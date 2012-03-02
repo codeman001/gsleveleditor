@@ -1,0 +1,67 @@
+<Application xmlns="http://schemas.microsoft.com/windows/2009/Ribbon">
+  
+  <Application.Commands>
+    
+    <!-- Menu command -->
+    <Command Name="cmdAppMenu" LabelTitle="toado map creation"/>
+    <Command Name="cmdNew" LabelTitle="Tạo bản đồ mới" Symbol="ID_NEW">
+      <Command.LargeImages>
+        <Image>ribbonIcon/new-icon.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="cmdOpen" LabelTitle="Mở file bản đồ" Symbol="ID_OPEN">
+      <Command.LargeImages>
+        <Image>ribbonIcon/open-icon.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="cmdSave" LabelTitle="Lưu bản đồ" Symbol="ID_SAVE">
+      <Command.LargeImages>
+        <Image>ribbonIcon/save-icon.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="cmdExportMetadata" LabelTitle="Xuất dữ liệu" Symbol="ID_EXPORT">
+      <Command.LargeImages>
+        <Image>ribbonIcon/export-icon.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="cmdExit" LabelTitle="Thoát chương trình" Symbol="ID_EXITAPP">
+      <Command.LargeImages>
+        <Image>ribbonIcon/close-icon.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    
+    <!-- Tab command -->
+    <Command Name="cmdTabDesign" LabelTitle="Chế độ thiết kế" />
+  
+  </Application.Commands>
+ 
+  <Application.Views>
+        
+    <Ribbon>
+      
+      <!-- Application Menu -->
+      <Ribbon.ApplicationMenu>
+        <ApplicationMenu CommandName='cmdAppMenu'>
+          <MenuGroup>
+            <Button CommandName='cmdNew'/>
+            <Button CommandName='cmdOpen'/>
+            <Button CommandName='cmdSave'/>
+            <Button CommandName='cmdExportMetadata' ApplicationModes='0,1'/>
+          </MenuGroup>
+          <MenuGroup>
+            <Button CommandName="cmdExit" />
+          </MenuGroup>
+        </ApplicationMenu>
+      </Ribbon.ApplicationMenu>
+
+
+      <!-- Application Tab -->
+      <Ribbon.Tabs>
+        <Tab CommandName="cmdTabDesign">                  
+          
+        </Tab>
+      </Ribbon.Tabs>
+      
+    </Ribbon>
+  </Application.Views>
+</Application>

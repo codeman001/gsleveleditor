@@ -1,0 +1,24 @@
+Index: uiClass.vcproj
+===================================================================
+--- uiClass.vcproj	(revision 242)
++++ uiClass.vcproj	(working copy)
+@@ -18,8 +18,8 @@
+ 	<Configurations>
+ 		<Configuration
+ 			Name="Debug|Win32"
+-			OutputDirectory="..\..\bin"
+-			IntermediateDirectory="..\..\bin\temp"
++			OutputDirectory="..\..\trunk\bin"
++			IntermediateDirectory="..\..\trunk\bin\uiClassTemp"
+ 			ConfigurationType="2"
+ 			CharacterSet="1"
+ 			>
+@@ -63,7 +63,7 @@
+ 			<Tool
+ 				Name="VCLinkerTool"
+ 				AdditionalDependencies="user32.lib advapi32.lib gdi32.lib shell32.lib ole32.lib"
+-				OutputFile="..\..\bin\$(ProjectName).dll"
++				OutputFile="..\..\trunk\bin\$(ProjectName).dll"
+ 				LinkIncremental="0"
+ 				GenerateDebugInformation="true"
+ 				SubSystem="2"

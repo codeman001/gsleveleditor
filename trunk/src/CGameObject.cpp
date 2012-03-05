@@ -118,14 +118,14 @@ void CGameObject::setOrientation(const core::vector3df& front, const core::vecto
 	matData[ 2] = m_right.Z;
 	matData[ 3] = 0.0f;
 
-	matData[ 4] = m_front.X;
-	matData[ 5] = m_front.Y;
-	matData[ 6] = m_front.Z;
+	matData[ 4] = m_up.X;
+	matData[ 5] = m_up.Y;
+	matData[ 6] = m_up.Z;
 	matData[ 7] = 0.0f;
 
-	matData[ 8] = m_up.X;
-	matData[ 9] = m_up.Y;
-	matData[10] = m_up.Z;
+	matData[ 8] = m_front.X;
+	matData[ 9] = m_front.Y;
+	matData[10] = m_front.Z;
 	matData[11] = 0.0f;
 
 	matData[12] = 0.0f;
@@ -155,7 +155,7 @@ void CGameObject::lookAt(const core::vector3df& pos)
 	float angle = (float)(core::vector2df( pos.X - m_position.X, pos.Z - m_position.Z ).getAngleTrig());
 
 	// rotation oz
-	setRotation(core::vector3df(0.0f, -angle, 0.0f));
+	setRotation(core::vector3df(0.0f, 90-angle, 0.0f));
 }
 
 // updateRotation

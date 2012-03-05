@@ -441,6 +441,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="AnimObject"
+					>
+					<File
+						RelativePath="..\..\src\CAnimObject.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CAnimObject.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<File

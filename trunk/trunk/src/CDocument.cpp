@@ -26,7 +26,9 @@ void CDocument::newDocument()
 	CZone *pRoot = new CZone();
 	
 	// add a cube box
-	pRoot->createCubeObject( 40.0f );
+	//pRoot->createCubeObject( 40.0f );
+	pRoot->createAnimObject()->loadFromFile( "media/dwarf.x" );
+	
 
 	m_zones.push_back( pRoot );
 

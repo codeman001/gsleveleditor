@@ -3,6 +3,7 @@
 
 #include "CGameObject.h"
 #include "CCubeObject.h"
+#include "CAnimObject.h"
 
 class CZone: public CGameObject
 {
@@ -37,6 +38,10 @@ public:
 	// createCubeObject
 	// add a cube object on screen
 	CCubeObject *createCubeObject( float size );
+
+	// createAnimObject
+	// add a anim object
+	CAnimObject *createAnimObject();
 
 	// removeObject
 	// remove object

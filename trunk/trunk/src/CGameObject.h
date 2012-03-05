@@ -5,8 +5,8 @@
 
 // CGameObject
 // Base class for object3d
-//  z
-//  *    y
+//  y
+//  *    z
 //  |   *
 //  |  /
 //  | /

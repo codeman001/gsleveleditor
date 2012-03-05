@@ -112,6 +112,16 @@ CCubeObject *CZone::createCubeObject( float size )
 	return pObj;
 }
 
+// createAnimObject
+// add a anim object
+CAnimObject *CZone::createAnimObject()
+{
+	CAnimObject *pObj = new CAnimObject();
+	pObj->setID( IDoc::s_objectID++ );
+	addChild( pObj );
+	return pObj;
+}
+
 // removeObject
 // remove object
 void CZone::removeObject( CGameObject *pObj )

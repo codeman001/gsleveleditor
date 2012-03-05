@@ -29,13 +29,10 @@ public:
 public:
 	virtual void idleUpdateWindow();
 
-	virtual void beginDraw();
-	virtual void drawDocument();
-	virtual void endDraw();
-
 	virtual void alertError( wchar_t *lpString );
 	virtual bool yesNoQuestion( wchar_t *lpString );
 	virtual void setStatusText( int part, wchar_t *lpString );
+
 };
 
 #endif

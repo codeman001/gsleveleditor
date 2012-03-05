@@ -204,6 +204,18 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath=".\gseditor.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\gseditor.manifest"
+				>
+			</File>
+			<File
+				RelativePath=".\gseditor.rc"
+				>
+			</File>
+			<File
 				RelativePath=".\ribbonUI.xml"
 				>
 				<FileConfiguration
@@ -218,18 +230,6 @@
 			</File>
 			<File
 				RelativePath=".\small.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\gseditor.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\gseditor.manifest"
-				>
-			</File>
-			<File
-				RelativePath=".\gseditor.rc"
 				>
 			</File>
 		</Filter>
@@ -346,6 +346,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\gseditor.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Resource.h"
 					>
 				</File>
@@ -355,10 +359,6 @@
 				</File>
 				<File
 					RelativePath=".\targetver.h"
-					>
-				</File>
-				<File
-					RelativePath=".\gseditor.h"
 					>
 				</File>
 			</Filter>
@@ -378,6 +378,14 @@
 				Name="MVC"
 				>
 				<File
+					RelativePath="..\..\src\IDoc.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\IDocImp.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\IView.h"
 					>
 				</File>
@@ -385,6 +393,54 @@
 					RelativePath="..\..\src\IViewImp.cpp"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="Document"
+				>
+				<File
+					RelativePath="..\..\src\CDocument.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\CDocument.h"
+					>
+				</File>
+				<Filter
+					Name="Zone"
+					>
+					<File
+						RelativePath="..\..\src\CZone.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CZone.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="GameObject"
+					>
+					<File
+						RelativePath="..\..\src\CGameObject.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CGameObject.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="CubeObject"
+					>
+					<File
+						RelativePath="..\..\src\CCubeObject.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CCubeObject.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<File

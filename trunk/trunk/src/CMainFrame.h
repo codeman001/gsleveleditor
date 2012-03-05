@@ -23,6 +23,10 @@ public:
 	CMainFrame();
 	virtual ~CMainFrame();
 	
+	inline uiStatusBar* getStatusBar()
+	{
+		return m_statusBarWnd;
+	}
 public:
 	virtual void _OnCreate();
 	virtual void _OnPaint(uiGraphics * pG);

@@ -1,0 +1,220 @@
+#ifndef _CGAMEOBJECT_H_
+#define _CGAMEOBJECT_H_
+
+#include "stdafx.h"
+
+// CGameObject
+// Base class for object3d
+//  z
+//  *    y
+//  |   *
+//  |  /
+//  | /
+//  |/
+//  *---------* x
+class CGameObject: public uiObject
+{	
+public:
+	static core::vector3df s_ox;
+	static core::vector3df s_oy;
+	static core::vector3df s_oz;
+
+	enum ObjectType
+	{
+		NullObject = 0,
+		ZoneObject,
+		NumObject
+	};
+protected:	
+	long				m_objectID;
+	ObjectType			m_objectType;
+
+	core::vector3df		m_position;
+	core::vector3df		m_rotation;
+	core::vector3df		m_scale;
+
+	core::vector3df		m_front;
+	core::vector3df		m_up;
+	core::vector3df		m_right;
+
+	bool				m_enable;
+	bool				m_visible;
+protected:
+	ISceneNode			*m_node;
+public:	
+
+	CGameObject();
+
+	virtual ~CGameObject();
+
+	// setID
+	// set id for object
+	inline void setID( long id )
+	{
+		m_objectID = id;
+	}
+
+	// getID
+	// get object id
+	inline long getID()
+	{
+		return m_objectID;
+	}
+
+	// getObjectType
+	// get object type
+	inline ObjectType getObjectType()
+	{
+		return m_objectType;
+	}
+
+	// getPosition
+	// get 3d position
+	inline core::vector3df& getPosition()
+	{
+		return m_position;
+	}
+
+	// setPosition
+	// set 3d position
+	inline void setPosition(core::vector3df& pos)
+	{
+		m_position = pos;
+		updateNodePosition();
+	}
+	
+	// getRotation
+	// get 3d rotation
+	inline core::vector3df& getRotation()
+	{
+		return m_rotation;
+	}
+
+	// setRotation
+	// set 3d rotation
+	void setRotation(core::vector3df& rot);	
+
+	// getPitch
+	inline float getPitch()	{	return m_rotation.X;	}
+
+	// getRoll
+	inline float getRoll()	{	return m_rotation.Z;	}
+
+	// getYaw
+	inline float getYaw()	{	return m_rotation.Y;	}
+
+	// setYaw
+	// rotation oy
+	virtual void setYaw(float angle);	
+	
+	// setYaw
+	// rotation ox
+	virtual void setPitch(float angle);
+
+	// setYaw
+	// rotation oz
+	virtual void setRoll(float angle);
+
+	// getQuaternion
+	// get rotation
+	void getQuaternion( core::quaternion* q );
+	
+	// setQuaternion
+	// set rotation
+	void setQuaternion( core::quaternion& q );
+
+	// setOrientation
+	// set rotation by front & up
+	virtual void setOrientation(const core::vector3df& front, const core::vector3df& up = core::vector3df(0.0f, 1.0f, 0.0f));
+
+	// getFront
+	// get front vector of object
+	inline core::vector3df&		getFront()	{	return m_front;			}
+
+	// getUp
+	// get up vector of object
+	inline core::vector3df&		getUp()		{	return m_up;			}
+
+	// getRight
+	// get right vector of object
+	inline core::vector3df&		getRight()	{	return m_right;			}
+
+	// updateRotation
+	void updateRotation();
+
+	// getScale
+	// get 3d xyz scale
+	inline core::vector3df& getScale() 
+	{
+		return m_scale;
+	}
+
+	// setScale
+	// set 3d xyz scale
+	inline void setScale(core::vector3df& scale) 
+	{
+		m_scale = scale;
+	}
+
+	// lookAt
+	// rotation object to the object
+	void lookAt(CGameObject* pObject);
+
+	// lookAt
+	// rotation object to pos
+	void lookAt(const core::vector3df& pos);
+
+	// getSceneNode
+	// return irrlicht node
+	inline ISceneNode* getSceneNode()
+	{
+		return m_node;
+	}
+
+	// isEnable
+	// check the object is enable
+	inline bool isEnable()
+	{
+		return m_enable;
+	}
+
+	// isVisible
+	// check the object is visible
+	inline bool isVisible()
+	{
+		return m_visible;
+	}
+
+	// setEnable
+	// set enable of object
+	virtual void setEnable( bool b )
+	{
+		m_enable = b;		
+	}
+
+	// setVisible
+	// set vidible of object ( false -> hidden )
+	virtual void setVisible( bool b )
+	{
+		m_visible = b;
+		if ( m_node )
+			m_node->setVisible( b );
+	}
+
+	// updateObject
+	// update object by frame...
+	virtual void updateObject()
+	{
+	}
+
+protected:
+	// updateNodeRotation
+	// update irr node rotation
+	void updateNodeRotation();
+
+	// updateNodePosition
+	// update irr node position
+	void updateNodePosition();
+};
+
+#endif

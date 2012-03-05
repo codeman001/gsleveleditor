@@ -2,51 +2,84 @@
 #define _IVIEW_
 
 #include "stdafx.h"
+#include "IDoc.h"
 
 class IView
 {
 protected:
-	bool m_repaintWindow;
-
 	IrrlichtDevice*			m_device;
 	IVideoDriver*			m_driver;
 	ISceneManager*			m_smgr;
 
 	SExposedVideoData		m_videoData;
+
+	IDoc*					m_document;
+
 public:	
 	IView();
-
 	virtual ~IView();
-
-	virtual void beginDraw() = 0;
-	virtual void drawDocument() = 0;
-	virtual void endDraw() = 0;
-
+		
+	// alertError
+	// show error msgbox
 	virtual void alertError( wchar_t *lpString ) = 0;
+
+	// yesNoQuestion
+	// show yes, no msgbox
 	virtual bool yesNoQuestion( wchar_t *lpString ) = 0;
+
+	// setStatusText
+	// set text on status bar
 	virtual void setStatusText( int part, wchar_t *lpString ) = 0;
 
+
+	// idleUpdateWindow
+	// update window
 	virtual void idleUpdateWindow() = 0;
 
-public:	
-	inline void requestPaintWindow( bool b = true )
-	{
-		m_repaintWindow = b;
-	}	
+public:
+	
+	int	m_mouseX;
+	int m_mouseY;
 
-	IrrlichtDevice* getDevice()
+	// getScreenCoordinatesFrom3DPosition
+	// convert 3d xyz to 2d xy
+	virtual bool getScreenCoordinatesFrom3DPosition(const core::vector3df& pos3d, int *x, int *y);
+
+public:	
+
+	// getDevice
+	// get irr device
+	inline IrrlichtDevice* getDevice()
 	{
 		return m_device;
 	}
 
-	IVideoDriver* getDriver()
+	// getDriver
+	// get irr driver
+	inline IVideoDriver* getDriver()
 	{
 		return m_driver;
 	}
 
-	ISceneManager* getSceneMgr()
+	// getSceneMgr
+	// get irr scene
+	inline ISceneManager* getSceneMgr()
 	{
 		return m_smgr;
+	}
+	
+	// getVideoData
+	// get viewData
+	inline SExposedVideoData& getVideoData()
+	{
+		return m_videoData;
+	}
+
+	// getSceneMgr
+	// get current document
+	inline IDoc* c()
+	{
+		return m_document;
 	}
 
 };

@@ -2,6 +2,7 @@
 #define _CGAMEOBJECT_H_
 
 #include "stdafx.h"
+#include "CSerializable.h"
 
 // CGameObject
 // Base class for object3d
@@ -23,6 +24,8 @@ public:
 	{
 		NullObject = 0,
 		ZoneObject,
+		CubeObject,
+		AnimObject,
 		NumObject
 	};
 protected:	
@@ -206,6 +209,18 @@ public:
 	virtual void updateObject()
 	{
 	}
+
+	// destroyNode
+	// remove node on scene
+	virtual void destroyNode();
+	
+	// saveData
+	// save data to serializable
+	void saveData( CSerializable* pObj );
+
+	// loadData
+	// load data to serializable
+	void loadData( CSerializable* pObj );
 
 protected:
 	// updateNodeRotation

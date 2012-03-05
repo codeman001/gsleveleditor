@@ -5,6 +5,7 @@
 CZone::CZone()
 {
 	m_needSortObject = true;
+	m_objectType = CGameObject::ZoneObject;
 }
 
 CZone::~CZone()
@@ -126,5 +127,19 @@ CAnimObject *CZone::createAnimObject()
 // remove object
 void CZone::removeObject( CGameObject *pObj )
 {
-	
+	vector<CGameObject*>::iterator iObj = m_childs.begin(), end = m_childs.end();
+	while ( iObj != end )
+	{
+		if ( pObj = (*iObj) )
+		{
+			// delete gameObject
+			(*iObj)->destroyNode();
+			delete (*iObj);
+			m_childs.erase( iObj );
+
+			break;
+		}
+
+		iObj++;
+	}
 }

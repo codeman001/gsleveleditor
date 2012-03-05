@@ -14,9 +14,7 @@ IView::IView()
 }
 
 IView::~IView()
-{
-	if ( m_document )
-		delete m_document;
+{	
 }
 
 bool IView::getScreenCoordinatesFrom3DPosition(const core::vector3df& pos3d, int *x, int *y)

@@ -8,7 +8,8 @@ class CAnimObject: public CGameObject
 public:
 	
 protected:
-	
+	IAnimatedMeshSceneNode*	m_animNode;
+
 public:
 	CAnimObject();
 
@@ -21,6 +22,14 @@ public:
 	// loadFromFile
 	// load anim object from file
 	void loadFromFile( char *lpFilename );
+
+	// setSpeed
+	// set speed for anim (frame/sercond)
+	inline void setSpeed( float speed )
+	{
+		if ( m_animNode )
+			m_animNode->setAnimationSpeed( speed );
+	}
 };
 
 

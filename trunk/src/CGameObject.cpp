@@ -25,7 +25,7 @@ CGameObject::CGameObject()
 }
 
 CGameObject::~CGameObject()
-{
+{	
 }
 
 // setRotation
@@ -191,4 +191,52 @@ void CGameObject::updateNodePosition()
 	{
 		m_node->setPosition( m_position );
 	}
+}
+
+// destroyNode
+// remove node on scene
+void CGameObject::destroyNode()
+{
+	if ( m_node )
+	{
+		m_node->remove();
+		m_node = NULL;
+	}
+}
+
+// saveData
+// save data to serializable
+void CGameObject::saveData( CSerializable* pObj )
+{
+	const char* stringObjType[] = 
+	{
+		"NullObject",
+		"ZoneObject",
+		"CubeObject",
+		"AnimObject"		
+	};
+
+	pObj->addRow("objectID",	&m_objectID, NSSerializable::longType, true);
+	pObj->addRow("objectType",	(void*)stringObjType[ (int)m_objectType ], NSSerializable::stringType, true);
+	
+	pObj->addRow("enable",		&m_enable,	NSSerializable::boolType);
+	pObj->addRow("visible",		&m_visible, NSSerializable::boolType);
+
+	pObj->addRow("positionX",	&m_position.X, NSSerializable::floatType );
+	pObj->addRow("positionY",	&m_position.Y, NSSerializable::floatType );
+	pObj->addRow("positionZ",	&m_position.Z, NSSerializable::floatType );
+	
+	pObj->addRow("rotationX",	&m_rotation.X, NSSerializable::floatType );
+	pObj->addRow("rotationY",	&m_rotation.Y, NSSerializable::floatType );
+	pObj->addRow("rotationZ",	&m_rotation.Z, NSSerializable::floatType );
+
+	pObj->addRow("scaleX",		&m_scale.X, NSSerializable::floatType );
+	pObj->addRow("scaleY",		&m_scale.Y, NSSerializable::floatType );
+	pObj->addRow("scaleZ",		&m_scale.Z, NSSerializable::floatType );		
+}
+
+// loadData
+// load data to serializable
+void CGameObject::loadData( CSerializable* pObj )
+{
 }

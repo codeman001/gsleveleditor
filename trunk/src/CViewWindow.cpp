@@ -28,6 +28,12 @@ CViewWindow::CViewWindow( WCHAR* lpString, uiWindow *p )
 	
 CViewWindow::~CViewWindow()
 {
+	if ( m_document )
+	{
+		delete m_document;
+		m_document = NULL;
+	}
+
 	m_device->drop();
 }
 

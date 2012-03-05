@@ -27,9 +27,10 @@ void CDocument::newDocument()
 	
 	// add a cube box
 	//pRoot->createCubeObject( 40.0f );
-	pRoot->createAnimObject()->loadFromFile( "media/dwarf.x" );
+	CAnimObject *pAnimObj =	pRoot->createAnimObject();	
+	pAnimObj->loadFromFile( "media/dwarf.x" );	
 	
-
+	// add zone to document
 	m_zones.push_back( pRoot );
 
 	// add camera

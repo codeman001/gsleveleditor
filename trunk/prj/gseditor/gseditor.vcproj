@@ -197,6 +197,32 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<Filter
+				Name="Header Files"
+				Filter="h;hpp;hxx;hm;inl;inc;xsd"
+				UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+				>
+				<File
+					RelativePath="..\..\src\AppInclude.h"
+					>
+				</File>
+				<File
+					RelativePath=".\gseditor.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Resource.h"
+					>
+				</File>
+				<File
+					RelativePath=".\stdafx.h"
+					>
+				</File>
+				<File
+					RelativePath=".\targetver.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -337,28 +363,14 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Header Files"
-				Filter="h;hpp;hxx;hm;inl;inc;xsd"
-				UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+				Name="StoreObject"
 				>
 				<File
-					RelativePath="..\..\src\AppInclude.h"
+					RelativePath="..\..\src\CSerializable.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\gseditor.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Resource.h"
-					>
-				</File>
-				<File
-					RelativePath=".\stdafx.h"
-					>
-				</File>
-				<File
-					RelativePath=".\targetver.h"
+					RelativePath="..\..\src\CSerializable.h"
 					>
 				</File>
 			</Filter>

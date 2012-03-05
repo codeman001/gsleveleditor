@@ -4,10 +4,12 @@
 
 CAnimObject::CAnimObject()
 {
+	m_animNode = NULL;
+	m_objectType = CGameObject::AnimObject;
 }
 
 CAnimObject::~CAnimObject()
-{
+{	
 }
 
 // loadFromFile
@@ -16,10 +18,10 @@ void CAnimObject::loadFromFile( char *lpFilename )
 {
 	ISceneManager *smgr = getIView()->getSceneMgr();
 
-	scene::IAnimatedMeshSceneNode* animNode = smgr->addAnimatedMeshSceneNode( smgr->getMesh( lpFilename ) );
-	animNode->setAnimationSpeed(20.f);
+	m_animNode = smgr->addAnimatedMeshSceneNode( smgr->getMesh( lpFilename ) );
+	m_animNode->setAnimationSpeed(20.f);
 	
-	m_node = animNode;
+	m_node = m_animNode;
 	updateNodePosition();
 	updateNodeRotation();
 }

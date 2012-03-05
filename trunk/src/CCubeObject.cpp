@@ -4,6 +4,8 @@
 
 CCubeObject::CCubeObject( float size )
 {
+	m_objectType = CGameObject::CubeObject;
+
 	m_node = getIView()->getSceneMgr()->addCubeSceneNode( size );
 	m_node->setMaterialFlag( video::EMF_LIGHTING, false );
 

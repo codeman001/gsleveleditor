@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CDocument.h"
 #include "IView.h"
+#include "IController.h"
 
 CDocument::CDocument()
 {
@@ -87,7 +88,12 @@ void CDocument::drawDocument()
 	// draw document
 	IVideoDriver* driver = getIView()->getDriver();
 
+	// draw 3d scene
 	driver->beginScene( true, true, 0, getIView()->getVideoData() );
 	getIView()->getSceneMgr()->drawAll();
+
+	// controller draw imp
+	CControllerManager::getInstance()->getCurrentController()->render();
+
 	driver->endScene();
 }

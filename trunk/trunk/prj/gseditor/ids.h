@@ -22,5 +22,15 @@
 #define ID_EXITAPP 7 
 #define ID_EXITAPP_LabelTitle_RESID 60010
 #define ID_EXITAPP_LargeImages_RESID 60011
-#define cmdTabDesign 8 
-#define cmdTabDesign_LabelTitle_RESID 60012
+#define cmdTabHome 8 
+#define cmdTabHome_LabelTitle_RESID 60012
+#define cmdGroupView 9 
+#define cmdGroupView_LabelTitle_RESID 60013
+#define ID_SELECT 10 
+#define ID_SELECT_LabelTitle_RESID 60014
+#define ID_MOVE 11 
+#define ID_MOVE_LabelTitle_RESID 60015
+#define ID_ROTATE 12 
+#define ID_ROTATE_LabelTitle_RESID 60016
+#define ID_SCALE 13 
+#define ID_SCALE_LabelTitle_RESID 60017

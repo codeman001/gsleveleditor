@@ -13,6 +13,7 @@ public:
 		SelectObject,
 		MoveObject,
 		RotateObject,
+		ScaleObject,
 		NumController
 	};
 

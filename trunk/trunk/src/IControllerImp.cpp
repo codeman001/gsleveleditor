@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "IController.h"
 
+#include "CSelectObjectController.h"
 
 // CControllerManager
 // 
@@ -12,7 +13,11 @@ CControllerManager::CControllerManager()
 	for ( int i = 0; i < numController; i++ )
 		m_controller[i] = NULL;
 
-	m_controller[ (int)IController::NullController ] = new IController();
+	m_controller[ (int)IController::NullController ]	= new IController();
+	m_controller[ (int)IController::SelectObject ]		= new CSelectObjectController();
+	m_controller[ (int)IController::MoveObject ]		= new IController();
+	m_controller[ (int)IController::RotateObject ]		= new IController();
+	m_controller[ (int)IController::ScaleObject ]		= new IController();
 
 	// default is null controller
 	m_currentController = m_controller[ (int)IController::NullController ];

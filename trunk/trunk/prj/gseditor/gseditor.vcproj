@@ -478,6 +478,34 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="Controller"
+				>
+				<Filter
+					Name="SelectObject"
+					>
+					<File
+						RelativePath="..\..\src\CSelectObjectController.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CSelectObjectController.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="MoveObject"
+					>
+				</Filter>
+				<Filter
+					Name="RotateObject"
+					>
+				</Filter>
+				<Filter
+					Name="ScaleObject"
+					>
+				</Filter>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

@@ -4,6 +4,7 @@
 #include "CMainFrame.h"
 #include "CGlobalInstance.h"
 
+#include "IController.h"
 #include "CDocument.h"
 
 IView* g_view = NULL;
@@ -110,10 +111,15 @@ void CViewWindow::_OnMouseMove	( uiMouseEvent mouseEvent, int x, int y )
 	// global mouse position
 	m_mouseX = x;
 	m_mouseY = y;
+
+	// controller event
+	CControllerManager::getInstance()->getCurrentController()->onMouseMove( x, y );
 }
 
 void CViewWindow::_OnMouseWheel	( uiMouseEvent mouseEvent, int x, int y )
-{	
+{
+	// controller event
+	CControllerManager::getInstance()->getCurrentController()->onMouseWhell( mouseEvent.isWheelUp() == false, x, y );
 }
 
 void CViewWindow::_OnLButtonDown	( uiMouseEvent mouseEvent, int x, int y )
@@ -134,6 +140,9 @@ void CViewWindow::_OnLButtonDown	( uiMouseEvent mouseEvent, int x, int y )
 
 	// post event
 	m_device->postEventFromUser(irrEvent);
+
+	// controller event
+	CControllerManager::getInstance()->getCurrentController()->onLMouseDown( x, y );
 }
 
 void CViewWindow::_OnLButtonUp	( uiMouseEvent mouseEvent, int x, int y )
@@ -154,6 +163,9 @@ void CViewWindow::_OnLButtonUp	( uiMouseEvent mouseEvent, int x, int y )
 
 	// post event
 	m_device->postEventFromUser(irrEvent);
+
+	// controller event
+	CControllerManager::getInstance()->getCurrentController()->onLMouseUp( x, y );
 }
 
 
@@ -175,6 +187,9 @@ void CViewWindow::_OnRButtonDown	( uiMouseEvent mouseEvent, int x, int y )
 
 	// post event
 	m_device->postEventFromUser(irrEvent);
+
+	// controller event
+	CControllerManager::getInstance()->getCurrentController()->onRMouseDown( x, y );
 }
 
 void CViewWindow::_OnRButtonUp	( uiMouseEvent mouseEvent, int x, int y )
@@ -195,6 +210,9 @@ void CViewWindow::_OnRButtonUp	( uiMouseEvent mouseEvent, int x, int y )
 
 	// post event
 	m_device->postEventFromUser(irrEvent);
+
+	// controller event
+	CControllerManager::getInstance()->getCurrentController()->onRMouseUp( x, y );
 }
 	
 void CViewWindow::_OnMButtonDown	( uiMouseEvent mouseEvent, int x, int y )

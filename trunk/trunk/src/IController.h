@@ -28,6 +28,10 @@ public:
 	// Run when cancel (press esc, or change another controller)
 	virtual void cancelController()	{}
 
+	// render
+	// Event render 2d interface
+	virtual void render(){}
+
 	virtual void onKeyUp		(int keyCode){}
 	virtual void onKeyDown		(int keyCode){}
 	

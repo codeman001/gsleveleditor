@@ -21,6 +21,9 @@ CViewWindow::CViewWindow( WCHAR* lpString, uiWindow *p )
 	// init view
 	g_view = this;
 	
+	// init controller
+	CControllerManager::createGetInstance();
+
 	// init document
 	m_document = new CDocument();
 	m_document->newDocument();
@@ -33,6 +36,9 @@ CViewWindow::~CViewWindow()
 		delete m_document;
 		m_document = NULL;
 	}
+
+	// destroy controller
+	CControllerManager::releaseInstance();
 
 	m_device->drop();
 }
@@ -49,8 +55,6 @@ void CViewWindow::createIrrDevice()
 	m_driver	= m_device->getVideoDriver();
 	m_smgr		= m_device->getSceneManager();
 	
-	
-
 	// init opengl
 	HDC HDc = GetDC( getHandle() );
 	PIXELFORMATDESCRIPTOR pfd={0};
@@ -70,10 +74,6 @@ void CViewWindow::createIrrDevice()
 	// share for multithread
 	wglShareLists((HGLRC)m_driver->getExposedVideoData().OpenGLWin32.HRc, (HGLRC)m_videoData.OpenGLWin32.HRc);
 
-}
-
-void CViewWindow::_OnCreate()
-{
 }
 
 void CViewWindow::_OnSize(	uiSizeEvent sizeEvent, int nWidth, int nHeight)

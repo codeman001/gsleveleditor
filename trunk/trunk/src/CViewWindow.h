@@ -13,8 +13,6 @@ public:
 	virtual void _OnSize(	uiSizeEvent sizeEvent, int nWidth, int nHeight);
 	virtual void _OnPaint( uiGraphics *pG );
 
-	virtual void _OnCreate();
-
 	virtual void _OnMouseMove	( uiMouseEvent mouseEvent, int x, int y );
 	virtual void _OnMouseWheel	( uiMouseEvent mouseEvent, int x, int y );
 	virtual void _OnLButtonUp	( uiMouseEvent mouseEvent, int x, int y );

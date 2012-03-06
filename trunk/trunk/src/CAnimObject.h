@@ -2,13 +2,15 @@
 #define _CANIMOBJECT_H
 
 #include "CGameObject.h"
+#include "CGameAnimatedMeshSceneNode.h"
 
 class CAnimObject: public CGameObject
 {
 public:
 	
 protected:
-	IAnimatedMeshSceneNode*	m_animNode;
+	CGameAnimatedMeshSceneNode*	m_animNode;
+	string	m_animeshFile;
 
 public:
 	CAnimObject();
@@ -23,6 +25,13 @@ public:
 	// load anim object from file
 	void loadFromFile( char *lpFilename );
 
+	// getMeshFile
+	// get current mesh file name
+	const char *getMeshFile()
+	{
+		return m_animeshFile.c_str();
+	}
+
 	// setSpeed
 	// set speed for anim (frame/sercond)
 	inline void setSpeed( float speed )
@@ -30,6 +39,15 @@ public:
 		if ( m_animNode )
 			m_animNode->setAnimationSpeed( speed );
 	}
+
+public:
+	// saveData
+	// save data to serializable
+	void saveData( CSerializable* pObj );
+
+	// loadData
+	// load data to serializable
+	void loadData( CSerializable* pObj );
 };
 
 

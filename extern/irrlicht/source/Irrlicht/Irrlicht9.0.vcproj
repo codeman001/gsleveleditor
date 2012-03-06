@@ -323,8 +323,8 @@
 		</Configuration>
 		<Configuration
 			Name="Static lib - Debug|Win32"
-			OutputDirectory="obj\$(ConfigurationName)"
-			IntermediateDirectory="obj\$(ConfigurationName)"
+			OutputDirectory="..\..\..\..\trunk\bin"
+			IntermediateDirectory="..\..\..\..\trunk\bin\irrlichtTemp"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -362,9 +362,9 @@
 				DisableLanguageExtensions="false"
 				RuntimeTypeInfo="false"
 				PrecompiledHeaderFile=".\..\obj\IrrDebug/Irrlicht.pch"
-				AssemblerListingLocation=".\..\obj\IrrDebugStatic/"
-				ObjectFile=".\..\obj\IrrDebugStatic/"
-				ProgramDataBaseFileName=".\..\obj\IrrDebugStatic/"
+				AssemblerListingLocation="..\..\..\..\trunk\bin\irrlichtTemp\obj\IrrDebug/"
+				ObjectFile="..\..\..\..\trunk\bin\irrlichtTemp\obj\IrrDebug/"
+				ProgramDataBaseFileName="..\..\..\..\trunk\bin\irrlichtTemp\obj\IrrDebug/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -384,7 +384,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="winmm.lib"
-				OutputFile="..\..\lib\Win32-visualstudio\Irrlicht.lib"
+				OutputFile="..\..\..\..\trunk\bin\Irrlicht.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

@@ -12,37 +12,37 @@ END
 
 STRINGTABLE 
 BEGIN
-    ID_NEW_LabelTitle_RESID L"T\x1ea1o b\x1ea3n \x0111\x1ed3 m\x1edbi" /* LabelTitle ID_NEW_LabelTitle_RESID: (null) */
+    ID_NEW_LabelTitle_RESID L"New level" /* LabelTitle ID_NEW_LabelTitle_RESID: (null) */
 END
 
 ID_NEW_LargeImages_RESID    BITMAP    "ribbonIcon\\new-icon.bmp" /* LargeImages ID_NEW_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
-    ID_OPEN_LabelTitle_RESID L"M\x1edf file b\x1ea3n \x0111\x1ed3" /* LabelTitle ID_OPEN_LabelTitle_RESID: (null) */
+    ID_OPEN_LabelTitle_RESID L"Open level" /* LabelTitle ID_OPEN_LabelTitle_RESID: (null) */
 END
 
 ID_OPEN_LargeImages_RESID    BITMAP    "ribbonIcon\\open-icon.bmp" /* LargeImages ID_OPEN_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
-    ID_SAVE_LabelTitle_RESID L"L\x01b0u b\x1ea3n \x0111\x1ed3" /* LabelTitle ID_SAVE_LabelTitle_RESID: (null) */
+    ID_SAVE_LabelTitle_RESID L"Save level" /* LabelTitle ID_SAVE_LabelTitle_RESID: (null) */
 END
 
 ID_SAVE_LargeImages_RESID    BITMAP    "ribbonIcon\\save-icon.bmp" /* LargeImages ID_SAVE_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
-    ID_EXPORT_LabelTitle_RESID L"Xu\x1ea5t d\x1eef li\x1ec7u" /* LabelTitle ID_EXPORT_LabelTitle_RESID: (null) */
+    ID_EXPORT_LabelTitle_RESID L"Export" /* LabelTitle ID_EXPORT_LabelTitle_RESID: (null) */
 END
 
 ID_EXPORT_LargeImages_RESID    BITMAP    "ribbonIcon\\export-icon.bmp" /* LargeImages ID_EXPORT_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
-    ID_EXITAPP_LabelTitle_RESID L"Tho\x00e1t ch\x01b0\x01a1ng tr\x00ecnh" /* LabelTitle ID_EXITAPP_LabelTitle_RESID: (null) */
+    ID_EXITAPP_LabelTitle_RESID L"Exit" /* LabelTitle ID_EXITAPP_LabelTitle_RESID: (null) */
 END
 
 ID_EXITAPP_LargeImages_RESID    BITMAP    "ribbonIcon\\close-icon.bmp" /* LargeImages ID_EXITAPP_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
-    cmdTabDesign_LabelTitle_RESID L"Ch\x1ebf \x0111\x1ed9 thi\x1ebft k\x1ebf" /* LabelTitle cmdTabDesign_LabelTitle_RESID: (null) */
+    cmdTabDesign_LabelTitle_RESID L"Home" /* LabelTitle cmdTabDesign_LabelTitle_RESID: (null) */
 END
 
 APPLICATION_RIBBON    UIFILE    "ribbonUI.bml"

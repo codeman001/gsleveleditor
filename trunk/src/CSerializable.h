@@ -13,7 +13,8 @@ namespace NSSerializable
 		floatType,
 		doubleType,
 		boolType,
-		stringType
+		stringType,
+		arrayByte
 	};
 }
 
@@ -25,6 +26,8 @@ typedef struct tagSerializableRec
 	char		data[256];
 	dataType	type;
 	bool		readOnly;
+	char		*exData;
+	char		exDataSize;
 
 	tagSerializableRec()
 	{
@@ -33,6 +36,15 @@ typedef struct tagSerializableRec
 
 		readOnly = false;
 		type = NSSerializable::unknownType;
+
+		exData = NULL;
+		exDataSize = 0;
+	}
+
+	~tagSerializableRec()
+	{
+		if ( exData )
+			delete exData;
 	}
 
 	tagSerializableRec( char* name, void *value, dataType type, bool readOnly )
@@ -41,6 +53,8 @@ typedef struct tagSerializableRec
 		
 		this->readOnly =  readOnly;
 		this->type = type;
+		this->exData = NULL;
+		this->exDataSize = 0;
 
 		if ( type == NSSerializable::intType )
 		{
@@ -77,13 +91,18 @@ typedef struct tagSerializableRec
 		}
 	}
 
-	const tagSerializableRec& operator= (const tagSerializableRec& s)
+	tagSerializableRec& operator= (const tagSerializableRec& s)
 	{
 		memcpy( name, s.name, 64 );
 		memcpy( data, s.data, 256 );
 		type = s.type;
 		readOnly = s.readOnly;
 
+		if ( s.type == NSSerializable::arrayByte )
+		{
+			memcpy( exData, s.exData, exDataSize);
+			exDataSize = s.exDataSize;
+		}
 		return *this;
 	}
 }SSerializableRec;
@@ -92,6 +111,8 @@ class CSerializable
 {
 protected:
 	vector<SSerializableRec>	m_data;
+
+	int m_cursor;
 public:
 	CSerializable();
 
@@ -107,6 +128,75 @@ public:
 	// addRow
 	// add a property
 	void addRow(char *name, void* value, dataType type, bool readOnly = false);
+
+	// addInt
+	// add int value to record
+	inline void addInt(char *name, int value, bool readOnly = false )
+	{
+		addRow(name, &value, NSSerializable::intType, readOnly);
+	}
+
+	// addLong
+	// add long value to record
+	inline void addLong(char *name, long value, bool readOnly = false )
+	{
+		addRow(name, &value, NSSerializable::longType, readOnly);
+	}
+
+	// addFloat
+	// add float value to record
+	inline void addFloat(char *name, float value, bool readOnly = false )
+	{
+		addRow(name, &value, NSSerializable::floatType, readOnly);
+	}
+
+	// addDouble
+	// add double value to record
+	inline void addDouble(char *name, double value, bool readOnly = false )
+	{
+		addRow(name, &value, NSSerializable::doubleType, readOnly);
+	}
+
+	// addBool
+	// add bool value to record
+	inline void addBool(char *name, bool value, bool readOnly = false )
+	{
+		addRow(name, &value, NSSerializable::boolType, readOnly);
+	}
+
+	// addString
+	// add bool value to record
+	inline void addString(char *name, const char *value, bool readOnly = false )
+	{
+		addRow(name, (void*)value, NSSerializable::stringType, readOnly);
+	}
+
+	// addArrayByte
+	// add array byte to record
+	void addArrayByte(char *name, char *value, int size, bool readOnly = false );
+
+	// setCursorRecord
+	// set position of cursor to read record
+	inline void setCursorRecord(int cursor)
+	{
+		m_cursor = cursor;
+	}
+	
+	// getCursorRecord
+	// get position of cursor
+	inline int getCursorRecord()
+	{
+		return m_cursor;
+	}
+
+
+	int		readInt();
+	long	readLong();
+	float	readFloat();
+	double	readDouble();
+	bool	readBool();
+	char*	readString();
+	void	readArrayByte( char* data, int *size );
 };
 
 #endif

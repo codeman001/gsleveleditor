@@ -28,9 +28,22 @@ public:
 		AnimObject,
 		NumObject
 	};
+	
+	enum ObjectState
+	{
+		Normal = 0,
+		Select,
+		Move,
+		Rotation,
+		Review
+	};
+
+	static const char* s_stringObjType[];
+
 protected:	
 	long				m_objectID;
 	ObjectType			m_objectType;
+	ObjectState			m_objectState;
 
 	core::vector3df		m_position;
 	core::vector3df		m_rotation;
@@ -52,9 +65,11 @@ public:
 
 	// setID
 	// set id for object
-	inline void setID( long id )
+	virtual void setID( long id )
 	{
 		m_objectID = id;
+		if ( m_node )
+			m_node->setID( id );
 	}
 
 	// getID
@@ -62,6 +77,20 @@ public:
 	inline long getID()
 	{
 		return m_objectID;
+	}
+
+	// setObjectState
+	// set state for object
+	inline void setObjectState( ObjectState state )
+	{
+		m_objectState = state;
+	}
+
+	// getObjectState
+	// get state of object
+	inline ObjectState getObjectState()
+	{
+		return m_objectState;
 	}
 
 	// getObjectType
@@ -221,6 +250,16 @@ public:
 	// loadData
 	// load data to serializable
 	void loadData( CSerializable* pObj );
+
+public:
+
+	// drawFrontUpLeftVector
+	// draw front, left, up vector
+	void drawFrontUpLeftVector();
+
+	// drawCircleAroundObj
+	// draw circle around object
+	void drawCircleAroundObject();
 
 protected:
 	// updateNodeRotation

@@ -9,19 +9,32 @@ CAnimObject::CAnimObject()
 }
 
 CAnimObject::~CAnimObject()
-{	
+{
 }
 
 // loadFromFile
 // load anim object from file
 void CAnimObject::loadFromFile( char *lpFilename )
 {
-	ISceneManager *smgr = getIView()->getSceneMgr();
+	m_animeshFile = lpFilename;
 
-	m_animNode = smgr->addAnimatedMeshSceneNode( smgr->getMesh( lpFilename ) );
-	m_animNode->setAnimationSpeed(20.f);
+	// release if mesh is loaded
+	if ( m_node )
+		destroyNode();
+
+	ISceneManager *smgr = getIView()->getSceneMgr();
 	
+	// load mesh
+	IAnimatedMesh *animMesh = smgr->getMesh( lpFilename );
+
+	// create scene node
+	m_animNode = new CGameAnimatedMeshSceneNode( this, animMesh, smgr->getRootSceneNode(), smgr );	
+	m_animNode->setAnimationSpeed(20.f);	
+
+	// set node
 	m_node = m_animNode;
+
+	// update position
 	updateNodePosition();
 	updateNodeRotation();
 }
@@ -30,7 +43,8 @@ void CAnimObject::loadFromFile( char *lpFilename )
 // update object by frame
 void CAnimObject::updateObject()
 {
-	// get line ray	
+	// get line ray
+	/*
 	scene::ISceneCollisionManager* collMan = getIView()->getSceneMgr()->getSceneCollisionManager();
 	
 	core::vector2di point( getIView()->m_mouseX, getIView()->m_mouseY );
@@ -44,7 +58,29 @@ void CAnimObject::updateObject()
 	
 	if ( b )
 	{
-		setOrientation( hit );
-		//lookAt( hit );
+		//setOrientation( hit );
+		lookAt( hit );
 	}
+	*/
+}
+
+// saveData
+// save data to serializable
+void CAnimObject::saveData( CSerializable* pObj )
+{
+	CGameObject::saveData( pObj );
+
+	// save mesh file
+	pObj->addString("meshFile", m_animeshFile.c_str());
+}
+
+// loadData
+// load data to serializable
+void CAnimObject::loadData( CSerializable* pObj )
+{
+	CGameObject::loadData( pObj );
+
+	// read mesh file
+	char *string = pObj->readString();
+	loadFromFile( string );
 }

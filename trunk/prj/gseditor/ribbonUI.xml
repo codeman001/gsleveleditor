@@ -4,34 +4,34 @@
     
     <!-- Menu command -->
     <Command Name="cmdAppMenu" LabelTitle="toado map creation"/>
-    <Command Name="cmdNew" LabelTitle="Tạo bản đồ mới" Symbol="ID_NEW">
+    <Command Name="cmdNew" LabelTitle="New level" Symbol="ID_NEW">
       <Command.LargeImages>
         <Image>ribbonIcon/new-icon.bmp</Image>
       </Command.LargeImages>
     </Command>
-    <Command Name="cmdOpen" LabelTitle="Mở file bản đồ" Symbol="ID_OPEN">
+    <Command Name="cmdOpen" LabelTitle="Open level" Symbol="ID_OPEN">
       <Command.LargeImages>
         <Image>ribbonIcon/open-icon.bmp</Image>
       </Command.LargeImages>
     </Command>
-    <Command Name="cmdSave" LabelTitle="Lưu bản đồ" Symbol="ID_SAVE">
+    <Command Name="cmdSave" LabelTitle="Save level" Symbol="ID_SAVE">
       <Command.LargeImages>
         <Image>ribbonIcon/save-icon.bmp</Image>
       </Command.LargeImages>
     </Command>
-    <Command Name="cmdExportMetadata" LabelTitle="Xuất dữ liệu" Symbol="ID_EXPORT">
+    <Command Name="cmdExportMetadata" LabelTitle="Export" Symbol="ID_EXPORT">
       <Command.LargeImages>
         <Image>ribbonIcon/export-icon.bmp</Image>
       </Command.LargeImages>
     </Command>
-    <Command Name="cmdExit" LabelTitle="Thoát chương trình" Symbol="ID_EXITAPP">
+    <Command Name="cmdExit" LabelTitle="Exit" Symbol="ID_EXITAPP">
       <Command.LargeImages>
         <Image>ribbonIcon/close-icon.bmp</Image>
       </Command.LargeImages>
     </Command>
     
     <!-- Tab command -->
-    <Command Name="cmdTabDesign" LabelTitle="Chế độ thiết kế" />
+    <Command Name="cmdTabDesign" LabelTitle="Home" />
   
   </Application.Commands>
  

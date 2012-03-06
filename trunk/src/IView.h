@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "IDoc.h"
+#include "IController.h"
 
 class IView
 {

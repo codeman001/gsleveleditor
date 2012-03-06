@@ -16,6 +16,9 @@ CDocument::~CDocument()
 		iZone++;
 	}
 	m_zones.clear();
+
+	// remove all child
+	getIView()->getSceneMgr()->getRootSceneNode()->removeAll();
 }
 
 // newDocument
@@ -26,10 +29,13 @@ void CDocument::newDocument()
 	CZone *pRoot = new CZone();
 	
 	// add a cube box
-	//pRoot->createCubeObject( 40.0f );
 	CAnimObject *pAnimObj =	pRoot->createAnimObject();	
-	pAnimObj->loadFromFile( "media/dwarf.x" );	
-	
+	pAnimObj->loadFromFile( "media/dwarf.x" );
+
+	pAnimObj =	pRoot->createAnimObject();	
+	pAnimObj->loadFromFile( "media/dwarf.x" );
+	pAnimObj->setPosition( core::vector3df(100.0f, 0.0f, 0.0f) );
+
 	// add zone to document
 	m_zones.push_back( pRoot );
 
@@ -61,9 +67,9 @@ void CDocument::updateDocument()
 	IrrlichtDevice *device = getIView()->getDevice();
 	device->getTimer()->tick();
 
-
 	// update camera
 	
+
 	// update all zone
 	vector<CZone*>::iterator iZone = m_zones.begin(), iEnd = m_zones.end();
 	while ( iZone != iEnd )

@@ -273,18 +273,14 @@
 					RelativePath="..\..\src\CMainFrame.h"
 					>
 				</File>
-				<Filter
-					Name="ViewWindow"
+				<File
+					RelativePath="..\..\src\CViewWindow.cpp"
 					>
-					<File
-						RelativePath="..\..\src\CViewWindow.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\CViewWindow.h"
-						>
-					</File>
-				</Filter>
+				</File>
+				<File
+					RelativePath="..\..\src\CViewWindow.h"
+					>
+				</File>
 				<Filter
 					Name="Base"
 					>
@@ -390,6 +386,14 @@
 				Name="MVC"
 				>
 				<File
+					RelativePath="..\..\src\IController.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\IControllerImp.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\IDoc.h"
 					>
 				</File>
@@ -462,6 +466,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\CAnimObject.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CGameAnimatedMeshSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CGameAnimatedMeshSceneNode.h"
 						>
 					</File>
 				</Filter>

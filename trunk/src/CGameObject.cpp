@@ -1,15 +1,25 @@
 #include "stdafx.h"
 #include "CGameObject.h"
+#include "IView.h"
 
 core::vector3df CGameObject::s_ox	= core::vector3df(1.0f, 0.0f, 0.0f);
 core::vector3df CGameObject::s_oy	= core::vector3df(0.0f, 1.0f, 0.0f);
 core::vector3df CGameObject::s_oz	= core::vector3df(0.0f, 0.0f, 1.0f);
 
+const char* CGameObject::s_stringObjType[] =
+{
+	"NullObject",
+	"ZoneObject",
+	"CubeObject",
+	"AnimObject"
+};
+
 CGameObject::CGameObject()
 {
 	m_objectID		= -1;
 	m_objectType	= NullObject;
-	
+	m_objectState	= Normal;
+
 	m_position		= core::vector3df(0.0f, 0.0f, 0.0f );
 	m_rotation		= core::vector3df(0.0f, 0.0f, 0.0f );
 	m_scale			= core::vector3df(1.0f, 1.0f, 1.0f );
@@ -25,7 +35,9 @@ CGameObject::CGameObject()
 }
 
 CGameObject::~CGameObject()
-{	
+{
+	if ( m_node )
+		m_node->drop();
 }
 
 // setRotation
@@ -199,6 +211,7 @@ void CGameObject::destroyNode()
 {
 	if ( m_node )
 	{
+		m_node->drop();
 		m_node->remove();
 		m_node = NULL;
 	}
@@ -208,35 +221,149 @@ void CGameObject::destroyNode()
 // save data to serializable
 void CGameObject::saveData( CSerializable* pObj )
 {
-	const char* stringObjType[] = 
-	{
-		"NullObject",
-		"ZoneObject",
-		"CubeObject",
-		"AnimObject"		
-	};
-
-	pObj->addRow("objectID",	&m_objectID, NSSerializable::longType, true);
-	pObj->addRow("objectType",	(void*)stringObjType[ (int)m_objectType ], NSSerializable::stringType, true);
+	pObj->addLong	("objectID",	m_objectID, true);
+	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
 	
-	pObj->addRow("enable",		&m_enable,	NSSerializable::boolType);
-	pObj->addRow("visible",		&m_visible, NSSerializable::boolType);
+	pObj->addBool	("enable",		m_enable );
+	pObj->addBool	("visible",		m_visible );
 
-	pObj->addRow("positionX",	&m_position.X, NSSerializable::floatType );
-	pObj->addRow("positionY",	&m_position.Y, NSSerializable::floatType );
-	pObj->addRow("positionZ",	&m_position.Z, NSSerializable::floatType );
+	pObj->addFloat	("positionX",	m_position.X );
+	pObj->addFloat	("positionY",	m_position.Y );
+	pObj->addFloat	("positionZ",	m_position.Z );
 	
-	pObj->addRow("rotationX",	&m_rotation.X, NSSerializable::floatType );
-	pObj->addRow("rotationY",	&m_rotation.Y, NSSerializable::floatType );
-	pObj->addRow("rotationZ",	&m_rotation.Z, NSSerializable::floatType );
+	pObj->addFloat	("rotationX",	m_rotation.X );
+	pObj->addFloat	("rotationY",	m_rotation.Y );
+	pObj->addFloat	("rotationZ",	m_rotation.Z );
 
-	pObj->addRow("scaleX",		&m_scale.X, NSSerializable::floatType );
-	pObj->addRow("scaleY",		&m_scale.Y, NSSerializable::floatType );
-	pObj->addRow("scaleZ",		&m_scale.Z, NSSerializable::floatType );		
+	pObj->addFloat	("scaleX",		m_scale.X );
+	pObj->addFloat	("scaleY",		m_scale.Y );
+	pObj->addFloat	("scaleZ",		m_scale.Z );
 }
 
 // loadData
 // load data to serializable
 void CGameObject::loadData( CSerializable* pObj )
 {
+	m_objectID	= pObj->readLong();
+
+	char *type = pObj->readString();
+	for ( int i = 0; i < CGameObject::NumObject; i++ )
+	{
+		if ( strcmp(s_stringObjType[i], type) == 0 )
+		{
+			m_objectType = (CGameObject::ObjectType)i;
+			break;
+		}
+	}
+
+	m_enable		= pObj->readBool();
+	m_visible		= pObj->readBool();
+
+	m_position.X	= pObj->readFloat();
+	m_position.Y	= pObj->readFloat();
+	m_position.Z	= pObj->readFloat();
+
+	m_rotation.X	= pObj->readFloat();
+	m_rotation.Y	= pObj->readFloat();
+	m_rotation.Z	= pObj->readFloat();
+
+	m_scale.X		= pObj->readFloat();
+	m_scale.Y		= pObj->readFloat();
+	m_scale.Z		= pObj->readFloat();	
+
+}
+
+// drawOXYZ
+// draw oxyz
+void CGameObject::drawFrontUpLeftVector()
+{
+	if ( m_node == NULL )
+		return;
+
+	IVideoDriver* driver = getIView()->getDriver();
+	
+	core::vector3df bBoxLength =	m_node->getBoundingBox().MaxEdge - m_node->getBoundingBox().MinEdge;
+
+	float length = -1;	
+	if ( length < 0 )
+		length = bBoxLength.getLength();
+	
+	// set material
+	SMaterial debug_mat;	
+	debug_mat.Lighting = false;
+	debug_mat.AntiAliasing=0;
+	driver->setMaterial(debug_mat);
+
+	// reset transform
+	core::matrix4 mat;
+	mat.makeIdentity();
+	driver->setTransform(video::ETS_WORLD, mat);
+
+	// draw up
+	driver->draw3DLine( m_position, m_position + m_up * length,		SColor(255, 255, 0, 0) );
+
+	// draw front
+	driver->draw3DLine( m_position, m_position + m_front * length,	SColor(255, 0, 255, 0) );
+
+	// draw right
+	driver->draw3DLine( m_position, m_position + m_right * length,	SColor(255, 0, 0, 255) );
+
+}
+
+// drawRotationCircle
+// draw circle around object
+void CGameObject::drawCircleAroundObject()
+{
+	if ( m_node == NULL )
+		return;
+
+	IVideoDriver* driver = getIView()->getDriver();
+	
+	core::vector3df bBoxLength	=	m_node->getBoundingBox().MaxEdge - m_node->getBoundingBox().MinEdge;
+	
+	static float radius = -1.0f;
+	if ( radius <= 0 )
+		radius = bBoxLength.getLength()/2;
+
+	float height = 0;
+
+	// set material
+	SMaterial debug_mat;	
+	debug_mat.Lighting = false;
+	debug_mat.AntiAliasing=0;
+	driver->setMaterial(debug_mat);
+
+	// reset transform
+	core::matrix4 mat;
+	mat.makeIdentity();
+	driver->setTransform(video::ETS_WORLD, mat);
+
+	// draw circle
+	int		step = 30;
+	float	rad = 0;
+	float	radInc = core::PI * 2/step;
+	
+	core::vector3df	point1, point2;
+
+
+	for ( int i = 0; i < step; i++ )
+	{
+		point1.Y = height;
+		point1.X = radius * sin( rad );
+		point1.Z = radius * cos( rad );
+
+		rad = rad + radInc;
+
+		point2.Y = height;
+		point2.X = radius * sin( rad );
+		point2.Z = radius * cos( rad );
+
+		driver->draw3DLine
+			( 
+				m_position + point1,
+				m_position + point2,
+				SColor(255, 255, 255, 0)
+			);
+	}
+
 }

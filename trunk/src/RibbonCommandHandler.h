@@ -45,9 +45,19 @@ public:
 	void setEnableCommand( UINT idCmd, bool enable );
 	void setSelectCommand( UINT	idCmd, bool select );
 	void setVisibleCommand( UINT idCmd, bool visible );
+	
+	void resetDefaultCommand();
+	void selectOnlyCommand( UINT idCmd );
 
 	void showContextMenu(int menuID, POINT& ptLocation, HWND hWnd);
 	void getDisplayLocation(POINT &pt, HWND hWnd);
+
+public:
+
+	void onSelectObjectCommand();
+	void onMoveObjectCommand();
+	void onRotateObjectCommand();
+	void onScaleObjectCommand();
 
 private:
 

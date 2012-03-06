@@ -42,7 +42,32 @@ END
 ID_EXITAPP_LargeImages_RESID    BITMAP    "ribbonIcon\\close-icon.bmp" /* LargeImages ID_EXITAPP_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
-    cmdTabDesign_LabelTitle_RESID L"Home" /* LabelTitle cmdTabDesign_LabelTitle_RESID: (null) */
+    cmdTabHome_LabelTitle_RESID L"Home" /* LabelTitle cmdTabHome_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    cmdGroupView_LabelTitle_RESID L"Object" /* LabelTitle cmdGroupView_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    ID_SELECT_LabelTitle_RESID L"Select" /* LabelTitle ID_SELECT_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    ID_MOVE_LabelTitle_RESID L"Move" /* LabelTitle ID_MOVE_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    ID_ROTATE_LabelTitle_RESID L"Rotate" /* LabelTitle ID_ROTATE_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    ID_SCALE_LabelTitle_RESID L"Scale" /* LabelTitle ID_SCALE_LabelTitle_RESID: (null) */
 END
 
 APPLICATION_RIBBON    UIFILE    "ribbonUI.bml"

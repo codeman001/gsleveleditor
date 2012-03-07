@@ -56,7 +56,7 @@ public:
 
 	// getSelectObject
 	// get list of object is selected
-	virtual vector<CGameObject*>* getSelectObject() = 0;
+	virtual ArrayGameObject* getSelectObject() = 0;
 
 	// getFirstObjSelect
 	// get list of object is selected

@@ -496,6 +496,14 @@
 				<Filter
 					Name="RotateObject"
 					>
+					<File
+						RelativePath="..\..\src\CRotateObjectController.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CRotateObjectController.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="ScaleObject"

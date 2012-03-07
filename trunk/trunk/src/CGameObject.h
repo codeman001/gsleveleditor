@@ -32,8 +32,9 @@ public:
 	enum ObjectState
 	{
 		Normal = 0,
-		Select,
+		Move,
 		Rotation,
+		Scale,
 		Review
 	};
 
@@ -285,5 +286,9 @@ protected:
 	// update irr node position
 	void updateNodePosition();
 };
+
+// typedef for array object
+typedef vector<CGameObject*>			ArrayGameObject;
+typedef vector<CGameObject*>::iterator	ArrayGameObjectIter;
 
 #endif

@@ -62,6 +62,7 @@ bool CMainFrame::registerWindow(LPWSTR lpNameApp, HINSTANCE hInst)
 
 #define ID_SELECT_COMMAND		29000
 #define ID_DELETE_COMMAND		29001
+#define ID_ROTATE_COMMAND		29002
 
 LRESULT	CMainFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam)
 {	
@@ -77,6 +78,9 @@ LRESULT	CMainFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam
 				break;
 			case ID_DELETE_COMMAND:
 				CGlobalInstance::getInstance()->m_ribbonCommand->onDeleteSelectObjectCommand();
+				break;
+			case ID_ROTATE_COMMAND:
+				CGlobalInstance::getInstance()->m_ribbonCommand->onRotateObjectCommand();
 				break;
 			}
 		}
@@ -113,7 +117,8 @@ void CMainFrame::_OnCreate()
 	e.pushKey( FCONTROL, ('s'-'a' + 1) ,(WORD) ID_SAVE_COMMAND);		// control + s save
 
 	e.pushKey( FVIRTKEY, VK_DELETE,		(WORD) ID_DELETE_COMMAND);		// delete
-	e.pushKey( FVIRTKEY, 'S',			(WORD) ID_SELECT_COMMAND);		// select controller	
+	e.pushKey( FVIRTKEY, 'S',			(WORD) ID_SELECT_COMMAND);		// select controller
+	e.pushKey( FVIRTKEY, 'R',			(WORD) ID_ROTATE_COMMAND);		// rotate controller
 
 	createAccelTable( &e );
 

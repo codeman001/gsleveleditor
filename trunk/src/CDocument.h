@@ -9,10 +9,10 @@
 class CDocument: public IDoc
 {
 protected:
-	vector<CZone*>	m_zones;
+	ArrayZone		m_zones;
 
-	vector<CGameObject*>	m_selectObjects;
-	vector<CGameObject*>	m_backupSelectObj;
+	ArrayGameObject	m_selectObjects;
+	ArrayGameObject	m_backupSelectObj;
 public:
 	CDocument();
 
@@ -68,7 +68,7 @@ public:
 
 	// getSelectObject
 	// get list of object is selected
-	virtual vector<CGameObject*>* getSelectObject()
+	virtual ArrayGameObject* getSelectObject()
 	{
 		return &m_selectObjects;
 	}

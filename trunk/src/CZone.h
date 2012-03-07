@@ -8,9 +8,9 @@
 class CZone: public CGameObject
 {
 protected:
-	vector<CGameObject*>	m_childs;
+	ArrayGameObject		m_childs;
 	
-	bool					m_needSortObject;
+	bool				m_needSortObject;
 
 protected:
 	// addChild
@@ -37,7 +37,7 @@ public:
 	
 	// getChilds
 	// get list child
-	inline vector<CGameObject*>* getChilds()
+	inline ArrayGameObject* getChilds()
 	{
 		return &m_childs;
 	}
@@ -55,5 +55,8 @@ public:
 	void removeObject( CGameObject *pObj );
 
 };
+
+typedef vector<CZone*>				ArrayZone;
+typedef vector<CZone*>::iterator	ArrayZoneIter;
 
 #endif

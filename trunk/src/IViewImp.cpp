@@ -17,6 +17,28 @@ IView::~IView()
 {	
 }
 
+// getSelectRay
+// get 3d ray from camera to pointer
+core::line3df IView::getSelectRay()
+{
+	ICameraSceneNode *camera = m_smgr->getActiveCamera();
+
+	// if no camera
+	if (  camera == NULL )
+		return core::line3df();
+
+	ISceneCollisionManager *collMan = m_smgr->getSceneCollisionManager();
+
+	// get select ray
+	core::line3df selectRay = collMan->getRayFromScreenCoordinates
+		(	
+			core::vector2di(m_mouseX, m_mouseY),
+			camera
+		);
+
+	return selectRay;
+}
+
 bool IView::getScreenCoordinatesFrom3DPosition(const core::vector3df& pos3d, int *x, int *y)
 {
 	if ( m_device == NULL || m_driver == NULL || m_smgr == NULL )

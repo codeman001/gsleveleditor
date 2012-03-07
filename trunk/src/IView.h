@@ -46,6 +46,10 @@ public:
 	// convert 3d xyz to 2d xy
 	virtual bool getScreenCoordinatesFrom3DPosition(const core::vector3df& pos3d, int *x, int *y);
 
+	// getSelectRay
+	// get 3d ray from camera to pointer
+	core::line3df getSelectRay();
+
 public:	
 
 	// getDevice

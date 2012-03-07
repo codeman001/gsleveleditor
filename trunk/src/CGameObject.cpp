@@ -167,7 +167,7 @@ void CGameObject::lookAt(CGameObject* pObject)
 void CGameObject::lookAt(const core::vector3df& pos)
 {
 	float angle = (float)(core::vector2df( pos.X - m_position.X, pos.Z - m_position.Z ).getAngleTrig());
-
+	
 	// rotation oz
 	setRotation(core::vector3df(0.0f, 90-angle, 0.0f));
 }
@@ -175,14 +175,16 @@ void CGameObject::lookAt(const core::vector3df& pos)
 // updateRotation
 void CGameObject::updateRotation()
 {
-	core::matrix4 mat;
-	mat.setRotationDegrees(m_rotation);
+	m_right			= CGameObject::s_ox;
+	m_front			= CGameObject::s_oz;
+	m_up			= CGameObject::s_oy;
 
-	core::quaternion q(mat);
+	core::matrix4 rotationMatrix;
+	rotationMatrix.setRotationDegrees(m_rotation);
 
-	m_right			=	q * CGameObject::s_ox;
-	m_front			=	q * CGameObject::s_oz;
-	m_up			=	q * CGameObject::s_oy;
+	rotationMatrix.rotateVect(m_front);
+	rotationMatrix.rotateVect(m_right);
+	rotationMatrix.rotateVect(m_up);
 
 	updateNodeRotation();
 }
@@ -192,8 +194,12 @@ void CGameObject::updateRotation()
 void CGameObject::updateNodeRotation()
 {
 	if ( m_node )
-	{
-		m_node->setRotation( m_rotation );
+	{	
+		// flip ox
+		core::vector3df rot(m_rotation);
+		rot.Y += 180.f;
+
+		m_node->setRotation( rot );
 	}
 }
 
@@ -323,11 +329,11 @@ void CGameObject::drawCircleAroundObject()
 	
 	core::vector3df bBoxLength	=	m_node->getBoundingBox().MaxEdge - m_node->getBoundingBox().MinEdge;
 	
-	static float radius = -1.0f;
+	float radius = -1.0f;
 	if ( radius <= 0 )
 		radius = bBoxLength.getLength()/2;
 
-	float height = 0;
+	float height =	m_position.Y + m_node->getBoundingBox().getCenter().Y;
 
 	// set material
 	SMaterial debug_mat;	

@@ -13,6 +13,7 @@ protected:
 	int		m_beginX;
 	int		m_beginY;
 
+	bool	m_selectState;
 public:
 	CSelectObjectController();
 
@@ -26,7 +27,7 @@ public:
 
 	virtual void onKeyUp		(int keyCode);	
 	
-	virtual void onLMouseDown		(int x, int y);
+	virtual void onLMouseDown	(int x, int y);
 
 	virtual void onLMouseUp		(int x, int y);
 
@@ -34,7 +35,13 @@ public:
 
 	virtual void onRMouseUp		(int x, int y);
 
+	virtual void onMouseMove	(int x, int y);
+
 	virtual void onMouseWhell	(bool scrollDown, int x, int y);
+
+	// setStateForSelectObject
+	// set state when mouse up
+	virtual void setStateForSelectObject();
 };
 
 

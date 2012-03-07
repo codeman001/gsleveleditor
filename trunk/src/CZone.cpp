@@ -10,7 +10,7 @@ CZone::CZone()
 
 CZone::~CZone()
 {
-	vector<CGameObject*>::iterator it = m_childs.begin(), end = m_childs.end();
+	ArrayGameObjectIter it = m_childs.begin(), end = m_childs.end();
 	while ( it != end )
 	{
 		delete (*it);
@@ -23,7 +23,7 @@ CZone::~CZone()
 // update object by frame...
 void CZone::updateObject()
 {
-	vector<CGameObject*>::iterator it = m_childs.begin(), end = m_childs.end();
+	ArrayGameObjectIter it = m_childs.begin(), end = m_childs.end();
 	while ( it != end )
 	{
 		CGameObject *pObject = (CGameObject*) (*it);
@@ -128,7 +128,7 @@ CAnimObject *CZone::createAnimObject()
 // remove object
 void CZone::removeObject( CGameObject *pObj )
 {
-	vector<CGameObject*>::iterator iObj = m_childs.begin(), end = m_childs.end();
+	ArrayGameObjectIter iObj = m_childs.begin(), end = m_childs.end();
 	while ( iObj != end )
 	{
 		if ( pObj == (*iObj) )

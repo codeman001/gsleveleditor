@@ -10,7 +10,7 @@ CDocument::CDocument()
 
 CDocument::~CDocument()
 {
-	vector<CZone*>::iterator iZone = m_zones.begin(), iEnd = m_zones.end();
+	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
 	while ( iZone != iEnd )
 	{
 		delete (*iZone);
@@ -72,7 +72,7 @@ void CDocument::updateDocument()
 	
 
 	// update all zone
-	vector<CZone*>::iterator iZone = m_zones.begin(), iEnd = m_zones.end();
+	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
 	while ( iZone != iEnd )
 	{		
 		(*iZone)->updateObject();
@@ -102,7 +102,7 @@ void CDocument::drawDocument()
 // search object with id
 CGameObject* CDocument::searchObject( long id )
 {
-	vector<CZone*>::iterator iZone = m_zones.begin(), iEnd = m_zones.end();
+	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
 	while ( iZone != iEnd )
 	{		
 		CGameObject* p = (*iZone)->searchObject( id );
@@ -132,11 +132,7 @@ void CDocument::selectObject( int mouseX, int mouseY, bool isControlHold )
 	ISceneCollisionManager *collMan = smgr->getSceneCollisionManager();
 
 	// get select ray
-	core::line3df selectRay = collMan->getRayFromScreenCoordinates
-		(	
-			core::vector2di(mouseX, mouseY),
-			camera
-		);
+	core::line3df selectRay = getIView()->getSelectRay();
 	
 	// check hit test
 	core::vector3df intersection;
@@ -162,7 +158,7 @@ void CDocument::selectObject( int mouseX, int mouseY, bool isControlHold )
 			else
 			{
 				pObj->setObjectState( CGameObject::Normal );
-				vector<CGameObject*>::iterator i = m_selectObjects.begin(), iEnd = m_selectObjects.end();
+				ArrayGameObjectIter i = m_selectObjects.begin(), iEnd = m_selectObjects.end();
 				while ( i != iEnd )
 				{
 					if ( (*i) == pObj )
@@ -197,11 +193,11 @@ void CDocument::selectObject( int x, int y, int w, int h, bool isControlHold )
 
 	int screenX = -1, screenY = -1;
 		
-	vector<CZone*>::iterator iZone = m_zones.begin(), iEnd = m_zones.end();
+	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
 	while ( iZone != iEnd )
-	{		
-		vector<CGameObject*>* listObj = (*iZone)->getChilds();
-		vector<CGameObject*>::iterator iObj = listObj->begin(), objEnd = listObj->end();
+	{
+		ArrayGameObject* listObj = (*iZone)->getChilds();
+		ArrayGameObjectIter iObj = listObj->begin(), objEnd = listObj->end();
 		ISceneNode *pNode = NULL;
 
 		while ( iObj != objEnd )
@@ -212,13 +208,13 @@ void CDocument::selectObject( int x, int y, int w, int h, bool isControlHold )
 			
 			if ( pNode != NULL )
 			{
-				//if ( viewFrustum->getBoundingBox().intersectsWithBox( pNode->getBoundingBox() ) )
-				{
-					core::vector3df center = pGameObj->getPosition();
+				core::vector3df center = pGameObj->getPosition();
 
+				// check object is in frustum
+				if ( viewFrustum->getBoundingBox().isPointInside( center ) )
+				{					
 					if ( pView->getScreenCoordinatesFrom3DPosition( center, &screenX, &screenY ) )
 					{
-
 						if ( x <= screenX && screenX <= x + w && y <= screenY && screenY <= y + h )
 						{
 							
@@ -227,7 +223,7 @@ void CDocument::selectObject( int x, int y, int w, int h, bool isControlHold )
 							else
 							{
 								pGameObj->setObjectState( CGameObject::Normal );
-								vector<CGameObject*>::iterator i = m_selectObjects.begin(), iEnd = m_selectObjects.end();
+								ArrayGameObjectIter i = m_selectObjects.begin(), iEnd = m_selectObjects.end();
 								while ( i != iEnd )
 								{
 									if ( (*i) == pGameObj )
@@ -272,7 +268,7 @@ void CDocument::popListSelectObj()
 // set state for select object
 void CDocument::setStateForSelectObject( CGameObject::ObjectState state )
 {
-	vector<CGameObject*>::iterator i = m_selectObjects.begin(), iEnd = m_selectObjects.end();
+	ArrayGameObjectIter i = m_selectObjects.begin(), iEnd = m_selectObjects.end();
 	while ( i != iEnd )
 	{
 		(*i)->setObjectState( state );

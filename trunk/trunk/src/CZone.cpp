@@ -98,6 +98,7 @@ CGameObject* CZone::searchObject( long objectID )
 // add a game object to child list
 void CZone::addChild( CGameObject *p )
 {
+	p->setParent( this );
 	m_childs.push_back( p );
 	m_needSortObject = true;
 }
@@ -130,7 +131,7 @@ void CZone::removeObject( CGameObject *pObj )
 	vector<CGameObject*>::iterator iObj = m_childs.begin(), end = m_childs.end();
 	while ( iObj != end )
 	{
-		if ( pObj = (*iObj) )
+		if ( pObj == (*iObj) )
 		{
 			// delete gameObject
 			(*iObj)->destroyNode();

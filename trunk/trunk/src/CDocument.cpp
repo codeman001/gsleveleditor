@@ -97,3 +97,193 @@ void CDocument::drawDocument()
 
 	driver->endScene();
 }
+
+// searchObjByID
+// search object with id
+CGameObject* CDocument::searchObject( long id )
+{
+	vector<CZone*>::iterator iZone = m_zones.begin(), iEnd = m_zones.end();
+	while ( iZone != iEnd )
+	{		
+		CGameObject* p = (*iZone)->searchObject( id );
+		
+		if ( p )
+			return p;
+
+		iZone++;
+	}
+
+	return NULL;
+}
+
+
+// selectObject
+// detect list objs at mouse xy	
+void CDocument::selectObject( int mouseX, int mouseY, bool isControlHold )
+{	
+	ISceneManager *smgr = getIView()->getSceneMgr();	
+	
+	ICameraSceneNode *camera = smgr->getActiveCamera();
+
+	// if no camera
+	if (  camera == NULL )
+		return;
+
+	ISceneCollisionManager *collMan = smgr->getSceneCollisionManager();
+
+	// get select ray
+	core::line3df selectRay = collMan->getRayFromScreenCoordinates
+		(	
+			core::vector2di(mouseX, mouseY),
+			camera
+		);
+	
+	// check hit test
+	core::vector3df intersection;
+	core::triangle3df hitTriangle;
+
+	// check select
+	ISceneNode *selectedSceneNode = collMan->getSceneNodeAndCollisionPointFromRay
+		(
+			selectRay,
+			intersection,
+			hitTriangle
+		);
+	
+	if ( selectedSceneNode )
+	{
+		CGameObject *pObj =	searchObject( selectedSceneNode->getID() );
+
+		// add to select list
+		if ( pObj )
+		{
+			if ( isControlHold == false || pObj->getObjectState() == CGameObject::Normal )
+				m_selectObjects.push_back( pObj );
+			else
+			{
+				pObj->setObjectState( CGameObject::Normal );
+				vector<CGameObject*>::iterator i = m_selectObjects.begin(), iEnd = m_selectObjects.end();
+				while ( i != iEnd )
+				{
+					if ( (*i) == pObj )
+					{
+						m_selectObjects.erase( i );
+						break;
+					}
+					i++;
+				}
+			}
+		}
+
+	}
+
+}
+
+// selectObject
+// detect list objs at rect
+void CDocument::selectObject( int x, int y, int w, int h, bool isControlHold )
+{
+	IView *pView = getIView();
+	ISceneManager *smgr = pView->getSceneMgr();	
+	
+	ICameraSceneNode *camera = smgr->getActiveCamera();
+
+	// if no camera
+	if (  camera == NULL )
+		return;
+
+	const SViewFrustum* viewFrustum = camera->getViewFrustum();
+	ISceneCollisionManager *collMan = smgr->getSceneCollisionManager();
+
+	int screenX = -1, screenY = -1;
+		
+	vector<CZone*>::iterator iZone = m_zones.begin(), iEnd = m_zones.end();
+	while ( iZone != iEnd )
+	{		
+		vector<CGameObject*>* listObj = (*iZone)->getChilds();
+		vector<CGameObject*>::iterator iObj = listObj->begin(), objEnd = listObj->end();
+		ISceneNode *pNode = NULL;
+
+		while ( iObj != objEnd )
+		{
+			CGameObject *pGameObj = (CGameObject*)(*iObj);
+			
+			pNode = pGameObj->getSceneNode();
+			
+			if ( pNode != NULL )
+			{
+				//if ( viewFrustum->getBoundingBox().intersectsWithBox( pNode->getBoundingBox() ) )
+				{
+					core::vector3df center = pGameObj->getPosition();
+
+					if ( pView->getScreenCoordinatesFrom3DPosition( center, &screenX, &screenY ) )
+					{
+
+						if ( x <= screenX && screenX <= x + w && y <= screenY && screenY <= y + h )
+						{
+							
+							if ( isControlHold == false || pGameObj->getObjectState() == CGameObject::Normal )
+								m_selectObjects.push_back( pGameObj );
+							else
+							{
+								pGameObj->setObjectState( CGameObject::Normal );
+								vector<CGameObject*>::iterator i = m_selectObjects.begin(), iEnd = m_selectObjects.end();
+								while ( i != iEnd )
+								{
+									if ( (*i) == pGameObj )
+									{
+										m_selectObjects.erase( i );
+										break;
+									}
+									i++;
+								}
+							}
+
+						}	// inselect
+					}	// getScreenCoordinatesFrom3DPosition			
+				} // frustum
+			}
+
+			iObj++;
+		}
+
+		iZone++;
+	}
+
+}
+
+// pushListSelectObj
+// save list select obj
+void CDocument::pushListSelectObj()
+{
+	m_backupSelectObj.clear();
+	m_backupSelectObj = m_selectObjects;
+}
+
+// popListSelectObj
+// restore list select obj
+void CDocument::popListSelectObj()
+{
+	m_selectObjects.clear();
+	m_selectObjects = m_backupSelectObj;
+}
+
+// setStateForSelectObject
+// set state for select object
+void CDocument::setStateForSelectObject( CGameObject::ObjectState state )
+{
+	vector<CGameObject*>::iterator i = m_selectObjects.begin(), iEnd = m_selectObjects.end();
+	while ( i != iEnd )
+	{
+		(*i)->setObjectState( state );
+		i++;
+	}
+}
+
+// clearSelect
+// clear all select
+void CDocument::clearSelect()
+{
+	setStateForSelectObject( CGameObject::Normal );
+	m_selectObjects.clear();
+}

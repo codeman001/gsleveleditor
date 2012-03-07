@@ -1,6 +1,7 @@
 #ifndef _CDOCUMENT_H_
 #define _CDOCUMENT_H_
 
+#include "stdafx.h"
 #include "IDoc.h"
 #include "CGameObject.h"
 #include "CZone.h"
@@ -10,6 +11,8 @@ class CDocument: public IDoc
 protected:
 	vector<CZone*>	m_zones;
 
+	vector<CGameObject*>	m_selectObjects;
+	vector<CGameObject*>	m_backupSelectObj;
 public:
 	CDocument();
 
@@ -34,6 +37,52 @@ public:
 	// drawDocument
 	// draw documen by frame
 	virtual void drawDocument();
+
+	// searchObjByID
+	// search object with id
+	virtual CGameObject* searchObject( long id );
+
+	// pushListSelectObj
+	// save list select obj
+	void pushListSelectObj();
+
+	// popListSelectObj
+	// restore list select obj
+	void popListSelectObj();
+
+	// selectObject
+	// detect list objs at mouse xy	
+	virtual void selectObject( int mouseX, int mouseY, bool isControlHold );
+
+	// selectObject
+	// detect list objs at rect
+	virtual void selectObject( int x, int y, int w, int h, bool isControlHold );
+
+	// setStateForSelectObject
+	// set state for select object
+	virtual void setStateForSelectObject( CGameObject::ObjectState state );
+
+	// clearSelect
+	// clear all select
+	virtual void clearSelect();
+
+	// getSelectObject
+	// get list of object is selected
+	virtual vector<CGameObject*>* getSelectObject()
+	{
+		return &m_selectObjects;
+	}
+
+	// getFirstObjSelect
+	// get list of object is selected
+	virtual CGameObject* getFirstObjSelect()
+	{
+		if ( m_selectObjects.size() == 0 )
+			return NULL;
+		
+		return m_selectObjects.front();
+	}
+	
 };
 
 #endif

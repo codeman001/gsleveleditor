@@ -32,6 +32,8 @@ CGameObject::CGameObject()
 	
 	m_enable		= true;
 	m_visible		= true;
+
+	m_parent		= NULL;
 }
 
 CGameObject::~CGameObject()

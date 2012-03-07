@@ -76,9 +76,9 @@ public:
 		return m_videoData;
 	}
 
-	// getSceneMgr
+	// getDocument
 	// get current document
-	inline IDoc* c()
+	inline IDoc* getDocument()
 	{
 		return m_document;
 	}

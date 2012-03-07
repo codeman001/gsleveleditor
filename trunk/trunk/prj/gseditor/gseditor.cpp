@@ -23,7 +23,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	pMainWnd->create( TEXT( STR_APP_TITLE ),50,50,1024,768,NULL, TEXT("gseditor") );	
 	pMainWnd->setPositionCenterOfScreen();
-	//pMainWnd->setWindowState( SW_MAXIMIZE );
+	pMainWnd->setWindowState( SW_MAXIMIZE );
 	pMainWnd->showWindow(true);		
 	pMainWnd->updateWindow();
 	pMainWnd->setForegroundWindow();

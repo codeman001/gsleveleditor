@@ -33,7 +33,6 @@ public:
 	{
 		Normal = 0,
 		Select,
-		Move,
 		Rotation,
 		Review
 	};
@@ -55,6 +54,8 @@ protected:
 
 	bool				m_enable;
 	bool				m_visible;
+
+	CGameObject			*m_parent;
 protected:
 	ISceneNode			*m_node;
 public:	
@@ -77,6 +78,20 @@ public:
 	inline long getID()
 	{
 		return m_objectID;
+	}
+
+	// getParent
+	// get parent object
+	inline CGameObject* getParent()
+	{
+		return m_parent;
+	}
+
+	// setParent
+	// set parent object
+	inline void setParent( CGameObject *p )
+	{
+		m_parent = p;
 	}
 
 	// setObjectState

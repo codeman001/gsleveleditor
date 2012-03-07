@@ -11,7 +11,6 @@ public:
 	{
 		NullController = 0,
 		SelectObject,
-		MoveObject,
 		RotateObject,
 		ScaleObject,
 		NumController

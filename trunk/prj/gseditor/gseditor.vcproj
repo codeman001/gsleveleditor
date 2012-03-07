@@ -494,10 +494,6 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="MoveObject"
-					>
-				</Filter>
-				<Filter
 					Name="RotateObject"
 					>
 				</Filter>

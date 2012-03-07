@@ -55,9 +55,9 @@ public:
 public:
 
 	void onSelectObjectCommand();
-	void onMoveObjectCommand();
 	void onRotateObjectCommand();
 	void onScaleObjectCommand();
+	void onDeleteSelectObjectCommand();
 
 private:
 

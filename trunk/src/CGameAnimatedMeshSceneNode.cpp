@@ -19,6 +19,7 @@ CGameAnimatedMeshSceneNode::~CGameAnimatedMeshSceneNode()
 
 }
 
+#include "IView.h"
 // render
 // override render state
 void CGameAnimatedMeshSceneNode::render()
@@ -28,19 +29,19 @@ void CGameAnimatedMeshSceneNode::render()
 	// draw bbox on select
 	if ( 
 			state == CGameObject::Select ||
-			state == CGameObject::Move ||
 			state == CGameObject::Rotation ||
 			state == CGameObject::Review		
 		)
 		setDebugDataVisible( EDS_BBOX );
+	else
+		setDebugDataVisible( 0 );
 
 	// draw animesh
 	CAnimatedMeshSceneNode::render();
 	
 	// draw move
-	if ( state == CGameObject::Move )
+	if ( state == CGameObject::Select )
 		m_owner->drawFrontUpLeftVector();	
 	else if ( state == CGameObject::Rotation )
-		m_owner->drawCircleAroundObject();
-	
+		m_owner->drawCircleAroundObject();	
 }

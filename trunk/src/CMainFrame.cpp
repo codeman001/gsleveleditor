@@ -70,7 +70,15 @@ LRESULT	CMainFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam
 	case WM_COMMAND:
 		{
 			int id = LOWORD(wParam);
-			
+			switch ( id )
+			{
+			case ID_SELECT_COMMAND:
+				CGlobalInstance::getInstance()->m_ribbonCommand->onSelectObjectCommand();
+				break;
+			case ID_DELETE_COMMAND:
+				CGlobalInstance::getInstance()->m_ribbonCommand->onDeleteSelectObjectCommand();
+				break;
+			}
 		}
 		break;
 	};

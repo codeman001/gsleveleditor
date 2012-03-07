@@ -57,11 +57,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    ID_MOVE_LabelTitle_RESID L"Move" /* LabelTitle ID_MOVE_LabelTitle_RESID: (null) */
-END
-
-STRINGTABLE 
-BEGIN
     ID_ROTATE_LabelTitle_RESID L"Rotate" /* LabelTitle ID_ROTATE_LabelTitle_RESID: (null) */
 END
 

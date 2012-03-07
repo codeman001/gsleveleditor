@@ -36,6 +36,37 @@ void CSelectObjectController::onLMouseDown(int x, int y)
 void CSelectObjectController::onLMouseUp(int x, int y)
 {
 	m_isLMouseDown = false;
+
+	int beginX = m_beginX;
+	int beginY = m_beginY;
+	int endX = x;
+	int endY = y;
+
+	if ( beginX > endX )
+		core::swap<int>( beginX, endX );
+	if ( beginY > endY )
+		core::swap<int>( beginY, endY );
+
+	core::recti	selectRect( beginX, beginY, endX, endY );
+
+	IDoc *pDoc = getIView()->getDocument();
+	
+	// clear current select if not hold control
+	bool isControlHold = GetAsyncKeyState( VK_CONTROL ) < 0;
+	
+	// clear the select if not hold control
+	if ( isControlHold == false )
+		pDoc->clearSelect();
+	
+	// detect select
+	if ( selectRect.getWidth() > 5 && selectRect.getHeight() > 5 )
+		pDoc->selectObject( beginX, beginY, selectRect.getWidth(), selectRect.getHeight(), isControlHold );
+	else
+		pDoc->selectObject( x, y, isControlHold );
+	
+	// update state for select object
+	pDoc->setStateForSelectObject( CGameObject::Select );
+	
 }
 
 void CSelectObjectController::onRMouseDown(int x, int y)
@@ -68,11 +99,11 @@ void CSelectObjectController::render()
 		if ( beginY > endY )
 			core::swap<int>( beginY, endY );
 
-		core::recti	rect( beginX, beginY, endX, endY );
+		core::recti	selectRect( beginX, beginY, endX, endY );
 		
 		// draw select
-		driver->draw2DRectangle( SColor(80, 0,255,0), rect );
-		driver->draw2DRectangleOutline( rect, SColor(200, 0,255,0) );
+		driver->draw2DRectangle( SColor(80, 0,255,0), selectRect );
+		driver->draw2DRectangleOutline( selectRect, SColor(200, 0,255,0) );
 	}
 
 }

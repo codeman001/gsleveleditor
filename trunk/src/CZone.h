@@ -35,6 +35,13 @@ public:
 	CGameObject* searchObject( long objectID );
 public:
 	
+	// getChilds
+	// get list child
+	inline vector<CGameObject*>* getChilds()
+	{
+		return &m_childs;
+	}
+
 	// createCubeObject
 	// add a cube object on screen
 	CCubeObject *createCubeObject( float size );

@@ -36,7 +36,6 @@
     <Command Name="cmdGroupView" LabelTitle="Object" />
     
     <Command Name="cmdSelectObject" LabelTitle="Select" Symbol="ID_SELECT"/>
-    <Command Name="cmdMoveObject" LabelTitle="Move" Symbol="ID_MOVE"/>
     <Command Name="cmdRotateObject" LabelTitle="Rotate" Symbol="ID_ROTATE"/>
     <Command Name="cmdScaleObject" LabelTitle="Scale" Symbol="ID_SCALE"/>
     
@@ -65,9 +64,8 @@
       <!-- Application Tab -->
       <Ribbon.Tabs>
         <Tab CommandName="cmdTabHome">
-          <Group CommandName="cmdGroupView" SizeDefinition="FourButtons">
+          <Group CommandName="cmdGroupView" SizeDefinition="ThreeButtons">
             <ToggleButton CommandName="cmdSelectObject" />
-            <ToggleButton CommandName="cmdMoveObject" />
             <ToggleButton CommandName="cmdRotateObject"/>
             <ToggleButton CommandName="cmdScaleObject"/>
           </Group>

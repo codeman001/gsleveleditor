@@ -28,9 +28,7 @@
 #define cmdGroupView_LabelTitle_RESID 60013
 #define ID_SELECT 10 
 #define ID_SELECT_LabelTitle_RESID 60014
-#define ID_MOVE 11 
-#define ID_MOVE_LabelTitle_RESID 60015
-#define ID_ROTATE 12 
-#define ID_ROTATE_LabelTitle_RESID 60016
-#define ID_SCALE 13 
-#define ID_SCALE_LabelTitle_RESID 60017
+#define ID_ROTATE 11 
+#define ID_ROTATE_LabelTitle_RESID 60015
+#define ID_SCALE 12 
+#define ID_SCALE_LabelTitle_RESID 60016

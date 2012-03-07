@@ -31,6 +31,11 @@ void CAnimObject::loadFromFile( char *lpFilename )
 	m_animNode = new CGameAnimatedMeshSceneNode( this, animMesh, smgr->getRootSceneNode(), smgr );	
 	m_animNode->setAnimationSpeed(20.f);	
 
+	// add collision
+	ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox(m_animNode);
+	m_animNode->setTriangleSelector(selector);
+	selector->drop();
+
 	// set node
 	m_node = m_animNode;
 

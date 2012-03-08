@@ -508,6 +508,14 @@
 				<Filter
 					Name="ScaleObject"
 					>
+					<File
+						RelativePath="..\..\src\CScaleObjectController.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CScaleObjectController.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>

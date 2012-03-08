@@ -213,6 +213,16 @@ void CGameObject::updateNodePosition()
 	}
 }
 
+// updateNodeScale
+// update irr node scale
+void CGameObject::updateNodeScale()
+{
+	if ( m_node )
+	{
+		m_node->setScale( m_scale );
+	}
+}
+
 // destroyNode
 // remove node on scene
 void CGameObject::destroyNode()
@@ -279,6 +289,24 @@ void CGameObject::loadData( CSerializable* pObj )
 	m_scale.Y		= pObj->readFloat();
 	m_scale.Z		= pObj->readFloat();	
 
+}
+
+// saveTransform
+// save all transform
+void CGameObject::saveTransform()
+{
+	m_oldPosition	= m_position;
+	m_oldRotation	= m_rotation;
+	m_oldScale		= m_scale;
+}
+
+// loadTransform
+// load all transform
+void CGameObject::loadTransform()
+{
+	m_position		= m_oldPosition;
+	m_rotation		= m_oldRotation;
+	m_scale			= m_oldScale;		
 }
 
 // drawOXYZ

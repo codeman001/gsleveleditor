@@ -42,13 +42,13 @@ public:
 	// search object with id
 	virtual CGameObject* searchObject( long id );
 
-	// pushListSelectObj
+	// saveListSelectObj
 	// save list select obj
-	void pushListSelectObj();
+	void saveListSelectObj();
 
-	// popListSelectObj
+	// loadListSelectObj
 	// restore list select obj
-	void popListSelectObj();
+	void loadListSelectObj();
 
 	// selectObject
 	// detect list objs at mouse xy	

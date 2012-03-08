@@ -30,13 +30,13 @@ public:
 	// draw documen by frame
 	virtual void drawDocument() = 0;
 
-	// pushListSelectObj
+	// saveListSelectObj
 	// save list select obj
-	virtual void pushListSelectObj() = 0;
+	virtual void saveListSelectObj() = 0;
 
-	// popListSelectObj
+	// loadListSelectObj
 	// restore list select obj
-	virtual void popListSelectObj() = 0;
+	virtual void loadListSelectObj() = 0;
 
 	// selectObject
 	// detect list objs at mouse xy	

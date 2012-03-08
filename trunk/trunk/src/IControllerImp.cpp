@@ -3,6 +3,7 @@
 
 #include "CSelectObjectController.h"
 #include "CRotateObjectController.h"
+#include "CScaleObjectController.h"
 
 // CControllerManager
 // 
@@ -17,7 +18,7 @@ CControllerManager::CControllerManager()
 	m_controller[ (int)IController::NullController ]	= new IController();
 	m_controller[ (int)IController::SelectObject ]		= new CSelectObjectController();
 	m_controller[ (int)IController::RotateObject ]		= new CRotateObjectController();
-	m_controller[ (int)IController::ScaleObject ]		= new IController();
+	m_controller[ (int)IController::ScaleObject ]		= new CScaleObjectController();
 
 	// default is null controller
 	m_currentController = m_controller[ (int)IController::NullController ];

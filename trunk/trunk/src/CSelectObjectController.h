@@ -3,17 +3,21 @@
 
 #include "stdafx.h"
 #include "IController.h"
+#include "CGameObject.h"
 
 class CSelectObjectController: public IController
 {
 protected:
-	bool	m_isRMouseDown;
-	bool	m_isLMouseDown;
+	bool		m_isRMouseDown;
+	bool		m_isLMouseDown;
 	
-	int		m_beginX;
-	int		m_beginY;
+	int			m_beginX;
+	int			m_beginY;
 
-	bool	m_selectState;
+	bool		m_selectState;
+	
+	CGameObject			*m_hitOnObj;
+	core::vector3df		m_hitPosition;
 public:
 	CSelectObjectController();
 

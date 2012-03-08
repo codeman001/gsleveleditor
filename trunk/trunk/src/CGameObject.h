@@ -49,6 +49,10 @@ protected:
 	core::vector3df		m_rotation;
 	core::vector3df		m_scale;
 
+	core::vector3df		m_oldPosition;
+	core::vector3df		m_oldRotation;
+	core::vector3df		m_oldScale;
+
 	core::vector3df		m_front;
 	core::vector3df		m_up;
 	core::vector3df		m_right;
@@ -202,6 +206,7 @@ public:
 	inline void setScale(core::vector3df& scale) 
 	{
 		m_scale = scale;
+		updateNodeScale();
 	}
 
 	// lookAt
@@ -267,6 +272,14 @@ public:
 	// load data to serializable
 	void loadData( CSerializable* pObj );
 
+	// saveTransform
+	// save all transform
+	void saveTransform();
+
+	// loadTransform
+	// load all transform
+	void loadTransform();
+
 public:
 
 	// drawFrontUpLeftVector
@@ -277,7 +290,6 @@ public:
 	// draw circle around object
 	void drawCircleAroundObject();
 
-protected:
 	// updateNodeRotation
 	// update irr node rotation
 	void updateNodeRotation();
@@ -285,6 +297,10 @@ protected:
 	// updateNodePosition
 	// update irr node position
 	void updateNodePosition();
+
+	// updateNodeScale
+	// update irr node scale
+	void updateNodeScale();
 };
 
 // typedef for array object

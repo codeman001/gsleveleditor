@@ -248,17 +248,17 @@ void CDocument::selectObject( int x, int y, int w, int h, bool isControlHold )
 
 }
 
-// pushListSelectObj
+// saveListSelectObj
 // save list select obj
-void CDocument::pushListSelectObj()
+void CDocument::saveListSelectObj()
 {
 	m_backupSelectObj.clear();
 	m_backupSelectObj = m_selectObjects;
 }
 
-// popListSelectObj
+// loadListSelectObj
 // restore list select obj
-void CDocument::popListSelectObj()
+void CDocument::loadListSelectObj()
 {
 	m_selectObjects.clear();
 	m_selectObjects = m_backupSelectObj;

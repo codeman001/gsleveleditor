@@ -3,7 +3,7 @@
 
 #include "CBaseWindow.h"
 
-class CMapTreeWindow: public CBaseWindow
+class CDocTreeWindow: public CBaseWindow
 {
 protected:
 	uiTreeView		*m_treeView;
@@ -15,8 +15,8 @@ protected:
 	DWORD m_nTreeContainerHidden;
 
 public:
-	CMapTreeWindow( WCHAR* lpString, uiWindow *p );
-	virtual ~CMapTreeWindow();
+	CDocTreeWindow( WCHAR* lpString, uiWindow *p );
+	virtual ~CDocTreeWindow();
 
 	virtual void _OnPaint( uiGraphics *pG );
 	

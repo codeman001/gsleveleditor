@@ -98,7 +98,7 @@ bool CSerializable::readBool()
 char* CSerializable::readString()
 {
 	SSerializableRec& rec = m_data[ m_cursor++ ];
-	if ( rec.type != NSSerializable::stringType )
+	if ( rec.type != NSSerializable::stringType || rec.type != NSSerializable::filePathType )
 		return NULL;
 
 	return rec.data;

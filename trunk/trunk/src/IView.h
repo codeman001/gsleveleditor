@@ -38,6 +38,12 @@ public:
 	virtual void idleUpdateWindow() = 0;
 
 public:
+
+	// setObjectProperty
+	// set object property on listview window
+	virtual void setObjectProperty(CGameObject *pObj) = 0;
+
+public:
 	
 	int	m_mouseX;
 	int m_mouseY;

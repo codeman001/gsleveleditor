@@ -49,9 +49,16 @@ void CScaleObjectController::onMouseMove(int x, int y)
 
 			// rotate object
 			core::vector3df scaleVector = pObj->getScale() * speed;
-			pObj->setScale( scaleVector );
+			float len = scaleVector.getLength();
+
+			if ( len >= 0.5f )
+				pObj->setScale( scaleVector );
 
 			i++;
 		}
+
+		// set property for object
+		if ( pListSelect->size() > 0 )
+			pView->setObjectProperty( pListSelect->front() );
 	}
 }

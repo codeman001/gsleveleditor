@@ -286,5 +286,13 @@ bool CViewWindow::yesNoQuestion( wchar_t *lpString )
 void CViewWindow::setStatusText( int part, wchar_t *lpString )
 {
 	CMainFrame* pFrame = (CMainFrame*)CGlobalInstance::getInstance()->m_mainFrame;
-	pFrame->getStatusBar()->setText( part, lpString );
+	pFrame->getStatusBar()->setText( part, lpString );	
+}
+
+// setObjectProperty
+// set object property on listview window
+void CViewWindow::setObjectProperty(CGameObject *pObj)
+{
+	CMainFrame* pFrame = (CMainFrame*)CGlobalInstance::getInstance()->m_mainFrame;
+	pFrame->getObjPropertyWnd()->setObject( pObj );
 }

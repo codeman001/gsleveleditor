@@ -31,6 +31,10 @@ public:
 	virtual bool yesNoQuestion( wchar_t *lpString );
 	virtual void setStatusText( int part, wchar_t *lpString );
 
+	// setObjectProperty
+	// set object property on listview window
+	virtual void setObjectProperty(CGameObject *pObj);
+
 };
 
 #endif

@@ -14,7 +14,9 @@ namespace NSSerializable
 		doubleType,
 		boolType,
 		stringType,
-		arrayByte
+		filePathType,
+		arrayByte,
+		groupInfo
 	};
 }
 
@@ -85,9 +87,13 @@ typedef struct tagSerializableRec
 				strcpy( this->data, "false" );
 
 		}
-		else if ( type == NSSerializable::stringType )
+		else if ( type == NSSerializable::stringType || type == NSSerializable::filePathType )
 		{
 			strcpy( this->data, (char*)value );
+		}
+		else
+		{
+			this->data[0] = NULL;
 		}
 	}
 
@@ -171,6 +177,20 @@ public:
 		addRow(name, (void*)value, NSSerializable::stringType, readOnly);
 	}
 
+	// add file path
+	// add path to record
+	inline void addPath(char *name, const char *value, bool readOnly = false )
+	{
+		addRow(name, (void*)value, NSSerializable::filePathType, readOnly);
+	}
+
+	// addGroup
+	// add group label for object
+	inline void addGroup(char *name)
+	{
+		addRow(name, NULL, NSSerializable::groupInfo, true);
+	}
+
 	// addArrayByte
 	// add array byte to record
 	void addArrayByte(char *name, char *value, int size, bool readOnly = false );
@@ -189,6 +209,19 @@ public:
 		return m_cursor;
 	}
 
+	// nextRecord
+	// peek the next record
+	inline void nextRecord()
+	{
+		m_cursor++;
+	}
+
+	// getAllRecord
+	// get all record
+	inline vector<SSerializableRec>* getAllRecord()
+	{
+		return &m_data;
+	}
 
 	int		readInt();
 	long	readLong();
@@ -198,5 +231,8 @@ public:
 	char*	readString();
 	void	readArrayByte( char* data, int *size );
 };
+
+typedef vector<SSerializableRec>			ArraySerializableRec;
+typedef vector<SSerializableRec>::iterator	ArraySerializableRecIter;
 
 #endif

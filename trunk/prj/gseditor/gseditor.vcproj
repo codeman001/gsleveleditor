@@ -297,6 +297,14 @@
 					Name="LeftSplit"
 					>
 					<File
+						RelativePath="..\..\src\CDocTreeWin.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CDocTreeWin.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\CLeftSplitWindow.cpp"
 						>
 					</File>
@@ -305,19 +313,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CMapPropertyWin.cpp"
+						RelativePath="..\..\src\CObjPropertyWin.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CMapPropertyWin.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\CMapTreeWin.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\CMapTreeWin.h"
+						RelativePath="..\..\src\CObjPropertyWin.h"
 						>
 					</File>
 				</Filter>

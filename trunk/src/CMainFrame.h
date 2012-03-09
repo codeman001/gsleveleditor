@@ -27,6 +27,17 @@ public:
 	{
 		return m_statusBarWnd;
 	}
+
+	inline CDocTreeWindow *getDocTreeWnd()
+	{
+		return m_leftSplitWnd->getTreeWnd();
+	}
+
+	inline CObjPropertyWindow* getObjPropertyWnd()
+	{
+		return m_leftSplitWnd->getPropertyWnd();
+	}
+
 public:
 	virtual void _OnCreate();
 	virtual void _OnPaint(uiGraphics * pG);

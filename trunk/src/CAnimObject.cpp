@@ -76,7 +76,8 @@ void CAnimObject::saveData( CSerializable* pObj )
 	CGameObject::saveData( pObj );
 
 	// save mesh file
-	pObj->addString("meshFile", m_animeshFile.c_str());
+	pObj->addGroup	("Anim object property");
+	pObj->addPath("meshFile", m_animeshFile.c_str());
 }
 
 // loadData
@@ -84,6 +85,8 @@ void CAnimObject::saveData( CSerializable* pObj )
 void CAnimObject::loadData( CSerializable* pObj )
 {
 	CGameObject::loadData( pObj );
+	
+	pObj->nextRecord();
 
 	// read mesh file
 	char *string = pObj->readString();

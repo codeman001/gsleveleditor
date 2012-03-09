@@ -164,6 +164,9 @@ void CSelectObjectController::onLMouseUp(int x, int y)
 		setStateForSelectObject();
 	}
 
+	// set property for object
+	getIView()->setObjectProperty( pDoc->getFirstObjSelect() );
+
 }
 
 void CSelectObjectController::onRMouseDown(int x, int y)
@@ -219,6 +222,9 @@ void CSelectObjectController::onMouseMove(int x, int y)
 
 				iObj++;
 			}
+
+			// set property for object
+			getIView()->setObjectProperty( m_hitOnObj );
 
 		}
 

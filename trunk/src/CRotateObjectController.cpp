@@ -48,6 +48,11 @@ void CRotateObjectController::onMouseMove(int x, int y)
 
 			i++;
 		}
+		
+		// set property for object
+		if ( pListSelect->size() > 0 )
+			pView->setObjectProperty( pListSelect->front() );
+
 	}
 
 }

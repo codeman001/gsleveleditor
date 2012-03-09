@@ -48,6 +48,8 @@ void CGameObject::setRotation(core::vector3df& rot)
 {
 	m_rotation		=	rot;
 
+	//fixRotationVector();
+
 	m_right			= CGameObject::s_ox;
 	m_front			= CGameObject::s_oz;
 	m_up			= CGameObject::s_oy;
@@ -172,9 +174,18 @@ void CGameObject::lookAt(const core::vector3df& pos)
 	setRotation(core::vector3df(0.0f, 90-angle, 0.0f));
 }
 
+// fixRotationVector
+// fix rotation angle from 0 -> 360
+void CGameObject::fixRotationVector()
+{
+
+}
+
 // updateRotation
 void CGameObject::updateRotation()
 {
+	//fixRotationVector();
+
 	m_right			= CGameObject::s_ox;
 	m_front			= CGameObject::s_oz;
 	m_up			= CGameObject::s_oy;
@@ -239,6 +250,8 @@ void CGameObject::destroyNode()
 // save data to serializable
 void CGameObject::saveData( CSerializable* pObj )
 {
+	pObj->addGroup	("Game object base");
+
 	pObj->addLong	("objectID",	m_objectID, true);
 	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
 	
@@ -261,7 +274,9 @@ void CGameObject::saveData( CSerializable* pObj )
 // loadData
 // load data to serializable
 void CGameObject::loadData( CSerializable* pObj )
-{
+{	
+	pObj->nextRecord();
+
 	m_objectID	= pObj->readLong();
 
 	char *type = pObj->readString();

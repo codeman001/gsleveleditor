@@ -9,8 +9,8 @@ CLeftSplitWindow::CLeftSplitWindow( WCHAR* lpString, uiWindow *p )
 	m_splitWnd->setDock( this, UIDOCK_FILL );
 	m_splitWnd->changeWindowStyle( UISTYLE_CHILD );
 
-	m_pTreeWnd		= ref<CMapTreeWindow>( new CMapTreeWindow( L"mapTreeWnd", m_splitWnd ) );
-	m_pPropertyWnd	= ref<CMapPropertyWindow>( new CMapPropertyWindow( L"mapPropertyWnd", m_splitWnd ) );
+	m_pTreeWnd		= ref<CDocTreeWindow>( new CDocTreeWindow( L"mapTreeWnd", m_splitWnd ) );
+	m_pPropertyWnd	= ref<CObjPropertyWindow>( new CObjPropertyWindow( L"mapPropertyWnd", m_splitWnd ) );
 
 	m_splitWnd->setWindow( m_pTreeWnd, 0,0 );
 	m_splitWnd->setWindow( m_pPropertyWnd, 1,0 );

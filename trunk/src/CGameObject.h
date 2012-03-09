@@ -266,11 +266,11 @@ public:
 	
 	// saveData
 	// save data to serializable
-	void saveData( CSerializable* pObj );
+	virtual void saveData( CSerializable* pObj );
 
 	// loadData
 	// load data to serializable
-	void loadData( CSerializable* pObj );
+	virtual void loadData( CSerializable* pObj );
 
 	// saveTransform
 	// save all transform
@@ -301,6 +301,13 @@ public:
 	// updateNodeScale
 	// update irr node scale
 	void updateNodeScale();
+
+protected:
+
+	// fixRotationVector
+	// fix rotation angle from 0 -> 360
+	void fixRotationVector();
+
 };
 
 // typedef for array object

@@ -2,27 +2,27 @@
 #define _LEFTSPLITWND_
 
 #include "CBaseWindow.h"
-#include "CMapTreeWin.h"
-#include "CMapPropertyWin.h"
+#include "CDocTreeWin.h"
+#include "CObjPropertyWin.h"
 
 class CLeftSplitWindow: public CBaseWindow
 {
 protected:
 	uiSplitContainer	*m_splitWnd;
 
-	CMapTreeWindow		*m_pTreeWnd;
-	CMapPropertyWindow	*m_pPropertyWnd; 
+	CDocTreeWindow		*m_pTreeWnd;
+	CObjPropertyWindow	*m_pPropertyWnd; 
 public:
 
 	CLeftSplitWindow( WCHAR* lpString, uiWindow *p );
 	virtual ~CLeftSplitWindow();
 
-	inline CMapTreeWindow* getTreeWnd()
+	inline CDocTreeWindow* getTreeWnd()
 	{
 		return m_pTreeWnd;
 	}
 
-	inline CMapPropertyWindow* getPropertyWnd()
+	inline CObjPropertyWindow* getPropertyWnd()
 	{
 		return m_pPropertyWnd;
 	}

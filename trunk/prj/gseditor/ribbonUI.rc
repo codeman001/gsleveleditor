@@ -52,17 +52,25 @@ END
 
 STRINGTABLE 
 BEGIN
-    ID_SELECT_LabelTitle_RESID L"Select" /* LabelTitle ID_SELECT_LabelTitle_RESID: (null) */
+    ID_SELECT_LabelTitle_RESID L"Select and Move" /* LabelTitle ID_SELECT_LabelTitle_RESID: (null) */
 END
 
+ID_SELECT_LargeImages_RESID    BITMAP    "ribbonIcon\\transform_move-icon.bmp" /* LargeImages ID_SELECT_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
     ID_ROTATE_LabelTitle_RESID L"Rotate" /* LabelTitle ID_ROTATE_LabelTitle_RESID: (null) */
 END
 
+ID_ROTATE_LargeImages_RESID    BITMAP    "ribbonIcon\\transform_rotate-icon.bmp" /* LargeImages ID_ROTATE_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
     ID_SCALE_LabelTitle_RESID L"Scale" /* LabelTitle ID_SCALE_LabelTitle_RESID: (null) */
+END
+
+ID_SCALE_LargeImages_RESID    BITMAP    "ribbonIcon\\transform_scale-icon.bmp" /* LargeImages ID_SCALE_LargeImages_RESID: (null) */
+STRINGTABLE 
+BEGIN
+    cmdTabTerrain_LabelTitle_RESID L"Terrain" /* LabelTitle cmdTabTerrain_LabelTitle_RESID: (null) */
 END
 
 APPLICATION_RIBBON    UIFILE    "ribbonUI.bml"

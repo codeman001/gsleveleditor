@@ -71,6 +71,9 @@ LRESULT	CMainFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam
 	{
 	case WM_COMMAND:
 		{
+			if ( GetFocus() != this->getHandle() )
+				break;
+
 			int id = LOWORD(wParam);
 			switch ( id )
 			{

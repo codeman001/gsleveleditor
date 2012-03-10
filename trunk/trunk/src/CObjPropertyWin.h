@@ -7,7 +7,9 @@
 class CObjPropertyWindow: public CBaseWindow
 {
 protected:
-	CGameObject			*m_currentObject;
+	CGameObject			*m_currentObject;	
+	CSerializable		m_objectInfo;
+
 	uiListProperty		*m_propertyWnd;
 public:
 	CObjPropertyWindow( WCHAR* lpString, uiWindow *p );
@@ -18,6 +20,10 @@ public:
 	// setObject
 	// set object to view property
 	virtual void setObject( CGameObject *pObject );
+
+	// _OnGetObjectProperty
+	// need get data from object to property row
+	virtual void _OnGetObjectProperty();
 
 	// _OnUpdatedProperty
 	// need set data to object

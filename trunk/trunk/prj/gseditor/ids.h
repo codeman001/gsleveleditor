@@ -37,3 +37,8 @@
 #define ID_SCALE_LargeImages_RESID 60019
 #define cmdTabTerrain 13 
 #define cmdTabTerrain_LabelTitle_RESID 60020
+#define cmdGroupTerrain 14 
+#define cmdGroupTerrain_LabelTitle_RESID 60021
+#define ID_ADDTERRAIN 15 
+#define ID_ADDTERRAIN_LabelTitle_RESID 60022
+#define ID_ADDTERRAIN_LargeImages_RESID 60023

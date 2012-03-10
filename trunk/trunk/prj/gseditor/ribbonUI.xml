@@ -55,6 +55,15 @@
 
     <!-- Tab command -->
     <Command Name="cmdTabTerrain" LabelTitle="Terrain" />
+
+    <Command Name="cmdGroupTerrain" LabelTitle="Terrain object" />
+    
+    <Command Name="cmdAddTerrain" LabelTitle="Add terrain" Symbol="ID_ADDTERRAIN">
+      <Command.LargeImages>
+        <Image>ribbonIcon/mountain-icon.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    
   </Application.Commands>
  
   <Application.Views>
@@ -87,7 +96,9 @@
           </Group>
         </Tab>
         <Tab CommandName="cmdTabTerrain">
-          
+          <Group CommandName="cmdGroupTerrain" SizeDefinition="OneButton">
+            <Button CommandName="cmdAddTerrain" />
+          </Group>
         </Tab>
       </Ribbon.Tabs>
       

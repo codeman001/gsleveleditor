@@ -33,9 +33,12 @@ IDI_SMALL               ICON         "small.ico"
 
 
 IDI_TREEROOT		    ICON                    "treeviewIcon\\root.ico"
-IDI_TREECONTAINER		ICON                    "treeviewIcon\\container.ico"
-IDI_TREECONTAINEROPEN	ICON                    "treeviewIcon\\containerOpen.ico"
-IDI_TREECONTAINERHIDDEN	ICON					"treeviewIcon\\containerHidden.ico"
+IDI_TREEZONE			ICON                    "treeviewIcon\\zone.ico"
+IDI_TREEZONEOPEN		ICON                    "treeviewIcon\\zoneOpen.ico"
+IDI_TREEHIDDEN			ICON					"treeviewIcon\\hidden.ico"
+IDI_TREEMESH			ICON					"treeviewIcon\\mesh.ico"
+IDI_TREETRIGGER			ICON					"treeviewIcon\\trigger.ico"
+IDI_TREECOLLISION		ICON					"treeviewIcon\\collision.ico"
 
 IDI_TOOLBARADD		    ICON                    "toolbarIcon\\toolbar-Add.ico"
 IDI_TOOLBAREDIT			ICON                    "toolbarIcon\\toolbar-Edit.ico"

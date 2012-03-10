@@ -34,11 +34,27 @@
     <Command Name="cmdTabHome" LabelTitle="Home" />
 
     <Command Name="cmdGroupView" LabelTitle="Object" />
+
+    <Command Name="cmdSelectObject" LabelTitle="Select and Move" Symbol="ID_SELECT">
+      <Command.LargeImages>
+        <Image>ribbonIcon/transform_move-icon.bmp</Image>
+      </Command.LargeImages>
+    </Command>
     
-    <Command Name="cmdSelectObject" LabelTitle="Select" Symbol="ID_SELECT"/>
-    <Command Name="cmdRotateObject" LabelTitle="Rotate" Symbol="ID_ROTATE"/>
-    <Command Name="cmdScaleObject" LabelTitle="Scale" Symbol="ID_SCALE"/>
+    <Command Name="cmdRotateObject" LabelTitle="Rotate" Symbol="ID_ROTATE">
+      <Command.LargeImages>
+        <Image>ribbonIcon/transform_rotate-icon.bmp</Image>
+      </Command.LargeImages>
+    </Command>
     
+    <Command Name="cmdScaleObject" LabelTitle="Scale" Symbol="ID_SCALE">
+      <Command.LargeImages>
+        <Image>ribbonIcon/transform_scale-icon.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+
+    <!-- Tab command -->
+    <Command Name="cmdTabTerrain" LabelTitle="Terrain" />
   </Application.Commands>
  
   <Application.Views>
@@ -69,6 +85,9 @@
             <ToggleButton CommandName="cmdRotateObject"/>
             <ToggleButton CommandName="cmdScaleObject"/>
           </Group>
+        </Tab>
+        <Tab CommandName="cmdTabTerrain">
+          
         </Tab>
       </Ribbon.Tabs>
       

@@ -30,6 +30,9 @@ typedef struct tagSerializableRec
 	bool		readOnly;
 	char		*exData;
 	char		exDataSize;
+	
+	// tag object
+	uiObject	*tagObject;
 
 	tagSerializableRec()
 	{
@@ -41,6 +44,8 @@ typedef struct tagSerializableRec
 
 		exData = NULL;
 		exDataSize = 0;
+
+		tagObject = NULL;
 	}
 
 	~tagSerializableRec()
@@ -57,6 +62,7 @@ typedef struct tagSerializableRec
 		this->type = type;
 		this->exData = NULL;
 		this->exDataSize = 0;
+		this->tagObject = NULL;
 
 		if ( type == NSSerializable::intType )
 		{

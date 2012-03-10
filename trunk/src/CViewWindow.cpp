@@ -143,6 +143,9 @@ void CViewWindow::_OnLButtonDown	( uiMouseEvent mouseEvent, int x, int y )
 
 	// controller event
 	CControllerManager::getInstance()->getCurrentController()->onLMouseDown( x, y );
+
+	//  set focus
+	uiApplication::getRoot()->setFocus();
 }
 
 void CViewWindow::_OnLButtonUp	( uiMouseEvent mouseEvent, int x, int y )
@@ -166,6 +169,9 @@ void CViewWindow::_OnLButtonUp	( uiMouseEvent mouseEvent, int x, int y )
 
 	// controller event
 	CControllerManager::getInstance()->getCurrentController()->onLMouseUp( x, y );
+
+	//  set focus
+	uiApplication::getRoot()->setFocus();
 }
 
 
@@ -190,6 +196,9 @@ void CViewWindow::_OnRButtonDown	( uiMouseEvent mouseEvent, int x, int y )
 
 	// controller event
 	CControllerManager::getInstance()->getCurrentController()->onRMouseDown( x, y );
+
+	//  set focus
+	uiApplication::getRoot()->setFocus();
 }
 
 void CViewWindow::_OnRButtonUp	( uiMouseEvent mouseEvent, int x, int y )
@@ -213,6 +222,9 @@ void CViewWindow::_OnRButtonUp	( uiMouseEvent mouseEvent, int x, int y )
 
 	// controller event
 	CControllerManager::getInstance()->getCurrentController()->onRMouseUp( x, y );
+
+	//  set focus
+	uiApplication::getRoot()->setFocus();
 }
 	
 void CViewWindow::_OnMButtonDown	( uiMouseEvent mouseEvent, int x, int y )
@@ -233,6 +245,9 @@ void CViewWindow::_OnMButtonDown	( uiMouseEvent mouseEvent, int x, int y )
 
 	// post event
 	m_device->postEventFromUser(irrEvent);
+
+	//  set focus
+	uiApplication::getRoot()->setFocus();
 }
 
 void CViewWindow::_OnMButtonUp	( uiMouseEvent mouseEvent, int x, int y )
@@ -253,6 +268,9 @@ void CViewWindow::_OnMButtonUp	( uiMouseEvent mouseEvent, int x, int y )
 
 	// post event
 	m_device->postEventFromUser(irrEvent);
+
+	//  set focus
+	uiApplication::getRoot()->setFocus();
 }
 
 void CViewWindow::idleUpdateWindow()

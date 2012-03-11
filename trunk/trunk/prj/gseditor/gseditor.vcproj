@@ -285,6 +285,14 @@
 					Name="Base"
 					>
 					<File
+						RelativePath="..\..\src\CAddEditWindow.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CAddEditWindow.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\CBaseWindow.cpp"
 						>
 					</File>
@@ -318,6 +326,34 @@
 					</File>
 					<File
 						RelativePath="..\..\src\CObjPropertyWin.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="RightSplit"
+					>
+					<File
+						RelativePath="..\..\src\CComponentWindow.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CComponentWindow.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CRightSplitWindow.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CRightSplitWindow.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CTemplateWindow.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CTemplateWindow.h"
 						>
 					</File>
 				</Filter>

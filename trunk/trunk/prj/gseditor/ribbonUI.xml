@@ -33,7 +33,7 @@
     <!-- Tab command -->
     <Command Name="cmdTabHome" LabelTitle="Home" />
 
-    <Command Name="cmdGroupView" LabelTitle="Object" />
+    <Command Name="cmdGroupObjTransform" LabelTitle="Object transform" />
 
     <Command Name="cmdSelectObject" LabelTitle="Select and Move" Symbol="ID_SELECT">
       <Command.LargeImages>
@@ -89,7 +89,7 @@
       <!-- Application Tab -->
       <Ribbon.Tabs>
         <Tab CommandName="cmdTabHome">
-          <Group CommandName="cmdGroupView" SizeDefinition="ThreeButtons">
+          <Group CommandName="cmdGroupObjTransform" SizeDefinition="ThreeButtons">
             <ToggleButton CommandName="cmdSelectObject" />
             <ToggleButton CommandName="cmdRotateObject"/>
             <ToggleButton CommandName="cmdScaleObject"/>

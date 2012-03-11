@@ -92,6 +92,7 @@ void CDocument::drawDocument()
 
 	// draw 3d scene
 	driver->beginScene( true, true, 0, getIView()->getVideoData() );
+		
 	getIView()->getSceneMgr()->drawAll();
 
 	// controller draw imp

@@ -24,8 +24,8 @@
 #define ID_EXITAPP_LargeImages_RESID 60011
 #define cmdTabHome 8 
 #define cmdTabHome_LabelTitle_RESID 60012
-#define cmdGroupView 9 
-#define cmdGroupView_LabelTitle_RESID 60013
+#define cmdGroupObjTransform 9 
+#define cmdGroupObjTransform_LabelTitle_RESID 60013
 #define ID_SELECT 10 
 #define ID_SELECT_LabelTitle_RESID 60014
 #define ID_SELECT_LargeImages_RESID 60015

@@ -32,10 +32,12 @@ void CAnimMeshComponent::loadFromFile( char *lpFilename )
 	m_animNode = new CGameAnimatedMeshSceneNode( m_gameObject, animMesh, smgr->getRootSceneNode(), smgr );	
 	m_animNode->setAnimationSpeed( m_animSpeed );	
 
+#ifdef GSEDITOR
 	// add collision
 	ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox(m_animNode);
 	m_animNode->setTriangleSelector(selector);
 	selector->drop();
+#endif
 
 	// set node
 	m_gameObject->m_node = m_animNode;

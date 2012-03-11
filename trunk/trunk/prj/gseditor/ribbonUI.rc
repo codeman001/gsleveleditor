@@ -47,7 +47,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    cmdGroupView_LabelTitle_RESID L"Object" /* LabelTitle cmdGroupView_LabelTitle_RESID: (null) */
+    cmdGroupObjTransform_LabelTitle_RESID L"Object transform" /* LabelTitle cmdGroupObjTransform_LabelTitle_RESID: (null) */
 END
 
 STRINGTABLE 

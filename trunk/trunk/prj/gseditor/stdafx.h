@@ -25,6 +25,8 @@
 #include <stdio.h>
 #include <math.h>
 
+#define GSEDITOR
+
 #include "AppInclude.h"
 
 // TODO: reference additional headers your program requires here

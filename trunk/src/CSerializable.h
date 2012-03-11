@@ -192,9 +192,9 @@ public:
 
 	// addGroup
 	// add group label for object
-	inline void addGroup(char *name)
+	inline void addGroup(const char *name)
 	{
-		addRow(name, NULL, NSSerializable::groupInfo, true);
+		addRow( (char*)name, NULL, NSSerializable::groupInfo, true);
 	}
 
 	// addArrayByte

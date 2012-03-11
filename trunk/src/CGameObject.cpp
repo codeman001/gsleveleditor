@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CGameObject.h"
+#include "CComponentFactory.h"
 #include "IView.h"
 
 core::vector3df CGameObject::s_ox	= core::vector3df(1.0f, 0.0f, 0.0f);
@@ -17,7 +18,7 @@ const char* CGameObject::s_stringObjType[] =
 CGameObject::CGameObject()
 {
 	m_objectID		= -1;
-	m_objectType	= NullObject;
+	m_objectType	= GameObject;
 	m_objectState	= Normal;
 
 	m_position		= core::vector3df(0.0f, 0.0f, 0.0f );
@@ -40,6 +41,13 @@ CGameObject::~CGameObject()
 {
 	if ( m_node )
 		m_node->drop();
+
+	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
+	while ( iComp != iEnd )
+	{
+		delete (*iComp);
+	}
+	m_components.clear();
 }
 
 // setRotation
@@ -269,6 +277,14 @@ void CGameObject::saveData( CSerializable* pObj )
 	pObj->addFloat	("scaleX",		m_scale.X );
 	pObj->addFloat	("scaleY",		m_scale.Y );
 	pObj->addFloat	("scaleZ",		m_scale.Z );
+
+	// save component
+	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
+	while ( iComp != iEnd )
+	{
+		(*iComp)->saveData( pObj );
+	}
+
 }
 
 // loadData
@@ -303,7 +319,19 @@ void CGameObject::loadData( CSerializable* pObj )
 	m_scale.X		= pObj->readFloat();
 	m_scale.Y		= pObj->readFloat();
 	m_scale.Z		= pObj->readFloat();	
+	
+	
+	IObjectComponent *pComp = NULL;
+	pComp = CComponentFactory::loadComponent( this, pObj );
 
+	while ( pComp ) 
+	{
+		// add component
+		m_components.push_back( pComp );
+
+		// continue load another component
+		pComp = CComponentFactory::loadComponent( this, pObj );
+	}
 }
 
 // saveTransform
@@ -417,4 +445,15 @@ void CGameObject::drawCircleAroundObject()
 			);
 	}
 
+}
+
+// updateObject
+// update object by frame...
+void CGameObject::updateObject()
+{
+	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
+	while ( iComp != iEnd )
+	{
+		(*iComp)->updateComponent();
+	}
 }

@@ -434,6 +434,70 @@
 					</File>
 				</Filter>
 				<Filter
+					Name="Components"
+					>
+					<File
+						RelativePath="..\..\src\CComponentFactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CComponentFactory.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\IObjectComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\IObjectComponent.h"
+						>
+					</File>
+					<Filter
+						Name="AnimMeshComponent"
+						>
+						<File
+							RelativePath="..\..\src\CAnimMeshComponent.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\CAnimMeshComponent.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\CGameAnimatedMeshSceneNode.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\CGameAnimatedMeshSceneNode.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="MeshComponent"
+						>
+					</Filter>
+					<Filter
+						Name="HealthComponent"
+						>
+					</Filter>
+					<Filter
+						Name="CollisionComponent"
+						>
+					</Filter>
+					<Filter
+						Name="NpcComponent"
+						>
+					</Filter>
+					<Filter
+						Name="AINpcComponent"
+						>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="Trigger"
+					>
+				</Filter>
+				<Filter
 					Name="GameObject"
 					>
 					<File
@@ -446,36 +510,12 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="CubeObject"
+					Name="Cinematic"
 					>
-					<File
-						RelativePath="..\..\src\CCubeObject.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\CCubeObject.h"
-						>
-					</File>
 				</Filter>
 				<Filter
-					Name="AnimObject"
+					Name="Terrain"
 					>
-					<File
-						RelativePath="..\..\src\CAnimObject.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\CAnimObject.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\CGameAnimatedMeshSceneNode.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\CGameAnimatedMeshSceneNode.h"
-						>
-					</File>
 				</Filter>
 			</Filter>
 			<Filter

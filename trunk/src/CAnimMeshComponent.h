@@ -2,24 +2,30 @@
 #define _CANIMOBJECT_H
 
 #include "CGameObject.h"
+#include "IObjectComponent.h"
 #include "CGameAnimatedMeshSceneNode.h"
 
-class CAnimObject: public CGameObject
+class CAnimMeshComponent: public IObjectComponent
 {
 public:
 	
 protected:
 	CGameAnimatedMeshSceneNode*	m_animNode;
-	string	m_animeshFile;
 
+	string						m_animeshFile;
+	float						m_animSpeed;
 public:
-	CAnimObject();
+	CAnimMeshComponent( CGameObject *pObj );
 
-	virtual ~CAnimObject();
+	virtual ~CAnimMeshComponent();
 
-	// updateObject
+	// init
+	// run when init object
+	virtual void initComponent();
+
+	// updateComponent
 	// update object by frame
-	virtual void updateObject();
+	virtual void updateComponent();
 
 	// loadFromFile
 	// load anim object from file
@@ -36,8 +42,13 @@ public:
 	// set speed for anim (frame/sercond)
 	inline void setSpeed( float speed )
 	{
+		if ( speed < 1 )
+			speed = 1;
+
 		if ( m_animNode )
 			m_animNode->setAnimationSpeed( speed );
+
+		m_animSpeed = speed;
 	}
 
 public:

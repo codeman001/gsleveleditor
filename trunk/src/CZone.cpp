@@ -103,26 +103,15 @@ void CZone::addChild( CGameObject *p )
 	m_needSortObject = true;
 }
 
-// createCubeObject
-// add a cube object on screen
-CCubeObject *CZone::createCubeObject( float size )
-{
-	CCubeObject *pObj = new CCubeObject( size );
-	pObj->setID( IDoc::s_objectID++ );
-
-	addChild( pObj );
-	return pObj;
-}
-
 // createAnimObject
 // add a anim object
-CAnimObject *CZone::createAnimObject()
+/*CAnimObject *CZone::createAnimObject()
 {
 	CAnimObject *pObj = new CAnimObject();
 	pObj->setID( IDoc::s_objectID++ );
 	addChild( pObj );
 	return pObj;
-}
+}*/
 
 // removeObject
 // remove object

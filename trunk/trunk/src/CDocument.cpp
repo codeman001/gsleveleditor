@@ -30,12 +30,14 @@ void CDocument::newDocument()
 	CZone *pRoot = new CZone();
 	
 	// add a cube box
+	/*
 	CAnimObject *pAnimObj =	pRoot->createAnimObject();	
 	pAnimObj->loadFromFile( "media/dwarf.x" );
 
 	pAnimObj =	pRoot->createAnimObject();	
 	pAnimObj->loadFromFile( "media/dwarf.x" );
 	pAnimObj->setPosition( core::vector3df(100.0f, 0.0f, 0.0f) );
+	*/
 
 	// add zone to document
 	m_zones.push_back( pRoot );

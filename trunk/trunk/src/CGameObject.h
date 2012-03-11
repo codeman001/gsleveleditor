@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "CSerializable.h"
+#include "IObjectComponent.h"
 
 // CGameObject
 // Base class for object3d
@@ -22,10 +23,11 @@ public:
 
 	enum ObjectType
 	{
-		NullObject = 0,
+		GameObject,
+		TerrainObject,
 		ZoneObject,
-		CubeObject,
-		AnimObject,
+		Trigger,
+		Cinematic,
 		NumObject
 	};
 	
@@ -61,8 +63,10 @@ protected:
 	bool				m_visible;
 
 	CGameObject			*m_parent;
-protected:
-	ISceneNode			*m_node;
+
+public:
+	ISceneNode					*m_node;
+	vector<IObjectComponent*>	m_components;
 public:	
 
 	CGameObject();
@@ -256,9 +260,7 @@ public:
 
 	// updateObject
 	// update object by frame...
-	virtual void updateObject()
-	{
-	}
+	virtual void updateObject();	
 
 	// destroyNode
 	// remove node on scene
@@ -313,5 +315,9 @@ protected:
 // typedef for array object
 typedef vector<CGameObject*>			ArrayGameObject;
 typedef vector<CGameObject*>::iterator	ArrayGameObjectIter;
+
+// typedef for array component
+typedef vector<IObjectComponent*>			ArrayComponent;
+typedef vector<IObjectComponent*>::iterator	ArrayComponentIter;
 
 #endif

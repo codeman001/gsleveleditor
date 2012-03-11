@@ -177,26 +177,37 @@ void CMainFrame::_OnCreate()
 	m_statusBarWnd->showWindow(true);
 
 	// create split window
-	m_mainSplitWnd = ref<uiSplitContainer>( new uiSplitContainer(L"mainSplitWnd", 0,0,200,200, this, 1,2 ) );	
+	m_mainSplitWnd = ref<uiSplitContainer>( new uiSplitContainer(L"mainSplitWnd", 0,0,200,200, this, 1,3 ) );	
 	m_mainSplitWnd->showWindow( true );	
 	m_mainSplitWnd->setMargin(0,0,146,0);
 	m_mainSplitWnd->setDock( this, UIDOCK_FILL );
 	m_mainSplitWnd->changeWindowStyle( UISTYLE_CHILD );
 
-	m_viewWnd		= ref<CViewWindow>		( new CViewWindow(L"viewWnd", m_mainSplitWnd) );	
+	// create tab view
+	uiTabControl *pTabView = ref<uiTabControl>( new uiTabControl(L"tabView", 0,0, 100, 100, m_mainSplitWnd) );
+
+	m_viewWnd		= ref<CViewWindow>		( new CViewWindow(L"viewWnd", pTabView) );	
 	m_leftSplitWnd	= ref<CLeftSplitWindow>	( new CLeftSplitWindow(L"leftSplitWnd", m_mainSplitWnd) );
-				
+	m_rightSplitWnd	= ref<CRightSplitWindow>( new CRightSplitWindow(L"rightSplitWnd", m_mainSplitWnd) );
+
+	pTabView->setMargin( 0, 0, 5, 0 );
+	pTabView->addTab( L"Game design mode", m_viewWnd );	
+	pTabView->addTab( L"Game play mode", NULL );
+
 	m_mainSplitWnd->setWindow( m_leftSplitWnd,	0,0 );
-	m_mainSplitWnd->setWindow( m_viewWnd,		0,1 );
+	m_mainSplitWnd->setWindow( pTabView,		0,1 );
+	m_mainSplitWnd->setWindow( m_rightSplitWnd,	0,2 );
 
 	// set size for propertyWnd
-	m_mainSplitWnd->setColSize( 0, 250 );
+	m_mainSplitWnd->setColSize( 0, 220 );
 
 	RECT rc;
 	GetWindowRect(GetDesktopWindow(), &rc);
 	int w = rc.right - rc.left;
 	
-	m_mainSplitWnd->setColSize( 1, w );
+	m_mainSplitWnd->setColSize( 1, w - 250 - 220 );
+	m_mainSplitWnd->setColSize( 2, 250 );
+
 	m_mainSplitWnd->setExpanderSize( 5 );
 	m_mainSplitWnd->updateWindow();	
 }

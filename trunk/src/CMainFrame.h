@@ -6,6 +6,7 @@
 
 #include "CViewWindow.h"
 #include "CLeftSplitWindow.h"
+#include "CRightSplitWindow.h"
 
 class CMainFrame: public uiForm
 {
@@ -19,6 +20,7 @@ protected:
 
 	CViewWindow				*m_viewWnd;
 	CLeftSplitWindow		*m_leftSplitWnd;
+	CRightSplitWindow		*m_rightSplitWnd;
 public:
 	CMainFrame();
 	virtual ~CMainFrame();

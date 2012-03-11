@@ -3,6 +3,8 @@
 
 #include "CAnimMeshComponent.h"
 
+#define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
+
 // loadComponent
 // create component
 IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializable *data )
@@ -11,42 +13,28 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 	char *lpComponentName = data->readString();
 	data->setCursorRecord(cursor);
 
-	int buildInType = (int)IObjectComponent::AnimMesh;
-	while ( buildInType != (int)IObjectComponent::UnknownType )
+	IObjectComponent* pComp = NULL;
+
+	if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::AnimMesh) ) == 0 )
 	{
-		if ( strcmp( lpComponentName, IObjectComponent::s_compType[buildInType] ) == 0 )
-		{
-			break;
-		}
-		buildInType++;
+		pComp = new CAnimMeshComponent( pObj );
+		pComp->loadData( data );
 	}
-
-	IObjectComponent *pComp = NULL;
-
-	if ( buildInType < (int)IObjectComponent::UnknownType )
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Mesh ) ) == 0 )
 	{
-		if ( buildInType == (int)IObjectComponent::AnimMesh )
-		{
-			pComp = new CAnimMeshComponent( pObj );
-			pComp->loadData( data );
-		}
-		else if ( buildInType == (int)IObjectComponent::Mesh )
-		{
-		}
-		else if ( buildInType == (int)IObjectComponent::Health )
-		{
-		}
-		else if ( buildInType == (int)IObjectComponent::Collision )
-		{
-		}
-		else if ( buildInType == (int)IObjectComponent::AINpcComponent )
-		{
-		}
-		else if ( buildInType == (int)IObjectComponent::NpcComponent )
-		{
-		}
 	}
-
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Health) ) == 0 )
+	{
+	}
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Collision) ) == 0 )
+	{
+	}
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::AINpcComponent) ) == 0 )
+	{
+	}
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::NpcComponent) ) == 0 )
+	{
+	}	
 	// check not build in component
 
 	return pComp;

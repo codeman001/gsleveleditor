@@ -3,6 +3,9 @@
 
 #include "CAddEditWindow.h"
 
+
+
+
 class CTemplateWindow: public CAddEditWindow
 {
 public:

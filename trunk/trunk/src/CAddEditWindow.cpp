@@ -43,6 +43,27 @@ CComboList::CComboList(LPCWSTR lpTitle, int x, int y, int w, int h, uiWindow* pP
 
 	// Thay doi font chu
 	SendMessage(zm_hWnd, WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), MAKELPARAM(false, 0));
+
+	// Turn off border of combolist
+	HWND hEdit, hList;
+	WCHAR   *wndClassName= L"Edit";
+
+	hEdit = GetWindow(zm_hWnd, GW_CHILD);
+		 
+	GetClassName (hEdit, wndClassName, 10);
+	if (!lstrcmp (wndClassName, L"Edit"))
+		hList = GetWindow(hEdit, GW_HWNDNEXT);
+	else
+	{
+		hList = hEdit;
+		hEdit = GetWindow(hList, GW_HWNDNEXT);
+	}
+	
+	LONG lStyle = GetWindowLong(hEdit, GWL_EXSTYLE);
+	lStyle &= ~WS_EX_CLIENTEDGE;	
+	SetWindowLong(hEdit, GWL_EXSTYLE, lStyle); 
+	UpdateWindow(hEdit);	
+
 }
 
 CComboList::~CComboList(void)
@@ -185,7 +206,7 @@ CAddEditWindow::CAddEditWindow( WCHAR* lpString, uiWindow *pParent )
 
 	// create combolist
 	m_comboList = ref<CComboList>( new CComboList(L"", 0,0, 10,10, this) );	
-	m_comboList->setDock( this, UIDOCK_FILL );
+	m_comboList->setDock( this, UIDOCK_FILL );	
 }
 
 CAddEditWindow::~CAddEditWindow()
@@ -195,5 +216,23 @@ CAddEditWindow::~CAddEditWindow()
 // onToolbarCommand
 // event khi nhan toolbar
 void CAddEditWindow::onToolbarCommand( uiObject *pObj )
+{
+	if ( pObj == m_addButton )
+		onAddButton();
+	else if ( pObj == m_modifyButton )
+		onModifyButton();
+	else if ( pObj == m_deleteButton )
+		onDelButton();
+}
+
+void CAddEditWindow::onAddButton()
+{
+}
+
+void CAddEditWindow::onModifyButton()
+{
+}
+
+void CAddEditWindow::onDelButton()
 {
 }

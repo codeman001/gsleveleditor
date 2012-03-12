@@ -30,6 +30,10 @@ public:
 	// onToolbarCommand
 	// event khi nhan toolbar
 	void onToolbarCommand( uiObject *pObj );
+
+	virtual void onAddButton();
+	virtual void onModifyButton();
+	virtual void onDelButton();
 };
 
 #endif

@@ -10,6 +10,10 @@ public:
 	virtual ~CComponentWindow();
 
 	virtual void _OnPaint( uiGraphics *pG );
+
+	virtual void onAddButton();
+	virtual void onModifyButton();
+	virtual void onDelButton();
 };
 
 #endif

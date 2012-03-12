@@ -14,7 +14,7 @@ CRightSplitWindow::CRightSplitWindow( WCHAR* lpString, uiWindow *p )
 
 	m_splitWnd->setWindow( m_tempWnd, 0,0 );
 	m_splitWnd->setWindow( m_compWnd, 1,0 );
-	m_splitWnd->setRowSize( 0, 400 );
+	m_splitWnd->setRowSize( 0, 300 );
 	m_splitWnd->setExpanderSize( 5 );
 	m_splitWnd->updateWindow();	 
 }

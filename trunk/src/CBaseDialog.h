@@ -11,12 +11,25 @@ protected:
 
 	uiFont		m_titleFont;
 	uiStringW	m_titleString;
+
+	uiButton*	m_okButton;
+	uiButton*	m_cancelButton;
 public:
 	CBaseDialog(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent);
 
 	virtual ~CBaseDialog(void);
 	
 	virtual void onButtonCommand( uiObject *pSender );
+	
+	virtual bool onOKButton()
+	{
+		return true;
+	}
+
+	virtual bool onCancelButton()
+	{
+		return true;
+	}
 
 	inline void setTitleString( wchar_t* lpString )
 	{
@@ -34,8 +47,12 @@ public:
 	}
 
 public:
-	virtual void _onPaint( uiGraphics *pG );
+	virtual void _OnPaint( uiGraphics *pG );
 	
+	virtual void _OnIdle();
+
+	// messageMap	
+	LRESULT messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam);	
 };
 
 #endif

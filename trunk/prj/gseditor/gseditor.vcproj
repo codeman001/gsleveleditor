@@ -266,11 +266,27 @@
 				Name="Frame"
 				>
 				<File
+					RelativePath="..\..\src\CComponentDialog.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\CComponentDialog.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\CMainFrame.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\CMainFrame.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\CTemplateDialog.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\CTemplateDialog.h"
 					>
 				</File>
 				<File
@@ -290,6 +306,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\CAddEditWindow.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CBaseDialog.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CBaseDialog.h"
 						>
 					</File>
 					<File

@@ -4,6 +4,7 @@
 CTemplateWindow::CTemplateWindow( WCHAR *lpString, uiWindow *p )
 	:CAddEditWindow(lpString, p)
 {
+
 }
 
 CTemplateWindow::~CTemplateWindow()

@@ -78,10 +78,4 @@ BEGIN
     cmdGroupTerrain_LabelTitle_RESID L"Terrain object" /* LabelTitle cmdGroupTerrain_LabelTitle_RESID: (null) */
 END
 
-STRINGTABLE 
-BEGIN
-    ID_ADDTERRAIN_LabelTitle_RESID L"Add terrain" /* LabelTitle ID_ADDTERRAIN_LabelTitle_RESID: (null) */
-END
-
-ID_ADDTERRAIN_LargeImages_RESID    BITMAP    "ribbonIcon\\mountain-icon.bmp" /* LargeImages ID_ADDTERRAIN_LargeImages_RESID: (null) */
 APPLICATION_RIBBON    UIFILE    "ribbonUI.bml"

@@ -3,6 +3,8 @@
 #include "IView.h"
 #include "IController.h"
 
+#include "CComponentFactory.h"
+
 CDocument::CDocument()
 {
 
@@ -26,6 +28,9 @@ CDocument::~CDocument()
 // new 3d scene document
 void CDocument::newDocument()
 {
+	// reload tempalate
+	CComponentFactory::initComponentTemplate();
+
 	// add root zone
 	CZone *pRoot = new CZone();
 	

@@ -225,6 +225,12 @@ void CAddEditWindow::onToolbarCommand( uiObject *pObj )
 		onDelButton();
 }
 
+// reloadList
+// reload list of item
+void CAddEditWindow::reloadList()
+{
+}
+
 void CAddEditWindow::onAddButton()
 {
 }

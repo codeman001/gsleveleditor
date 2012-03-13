@@ -222,6 +222,16 @@ public:
 		m_cursor++;
 	}
 
+	// readRawRecord
+	// read all info
+	inline SSerializableRec* readRawRecord()
+	{
+		if ( m_cursor >= (int)m_data.size() )
+			return NULL;
+
+		return &m_data[ m_cursor++ ];
+	}
+
 	// getAllRecord
 	// get all record
 	inline vector<SSerializableRec>* getAllRecord()

@@ -12,31 +12,30 @@ CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, u
 	m_listControl->setDock( this, UIDOCK_FILL );
 	m_listControl->showWindow(true);
 
-	uiListPropertyGroup *pHeader = m_listControl->addGroup(L"Header");
+	uiListPropertyRow *pRow = NULL;
+	uiComboBox *pListType = NULL;
+
+	// add header name
+	uiListPropertyGroup *pHeader = m_listControl->addGroup(L"Component:");
+	pRow = m_listControl->addRowItem( L"Component name" );
+	pRow->setControl( UILISTPROPERTY_EDIT, 1, NULL );
+
+	// add parameter
+	pHeader = m_listControl->addGroup(L"Parameter:");
 	pHeader->enableColText( true );
 	pHeader->setColText(L"Param name:", 0);
 	pHeader->setColText(L"Param type:", 1);
 	pHeader->setColText(L"Default value:", 2);
-
-	WCHAR lpString[512];
-	
-	uiListPropertyRow *pRow = NULL;
-	uiComboBox *pListType = NULL;
-
-	for (int i = 0; i < 20; i++ )
-	{		
-		swprintf(lpString, 512, L"Enter param name", i);
 		
-		pRow = m_listControl->addRowItem( lpString );
+	// add default 15 parameter
+	for (int i = 0; i < 20; i++ )
+	{
+		pRow = m_listControl->addRowItem( L"" );
 		
 		pRow->setControl( UILISTPROPERTY_EDIT, 0, NULL );
 		pListType = (uiComboBox*)pRow->setControl( UILISTPROPERTY_COMBOBOX, 1, NULL );
 		pRow->setControl( UILISTPROPERTY_EDIT, 2, NULL );
-
-
-
 	}
-
 	updateDock();
 }
 

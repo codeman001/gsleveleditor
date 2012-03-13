@@ -31,6 +31,10 @@ public:
 	// event khi nhan toolbar
 	void onToolbarCommand( uiObject *pObj );
 
+	// reloadList
+	// reload list of item
+	virtual void reloadList();
+
 	virtual void onAddButton();
 	virtual void onModifyButton();
 	virtual void onDelButton();

@@ -5,6 +5,25 @@
 
 #define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
 
+// global template
+CSerializable CComponentFactory::s_compTemplate[ IObjectComponent::NumComponent ];
+
+
+// initComponentTemplate
+// read component from template
+void CComponentFactory::initComponentTemplate()
+{
+	// default component anim mesh
+	CSerializable *p = &s_compTemplate[ IObjectComponent::AnimMesh ];
+	p->clear();
+	p->addGroup	(stringOfComponent(IObjectComponent::AnimMesh));
+	p->addPath	("meshFile", "data/mesh/dwarf.x");
+	p->addFloat	("animSpeed", 24.0f );
+}
+
+
+
+
 // loadComponent
 // create component
 IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializable *data )

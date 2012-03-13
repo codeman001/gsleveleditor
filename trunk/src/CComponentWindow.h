@@ -14,6 +14,10 @@ public:
 	virtual void onAddButton();
 	virtual void onModifyButton();
 	virtual void onDelButton();
+
+	// reloadList
+	// reload list of item
+	void reloadList();
 };
 
 #endif

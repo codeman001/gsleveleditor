@@ -17,7 +17,7 @@ public:
 		Collision,
 		AINpcComponent,
 		NpcComponent,
-		UnknownType
+		NumComponent
 	};
 
 	static const char *s_compType[];

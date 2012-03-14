@@ -57,6 +57,33 @@ void CComponentFactory::loadAllTemplate()
 	
 }
 
+// getComponentName
+// return the name of component
+const char* CComponentFactory::getComponentName( int comID )
+{
+	if ( comID < 1 || comID >= (int)s_compTemplate.size() )
+		return NULL;
+
+	CSerializable *p = &s_compTemplate[comID];
+	return p->getAllRecord()->front().name;
+}
+
+// getComponentID
+// return the id of component
+int CComponentFactory::getComponentID( const char *name )
+{
+	int numComponent = (int)s_compTemplate.size();
+	
+	for ( int i = 1; i < numComponent; i++ )
+	{
+		CSerializable *p = &s_compTemplate[i];
+		if ( strcmp(p->getAllRecord()->front().name, name) == 0 )
+			return i;
+	}
+
+	return -1;
+}
+
 #endif
 
 // loadComponent

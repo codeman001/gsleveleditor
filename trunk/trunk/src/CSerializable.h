@@ -253,6 +253,7 @@ public:
 	void	readArrayByte( char* data, int *size );
 };
 
+typedef vector<CSerializable>				ArraySerializable;
 typedef vector<SSerializableRec>			ArraySerializableRec;
 typedef vector<SSerializableRec>::iterator	ArraySerializableRecIter;
 

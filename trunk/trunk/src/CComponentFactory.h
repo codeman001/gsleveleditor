@@ -35,6 +35,14 @@ public:
 	// loadAllTemplate
 	// load all template info
 	static void loadAllTemplate();
+
+	// getComponentName
+	// return the name of component
+	static const char* getComponentName( int comID );
+
+	// getComponentID
+	// return the id of component
+	static int getComponentID( const char *name );
 #endif
 
 	// loadComponent

@@ -1,6 +1,20 @@
 #include "stdafx.h"
 #include "CSerializable.h"
 
+const char* CSerializable::s_stringType[] = 
+{
+	"unknownType",
+	"intType",
+	"longType",
+	"floatType",
+	"doubleType",
+	"boolType",
+	"stringType",
+	"filePathType",
+	"arrayByte",
+	"groupInfo"	
+};
+
 CSerializable::CSerializable()
 {
 	m_cursor = 0;

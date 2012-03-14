@@ -1,28 +1,47 @@
 #include "stdafx.h"
 #include "CComponentFactory.h"
-
 #include "CAnimMeshComponent.h"
 
 #define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
 
+#ifdef GSEDITOR
 // global template
-CSerializable CComponentFactory::s_compTemplate[ IObjectComponent::NumComponent ];
+vector<CSerializable> CComponentFactory::s_compTemplate;
 
 
 // initComponentTemplate
 // read component from template
 void CComponentFactory::initComponentTemplate()
 {
+	s_compTemplate.clear();
+	s_compTemplate.resize( IObjectComponent::NumComponent );
+
 	// default component anim mesh
 	CSerializable *p = &s_compTemplate[ IObjectComponent::AnimMesh ];
-	p->clear();
 	p->addGroup	(stringOfComponent(IObjectComponent::AnimMesh));
 	p->addPath	("meshFile", "data/mesh/dwarf.x");
 	p->addFloat	("animSpeed", 24.0f );
 }
 
+// isBuildInComponent
+// return true, false
+bool CComponentFactory::isBuildInComponent( CSerializable* p )
+{
+	for ( int i = 0; i < IObjectComponent::NumComponent; i++ )
+	{
+		if ( p == &s_compTemplate[i] )
+			return true;
+	}
+	return false;
+}
 
-
+// freeData
+// release all component template info
+void CComponentFactory::freeData()
+{
+	s_compTemplate.clear();
+}
+#endif
 
 // loadComponent
 // create component

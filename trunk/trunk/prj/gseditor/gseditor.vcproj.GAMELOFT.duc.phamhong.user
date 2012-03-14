@@ -10,7 +10,7 @@
 			>
 			<DebugSettings
 				Command="$(TargetPath)"
-				WorkingDirectory="E:\ProjectC\gseditor\extern\irrlicht"
+				WorkingDirectory="E:\ProjectC\gseditor\trunk\bin"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"

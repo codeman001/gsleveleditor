@@ -28,6 +28,9 @@ void CComponentWindow::reloadList()
 {
 	m_comboList->clearItem();
 	
+	if ( CComponentFactory::s_compTemplate.size() == 0 )
+		return;
+
 	wchar_t lpValue[512];
 
 	// add build in template
@@ -36,15 +39,23 @@ void CComponentWindow::reloadList()
 		CSerializable *p = &CComponentFactory::s_compTemplate[i];
 
 		// read first record
+		int pos = p->getCursorRecord();
 		SSerializableRec *r = p->readRawRecord();
-		
+
 		if ( r == NULL || r->type != NSSerializable::groupInfo )
 			continue;
 
 		// convert value
 		uiString::convertUTF8ToUnicode( r->name, (unsigned short*)lpValue );
-		m_comboList->addItem( lpValue, lpValue );
+		uiComboBoxItem *pItem =	m_comboList->addItem( lpValue, lpValue );
+		
+		// tag data to list property
+		pItem->setData( p );
+		
+		p->setCursorRecord( pos );
 	}
+
+	m_comboList->selectItem(0);
 }
 
 
@@ -58,6 +69,16 @@ void CComponentWindow::onAddButton()
 
 void CComponentWindow::onModifyButton()
 {
+	uiComboBoxItem *pItem =	m_comboList->getSelectItem();
+	if ( pItem )
+	{
+		CSerializable *p = (CSerializable*) pItem->getData();
+
+		CComponentDialog dialog(L"Add, modify component", 0, 0, 500, 400, this, p);
+		dialog.setPositionCenterOfScreen();
+		
+		uiApplication::getRoot()->doModal( &dialog );
+	}
 }
 
 void CComponentWindow::onDelButton()

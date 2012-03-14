@@ -16,8 +16,9 @@ namespace NSSerializable
 		stringType,
 		filePathType,
 		arrayByte,
-		groupInfo
-	};
+		groupInfo,
+		numType
+	};	
 }
 
 using NSSerializable::dataType;
@@ -119,9 +120,16 @@ typedef struct tagSerializableRec
 	}
 }SSerializableRec;
 
+#ifdef GSEDITOR
+class CSerializable: public uiObject
+#else
 class CSerializable
+#endif
 {
-protected:
+public:
+	static const char *s_stringType[NSSerializable::numType];
+
+protected:	
 	vector<SSerializableRec>	m_data;
 
 	int m_cursor;

@@ -7,7 +7,7 @@
 
 CDocument::CDocument()
 {
-
+	CComponentFactory::freeData();
 }
 
 CDocument::~CDocument()

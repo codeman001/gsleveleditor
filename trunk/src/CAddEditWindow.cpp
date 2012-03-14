@@ -183,13 +183,11 @@ CAddEditWindow::CAddEditWindow( WCHAR* lpString, uiWindow *pParent )
 	m_addButton	= pToolbar->addButton(L"Add", iconAddIndex);
 	m_addButton->setEventOnClicked<CAddEditWindow, &CAddEditWindow::onToolbarCommand>( this );
 
-	m_modifyButton = pToolbar->addButton(L"Add", iconModIndex);
-	m_addButton->setEventOnClicked<CAddEditWindow, &CAddEditWindow::onToolbarCommand>( this );
-	m_modifyButton->enableButton( false );
+	m_modifyButton = pToolbar->addButton(L"Modify", iconModIndex);
+	m_modifyButton->setEventOnClicked<CAddEditWindow, &CAddEditWindow::onToolbarCommand>( this );
 
 	m_deleteButton	= pToolbar->addButton(L"Delete", iconDelIndex);
 	m_deleteButton->setEventOnClicked<CAddEditWindow, &CAddEditWindow::onToolbarCommand>( this );
-	m_deleteButton->enableButton( false );
 
 	uiRebarBand bandToolbar( pToolbar,L"");	
 	bandToolbar.setWidth(50);
@@ -205,7 +203,7 @@ CAddEditWindow::CAddEditWindow( WCHAR* lpString, uiWindow *pParent )
 	pRebar->showWindow(true);
 
 	// create combolist
-	m_comboList = ref<CComboList>( new CComboList(L"", 0,0, 10,10, this) );	
+	m_comboList = ref<CComboList>( new CComboList(L"", 0,0, 10,10, this) );
 	m_comboList->setDock( this, UIDOCK_FILL );	
 }
 

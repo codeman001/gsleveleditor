@@ -6,8 +6,7 @@
 #include "CComponentFactory.h"
 
 CDocument::CDocument()
-{
-	CComponentFactory::freeData();
+{	
 }
 
 CDocument::~CDocument()
@@ -22,6 +21,9 @@ CDocument::~CDocument()
 
 	// remove all child
 	getIView()->getSceneMgr()->getRootSceneNode()->removeAll();
+
+	// free component template
+	CComponentFactory::freeData();
 }
 
 // newDocument

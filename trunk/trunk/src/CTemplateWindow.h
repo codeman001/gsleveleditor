@@ -13,6 +13,14 @@ public:
 	virtual ~CTemplateWindow();
 	
 	virtual void _OnPaint( uiGraphics *pG );
+
+	virtual void onAddButton();
+	virtual void onModifyButton();
+	virtual void onDelButton();
+
+	// reloadList
+	// reload list of item
+	void reloadList();
 };
 
 #endif

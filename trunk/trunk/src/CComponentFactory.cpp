@@ -41,6 +41,22 @@ void CComponentFactory::freeData()
 {
 	s_compTemplate.clear();
 }
+
+// saveAllTemplate
+// save all template info
+void CComponentFactory::saveAllTemplate()
+{
+	wchar_t path[MAX_PATH] = {0};
+	uiApplication::getAppPath( (LPWSTR)path, MAX_PATH );
+}
+
+// loadAllTemplate
+// load all template info
+void CComponentFactory::loadAllTemplate()
+{
+	
+}
+
 #endif
 
 // loadComponent

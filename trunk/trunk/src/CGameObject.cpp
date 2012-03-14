@@ -35,6 +35,11 @@ CGameObject::CGameObject()
 	m_visible		= true;
 
 	m_parent		= NULL;
+
+#ifdef GSEDITOR
+	m_templateID	= -1;
+#endif
+
 }
 
 CGameObject::~CGameObject()

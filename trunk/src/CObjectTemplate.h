@@ -7,9 +7,9 @@
 class CObjectTemplate
 {
 protected:
-	uiStringW	m_templateName;
-	int			m_objectTemplateID;
-	vector<int>	m_objectComponents;
+	uiStringW				m_templateName;
+	int						m_objectTemplateID;
+	vector<CSerializable>	m_objectComponents;
 public:
 	CObjectTemplate();
 	virtual ~CObjectTemplate();
@@ -28,6 +28,10 @@ public:
 		return m_objectTemplateID;
 	}
 
+	// containComponent
+	// check the obj template has the componentID
+	bool containComponent( int comID );
+
 	// addComponent
 	// add component to object
 	bool addComponent( int comID );
@@ -35,6 +39,19 @@ public:
 	// removeComponent
 	// remove component from object
 	bool removeComponent( int comID );
+
+	// getAllComponentProperty
+	// return list property
+	inline ArraySerializable* getAllComponentProperty()
+	{
+		return &m_objectComponents;
+	}
+protected:
+	
+	// sortComponentByName
+	// sort component on the list
+	void sortComponentByName();
+
 };
 
 #endif

@@ -7,7 +7,7 @@
 class CComponentDialog: public CBaseDialog
 {
 protected:
-	uiListProperty	*m_listControl;	
+	uiListProperty	*m_listControl;
 	CSerializable	*m_componentTemplate;
 
 protected:
@@ -24,6 +24,14 @@ public:
 	// updateEditType
 	// set edit mode on all rows
 	void updateEditType();
+
+	// onComboboxTypeChange
+	// change combobox
+	void onComboboxTypeChange(uiObject *pSender);
+
+	// onListPropertyChange
+	// change data
+	void onListPropertyChange(uiObject *pSender);
 };
 
 #endif

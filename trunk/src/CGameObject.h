@@ -64,6 +64,10 @@ protected:
 
 	CGameObject			*m_parent;
 
+#ifdef GSEDITOR
+	int					m_templateID;
+#endif
+
 public:
 	ISceneNode					*m_node;
 	vector<IObjectComponent*>	m_components;
@@ -88,6 +92,22 @@ public:
 	{
 		return m_objectID;
 	}
+
+#ifdef GSEDITOR
+	// setTemplateID
+	// get id template (use on gseditor)
+	inline int getTemplateID()
+	{
+		return m_templateID;
+	}
+
+	// setTemplateID
+	// ref id template (use on gseditor)
+	inline void setTemplateID( int templateID )
+	{
+		m_templateID = templateID;
+	}
+#endif
 
 	// getParent
 	// get parent object

@@ -120,11 +120,8 @@ typedef struct tagSerializableRec
 	}
 }SSerializableRec;
 
-#ifdef GSEDITOR
-class CSerializable: public uiObject
-#else
+
 class CSerializable
-#endif
 {
 public:
 	static const char *s_stringType[NSSerializable::numType];

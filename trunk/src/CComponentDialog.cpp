@@ -2,7 +2,7 @@
 #include "CComponentDialog.h"
 #include "CComponentFactory.h"
 
-#define stringOfType(x)	CSerializable::s_stringType[ (int)x]
+#define stringOfType(x)	CSerializable::s_stringType[(int)x]
 
 CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent, CSerializable *componentTemplate)
 	:CBaseDialog(lpTitle, x, y, w, h, pParent)
@@ -44,7 +44,7 @@ CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, u
 
 
 
-	// add parameter
+	// add parameter header
 	pHeader = m_listControl->addGroup(L"Parameter:");
 	pHeader->enableColText( true );
 	pHeader->setColText(L"Param name:", 0);
@@ -58,15 +58,17 @@ CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, u
 	if ( isBuildIn )
 		numParam = numPropertyRecord;
 
+	// add param to list property
 	for (int i = 0; i < numParam; i++ )
-	{
+	{		
 		pRow = m_listControl->addRowItem( L"" );
 		
+		// if edit component
 		if ( m_componentTemplate && i < numPropertyRecord )
 		{
 			SSerializableRec* pRec = m_componentTemplate->readRawRecord();
 
-			// set type text
+			// set type variable text at column 1
 			uiString::convertUTF8ToUnicode( stringOfType(pRec->type), (unsigned short*) lpText );
 			pRow->setText( lpText, 1 );
 			
@@ -89,20 +91,27 @@ CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, u
 			}
 			else
 			{
+				// set combobox with list type on column 1
 				pListType = (uiComboBox*)pRow->setControl( UILISTPROPERTY_COMBOBOX, 1, NULL );
 				for ( int i = 0; i < NSSerializable::numType; i++ )
 				{
 					uiString::convertUTF8ToUnicode( stringOfType(i), (unsigned short*) lpText );
 					pListType->addString( lpText );
-				}				
+				}
 				pListType->selectItem( (DWORD) pRec->type );
+				pListType->setEventOnSelectChange<CComponentDialog, &CComponentDialog::onComboboxTypeChange> (this);
 
+				// set control value property is edit (column 2)
 				pRow->setControl( UILISTPROPERTY_EDIT, 2, NULL );
 			}
 		}
+		// if create new component
 		else
 		{
+			// column 0 is edit
 			pRow->setControl( UILISTPROPERTY_EDIT, 0, NULL );
+
+			// column 1 is combbox
 			pListType = (uiComboBox*)pRow->setControl( UILISTPROPERTY_COMBOBOX, 1, NULL );
 			for ( int i = 0; i < NSSerializable::numType; i++ )
 			{
@@ -110,11 +119,17 @@ CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, u
 				pListType->addString( lpText );
 			}
 			pListType->selectItem( 0 );
+			pListType->setEventOnSelectChange<CComponentDialog, &CComponentDialog::onComboboxTypeChange> (this);
 
+			// column 2 is edit
 			pRow->setControl( UILISTPROPERTY_EDIT, 2, NULL );
 		}
 	}
 	
+	// set event update for listcontrol
+	m_listControl->setEventOnUpdateProperty	<CComponentDialog, &CComponentDialog::onListPropertyChange> (this );
+	m_listControl->setEventOnDeActive		<CComponentDialog, &CComponentDialog::onListPropertyChange> (this );
+
 	// reload position
 	if ( m_componentTemplate )	
 		m_componentTemplate->setCursorRecord( beginRecord );
@@ -131,26 +146,44 @@ CComponentDialog::~CComponentDialog()
 	
 }
 
+// onComboboxTypeChange
+// change combobox
+void CComponentDialog::onComboboxTypeChange(uiObject *pSender)
+{
+	updateEditType();
+}
+
+// onListPropertyChange
+// change data
+void CComponentDialog::onListPropertyChange(uiObject *pSender)
+{
+	updateEditType();
+}
+
 // updateEditType
 // update edit control for variable type (float, string, number...)
 void CComponentDialog::updateEditType()
 {
 	int itemCount = m_listControl->getItemCount();
-	for ( int i = 4; i < itemCount; i++ )
+	for ( int i = 3; i < itemCount; i++ )
 	{
 		uiListPropertyItem* pItem = m_listControl->getItem(i);
 
-		// row item
 		if ( pItem->getObjectType() == 2 )
 		{
 			uiListPropertyRow *pRow = (uiListPropertyRow*)pItem;
 			
-			uiComboBox*				pCmbBox = (uiComboBox*)pRow->getControl( 1 );
-			uiListPropertyEdit*		pEditBox = (uiListPropertyEdit*)pRow->getControl( 2 );
+			uiComboBox*				pCmbBox		= (uiComboBox*)pRow->getControl( 1 );
+			uiListPropertyEdit*		pEditBox	= (uiListPropertyEdit*)pRow->getControl( 2 );
 
 			if ( pCmbBox && pEditBox )
 			{
-				setEditMode( (NSSerializable::dataType) pCmbBox->getSelectIndex(), pEditBox );
+				NSSerializable::dataType varType = (NSSerializable::dataType) pCmbBox->getSelectIndex();
+				setEditMode( varType, pEditBox );
+
+				// set null string
+				if ( varType == NSSerializable::unknownType )
+					pRow->setText(L"", 1);
 			}
 		}
 	}
@@ -160,7 +193,7 @@ void CComponentDialog::setEditMode( NSSerializable::dataType type, uiListPropert
 {
 	p->setNumberValueOnly( false );
 	p->setNumberFloatValueOnly( false );
-
+	
 	switch ( type )
 	{
 		case NSSerializable::intType:

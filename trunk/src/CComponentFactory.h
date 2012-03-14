@@ -2,6 +2,7 @@
 #define _COMPONENTFACTORY_
 
 #include "IObjectComponent.h"
+#include "3rdsource/tinyxml/tinyxml.h"
 
 class CComponentFactory
 {
@@ -26,6 +27,14 @@ public:
 	// isBuildInComponent
 	// return true, false
 	static bool isBuildInComponent( CSerializable* p );
+
+	// saveAllTemplate
+	// save all template info
+	static void saveAllTemplate();
+
+	// loadAllTemplate
+	// load all template info
+	static void loadAllTemplate();
 #endif
 
 	// loadComponent

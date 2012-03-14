@@ -577,6 +577,26 @@
 					Name="Terrain"
 					>
 				</Filter>
+				<Filter
+					Name="ObjectTemplate"
+					>
+					<File
+						RelativePath="..\..\src\CObjectTemplate.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CObjectTemplate.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CObjTemplateFactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CObjTemplateFactory.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Controller"

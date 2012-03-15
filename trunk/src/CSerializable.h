@@ -257,6 +257,10 @@ public:
 		return &m_data;
 	}
 
+	// getProperty
+	// get property
+	SSerializableRec* getProperty( char *name );
+
 	int		readInt();
 	long	readLong();
 	float	readFloat();

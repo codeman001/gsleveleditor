@@ -301,14 +301,36 @@ bool CComponentDialog::onOKButton()
 		{
 			CObjectTemplate *p = &(*it);
 			
-			if ( p->containComponent( lpNameCom ) == true )
-			{
-				CSerializable *pSerializable =	p->getComponent( lpNameCom );
+			CSerializable *pSerializable =	p->getComponent( lpNameCom );
 
+			// modify all template because component has changed!
+			if ( pSerializable != NULL )
+			{
+				// set dirty for object template
+				p->setDirty(true);
+
+				// clear and update new serializable
+				CSerializable old = *pSerializable;				
+				pSerializable->clear();
+
+				// add all row data
+				ArraySerializableRec *arrayRec = m_componentTemplate->getAllRecord();
+				ArraySerializableRecIter iRec = arrayRec->begin(), iRecEnd = arrayRec->end();
+				while ( iRec != iRecEnd )
+				{
+					SSerializableRec newRec = (*iRec);
+					SSerializableRec *p = old.getProperty( newRec.name );
+					
+					// copy from old data to new serializable
+					if ( p )
+						strcpy( newRec.data, p->data );
+					
+					pSerializable->addRow( &newRec );
+					iRec++;
+				}
 			}
 			++it;
 		}
-
 	}
 
 	return true;

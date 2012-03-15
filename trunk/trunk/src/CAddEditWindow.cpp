@@ -20,7 +20,7 @@ CComboList::CComboList(LPCWSTR lpTitle, int x, int y, int w, int h, uiWindow* pP
 	this->zm_hInstance = hInst;		
 
 	DWORD dwStyle;
-	dwStyle = CBS_SIMPLE|CBS_AUTOHSCROLL|CBS_DISABLENOSCROLL|CBS_SORT|WS_VSCROLL;
+	dwStyle = CBS_SIMPLE|CBS_AUTOHSCROLL|CBS_DISABLENOSCROLL|WS_VSCROLL;
 
 #pragma warning(disable:4312)
 	//Khoi tao cua so

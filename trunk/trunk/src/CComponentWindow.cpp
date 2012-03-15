@@ -2,6 +2,7 @@
 
 #include "IObjectComponent.h"
 #include "CComponentFactory.h"
+#include "CObjTemplateFactory.h"
 
 #include "CComponentWindow.h"
 #include "CComponentDialog.h"
@@ -68,6 +69,8 @@ void CComponentWindow::onAddButton()
 	dialog.setPositionCenterOfScreen();
 	
 	uiApplication::getRoot()->doModal( &dialog );
+
+	reloadList();
 }
 
 void CComponentWindow::onModifyButton()
@@ -87,4 +90,36 @@ void CComponentWindow::onModifyButton()
 
 void CComponentWindow::onDelButton()
 {
+	uiComboBoxItem *pItem =	m_comboList->getSelectItem();
+	if ( pItem )
+	{
+		int i = (int) pItem->getData();		
+		CSerializable *p = &CComponentFactory::s_compTemplate[i];
+		char *lpName = p->getAllRecord()->front().name;
+
+		if ( CComponentFactory::isBuildInComponent( p ) == true )
+		{
+			alert(L"Can not delete build in component\n",NULL);
+			return;
+		}
+		else
+		{
+			// check it use
+			ArrayTemplateIter it = CObjTemplateFactory::s_objectTemplate.begin(), 
+				end = CObjTemplateFactory::s_objectTemplate.end();
+
+			while ( it != end )
+			{
+				if ( (*it).containComponent(lpName) == true )
+				{
+					alert(L"Can not delete this component because it use on template\n",NULL);
+					return;
+				}
+				it++;
+			}
+			
+			CComponentFactory::removeComponent( p );
+			reloadList();
+		}
+	}
 }

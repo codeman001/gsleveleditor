@@ -25,10 +25,19 @@ CTemplateDialog::CTemplateDialog(LPWSTR lpTitle, int x, int y, int w, int h, uiW
 		m_isEditObjTemplate = false;
 		m_objectTemplate	= new CObjectTemplate();
 	}
+	else
+	{
+		m_isEditObjTemplate = true;
+		m_objectTemplate	= objectTemplate;
+	}
 
 	// add template group
 	uiListPropertyGroup *pHeader	= m_componentControl->addGroup(L"Object template:");
 	uiListPropertyRow	*pRow		= m_componentControl->addRowItem( L"Template name" );
+	
+	// set name of template
+	if ( m_isEditObjTemplate == true )	
+		pRow->setText( m_objectTemplate->getObjectTemplateName(), 1 );	
 
 	// set control edit name template
 	pRow->setControl( UILISTPROPERTY_EDIT, 1, NULL );
@@ -59,14 +68,28 @@ CTemplateDialog::CTemplateDialog(LPWSTR lpTitle, int x, int y, int w, int h, uiW
 		uiComboBox *pComboBox =	(uiComboBox*)pRow->setControl( UILISTPROPERTY_COMBOBOX, 1, NULL );
 		pComboBox->addString( L"disable" );
 		pComboBox->addString( L"enable" );
-
+		
+		// set enable if this template has component
+		if ( m_isEditObjTemplate == true )
+		{
+			if ( m_objectTemplate->containComponent( r->name ) == true )
+			{
+				pRow->setText(L"enable", 1);
+				pComboBox->selectItem(1);
+			}
+		}
+		
 		// set event when combobox change
 		pComboBox->setEventOnSelectChange<CTemplateDialog, &CTemplateDialog::onComboboxEnableComponent> (this);
-
 	}
 
 	// set event on change component
 	m_componentControl->setEventOnUpdateProperty<CTemplateDialog, &CTemplateDialog::onUpdateListComponent> ( this );
+	m_propertyControl->setEventOnUpdateProperty<CTemplateDialog, &CTemplateDialog::onUpdateListProperty> (this);
+	m_propertyControl->setEventOnCmbChange<CTemplateDialog, &CTemplateDialog::onUpdateListProperty> (this);
+
+	if ( m_isEditObjTemplate == true )
+		addObjectTemplateProperty();
 
 	// update windows dock
 	updateDock();
@@ -108,8 +131,7 @@ void CTemplateDialog::onUpdateListComponent(uiObject *pSender )
 			pRow->getText( lpComponentName, 0 );
 			uiString::convertUnicodeToUTF8( (unsigned short*)lpComponentName, lpComponentNameA );
 
-			int		comID				= CComponentFactory::getComponentID( lpComponentNameA );
-			bool	objHasComponent		= m_objectTemplate->containComponent(comID);
+			bool	objHasComponent		= m_objectTemplate->containComponent( lpComponentNameA );
 
 			if ( pCmbBox->getSelectIndex() == 0 )
 			{
@@ -118,7 +140,7 @@ void CTemplateDialog::onUpdateListComponent(uiObject *pSender )
 				
 				if ( objHasComponent == true )
 				{
-					m_objectTemplate->removeComponent( comID );
+					m_objectTemplate->removeComponent( lpComponentNameA );
 					hasChangeInfo = true;
 				}
 			}
@@ -126,9 +148,9 @@ void CTemplateDialog::onUpdateListComponent(uiObject *pSender )
 			{								
 				// select enable
 				// add template to object
-				if ( comID > 0 && objHasComponent == false )
+				if ( objHasComponent == false )
 				{
-					m_objectTemplate->addComponent( comID );
+					m_objectTemplate->addComponent( lpComponentNameA );
 					hasChangeInfo = true;
 				}
 
@@ -138,19 +160,50 @@ void CTemplateDialog::onUpdateListComponent(uiObject *pSender )
 
 	// update for list property
 	if ( hasChangeInfo )
-		setListPropertyValue();
+		addObjectTemplateProperty();
 }
 
 // onUpdateListProperty
 // when user update list control property
 void CTemplateDialog::onUpdateListProperty(uiObject *pSender )
 {
+	ArraySerializable *allComponent = m_objectTemplate->getAllComponentProperty();
+	ArraySerializable::iterator i = allComponent->begin(), end = allComponent->end();
 
+	WCHAR	lpText[1024];
+
+	// load all component
+	while ( i != end )
+	{
+		CSerializable *p = &(*i);
+
+		ArraySerializableRecIter iRec = p->getAllRecord()->begin(); 
+		ArraySerializableRecIter iEnd = p->getAllRecord()->end();
+		
+		// load all property of component
+		while (iRec != iEnd)
+		{
+			SSerializableRec *pRec = &(*iRec);
+			if ( pRec->tagObject != NULL )
+			{
+				// get row on list control
+				uiListPropertyRow *pRow = (uiListPropertyRow*)pRec->tagObject;
+
+				// copy data from control to serializable
+				pRow->getText( lpText, 1 );
+				uiString::convertUnicodeToUTF8( (unsigned short*) lpText, pRec->data );
+
+			}
+			iRec++;
+		}
+
+		i++;
+	}
 }
 
-// setListPropertyValue
+// addObjectTemplateProperty
 // add value from list component to property
-void CTemplateDialog::setListPropertyValue()
+void CTemplateDialog::addObjectTemplateProperty()
 {
 	m_propertyControl->deleteAllItem();	
 	
@@ -197,7 +250,7 @@ void CTemplateDialog::addSerializableToProperty( CSerializable *p )
 			
 			// tag the control to row property
 			r.tagObject = pRow;
-			
+
 			// convert value
 			uiString::convertUTF8ToUnicode( r.data, (unsigned short*)lpValue );
 			pRow->setText( lpValue, 1 );
@@ -225,4 +278,34 @@ void CTemplateDialog::addSerializableToProperty( CSerializable *p )
 		}
 		iRec++;
 	}
+}
+
+
+// onOKButton
+// event when press OK
+bool CTemplateDialog::onOKButton()
+{
+	// get name template
+	uiListPropertyRow *pRow = (uiListPropertyRow*)m_componentControl->getItem(1);
+
+	WCHAR lpName[1024];
+	pRow->getText( lpName, 1 );
+	uiString::trim<WCHAR>( lpName );
+
+	if ( uiString::length<WCHAR>( lpName ) == 0 )
+	{
+		alert(L"Please type template name", MB_OK);
+		return false;
+	}
+	
+	m_objectTemplate->setObjectTemplateName( lpName );
+
+	// add to list
+	if ( m_isEditObjTemplate == false )
+		CObjTemplateFactory::addTemplate( m_objectTemplate );	
+
+	// save template
+	CObjTemplateFactory::saveAllObjectTemplate();
+
+	return true;
 }

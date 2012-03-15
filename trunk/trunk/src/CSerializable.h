@@ -31,9 +31,11 @@ typedef struct tagSerializableRec
 	bool		readOnly;
 	char		*exData;
 	char		exDataSize;
-	
+
+#ifdef GSEDITOR	
 	// tag object
 	uiObject	*tagObject;
+#endif
 
 	tagSerializableRec()
 	{
@@ -126,6 +128,10 @@ class CSerializable
 public:
 	static const char *s_stringType[NSSerializable::numType];
 
+	// getType
+	// get type from string
+	static NSSerializable::dataType getType( char *lpType );
+
 protected:	
 	vector<SSerializableRec>	m_data;
 
@@ -145,6 +151,13 @@ public:
 	// addRow
 	// add a property
 	void addRow(char *name, void* value, dataType type, bool readOnly = false);
+
+	// addRow
+	// add a record
+	inline void addRow( SSerializableRec *r )
+	{
+		m_data.push_back( (*r) );
+	}
 
 	// addInt
 	// add int value to record

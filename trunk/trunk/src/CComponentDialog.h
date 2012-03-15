@@ -8,6 +8,7 @@ class CComponentDialog: public CBaseDialog
 {
 protected:
 	uiListProperty	*m_listControl;
+	
 	CSerializable	*m_componentTemplate;
 
 protected:
@@ -32,6 +33,11 @@ public:
 	// onListPropertyChange
 	// change data
 	void onListPropertyChange(uiObject *pSender);
+
+	// onOKButton
+	// on OK button click
+	virtual bool onOKButton();
+
 };
 
 #endif

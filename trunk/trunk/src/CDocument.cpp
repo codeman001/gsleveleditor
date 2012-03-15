@@ -4,6 +4,7 @@
 #include "IController.h"
 
 #include "CComponentFactory.h"
+#include "CObjTemplateFactory.h"
 
 CDocument::CDocument()
 {	
@@ -21,17 +22,17 @@ CDocument::~CDocument()
 
 	// remove all child
 	getIView()->getSceneMgr()->getRootSceneNode()->removeAll();
-
-	// free component template
+	
 	CComponentFactory::freeData();
+	CObjTemplateFactory::freeData();
 }
 
 // newDocument
 // new 3d scene document
 void CDocument::newDocument()
-{
-	// reload tempalate
+{	
 	CComponentFactory::initComponentTemplate();
+	CObjTemplateFactory::initObjectTempalte();
 
 	// add root zone
 	CZone *pRoot = new CZone();

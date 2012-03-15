@@ -31,11 +31,15 @@ public:
 	// when user update list control property
 	virtual void onUpdateListProperty(uiObject *pSender );
 
+	// onOKButton
+	// event when press OK
+	virtual bool onOKButton();	
+
 protected:
 
-	// setListPropertyValue
+	// addObjectTemplateProperty
 	// add value from list component to property
-	void setListPropertyValue();
+	void addObjectTemplateProperty();
 	
 	// addSerializableToProperty
 	// add serializable

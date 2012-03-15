@@ -5,6 +5,11 @@ CObjectTemplate::CObjectTemplate()
 {
 	m_templateName = L"";
 	m_objectTemplateID = -1;
+
+#ifdef GSEDITOR
+	m_numObjRef = 0;
+#endif
+
 }
 
 CObjectTemplate::~CObjectTemplate()
@@ -13,12 +18,8 @@ CObjectTemplate::~CObjectTemplate()
 
 // containComponent
 // check the obj template has the componentID
-bool CObjectTemplate::containComponent( int comID )
+bool CObjectTemplate::containComponent( char *lpName )
 {	
-	const char *lpName = CComponentFactory::getComponentName( comID );
-	if ( lpName == NULL )
-		return false;
-
 	int n = (int)m_objectComponents.size();
 	for ( int i = 0; i < n; i++ )
 	{
@@ -32,15 +33,38 @@ bool CObjectTemplate::containComponent( int comID )
 	return false;
 }
 
+// getComponent
+// get component
+CSerializable * CObjectTemplate::getComponent( char* comName )
+{
+	int n = (int)m_objectComponents.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		CSerializable *p = &m_objectComponents[i];
+
+		// found this component
+		if ( strcmp( comName, p->getAllRecord()->front().name ) == 0 )
+			return p;
+	}
+
+	return NULL;
+}
+
 // addComponent
 // add component to object
-bool CObjectTemplate::addComponent( int comID )
+bool CObjectTemplate::addComponent( char *lpName )
 {
-	if ( containComponent( comID ) == true )
+	if ( containComponent( lpName ) == true )
 		return false;
 	
 	// add this component to template
-	m_objectComponents.push_back( CComponentFactory::s_compTemplate[comID] );
+	int n = CComponentFactory::s_compTemplate.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		CSerializable *p = &CComponentFactory::s_compTemplate[i];
+		if ( strcmp( lpName, p->getAllRecord()->front().name ) == 0 )
+			m_objectComponents.push_back( *p );
+	}
 	sortComponentByName();
 
 	return true;
@@ -48,12 +72,8 @@ bool CObjectTemplate::addComponent( int comID )
 
 // removeComponent
 // remove component from object
-bool CObjectTemplate::removeComponent( int comID )
+bool CObjectTemplate::removeComponent( char *lpName )
 {
-	const char *lpName = CComponentFactory::getComponentName( comID );
-	if ( lpName == NULL )
-		return false;
-
 	int n = (int)m_objectComponents.size();
 	for ( int i = 0; i < n; i++ )
 	{

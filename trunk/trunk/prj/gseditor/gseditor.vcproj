@@ -419,7 +419,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="StoreObject"
+				Name="Serializable"
 				>
 				<File
 					RelativePath="..\..\src\CSerializable.cpp"

@@ -8,6 +8,7 @@ CObjectTemplate::CObjectTemplate()
 
 #ifdef GSEDITOR
 	m_numObjRef = 0;
+	m_isDirty	= false;
 #endif
 
 }
@@ -56,7 +57,11 @@ bool CObjectTemplate::addComponent( char *lpName )
 {
 	if ( containComponent( lpName ) == true )
 		return false;
-	
+
+#ifdef GSEDITOR
+	m_isDirty = true;
+#endif
+
 	// add this component to template
 	int n = CComponentFactory::s_compTemplate.size();
 	for ( int i = 0; i < n; i++ )
@@ -74,6 +79,7 @@ bool CObjectTemplate::addComponent( char *lpName )
 // remove component from object
 bool CObjectTemplate::removeComponent( char *lpName )
 {
+
 	int n = (int)m_objectComponents.size();
 	for ( int i = 0; i < n; i++ )
 	{
@@ -84,6 +90,11 @@ bool CObjectTemplate::removeComponent( char *lpName )
 		{
 			m_objectComponents.erase( m_objectComponents.begin() + i );
 			sortComponentByName();
+
+#ifdef GSEDITOR
+			m_isDirty = true;
+#endif
+
 			return true;
 		}
 	}

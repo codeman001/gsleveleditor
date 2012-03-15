@@ -143,3 +143,17 @@ void CSerializable::readArrayByte( char* data, int *size )
 	memcpy( data, rec.exData, rec.exDataSize );
 	*size = rec.exDataSize;
 }
+
+// getProperty
+// get property
+SSerializableRec* CSerializable::getProperty( char *name )
+{
+	int i = 0, n = m_data.size();
+	for ( i = 0; i < n; i++ )
+	{
+		SSerializableRec *pRec = &m_data[i];
+		if ( strcmp( pRec->name, name ) == 0 )
+			return pRec;
+	}
+	return NULL;
+}

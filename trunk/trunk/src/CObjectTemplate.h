@@ -11,6 +11,7 @@ protected:
 #ifdef GSEDITOR
 	uiStringW				m_templateName;
 	int						m_numObjRef;
+	bool					m_isDirty;
 #endif
 
 	int						m_objectTemplateID;
@@ -69,6 +70,22 @@ public:
 	{
 		return m_numObjRef;
 	}
+
+	// isDirty
+	// return true if the template has change component
+	// so we need reload object if it is dirty
+	inline bool isDirty()
+	{
+		return m_isDirty;
+	}
+
+	// setDirty
+	// set dirty to template	
+	inline void setDirty( bool b = true )
+	{
+		m_isDirty = true;
+	}
+
 #endif
 	// containComponent
 	// check the obj template has the componentID

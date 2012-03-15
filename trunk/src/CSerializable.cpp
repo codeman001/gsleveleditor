@@ -15,6 +15,19 @@ const char* CSerializable::s_stringType[] =
 	"groupInfo"	
 };
 
+// getType
+// get type from string
+NSSerializable::dataType CSerializable::getType( char *lpType )
+{
+	for ( int i = NSSerializable::unknownType; i <  NSSerializable::numType; i++ )
+	{
+		if ( strcmp( lpType, s_stringType[i] ) == 0 )
+			return (NSSerializable::dataType) i;
+	}
+
+	return NSSerializable::unknownType;
+}
+
 CSerializable::CSerializable()
 {
 	m_cursor = 0;

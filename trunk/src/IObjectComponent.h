@@ -10,20 +10,19 @@ class IObjectComponent
 public:
 	enum ComponentType
 	{
-		Null = 0,
 		AnimMesh,
 		Mesh,
 		Health,
 		Collision,
 		AINpcComponent,
-		NpcComponent,
-		NumComponent
+		NpcComponent
 	};
 
 	static const char *s_compType[];
 protected:
 	int			m_componentID;
 	CGameObject	*m_gameObject;
+
 public:
 	IObjectComponent(CGameObject *pObj, int compID);
 
@@ -49,6 +48,7 @@ public:
 	// loadData
 	// load data to serializable
 	virtual void loadData( CSerializable* pObj ) = 0;
+
 };
 
 #endif

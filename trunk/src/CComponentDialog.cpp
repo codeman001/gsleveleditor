@@ -1,8 +1,11 @@
 #include "stdafx.h"
+
 #include "CComponentDialog.h"
 #include "CComponentFactory.h"
+#include "CObjTemplateFactory.h"
 
 #define stringOfType(x)	CSerializable::s_stringType[(int)x]
+#define NUM_PARAMS	20
 
 CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent, CSerializable *componentTemplate)
 	:CBaseDialog(lpTitle, x, y, w, h, pParent)
@@ -18,13 +21,14 @@ CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, u
 	uiComboBox *pListType = NULL;
 
 	m_componentTemplate = componentTemplate;
+
 	int beginRecord = -1;
 	int numPropertyRecord = -1;
 
 	// save position
 	if ( m_componentTemplate )
 	{
-		beginRecord = m_componentTemplate->getCursorRecord();
+		beginRecord			= m_componentTemplate->getCursorRecord();
 		numPropertyRecord	= (int)m_componentTemplate->getAllRecord()->size() - 1;
 	}
 
@@ -43,7 +47,6 @@ CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, u
 		pRow->setControl( UILISTPROPERTY_EDIT, 1, NULL );
 
 
-
 	// add parameter header
 	pHeader = m_listControl->addGroup(L"Parameter:");
 	pHeader->enableColText( true );
@@ -51,9 +54,11 @@ CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, u
 	pHeader->setColText(L"Param type:", 1);
 	pHeader->setColText(L"Default value:", 2);
 		
-	// add default 20 parameter
-	int numParam = 20;
-	bool isBuildIn = CComponentFactory::isBuildInComponent( m_componentTemplate );
+	int numParam = NUM_PARAMS;	
+	bool isBuildIn = false;
+	
+	if ( m_componentTemplate )
+		isBuildIn = CComponentFactory::isBuildInComponent( m_componentTemplate );
 
 	if ( isBuildIn )
 		numParam = numPropertyRecord;
@@ -209,4 +214,102 @@ void CComponentDialog::setEditMode( NSSerializable::dataType type, uiListPropert
 			break;
 		}
 	}
+}
+
+// onOKButton
+// on OK button click
+bool CComponentDialog::onOKButton()
+{	
+	uiListPropertyRow *pRow = (uiListPropertyRow*)m_listControl->getItem(1);
+
+	wchar_t lpString[1024];
+	char	lpNameCom[1024];
+	char	lpValue[1024];
+	char	lpName[1024];
+
+	pRow->getText( lpString, 1 );
+	uiString::trim<WCHAR>( lpString );
+
+	if ( uiString::length<WCHAR>( lpString ) == 0 )
+	{
+		alert(L"Please type component name", MB_OK);
+		return false;
+	}
+
+	CSerializable *p = NULL;
+	CSerializable s;
+
+	if ( m_componentTemplate )
+	{
+		m_componentTemplate->clear();
+		p = m_componentTemplate;
+	}
+	else
+	{
+		p = &s;
+	}	
+
+	// add group
+	uiString::convertUnicodeToUTF8((unsigned short*)lpString, lpNameCom);
+	p->addGroup( lpNameCom );
+	
+	int n = m_listControl->getItemCount();
+
+	for ( int i = 3; i < n; i++ )
+	{
+		pRow = (uiListPropertyRow*)m_listControl->getItem( i);
+		
+		// get property name
+		pRow->getText( lpString, 0 );
+		uiString::trim<wchar_t>( lpString );
+		uiString::convertUnicodeToUTF8( (unsigned short*)lpString, lpName );
+		if ( strlen( lpName ) == 0 )
+			continue;
+
+		// get property type
+		pRow->getText( lpString, 1 );
+		uiString::trim<wchar_t>( lpString );
+		uiString::convertUnicodeToUTF8( (unsigned short*)lpString, lpValue );
+		NSSerializable::dataType type = CSerializable::getType( lpValue );
+		if ( type == NSSerializable::unknownType )
+			continue;
+
+		// get property value
+		pRow->getText( lpString, 2 );
+		uiString::trim<wchar_t>( lpString );
+		uiString::convertUnicodeToUTF8( (unsigned short*)lpString, lpValue );
+
+		// add record
+		SSerializableRec r;
+		strcpy (r.name, lpName );
+		strcpy (r.data, lpValue );
+		r.type = type;
+		r.readOnly = false;
+
+		// add row to serializable
+		p->addRow( &r );
+	}
+
+	// add component
+	if ( m_componentTemplate == NULL )
+		CComponentFactory::addComponent( p );
+	else
+	{
+		// also need modify infomation on all template object
+		ArrayTemplateIter it =	CObjTemplateFactory::s_objectTemplate.begin(), end = CObjTemplateFactory::s_objectTemplate.end();
+		while ( it != end )
+		{
+			CObjectTemplate *p = &(*it);
+			
+			if ( p->containComponent( lpNameCom ) == true )
+			{
+				CSerializable *pSerializable =	p->getComponent( lpNameCom );
+
+			}
+			++it;
+		}
+
+	}
+
+	return true;
 }

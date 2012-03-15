@@ -14,9 +14,11 @@ vector<CSerializable> CComponentFactory::s_compTemplate;
 void CComponentFactory::initComponentTemplate()
 {
 	s_compTemplate.clear();
-	s_compTemplate.resize( IObjectComponent::NumComponent );
+	loadAllTemplate();
 
 	// default component anim mesh
+	s_compTemplate.push_back( CSerializable() );	// anim mesh
+
 	CSerializable *p = &s_compTemplate[ IObjectComponent::AnimMesh ];
 	p->addGroup	(stringOfComponent(IObjectComponent::AnimMesh));
 	p->addPath	("meshFile", "data/mesh/dwarf.x");
@@ -27,11 +29,13 @@ void CComponentFactory::initComponentTemplate()
 // return true, false
 bool CComponentFactory::isBuildInComponent( CSerializable* p )
 {
-	for ( int i = 0; i < IObjectComponent::NumComponent; i++ )
+	const char *lpName = p->getAllRecord()->front().name;
+	for ( int i = 0; i <= IObjectComponent::AINpcComponent; i++ )
 	{
-		if ( p == &s_compTemplate[i] )
+		if ( strcmp( lpName, stringOfComponent(i) ) == 0 )
 			return true;
 	}
+
 	return false;
 }
 
@@ -57,31 +61,62 @@ void CComponentFactory::loadAllTemplate()
 	
 }
 
-// getComponentName
-// return the name of component
-const char* CComponentFactory::getComponentName( int comID )
-{
-	if ( comID < 1 || comID >= (int)s_compTemplate.size() )
-		return NULL;
-
-	CSerializable *p = &s_compTemplate[comID];
-	return p->getAllRecord()->front().name;
-}
-
-// getComponentID
-// return the id of component
-int CComponentFactory::getComponentID( const char *name )
+// addComponent
+// add component
+bool CComponentFactory::addComponent( CSerializable* p )
 {
 	int numComponent = (int)s_compTemplate.size();
-	
-	for ( int i = 1; i < numComponent; i++ )
+	const char *lpName = p->getAllRecord()->front().name;
+
+	for ( int i = 0; i < numComponent; i++ )
 	{
-		CSerializable *p = &s_compTemplate[i];
-		if ( strcmp(p->getAllRecord()->front().name, name) == 0 )
-			return i;
+		CSerializable *pSerializable = &s_compTemplate[i];
+		if ( strcmp( lpName, pSerializable->getAllRecord()->front().name) == 0 )
+			return false;
+	}
+	
+	s_compTemplate.push_back( *p );
+	return true;
+}
+
+// removeComponent
+// remove component
+bool CComponentFactory::removeComponent( CSerializable* p )
+{
+	int numComponent = (int)s_compTemplate.size();
+	const char *lpName = p->getAllRecord()->front().name;
+
+	for ( int i = 0; i < numComponent; i++ )
+	{
+		CSerializable *pSerializable = &s_compTemplate[i];
+
+		if ( strcmp(lpName, pSerializable->getAllRecord()->front().name) == 0 )
+		{
+			s_compTemplate.erase( s_compTemplate.begin() + i );
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+// getComponent
+// get component data
+CSerializable* CComponentFactory::getComponent( char *lpName )
+{
+	int numComponent = (int)s_compTemplate.size();
+
+	for ( int i = 0; i < numComponent; i++ )
+	{
+		CSerializable *pSerializable = &s_compTemplate[i];
+
+		if ( strcmp(lpName, pSerializable->getAllRecord()->front().name) == 0 )
+		{
+			return pSerializable;
+		}
 	}
 
-	return -1;
+	return NULL;
 }
 
 #endif

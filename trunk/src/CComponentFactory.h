@@ -36,13 +36,17 @@ public:
 	// load all template info
 	static void loadAllTemplate();
 
-	// getComponentName
-	// return the name of component
-	static const char* getComponentName( int comID );
+	// addComponent
+	// add component
+	static bool addComponent( CSerializable* p );
 
-	// getComponentID
-	// return the id of component
-	static int getComponentID( const char *name );
+	// removeComponent
+	// remove component
+	static bool removeComponent( CSerializable* p );
+
+	// getComponent
+	// get component data
+	CSerializable* getComponent( char *lpName );
 #endif
 
 	// loadComponent

@@ -3,7 +3,6 @@
 
 // global object template
 vector<CObjectTemplate> CObjTemplateFactory::s_objectTemplate;
-int CObjTemplateFactory::s_idGenerate = 1;
 
 // initObjectTempalte
 // init object template
@@ -11,6 +10,56 @@ void CObjTemplateFactory::initObjectTempalte()
 {
 	s_objectTemplate.clear();
 	loadAllObjectTemplate();
+}
+
+extern void getBufferString( char *lpBuffer, char *from, char *to );
+//void getBufferString( char *lpBuffer, char *from, char *to )
+//{
+//	int len = to - from;
+//	
+//	uiString::mid(lpBuffer, from, 0, len);
+//	uiString::trim(lpBuffer);
+//}
+
+void readTemplateFromData( char *lpData )
+{
+	char *p = lpData;
+	char *from = p;
+
+	char	lpStringA[1024];
+	wchar_t	lpString[1024];
+	while ( *p != NULL )
+	{
+		if ( *p == '{' )
+		{
+			getBufferString( lpStringA, from, p );
+			uiString::convertUTF8ToUnicode( lpStringA, (unsigned short*) lpString );
+
+			CObjectTemplate obj;
+			CSerializable	component;
+
+			obj.setObjectTemplateName( lpString );
+			
+			p++;
+
+			while ( component.readData( p ) )
+			{
+				obj.getAllComponentProperty()->push_back( component );				
+				component.clear();
+			}
+			
+			CObjTemplateFactory::addTemplate( &obj );		
+		}
+		else if ( *p == '}' )
+		{
+			p++;
+			from = p;
+		}
+		else
+		{
+			p++;
+		}
+	}
 }
 
 // loadAllObjectTemplate
@@ -37,8 +86,9 @@ void CObjTemplateFactory::loadAllObjectTemplate()
 		file.read(lpBuffer,length);
 		file.close();
 
-		
+		readTemplateFromData( lpBuffer );
 
+		delete lpBuffer;
 	}
 }
 
@@ -88,20 +138,26 @@ void CObjTemplateFactory::saveAllObjectTemplate()
 void CObjTemplateFactory::addTemplate(CObjectTemplate* p)
 {
 	s_objectTemplate.push_back( *p );
-	s_objectTemplate.back().setTemplateID( s_idGenerate++ );
 }
 
 // removeTemplate
 // remove a template from list
-void CObjTemplateFactory::removeTemplate(int templateID)
+void CObjTemplateFactory::removeTemplate(wchar_t* templateName)
 {
 	ArrayTemplateIter i = s_objectTemplate.begin(), end = s_objectTemplate.end();
+
+	char lpNameA[1024];
+	
+	char templateNameA[1024];
+	uiString::convertUnicodeToUTF8( (unsigned short*) templateName, templateNameA );
 
 	while ( i != end )
 	{
 		CObjectTemplate *p = &(*i);
+	
+		uiString::convertUnicodeToUTF8( (unsigned short*) p->getObjectTemplateName(), lpNameA );
 
-		if ( p->getTemplateID() == templateID )
+		if ( strcmp( lpNameA, templateNameA) == 0 )
 		{
 			s_objectTemplate.erase( i );
 			break;

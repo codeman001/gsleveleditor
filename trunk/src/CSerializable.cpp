@@ -233,8 +233,6 @@ void getBufferString( char *lpBuffer, char *from, char *to )
 
 bool CSerializable::readData( char* &pData )
 {
-	int i = 0;
-	
 	char *p		= pData;
 	char *from	= p;
 	char *split = NULL;
@@ -243,12 +241,20 @@ bool CSerializable::readData( char* &pData )
 	char lpBuffer[1024];
 
 	SSerializableRec	rec;
+	bool				beginGroup = false;
 
 	while ( *p != 0 )
 	{
 		// begin group
 		if ( *p == '{' )
-		{			
+		{
+			// error read
+			if ( beginGroup == true )
+			{
+				pData = p;
+				return false;
+			}
+
 			memset( &rec, 0, sizeof(SSerializableRec) );
 
 			// get group name
@@ -261,12 +267,23 @@ bool CSerializable::readData( char* &pData )
 			from	= p + 1;
 			split	= NULL;
 			dot		= NULL;
+
+			beginGroup = true;
 		}
 		// end group
 		else if ( *p == '}' )
-		{
-			pData = p + 1;
-			return true;
+		{			
+			if ( beginGroup )
+			{
+				pData = p + 1;
+				beginGroup = false;
+				return true;
+			}
+			else
+			{
+				pData = p;
+				return false;
+			}
 		}
 		else if ( *p == ';' )
 		{

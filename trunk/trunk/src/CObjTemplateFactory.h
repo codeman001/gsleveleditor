@@ -27,11 +27,12 @@ public:
 
 	// removeTemplate
 	// remove a template from list
-	static void removeTemplate(int templateID);
+	static void removeTemplate(wchar_t* templateName);
 
 	// freeData
 	// delete all list object template
 	static void freeData();
+
 };
 
 typedef vector<CObjectTemplate>				ArrayTemplate;

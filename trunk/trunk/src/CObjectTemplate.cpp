@@ -4,7 +4,6 @@
 CObjectTemplate::CObjectTemplate()
 {
 	m_templateName = L"";
-	m_objectTemplateID = -1;
 
 #ifdef GSEDITOR
 	m_numObjRef = 0;

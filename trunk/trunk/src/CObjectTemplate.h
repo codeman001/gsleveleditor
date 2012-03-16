@@ -7,48 +7,20 @@
 class CObjectTemplate
 {
 protected:
-
-#ifdef GSEDITOR
 	uiStringW				m_templateName;
+
+#ifdef GSEDITOR	
 	int						m_numObjRef;
 	bool					m_isDirty;
 #endif
 
-	int						m_objectTemplateID;
 	vector<CSerializable>	m_objectComponents;
 public:
 
 	CObjectTemplate();
 	virtual ~CObjectTemplate();
 
-	// setTemplateID
-	// set template id
-	inline void setTemplateID( int id )
-	{
-		m_objectTemplateID = id;
-	}
-
-	// getTemplateID
-	// return template id
-	inline int getTemplateID()
-	{
-		return m_objectTemplateID;
-	}
-
 #ifdef GSEDITOR
-	// setObjectTemplateName
-	// set template name
-	inline void setObjectTemplateName( wchar_t *name )
-	{
-		m_templateName = name;
-	}
-
-	// getObjectTemplateName
-	// get name
-	inline wchar_t* getObjectTemplateName()
-	{
-		return m_templateName.c();
-	}
 
 	// incRef
 	// add a ref when gameobject use this template
@@ -87,6 +59,20 @@ public:
 	}
 
 #endif
+	// setObjectTemplateName
+	// set template name
+	inline void setObjectTemplateName( wchar_t *name )
+	{
+		m_templateName = name;
+	}
+
+	// getObjectTemplateName
+	// get name
+	inline wchar_t* getObjectTemplateName()
+	{
+		return m_templateName.c();
+	}
+
 	// containComponent
 	// check the obj template has the componentID
 	bool containComponent( char* comName );

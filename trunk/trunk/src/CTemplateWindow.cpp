@@ -64,8 +64,8 @@ void CTemplateWindow::onDelButton()
 			WCHAR msg[1024];
 			swprintf( msg, 1024, L"Do you want to delete this template '%s'", p->getObjectTemplateName() );
 			if ( question( msg, NULL) == true )
-			{
-				CObjTemplateFactory::removeTemplate( p->getTemplateID() );
+			{				
+				CObjTemplateFactory::removeTemplate( p->getObjectTemplateName() );
 				CObjTemplateFactory::saveAllObjectTemplate();
 				reloadList();
 			}

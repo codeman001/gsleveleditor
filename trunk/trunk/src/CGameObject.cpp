@@ -9,10 +9,12 @@ core::vector3df CGameObject::s_oz	= core::vector3df(0.0f, 0.0f, 1.0f);
 
 const char* CGameObject::s_stringObjType[] =
 {
-	"NullObject",
+	"GameObject",
+	"TerrainObject",
 	"ZoneObject",
-	"CubeObject",
-	"AnimObject"
+	"Trigger",
+	"Cinematic",
+	"NumObject"
 };
 
 CGameObject::CGameObject()

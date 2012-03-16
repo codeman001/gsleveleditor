@@ -268,6 +268,15 @@ public:
 	bool	readBool();
 	char*	readString();
 	void	readArrayByte( char* data, int *size );
+
+protected:
+	virtual void	saveItem( std::ofstream& f,  vector<SSerializableRec>::iterator& it,  int nTab = 0 );
+	virtual void	saveGroup( std::ofstream& f, vector<SSerializableRec>::iterator& it,  int nTab = 0 );
+public:
+
+	virtual void	saveData( std::ofstream& f, int nTab = 0 );
+	virtual bool	readData( char* &pData );
+
 };
 
 typedef vector<CSerializable>				ArraySerializable;

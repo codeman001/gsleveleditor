@@ -292,7 +292,10 @@ bool CComponentDialog::onOKButton()
 
 	// add component
 	if ( m_componentTemplate == NULL )
+	{
 		CComponentFactory::addComponent( p );
+		CComponentFactory::saveAllTemplate();
+	}
 	else
 	{
 		// also need modify infomation on all template object
@@ -331,6 +334,7 @@ bool CComponentDialog::onOKButton()
 			}
 			++it;
 		}
+		CComponentFactory::saveAllTemplate();
 	}
 
 	return true;

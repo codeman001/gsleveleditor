@@ -15,6 +15,7 @@ using namespace irr::video;
 #include <map>
 #include <stack>
 #include <queue>
+#include <fstream>
 
 using namespace std;
 

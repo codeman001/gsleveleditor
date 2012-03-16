@@ -119,6 +119,7 @@ void CComponentWindow::onDelButton()
 			}
 			
 			CComponentFactory::removeComponent( p );
+			CComponentFactory::saveAllTemplate();
 			reloadList();
 		}
 	}

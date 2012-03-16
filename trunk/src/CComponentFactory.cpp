@@ -14,8 +14,7 @@ vector<CSerializable> CComponentFactory::s_compTemplate;
 void CComponentFactory::initComponentTemplate()
 {
 	s_compTemplate.clear();
-	loadAllTemplate();
-
+	
 	// default component anim mesh
 	s_compTemplate.push_back( CSerializable() );	// anim mesh
 
@@ -23,6 +22,8 @@ void CComponentFactory::initComponentTemplate()
 	p->addGroup	(stringOfComponent(IObjectComponent::AnimMesh));
 	p->addPath	("meshFile", "data/mesh/dwarf.x");
 	p->addFloat	("animSpeed", 24.0f );
+
+	loadAllTemplate();
 }
 
 // isBuildInComponent
@@ -51,14 +52,65 @@ void CComponentFactory::freeData()
 void CComponentFactory::saveAllTemplate()
 {
 	wchar_t path[MAX_PATH] = {0};
+	wchar_t fileName[MAX_PATH] = {0};
+
 	uiApplication::getAppPath( (LPWSTR)path, MAX_PATH );
+	swprintf( fileName, MAX_PATH, L"%s\\componentTemplate.css", path );
+
+	std::ofstream file( fileName );
+	
+	int n = s_compTemplate.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		CSerializable *p = &s_compTemplate[i];
+		if ( isBuildInComponent(p) == false )
+		{
+			// write to file
+			p->saveData( file );
+		}
+	}
+
+	file.close();
+
 }
 
 // loadAllTemplate
 // load all template info
 void CComponentFactory::loadAllTemplate()
 {
-	
+	wchar_t path[MAX_PATH] = {0};
+	wchar_t fileName[MAX_PATH] = {0};
+
+	uiApplication::getAppPath( (LPWSTR)path, MAX_PATH );
+	swprintf( fileName, MAX_PATH, L"%s\\componentTemplate.css", path );
+
+	std::ifstream file( fileName );
+	if ( file.is_open() )
+	{
+		file.seekg (0, ios::end);
+		unsigned long length = file.tellg();
+		file.seekg (0, ios::beg);
+		
+		char *lpBuffer = new char[length];
+		memset( lpBuffer, 0, length );
+
+		file.read(lpBuffer,length);
+		file.close();	
+
+		CSerializable s;
+		char *p = lpBuffer;
+		
+		while ( *p != NULL )
+		{
+			if ( s.readData(p) == true )
+				s_compTemplate.push_back( s );
+			else
+				break;
+		}
+
+		delete lpBuffer;
+	}
+	file.close();
 }
 
 // addComponent

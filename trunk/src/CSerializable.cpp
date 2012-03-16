@@ -157,3 +157,163 @@ SSerializableRec* CSerializable::getProperty( char *name )
 	}
 	return NULL;
 }
+
+void CSerializable::saveItem( std::ofstream& f,  ArraySerializableRecIter& it,  int nTab )
+{
+	uiStringA tab = "";
+	for ( int i = 0; i < nTab; i++ )
+		tab += "\t";
+
+	ArraySerializableRecIter end = m_data.end();
+	while ( it != end )
+	{
+		SSerializableRec *p = &(*it);
+		
+		if ( p->type == NSSerializable::groupInfo )
+		{
+			it--;
+			return;
+		}
+		else if ( p->type != NSSerializable::arrayByte )
+		{
+			// save data
+			f << tab.c() << p->name  << ": " << p->data << " | " << s_stringType[p->type] << ";\n";
+			it++;
+		}
+		else
+		{
+			// array Byte
+			it++;
+		}
+	}
+}
+
+void CSerializable::saveGroup( std::ofstream& f, ArraySerializableRecIter& it, int nTab )
+{
+	uiStringA tab = "";
+	for ( int i = 0; i < nTab; i++ )
+		tab += "\t";
+
+	ArraySerializableRecIter end = m_data.end();
+		
+	while ( it != end )
+	{
+		SSerializableRec *p = &(*it);
+
+		if ( p->type == NSSerializable::groupInfo )
+		{
+			f << tab.c() << p->name << "\n";
+			f << tab.c() << "{\n";
+			
+			it++;
+			saveItem( f, it, nTab + 1 );
+			
+			f << tab.c() << "}\n";
+		}
+
+	}
+
+}
+
+void CSerializable::saveData( std::ofstream& f, int nTab )
+{
+	ArraySerializableRecIter it = m_data.begin();
+	
+	// save group
+	saveGroup( f, it, nTab );	
+}
+
+void getBufferString( char *lpBuffer, char *from, char *to )
+{
+	int len = to - from;
+	
+	uiString::mid(lpBuffer, from, 0, len);
+	uiString::trim(lpBuffer);
+}
+
+bool CSerializable::readData( char* &pData )
+{
+	int i = 0;
+	
+	char *p		= pData;
+	char *from	= p;
+	char *split = NULL;
+	char *dot	= NULL;
+
+	char lpBuffer[1024];
+
+	SSerializableRec	rec;
+
+	while ( *p != 0 )
+	{
+		// begin group
+		if ( *p == '{' )
+		{			
+			memset( &rec, 0, sizeof(SSerializableRec) );
+
+			// get group name
+			getBufferString( rec.name, from, p );
+			rec.type = NSSerializable::groupInfo;
+
+			// add group
+			addRow( &rec );
+			
+			from	= p + 1;
+			split	= NULL;
+			dot		= NULL;
+		}
+		// end group
+		else if ( *p == '}' )
+		{
+			pData = p + 1;
+			return true;
+		}
+		else if ( *p == ';' )
+		{
+			// error data
+			if ( dot == NULL || split == NULL )
+			{
+				pData = p + 1;
+				return false;
+			}
+
+			memset( &rec, 0, sizeof(SSerializableRec) );
+
+			// get name property
+			getBufferString( rec.name, from,		dot );
+
+			// get data property
+			getBufferString( rec.data, dot + 1,		split );
+
+			// get data type 
+			getBufferString( lpBuffer, split + 1,	p );
+			int type = 0;
+			for ( type = 0; type < NSSerializable::numType; type++ )
+			{
+				if ( strcmp( lpBuffer, s_stringType[type] ) == 0 )
+					break;
+			}
+			rec.type = (NSSerializable::dataType)type;
+
+			// add record
+			addRow( &rec );
+
+			from	= p + 1;
+			split	= NULL;
+			dot		= NULL;			
+		}
+		else if ( *p == '|' )
+		{
+			split = p;
+		}
+		else if ( *p == ':' )
+		{
+			dot = p;
+		}
+
+		p++;
+	}
+
+	pData = p;
+	return false;
+}

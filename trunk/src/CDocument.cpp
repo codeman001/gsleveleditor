@@ -6,6 +6,8 @@
 #include "CComponentFactory.h"
 #include "CObjTemplateFactory.h"
 
+#include "CGameOxyzSceneNode.h"
+
 CDocument::CDocument()
 {	
 }
@@ -50,10 +52,17 @@ void CDocument::newDocument()
 	// add zone to document
 	m_zones.push_back( pRoot );
 
+	ISceneManager *smgr = getIView()->getSceneMgr();
+
 	// add camera
-	scene::ICameraSceneNode* cam = getIView()->getSceneMgr()->addCameraSceneNode();
-	cam->setTarget(core::vector3df(0,0,0));
-	cam->setPosition( core::vector3df(200, 200, 200) );
+	scene::ICameraSceneNode* cam = smgr->addCameraSceneNode();
+	cam->setTarget(core::vector3df(300,100,300));
+	cam->setPosition( core::vector3df(0, 400, 0) );
+	cam->setFOV( core::degToRad(60.0f) );
+	
+	// add oxyz plane node
+	CGameOxyzSceneNode *oxyPlane = new CGameOxyzSceneNode( smgr->getRootSceneNode(), smgr, 1 );
+	oxyPlane->drop();
 }
 	
 // saveDocument

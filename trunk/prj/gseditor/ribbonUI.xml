@@ -33,6 +33,18 @@
     <!-- Tab command -->
     <Command Name="cmdTabHome" LabelTitle="Home" />
 
+    <Command Name="cmdGroupObject" LabelTitle="Object creation" />
+    <Command Name="cmdAddObject" LabelTitle="Add Object" Symbol="ID_ADDOBJECT">
+      <Command.LargeImages>
+        <Image>ribbonIcon/object_3d.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="cmdAddTrigger" LabelTitle="Add Trigger" Symbol="ID_ADDTRIGGER">
+      <Command.LargeImages>
+        <Image>ribbonIcon/object_trigger.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+
     <Command Name="cmdGroupObjTransform" LabelTitle="Object transform" />
 
     <Command Name="cmdSelectObject" LabelTitle="Select and Move" Symbol="ID_SELECT">
@@ -84,6 +96,10 @@
       <!-- Application Tab -->
       <Ribbon.Tabs>
         <Tab CommandName="cmdTabHome">
+          <Group CommandName="cmdGroupObject" SizeDefinition="TwoButtons">
+            <ToggleButton CommandName="cmdAddObject" />
+            <ToggleButton CommandName="cmdAddTrigger"/>            
+          </Group>
           <Group CommandName="cmdGroupObjTransform" SizeDefinition="ThreeButtons">
             <ToggleButton CommandName="cmdSelectObject" />
             <ToggleButton CommandName="cmdRotateObject"/>

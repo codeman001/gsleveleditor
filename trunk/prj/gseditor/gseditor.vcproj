@@ -523,14 +523,6 @@
 							RelativePath="..\..\src\CAnimMeshComponent.h"
 							>
 						</File>
-						<File
-							RelativePath="..\..\src\CGameAnimatedMeshSceneNode.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\src\CGameAnimatedMeshSceneNode.h"
-							>
-						</File>
 					</Filter>
 					<Filter
 						Name="MeshComponent"
@@ -596,6 +588,34 @@
 						RelativePath="..\..\src\CObjTemplateFactory.h"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="SceneNode"
+					>
+					<Filter
+						Name="GameAniMesh"
+						>
+						<File
+							RelativePath="..\..\src\CGameAnimatedMeshSceneNode.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\CGameAnimatedMeshSceneNode.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="GameOxyz"
+						>
+						<File
+							RelativePath="..\..\src\CGameOxySceneNode.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\CGameOxyzSceneNode.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter

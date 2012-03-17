@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "CSerializable.h"
 #include "IObjectComponent.h"
+#include "CObjectTemplate.h"
 
 // CGameObject
 // Base class for object3d
@@ -64,8 +65,10 @@ protected:
 
 	CGameObject			*m_parent;
 
-#ifdef GSEDITOR
-	int					m_templateID;
+	CObjectTemplate		*m_template;
+
+#ifdef GSEDITOR	
+	uiTreeViewItem		*m_treeItem;
 #endif
 
 public:
@@ -93,20 +96,30 @@ public:
 		return m_objectID;
 	}
 
-#ifdef GSEDITOR
-	// setTemplateID
-	// get id template (use on gseditor)
-	inline int getTemplateID()
+	// getTemplate
+	// return the name of template
+	inline CObjectTemplate *getTemplate()
 	{
-		return m_templateID;
+		return m_template;
 	}
 
-	// setTemplateID
-	// ref id template (use on gseditor)
-	inline void setTemplateID( int templateID )
+	// setObjectTemplate
+	// set template name
+	inline void setObjectTemplate( CObjectTemplate *objTemplate )
 	{
-		m_templateID = templateID;
+		m_template = objTemplate;
 	}
+
+#ifdef GSEDITOR	
+	inline uiTreeViewItem* getTreeItem()
+	{
+		return m_treeItem;
+	}
+
+	inline void setTreeItem( uiTreeViewItem *p )
+	{
+		m_treeItem = p;
+	}	
 #endif
 
 	// getParent

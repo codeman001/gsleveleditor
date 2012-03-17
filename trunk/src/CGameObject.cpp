@@ -38,10 +38,6 @@ CGameObject::CGameObject()
 
 	m_parent		= NULL;
 
-#ifdef GSEDITOR
-	m_templateID	= -1;
-#endif
-
 }
 
 CGameObject::~CGameObject()

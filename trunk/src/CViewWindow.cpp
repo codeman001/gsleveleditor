@@ -6,6 +6,7 @@
 
 #include "IController.h"
 #include "CDocument.h"
+#include "CZone.h"
 
 IView* g_view = NULL;
 
@@ -85,8 +86,10 @@ void CViewWindow::_OnSize(	uiSizeEvent sizeEvent, int nWidth, int nHeight)
 	if ( m_driver )
 	{
 		m_driver->OnResize( core::dimension2d<u32>(nWidth, nHeight) );
-		if ( m_smgr->getActiveCamera() )
-			m_smgr->getActiveCamera()->setAspectRatio( (f32) nWidth/nHeight );
+
+		ICameraSceneNode *cam = m_smgr->getActiveCamera();
+		if ( cam )
+			cam->setAspectRatio( (f32) nWidth/nHeight );
 	}
 }
 
@@ -363,5 +366,16 @@ CGameObject* CViewWindow::getGameObjectOfCurrentTemplate()
 // get current zone
 CZone* CViewWindow::getCurrentZone()
 {
-	return NULL;
+	return (CZone*)m_pZone;
+}
+
+// setCurrentZone
+// get current zone
+void CViewWindow::setCurrentZone(CZone *pZone)
+{
+	m_pZone = pZone;
+
+	wchar_t lpStatusText[1024];
+	swprintf(lpStatusText, 1024, L"Current zone: %s", (wchar_t*)pZone->getName());
+	setStatusText( 1, lpStatusText );
 }

@@ -3,7 +3,9 @@
 
 #include "IView.h"
 #include "CGameObject.h"
+#include "CZone.h"
 #include "CObjTemplateFactory.h"
+
 
 void CAddObjectController::initController()
 {
@@ -50,4 +52,37 @@ void CAddObjectController::onMouseMove(int x, int y)
 
 void CAddObjectController::onLMouseUp(int x, int y)
 {
+	IView *pView = getIView();
+	ICameraSceneNode *cam = pView->getSceneMgr()->getActiveCamera();
+
+	// move object
+	core::line3df	ray = pView->getSelectRay();
+	core::plane3df	plane( core::vector3df(0.0f, 0.0f, 0.0f), core::vector3df(0.0f, 1.0f, 0.0f) );
+	
+	// get position
+	core::vector3df hit;
+	bool b = plane.getIntersectionWithLine( ray.start, ray.getVector(), hit );
+	
+	if ( b )
+	{
+		core::vector3df camPos = cam->getAbsolutePosition();		
+		core::line3df camRay( camPos, hit );
+
+		if ( camRay.getLength() < cam->getFarValue() )
+		{
+			CGameObject *pObj =	pView->getCurrentZone()->spawnObject( pView->getCurrentObjectTemplate() );
+			
+			if ( pObj == NULL )
+				pView->alertError( L"Can not create object because missing template" );
+			else
+			{
+				pObj->setPosition( hit );
+				pObj->setVisible( true );
+			}
+		}
+		else
+			pView->alertError( L"Can not create object because is too far" );
+	}
+	else
+		pView->alertError( L"Can not create object because is too far" );
 }

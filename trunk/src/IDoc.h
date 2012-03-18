@@ -65,6 +65,10 @@ public:
 	// searchObjByID
 	// search object with id
 	virtual CGameObject* searchObject( long id ) = 0;
+
+	// createZone
+	// create a zone
+	virtual CGameObject* createZone() = 0;
 };
 
 #endif

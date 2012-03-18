@@ -9,6 +9,8 @@
 #include "CGameOxyzSceneNode.h"
 #include "CGameGSCameraAnimators.h"
 
+long CDocument::s_objectID = 1;
+
 CDocument::CDocument()
 {	
 }
@@ -39,13 +41,6 @@ void CDocument::newDocument()
 		
 	ISceneManager *smgr = getIView()->getSceneMgr();
 	IrrlichtDevice *device = getIView()->getDevice();
-
-	// add root zone
-	CZone *pRoot = new CZone();
-	
-	// add zone to document
-	m_zones.push_back( pRoot );
-	
 
 	// add camera
 	scene::ICameraSceneNode* cam = smgr->addCameraSceneNode();
@@ -85,9 +80,6 @@ void CDocument::updateDocument()
 	IrrlichtDevice *device = getIView()->getDevice();
 	device->getTimer()->tick();
 
-	// update camera
-	
-
 	// update all zone
 	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
 	while ( iZone != iEnd )
@@ -95,7 +87,6 @@ void CDocument::updateDocument()
 		(*iZone)->updateObject();
 		iZone++;
 	}
-
 }
 
 // drawDocument
@@ -108,11 +99,13 @@ void CDocument::drawDocument()
 	// draw 3d scene
 	driver->beginScene( true, true, 0, getIView()->getVideoData() );
 		
+	// draw all scene
 	getIView()->getSceneMgr()->drawAll();
 
 	// controller draw imp
 	CControllerManager::getInstance()->getCurrentController()->render();
-
+	
+	// end scene
 	driver->endScene();
 }
 
@@ -134,6 +127,35 @@ CGameObject* CDocument::searchObject( long id )
 	return NULL;
 }
 
+// createZone
+// create a zone
+CGameObject* CDocument::createZone()
+{
+	CZone *pZone = new CZone();
+		
+	// set up name
+	uiStringW name;
+	name.format( L"zone%d", (int)CDocument::s_objectID );
+
+	// create name + id
+	pZone->setName( name.c() );
+	pZone->setID( CDocument::s_objectID++ );
+
+	// create tree item
+	uiTreeViewItem *pTreeItem =	m_treeViewRoot->addChild( (LPWSTR) name.c() );
+	
+	pTreeItem->setIconIndex( m_nTreeZone );
+	pTreeItem->setIconStateIndex( m_nTreeZoneOpen );
+	pTreeItem->update();
+
+	pTreeItem->setData( pZone );
+
+	pZone->setTreeItem( pTreeItem );
+
+	// add zone to document
+	m_zones.push_back( pZone );
+	return pZone;
+}
 
 // selectObject
 // detect list objs at mouse xy	

@@ -114,6 +114,10 @@ public:
 	// getCurrentZone
 	// get current zone
 	virtual CZone* getCurrentZone() = 0;
+
+	// setCurrentZone
+	// get current zone
+	virtual void setCurrentZone(CZone *pZone) = 0;
 };
 
 extern IView* getIView();

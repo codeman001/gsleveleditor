@@ -184,7 +184,9 @@ void CMainFrame::_OnCreate()
 	
 	// create status bar
 	m_statusBarWnd = ref<uiStatusBar> ( new uiStatusBar(L"",0,0,0,0, this) );
-	m_statusBarWnd->setDock(this, UIDOCK_BOTTOM );
+	m_statusBarWnd->setDock(this, UIDOCK_BOTTOM );	
+	int statusBarSize[] = {200, 200, 400, 1};
+	m_statusBarWnd->createParts( 4, statusBarSize );
 	m_statusBarWnd->showWindow(true);
 
 	// create split window

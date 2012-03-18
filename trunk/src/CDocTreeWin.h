@@ -10,9 +10,12 @@ protected:
 	uiTreeViewItem	*m_rootItem;
 
 	DWORD m_nTreeRootIcon;
-	DWORD m_nTreeContainer;
-	DWORD m_nTreeContainerOpen;
-	DWORD m_nTreeContainerHidden;
+	DWORD m_nTreeZone;
+	DWORD m_nTreeZoneOpen;
+	DWORD m_nTreeHidden;
+	DWORD m_nTreeMesh;
+	DWORD m_nTreeTrigger;
+	DWORD m_nTreeCollision;
 
 public:
 	CDocTreeWindow( WCHAR* lpString, uiWindow *p );

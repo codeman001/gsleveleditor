@@ -20,6 +20,7 @@ const char* CGameObject::s_stringObjType[] =
 CGameObject::CGameObject()
 {
 	m_objectID		= -1;
+	m_name			= L"noNameObj";
 	m_objectType	= GameObject;
 	m_objectState	= Normal;
 
@@ -281,6 +282,7 @@ void CGameObject::saveData( CSerializable* pObj )
 	while ( iComp != iEnd )
 	{
 		(*iComp)->saveData( pObj );
+		iComp++;
 	}
 
 }
@@ -350,6 +352,9 @@ void CGameObject::releaseAllComponent()
 void CGameObject::initComponent( CSerializable* componentData )
 {
 	IObjectComponent *pComp = NULL;
+
+	int pos = componentData->getCursorRecord();
+	
 	pComp = CComponentFactory::loadComponent( this, componentData );
 
 	while ( pComp )
@@ -360,6 +365,9 @@ void CGameObject::initComponent( CSerializable* componentData )
 		// continue load another component
 		pComp = CComponentFactory::loadComponent( this, componentData );
 	}
+
+	componentData->setCursorRecord( pos );
+
 }
 
 
@@ -484,5 +492,6 @@ void CGameObject::updateObject()
 	while ( iComp != iEnd )
 	{
 		(*iComp)->updateComponent();
+		iComp++;
 	}
 }

@@ -14,6 +14,21 @@ protected:
 
 	ArrayGameObject	m_selectObjects;
 	ArrayGameObject	m_backupSelectObj;
+
+	uiTreeViewItem	*m_treeViewRoot;
+
+public:
+	static long		s_objectID;
+
+public:
+	DWORD m_nTreeRootIcon;
+	DWORD m_nTreeZone;
+	DWORD m_nTreeZoneOpen;
+	DWORD m_nTreeHidden;
+	DWORD m_nTreeMesh;
+	DWORD m_nTreeTrigger;
+	DWORD m_nTreeCollision;
+	
 public:
 	CDocument();
 
@@ -38,6 +53,10 @@ public:
 	// drawDocument
 	// draw documen by frame
 	virtual void drawDocument();
+
+	// createZone
+	// create a zone
+	virtual CGameObject* createZone();
 
 	// searchObjByID
 	// search object with id
@@ -84,6 +103,32 @@ public:
 		return m_selectObjects.front();
 	}
 	
+	// setTreeViewItem
+	// set tree view item
+	inline void setTreeViewItem( uiTreeViewItem *p )
+	{
+		m_treeViewRoot = p;
+	}
+
+	inline void setTreeIcon(
+			DWORD rootIcon,
+			DWORD zoneIcon,
+			DWORD zoneOpenIcon,
+			DWORD hiddenIcon,
+			DWORD meshIcon,
+			DWORD triggerIcon,
+			DWORD collisionIcon
+		)
+	{
+		m_nTreeRootIcon = rootIcon;
+		m_nTreeZone = zoneIcon;
+		m_nTreeZoneOpen = zoneOpenIcon;
+		m_nTreeHidden = hiddenIcon;
+		m_nTreeMesh = meshIcon;
+		m_nTreeTrigger = triggerIcon;
+		m_nTreeCollision = collisionIcon;
+	}
+
 };
 
 #endif

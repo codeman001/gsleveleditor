@@ -6,8 +6,7 @@
 class CZone: public CGameObject
 {
 protected:
-	ArrayGameObject		m_childs;
-	
+	ArrayGameObject		m_childs;		
 	bool				m_needSortObject;
 
 protected:
@@ -31,18 +30,18 @@ public:
 	// searchObject
 	// search object by id
 	CGameObject* searchObject( long objectID );
+
+	// spawnObject
+	// create a template object
+	CGameObject* spawnObject( wchar_t* objTemplate );
 public:
-	
+
 	// getChilds
 	// get list child
 	inline ArrayGameObject* getChilds()
 	{
 		return &m_childs;
-	}	
-
-	// createAnimObject
-	// add a anim object
-	// CAnimObject *createAnimObject();
+	}
 
 	// removeObject
 	// remove object

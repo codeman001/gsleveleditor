@@ -206,7 +206,7 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::NpcComponent) ) == 0 )
 	{
 	}	
+	
 	// check not build in component
-
 	return pComp;
 }

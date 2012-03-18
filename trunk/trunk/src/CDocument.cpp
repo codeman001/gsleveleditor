@@ -7,6 +7,7 @@
 #include "CObjTemplateFactory.h"
 
 #include "CGameOxyzSceneNode.h"
+#include "CGameGSCameraAnimators.h"
 
 CDocument::CDocument()
 {	
@@ -35,31 +36,27 @@ void CDocument::newDocument()
 {	
 	CComponentFactory::initComponentTemplate();
 	CObjTemplateFactory::initObjectTempalte();
+		
+	ISceneManager *smgr = getIView()->getSceneMgr();
+	IrrlichtDevice *device = getIView()->getDevice();
 
 	// add root zone
 	CZone *pRoot = new CZone();
 	
-	// add a cube box
-	/*
-	CAnimObject *pAnimObj =	pRoot->createAnimObject();	
-	pAnimObj->loadFromFile( "media/dwarf.x" );
-
-	pAnimObj =	pRoot->createAnimObject();	
-	pAnimObj->loadFromFile( "media/dwarf.x" );
-	pAnimObj->setPosition( core::vector3df(100.0f, 0.0f, 0.0f) );
-	*/
-
 	// add zone to document
 	m_zones.push_back( pRoot );
-
-	ISceneManager *smgr = getIView()->getSceneMgr();
+	
 
 	// add camera
 	scene::ICameraSceneNode* cam = smgr->addCameraSceneNode();
 	cam->setTarget(core::vector3df(300,100,300));
-	cam->setPosition( core::vector3df(0, 400, 0) );
+	cam->setPosition( core::vector3df(0, 200, 0) );
 	cam->setFOV( core::degToRad(60.0f) );
 	
+	CGameGSCameraAnimators* camAnimator = new CGameGSCameraAnimators( device->getCursorControl() );
+	cam->addAnimator( camAnimator );
+	camAnimator->drop();
+
 	// add oxyz plane node
 	CGameOxyzSceneNode *oxyPlane = new CGameOxyzSceneNode( smgr->getRootSceneNode(), smgr, 1 );
 	oxyPlane->drop();

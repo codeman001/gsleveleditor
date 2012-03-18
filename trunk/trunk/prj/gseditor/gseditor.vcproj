@@ -616,6 +616,18 @@
 							>
 						</File>
 					</Filter>
+					<Filter
+						Name="GameCamera"
+						>
+						<File
+							RelativePath="..\..\src\CGameGSCameraAnimators.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\CGameGSCameraAnimators.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter

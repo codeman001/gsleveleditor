@@ -53,10 +53,15 @@ public:
 	// get current zone
 	virtual CZone* getCurrentZone();
 
+	// setCurrentZone
+	// get current zone
+	virtual void setCurrentZone(CZone *pZone);
+
 protected:
 	
 	uiStringW		m_objTemplate;
 	CGameObject*	m_pObjTemplate;
+	CGameObject*	m_pZone;
 };
 
 #endif

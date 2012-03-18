@@ -45,6 +45,8 @@ public:
 
 protected:	
 	long				m_objectID;
+	std::wstring		m_name;
+
 	ObjectType			m_objectType;
 	ObjectState			m_objectState;
 
@@ -94,6 +96,20 @@ public:
 	inline long getID()
 	{
 		return m_objectID;
+	}
+
+		// getName
+	// get zone name
+	inline const wchar_t* getName()
+	{
+		return m_name.c_str();
+	}
+
+	// setName
+	// set name for zone
+	inline void setName( const wchar_t *lpName )
+	{
+		m_name = lpName;
 	}
 
 	// getTemplate

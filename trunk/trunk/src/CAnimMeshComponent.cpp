@@ -71,8 +71,8 @@ void CAnimMeshComponent::saveData( CSerializable* pObj )
 	// save mesh file
 	pObj->addGroup( IObjectComponent::s_compType[ m_componentID ] );
 
-	pObj->addPath("meshFile", m_animeshFile.c_str());
-	pObj->addFloat("animSpeed", m_animSpeed );
+	pObj->addPath("meshFile", m_animeshFile.c_str(), true);
+	pObj->addFloat("animSpeed", m_animSpeed, true );
 }
 
 // loadData

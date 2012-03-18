@@ -1,6 +1,13 @@
 #include "stdafx.h"
 #include "CZone.h"
+
+#ifdef GSEDITOR
 #include "IDoc.h"
+#include "IView.h"
+#endif
+
+#include "CDocument.h"
+#include "CObjTemplateFactory.h"
 
 CZone::CZone()
 {
@@ -94,6 +101,39 @@ CGameObject* CZone::searchObject( long objectID )
 	return NULL;
 }
 
+// spawnObject
+// create a template object
+CGameObject* CZone::spawnObject( wchar_t* objTemplate )
+{
+	CGameObject *p = CObjTemplateFactory::spawnObject( objTemplate );
+	if ( p == NULL )
+		return NULL;
+
+	p->setID( CDocument::s_objectID++ );
+	addChild( p );
+
+#ifdef GSEDITOR
+	// set up name
+	uiStringW name;
+	name.format( L"%s_%d", objTemplate, (int)CDocument::s_objectID );
+
+	// create tree item
+	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) name.c() );
+	CDocument *pDoc = (CDocument*) getIView()->getDocument();
+
+	pTreeItem->setIconIndex( pDoc->m_nTreeMesh );
+	pTreeItem->setIconStateIndex( pDoc->m_nTreeMesh );
+	pTreeItem->update();
+
+	pTreeItem->setData( p );
+	p->setTreeItem( pTreeItem );
+	m_treeItem->update();
+	m_treeItem->expandChild( true );
+#endif
+
+	return p;
+}
+
 // addChild
 // add a game object to child list
 void CZone::addChild( CGameObject *p )
@@ -102,16 +142,6 @@ void CZone::addChild( CGameObject *p )
 	m_childs.push_back( p );
 	m_needSortObject = true;
 }
-
-// createAnimObject
-// add a anim object
-/*CAnimObject *CZone::createAnimObject()
-{
-	CAnimObject *pObj = new CAnimObject();
-	pObj->setID( IDoc::s_objectID++ );
-	addChild( pObj );
-	return pObj;
-}*/
 
 // removeObject
 // remove object

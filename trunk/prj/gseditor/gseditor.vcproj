@@ -669,6 +669,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="AddObject"
+					>
+					<File
+						RelativePath="..\..\src\CAddObjectController.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CAddObjectController.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<File

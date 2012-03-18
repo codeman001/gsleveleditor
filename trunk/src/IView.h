@@ -5,6 +5,8 @@
 #include "IDoc.h"
 #include "IController.h"
 
+class	CZone;
+
 class IView
 {
 protected:
@@ -93,6 +95,25 @@ public:
 		return m_document;
 	}
 
+	// enableFreeCamera
+	// disable or enable change camera view on editor
+	virtual void enableFreeCamera( bool b );
+
+	// getCurrentObjectTemplate
+	// get current name
+	virtual wchar_t* getCurrentObjectTemplate() = 0;
+
+	// objTemplate
+	// set current template
+	virtual void setCurrentObjectTemplate( wchar_t *objTemplate ) = 0;
+
+	// getGameObjectOfCurrentTemplate
+	// get current obj
+	virtual CGameObject* getGameObjectOfCurrentTemplate() = 0;
+
+	// getCurrentZone
+	// get current zone
+	virtual CZone* getCurrentZone() = 0;
 };
 
 extern IView* getIView();

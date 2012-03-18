@@ -8,7 +8,7 @@ class CGameGSCameraAnimators : public ISceneNodeAnimatorCameraFPS
 {
 public:
 		//! Constructor
-		CGameGSCameraAnimators(	gui::ICursorControl* cursorControl,	f32 rotateSpeed = 10.0f,	f32 moveSpeed = .5f );
+		CGameGSCameraAnimators(	gui::ICursorControl* cursorControl,	f32 rotateSpeed = 15.0f,	f32 moveSpeed = 0.5f );
 
 		//! Destructor
 		virtual ~CGameGSCameraAnimators();
@@ -59,7 +59,13 @@ protected:
 
 		core::position2d<f32> m_centerCursor, m_cursorPos;
 
-		bool	m_mousePress;
+		bool	m_leftMousePress;
+		bool	m_rightMousePress;
+		bool	m_midMousePress;
+
+		bool	m_mouseWhell;
+		float	m_wheel;
+
 		bool	m_firstUpdate;
 		long	m_lastAnimationTime;
 };

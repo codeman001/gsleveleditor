@@ -1,7 +1,7 @@
 #ifndef _ROTATEOBJECT_CONTROLLER_
 #define _ROTATEOBJECT_CONTROLLER_
 
-#include "CSelectObjectController.h"
+#include "IController.h"
 
 class CRotateObjectController: public IController
 {
@@ -21,7 +21,7 @@ public:
 	
 	virtual void onLMouseUp		(int x, int y);
 
-	virtual void onMouseMove	(int x, int y);	
+	virtual void onMouseMove	(int x, int y);
 };
 
 #endif

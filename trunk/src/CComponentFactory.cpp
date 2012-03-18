@@ -180,6 +180,9 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 	int cursor = data->getCursorRecord();	
 	char *lpComponentName = data->readString();
 	data->setCursorRecord(cursor);
+	
+	if ( lpComponentName == NULL )
+		return NULL;
 
 	IObjectComponent* pComp = NULL;
 

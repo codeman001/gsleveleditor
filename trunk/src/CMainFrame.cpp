@@ -65,6 +65,9 @@ bool CMainFrame::registerWindow(LPWSTR lpNameApp, HINSTANCE hInst)
 #define ID_ROTATE_COMMAND		29002
 #define ID_SCALE_COMMAND		29003
 
+#define ID_CAMERA_COMMAND		29004
+#define ID_ADDOBJ_COMMAND		29005
+
 LRESULT	CMainFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam)
 {	
 	switch( uMsg )
@@ -88,6 +91,12 @@ LRESULT	CMainFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam
 				break;
 			case ID_SCALE_COMMAND:
 				CGlobalInstance::getInstance()->m_ribbonCommand->onScaleObjectCommand();
+				break;
+			case ID_CAMERA_COMMAND:
+				CGlobalInstance::getInstance()->m_ribbonCommand->onCameraViewCommand();
+				break;
+			case ID_ADDOBJ_COMMAND:
+				CGlobalInstance::getInstance()->m_ribbonCommand->onAddObjectCommand();
 				break;
 			}
 		}
@@ -127,6 +136,8 @@ void CMainFrame::_OnCreate()
 	e.pushKey( FVIRTKEY, 'S',			(WORD) ID_SELECT_COMMAND);		// select controller
 	e.pushKey( FVIRTKEY, 'R',			(WORD) ID_ROTATE_COMMAND);		// rotate controller
 	e.pushKey( FVIRTKEY, 'L',			(WORD) ID_SCALE_COMMAND);		// scale controller
+	e.pushKey( FVIRTKEY, 'C',			(WORD) ID_CAMERA_COMMAND);		// camera view
+	e.pushKey( FVIRTKEY, 'A',			(WORD) ID_ADDOBJ_COMMAND);		// add object controller
 
 	createAccelTable( &e );
 
@@ -210,6 +221,8 @@ void CMainFrame::_OnCreate()
 
 	m_mainSplitWnd->setExpanderSize( 5 );
 	m_mainSplitWnd->updateWindow();	
+
+	CGlobalInstance::getInstance()->m_ribbonCommand->onCameraViewCommand();
 }
 
 void CMainFrame::_OnSize(uiSizeEvent sizeEvent, int nWidth, int nHeight)
@@ -254,4 +267,6 @@ bool CMainFrame::_OnKeyUp( uiKeyEvent keyEvent )
 
 void CMainFrame::_OnMouseWheel	( uiMouseEvent mouseEvent, int x, int y )
 {
+	if ( GetFocus() == this->getHandle() )
+		m_viewWnd->_OnMouseWheel( mouseEvent, x, y );
 }

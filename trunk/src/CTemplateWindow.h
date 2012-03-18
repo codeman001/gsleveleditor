@@ -21,6 +21,10 @@ public:
 	// reloadList
 	// reload list of item
 	void reloadList();
+
+	// onTemplateChange
+	// on change on combolist
+	void onTemplateChange( uiObject *pSender );
 };
 
 #endif

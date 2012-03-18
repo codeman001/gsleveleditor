@@ -1,11 +1,14 @@
 #include "stdafx.h"
 #include "CTemplateWindow.h"
 #include "CTemplateDialog.h"
+#include "IView.h"
 
 CTemplateWindow::CTemplateWindow( WCHAR *lpString, uiWindow *p )
 	:CAddEditWindow(lpString, p)
 {
 	reloadList();
+
+	m_comboList->setEventOnSelectChange<CTemplateWindow, &CTemplateWindow::onTemplateChange>( this );
 }
 
 CTemplateWindow::~CTemplateWindow()
@@ -81,7 +84,7 @@ void CTemplateWindow::reloadList()
 
 	ArrayTemplateIter i = CObjTemplateFactory::s_objectTemplate.begin(), 
 		end = CObjTemplateFactory::s_objectTemplate.end();
-	
+		
 	while ( i != end )
 	{
 		CObjectTemplate *p = &(*i);
@@ -90,5 +93,26 @@ void CTemplateWindow::reloadList()
 		pComboboxItem->setData( (uiObject*) p );
 
 		i++;
-	}
+	}	
+	
+	// select last template
+	m_comboList->selectItem ( m_comboList->getItemCount() - 1 );
+	onTemplateChange( m_comboList );
+}
+
+// onTemplateChange
+// on change on combolist
+void CTemplateWindow::onTemplateChange( uiObject *pSender )
+{
+	uiComboBoxItem *pItem =	m_comboList->getSelectItem();
+
+	WCHAR lpString[1024];
+	char lpStringA[1024];
+	pItem->getString( lpString );
+
+	// set current template
+	getIView()->setCurrentObjectTemplate( lpString );
+
+	uiString::convertUnicodeToUTF8( (unsigned short*) lpString, lpStringA );
+	printf("Select current template: %s \n", lpStringA);
 }

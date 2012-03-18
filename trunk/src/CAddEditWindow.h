@@ -38,6 +38,11 @@ public:
 	virtual void onAddButton();
 	virtual void onModifyButton();
 	virtual void onDelButton();
+
+	CComboList* getComboList()
+	{
+		return m_comboList;
+	}
 };
 
 #endif

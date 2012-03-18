@@ -5,6 +5,7 @@
 #include "IDoc.h"
 #include "CGameObject.h"
 #include "CZone.h"
+#include "CObjTemplateFactory.h"
 
 class CDocument: public IDoc
 {

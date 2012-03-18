@@ -41,7 +41,7 @@ void CGameOxyzSceneNode::render()
 	start	= core::vector3df( 0,0,0 );
 	end		= core::vector3df( size, 0,0 );
 
-	for ( int i = 0; i < nGrid; i++ )
+	for ( int i = 0; i <= nGrid; i++ )
 	{
 		driver->draw3DLine( start, end, color );
 		start.Z += gridSize;
@@ -51,10 +51,14 @@ void CGameOxyzSceneNode::render()
 	start	= core::vector3df( 0,0,0 );
 	end		= core::vector3df( 0,0,size );
 
-	for ( int i = 0; i < nGrid; i++ )
+	for ( int i = 0; i <= nGrid; i++ )
 	{
 		driver->draw3DLine( start, end, color );
 		start.X += gridSize;
 		end.X	+= gridSize;
 	}
+	
+	Box.addInternalPoint( core::vector3df(0, 0, 0) );
+	Box.addInternalPoint( core::vector3df(size, 10, size) );
+	
 }

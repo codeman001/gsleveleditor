@@ -31,10 +31,32 @@ public:
 	virtual bool yesNoQuestion( wchar_t *lpString );
 	virtual void setStatusText( int part, wchar_t *lpString );
 
+public:
+
 	// setObjectProperty
 	// set object property on listview window
 	virtual void setObjectProperty(CGameObject *pObj);
 
+	// getCurrentObjectTemplate
+	// get current name
+	virtual wchar_t* getCurrentObjectTemplate();
+
+	// objTemplate
+	// set current template
+	virtual void setCurrentObjectTemplate( wchar_t *objTemplate );
+
+	// getGameObjectOfCurrentTemplate
+	// get current obj
+	virtual CGameObject* getGameObjectOfCurrentTemplate();
+
+	// getCurrentZone
+	// get current zone
+	virtual CZone* getCurrentZone();
+
+protected:
+	
+	uiStringW		m_objTemplate;
+	CGameObject*	m_pObjTemplate;
 };
 
 #endif

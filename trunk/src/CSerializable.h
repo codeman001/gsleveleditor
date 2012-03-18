@@ -100,6 +100,10 @@ typedef struct tagSerializableRec
 		{
 			strcpy( this->data, (char*)value );
 		}
+		else if ( type == NSSerializable::groupInfo )
+		{
+			strcpy( this->data, this->name );
+		}
 		else
 		{
 			this->data[0] = NULL;

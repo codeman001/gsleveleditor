@@ -3,10 +3,17 @@
 
 #include "CObjectTemplate.h"
 
+class CGameObject;
+
 class CObjTemplateFactory
 {
 public:
 	static vector<CObjectTemplate>	s_objectTemplate;
+
+#ifdef GSEDITOR
+	static vector<CGameObject*>		s_objects;
+#endif
+
 	static int s_idGenerate;
 
 	// initObjectTempalte
@@ -32,6 +39,20 @@ public:
 	// freeData
 	// delete all list object template
 	static void freeData();
+
+	// spawnObject
+	// create a object on template
+	static CGameObject* spawnObject( wchar_t* templateName );
+
+	// getTemplate
+	// get template
+	static CObjectTemplate* getTemplate( wchar_t* templateName );
+
+#ifdef GSEDITOR
+	// getGameObject
+	// get a template object
+	static CGameObject* getGameObject( wchar_t* templateName );
+#endif
 
 };
 

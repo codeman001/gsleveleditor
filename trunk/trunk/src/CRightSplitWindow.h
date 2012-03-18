@@ -16,6 +16,11 @@ protected:
 public:
 	CRightSplitWindow( WCHAR* lpString, uiWindow *p );
 	virtual ~CRightSplitWindow();
+
+	inline CComboList*	getListTemplate()
+	{
+		return m_tempWnd->getComboList();
+	}
 };
 
 #endif

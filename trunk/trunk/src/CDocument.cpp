@@ -52,6 +52,7 @@ void CDocument::newDocument()
 	cam->setTarget(core::vector3df(300,100,300));
 	cam->setPosition( core::vector3df(0, 200, 0) );
 	cam->setFOV( core::degToRad(60.0f) );
+	cam->setFarValue( 8000.0f );
 	
 	CGameGSCameraAnimators* camAnimator = new CGameGSCameraAnimators( device->getCursorControl() );
 	cam->addAnimator( camAnimator );
@@ -237,7 +238,7 @@ void CDocument::selectObject( int x, int y, int w, int h, bool isControlHold )
 							
 							if ( isControlHold == false || pGameObj->getObjectState() == CGameObject::Normal )
 								m_selectObjects.push_back( pGameObj );
-							else
+							/*else
 							{
 								pGameObj->setObjectState( CGameObject::Normal );
 								ArrayGameObjectIter i = m_selectObjects.begin(), iEnd = m_selectObjects.end();
@@ -250,7 +251,7 @@ void CDocument::selectObject( int x, int y, int w, int h, bool isControlHold )
 									}
 									i++;
 								}
-							}
+							}*/
 
 						}	// inselect
 					}	// getScreenCoordinatesFrom3DPosition			

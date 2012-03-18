@@ -307,6 +307,14 @@ public:
 	// load data to serializable
 	virtual void loadData( CSerializable* pObj );
 
+	// releaseAllComponent
+	// delete all component on object
+	virtual void releaseAllComponent();
+
+	// initComponent
+	// create a component on object
+	virtual void initComponent( CSerializable* componentData );
+		
 	// saveTransform
 	// save all transform
 	void saveTransform();

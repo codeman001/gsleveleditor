@@ -45,6 +45,13 @@
       </Command.LargeImages>
     </Command>
 
+    <Command Name="cmdGroupCamera" LabelTitle="Camera" />
+    <Command Name="cmdCameraView" LabelTitle="Camera view" Symbol="ID_CAMERAVIEW">
+      <Command.LargeImages>
+        <Image>ribbonIcon/camera_icon.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    
     <Command Name="cmdGroupObjTransform" LabelTitle="Object transform" />
 
     <Command Name="cmdSelectObject" LabelTitle="Select and Move" Symbol="ID_SELECT">
@@ -96,6 +103,9 @@
       <!-- Application Tab -->
       <Ribbon.Tabs>
         <Tab CommandName="cmdTabHome">
+          <Group CommandName="cmdGroupCamera" SizeDefinition="OneButton">
+            <ToggleButton CommandName="cmdCameraView" />
+          </Group>                      
           <Group CommandName="cmdGroupObject" SizeDefinition="TwoButtons">
             <ToggleButton CommandName="cmdAddObject" />
             <ToggleButton CommandName="cmdAddTrigger"/>            

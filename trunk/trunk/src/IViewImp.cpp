@@ -79,3 +79,19 @@ bool IView::getScreenCoordinatesFrom3DPosition(const core::vector3df& pos3d, int
 
 	return transformedPos[3] >= 0;
 }
+
+// enableFreeCamera
+// disable or enable change camera view on editor
+void IView::enableFreeCamera( bool b )
+{
+	if ( m_device == NULL || m_driver == NULL || m_smgr == NULL )
+		return;
+
+	ICameraSceneNode*	camera = m_smgr->getActiveCamera();
+
+	if (camera == NULL)
+		return;
+
+	// set enable input revc
+	camera->setInputReceiverEnabled( b );
+}

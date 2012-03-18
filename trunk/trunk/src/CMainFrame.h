@@ -39,7 +39,7 @@ public:
 	{
 		return m_leftSplitWnd->getPropertyWnd();
 	}
-
+	
 public:
 	virtual void _OnCreate();
 	virtual void _OnPaint(uiGraphics * pG);

@@ -42,6 +42,9 @@ void CAnimMeshComponent::loadFromFile( char *lpFilename )
 	// set node
 	m_gameObject->m_node = m_animNode;
 
+	// set visibke
+	m_gameObject->m_node->setVisible( true );	
+
 	// update position
 	m_gameObject->updateNodePosition();
 	m_gameObject->updateNodeRotation();

@@ -59,7 +59,8 @@ void CComponentWindow::reloadList()
 		p->setCursorRecord( pos );
 	}
 
-	m_comboList->selectItem(0);
+	// select last template
+	m_comboList->selectItem ( m_comboList->getItemCount() - 1 );
 }
 
 

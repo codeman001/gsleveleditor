@@ -8,7 +8,13 @@ CGameGSCameraAnimators::CGameGSCameraAnimators(	gui::ICursorControl* cursorContr
 	m_rotateSpeed = rotateSpeed;
 	m_moveSpeed = moveSpeed;
 
-	m_mousePress = false;
+	m_leftMousePress = false;
+	m_rightMousePress = false;
+	m_midMousePress = false;
+	m_mouseWhell = false;
+
+	m_wheel = 0.0f;
+
 	m_firstUpdate = true;
 }
 
@@ -27,9 +33,6 @@ void CGameGSCameraAnimators::animateNode(ISceneNode* node, u32 timeMs)
 
 	if (m_firstUpdate)
 	{
-		//m_centerCursor = m_cursorControl->getRelativePosition();
-		//m_cursorPos = m_centerCursor;
-
 		m_lastAnimationTime = timeMs;
 		m_firstUpdate = false;
 	}
@@ -51,7 +54,10 @@ void CGameGSCameraAnimators::animateNode(ISceneNode* node, u32 timeMs)
 	const float MaxVerticalAngle = 88;
 	const int	MouseYDirection = 1;	
 
-	if (m_cursorPos != m_centerCursor)
+	// Update position
+	core::vector3df offsetPosition;
+
+	if (m_cursorPos != m_centerCursor && m_leftMousePress)
 	{
 		// rotate X
 		relativeRotation.Y -= (m_centerCursor.X - m_cursorPos.X) * m_rotateSpeed * MouseYDirection;
@@ -71,18 +77,53 @@ void CGameGSCameraAnimators::animateNode(ISceneNode* node, u32 timeMs)
 		m_centerCursor = m_cursorControl->getRelativePosition();
 		m_cursorPos = m_centerCursor;
 	}
+	else if (m_cursorPos != m_centerCursor && (m_rightMousePress || m_midMousePress) )
+	{
+		offsetPosition.X = (m_cursorPos.X - m_centerCursor.X) * 100.0f;
+		offsetPosition.Y = (m_cursorPos.Y - m_centerCursor.Y) * 100.0f;
+
+		offsetPosition = offsetPosition * m_moveSpeed * timeDiff;
+
+		m_centerCursor = m_cursorControl->getRelativePosition();
+		m_cursorPos = m_centerCursor;
+	}
 	
 	// set target
 	target.set(0,0, core::max_(1.f, pos.getLength()));
-	core::vector3df movedir = target;
 
 	core::matrix4 mat;
 	mat.setRotationDegrees(core::vector3df(relativeRotation.X, relativeRotation.Y, 0));
 	mat.transformVect(target);
-
-
+	
 	// set position
-		
+	core::vector3df movedir = target;
+	movedir.normalize();
+
+	if ( m_midMousePress )
+	{		
+		pos -= movedir * offsetPosition.Y;		
+	}
+
+	if ( m_mouseWhell )
+	{
+		pos -= movedir * m_wheel * m_moveSpeed * timeDiff;
+		m_mouseWhell = false;
+	}
+
+	if ( m_rightMousePress )
+	{
+		// move left, right
+		core::vector3df strafevect = target;
+		strafevect = strafevect.crossProduct(camera->getUpVector());	
+		strafevect.normalize();
+		pos += strafevect * offsetPosition.X;
+
+		// move up, down
+		core::vector3df	up = strafevect;
+		up = up.crossProduct( movedir );
+		up.normalize();
+		pos += up * offsetPosition.Y;
+	}
 
 
 	// write translation
@@ -102,24 +143,49 @@ bool CGameGSCameraAnimators::OnEvent(const SEvent& evt)
 		break;
 
 	case EET_MOUSE_INPUT_EVENT:
-		if (evt.MouseInput.Event == EMIE_RMOUSE_PRESSED_DOWN)
+		if (evt.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN)
 		{
-			m_mousePress = true;
+			m_leftMousePress = true;
 			
 			m_centerCursor = m_cursorControl->getRelativePosition();
 			m_cursorPos = m_centerCursor;
 		}
+		else if (evt.MouseInput.Event == EMIE_RMOUSE_PRESSED_DOWN)
+		{
+			m_rightMousePress = true;
+			m_centerCursor = m_cursorControl->getRelativePosition();
+			m_cursorPos = m_centerCursor;
+		}
+		else if (evt.MouseInput.Event == EMIE_MMOUSE_PRESSED_DOWN)
+		{
+			m_midMousePress = true;
+			m_centerCursor = m_cursorControl->getRelativePosition();
+			m_cursorPos = m_centerCursor;
+		}
+		else if ( evt.MouseInput.Event == EMIE_LMOUSE_LEFT_UP )
+		{
+			m_leftMousePress = false;
+		}
 		else if ( evt.MouseInput.Event == EMIE_RMOUSE_LEFT_UP )
 		{
-			m_mousePress = false;
+			m_rightMousePress = false;
+		}
+		else if (evt.MouseInput.Event == EMIE_MMOUSE_LEFT_UP )
+		{
+			m_midMousePress = false;			
 		}
 		else if ( evt.MouseInput.Event == EMIE_MOUSE_MOVED )
 		{
-			if ( m_mousePress )
+			if ( m_leftMousePress || m_rightMousePress || m_midMousePress )
 			{
 				m_cursorPos = m_cursorControl->getRelativePosition();
 				return true;
 			}
+		}
+		else if ( evt.MouseInput.Event == EMIE_MOUSE_WHEEL )
+		{
+			m_wheel =  evt.MouseInput.Wheel;
+			m_mouseWhell = true;
 		}
 		break;
 

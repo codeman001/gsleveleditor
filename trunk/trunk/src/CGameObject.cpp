@@ -45,12 +45,7 @@ CGameObject::~CGameObject()
 	if ( m_node )
 		m_node->drop();
 
-	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
-	while ( iComp != iEnd )
-	{
-		delete (*iComp);
-	}
-	m_components.clear();
+	releaseAllComponent();
 }
 
 // setRotation
@@ -336,6 +331,37 @@ void CGameObject::loadData( CSerializable* pObj )
 		pComp = CComponentFactory::loadComponent( this, pObj );
 	}
 }
+
+// releaseAllComponent
+// delete all component on object
+void CGameObject::releaseAllComponent()
+{
+	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
+	while ( iComp != iEnd )
+	{
+		delete (*iComp);
+		iComp++;
+	}
+	m_components.clear();
+}
+
+// initComponent
+// create a component on object
+void CGameObject::initComponent( CSerializable* componentData )
+{
+	IObjectComponent *pComp = NULL;
+	pComp = CComponentFactory::loadComponent( this, componentData );
+
+	while ( pComp )
+	{
+		// add component
+		m_components.push_back( pComp );
+
+		// continue load another component
+		pComp = CComponentFactory::loadComponent( this, componentData );
+	}
+}
+
 
 // saveTransform
 // save all transform

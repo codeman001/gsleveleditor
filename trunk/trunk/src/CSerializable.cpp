@@ -125,7 +125,11 @@ bool CSerializable::readBool()
 char* CSerializable::readString()
 {
 	SSerializableRec& rec = m_data[ m_cursor++ ];
-	if ( rec.type != NSSerializable::stringType || rec.type != NSSerializable::filePathType )
+	if ( 
+		rec.type != NSSerializable::stringType && 
+		rec.type != NSSerializable::filePathType &&
+		rec.type != NSSerializable::groupInfo
+		)
 		return NULL;
 
 	return rec.data;
@@ -259,6 +263,7 @@ bool CSerializable::readData( char* &pData )
 
 			// get group name
 			getBufferString( rec.name, from, p );
+			strcpy( rec.data, rec.name );
 			rec.type = NSSerializable::groupInfo;
 
 			// add group

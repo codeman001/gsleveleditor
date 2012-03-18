@@ -28,6 +28,9 @@ CViewWindow::CViewWindow( WCHAR* lpString, uiWindow *p )
 	// init document
 	m_document = new CDocument();
 	m_document->newDocument();
+
+	m_objTemplate = L"";
+	m_pObjTemplate = NULL;
 }
 	
 CViewWindow::~CViewWindow()
@@ -120,6 +123,21 @@ void CViewWindow::_OnMouseWheel	( uiMouseEvent mouseEvent, int x, int y )
 {
 	// controller event
 	CControllerManager::getInstance()->getCurrentController()->onMouseWhell( mouseEvent.isWheelUp() == false, x, y );
+
+	SEvent irrEvent;
+	memset(&irrEvent, 0, sizeof(SEvent));
+
+	irrEvent.EventType			= irr::EET_MOUSE_INPUT_EVENT;
+	irrEvent.MouseInput.Event	= irr::EMIE_MOUSE_WHEEL;
+	irrEvent.MouseInput.X		= (short)x;
+	irrEvent.MouseInput.Y		= (short)y;
+	irrEvent.MouseInput.Shift	= mouseEvent.isShiftKeyDown();
+	irrEvent.MouseInput.Control = mouseEvent.isCtrlKeyDown();
+	irrEvent.MouseInput.Alt		= mouseEvent.isAltKeyDown();
+	irrEvent.MouseInput.Wheel	= mouseEvent.isWheelUp()? -10.0f: 10.0f;
+
+	// post event
+	m_device->postEventFromUser(irrEvent);
 }
 
 void CViewWindow::_OnLButtonDown	( uiMouseEvent mouseEvent, int x, int y )
@@ -313,4 +331,37 @@ void CViewWindow::setObjectProperty(CGameObject *pObj)
 {
 	CMainFrame* pFrame = (CMainFrame*)CGlobalInstance::getInstance()->m_mainFrame;
 	pFrame->getObjPropertyWnd()->setObject( pObj );
+}
+
+// getCurrentObjectTemplate
+// get current name
+wchar_t* CViewWindow::getCurrentObjectTemplate()
+{	
+	return m_objTemplate.c();
+}
+
+// objTemplate
+// set current template
+void CViewWindow::setCurrentObjectTemplate( wchar_t *objTemplate )
+{
+	CGameObject* pOldObj = CObjTemplateFactory::getGameObject( m_objTemplate.c() );
+	if ( pOldObj )
+		pOldObj->setVisible( false );
+
+	m_objTemplate = objTemplate;
+	m_pObjTemplate = CObjTemplateFactory::getGameObject( m_objTemplate.c() );
+}
+
+// getGameObjectOfCurrentTemplate
+// get current obj
+CGameObject* CViewWindow::getGameObjectOfCurrentTemplate()
+{
+	return m_pObjTemplate;
+}
+
+// getCurrentZone
+// get current zone
+CZone* CViewWindow::getCurrentZone()
+{
+	return NULL;
 }

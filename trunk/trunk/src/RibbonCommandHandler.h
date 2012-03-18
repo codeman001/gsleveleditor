@@ -53,6 +53,8 @@ public:
 	void getDisplayLocation(POINT &pt, HWND hWnd);
 
 public:
+	void onCameraViewCommand();
+	void onAddObjectCommand();
 
 	void onSelectObjectCommand();
 	void onRotateObjectCommand();

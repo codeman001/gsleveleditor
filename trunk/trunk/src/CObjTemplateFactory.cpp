@@ -1,8 +1,17 @@
 #include "stdafx.h"
 #include "CObjTemplateFactory.h"
+#include "CGameObject.h"
+
+#ifdef GSEDITOR
+#include "IView.h"
+#endif
 
 // global object template
 vector<CObjectTemplate> CObjTemplateFactory::s_objectTemplate;
+
+#ifdef GSEDITOR
+vector<CGameObject*>	CObjTemplateFactory::s_objects;
+#endif
 
 // initObjectTempalte
 // init object template
@@ -28,6 +37,7 @@ void readTemplateFromData( char *lpData )
 
 	char	lpStringA[1024];
 	wchar_t	lpString[1024];
+
 	while ( *p != NULL )
 	{
 		if ( *p == '{' )
@@ -48,7 +58,15 @@ void readTemplateFromData( char *lpData )
 				component.clear();
 			}
 			
-			CObjTemplateFactory::addTemplate( &obj );		
+			CObjTemplateFactory::addTemplate( &obj );
+
+#ifdef GSEDITOR
+			// create game object
+			CGameObject *pObj = CObjTemplateFactory::spawnObject( lpString );
+			pObj->setObjectState( CGameObject::Move );
+			CObjTemplateFactory::s_objects.push_back( pObj );
+#endif
+
 		}
 		else if ( *p == '}' )
 		{
@@ -92,6 +110,55 @@ void CObjTemplateFactory::loadAllObjectTemplate()
 	}
 }
 
+// getTemplate
+// get template
+CObjectTemplate* CObjTemplateFactory::getTemplate( wchar_t* templateName )
+{
+	ArrayTemplateIter i = s_objectTemplate.begin(), end = s_objectTemplate.end();
+
+	char lpNameA[1024];
+	
+	char templateNameA[1024];
+	uiString::convertUnicodeToUTF8( (unsigned short*) templateName, templateNameA );
+
+	while ( i != end )
+	{
+		CObjectTemplate *p = &(*i);
+	
+		uiString::convertUnicodeToUTF8( (unsigned short*) p->getObjectTemplateName(), lpNameA );
+
+		if ( strcmp( lpNameA, templateNameA) == 0 )
+		{
+			return p;
+		}
+		i++;
+	}
+	return NULL;
+}
+
+// spawnObject
+// create a object on template
+CGameObject* CObjTemplateFactory::spawnObject( wchar_t* templateName )
+{
+	CObjectTemplate *pTemplate = getTemplate( templateName );
+	if ( pTemplate == NULL )
+		return NULL;
+
+	CGameObject *pObj = new CGameObject();
+	ArraySerializable::iterator i =	pTemplate->getAllComponentProperty()->begin(), 
+		end = pTemplate->getAllComponentProperty()->end();
+
+	while ( i != end )
+	{
+		pObj->initComponent( &(*i ) );
+		i++;
+	}
+
+	pObj->setVisible( false );
+	pObj->setObjectTemplate( pTemplate );
+	return pObj;
+}
+
 // saveAllObjectTemplate
 // save obj template to file
 void CObjTemplateFactory::saveAllObjectTemplate()
@@ -133,6 +200,25 @@ void CObjTemplateFactory::saveAllObjectTemplate()
 	file.close();
 }
 
+#ifdef GSEDITOR
+// getGameObject
+// get a template object
+CGameObject* CObjTemplateFactory::getGameObject( wchar_t* templateName )
+{
+	ArrayGameObjectIter i = s_objects.begin(), end = s_objects.end();
+	while ( i != end )
+	{
+		CGameObject *pObject = (*i);
+		if ( wcscmp( pObject->getTemplate()->getObjectTemplateName(), templateName ) == 0 )
+		{
+			return pObject;
+		}
+		i++;
+	}
+	return NULL;
+}
+#endif
+
 // addTemplate
 // add a template to list
 void CObjTemplateFactory::addTemplate(CObjectTemplate* p)
@@ -171,4 +257,17 @@ void CObjTemplateFactory::removeTemplate(wchar_t* templateName)
 void CObjTemplateFactory::freeData()
 {
 	s_objectTemplate.clear();
+
+#ifdef GSEDITOR
+	ArrayGameObjectIter i = s_objects.begin(), end = s_objects.end();
+	while ( i != end )
+	{
+		CGameObject *pObject = (*i);
+		if ( pObject )
+			delete pObject;
+		i++;
+	}
+	s_objects.clear();
+#endif
+
 }

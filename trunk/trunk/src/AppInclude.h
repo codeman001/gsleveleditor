@@ -1,8 +1,13 @@
 #ifndef _APP_INCLUDE_
 #define _APP_INCLUDE_
 
-#include "uiClass.h"
-using namespace uiClass;
+#ifdef GSEDITOR
+	#include "uiClass.h"
+	using namespace uiClass;
+#else
+	#include "uiString.h"
+	using namespace uiClass;
+#endif
 
 #include <irrlicht.h>
 using namespace irr;
@@ -19,6 +24,10 @@ using namespace irr::video;
 
 using namespace std;
 
-#define STR_APP_TITLE "gseditor"
+#ifdef GSEDITOR
+	#define STR_APP_TITLE "gseditor"
+#else
+	#define STR_APP_TITLE "game"
+#endif
 
 #endif

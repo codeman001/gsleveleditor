@@ -87,7 +87,11 @@ void CObjTemplateFactory::loadAllObjectTemplate()
 	wchar_t path[MAX_PATH] = {0};
 	wchar_t fileName[MAX_PATH] = {0};
 
+#ifdef GSEDITOR
 	uiApplication::getAppPath( (LPWSTR)path, MAX_PATH );
+#else
+	
+#endif
 	swprintf( fileName, MAX_PATH, L"%s\\objectTemplate.css", path );
 
 	std::ifstream file( fileName );
@@ -166,7 +170,9 @@ void CObjTemplateFactory::saveAllObjectTemplate()
 	wchar_t path[MAX_PATH] = {0};
 	wchar_t fileName[MAX_PATH] = {0};
 
+#ifdef GSEDITOR
 	uiApplication::getAppPath( (LPWSTR)path, MAX_PATH );
+#endif
 	swprintf( fileName, MAX_PATH, L"%s\\objectTemplate.css", path );
 
 	std::ofstream file( fileName );

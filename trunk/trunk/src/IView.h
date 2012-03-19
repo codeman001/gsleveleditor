@@ -2,8 +2,11 @@
 #define _IVIEW_
 
 #include "stdafx.h"
-#include "IDoc.h"
-#include "IController.h"
+
+#ifdef GSEDITOR
+	#include "IDoc.h"
+	#include "IController.h"
+#endif
 
 class	CZone;
 
@@ -16,12 +19,16 @@ protected:
 
 	SExposedVideoData		m_videoData;
 
+#ifdef GSEDITOR
 	IDoc*					m_document;
+#endif
 
-public:	
+public:
+
 	IView();
 	virtual ~IView();
-		
+
+#ifdef GSEDITOR
 	// alertError
 	// show error msgbox
 	virtual void alertError( wchar_t *lpString ) = 0;
@@ -44,6 +51,8 @@ public:
 	// setObjectProperty
 	// set object property on listview window
 	virtual void setObjectProperty(CGameObject *pObj) = 0;
+
+#endif
 
 public:
 	
@@ -88,6 +97,7 @@ public:
 		return m_videoData;
 	}
 
+#ifdef GSEDITOR
 	// getDocument
 	// get current document
 	inline IDoc* getDocument()
@@ -118,6 +128,8 @@ public:
 	// setCurrentZone
 	// get current zone
 	virtual void setCurrentZone(CZone *pZone) = 0;
+#endif
+
 };
 
 extern IView* getIView();

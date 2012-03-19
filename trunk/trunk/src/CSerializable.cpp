@@ -164,7 +164,7 @@ SSerializableRec* CSerializable::getProperty( char *name )
 
 void CSerializable::saveItem( std::ofstream& f,  ArraySerializableRecIter& it,  int nTab )
 {
-	uiStringA tab = "";
+	string tab = "";
 	for ( int i = 0; i < nTab; i++ )
 		tab += "\t";
 
@@ -181,7 +181,7 @@ void CSerializable::saveItem( std::ofstream& f,  ArraySerializableRecIter& it,  
 		else if ( p->type != NSSerializable::arrayByte )
 		{
 			// save data
-			f << tab.c() << p->name  << ": " << p->data << " | " << s_stringType[p->type] << ";\n";
+			f << tab.c_str() << p->name  << ": " << p->data << " | " << s_stringType[p->type] << ";\n";
 			it++;
 		}
 		else
@@ -194,7 +194,7 @@ void CSerializable::saveItem( std::ofstream& f,  ArraySerializableRecIter& it,  
 
 void CSerializable::saveGroup( std::ofstream& f, ArraySerializableRecIter& it, int nTab )
 {
-	uiStringA tab = "";
+	string tab = "";
 	for ( int i = 0; i < nTab; i++ )
 		tab += "\t";
 
@@ -206,13 +206,13 @@ void CSerializable::saveGroup( std::ofstream& f, ArraySerializableRecIter& it, i
 
 		if ( p->type == NSSerializable::groupInfo )
 		{
-			f << tab.c() << p->name << "\n";
-			f << tab.c() << "{\n";
+			f << tab.c_str() << p->name << "\n";
+			f << tab.c_str() << "{\n";
 			
 			it++;
 			saveItem( f, it, nTab + 1 );
 			
-			f << tab.c() << "}\n";
+			f << tab.c_str() << "}\n";
 		}
 
 	}

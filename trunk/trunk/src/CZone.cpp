@@ -4,9 +4,9 @@
 #ifdef GSEDITOR
 #include "IDoc.h"
 #include "IView.h"
+#include "CDocument.h"
 #endif
 
-#include "CDocument.h"
 #include "CObjTemplateFactory.h"
 
 CZone::CZone()

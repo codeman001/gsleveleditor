@@ -46,6 +46,7 @@ public:
 protected:	
 	long				m_objectID;
 	std::wstring		m_name;
+	std::wstring		m_objectTemplate;
 
 	ObjectType			m_objectType;
 	ObjectState			m_objectState;
@@ -66,8 +67,6 @@ protected:
 	bool				m_visible;
 
 	CGameObject			*m_parent;
-
-	CObjectTemplate		*m_template;
 
 #ifdef GSEDITOR	
 	uiTreeViewItem		*m_treeItem;
@@ -110,20 +109,27 @@ public:
 	inline void setName( const wchar_t *lpName )
 	{
 		m_name = lpName;
+#ifdef GSEDITOR
+		if ( m_treeItem )
+		{
+			m_treeItem->setString( (LPWSTR) lpName );
+			m_treeItem->update();
+		}
+#endif
 	}
 
 	// getTemplate
 	// return the name of template
-	inline CObjectTemplate *getTemplate()
+	inline wchar_t *getTemplate()
 	{
-		return m_template;
+		return (wchar_t*)m_objectTemplate.c_str();
 	}
 
 	// setObjectTemplate
 	// set template name
-	inline void setObjectTemplate( CObjectTemplate *objTemplate )
+	inline void setObjectTemplate( wchar_t *lpName )
 	{
-		m_template = objTemplate;
+		m_objectTemplate = lpName;
 	}
 
 #ifdef GSEDITOR	

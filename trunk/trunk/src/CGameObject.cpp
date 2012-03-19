@@ -21,6 +21,7 @@ CGameObject::CGameObject()
 {
 	m_objectID		= -1;
 	m_name			= L"noNameObj";
+	m_objectTemplate= L"";
 	m_objectType	= GameObject;
 	m_objectState	= Normal;
 
@@ -39,6 +40,9 @@ CGameObject::CGameObject()
 
 	m_parent		= NULL;
 
+#ifdef GSEDITOR
+	m_treeItem		= NULL;
+#endif
 }
 
 CGameObject::~CGameObject()
@@ -261,7 +265,14 @@ void CGameObject::saveData( CSerializable* pObj )
 
 	pObj->addLong	("objectID",	m_objectID, true);
 	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
-	
+
+	char lpText[1024] = {0};
+	uiString::convertUnicodeToUTF8( (unsigned short*)m_name.c_str(), lpText );
+	pObj->addString	("objectName",	lpText, false);
+
+	uiString::convertUnicodeToUTF8( (unsigned short*)m_objectTemplate.c_str(), lpText );
+	pObj->addString	("objectTemplate",	lpText, true);
+
 	pObj->addBool	("enable",		m_enable );
 	pObj->addBool	("visible",		m_visible );
 
@@ -304,6 +315,18 @@ void CGameObject::loadData( CSerializable* pObj )
 			break;
 		}
 	}
+	
+	wchar_t lpText[1024] = {0};
+
+	// read obj name
+	pObj->readString();
+	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
+	setName( lpText );
+
+	// read template
+	pObj->readString();
+	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
+	m_objectTemplate = lpText;
 
 	m_enable		= pObj->readBool();
 	m_visible		= pObj->readBool();

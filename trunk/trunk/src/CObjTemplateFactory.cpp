@@ -155,7 +155,7 @@ CGameObject* CObjTemplateFactory::spawnObject( wchar_t* templateName )
 	}
 
 	pObj->setVisible( false );
-	pObj->setObjectTemplate( pTemplate );
+	pObj->setObjectTemplate( templateName );
 	return pObj;
 }
 
@@ -209,7 +209,7 @@ CGameObject* CObjTemplateFactory::getGameObject( wchar_t* templateName )
 	while ( i != end )
 	{
 		CGameObject *pObject = (*i);
-		if ( wcscmp( pObject->getTemplate()->getObjectTemplateName(), templateName ) == 0 )
+		if ( wcscmp( pObject->getTemplate(), templateName ) == 0 )
 		{
 			return pObject;
 		}

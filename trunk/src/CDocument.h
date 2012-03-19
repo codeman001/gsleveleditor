@@ -18,9 +18,6 @@ protected:
 	uiTreeViewItem	*m_treeViewRoot;
 
 public:
-	static long		s_objectID;
-
-public:
 	DWORD m_nTreeRootIcon;
 	DWORD m_nTreeZone;
 	DWORD m_nTreeZoneOpen;

@@ -7,9 +7,7 @@
 class IDoc: public uiObject
 {
 public:
-	static long s_objectID;
 
-public:
 	// newDocument
 	// new 3d scene document
 	virtual void newDocument()= 0;

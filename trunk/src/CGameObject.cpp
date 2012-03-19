@@ -3,6 +3,8 @@
 #include "CComponentFactory.h"
 #include "IView.h"
 
+long CGameObject::s_objectID = 1;
+
 core::vector3df CGameObject::s_ox	= core::vector3df(1.0f, 0.0f, 0.0f);
 core::vector3df CGameObject::s_oy	= core::vector3df(0.0f, 1.0f, 0.0f);
 core::vector3df CGameObject::s_oz	= core::vector3df(0.0f, 0.0f, 1.0f);

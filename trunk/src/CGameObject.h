@@ -22,6 +22,9 @@ class CGameObject
 #endif
 {	
 public:
+	static long		s_objectID;
+
+public:
 	static core::vector3df s_ox;
 	static core::vector3df s_oy;
 	static core::vector3df s_oz;

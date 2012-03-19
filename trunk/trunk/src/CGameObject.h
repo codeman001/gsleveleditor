@@ -104,7 +104,7 @@ public:
 		return m_objectID;
 	}
 
-		// getName
+	// getName
 	// get zone name
 	inline const wchar_t* getName()
 	{
@@ -329,15 +329,19 @@ public:
 	virtual void destroyNode();
 	
 	// saveData
-	// save data to serializable
+	// save data to serializable ( use for save in game .sav )
 	virtual void saveData( CSerializable* pObj );
 
 	// loadData
-	// load data to serializable
+	// load data to serializable ( use for load in game .sav )
 	virtual void loadData( CSerializable* pObj );
 
+	// getData
+	// get basic data to serializable
+	virtual void getData( CSerializable* pObj );
+
 	// updateData
-	// update data 
+	// update data
 	virtual void updateData( CSerializable* pObj );
 
 	// releaseAllComponent

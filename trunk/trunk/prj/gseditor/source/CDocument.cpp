@@ -54,13 +54,64 @@ void CDocument::newDocument()
 	// add oxyz plane node
 	CGameOxyzSceneNode *oxyPlane = new CGameOxyzSceneNode( smgr->getRootSceneNode(), smgr, 1 );
 	oxyPlane->drop();
+
+	m_filePath = L"";
 }
 	
 // saveDocument
 // save the document
 bool CDocument::saveDocument(wchar_t* lpPath)
 {
-	return false;
+	m_filePath = lpPath;
+	ofstream file( lpPath );
+	if ( file.is_open() == false )
+		return false;
+	
+	CSerializable serializable;
+
+	char lpString[1024];
+
+	// update all zone
+	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
+	while ( iZone != iEnd )
+	{		
+		// write to file zone info
+		CZone *pZone = (*iZone);
+
+		pZone->sortObjectByID();		
+		pZone->getData( &serializable );
+		
+		// write zone info		
+		sprintf(lpString, "zone_%d", pZone->getID());
+		file << lpString << "\n";
+		file << "{\n";
+		serializable.saveData( file, 1 );
+		file << "}\n";
+		
+		// write object info
+		ArrayGameObjectIter i = pZone->getChilds()->begin(), end = pZone->getChilds()->end();
+		while ( i != end )
+		{
+			CGameObject *pGameObj = (CGameObject*)(*i);
+
+			serializable.clear();
+			pGameObj->getData( &serializable );
+			
+			sprintf(lpString, "object_%d", pGameObj->getID());
+			file << lpString << "\n";
+			file << "{\n";
+			serializable.saveData( file, 1 );
+			file << "}\n";
+
+			i++;
+		}
+
+		serializable.clear();
+		iZone++;
+	}
+
+	file.close();
+	return true;
 }
 
 // openDocument
@@ -68,6 +119,16 @@ bool CDocument::saveDocument(wchar_t* lpPath)
 bool CDocument::openDocument(wchar_t* lpPath)
 {
 	return false;
+}
+
+// getCurrentFile
+// return current file is open
+wchar_t* CDocument::getCurrentFile()
+{
+	if ( m_filePath.size() == 0 )
+		return NULL;
+
+	return (wchar_t*) m_filePath.c_str();
 }
 
 // updateDocument

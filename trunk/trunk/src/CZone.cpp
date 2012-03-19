@@ -175,3 +175,21 @@ void CZone::removeObject( CGameObject *pObj )
 		iObj++;
 	}
 }
+
+// getData
+// get data from zone
+void CZone::getData( CSerializable* pObj )
+{
+	pObj->addGroup	("Game zone");
+
+	pObj->addLong	("objectID",	m_objectID, true);
+	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
+
+	char lpText[1024] = {0};
+	uiString::convertUnicodeToUTF8( (unsigned short*)m_name.c_str(), lpText );
+	pObj->addString	("objectName",	lpText, false);
+
+	pObj->addBool	("enable",		m_enable );
+	pObj->addBool	("visible",		m_visible );	
+
+}

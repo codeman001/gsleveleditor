@@ -61,6 +61,10 @@ public:
 	void onScaleObjectCommand();
 	void onDeleteSelectObjectCommand();
 
+	void onNewDocumentCommand();
+	void onSaveDocumentCommand();
+	void onOpenDocumentCommand();
+
 private:
 
     CRibbonCommandHandler()

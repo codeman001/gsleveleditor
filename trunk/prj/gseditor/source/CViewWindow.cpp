@@ -167,6 +167,9 @@ void CViewWindow::_OnLButtonDown	( uiMouseEvent mouseEvent, int x, int y )
 
 	//  set focus
 	uiApplication::getRoot()->setFocus();
+
+	// erase status 0
+	setStatusText( 0, L"" );
 }
 
 void CViewWindow::_OnLButtonUp	( uiMouseEvent mouseEvent, int x, int y )

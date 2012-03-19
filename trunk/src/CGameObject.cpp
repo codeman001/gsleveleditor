@@ -263,7 +263,7 @@ void CGameObject::destroyNode()
 // save data to serializable
 void CGameObject::saveData( CSerializable* pObj )
 {
-	pObj->addGroup	("Game object base");
+	pObj->addGroup	("Game object");
 
 	pObj->addLong	("objectID",	m_objectID, true);
 	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
@@ -355,6 +355,38 @@ void CGameObject::loadData( CSerializable* pObj )
 		// continue load another component
 		pComp = CComponentFactory::loadComponent( this, pObj );
 	}
+}
+
+// getData
+// get basic data to serializable
+void CGameObject::getData( CSerializable* pObj )
+{
+	pObj->addGroup	("Game object");
+
+	pObj->addLong	("objectID",	m_objectID, true);
+	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
+
+	char lpText[1024] = {0};
+	uiString::convertUnicodeToUTF8( (unsigned short*)m_name.c_str(), lpText );
+	pObj->addString	("objectName",	lpText, false);
+
+	uiString::convertUnicodeToUTF8( (unsigned short*)m_objectTemplate.c_str(), lpText );
+	pObj->addString	("objectTemplate",	lpText, true);
+
+	pObj->addBool	("enable",		m_enable );
+	pObj->addBool	("visible",		m_visible );
+
+	pObj->addFloat	("positionX",	m_position.X );
+	pObj->addFloat	("positionY",	m_position.Y );
+	pObj->addFloat	("positionZ",	m_position.Z );
+	
+	pObj->addFloat	("rotationX",	m_rotation.X );
+	pObj->addFloat	("rotationY",	m_rotation.Y );
+	pObj->addFloat	("rotationZ",	m_rotation.Z );
+
+	pObj->addFloat	("scaleX",		m_scale.X );
+	pObj->addFloat	("scaleY",		m_scale.Y );
+	pObj->addFloat	("scaleZ",		m_scale.Z );
 }
 
 // updateData

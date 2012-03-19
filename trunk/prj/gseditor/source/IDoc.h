@@ -67,6 +67,11 @@ public:
 	// createZone
 	// create a zone
 	virtual CGameObject* createZone() = 0;
+
+	// getCurrentFile
+	// return current file is open
+	virtual wchar_t* getCurrentFile() = 0;
+
 };
 
 #endif

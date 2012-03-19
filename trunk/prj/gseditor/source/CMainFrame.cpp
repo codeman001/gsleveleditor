@@ -92,11 +92,22 @@ LRESULT	CMainFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam
 			case ID_SCALE_COMMAND:
 				CGlobalInstance::getInstance()->m_ribbonCommand->onScaleObjectCommand();
 				break;
+
 			case ID_CAMERA_COMMAND:
 				CGlobalInstance::getInstance()->m_ribbonCommand->onCameraViewCommand();
 				break;
 			case ID_ADDOBJ_COMMAND:
 				CGlobalInstance::getInstance()->m_ribbonCommand->onAddObjectCommand();
+				break;
+
+			case ID_NEW_COMMAND:
+				CGlobalInstance::getInstance()->m_ribbonCommand->onNewDocumentCommand();
+				break;
+			case ID_SAVE_COMMAND:
+				CGlobalInstance::getInstance()->m_ribbonCommand->onSaveDocumentCommand();
+				break;
+			case ID_OPEN_COMMAND:
+				CGlobalInstance::getInstance()->m_ribbonCommand->onOpenDocumentCommand();
 				break;
 			}
 		}

@@ -17,6 +17,7 @@ protected:
 
 	uiTreeViewItem	*m_treeViewRoot;
 
+	wstring			m_filePath;
 public:
 	DWORD m_nTreeRootIcon;
 	DWORD m_nTreeZone;
@@ -42,6 +43,10 @@ public:
 	// openDocument
 	// load document
 	virtual bool openDocument(wchar_t* lpPath);
+
+	// getCurrentFile
+	// return current file is open
+	virtual wchar_t* getCurrentFile();
 
 	// updateDocument
 	// update all object in doc by frame...

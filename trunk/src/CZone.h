@@ -34,7 +34,16 @@ public:
 	// spawnObject
 	// create a template object
 	CGameObject* spawnObject( wchar_t* objTemplate );
+
+	// removeObject
+	// remove object
+	void removeObject( CGameObject *pObj );
+
 public:
+
+	// getData
+	// get data from zone
+	virtual void getData( CSerializable* pObj );
 
 	// getChilds
 	// get list child
@@ -42,11 +51,7 @@ public:
 	{
 		return &m_childs;
 	}
-
-	// removeObject
-	// remove object
-	void removeObject( CGameObject *pObj );
-
+	
 };
 
 typedef vector<CZone*>				ArrayZone;

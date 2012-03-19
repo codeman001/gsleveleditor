@@ -236,6 +236,8 @@ void CSerializable::saveGroup( std::ofstream& f, ArraySerializableRecIter& it, i
 			f << tab.c_str() << "}\n";
 		}
 
+		if ( it != end )
+			it++;
 	}
 
 }

@@ -52,6 +52,10 @@ public:
 	// getGameObject
 	// get a template object
 	static CGameObject* getGameObject( wchar_t* templateName );
+
+	// registerDrawAllObject
+	// add all to scene node
+	static void registerDrawAllTemplateObject();
 #endif
 
 };

@@ -57,6 +57,13 @@ public:
 	// get current zone
 	virtual void setCurrentZone(CZone *pZone);
 
+	// newDocument
+	// renew document
+	virtual void newDocument();
+	
+	// getDocumentTreeView
+	// get tree view control of document
+	virtual uiTreeView* getDocumentTreeView();
 protected:
 	
 	uiStringW		m_objTemplate;

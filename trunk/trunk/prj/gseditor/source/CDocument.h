@@ -18,14 +18,6 @@ protected:
 	uiTreeViewItem	*m_treeViewRoot;
 
 	wstring			m_filePath;
-public:
-	DWORD m_nTreeRootIcon;
-	DWORD m_nTreeZone;
-	DWORD m_nTreeZoneOpen;
-	DWORD m_nTreeHidden;
-	DWORD m_nTreeMesh;
-	DWORD m_nTreeTrigger;
-	DWORD m_nTreeCollision;
 	
 public:
 	CDocument();
@@ -43,6 +35,10 @@ public:
 	// openDocument
 	// load document
 	virtual bool openDocument(wchar_t* lpPath);
+
+	// isEmptyDocument
+	// return true if document is nothing
+	virtual bool isEmptyDocument();
 
 	// getCurrentFile
 	// return current file is open
@@ -110,25 +106,6 @@ public:
 	inline void setTreeViewItem( uiTreeViewItem *p )
 	{
 		m_treeViewRoot = p;
-	}
-
-	inline void setTreeIcon(
-			DWORD rootIcon,
-			DWORD zoneIcon,
-			DWORD zoneOpenIcon,
-			DWORD hiddenIcon,
-			DWORD meshIcon,
-			DWORD triggerIcon,
-			DWORD collisionIcon
-		)
-	{
-		m_nTreeRootIcon = rootIcon;
-		m_nTreeZone = zoneIcon;
-		m_nTreeZoneOpen = zoneOpenIcon;
-		m_nTreeHidden = hiddenIcon;
-		m_nTreeMesh = meshIcon;
-		m_nTreeTrigger = triggerIcon;
-		m_nTreeCollision = collisionIcon;
 	}
 
 };

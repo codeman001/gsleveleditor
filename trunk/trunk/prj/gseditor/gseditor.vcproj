@@ -450,11 +450,11 @@
 				Name="MVC"
 				>
 				<File
-					RelativePath="..\..\src\IDoc.h"
+					RelativePath=".\source\IDoc.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\IDocImp.cpp"
+					RelativePath=".\source\IDocImp.cpp"
 					>
 				</File>
 				<File

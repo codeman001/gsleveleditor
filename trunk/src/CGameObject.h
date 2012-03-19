@@ -336,6 +336,10 @@ public:
 	// load data to serializable
 	virtual void loadData( CSerializable* pObj );
 
+	// updateData
+	// update data 
+	virtual void updateData( CSerializable* pObj );
+
 	// releaseAllComponent
 	// delete all component on object
 	virtual void releaseAllComponent();

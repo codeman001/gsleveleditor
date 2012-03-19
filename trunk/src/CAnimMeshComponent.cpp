@@ -17,6 +17,9 @@ CAnimMeshComponent::~CAnimMeshComponent()
 // load anim object from file
 void CAnimMeshComponent::loadFromFile( char *lpFilename )
 {
+	if ( m_animeshFile == lpFilename )
+		return;
+
 	m_animeshFile = lpFilename;
 
 	// release if mesh is loaded
@@ -84,4 +87,8 @@ void CAnimMeshComponent::loadData( CSerializable* pObj )
 	// read mesh file
 	char *string = pObj->readString();
 	loadFromFile( string );
+
+	// read anim speed
+	m_animSpeed = pObj->readFloat();
+	m_animNode->setAnimationSpeed( m_animSpeed );
 }

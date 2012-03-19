@@ -320,13 +320,11 @@ void CGameObject::loadData( CSerializable* pObj )
 	
 	wchar_t lpText[1024] = {0};
 
-	// read obj name
-	pObj->readString();
+	// read obj name	
 	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
 	setName( lpText );
 
-	// read template
-	pObj->readString();
+	// read template	
 	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
 	m_objectTemplate = lpText;
 
@@ -357,6 +355,63 @@ void CGameObject::loadData( CSerializable* pObj )
 		// continue load another component
 		pComp = CComponentFactory::loadComponent( this, pObj );
 	}
+}
+
+// updateData
+// update data 
+void CGameObject::updateData( CSerializable* pObj )
+{
+	int pos = pObj->getCursorRecord();
+	pObj->nextRecord();
+
+	m_objectID	= pObj->readLong();
+
+	char *type = pObj->readString();
+	for ( int i = 0; i < CGameObject::NumObject; i++ )
+	{
+		if ( strcmp(s_stringObjType[i], type) == 0 )
+		{
+			m_objectType = (CGameObject::ObjectType)i;
+			break;
+		}
+	}
+	
+	wchar_t lpText[1024] = {0};
+
+	// read obj name	
+	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
+	setName( lpText );
+
+	// read template	
+	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
+	m_objectTemplate = lpText;
+
+	m_enable		= pObj->readBool();
+	m_visible		= pObj->readBool();
+
+	m_position.X	= pObj->readFloat();
+	m_position.Y	= pObj->readFloat();
+	m_position.Z	= pObj->readFloat();
+
+	m_rotation.X	= pObj->readFloat();
+	m_rotation.Y	= pObj->readFloat();
+	m_rotation.Z	= pObj->readFloat();
+
+	m_scale.X		= pObj->readFloat();
+	m_scale.Y		= pObj->readFloat();
+	m_scale.Z		= pObj->readFloat();
+
+	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
+	while ( iComp != iEnd )
+	{
+		(*iComp)->loadData( pObj );
+		iComp++;
+	}
+	pObj->setCursorRecord( pos );
+
+	updateNodePosition();
+	updateNodeRotation();
+	updateNodeScale();
 }
 
 // releaseAllComponent

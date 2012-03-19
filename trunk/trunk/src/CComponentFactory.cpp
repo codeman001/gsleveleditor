@@ -177,7 +177,7 @@ CSerializable* CComponentFactory::getComponent( char *lpName )
 // create component
 IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializable *data )
 {	
-	int cursor = data->getCursorRecord();	
+	int cursor = data->getCursorRecord();
 	char *lpComponentName = data->readString();
 	data->setCursorRecord(cursor);
 	

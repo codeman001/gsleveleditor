@@ -105,6 +105,8 @@ void CTemplateWindow::reloadList()
 void CTemplateWindow::onTemplateChange( uiObject *pSender )
 {
 	uiComboBoxItem *pItem =	m_comboList->getSelectItem();
+	if ( pItem == NULL )
+		return;
 
 	WCHAR lpString[1024];
 	char lpStringA[1024];

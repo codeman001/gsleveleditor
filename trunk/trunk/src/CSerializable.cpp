@@ -68,6 +68,9 @@ void CSerializable::addArrayByte(char *name, char *value, int size, bool readOnl
 
 int	CSerializable::readInt()
 {
+	if ( m_cursor >= (int)m_data.size() )
+		return 0;
+
 	SSerializableRec& rec = m_data[ m_cursor++ ];
 	if ( rec.type != NSSerializable::intType )
 		return 0;
@@ -79,6 +82,9 @@ int	CSerializable::readInt()
 
 long CSerializable::readLong()
 {
+	if ( m_cursor >= (int)m_data.size() )
+		return 0;
+
 	SSerializableRec& rec = m_data[ m_cursor++ ];
 	if ( rec.type != NSSerializable::longType )
 		return 0;
@@ -90,6 +96,9 @@ long CSerializable::readLong()
 
 float CSerializable::readFloat()
 {
+	if ( m_cursor >= (int)m_data.size() )
+		return 0;
+
 	SSerializableRec& rec = m_data[ m_cursor++ ];
 	if ( rec.type != NSSerializable::floatType )
 		return 0;
@@ -101,6 +110,9 @@ float CSerializable::readFloat()
 
 double CSerializable::readDouble()
 {
+	if ( m_cursor >= (int)m_data.size() )
+		return 0;
+
 	SSerializableRec& rec = m_data[ m_cursor++ ];
 	if ( rec.type != NSSerializable::doubleType )
 		return 0;
@@ -112,6 +124,9 @@ double CSerializable::readDouble()
 
 bool CSerializable::readBool()
 {
+	if ( m_cursor >= (int)m_data.size() )
+		return false;
+
 	SSerializableRec& rec = m_data[ m_cursor++ ];
 	if ( rec.type != NSSerializable::boolType )
 		return 0;
@@ -124,6 +139,9 @@ bool CSerializable::readBool()
 
 char* CSerializable::readString()
 {
+	if ( m_cursor >= (int)m_data.size() )
+		return NULL;
+
 	SSerializableRec& rec = m_data[ m_cursor++ ];
 	if ( 
 		rec.type != NSSerializable::stringType && 
@@ -137,6 +155,9 @@ char* CSerializable::readString()
 
 void CSerializable::readArrayByte( char* data, int *size )
 {
+	if ( m_cursor >= (int)m_data.size() )
+		return;
+
 	SSerializableRec& rec = m_data[ m_cursor++ ];
 	if ( rec.type != NSSerializable::arrayByte )
 	{

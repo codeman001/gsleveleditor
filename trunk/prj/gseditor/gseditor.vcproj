@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrlicht\include;..\..\..\extern\uiClass;..\..\..\extern\irrlicht\source\Irrlicht"
+				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrlicht\include;..\..\..\extern\uiClass;..\..\..\extern\irrlicht\source\Irrlicht;&quot;$(ProjectDir)\source&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_USRDLL;IRRLICHT_EXPORTS;GSEDITOR"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -178,11 +178,8 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\stdafx.h"
+				RelativePath="..\..\src\stdafx.cpp"
 				>
-			</File>
-			<File
-				RelativePath="..\..\src\stdafx.cpp" >
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
@@ -199,6 +196,10 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\stdafx.h"
+				>
 			</File>
 			<Filter
 				Name="Header Files"
@@ -265,62 +266,46 @@
 				Name="Frame"
 				>
 				<File
-					RelativePath="..\..\src\CComponentDialog.cpp"
+					RelativePath=".\source\CMainFrame.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\CComponentDialog.h"
+					RelativePath=".\source\CMainFrame.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\CMainFrame.cpp"
+					RelativePath=".\source\CViewWindow.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\CMainFrame.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\CTemplateDialog.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\CTemplateDialog.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\CViewWindow.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\CViewWindow.h"
+					RelativePath=".\source\CViewWindow.h"
 					>
 				</File>
 				<Filter
 					Name="Base"
 					>
 					<File
-						RelativePath="..\..\src\CAddEditWindow.cpp"
+						RelativePath=".\source\CAddEditWindow.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CAddEditWindow.h"
+						RelativePath=".\source\CAddEditWindow.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CBaseDialog.cpp"
+						RelativePath=".\source\CBaseDialog.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CBaseDialog.h"
+						RelativePath=".\source\CBaseDialog.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CBaseWindow.cpp"
+						RelativePath=".\source\CBaseWindow.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CBaseWindow.h"
+						RelativePath=".\source\CBaseWindow.h"
 						>
 					</File>
 				</Filter>
@@ -328,27 +313,27 @@
 					Name="LeftSplit"
 					>
 					<File
-						RelativePath="..\..\src\CDocTreeWin.cpp"
+						RelativePath=".\source\CDocTreeWin.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CDocTreeWin.h"
+						RelativePath=".\source\CDocTreeWin.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CLeftSplitWindow.cpp"
+						RelativePath=".\source\CLeftSplitWindow.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CLeftSplitWindow.h"
+						RelativePath=".\source\CLeftSplitWindow.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CObjPropertyWin.cpp"
+						RelativePath=".\source\CObjPropertyWin.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CObjPropertyWin.h"
+						RelativePath=".\source\CObjPropertyWin.h"
 						>
 					</File>
 				</Filter>
@@ -356,27 +341,47 @@
 					Name="RightSplit"
 					>
 					<File
-						RelativePath="..\..\src\CComponentWindow.cpp"
+						RelativePath=".\source\CComponentWindow.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CComponentWindow.h"
+						RelativePath=".\source\CComponentWindow.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CRightSplitWindow.cpp"
+						RelativePath=".\source\CRightSplitWindow.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CRightSplitWindow.h"
+						RelativePath=".\source\CRightSplitWindow.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CTemplateWindow.cpp"
+						RelativePath=".\source\CTemplateWindow.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CTemplateWindow.h"
+						RelativePath=".\source\CTemplateWindow.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Dialog"
+					>
+					<File
+						RelativePath=".\source\CComponentDialog.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\source\CComponentDialog.h"
+						>
+					</File>
+					<File
+						RelativePath=".\source\CTemplateDialog.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\source\CTemplateDialog.h"
 						>
 					</File>
 				</Filter>
@@ -385,35 +390,35 @@
 				Name="Ribbon"
 				>
 				<File
-					RelativePath="..\..\src\CRibbonItem.cpp"
+					RelativePath=".\source\CRibbonItem.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\CRibbonItem.h"
+					RelativePath=".\source\CRibbonItem.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\RibbonApplication.cpp"
+					RelativePath=".\source\RibbonApplication.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\RibbonApplication.h"
+					RelativePath=".\source\RibbonApplication.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\RibbonCommandHandler.cpp"
+					RelativePath=".\source\RibbonCommandHandler.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\RibbonCommandHandler.h"
+					RelativePath=".\source\RibbonCommandHandler.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\RibbonFontUtil.cpp"
+					RelativePath=".\source\RibbonFontUtil.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\RibbonFontUtil.h"
+					RelativePath=".\source\RibbonFontUtil.h"
 					>
 				</File>
 			</Filter>
@@ -433,25 +438,17 @@
 				Name="GlobalInstance"
 				>
 				<File
-					RelativePath="..\..\src\CGlobalInstance.cpp"
+					RelativePath=".\source\CGlobalInstance.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\CGlobalInstance.h"
+					RelativePath=".\source\CGlobalInstance.h"
 					>
 				</File>
 			</Filter>
 			<Filter
 				Name="MVC"
 				>
-				<File
-					RelativePath="..\..\src\IController.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\IControllerImp.cpp"
-					>
-				</File>
 				<File
 					RelativePath="..\..\src\IDoc.h"
 					>
@@ -473,11 +470,11 @@
 				Name="Document"
 				>
 				<File
-					RelativePath="..\..\src\CDocument.cpp"
+					RelativePath=".\source\CDocument.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\CDocument.h"
+					RelativePath=".\source\CDocument.h"
 					>
 				</File>
 				<Filter
@@ -632,15 +629,23 @@
 			<Filter
 				Name="Controller"
 				>
+				<File
+					RelativePath=".\source\IController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\source\IControllerImp.cpp"
+					>
+				</File>
 				<Filter
 					Name="SelectObject"
 					>
 					<File
-						RelativePath="..\..\src\CSelectObjectController.cpp"
+						RelativePath=".\source\CSelectObjectController.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CSelectObjectController.h"
+						RelativePath=".\source\CSelectObjectController.h"
 						>
 					</File>
 				</Filter>
@@ -648,11 +653,11 @@
 					Name="RotateObject"
 					>
 					<File
-						RelativePath="..\..\src\CRotateObjectController.cpp"
+						RelativePath=".\source\CRotateObjectController.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CRotateObjectController.h"
+						RelativePath=".\source\CRotateObjectController.h"
 						>
 					</File>
 				</Filter>
@@ -660,11 +665,11 @@
 					Name="ScaleObject"
 					>
 					<File
-						RelativePath="..\..\src\CScaleObjectController.cpp"
+						RelativePath=".\source\CScaleObjectController.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CScaleObjectController.h"
+						RelativePath=".\source\CScaleObjectController.h"
 						>
 					</File>
 				</Filter>
@@ -672,11 +677,11 @@
 					Name="AddObject"
 					>
 					<File
-						RelativePath="..\..\src\CAddObjectController.cpp"
+						RelativePath=".\source\CAddObjectController.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CAddObjectController.h"
+						RelativePath=".\source\CAddObjectController.h"
 						>
 					</File>
 				</Filter>

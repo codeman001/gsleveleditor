@@ -7,7 +7,7 @@
 class CObjectTemplate
 {
 protected:
-	uiStringW				m_templateName;
+	std::wstring			m_templateName;
 
 #ifdef GSEDITOR	
 	int						m_numObjRef;
@@ -70,7 +70,7 @@ public:
 	// get name
 	inline wchar_t* getObjectTemplateName()
 	{
-		return m_templateName.c();
+		return (wchar_t*)m_templateName.c_str();
 	}
 
 	// containComponent

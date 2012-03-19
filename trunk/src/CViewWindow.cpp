@@ -347,9 +347,12 @@ wchar_t* CViewWindow::getCurrentObjectTemplate()
 // set current template
 void CViewWindow::setCurrentObjectTemplate( wchar_t *objTemplate )
 {
-	CGameObject* pOldObj = CObjTemplateFactory::getGameObject( m_objTemplate.c() );
-	if ( pOldObj )
-		pOldObj->setVisible( false );
+	if ( m_objTemplate.getLength() > 0 )
+	{
+		CGameObject* pOldObj = CObjTemplateFactory::getGameObject( m_objTemplate.c() );
+		if ( pOldObj )
+			pOldObj->setVisible( false );
+	}
 
 	m_objTemplate = objTemplate;
 	m_pObjTemplate = CObjTemplateFactory::getGameObject( m_objTemplate.c() );

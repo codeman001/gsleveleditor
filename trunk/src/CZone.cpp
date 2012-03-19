@@ -109,16 +109,17 @@ CGameObject* CZone::spawnObject( wchar_t* objTemplate )
 	if ( p == NULL )
 		return NULL;
 
+	wchar_t lpName[1024];
+	swprintf( lpName, 1024, L"%s_%d", objTemplate, (int)CDocument::s_objectID );
+	
 	p->setID( CDocument::s_objectID++ );
-	addChild( p );
+	p->setParent( this );
 
+	
+	
 #ifdef GSEDITOR
-	// set up name
-	uiStringW name;
-	name.format( L"%s_%d", objTemplate, (int)CDocument::s_objectID );
-
 	// create tree item
-	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) name.c() );
+	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) lpName );
 	CDocument *pDoc = (CDocument*) getIView()->getDocument();
 
 	pTreeItem->setIconIndex( pDoc->m_nTreeMesh );
@@ -131,6 +132,9 @@ CGameObject* CZone::spawnObject( wchar_t* objTemplate )
 	m_treeItem->expandChild( true );
 #endif
 
+	p->setName( lpName );
+
+	addChild( p );
 	return p;
 }
 
@@ -152,9 +156,17 @@ void CZone::removeObject( CGameObject *pObj )
 	{
 		if ( pObj == (*iObj) )
 		{
+
+#ifdef GSEDITOR
+			uiTreeViewItem *pTreeItem = pObj->getTreeItem();
+			if ( pTreeItem )
+				m_treeItem->destroyChild( pTreeItem );
+#endif
+
 			// delete gameObject
-			(*iObj)->destroyNode();
-			delete (*iObj);
+			pObj->destroyNode();
+			delete pObj;
+
 			m_childs.erase( iObj );
 
 			break;

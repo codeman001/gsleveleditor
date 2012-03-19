@@ -9,8 +9,11 @@
 #include "CGameOxyzSceneNode.h"
 #include "CGameGSCameraAnimators.h"
 
+static bool s_isFirstDocument = true;
+
 CDocument::CDocument()
-{	
+{
+	s_isFirstDocument = false;
 }
 
 CDocument::~CDocument()
@@ -23,20 +26,18 @@ CDocument::~CDocument()
 	}
 	m_zones.clear();
 
+	// delete all item
+	getIView()->getDocumentTreeView()->deleteAllItem();
+
 	// remove all child
 	getIView()->getSceneMgr()->getRootSceneNode()->removeAll();
 	
-	CComponentFactory::freeData();
-	CObjTemplateFactory::freeData();
 }
 
 // newDocument
 // new 3d scene document
 void CDocument::newDocument()
-{	
-	CComponentFactory::initComponentTemplate();
-	CObjTemplateFactory::initObjectTempalte();
-		
+{		
 	ISceneManager *smgr = getIView()->getSceneMgr();
 	IrrlichtDevice *device = getIView()->getDevice();
 
@@ -56,6 +57,24 @@ void CDocument::newDocument()
 	oxyPlane->drop();
 
 	m_filePath = L"";
+
+	// begin id
+	CGameObject::s_objectID = 1;
+
+	// add root
+	const WCHAR *lpRootName = L"level";
+	uiTreeView *pTreeview = getIView()->getDocumentTreeView();
+	m_treeViewRoot = pTreeview->addItem( (WCHAR*)lpRootName );	
+
+	// create a zone
+	CZone *pZone = (CZone*)createZone();
+	getIView()->setCurrentZone( pZone );
+
+	m_treeViewRoot->expandChild( true );
+
+	// register draw all template obj
+	if ( s_isFirstDocument == false )
+		CObjTemplateFactory::registerDrawAllTemplateObject();
 }
 	
 // saveDocument
@@ -114,9 +133,74 @@ bool CDocument::saveDocument(wchar_t* lpPath)
 	return true;
 }
 
+extern void getBufferString( char *lpBuffer, char *from, char *to );
+
+bool readDocumentFromData( char *lpData )
+{
+	char *p = lpData;
+	char *from = p;
+
+	char	lpStringA[1024];
+	wchar_t	lpString[1024];
+
+	while ( *p != NULL )
+	{
+		if ( *p == '{' )
+		{
+			getBufferString( lpStringA, from, p );
+			uiString::convertUTF8ToUnicode( lpStringA, (unsigned short*) lpString );
+						
+			p++;
+			
+			CSerializable	component;
+			while ( component.readData( p ) )
+			{
+				printf("Obj: %s - %d records \n", lpStringA, component.getAllRecord()->size() );
+				component.clear();
+			}						
+		}
+		else if ( *p == '}' )
+		{
+			p++;
+			from = p;
+		}
+		else
+		{
+			p++;
+		}
+	}
+
+	return true;
+}
+
 // openDocument
 // load document
 bool CDocument::openDocument(wchar_t* lpPath)
+{
+	m_filePath = lpPath;
+	ifstream file( lpPath );
+	if ( file.is_open() == false )
+		return false;
+	
+	file.seekg (0, ios::end);
+	unsigned long length = file.tellg();
+	file.seekg (0, ios::beg);
+		
+	char *lpBuffer = new char[length];
+	memset( lpBuffer, 0, length );
+
+	file.read(lpBuffer,length);
+	file.close();
+
+	bool ret = readDocumentFromData( lpBuffer );
+
+	delete lpBuffer;		
+	return ret;
+}
+
+// isEmptyDocument
+// return true if document is nothing
+bool CDocument::isEmptyDocument()
 {
 	return false;
 }
@@ -203,8 +287,8 @@ CGameObject* CDocument::createZone()
 	// create tree item
 	uiTreeViewItem *pTreeItem =	m_treeViewRoot->addChild( (LPWSTR) name.c() );
 	
-	pTreeItem->setIconIndex( m_nTreeZone );
-	pTreeItem->setIconStateIndex( m_nTreeZoneOpen );
+	pTreeItem->setIconIndex( 1 );
+	pTreeItem->setIconStateIndex( 2 );
 	pTreeItem->update();
 
 	pTreeItem->setData( pZone );

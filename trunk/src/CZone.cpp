@@ -122,8 +122,8 @@ CGameObject* CZone::spawnObject( wchar_t* objTemplate )
 	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) lpName );
 	CDocument *pDoc = (CDocument*) getIView()->getDocument();
 
-	pTreeItem->setIconIndex( pDoc->m_nTreeMesh );
-	pTreeItem->setIconStateIndex( pDoc->m_nTreeMesh );
+	pTreeItem->setIconIndex( 4 );
+	pTreeItem->setIconStateIndex( 4 );
 	pTreeItem->update();
 
 	pTreeItem->setData( p );

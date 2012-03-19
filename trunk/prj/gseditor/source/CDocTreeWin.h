@@ -7,7 +7,6 @@ class CDocTreeWindow: public CBaseWindow
 {
 protected:
 	uiTreeView		*m_treeView;
-	uiTreeViewItem	*m_rootItem;
 
 	DWORD m_nTreeRootIcon;
 	DWORD m_nTreeZone;
@@ -35,6 +34,11 @@ public:
 	void clearAllTreeView();
 
 	void _onTreeSelect(uiObject *sender);
+
+	inline uiTreeView* getTreeviewControl()
+	{
+		return m_treeView;
+	}
 };
 
 #endif

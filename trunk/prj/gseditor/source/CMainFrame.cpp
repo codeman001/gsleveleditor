@@ -7,6 +7,7 @@
 #include "resource.h"
 #include "ids.h"
 
+#include "CDocument.h"
 
 CMainFrame::CMainFrame()
 {	
@@ -188,7 +189,7 @@ void CMainFrame::_OnCreate()
 				
 	// release ref on application
 	m_pApplication->Release();	
-	
+
 	// store ref to global
 	CGlobalInstance::getInstance()->m_ribbonFramework = m_pFramework;
 	CGlobalInstance::getInstance()->m_mainFrame = this;
@@ -234,6 +235,10 @@ void CMainFrame::_OnCreate()
 
 	m_mainSplitWnd->setExpanderSize( 5 );
 	m_mainSplitWnd->updateWindow();	
+
+	// new document
+	CDocument *pDoc = (CDocument*) getIView()->getDocument();
+	pDoc->newDocument();
 
 	CGlobalInstance::getInstance()->m_ribbonCommand->onCameraViewCommand();
 }

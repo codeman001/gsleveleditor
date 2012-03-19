@@ -105,6 +105,10 @@ public:
 		return m_document;
 	}
 
+	// newDocument
+	// renew document
+	virtual void newDocument() = 0;
+
 	// enableFreeCamera
 	// disable or enable change camera view on editor
 	virtual void enableFreeCamera( bool b );
@@ -128,6 +132,10 @@ public:
 	// setCurrentZone
 	// get current zone
 	virtual void setCurrentZone(CZone *pZone) = 0;
+
+	// getDocumentTreeView
+	// get tree view control of document
+	virtual uiTreeView* getDocumentTreeView() = 0;
 #endif
 
 };

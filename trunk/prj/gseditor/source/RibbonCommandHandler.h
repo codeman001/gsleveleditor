@@ -61,9 +61,9 @@ public:
 	void onScaleObjectCommand();
 	void onDeleteSelectObjectCommand();
 
-	void onNewDocumentCommand();
-	void onSaveDocumentCommand();
-	void onOpenDocumentCommand();
+	bool onNewDocumentCommand();
+	bool onSaveDocumentCommand();
+	bool onOpenDocumentCommand();
 
 private:
 

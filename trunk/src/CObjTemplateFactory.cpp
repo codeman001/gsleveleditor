@@ -223,6 +223,25 @@ CGameObject* CObjTemplateFactory::getGameObject( wchar_t* templateName )
 	}
 	return NULL;
 }
+
+// registerDrawAllObject
+// add all to scene node
+void CObjTemplateFactory::registerDrawAllTemplateObject()
+{
+	ISceneManager *pSceneMgr = getIView()->getSceneMgr();
+
+	ArrayGameObjectIter i = s_objects.begin(), end = s_objects.end();
+	while ( i != end )
+	{
+		CGameObject *pObject = (*i);
+		
+		ISceneNode *pNode = pObject->getSceneNode();
+		if ( pNode )
+			pSceneMgr->getRootSceneNode()->addChild( pNode );
+
+		i++;
+	}	
+}
 #endif
 
 // addTemplate

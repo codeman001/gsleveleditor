@@ -72,6 +72,10 @@ public:
 	// return current file is open
 	virtual wchar_t* getCurrentFile() = 0;
 
+	// isEmptyDocument
+	// return true if document is nothing
+	virtual bool isEmptyDocument() = 0;
+
 };
 
 #endif

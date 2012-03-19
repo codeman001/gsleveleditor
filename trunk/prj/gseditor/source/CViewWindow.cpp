@@ -28,10 +28,13 @@ CViewWindow::CViewWindow( WCHAR* lpString, uiWindow *p )
 
 	// init document
 	m_document = new CDocument();
-	m_document->newDocument();
 
 	m_objTemplate = L"";
 	m_pObjTemplate = NULL;
+
+	CComponentFactory::initComponentTemplate();
+	CObjTemplateFactory::initObjectTempalte();
+	
 }
 	
 CViewWindow::~CViewWindow()
@@ -44,6 +47,9 @@ CViewWindow::~CViewWindow()
 
 	// destroy controller
 	CControllerManager::releaseInstance();
+	
+	CComponentFactory::freeData();
+	CObjTemplateFactory::freeData();
 
 	m_device->drop();
 }
@@ -384,4 +390,26 @@ void CViewWindow::setCurrentZone(CZone *pZone)
 	wchar_t lpStatusText[1024];
 	swprintf(lpStatusText, 1024, L"Current zone: %s", (wchar_t*)pZone->getName());
 	setStatusText( 1, lpStatusText );
+}
+
+// newDocument
+// renew document
+void CViewWindow::newDocument()
+{
+	if ( m_document )
+	{
+		delete m_document;
+		m_document = NULL;
+	}
+
+	m_document = new CDocument();
+	m_document->newDocument();
+}
+
+// getDocumentTreeView
+// get tree view control of document
+uiTreeView* CViewWindow::getDocumentTreeView()
+{
+	CMainFrame* pFrame = (CMainFrame*)CGlobalInstance::getInstance()->m_mainFrame;
+	return pFrame->getDocTreeWnd()->getTreeviewControl();
 }

@@ -12,7 +12,7 @@ public:
 protected:
 	CGameAnimatedMeshSceneNode*	m_animNode;
 
-	string						m_animeshFile;
+	std::string					m_animeshFile;
 	float						m_animSpeed;
 public:
 	CAnimMeshComponent( CGameObject *pObj );

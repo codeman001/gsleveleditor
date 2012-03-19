@@ -21,6 +21,7 @@ using namespace irr::video;
 #include <stack>
 #include <queue>
 #include <fstream>
+#include <string>
 
 using namespace std;
 

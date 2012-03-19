@@ -2,7 +2,6 @@
 #define _COMPONENTFACTORY_
 
 #include "IObjectComponent.h"
-#include "3rdsource/tinyxml/tinyxml.h"
 
 class CComponentFactory
 {

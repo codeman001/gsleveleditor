@@ -15,7 +15,11 @@
 //  | /
 //  |/
 //  *---------* x
-class CGameObject: public uiObject
+
+class CGameObject
+#ifdef GSEDITOR
+	: public uiObject
+#endif
 {	
 public:
 	static core::vector3df s_ox;

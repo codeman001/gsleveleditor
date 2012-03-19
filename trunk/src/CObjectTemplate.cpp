@@ -59,7 +59,6 @@ bool CObjectTemplate::addComponent( char *lpName )
 
 #ifdef GSEDITOR
 	m_isDirty = true;
-#endif
 
 	// add this component to template
 	int n = CComponentFactory::s_compTemplate.size();
@@ -69,6 +68,8 @@ bool CObjectTemplate::addComponent( char *lpName )
 		if ( strcmp( lpName, p->getAllRecord()->front().name ) == 0 )
 			m_objectComponents.push_back( *p );
 	}
+#endif
+
 	sortComponentByName();
 
 	return true;

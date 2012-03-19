@@ -48,7 +48,9 @@ typedef struct tagSerializableRec
 		exData = NULL;
 		exDataSize = 0;
 
+#ifdef GSEDITOR	
 		tagObject = NULL;
+#endif
 	}
 
 	~tagSerializableRec()
@@ -65,8 +67,9 @@ typedef struct tagSerializableRec
 		this->type = type;
 		this->exData = NULL;
 		this->exDataSize = 0;
+#ifdef GSEDITOR	
 		this->tagObject = NULL;
-
+#endif
 		if ( type == NSSerializable::intType )
 		{
 			int n = *((int*)value);

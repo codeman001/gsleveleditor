@@ -6,8 +6,10 @@ IView::IView()
 	m_device	= NULL;
 	m_driver	= NULL;
 	m_smgr		= NULL;
-	
+		
+#ifdef GSEDITOR
 	m_document = NULL;
+#endif
 
 	m_mouseX = 0;
 	m_mouseY = 0;
@@ -80,6 +82,7 @@ bool IView::getScreenCoordinatesFrom3DPosition(const core::vector3df& pos3d, int
 	return transformedPos[3] >= 0;
 }
 
+#ifdef GSEDITOR
 // enableFreeCamera
 // disable or enable change camera view on editor
 void IView::enableFreeCamera( bool b )
@@ -95,3 +98,4 @@ void IView::enableFreeCamera( bool b )
 	// set enable input revc
 	camera->setInputReceiverEnabled( b );
 }
+#endif

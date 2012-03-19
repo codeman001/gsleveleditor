@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="..\..\bin"
+			IntermediateDirectory="..\..\bin\snakeTemp"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
@@ -41,7 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				AdditionalIncludeDirectories="..\..\trunk\src;..\..\..\extern\irrlicht\include;..\..\..\extern\irrlicht\source\Irrlicht;..\..\..\extern\uiClass"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -166,16 +167,28 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\snake3d.cpp"
+				RelativePath=".\small.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\stdafx.cpp"
+				RelativePath=".\snake3d.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\snake3d.rc"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Source"
+			>
+			<File
+				RelativePath="..\..\src\stdafx.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -194,46 +207,146 @@
 					/>
 				</FileConfiguration>
 			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-			>
 			<File
-				RelativePath=".\Resource.h"
+				RelativePath="..\..\src\stdafx.h"
 				>
 			</File>
-			<File
-				RelativePath=".\snake3d.h"
+			<Filter
+				Name="win32"
 				>
-			</File>
-			<File
-				RelativePath=".\stdafx.h"
+				<Filter
+					Name="Header Files"
+					Filter="h;hpp;hxx;hm;inl;inc;xsd"
+					UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+					>
+					<File
+						RelativePath=".\Resource.h"
+						>
+					</File>
+					<File
+						RelativePath=".\snake3d.h"
+						>
+					</File>
+					<File
+						RelativePath=".\targetver.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Source Files"
+					Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+					UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+					>
+					<File
+						RelativePath=".\snake3d.cpp"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="core"
 				>
-			</File>
-			<File
-				RelativePath=".\targetver.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
-			<File
-				RelativePath=".\small.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\snake3d.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\snake3d.rc"
-				>
-			</File>
+				<Filter
+					Name="GameObject"
+					>
+					<File
+						RelativePath="..\..\src\CGameObject.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CGameObject.h"
+						>
+					</File>
+					<Filter
+						Name="Zone"
+						>
+						<File
+							RelativePath="..\..\src\CZone.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\CZone.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="Component"
+					>
+					<File
+						RelativePath="..\..\src\CComponentFactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CComponentFactory.h"
+						>
+					</File>
+					<Filter
+						Name="CAnimMeshComponent"
+						>
+						<File
+							RelativePath="..\..\src\CAnimMeshComponent.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\CAnimMeshComponent.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\CGameAnimatedMeshSceneNode.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\CGameAnimatedMeshSceneNode.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="ObjectTemplate"
+					>
+					<File
+						RelativePath="..\..\src\CObjectTemplate.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CObjectTemplate.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CObjTemplateFactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CObjTemplateFactory.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Seriaizable"
+					>
+					<File
+						RelativePath="..\..\src\CSerializable.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\CSerializable.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="View"
+					>
+					<File
+						RelativePath="..\..\src\IView.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\IViewImp.cpp"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

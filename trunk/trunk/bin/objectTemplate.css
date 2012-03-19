@@ -1,0 +1,8 @@
+orge
+{
+	Anim mesh component
+	{
+		meshFile: data/mesh/dwarf.x | filePathType;
+		animSpeed: 24.0000000 | floatType;
+	}
+}

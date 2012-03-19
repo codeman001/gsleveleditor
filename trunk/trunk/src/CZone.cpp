@@ -110,9 +110,9 @@ CGameObject* CZone::spawnObject( wchar_t* objTemplate )
 		return NULL;
 
 	wchar_t lpName[1024];
-	swprintf( lpName, 1024, L"%s_%d", objTemplate, (int)CDocument::s_objectID );
+	swprintf( lpName, 1024, L"%s_%d", objTemplate, (int)CGameObject::s_objectID );
 	
-	p->setID( CDocument::s_objectID++ );
+	p->setID( CGameObject::s_objectID++ );
 	p->setParent( this );
 
 	

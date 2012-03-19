@@ -9,8 +9,6 @@
 #include "CGameOxyzSceneNode.h"
 #include "CGameGSCameraAnimators.h"
 
-long CDocument::s_objectID = 1;
-
 CDocument::CDocument()
 {	
 }
@@ -135,11 +133,11 @@ CGameObject* CDocument::createZone()
 		
 	// set up name
 	uiStringW name;
-	name.format( L"zone%d", (int)CDocument::s_objectID );
+	name.format( L"zone%d", (int)CGameObject::s_objectID );
 
 	// create name + id
 	pZone->setName( name.c() );
-	pZone->setID( CDocument::s_objectID++ );
+	pZone->setID( CGameObject::s_objectID++ );
 
 	// create tree item
 	uiTreeViewItem *pTreeItem =	m_treeViewRoot->addChild( (LPWSTR) name.c() );

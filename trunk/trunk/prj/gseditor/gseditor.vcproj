@@ -457,6 +457,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\Component\CStaticMeshComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CStaticMeshComponent.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Component\IObjectComponent.cpp"
 						>
 					</File>
@@ -514,6 +522,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\core\SceneNode\CGameAnimatedMeshSceneNode.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameMeshSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameMeshSceneNode.h"
 						>
 					</File>
 					<File

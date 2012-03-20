@@ -45,6 +45,10 @@ public:
 	// get data from zone
 	virtual void getData( CSerializable* pObj );
 
+	// updateData
+	// update data
+	virtual void updateData( CSerializable* pObj );
+
 	// getChilds
 	// get list child
 	inline ArrayGameObject* getChilds()

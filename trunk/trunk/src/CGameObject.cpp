@@ -432,14 +432,12 @@ void CGameObject::updateData( CSerializable* pObj )
 	m_scale.X		= pObj->readFloat();
 	m_scale.Y		= pObj->readFloat();
 	m_scale.Z		= pObj->readFloat();
-
-	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
-	while ( iComp != iEnd )
-	{
-		(*iComp)->loadData( pObj );
-		iComp++;
-	}
+	
 	pObj->setCursorRecord( pos );
+
+	setID( m_objectID );
+	setEnable( m_enable );
+	setVisible( m_visible );
 
 	updateNodePosition();
 	updateNodeRotation();

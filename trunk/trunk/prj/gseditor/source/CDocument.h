@@ -108,6 +108,11 @@ public:
 		m_treeViewRoot = p;
 	}
 
+protected:
+	// readDocumentFromData
+	// parse document from data
+	bool readDocumentFromData( char *lpData );
+
 };
 
 #endif

@@ -457,6 +457,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\Component\CSkyboxComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CSkyboxComponent.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Component\CStaticMeshComponent.cpp"
 						>
 					</File>

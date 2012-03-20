@@ -12,7 +12,8 @@ public:
 	{
 		AnimMesh,
 		StaticMesh,
-		NumBuildInComponent = StaticMesh
+		Skybox,
+		NumBuildInComponent = Skybox
 	};
 
 	static const char *s_compType[];

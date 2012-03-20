@@ -135,13 +135,17 @@ bool CDocument::saveDocument(wchar_t* lpPath)
 
 extern void getBufferString( char *lpBuffer, char *from, char *to );
 
-bool readDocumentFromData( char *lpData )
+// readDocumentFromData
+// parse document from data
+bool CDocument::readDocumentFromData( char *lpData )
 {
 	char *p = lpData;
 	char *from = p;
 
 	char	lpStringA[1024];
 	wchar_t	lpString[1024];
+
+	CZone	*currentZone = NULL;
 
 	while ( *p != NULL )
 	{
@@ -152,12 +156,35 @@ bool readDocumentFromData( char *lpData )
 						
 			p++;
 			
-			CSerializable	component;
-			while ( component.readData( p ) )
+			// read data object
+			CSerializable	objData;
+			while ( objData.readData( p ) )
+			{				
+			}
+		
+			// parse object info
+			SSerializableRec *r = objData.getProperty("objectTemplate");
+			if ( r != NULL && currentZone )
 			{
-				printf("Obj: %s - %d records \n", lpStringA, component.getAllRecord()->size() );
-				component.clear();
-			}						
+				uiString::convertUTF8ToUnicode( r->data, (unsigned short*) lpString );
+
+				// create game object
+				CGameObject *pGameObj = currentZone->spawnObject( lpString );
+				if ( pGameObj )
+					pGameObj->updateData( &objData );
+			}
+			else
+			{
+				char *objType = objData.getAllRecord()->front().data;
+				if ( strcmp( objType, "Game zone" ) == 0 )
+				{
+					// create zone
+					currentZone = (CZone*)createZone();
+					currentZone->updateData( &objData );
+				}
+			}
+
+			objData.clear();
 		}
 		else if ( *p == '}' )
 		{

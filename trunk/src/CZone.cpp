@@ -193,3 +193,39 @@ void CZone::getData( CSerializable* pObj )
 	pObj->addBool	("visible",		m_visible );	
 
 }
+
+// updateData
+// update data
+void CZone::updateData( CSerializable* pObj )
+{
+	int pos = pObj->getCursorRecord();
+	pObj->nextRecord();
+	
+	// object id
+	m_objectID	= pObj->readLong();
+
+	// object type
+	char *type = pObj->readString();
+	for ( int i = 0; i < CGameObject::NumObject; i++ )
+	{
+		if ( strcmp(s_stringObjType[i], type) == 0 )
+		{
+			m_objectType = (CGameObject::ObjectType)i;
+			break;
+		}
+	}
+
+	// read obj name
+	wchar_t lpText[1024] = {0};
+	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
+	setName( lpText );
+
+	// object enable
+	m_enable	= pObj->readBool();
+
+	// object visible
+	m_visible	= pObj->readBool();
+
+	// reset position
+	pObj->setCursorRecord( pos );
+}

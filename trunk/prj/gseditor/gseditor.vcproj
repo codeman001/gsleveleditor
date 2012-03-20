@@ -478,18 +478,6 @@
 					>
 				</File>
 				<Filter
-					Name="Zone"
-					>
-					<File
-						RelativePath="..\..\src\CZone.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\CZone.h"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="Components"
 					>
 					<File
@@ -542,10 +530,6 @@
 					</Filter>
 				</Filter>
 				<Filter
-					Name="Trigger"
-					>
-				</Filter>
-				<Filter
 					Name="GameObject"
 					>
 					<File
@@ -556,13 +540,29 @@
 						RelativePath="..\..\src\CGameObject.h"
 						>
 					</File>
+					<Filter
+						Name="Terrain"
+						>
+					</Filter>
+					<Filter
+						Name="Trigger"
+						>
+					</Filter>
+					<Filter
+						Name="Zone"
+						>
+						<File
+							RelativePath="..\..\src\CZone.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\CZone.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="Cinematic"
-					>
-				</Filter>
-				<Filter
-					Name="Terrain"
 					>
 				</Filter>
 				<Filter

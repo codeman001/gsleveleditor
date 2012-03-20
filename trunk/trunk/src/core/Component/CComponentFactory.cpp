@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "CComponentFactory.h"
+
 #include "CAnimMeshComponent.h"
+#include "CStaticMeshComponent.h"
+
 
 #define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
 
@@ -15,13 +18,20 @@ void CComponentFactory::initComponentTemplate()
 {
 	s_compTemplate.clear();
 	
-	// default component anim mesh
-	s_compTemplate.push_back( CSerializable() );	// anim mesh
+	CSerializable *p = NULL;
 
-	CSerializable *p = &s_compTemplate[ IObjectComponent::AnimMesh ];
+	// add build in anim mesh
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::AnimMesh ];
 	p->addGroup	(stringOfComponent(IObjectComponent::AnimMesh));
 	p->addPath	("meshFile", "data/mesh/dwarf.x");
 	p->addFloat	("animSpeed", 24.0f );
+
+	// add build in static mesh
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::StaticMesh ];
+	p->addGroup	(stringOfComponent(IObjectComponent::StaticMesh));
+	p->addPath	("meshFile", "data/mesh/dwarf.x");
 
 	loadAllTemplate();
 }
@@ -31,7 +41,7 @@ void CComponentFactory::initComponentTemplate()
 bool CComponentFactory::isBuildInComponent( CSerializable* p )
 {
 	const char *lpName = p->getAllRecord()->front().name;
-	for ( int i = 0; i <= IObjectComponent::AINpcComponent; i++ )
+	for ( int i = 0; i <= IObjectComponent::NumBuildInComponent; i++ )
 	{
 		if ( strcmp( lpName, stringOfComponent(i) ) == 0 )
 			return true;
@@ -191,21 +201,11 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 		pComp = new CAnimMeshComponent( pObj );
 		pComp->loadData( data );
 	}
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Mesh ) ) == 0 )
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::StaticMesh ) ) == 0 )
 	{
+		pComp = new CStaticMeshComponent( pObj );
+		pComp->loadData( data );
 	}
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Health) ) == 0 )
-	{
-	}
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Collision) ) == 0 )
-	{
-	}
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::AINpcComponent) ) == 0 )
-	{
-	}
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::NpcComponent) ) == 0 )
-	{
-	}	
 	
 	// check not build in component
 	return pComp;

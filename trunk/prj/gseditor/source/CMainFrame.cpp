@@ -144,6 +144,7 @@ void CMainFrame::_OnCreate()
 	e.pushKey( FCONTROL, ('o'-'a' + 1) ,(WORD) ID_OPEN_COMMAND);		// control + o open
 	e.pushKey( FCONTROL, ('s'-'a' + 1) ,(WORD) ID_SAVE_COMMAND);		// control + s save
 
+	e.pushKey( FVIRTKEY, VK_ESCAPE,		(WORD) ID_CAMERA_COMMAND);		// esc
 	e.pushKey( FVIRTKEY, VK_DELETE,		(WORD) ID_DELETE_COMMAND);		// delete
 	e.pushKey( FVIRTKEY, 'S',			(WORD) ID_SELECT_COMMAND);		// select controller
 	e.pushKey( FVIRTKEY, 'R',			(WORD) ID_ROTATE_COMMAND);		// rotate controller

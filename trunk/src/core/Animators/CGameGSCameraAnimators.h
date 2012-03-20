@@ -52,7 +52,13 @@ public:
 
 		virtual bool isEventReceiverEnabled() const;
 
+		// enableMove
+		// enable/disable move by right click
+		virtual void enableMove( bool b );
+
 protected:
+		bool m_enableMove;
+
 		f32	m_moveSpeed;
 		f32 m_rotateSpeed;
 		gui::ICursorControl *m_cursorControl;

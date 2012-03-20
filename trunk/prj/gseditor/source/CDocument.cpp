@@ -266,16 +266,25 @@ void CDocument::drawDocument()
 {
 	// draw document
 	IVideoDriver* driver = getIView()->getDriver();
+	ISceneManager* smgr = getIView()->getSceneMgr();
 
 	// draw 3d scene
 	driver->beginScene( true, true, 0, getIView()->getVideoData() );
 		
 	// draw all scene
-	getIView()->getSceneMgr()->drawAll();
+	smgr->drawAll();
 
 	// controller draw imp
 	CControllerManager::getInstance()->getCurrentController()->render();
 	
+	int fps = driver->getFPS();
+	core::stringw text(L"fps: ");
+	text += fps;
+	text += L" frame/second";
+
+	irr::gui::IGUIFont* font = smgr->getGUIEnvironment()->getBuiltInFont();
+	font->draw( text.c_str(), core::recti( 10, 10, 200, 20), video::SColor(255, 255,0,0) );
+
 	// end scene
 	driver->endScene();
 }

@@ -83,6 +83,9 @@ bool IView::getScreenCoordinatesFrom3DPosition(const core::vector3df& pos3d, int
 }
 
 #ifdef GSEDITOR
+
+#include "CGameGSCameraAnimators.h"
+
 // enableFreeCamera
 // disable or enable change camera view on editor
 void IView::enableFreeCamera( bool b )
@@ -94,8 +97,11 @@ void IView::enableFreeCamera( bool b )
 
 	if (camera == NULL)
 		return;
+	
+	core::list<ISceneNodeAnimator*>::ConstIterator it = camera->getAnimators().begin();
+	CGameGSCameraAnimators *camAnimator = (CGameGSCameraAnimators*) (*it);
 
-	// set enable input revc
-	camera->setInputReceiverEnabled( b );
+	// disable rotate on right click
+	camAnimator->enableMove( b );
 }
 #endif

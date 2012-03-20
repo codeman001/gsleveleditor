@@ -3,7 +3,7 @@
 
 #include "CAnimMeshComponent.h"
 #include "CStaticMeshComponent.h"
-
+#include "CSkyboxComponent.h"
 
 #define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
 
@@ -32,6 +32,12 @@ void CComponentFactory::initComponentTemplate()
 	p = &s_compTemplate[ IObjectComponent::StaticMesh ];
 	p->addGroup	(stringOfComponent(IObjectComponent::StaticMesh));
 	p->addPath	("meshFile", "data/mesh/dwarf.x");
+
+	// add skybox component
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::Skybox ];
+	p->addGroup	(stringOfComponent(IObjectComponent::Skybox));
+	p->addPath	("skyTexture", "data/skydome2.jpg");		
 
 	loadAllTemplate();
 }
@@ -206,7 +212,12 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 		pComp = new CStaticMeshComponent( pObj );
 		pComp->loadData( data );
 	}
-	
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Skybox ) ) == 0 )
+	{
+		pComp = new CSkyboxComponent( pObj );
+		pComp->loadData( data );
+	}
+
 	// check not build in component
 	return pComp;
 }

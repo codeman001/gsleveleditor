@@ -23,6 +23,9 @@ public:
 	// update object by frame
 	virtual void updateComponent();
 	
+	// loadSkyTextureFile
+	// load file
+	void loadSkyTextureFile( char *lpFileName );
 public:
 	// saveData
 	// save data to serializable

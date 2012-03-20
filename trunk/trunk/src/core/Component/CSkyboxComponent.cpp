@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CSkyboxComponent.h"
+#include "IView.h"
 
 CSkyboxComponent::CSkyboxComponent( CGameObject *pObj )
 	:IObjectComponent( pObj, IObjectComponent::Skybox )
@@ -21,15 +22,55 @@ void CSkyboxComponent::initComponent()
 void CSkyboxComponent::updateComponent()
 {
 }
+
+// loadSkyTextureFile
+// load file
+void CSkyboxComponent::loadSkyTextureFile( char *lpFileName )
+{
+	if ( m_skyboxTexture == lpFileName )
+		return;
+
+	m_skyboxTexture = lpFileName;
+
+	// release if mesh is loaded
+	if ( m_gameObject->m_node )
+		m_gameObject->destroyNode();
+
+	ISceneManager *smgr = getIView()->getSceneMgr();
+	IVideoDriver *driver= getIView()->getDriver();
+
+	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);
+
+	scene::ISceneNode* skydome = smgr->addSkyDomeSceneNode(driver->getTexture(lpFileName), 16,8, 0.95f, 2.0f);
 	
+	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, true);
+
+	// set scenenode
+	m_gameObject->m_node = skydome;
+	skydome->grab();
+
+	// set visibke
+	m_gameObject->m_node->setVisible( true );
+}
+
 // saveData
 // save data to serializable
 void CSkyboxComponent::saveData( CSerializable* pObj )
 {
+	// save mesh file
+	pObj->addGroup( IObjectComponent::s_compType[ m_componentID ] );
+
+	// add path to mesh file
+	pObj->addPath("skyTexture", m_skyboxTexture.c_str(), true);
 }
 
 // loadData
 // load data to serializable
 void CSkyboxComponent::loadData( CSerializable* pObj )
 {
+	pObj->nextRecord();
+
+	// read mesh file
+	char *string = pObj->readString();
+	loadSkyTextureFile( string );
 }

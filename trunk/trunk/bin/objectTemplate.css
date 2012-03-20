@@ -6,3 +6,10 @@ orge
 		animSpeed: 24.0000000 | floatType;
 	}
 }
+lv1_terrain
+{
+	Static mesh component
+	{
+		meshFile: data/mesh/lv1_terrain.x | filePathType;
+	}
+}

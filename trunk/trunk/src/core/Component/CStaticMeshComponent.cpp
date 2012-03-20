@@ -55,6 +55,9 @@ void CStaticMeshComponent::loadFromFile( char *lpFilename )
 		
 		// copy material
 		staticBuffer->getMaterial() = animBuffer->getMaterial();
+
+		staticBuffer->getMaterial().Lighting = false;
+
 		staticBuffer->setHardwareMappingHint( scene::EHM_STATIC,  scene::EBT_VERTEX_AND_INDEX);
 	}	
 

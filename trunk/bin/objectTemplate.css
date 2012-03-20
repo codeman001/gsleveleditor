@@ -13,3 +13,10 @@ lv1_terrain
 		meshFile: data/mesh/lv1_terrain.x | filePathType;
 	}
 }
+lv1_skybox
+{
+	Skybox
+	{
+		skyTexture: data/skydome2.jpg | filePathType;
+	}
+}

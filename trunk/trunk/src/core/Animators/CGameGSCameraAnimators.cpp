@@ -16,6 +16,7 @@ CGameGSCameraAnimators::CGameGSCameraAnimators(	gui::ICursorControl* cursorContr
 	m_wheel = 0.0f;
 
 	m_firstUpdate = true;
+	m_enableMove = true;
 }
 
 //! Destructor
@@ -23,116 +24,6 @@ CGameGSCameraAnimators::~CGameGSCameraAnimators()
 {
 }
 
-//! Animates the scene node, currently only works on cameras
-void CGameGSCameraAnimators::animateNode(ISceneNode* node, u32 timeMs)
-{
-	if (!node || node->getType() != ESNT_CAMERA)
-		return;
-
-	ICameraSceneNode* camera = static_cast<ICameraSceneNode*>(node);
-
-	if (m_firstUpdate)
-	{
-		m_lastAnimationTime = timeMs;
-		m_firstUpdate = false;
-	}
-
-	if(!camera->isInputReceiverEnabled())
-		return;
-
-	// get time
-	f32 timeDiff = (f32) ( timeMs - m_lastAnimationTime );
-	m_lastAnimationTime = timeMs;
-
-	// update position
-	core::vector3df pos = camera->getPosition();
-
-	// Update rotation
-	core::vector3df target = (camera->getTarget() - camera->getAbsolutePosition());
-	core::vector3df relativeRotation = target.getHorizontalAngle();
-	
-	const float MaxVerticalAngle = 88;
-	const int	MouseYDirection = 1;	
-
-	// Update position
-	core::vector3df offsetPosition;
-
-	if (m_cursorPos != m_centerCursor && m_leftMousePress)
-	{
-		// rotate X
-		relativeRotation.Y -= (m_centerCursor.X - m_cursorPos.X) * m_rotateSpeed * MouseYDirection;
-
-		// rotate Y
-		relativeRotation.X -= (m_centerCursor.Y - m_cursorPos.Y) * m_rotateSpeed;
-
-		if (relativeRotation.X > MaxVerticalAngle*2 && relativeRotation.X < 360.0f-MaxVerticalAngle)
-		{
-			relativeRotation.X = 360.0f-MaxVerticalAngle;
-		}
-		else if (relativeRotation.X > MaxVerticalAngle && relativeRotation.X < 360.0f-MaxVerticalAngle)
-		{
-			relativeRotation.X = MaxVerticalAngle;
-		}
-
-		m_centerCursor = m_cursorControl->getRelativePosition();
-		m_cursorPos = m_centerCursor;
-	}
-	else if (m_cursorPos != m_centerCursor && (m_rightMousePress || m_midMousePress) )
-	{
-		offsetPosition.X = (m_cursorPos.X - m_centerCursor.X) * 100.0f;
-		offsetPosition.Y = (m_cursorPos.Y - m_centerCursor.Y) * 100.0f;
-
-		offsetPosition = offsetPosition * m_moveSpeed * timeDiff;
-
-		m_centerCursor = m_cursorControl->getRelativePosition();
-		m_cursorPos = m_centerCursor;
-	}
-	
-	// set target
-	target.set(0,0, core::max_(1.f, pos.getLength()));
-
-	core::matrix4 mat;
-	mat.setRotationDegrees(core::vector3df(relativeRotation.X, relativeRotation.Y, 0));
-	mat.transformVect(target);
-	
-	// set position
-	core::vector3df movedir = target;
-	movedir.normalize();
-
-	if ( m_midMousePress )
-	{		
-		pos -= movedir * offsetPosition.Y;		
-	}
-
-	if ( m_mouseWhell )
-	{
-		pos -= movedir * m_wheel * m_moveSpeed * timeDiff;
-		m_mouseWhell = false;
-	}
-
-	if ( m_rightMousePress )
-	{
-		// move left, right
-		core::vector3df strafevect = target;
-		strafevect = strafevect.crossProduct(camera->getUpVector());	
-		strafevect.normalize();
-		pos += strafevect * offsetPosition.X;
-
-		// move up, down
-		core::vector3df	up = strafevect;
-		up = up.crossProduct( movedir );
-		up.normalize();
-		pos += up * offsetPosition.Y;
-	}
-
-
-	// write translation
-	camera->setPosition(pos);
-
-	// write right target
-	target += pos;
-	camera->setTarget(target);
-}
 
 //! Event receiver
 bool CGameGSCameraAnimators::OnEvent(const SEvent& evt)
@@ -194,6 +85,131 @@ bool CGameGSCameraAnimators::OnEvent(const SEvent& evt)
 	}
 
 	return false;
+}
+
+//! Animates the scene node, currently only works on cameras
+void CGameGSCameraAnimators::animateNode(ISceneNode* node, u32 timeMs)
+{
+	if (!node || node->getType() != ESNT_CAMERA)
+		return;
+
+	ICameraSceneNode* camera = static_cast<ICameraSceneNode*>(node);
+
+	if (m_firstUpdate)
+	{
+		m_lastAnimationTime = timeMs;
+		m_firstUpdate = false;
+	}
+
+	if(!camera->isInputReceiverEnabled())
+		return;
+
+	// get time
+	f32 timeDiff = (f32) ( timeMs - m_lastAnimationTime );
+	m_lastAnimationTime = timeMs;
+
+	// update position
+	core::vector3df pos = camera->getPosition();
+
+	// Update rotation
+	core::vector3df target = (camera->getTarget() - camera->getAbsolutePosition());
+	core::vector3df relativeRotation = target.getHorizontalAngle();
+	
+	const float MaxVerticalAngle = 88;
+	const int	MouseYDirection = 1;	
+
+	// Update position
+	core::vector3df offsetPosition;
+
+	if (	
+			m_cursorPos != m_centerCursor && 
+			( 
+				(m_leftMousePress && m_enableMove == true) ||
+				(m_rightMousePress && m_enableMove == false)
+			)
+		)
+	{
+		// rotate X
+		relativeRotation.Y -= (m_centerCursor.X - m_cursorPos.X) * m_rotateSpeed * MouseYDirection;
+
+		// rotate Y
+		relativeRotation.X -= (m_centerCursor.Y - m_cursorPos.Y) * m_rotateSpeed;
+
+		if (relativeRotation.X > MaxVerticalAngle*2 && relativeRotation.X < 360.0f-MaxVerticalAngle)
+		{
+			relativeRotation.X = 360.0f-MaxVerticalAngle;
+		}
+		else if (relativeRotation.X > MaxVerticalAngle && relativeRotation.X < 360.0f-MaxVerticalAngle)
+		{
+			relativeRotation.X = MaxVerticalAngle;
+		}
+
+		m_centerCursor = m_cursorControl->getRelativePosition();
+		m_cursorPos = m_centerCursor;
+	}
+	else if (m_cursorPos != m_centerCursor &&  ((m_rightMousePress && m_enableMove == true) || m_midMousePress) )
+	{
+		offsetPosition.X = (m_cursorPos.X - m_centerCursor.X) * 100.0f;
+		offsetPosition.Y = (m_cursorPos.Y - m_centerCursor.Y) * 100.0f;
+
+		offsetPosition = offsetPosition * m_moveSpeed * timeDiff;
+
+		m_centerCursor = m_cursorControl->getRelativePosition();
+		m_cursorPos = m_centerCursor;
+	}
+	
+	// set target
+	target.set(0,0, core::max_(1.f, pos.getLength()));
+
+	core::matrix4 mat;
+	mat.setRotationDegrees(core::vector3df(relativeRotation.X, relativeRotation.Y, 0));
+	mat.transformVect(target);
+	
+	// set position
+	core::vector3df movedir = target;
+	movedir.normalize();
+
+	if ( m_midMousePress )
+	{		
+		pos -= movedir * offsetPosition.Y;		
+	}
+
+	if ( m_mouseWhell )
+	{
+		pos -= movedir * m_wheel * m_moveSpeed * timeDiff;
+		m_mouseWhell = false;
+	}
+
+	if ( m_rightMousePress )
+	{
+		// move left, right
+		core::vector3df strafevect = target;
+		strafevect = strafevect.crossProduct(camera->getUpVector());	
+		strafevect.normalize();
+		pos += strafevect * offsetPosition.X;
+
+		// move up, down
+		core::vector3df	up = strafevect;
+		up = up.crossProduct( movedir );
+		up.normalize();
+		pos += up * offsetPosition.Y;
+	}
+
+
+	// write translation
+	camera->setPosition(pos);
+
+	// write right target
+	target += pos;
+	camera->setTarget(target);
+}
+
+
+// enableMove
+// enable move by right click
+void CGameGSCameraAnimators::enableMove( bool b )
+{
+	m_enableMove = b;
 }
 
 //! Returns the speed of movement in units per second

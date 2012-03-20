@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src;..\..\..\extern\irrlicht\include;..\..\..\extern\irrlicht\source\Irrlicht;..\..\..\extern\uiClass"
+				AdditionalIncludeDirectories="..\..\src;..\..\..\extern\irrlicht\include;..\..\..\extern\irrlicht\source\Irrlicht;..\..\..\extern\uiClass;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Serializable"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -190,6 +190,18 @@
 			Name="Source"
 			>
 			<File
+				RelativePath="..\..\src\AppInclude.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\IView.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\IViewImp.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -249,110 +261,114 @@
 				Name="core"
 				>
 				<Filter
-					Name="GameObject"
+					Name="Animators"
 					>
 					<File
-						RelativePath="..\..\src\CGameObject.cpp"
+						RelativePath="..\..\src\core\Animators\CGameGSCameraAnimators.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CGameObject.h"
+						RelativePath="..\..\src\core\Animators\CGameGSCameraAnimators.h"
 						>
 					</File>
-					<Filter
-						Name="Zone"
-						>
-						<File
-							RelativePath="..\..\src\CZone.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\src\CZone.h"
-							>
-						</File>
-					</Filter>
 				</Filter>
 				<Filter
 					Name="Component"
 					>
 					<File
-						RelativePath="..\..\src\CComponentFactory.cpp"
+						RelativePath="..\..\src\core\Component\CAnimMeshComponent.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CComponentFactory.h"
+						RelativePath="..\..\src\core\Component\CAnimMeshComponent.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\IObjectComponent.cpp"
+						RelativePath="..\..\src\core\Component\CComponentFactory.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\IObjectComponent.h"
+						RelativePath="..\..\src\core\Component\CComponentFactory.h"
 						>
 					</File>
-					<Filter
-						Name="CAnimMeshComponent"
+					<File
+						RelativePath="..\..\src\core\Component\IObjectComponent.cpp"
 						>
-						<File
-							RelativePath="..\..\src\CAnimMeshComponent.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\src\CAnimMeshComponent.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\src\CGameAnimatedMeshSceneNode.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\src\CGameAnimatedMeshSceneNode.h"
-							>
-						</File>
-					</Filter>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\IObjectComponent.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="GameObject"
+					>
+					<File
+						RelativePath="..\..\src\core\GameObject\CGameObject.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CGameObject.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CZone.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CZone.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="ObjectTemplate"
 					>
 					<File
-						RelativePath="..\..\src\CObjectTemplate.cpp"
+						RelativePath="..\..\src\core\ObjectTemplate\CObjectTemplate.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CObjectTemplate.h"
+						RelativePath="..\..\src\core\ObjectTemplate\CObjectTemplate.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CObjTemplateFactory.cpp"
+						RelativePath="..\..\src\core\ObjectTemplate\CObjTemplateFactory.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\CObjTemplateFactory.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Seriaizable"
-					>
-					<File
-						RelativePath="..\..\src\CSerializable.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\CSerializable.h"
+						RelativePath="..\..\src\core\ObjectTemplate\CObjTemplateFactory.h"
 						>
 					</File>
 				</Filter>
 				<Filter
-					Name="View"
+					Name="SceneNode"
 					>
 					<File
-						RelativePath="..\..\src\IView.h"
+						RelativePath="..\..\src\core\SceneNode\CGameAnimatedMeshSceneNode.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\IViewImp.cpp"
+						RelativePath="..\..\src\core\SceneNode\CGameAnimatedMeshSceneNode.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameOxySceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameOxyzSceneNode.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Serializable"
+					>
+					<File
+						RelativePath="..\..\src\core\Serializable\CSerializable.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Serializable\CSerializable.h"
 						>
 					</File>
 				</Filter>

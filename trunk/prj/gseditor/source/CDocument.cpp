@@ -18,13 +18,8 @@ CDocument::CDocument()
 
 CDocument::~CDocument()
 {
-	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
-	while ( iZone != iEnd )
-	{
-		delete (*iZone);
-		iZone++;
-	}
-	m_zones.clear();
+	// delete all zone
+	removeAllZone();
 
 	// delete all item
 	getIView()->getDocumentTreeView()->deleteAllItem();
@@ -146,7 +141,7 @@ bool CDocument::readDocumentFromData( char *lpData )
 	wchar_t	lpString[1024];
 
 	CZone	*currentZone = NULL;
-
+	
 	while ( *p != NULL )
 	{
 		if ( *p == '{' )
@@ -219,7 +214,13 @@ bool CDocument::openDocument(wchar_t* lpPath)
 	file.read(lpBuffer,length);
 	file.close();
 
+	// remove old zone
+	removeAllZone();
+
 	bool ret = readDocumentFromData( lpBuffer );
+
+	// expand child
+	m_treeViewRoot->expandChild(true);
 
 	delete lpBuffer;		
 	return ret;
@@ -326,6 +327,42 @@ CGameObject* CDocument::createZone()
 	m_zones.push_back( pZone );
 	return pZone;
 }
+
+
+// removeZone
+// remove zone
+void CDocument::removeZone(CGameObject* zone)
+{
+	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
+	while ( iZone != iEnd )
+	{
+		CZone *p = (CZone*) (*iZone);
+		if ( p == zone )
+		{
+			m_treeViewRoot->destroyChild( p->getTreeItem() );
+			delete p;
+			m_zones.erase( iZone );
+			return;
+		}
+		iZone++;
+	}
+}
+
+// removeAllZone
+// remove all zone on level
+void CDocument::removeAllZone()
+{
+	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
+	while ( iZone != iEnd )
+	{
+		CZone *p = (CZone*) (*iZone);		
+		m_treeViewRoot->destroyChild( p->getTreeItem() );
+		delete p;
+		iZone++;
+	}
+	m_zones.clear();
+}
+
 
 // selectObject
 // detect list objs at mouse xy	

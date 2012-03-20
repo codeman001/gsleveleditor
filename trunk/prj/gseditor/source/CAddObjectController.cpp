@@ -45,6 +45,8 @@ void CAddObjectController::onMouseMove(int x, int y)
 	if ( b )
 	{
 		CGameObject *pObj = pView->getGameObjectOfCurrentTemplate();
+		if ( pObj && pObj->isVisible() == false )
+			pObj->setVisible( true );
 		if ( pObj )
 			pObj->setPosition( hit );			
 	}

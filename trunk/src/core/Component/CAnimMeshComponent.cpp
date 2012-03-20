@@ -31,6 +31,11 @@ void CAnimMeshComponent::loadFromFile( char *lpFilename )
 	// load mesh
 	IAnimatedMesh *animMesh = smgr->getMesh( lpFilename );
 
+	// turn off lighting
+	int numMesh = animMesh->getMeshBufferCount();
+	for ( int i = 0; i < numMesh; i++ )
+		animMesh->getMeshBuffer(i)->getMaterial().Lighting = false;
+	
 	// create scene node
 	m_animNode = new CGameAnimatedMeshSceneNode( m_gameObject, animMesh, smgr->getRootSceneNode(), smgr );	
 	m_animNode->setAnimationSpeed( m_animSpeed );	

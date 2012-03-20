@@ -439,8 +439,9 @@ void CGameObject::updateData( CSerializable* pObj )
 	setEnable( m_enable );
 	setVisible( m_visible );
 
+	updateRotation();
+
 	updateNodePosition();
-	updateNodeRotation();
 	updateNodeScale();
 }
 

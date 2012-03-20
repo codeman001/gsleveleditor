@@ -56,6 +56,14 @@ public:
 	// create a zone
 	virtual CGameObject* createZone();
 
+	// removeZone
+	// remove zone
+	virtual void removeZone(CGameObject* zone);
+
+	// removeAllZone
+	// remove all zone on level
+	virtual void removeAllZone();
+
 	// searchObjByID
 	// search object with id
 	virtual CGameObject* searchObject( long id );

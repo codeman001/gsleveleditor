@@ -11,11 +11,8 @@ public:
 	enum ComponentType
 	{
 		AnimMesh,
-		Mesh,
-		Health,
-		Collision,
-		AINpcComponent,
-		NpcComponent
+		StaticMesh,
+		NumBuildInComponent = StaticMesh
 	};
 
 	static const char *s_compType[];

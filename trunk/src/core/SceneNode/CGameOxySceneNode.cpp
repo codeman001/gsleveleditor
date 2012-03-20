@@ -57,8 +57,7 @@ void CGameOxyzSceneNode::render()
 		start.X += gridSize;
 		end.X	+= gridSize;
 	}
-	
+		
 	Box.addInternalPoint( core::vector3df(0, 0, 0) );
-	Box.addInternalPoint( core::vector3df(size, 10, size) );
-	
+	Box.addInternalPoint( core::vector3df(size, 10, size) );	
 }

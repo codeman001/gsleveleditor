@@ -9,9 +9,7 @@
 class CGameOxyzSceneNode: public ISceneNode
 {
 protected:
-	core::aabbox3d<f32> Box;
-	
-	//S3DVertex Vertices[4];
+	core::aabbox3d<f32> Box;	
 	SMaterial Material;
 public:
 	CGameOxyzSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id);

@@ -48,7 +48,10 @@ void CAddObjectController::onMouseMove(int x, int y)
 		if ( pObj && pObj->isVisible() == false )
 			pObj->setVisible( true );
 		if ( pObj )
+		{
+			pObj->updateObject();
 			pObj->setPosition( hit );			
+		}
 	}
 }
 

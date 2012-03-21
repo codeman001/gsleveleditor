@@ -457,6 +457,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\Component\CObjectTransformComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CObjectTransformComponent.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Component\CSkyboxComponent.cpp"
 						>
 					</File>

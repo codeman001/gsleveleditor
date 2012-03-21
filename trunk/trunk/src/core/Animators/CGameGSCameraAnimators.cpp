@@ -104,8 +104,9 @@ void CGameGSCameraAnimators::animateNode(ISceneNode* node, u32 timeMs)
 	if(!camera->isInputReceiverEnabled())
 		return;
 
-	// get time
-	f32 timeDiff = (f32) ( timeMs - m_lastAnimationTime );
+	// get time	
+	//f32 timeDiff = (f32) ( timeMs - m_lastAnimationTime );
+	f32 timeDiff = 2.0f;
 	m_lastAnimationTime = timeMs;
 
 	// update position

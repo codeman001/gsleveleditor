@@ -13,7 +13,8 @@ public:
 		AnimMesh,
 		StaticMesh,
 		Skybox,
-		NumBuildInComponent = Skybox
+		ObjectTransform,
+		NumBuildInComponent = ObjectTransform
 	};
 
 	static const char *s_compType[];

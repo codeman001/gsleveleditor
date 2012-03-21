@@ -30,6 +30,8 @@ void CAnimMeshComponent::loadFromFile( char *lpFilename )
 	
 	// load mesh
 	IAnimatedMesh *animMesh = smgr->getMesh( lpFilename );
+	if ( animMesh == NULL )
+		return;
 
 	// turn off lighting
 	int numMesh = animMesh->getMeshBufferCount();

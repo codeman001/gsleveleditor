@@ -41,7 +41,26 @@ void CSkyboxComponent::loadSkyTextureFile( char *lpFileName )
 
 	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);
 
-	scene::ISceneNode* skydome = smgr->addSkyDomeSceneNode(driver->getTexture(lpFileName), 16,8, 0.95f, 2.0f);
+	ITexture *pTex = driver->getTexture(lpFileName);
+
+#ifdef GSEDITOR
+	if ( pTex == NULL )
+	{
+		WCHAR appPath[MAX_PATH];
+		char  appPathA[MAX_PATH];
+
+		uiApplication::getAppPath(appPath, MAX_PATH);
+		uiString::copy<char, WCHAR>( appPathA, appPath  );
+		
+		std::string path = appPathA;
+		path += "\\";
+		path += lpFileName;
+		
+		pTex = driver->getTexture(path.c_str());
+	}
+#endif
+
+	scene::ISceneNode* skydome = smgr->addSkyDomeSceneNode( pTex, 16,8, 0.95f, 2.0f);
 	
 	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, true);
 
@@ -51,6 +70,10 @@ void CSkyboxComponent::loadSkyTextureFile( char *lpFileName )
 
 	// set visibke
 	m_gameObject->m_node->setVisible( true );
+	
+	// update position
+	m_gameObject->updateNodePosition();
+	m_gameObject->updateNodeRotation();
 }
 
 // saveData

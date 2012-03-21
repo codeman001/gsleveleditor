@@ -4,6 +4,7 @@
 #include "CAnimMeshComponent.h"
 #include "CStaticMeshComponent.h"
 #include "CSkyboxComponent.h"
+#include "CObjectTransformComponent.h"
 
 #define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
 
@@ -38,6 +39,17 @@ void CComponentFactory::initComponentTemplate()
 	p = &s_compTemplate[ IObjectComponent::Skybox ];
 	p->addGroup	(stringOfComponent(IObjectComponent::Skybox));
 	p->addPath	("skyTexture", "data/skydome2.jpg");		
+
+	// add object transform
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::ObjectTransform ];
+	p->addGroup	(stringOfComponent(IObjectComponent::ObjectTransform));	
+	p->addFloat("rotateX", 0.0f);
+	p->addFloat("rotateY", 0.0f);
+	p->addFloat("rotateZ", 0.0f);
+	p->addFloat("scaleX", 1.0f);
+	p->addFloat("scaleY", 1.0f);
+	p->addFloat("scaleZ", 1.0f);
 
 	loadAllTemplate();
 }
@@ -202,21 +214,17 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 
 	IObjectComponent* pComp = NULL;
 
-	if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::AnimMesh) ) == 0 )
-	{
+	if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::AnimMesh) ) == 0 )	
 		pComp = new CAnimMeshComponent( pObj );
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::StaticMesh ) ) == 0 )	
+		pComp = new CStaticMeshComponent( pObj );	
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Skybox ) ) == 0 )	
+		pComp = new CSkyboxComponent( pObj );	
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ObjectTransform ) ) == 0 )
+		pComp = new CObjectTransformComponent( pObj );
+
+	if ( pComp )
 		pComp->loadData( data );
-	}
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::StaticMesh ) ) == 0 )
-	{
-		pComp = new CStaticMeshComponent( pObj );
-		pComp->loadData( data );
-	}
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Skybox ) ) == 0 )
-	{
-		pComp = new CSkyboxComponent( pObj );
-		pComp->loadData( data );
-	}
 
 	// check not build in component
 	return pComp;

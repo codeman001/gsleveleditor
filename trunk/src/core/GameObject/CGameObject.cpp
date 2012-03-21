@@ -479,6 +479,13 @@ void CGameObject::initComponent( CSerializable* componentData )
 
 	componentData->setCursorRecord( pos );
 
+	// call init all component
+	ArrayComponentIter i = m_components.begin(), end = m_components.end();
+	while ( i != end )
+	{
+		(*i)->initComponent();
+		i++;
+	}
 }
 
 

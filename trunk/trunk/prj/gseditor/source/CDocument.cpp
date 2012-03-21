@@ -18,6 +18,9 @@ CDocument::CDocument()
 
 CDocument::~CDocument()
 {
+	// delete grid
+	m_gridNode->drop();
+
 	// delete all zone
 	removeAllZone();
 
@@ -49,7 +52,7 @@ void CDocument::newDocument()
 
 	// add oxyz plane node
 	CGameOxyzSceneNode *oxyPlane = new CGameOxyzSceneNode( smgr->getRootSceneNode(), smgr, 1 );
-	oxyPlane->drop();
+	m_gridNode = oxyPlane;
 
 	m_filePath = L"";
 

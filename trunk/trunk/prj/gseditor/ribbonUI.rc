@@ -98,12 +98,39 @@ END
 ID_SCALE_LargeImages_RESID    BITMAP    "ribbonIcon\\transform_scale-icon.bmp" /* LargeImages ID_SCALE_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
-    cmdTabTerrain_LabelTitle_RESID L"Terrain" /* LabelTitle cmdTabTerrain_LabelTitle_RESID: (null) */
+    ID_CREATEZONE_LabelTitle_RESID L"Create new zone" /* LabelTitle ID_CREATEZONE_LabelTitle_RESID: (null) */
 END
 
 STRINGTABLE 
 BEGIN
-    cmdGroupTerrain_LabelTitle_RESID L"Terrain object" /* LabelTitle cmdGroupTerrain_LabelTitle_RESID: (null) */
+    ID_DRAWGRID_LabelTitle_RESID L"Draw grid" /* LabelTitle ID_DRAWGRID_LabelTitle_RESID: (null) */
 END
 
+STRINGTABLE 
+BEGIN
+    ID_DRAWOBJECT_LabelTitle_RESID L"Draw objects" /* LabelTitle ID_DRAWOBJECT_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    ID_SELECTALLOBJ_LabelTitle_RESID L"Select all objects" /* LabelTitle ID_SELECTALLOBJ_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    ID_CAMERAVIEWOBJ_LabelTitle_RESID L"Camera view" /* LabelTitle ID_CAMERAVIEWOBJ_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    ID_DELETEZONE_LabelTitle_RESID L"Delete zone" /* LabelTitle ID_DELETEZONE_LabelTitle_RESID: (null) */
+END
+
+ID_DELETEZONE_SmallImages_RESID    BITMAP    "ribbonIcon\\menu-delete.bmp" /* SmallImages ID_DELETEZONE_SmallImages_RESID: (null) */
+STRINGTABLE 
+BEGIN
+    ID_DELETEOBJECT_LabelTitle_RESID L"Delete object" /* LabelTitle ID_DELETEOBJECT_LabelTitle_RESID: (null) */
+END
+
+ID_DELETEOBJECT_SmallImages_RESID    BITMAP    "ribbonIcon\\menu-delete.bmp" /* SmallImages ID_DELETEOBJECT_SmallImages_RESID: (null) */
 APPLICATION_RIBBON    UIFILE    "ribbonUI.bml"

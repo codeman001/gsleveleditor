@@ -16,9 +16,10 @@ protected:
 	ArrayGameObject	m_backupSelectObj;
 
 	uiTreeViewItem	*m_treeViewRoot;
-
+	
 	wstring			m_filePath;
 	
+	ISceneNode		*m_gridNode;
 public:
 	CDocument();
 
@@ -114,6 +115,23 @@ public:
 	inline void setTreeViewItem( uiTreeViewItem *p )
 	{
 		m_treeViewRoot = p;
+	}
+
+	// isShowGrid
+	// is show grid on map
+	bool isShowGrid()
+	{
+		if ( m_gridNode )
+			return m_gridNode->isVisible();
+		return false;
+	}
+
+	// showGrid
+	// show grid on map
+	void showGrid( bool b )
+	{
+		if ( m_gridNode )
+			m_gridNode->setVisible( b );
 	}
 
 protected:

@@ -229,3 +229,20 @@ void CZone::updateData( CSerializable* pObj )
 	// reset position
 	pObj->setCursorRecord( pos );
 }
+
+#ifdef GSEDITOR
+
+// setUIVisible
+// set visible on editor
+void CZone::setUIVisible( bool b )
+{
+	CGameObject::setUIVisible( b );
+	ArrayGameObjectIter iObj = m_childs.begin(), end = m_childs.end();
+	while ( iObj != end )
+	{
+		(*iObj)->setUIVisible( b );
+		iObj++;
+	}
+}
+
+#endif

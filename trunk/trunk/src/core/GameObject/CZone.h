@@ -39,6 +39,12 @@ public:
 	// remove object
 	void removeObject( CGameObject *pObj );
 
+#ifdef GSEDITOR
+	// setUIVisible
+	// set visible on editor
+	virtual void setUIVisible( bool b );
+#endif
+
 public:
 
 	// getData

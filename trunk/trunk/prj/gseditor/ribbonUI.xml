@@ -34,6 +34,7 @@
     <Command Name="cmdTabHome" LabelTitle="Home" />
 
     <Command Name="cmdGroupObject" LabelTitle="Object creation" />
+    
     <Command Name="cmdAddObject" LabelTitle="Add Object" Symbol="ID_ADDOBJECT">
       <Command.LargeImages>
         <Image>ribbonIcon/object_3d.bmp</Image>
@@ -65,23 +66,87 @@
         <Image>ribbonIcon/transform_rotate-icon.bmp</Image>
       </Command.LargeImages>
     </Command>
-    
+ 
     <Command Name="cmdScaleObject" LabelTitle="Scale" Symbol="ID_SCALE">
       <Command.LargeImages>
         <Image>ribbonIcon/transform_scale-icon.bmp</Image>
       </Command.LargeImages>
     </Command>
+    
+    <Command Name="cmdMenuCreateZone" LabelTitle="Create new zone" Symbol="ID_CREATEZONE"/>
+    <Command Name="cmdDrawGrid" LabelTitle="Draw grid" Symbol="ID_DRAWGRID"/>
+    <Command Name="cmdDrawObject" LabelTitle="Draw objects" Symbol="ID_DRAWOBJECT"/>    
+    <Command Name="cmdMenuSelectAllObject" LabelTitle="Select all objects" Symbol="ID_SELECTALLOBJ"/>
+    <Command Name="cmdMenuCameraView" LabelTitle="Camera view" Symbol="ID_CAMERAVIEWOBJ"/>
 
-    <!-- Tab command -->
-    <Command Name="cmdTabTerrain" LabelTitle="Terrain" />
+    <Command Name="cmdDeleteZone" Symbol="ID_DELETEZONE">
+      <Command.LabelTitle>
+        <String>Delete zone</String>
+      </Command.LabelTitle>
+      <Command.SmallImages>
+        <Image>ribbonIcon/menu-delete.bmp</Image>
+      </Command.SmallImages>
+    </Command>
 
-    <Command Name="cmdGroupTerrain" LabelTitle="Terrain object" />
-       
+    <Command Name="cmdDeleteObject" Symbol="ID_DELETEOBJECT">
+      <Command.LabelTitle>
+        <String>Delete object</String>
+      </Command.LabelTitle>
+      <Command.SmallImages>
+        <Image>ribbonIcon/menu-delete.bmp</Image>
+      </Command.SmallImages>    
+    </Command>
+
+    <!-- Menu command -->
+    <Command Name="ContextMenuDocumentMap"     Symbol="ID_MENUDOCUMENT"/>
+    <Command Name="ContextMenuZoneMap"         Symbol="ID_MENUZONE"/>
+    <Command Name="ContextMenuObjectMap"       Symbol="ID_MENUOBJECT"/>
     
   </Application.Commands>
  
   <Application.Views>
-        
+
+    <ContextPopup>
+      <ContextPopup.ContextMenus>
+                
+        <ContextMenu Name="ContextMenuDocument">
+          <MenuGroup>
+            <Button CommandName="cmdMenuCreateZone" />            
+          </MenuGroup>          
+          <MenuGroup>
+            <ToggleButton CommandName="cmdDrawGrid" />
+          </MenuGroup>          
+        </ContextMenu>
+
+        <ContextMenu Name="ContextMenuZone">          
+          <MenuGroup>
+            <ToggleButton CommandName="cmdDrawObject" />                    
+            <Button CommandName="cmdMenuSelectAllObject" />
+            <Button CommandName="cmdMenuCameraView" />
+          </MenuGroup>
+          <MenuGroup>
+            <Button CommandName="cmdDeleteZone" />
+          </MenuGroup>
+        </ContextMenu>
+
+        <ContextMenu Name="ContextMenuObject">
+          <MenuGroup>                        
+            <Button CommandName="cmdMenuCameraView" />
+          </MenuGroup>
+          <MenuGroup>
+            <Button CommandName="cmdDeleteObject" />
+          </MenuGroup>
+        </ContextMenu>
+
+      </ContextPopup.ContextMenus>
+
+      <ContextPopup.ContextMaps>        
+        <ContextMap CommandName="ContextMenuDocumentMap" ContextMenu="ContextMenuDocument"/>
+        <ContextMap CommandName="ContextMenuZoneMap"     ContextMenu="ContextMenuZone"/>
+        <ContextMap CommandName="ContextMenuObjectMap"   ContextMenu="ContextMenuObject"/>
+      </ContextPopup.ContextMaps>        
+    </ContextPopup>
+    
     <Ribbon>
       
       <!-- Application Menu -->
@@ -115,9 +180,7 @@
             <ToggleButton CommandName="cmdRotateObject"/>
             <ToggleButton CommandName="cmdScaleObject"/>
           </Group>
-        </Tab>
-        <Tab CommandName="cmdTabTerrain">          
-        </Tab>
+        </Tab>        
       </Ribbon.Tabs>
       
     </Ribbon>

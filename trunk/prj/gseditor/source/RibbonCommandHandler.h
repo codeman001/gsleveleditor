@@ -65,6 +65,11 @@ public:
 	bool onSaveDocumentCommand();
 	bool onOpenDocumentCommand();
 
+	void onShowGridCommand();
+	void onShowObjectCommand();
+
+	void onCreateZoneCommand();
+	void onDeleteObjectComand();
 private:
 
     CRibbonCommandHandler()

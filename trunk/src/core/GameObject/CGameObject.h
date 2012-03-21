@@ -77,6 +77,7 @@ protected:
 
 #ifdef GSEDITOR	
 	uiTreeViewItem		*m_treeItem;
+	bool				m_uiVisible;
 #endif
 
 public:
@@ -149,6 +150,19 @@ public:
 	{
 		m_treeItem = p;
 	}	
+
+	inline bool isUIVisible()
+	{
+		return m_uiVisible;
+	}
+
+	virtual void setUIVisible(bool b)
+	{
+		m_uiVisible = b;
+
+		if ( m_node )
+			m_node->setVisible( m_visible && b );
+	}
 #endif
 
 	// getParent
@@ -301,7 +315,11 @@ public:
 	// check the object is visible
 	inline bool isVisible()
 	{
+#ifdef GSEDITOR
+		return m_visible && m_uiVisible ;
+#else
 		return m_visible;
+#endif
 	}
 
 	// setEnable
@@ -317,7 +335,13 @@ public:
 	{
 		m_visible = b;
 		if ( m_node )
+		{
+#ifdef GSEDITOR
+			m_node->setVisible( b && m_uiVisible );
+#else
 			m_node->setVisible( b );
+#endif
+		}
 	}
 
 	// updateObject

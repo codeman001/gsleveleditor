@@ -8,7 +8,8 @@ IView::IView()
 	m_smgr		= NULL;
 		
 #ifdef GSEDITOR
-	m_document = NULL;
+	m_document		= NULL;
+	m_contextObj	= NULL;
 #endif
 
 	m_mouseX = 0;

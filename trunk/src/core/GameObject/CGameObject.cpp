@@ -44,6 +44,7 @@ CGameObject::CGameObject()
 
 #ifdef GSEDITOR
 	m_treeItem		= NULL;
+	m_uiVisible		= true;
 #endif
 }
 

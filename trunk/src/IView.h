@@ -9,6 +9,7 @@
 #endif
 
 class	CZone;
+class	CGameObject;
 
 class IView
 {
@@ -21,6 +22,7 @@ protected:
 
 #ifdef GSEDITOR
 	IDoc*					m_document;
+	CGameObject*			m_contextObj;
 #endif
 
 public:
@@ -52,6 +54,19 @@ public:
 	// set object property on listview window
 	virtual void setObjectProperty(CGameObject *pObj) = 0;
 
+	// setObjectForContext
+	// set object for menu command
+	inline void setObjectForContext(CGameObject *pObj)
+	{
+		m_contextObj = pObj;
+	}
+
+	// getObjectForContext
+	// get object for menu command
+	inline CGameObject* getObjectForContext()
+	{
+		return m_contextObj;
+	}
 #endif
 
 public:

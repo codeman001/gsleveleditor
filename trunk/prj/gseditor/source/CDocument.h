@@ -20,6 +20,12 @@ protected:
 	wstring			m_filePath;
 	
 	ISceneNode		*m_gridNode;
+
+	core::vector3df	m_saveCamPos;
+	core::vector3df m_saveCamTarget;
+
+	scene::ICameraSceneNode*	m_cam;
+	scene::ICameraSceneNode*	m_camOrtho;
 public:
 	CDocument();
 
@@ -134,6 +140,29 @@ public:
 			m_gridNode->setVisible( b );
 	}
 
+	// getData
+	// get data to serializable
+	virtual void getData( CSerializable *pObj );
+
+	// updateData
+	// read data from serializable
+	virtual void updateData( CSerializable *pObj );
+
+	// setShadowMode
+	// change shadow mode
+	virtual void setShadowMode( bool b );
+
+	// setAspectRatioAllCamera	
+	virtual void setAspectRatioAllCamera(float f)
+	{
+		m_cam->setAspectRatio( f );		
+	}
+
+	// getCamera
+	virtual ICameraSceneNode *getCamera()
+	{
+		return m_cam;
+	}
 protected:
 	// readDocumentFromData
 	// parse document from data

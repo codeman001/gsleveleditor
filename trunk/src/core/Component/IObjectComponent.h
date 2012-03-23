@@ -15,7 +15,8 @@ public:
 		Skybox,
 		ObjectTransform,
 		ObjectCollision,
-		NumBuildInComponent = ObjectCollision
+		Shadow,
+		NumBuildInComponent = Shadow
 	};
 
 	static const char *s_compType[];

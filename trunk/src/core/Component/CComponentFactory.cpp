@@ -6,6 +6,7 @@
 #include "CSkyboxComponent.h"
 #include "CObjectTransformComponent.h"
 #include "CObjectCollisionComponent.h"
+#include "CShadowComponent.h"
 
 #define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
 
@@ -52,12 +53,19 @@ void CComponentFactory::initComponentTemplate()
 	p->addFloat("scaleY", 1.0f);
 	p->addFloat("scaleZ", 1.0f);
 
-	// add collision transform
+	// add collision
 	s_compTemplate.push_back( CSerializable() );
 	p = &s_compTemplate[ IObjectComponent::ObjectCollision ];
 	p->addGroup	(stringOfComponent(IObjectComponent::ObjectCollision));	
 	p->addInt("collisionType", 0 );
 	p->addInt("collisionData", 0 );
+
+	// add shadow
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::Shadow ];
+	p->addGroup	(stringOfComponent(IObjectComponent::Shadow));	
+	p->addBool("shadowCasting",		true);
+	p->addBool("shadowReceiving",	false);
 
 	loadAllTemplate();
 }
@@ -232,6 +240,8 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 		pComp = new CObjectTransformComponent( pObj );
 	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ObjectCollision ) ) == 0 )
 		pComp = new CObjectCollisionComponent( pObj );
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Shadow ) ) == 0 )
+		pComp = new CShadowComponent( pObj );
 
 	if ( pComp )
 		pComp->loadData( data );

@@ -47,6 +47,14 @@ public:
 
 public:
 
+	// saveData
+	// save data
+	virtual void saveData( CSerializable *pObj );
+
+	// loadData
+	// load data
+	virtual void loadData( CSerializable *pObj );
+
 	// getData
 	// get data from zone
 	virtual void getData( CSerializable* pObj );

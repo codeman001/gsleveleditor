@@ -217,8 +217,10 @@ void CMainFrame::_OnCreate()
 	m_rightSplitWnd	= ref<CRightSplitWindow>( new CRightSplitWindow(L"rightSplitWnd", m_mainSplitWnd) );
 
 	pTabView->setMargin( 0, 0, 5, 0 );
-	pTabView->addTab( L"Game design mode", m_viewWnd );	
-	pTabView->addTab( L"Game play mode", NULL );
+	pTabView->addTab( L"Design mode", m_viewWnd );	
+	pTabView->addTab( L"Shadow export mode", NULL );
+	pTabView->setEventOnTabChanged<CMainFrame, &CMainFrame::onTabChange>( this );
+	m_tabView = pTabView;
 
 	m_mainSplitWnd->setWindow( m_leftSplitWnd,	0,0 );
 	m_mainSplitWnd->setWindow( pTabView,		0,1 );
@@ -288,4 +290,12 @@ void CMainFrame::_OnMouseWheel	( uiMouseEvent mouseEvent, int x, int y )
 {
 	if ( GetFocus() == this->getHandle() )
 		m_viewWnd->_OnMouseWheel( mouseEvent, x, y );
+}
+
+void CMainFrame::onTabChange( uiObject *pSender )
+{	
+	int tab = (int)m_tabView->getSelectTab();
+
+	getIView()->getDocument()->setShadowMode( !(tab == 0) );
+
 }

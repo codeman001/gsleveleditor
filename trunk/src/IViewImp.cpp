@@ -99,10 +99,13 @@ void IView::enableFreeCamera( bool b )
 	if (camera == NULL)
 		return;
 	
-	core::list<ISceneNodeAnimator*>::ConstIterator it = camera->getAnimators().begin();
-	CGameGSCameraAnimators *camAnimator = (CGameGSCameraAnimators*) (*it);
+	if ( camera->getAnimators().size() > 0 )
+	{
+		core::list<ISceneNodeAnimator*>::ConstIterator it = camera->getAnimators().begin();
+		CGameGSCameraAnimators *camAnimator = (CGameGSCameraAnimators*) (*it);
 
-	// disable rotate on right click
-	camAnimator->enableMove( b );
+		// disable rotate on right click
+		camAnimator->enableMove( b );
+	}
 }
 #endif

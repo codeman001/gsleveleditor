@@ -49,6 +49,12 @@ void CDocument::newDocument()
 	CGameGSCameraAnimators* camAnimator = new CGameGSCameraAnimators( device->getCursorControl() );
 	cam->addAnimator( camAnimator );
 	camAnimator->drop();
+	
+	// add ortho
+	m_cam = cam;
+	m_camOrtho = smgr->addCameraSceneNode();
+
+	smgr->setActiveCamera( m_cam );
 
 	// add oxyz plane node
 	CGameOxyzSceneNode *oxyPlane = new CGameOxyzSceneNode( smgr->getRootSceneNode(), smgr, 1 );
@@ -72,7 +78,7 @@ void CDocument::newDocument()
 
 	// register draw all template obj
 	if ( s_isFirstDocument == false )
-		CObjTemplateFactory::registerDrawAllTemplateObject();
+		CObjTemplateFactory::registerDrawAllTemplateObject();	
 }
 	
 // saveDocument
@@ -87,6 +93,14 @@ bool CDocument::saveDocument(wchar_t* lpPath)
 	CSerializable serializable;
 
 	char lpString[1024];
+
+	// need save level info
+	getData( &serializable );	
+	file << "Game\n";
+	file << "{\n";
+	serializable.saveData( file, 1 );
+	serializable.clear();
+	file << "}\n";
 
 	// update all zone
 	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
@@ -179,6 +193,10 @@ bool CDocument::readDocumentFromData( char *lpData )
 					// create zone
 					currentZone = (CZone*)createZone();
 					currentZone->updateData( &objData );
+				}
+				else if ( strcmp( objType, "Game level" ) == 0 )
+				{
+					updateData( &objData );
 				}
 			}
 
@@ -478,21 +496,7 @@ void CDocument::selectObject( int x, int y, int w, int h, bool isControlHold )
 						{
 							
 							if ( isControlHold == false || pGameObj->getObjectState() == CGameObject::Normal )
-								m_selectObjects.push_back( pGameObj );
-							/*else
-							{
-								pGameObj->setObjectState( CGameObject::Normal );
-								ArrayGameObjectIter i = m_selectObjects.begin(), iEnd = m_selectObjects.end();
-								while ( i != iEnd )
-								{
-									if ( (*i) == pGameObj )
-									{
-										m_selectObjects.erase( i );
-										break;
-									}
-									i++;
-								}
-							}*/
+								m_selectObjects.push_back( pGameObj );							
 
 						}	// inselect
 					}	// getScreenCoordinatesFrom3DPosition			
@@ -541,4 +545,128 @@ void CDocument::clearSelect()
 {
 	setStateForSelectObject( CGameObject::Normal );
 	m_selectObjects.clear();
+}
+
+// getData
+// get data to serializable
+void CDocument::getData( CSerializable *pObj )
+{
+	pObj->addGroup( "Game level" );
+
+	pObj->addBool(	"gridGame",	m_isGirdDocument );
+	pObj->addInt(	"gridSize",	m_gridSize );
+
+	if ( m_cam )
+	{
+		m_saveCamPos	= m_cam->getAbsolutePosition() ;
+		m_saveCamTarget	= m_cam->getTarget();
+	}
+
+	pObj->addFloat(	"camX",	m_saveCamPos.X );
+	pObj->addFloat(	"camY",	m_saveCamPos.Y );
+	pObj->addFloat(	"camZ",	m_saveCamPos.Z );
+
+	pObj->addFloat(	"camTargetX",	m_saveCamTarget.X );
+	pObj->addFloat(	"camTargetY",	m_saveCamTarget.Y );
+	pObj->addFloat(	"camTargetZ",	m_saveCamTarget.Z );
+
+}
+
+// updateData
+// read data from serializable
+void CDocument::updateData( CSerializable *pObj )
+{
+	pObj->nextRecord();
+
+	m_isGirdDocument	= pObj->readBool();
+	m_gridSize			= pObj->readInt();
+
+	// cam pos
+	m_saveCamPos.X = pObj->readFloat();
+	m_saveCamPos.Y = pObj->readFloat();
+	m_saveCamPos.Z = pObj->readFloat();
+
+	// cam target
+	m_saveCamTarget.X = pObj->readFloat();
+	m_saveCamTarget.Y = pObj->readFloat();
+	m_saveCamTarget.Z = pObj->readFloat();
+}
+
+// setShadowMode
+// change shadow mode
+
+#include "CShadowComponent.h"
+
+void CDocument::setShadowMode( bool b )
+{
+	IDoc::setShadowMode( b );
+
+	ISceneManager *smgr = getIView()->getSceneMgr();
+	
+	
+	ArrayGameObject	shadowRevcList;
+	core::aabbox3df globalBox;
+	bool addBox = false;
+
+	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
+	while ( iZone != iEnd )
+	{
+		CZone *p = (CZone*) (*iZone);		
+		
+		ArrayGameObjectIter it = p->getChilds()->begin(), end = p->getChilds()->end();
+		while ( it != end )
+		{
+			CGameObject *pObj = (*it);
+			ISceneNode *pNode = pObj->getSceneNode();
+
+			if ( pNode )
+			{
+				CShadowComponent *pShadow =	(CShadowComponent*) pObj->getComponent( IObjectComponent::Shadow );
+				
+				if ( pShadow && pShadow->isShadowReceiving() )
+				{
+					shadowRevcList.push_back( pObj );
+				}
+
+				core::aabbox3df box = pNode->getBoundingBox();
+				pNode->getAbsoluteTransformation().transformBox( box );
+				
+				if ( addBox == false )
+				{
+					globalBox = box;
+					addBox = true;
+				}
+				else
+				{
+					globalBox.addInternalBox( box );
+				}
+				
+			}
+			it++;
+		}
+		iZone++;
+	}
+
+	if ( m_shadowMode == true && addBox == true )
+	{
+		float width		= globalBox.MaxEdge.X - globalBox.MinEdge.X;
+		float height	= globalBox.MaxEdge.Z - globalBox.MinEdge.Z;
+
+		core::matrix4 mat;
+		mat.buildProjectionMatrixOrthoLH(width, height, 0, 5000);
+		
+		core::vector3df	pos = globalBox.getCenter() + core::vector3df(0, 3000, 0);
+
+		m_camOrtho->setProjectionMatrix(mat, true);
+		m_camOrtho->setPosition( pos );
+		m_camOrtho->setTarget( pos - core::vector3df(0, 10, 0) );
+
+		smgr->setActiveCamera(m_camOrtho);
+	}
+	else
+	{
+		
+		smgr->setActiveCamera(m_cam);
+	}
+
 }

@@ -23,6 +23,7 @@ CGameMeshSceneNode::~CGameMeshSceneNode()
 // override render state
 void CGameMeshSceneNode::render()
 {
+#ifdef GSEDITOR
 	CGameObject::ObjectState state = m_owner->getObjectState();
 	
 	// draw bbox on select
@@ -33,10 +34,12 @@ void CGameMeshSceneNode::render()
 		setDebugDataVisible( EDS_BBOX );
 	else
 		setDebugDataVisible( 0 );
+#endif
 
 	// draw mesh
 	CMeshSceneNode::render();
-	
+
+#ifdef GSEDITOR	
 	// draw move
 	if ( 
 			state == CGameObject::Move || 
@@ -47,4 +50,6 @@ void CGameMeshSceneNode::render()
 	
 	if ( state == CGameObject::Rotation )
 		m_owner->drawCircleAroundObject();	
+#endif
+
 }

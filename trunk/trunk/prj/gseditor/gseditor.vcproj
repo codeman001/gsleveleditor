@@ -457,6 +457,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\Component\CObjectCollisionComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CObjectCollisionComponent.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Component\CObjectTransformComponent.cpp"
 						>
 					</File>

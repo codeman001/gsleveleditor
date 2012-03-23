@@ -5,6 +5,7 @@
 #include "CStaticMeshComponent.h"
 #include "CSkyboxComponent.h"
 #include "CObjectTransformComponent.h"
+#include "CObjectCollisionComponent.h"
 
 #define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
 
@@ -50,6 +51,13 @@ void CComponentFactory::initComponentTemplate()
 	p->addFloat("scaleX", 1.0f);
 	p->addFloat("scaleY", 1.0f);
 	p->addFloat("scaleZ", 1.0f);
+
+	// add collision transform
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::ObjectCollision ];
+	p->addGroup	(stringOfComponent(IObjectComponent::ObjectCollision));	
+	p->addInt("collisionType", 0 );
+	p->addInt("collisionData", 0 );
 
 	loadAllTemplate();
 }
@@ -222,6 +230,8 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 		pComp = new CSkyboxComponent( pObj );	
 	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ObjectTransform ) ) == 0 )
 		pComp = new CObjectTransformComponent( pObj );
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ObjectCollision ) ) == 0 )
+		pComp = new CObjectCollisionComponent( pObj );
 
 	if ( pComp )
 		pComp->loadData( data );

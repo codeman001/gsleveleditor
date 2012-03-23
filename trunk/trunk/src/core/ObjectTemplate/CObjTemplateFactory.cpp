@@ -154,10 +154,11 @@ CGameObject* CObjTemplateFactory::spawnObject( wchar_t* templateName )
 
 	while ( i != end )
 	{
-		pObj->initComponent( &(*i ) );
+		pObj->createComponent( &(*i ) );
 		i++;
 	}
 
+	pObj->initComponent();
 	pObj->setVisible( false );
 	pObj->setObjectTemplate( templateName );
 	return pObj;

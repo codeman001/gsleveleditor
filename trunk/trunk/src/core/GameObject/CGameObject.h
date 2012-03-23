@@ -72,6 +72,8 @@ protected:
 
 	bool				m_enable;
 	bool				m_visible;
+	
+	bool				m_needSortComponent;
 
 	CGameObject			*m_parent;
 
@@ -315,11 +317,7 @@ public:
 	// check the object is visible
 	inline bool isVisible()
 	{
-#ifdef GSEDITOR
-		return m_visible && m_uiVisible ;
-#else
 		return m_visible;
-#endif
 	}
 
 	// setEnable
@@ -374,8 +372,20 @@ public:
 
 	// initComponent
 	// create a component on object
-	virtual void initComponent( CSerializable* componentData );
-		
+	virtual void createComponent( CSerializable* componentData );
+	
+	// initComponent
+	// init all component on object
+	virtual void initComponent( );
+
+	// sortComponentById
+	// sort array component
+	virtual void sortComponentById();
+
+	// getComponent
+	// get component
+	IObjectComponent *getComponent( int componentID );
+
 	// saveTransform
 	// save all transform
 	void saveTransform();

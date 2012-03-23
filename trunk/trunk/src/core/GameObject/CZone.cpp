@@ -176,6 +176,55 @@ void CZone::removeObject( CGameObject *pObj )
 	}
 }
 
+// saveData
+// save data
+void CZone::saveData( CSerializable *pObj )
+{
+	pObj->addGroup	("Game zone");
+
+	pObj->addLong	("objectID",	m_objectID, true);
+	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
+
+	char lpText[1024] = {0};
+	uiString::convertUnicodeToUTF8( (unsigned short*)m_name.c_str(), lpText );
+	pObj->addString	("objectName",	lpText, false);
+
+	pObj->addBool	("enable",		m_enable );
+	pObj->addBool	("visible",		m_visible );	
+}
+
+// loadData
+// load data
+void CZone::loadData( CSerializable *pObj )
+{
+	pObj->nextRecord();
+	
+	// object id
+	m_objectID	= pObj->readLong();
+
+	// object type
+	char *type = pObj->readString();
+	for ( int i = 0; i < CGameObject::NumObject; i++ )
+	{
+		if ( strcmp(s_stringObjType[i], type) == 0 )
+		{
+			m_objectType = (CGameObject::ObjectType)i;
+			break;
+		}
+	}
+
+	// read obj name
+	wchar_t lpText[1024] = {0};
+	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
+	setName( lpText );
+
+	// object enable
+	m_enable	= pObj->readBool();
+
+	// object visible
+	m_visible	= pObj->readBool();
+}
+
 // getData
 // get data from zone
 void CZone::getData( CSerializable* pObj )

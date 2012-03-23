@@ -6,7 +6,19 @@
 
 class IDoc: public uiObject
 {
+protected:
+	bool	m_isGirdDocument;
+	int		m_gridSize;
+
+	bool	m_shadowMode;
 public:
+	IDoc()
+	{
+		m_isGirdDocument	= false;
+		m_gridSize			= 20;
+
+		m_shadowMode		= false;
+	}
 
 	// newDocument
 	// new 3d scene document
@@ -84,6 +96,52 @@ public:
 	// return true if document is nothing
 	virtual bool isEmptyDocument() = 0;
 
+	// getData
+	// get data to serializable
+	virtual void getData( CSerializable *pObj ) = 0;
+
+	// updateData
+	// read data from serializable
+	virtual void updateData( CSerializable *pObj ) = 0;
+
+	// isGridGame
+	// return true if the game is grid type
+	inline bool isGridGame()
+	{
+		return m_isGirdDocument;
+	}
+
+	// getGridSize
+	// return size of grid
+	inline int getGridSize()
+	{
+		return m_isGirdDocument;
+	}
+
+	// setGridSize
+	// set grid
+	void setGridSize(int size)
+	{
+		m_gridSize = size;
+	}
+
+	// setShadowMode
+	virtual void setShadowMode( bool b )
+	{
+		m_shadowMode = b;
+	}
+
+	// isShadowMode
+	inline bool isShadowMode()
+	{
+		return m_shadowMode;
+	}
+
+	// setAspectRatioAllCamera	
+	virtual void setAspectRatioAllCamera(float f) = 0;
+
+	// getCamera
+	virtual ICameraSceneNode *getCamera() = 0;
 };
 
 #endif

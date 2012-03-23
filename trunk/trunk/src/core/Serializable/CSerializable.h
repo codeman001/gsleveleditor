@@ -75,7 +75,7 @@ typedef struct tagSerializableRec
 			int n = *((int*)value);
 			sprintf( this->data, "%d", n );
 		}
-		if ( type == NSSerializable::longType )
+		else if ( type == NSSerializable::longType )
 		{
 			long n = *((long*)value);
 			sprintf( this->data, "%d", n );

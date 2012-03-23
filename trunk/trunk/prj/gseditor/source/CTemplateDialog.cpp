@@ -260,6 +260,14 @@ void CTemplateDialog::addSerializableToProperty( CSerializable *p )
 			{
 				if ( r.type == NSSerializable::boolType )
 				{
+					uiComboBox *pComboBox =	(uiComboBox*)pRow->setControl( UILISTPROPERTY_COMBOBOX, 1, NULL );
+					pComboBox->addString(L"true");
+					pComboBox->addString(L"false");
+					
+					if ( strcmp(r.data, "true") == 0 )
+						pComboBox->selectItem( 0 );
+					else
+						pComboBox->selectItem( 1 );
 				}
 				else if ( r.type == NSSerializable::stringType || r.type == NSSerializable::filePathType )
 				{

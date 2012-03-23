@@ -8,7 +8,8 @@ const char *IObjectComponent::s_compType[] =
 	"Static mesh component",
 	"Skybox component",
 	"Object transform component",
-	"Object collision component"
+	"Object collision component",
+	"Object shadow component"
 };
 
 IObjectComponent::IObjectComponent(CGameObject *pObj, int compID)

@@ -23,6 +23,11 @@ void CRotateObjectController::onLMouseDown(int x, int y)
 void CRotateObjectController::onLMouseUp(int x, int y)
 {
 	m_isLMouseDown = false;
+
+	// set property for object
+	ArrayGameObject *pListSelect = getIView()->getDocument()->getSelectObject();
+	if ( pListSelect->size() > 0 )
+		getIView()->setObjectProperty( pListSelect->front() );
 }
 
 void CRotateObjectController::onMouseMove(int x, int y)
@@ -47,12 +52,7 @@ void CRotateObjectController::onMouseMove(int x, int y)
 			pObj->setYaw( pObj->getYaw() - delta );
 
 			i++;
-		}
-		
-		// set property for object
-		if ( pListSelect->size() > 0 )
-			pView->setObjectProperty( pListSelect->front() );
-
+		}		
 	}
 
 }

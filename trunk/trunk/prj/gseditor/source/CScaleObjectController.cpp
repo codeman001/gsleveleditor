@@ -20,6 +20,11 @@ void CScaleObjectController::onLMouseDown(int x, int y)
 void CScaleObjectController::onLMouseUp(int x, int y)
 {
 	m_isLMouseDown = false;
+
+	// set property for object
+	ArrayGameObject *pListSelect = getIView()->getDocument()->getSelectObject();
+	if ( pListSelect->size() > 0 )
+		getIView()->setObjectProperty( pListSelect->front() );
 }
 
 void CScaleObjectController::onMouseMove(int x, int y)
@@ -55,10 +60,7 @@ void CScaleObjectController::onMouseMove(int x, int y)
 				pObj->setScale( scaleVector );
 
 			i++;
-		}
-
-		// set property for object
-		if ( pListSelect->size() > 0 )
-			pView->setObjectProperty( pListSelect->front() );
+		}		
 	}
+
 }

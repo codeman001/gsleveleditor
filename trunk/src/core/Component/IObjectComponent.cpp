@@ -6,8 +6,9 @@ const char *IObjectComponent::s_compType[] =
 {
 	"Anim mesh component",
 	"Static mesh component",
-	"Skybox",
-	"Object transform component"
+	"Skybox component",
+	"Object transform component",
+	"Object collision component"
 };
 
 IObjectComponent::IObjectComponent(CGameObject *pObj, int compID)

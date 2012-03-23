@@ -14,7 +14,8 @@ public:
 		StaticMesh,
 		Skybox,
 		ObjectTransform,
-		NumBuildInComponent = ObjectTransform
+		ObjectCollision,
+		NumBuildInComponent = ObjectCollision
 	};
 
 	static const char *s_compType[];

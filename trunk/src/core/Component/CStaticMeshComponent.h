@@ -7,9 +7,7 @@
 #include "CGameMeshSceneNode.h"
 
 class CStaticMeshComponent: public IObjectComponent
-{
-public:
-	
+{	
 protected:
 	CGameMeshSceneNode*			m_meshNode;
 

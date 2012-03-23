@@ -42,6 +42,8 @@ CGameObject::CGameObject()
 
 	m_parent		= NULL;
 
+	m_needSortComponent	= true;
+
 #ifdef GSEDITOR
 	m_treeItem		= NULL;
 	m_uiVisible		= true;
@@ -461,7 +463,7 @@ void CGameObject::releaseAllComponent()
 
 // initComponent
 // create a component on object
-void CGameObject::initComponent( CSerializable* componentData )
+void CGameObject::createComponent( CSerializable* componentData )
 {
 	IObjectComponent *pComp = NULL;
 
@@ -478,7 +480,15 @@ void CGameObject::initComponent( CSerializable* componentData )
 		pComp = CComponentFactory::loadComponent( this, componentData );
 	}
 
-	componentData->setCursorRecord( pos );
+	componentData->setCursorRecord( pos );	
+}
+
+// initComponent
+// create a component on object
+void CGameObject::initComponent()
+{
+	// sort component
+	sortComponentById();
 
 	// call init all component
 	ArrayComponentIter i = m_components.begin(), end = m_components.end();
@@ -487,6 +497,68 @@ void CGameObject::initComponent( CSerializable* componentData )
 		(*i)->initComponent();
 		i++;
 	}
+}
+
+// sortComponentById
+// sort array component
+void CGameObject::sortComponentById()
+{
+	int len = (int)m_components.size();
+	
+	IObjectComponent *obj;
+		
+	for (int i = 1; i <= len - 1; i++)
+	{
+		obj = m_components[i];
+		
+		int j = i - 1;
+		int done = 0;
+
+		do
+		{
+			if ( m_components[j]->getComponent() > obj->getComponent() )
+			{
+				m_components[j + 1] = m_components[j];
+
+				j = j - 1;
+				if ( j < 0 )
+					done = 1;
+			}
+			else
+				done = 1;
+		}
+		while (done == 0);
+		
+		m_components[j + 1] = obj;		
+	}
+
+	m_needSortComponent = false;
+}
+
+// getComponent
+// get component
+IObjectComponent *CGameObject::getComponent( int componentID )
+{
+	if ( m_needSortComponent == true )
+		sortComponentById();
+
+	int first = 0, last = m_components.size() - 1;
+	int mid = 0;
+	
+	while (first <= last) 
+	{
+		mid = (first + last) / 2;
+		
+		if ( componentID > m_components[mid]->getComponent() )
+			first = mid + 1;
+		else if ( componentID < m_components[mid]->getComponent() )
+			last = mid - 1;
+		else		
+			return m_components[mid];
+   }
+
+	return NULL;
+
 }
 
 

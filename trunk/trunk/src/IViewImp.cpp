@@ -18,6 +18,10 @@ IView::IView()
 
 IView::~IView()
 {	
+	m_eventReceivers.clear();
+
+	UIDEBUG_TRACE("Debug leak memory: \n");
+	UIDEBUG_DUMPLEAK();
 }
 
 // getSelectRay
@@ -109,3 +113,34 @@ void IView::enableFreeCamera( bool b )
 	}
 }
 #endif
+
+// register event
+// register input event
+void IView::registerEvent( string name, IEventReceiver *pEvent )
+{
+	vector<eventType>::iterator i = m_eventReceivers.begin(), end = m_eventReceivers.end();
+	while ( i != end )
+	{
+		if ( (*i).second == pEvent )
+			return;
+		i++;
+	}
+	
+	m_eventReceivers.push_back( eventType(name, pEvent) );
+}
+
+// unRegisterEvent
+// unregister input event
+void IView::unRegisterEvent( IEventReceiver *pEvent )
+{
+	vector<eventType>::iterator i = m_eventReceivers.begin(), end = m_eventReceivers.end();
+	while ( i != end )
+	{
+		if ( (*i).second == pEvent )
+		{
+			m_eventReceivers.erase( i );
+			return;
+		}
+		i++;
+	}
+}

@@ -6,6 +6,8 @@
 
 #include "IView.h"
 
+#include "CLevel.h"
+
 IView* g_view = NULL;
 
 IView* getIView()
@@ -19,6 +21,9 @@ public:
 	long	m_lastUpdateTime;
 	int		m_fps;
 
+
+	CLevel	*m_level;
+
 protected:
 	ITexture*		m_image;
 	gui::IGUIFont*	m_font;
@@ -26,7 +31,13 @@ public:
 
 	virtual bool OnEvent(const SEvent& event)
 	{
-		return false;
+		vector<eventType>::iterator i = m_eventReceivers.begin(), end = m_eventReceivers.end();
+		while ( i != end )
+		{
+			(*i).second->OnEvent( event );
+			i++;
+		}
+		return true;
 	}
 
 	// getIView
@@ -50,11 +61,13 @@ public:
 		// load image
 		m_image = m_driver->getTexture("data/irrlichtlogo.png");
 		m_font	= device->getGUIEnvironment()->getFont("data/bigfont.png");
+	
+		m_level = new CLevel();
 	}
 
 	void destroyApplication()
 	{
-		
+		delete m_level;
 	}
 
 	void mainLoop()
@@ -63,9 +76,13 @@ public:
 		f32 frameDeltaTime = (f32)(now - m_lastUpdateTime) / 1000.f; // Time in seconds
 		m_lastUpdateTime = now;
 		
+		m_level->update();
+
 		m_driver->beginScene(true, true, video::SColor(255,113,113,133));
 		
 		m_smgr->drawAll();
+
+		m_level->render();
 
 		// draw image
 		m_driver->draw2DImage
@@ -76,7 +93,7 @@ public:
 				video::SColor(255,255,255,255), 
 				true
 			);
-		
+
 		int fps = m_driver->getFPS();
 
 		// draw fps string		
@@ -112,7 +129,5 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	myApp.destroyApplication();
 	device->drop();
 
-	UIDEBUG_TRACE("Debug leak memory: \n");
-	UIDEBUG_DUMPLEAK();
 	return (int) 1;
 }

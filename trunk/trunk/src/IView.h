@@ -69,6 +69,9 @@ public:
 	}
 #endif
 
+	typedef std::pair<string,IEventReceiver*>	eventType;
+	vector<	eventType >	m_eventReceivers;
+
 public:
 	
 	int	m_mouseX;
@@ -152,6 +155,14 @@ public:
 	// get tree view control of document
 	virtual uiTreeView* getDocumentTreeView() = 0;
 #endif
+	
+	// register event
+	// register input event
+	void registerEvent( string name, IEventReceiver *pEvent );
+
+	// unRegisterEvent
+	// unregister input event
+	void unRegisterEvent( IEventReceiver *pEvent );
 
 };
 

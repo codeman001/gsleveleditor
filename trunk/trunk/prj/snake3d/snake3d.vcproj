@@ -271,6 +271,14 @@
 						RelativePath="..\..\src\core\Animators\CGameGSCameraAnimators.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\src\core\Animators\CGameSnakeAnimator.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Animators\CGameSnakeAnimator.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Component"
@@ -308,6 +316,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\Component\CShadowComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CShadowComponent.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Component\CSkyboxComponent.cpp"
 						>
 					</File>
@@ -341,6 +357,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\core\GameObject\CGameObject.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CSnakeObject.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CSnakeObject.h"
 						>
 					</File>
 					<File
@@ -399,6 +423,22 @@
 						RelativePath="..\..\src\core\SceneNode\CGameOxyzSceneNode.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameSnakeSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameSnakeSceneNode.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CSnakeMesh.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CSnakeMesh.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Serializable"
@@ -412,6 +452,18 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="game"
+				>
+				<File
+					RelativePath="..\..\src\CLevel.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\CLevel.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<File

@@ -3,12 +3,11 @@
 
 #include "stdafx.h"
 #include "IView.h"
-#include "CSnakeObject.h"
 
 class CLevel
 {
 protected:
-	CSnakeObject	*m_snake;
+	
 public:
 	CLevel();
 

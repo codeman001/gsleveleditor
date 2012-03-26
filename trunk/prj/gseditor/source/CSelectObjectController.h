@@ -15,7 +15,8 @@ protected:
 	int			m_beginY;
 
 	bool		m_selectState;
-	
+	int			m_moveState;
+
 	CGameObject			*m_hitOnObj;
 	core::vector3df		m_hitPosition;
 public:

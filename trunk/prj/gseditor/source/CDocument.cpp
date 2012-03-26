@@ -60,6 +60,11 @@ void CDocument::newDocument()
 	CGameOxyzSceneNode *oxyPlane = new CGameOxyzSceneNode( smgr->getRootSceneNode(), smgr, 1 );
 	m_gridNode = oxyPlane;
 
+	// add ligth
+	ISceneNode* pNode = smgr->addEmptySceneNode();
+	ILightSceneNode *light = smgr->addLightSceneNode( pNode, core::vector3df(0, 0, 0) );
+	light->setLightType( video::ELT_DIRECTIONAL );	
+
 	m_filePath = L"";
 
 	// begin id

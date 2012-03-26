@@ -55,6 +55,7 @@ public:
 public:
 	void onCameraViewCommand();
 	void onAddObjectCommand();
+	void onAddWaypointCommand();
 
 	void onSelectObjectCommand();
 	void onRotateObjectCommand();

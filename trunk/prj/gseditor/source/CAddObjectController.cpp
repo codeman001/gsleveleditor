@@ -73,7 +73,7 @@ void CAddObjectController::onLMouseUp(int x, int y)
 		core::vector3df camPos = cam->getAbsolutePosition();		
 		core::line3df camRay( camPos, hit );
 
-		if ( camRay.getLength() < cam->getFarValue() )
+		if ( camRay.getLength() < 5000 )
 		{
 			CGameObject *pObj =	pView->getCurrentZone()->spawnObject( pView->getCurrentObjectTemplate() );
 			

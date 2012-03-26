@@ -449,6 +449,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\Component\CBoxObjectComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CBoxObjectComponent.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Component\CComponentFactory.cpp"
 						>
 					</File>
@@ -509,11 +517,35 @@
 					Name="GameObject"
 					>
 					<File
+						RelativePath="..\..\src\core\GameObject\CCamera.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CCamera.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\GameObject\CGameObject.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\core\GameObject\CGameObject.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CTrigger.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CTrigger.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CWayPoint.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CWayPoint.h"
 						>
 					</File>
 					<File
@@ -554,6 +586,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\core\SceneNode\CGameAnimatedMeshSceneNode.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameBoxSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameBoxSceneNode.h"
 						>
 					</File>
 					<File
@@ -686,6 +726,14 @@
 					</File>
 					<File
 						RelativePath=".\source\CAddObjectController.h"
+						>
+					</File>
+					<File
+						RelativePath=".\source\CAddWaypointController.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\source\CAddWaypointController.h"
 						>
 					</File>
 				</Filter>

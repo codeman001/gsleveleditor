@@ -55,15 +55,12 @@ void CStaticMeshComponent::loadFromFile( char *lpFilename )
 		
 		// copy material
 		staticBuffer->getMaterial() = animBuffer->getMaterial();
-
-		staticBuffer->getMaterial().Lighting = false;
-
+		staticBuffer->getMaterial().Lighting = m_gameObject->isLighting();
 		staticBuffer->setHardwareMappingHint( scene::EHM_STATIC,  scene::EBT_VERTEX_AND_INDEX);
 	}	
 
 	// create scene node
-	m_meshNode = new CGameMeshSceneNode( m_gameObject, staticMesh, smgr->getRootSceneNode(), smgr );
-	m_meshNode->setReadOnlyMaterials( true );
+	m_meshNode = new CGameMeshSceneNode( m_gameObject, staticMesh, smgr->getRootSceneNode(), smgr );	
 	staticMesh->drop();
 
 #ifdef GSEDITOR

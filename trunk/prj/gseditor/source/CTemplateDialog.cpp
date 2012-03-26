@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CTemplateDialog.h"
+#include "CGameObject.h"
 
 CTemplateDialog::CTemplateDialog(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent, CObjectTemplate *objectTemplate)
 	:CBaseDialog(lpTitle, x, y, w, h, pParent)
@@ -310,7 +311,14 @@ bool CTemplateDialog::onOKButton()
 
 	// add to list
 	if ( m_isEditObjTemplate == false )
-		CObjTemplateFactory::addTemplate( m_objectTemplate );	
+	{
+		CObjTemplateFactory::addTemplate( m_objectTemplate );
+	
+		// spawn test object
+		CGameObject *pObj = CObjTemplateFactory::spawnObject( lpName );
+		pObj->setObjectState( CGameObject::Move );
+		CObjTemplateFactory::s_objects.push_back( pObj );
+	}
 
 	// save template
 	CObjTemplateFactory::saveAllObjectTemplate();

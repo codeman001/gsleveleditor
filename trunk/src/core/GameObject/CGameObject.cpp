@@ -39,6 +39,7 @@ CGameObject::CGameObject()
 	
 	m_enable		= true;
 	m_visible		= true;
+	m_lighting		= true;
 
 	m_parent		= NULL;
 
@@ -280,6 +281,7 @@ void CGameObject::saveData( CSerializable* pObj )
 
 	pObj->addBool	("enable",		m_enable );
 	pObj->addBool	("visible",		m_visible );
+	pObj->addBool	("lighting",	m_lighting );
 
 	pObj->addFloat	("positionX",	m_position.X );
 	pObj->addFloat	("positionY",	m_position.Y );
@@ -333,6 +335,7 @@ void CGameObject::loadData( CSerializable* pObj )
 
 	m_enable		= pObj->readBool();
 	m_visible		= pObj->readBool();
+	m_lighting		= pObj->readBool();
 
 	m_position.X	= pObj->readFloat();
 	m_position.Y	= pObj->readFloat();
@@ -378,6 +381,7 @@ void CGameObject::getData( CSerializable* pObj )
 
 	pObj->addBool	("enable",		m_enable );
 	pObj->addBool	("visible",		m_visible );
+	pObj->addBool	("lighting",	m_lighting);
 
 	pObj->addFloat	("positionX",	m_position.X );
 	pObj->addFloat	("positionY",	m_position.Y );
@@ -396,7 +400,6 @@ void CGameObject::getData( CSerializable* pObj )
 // update data 
 void CGameObject::updateData( CSerializable* pObj )
 {
-	int pos = pObj->getCursorRecord();
 	pObj->nextRecord();
 
 	m_objectID	= pObj->readLong();
@@ -423,6 +426,7 @@ void CGameObject::updateData( CSerializable* pObj )
 
 	m_enable		= pObj->readBool();
 	m_visible		= pObj->readBool();
+	m_lighting		= pObj->readBool();
 
 	m_position.X	= pObj->readFloat();
 	m_position.Y	= pObj->readFloat();
@@ -436,16 +440,21 @@ void CGameObject::updateData( CSerializable* pObj )
 	m_scale.Y		= pObj->readFloat();
 	m_scale.Z		= pObj->readFloat();
 	
-	pObj->setCursorRecord( pos );
-
 	setID( m_objectID );
 	setEnable( m_enable );
 	setVisible( m_visible );
+	setLighting( m_lighting );
 
 	updateRotation();
 
 	updateNodePosition();
 	updateNodeScale();
+}
+
+void CGameObject::setLighting( bool b )
+{
+	m_node->setMaterialFlag( video::EMF_LIGHTING, b );
+	m_lighting = b;
 }
 
 // releaseAllComponent
@@ -580,6 +589,124 @@ void CGameObject::loadTransform()
 	m_scale			= m_oldScale;		
 }
 
+#ifdef GSEDITOR
+
+// isLineHit
+// mouse x, y is hit on line x1y1 - x2y2
+bool CGameObject::isLineHit( int X1, int Y1, int X2, int Y2, int X, int Y )
+{
+	float x1 = (float)X1;
+	float y1 = (float)Y1;
+
+	float x2 = (float)X2;
+	float y2 = (float)Y2;
+
+	float xHit = (float)X;
+	float yHit = (float)Y;
+	
+	const float constSelect = 5.0f;
+
+	if ( x1 > x2 )
+	{
+		if ( xHit < (x2 - constSelect) || xHit > (x1 + constSelect) )
+			return false;
+	}
+	else
+	{
+		if ( xHit < (x1 - constSelect) || xHit > (x2 + constSelect) )
+			return false;
+	}
+	
+	if ( y1 > y2 )
+	{
+		if ( yHit < (y2 - constSelect) || yHit > (y1 + constSelect) )
+			return false;
+	}
+	else
+	{
+		if ( yHit < (y1 - constSelect) || yHit > (y2 + constSelect) )
+			return false;
+	}
+
+
+	core::vector2df v( x2 - x1, y2 - y1 );
+	core::vector2df w( xHit - x1, yHit - y1 );
+
+	#define dot(u,v)   ((float)u.dotProduct(v))
+	#define norm(v)    sqrtf(dot(v,v))
+			
+	float c1 = dot(w,v);
+	if ( c1 <= 0 )
+	{
+		core::vector2df r( xHit - x1, yHit - y1 );
+		float distance = norm(r);
+		
+		if ( distance <= constSelect )
+			return true;
+	}
+
+	float c2 = dot(v,v);	
+	
+	if ( c2 <= c1 )
+	{
+		core::vector2df r( xHit - x2, yHit - y2 );
+		float distance = norm(r);
+		
+		if ( distance <= constSelect )
+			return true;
+	}
+
+	float b = c1 / c2;
+		
+	core::vector2df Pb( x1 + b*v.X, y1 + b*v.Y );
+
+	// Khoang cach giua point va edge
+	core::vector2df r( xHit - Pb.X, yHit - Pb.Y );
+	double distance = norm(r);				
+
+	#undef dot
+	#undef norm
+	
+	if ( distance <= constSelect )
+		return true;
+
+	return false;
+}
+
+// isHittestObjectVector
+// typeVector:	1 ox, 2 oy, 3, oz
+bool CGameObject::isHittestObjectVector( int x, int y, int typeVector )
+{
+	if ( m_node == NULL )
+		return false;
+
+	IView *pView = getIView();
+
+	IVideoDriver* driver = pView->getDriver();	
+	core::vector3df bBoxLength = m_node->getBoundingBox().MaxEdge - m_node->getBoundingBox().MinEdge;
+	float length = bBoxLength.getLength() * 1.5f;
+
+	core::vector3df	ox = m_position + m_right	* length;
+	core::vector3df	oy = m_position + m_up		* length;
+	core::vector3df	oz = m_position + m_front	* length;
+
+	int x1, y1, x2, y2;
+	pView->getScreenCoordinatesFrom3DPosition( m_position, &x1, &y1 );
+
+	if ( typeVector == 1 )
+		pView->getScreenCoordinatesFrom3DPosition( ox, &x2, &y2 );
+	else if ( typeVector == 2 )
+		pView->getScreenCoordinatesFrom3DPosition( oy, &x2, &y2 );
+	else if ( typeVector == 3 )
+		pView->getScreenCoordinatesFrom3DPosition( oz, &x2, &y2 );
+	else
+		return false;
+	
+	return isLineHit( x1, y1, x2, y2, x, y );
+}
+
+#endif
+
 // drawOXYZ
 // draw oxyz
 void CGameObject::drawFrontUpLeftVector()
@@ -591,9 +718,7 @@ void CGameObject::drawFrontUpLeftVector()
 	
 	core::vector3df bBoxLength =	m_node->getBoundingBox().MaxEdge - m_node->getBoundingBox().MinEdge;
 
-	float length = -1;	
-	if ( length < 0 )
-		length = bBoxLength.getLength();
+	float length = bBoxLength.getLength() * 1.5f;
 	
 	// set material
 	SMaterial debug_mat;	

@@ -14,6 +14,7 @@ public:
 		RotateObject,
 		ScaleObject,
 		AddObject,
+		AddWaypoint,
 		NumController
 	};
 

@@ -10,6 +10,8 @@ class CAddWaypointController: public IController
 {
 protected:
 	CWayPoint	*m_temp;
+
+	CWayPoint	*m_connect;
 public:
 	CAddWaypointController();
 	virtual ~CAddWaypointController();
@@ -19,6 +21,8 @@ public:
 	virtual void cancelController();
 			
 	virtual void onLMouseUp		(int x, int y);
+
+	virtual void onRMouseUp		(int x, int y);
 
 	virtual void onMouseMove	(int x, int y);
 };

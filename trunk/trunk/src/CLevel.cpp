@@ -10,8 +10,7 @@ CLevel::CLevel()
 }
 
 CLevel::~CLevel()
-{
-	delete m_snake;
+{	
 }
 
 void CLevel::init()
@@ -22,16 +21,11 @@ void CLevel::init()
 	oxyz->drop();
 
 	ICameraSceneNode *cam =	smgr->addCameraSceneNode(smgr->getRootSceneNode(), core::vector3df(-500, 500, -500), core::vector3df(0, 0, 0) );
-	cam->setFOV( core::degToRad(60.0f) );
-
-	// new snake
-	m_snake = new CSnakeObject();
+	cam->setFOV( core::degToRad(60.0f) );	
 }
 
 void CLevel::update()
 {
-	// update snake
-	m_snake->updateObject();
 }
 
 void CLevel::render()

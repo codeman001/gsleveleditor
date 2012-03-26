@@ -5,17 +5,56 @@ orge
 		meshFile: data/mesh/dwarf.x | filePathType;
 		animSpeed: 24.0000000 | floatType;
 	}
+	Object shadow component
+	{
+		shadowCasting: true | boolType;
+		shadowReceiving: false | boolType;
+	}
 }
 lv1_terrain
 {
+	Object collision component
+	{
+		collisionType: 2 | intType;
+		collisionData: 0 | intType;
+	}
+	Object shadow component
+	{
+		shadowCasting: false | boolType;
+		shadowReceiving: true | boolType;
+	}
 	Static mesh component
 	{
 		meshFile: data/mesh/lv1_terrain.x | filePathType;
 	}
 }
-lv1_skybox
+orge_scale
 {
-	Skybox
+	Anim mesh component
+	{
+		meshFile: data/mesh/dwarf.x | filePathType;
+		animSpeed: 24.0000000 | floatType;
+	}
+	Object transform component
+	{
+		rotateX: 0.0000000 | floatType;
+		rotateY: 0.0000000 | floatType;
+		rotateZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 2.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+staticOrge
+{
+	Static mesh component
+	{
+		meshFile: data/mesh/dwarf.x | filePathType;
+	}
+}
+skybox
+{
+	Skybox component
 	{
 		skyTexture: data/skydome2.jpg | filePathType;
 	}

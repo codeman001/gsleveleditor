@@ -271,14 +271,6 @@
 						RelativePath="..\..\src\core\Animators\CGameGSCameraAnimators.h"
 						>
 					</File>
-					<File
-						RelativePath="..\..\src\core\Animators\CGameSnakeAnimator.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\core\Animators\CGameSnakeAnimator.h"
-						>
-					</File>
 				</Filter>
 				<Filter
 					Name="Component"
@@ -360,14 +352,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\core\GameObject\CSnakeObject.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\core\GameObject\CSnakeObject.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\src\core\GameObject\CZone.cpp"
 						>
 					</File>
@@ -421,22 +405,6 @@
 					</File>
 					<File
 						RelativePath="..\..\src\core\SceneNode\CGameOxyzSceneNode.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\core\SceneNode\CGameSnakeSceneNode.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\core\SceneNode\CGameSnakeSceneNode.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\core\SceneNode\CSnakeMesh.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\core\SceneNode\CSnakeMesh.h"
 						>
 					</File>
 				</Filter>

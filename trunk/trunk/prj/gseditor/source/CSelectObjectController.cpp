@@ -42,9 +42,7 @@ void CSelectObjectController::onLMouseDown(int x, int y)
 	bool isControlHold = GetAsyncKeyState( VK_CONTROL ) < 0;
 
 	// clear select
-	ArrayGameObject *currentSelect = pDoc->getSelectObject();
-
-	// set hit object is null
+	ArrayGameObject *currentSelect = pDoc->getSelectObject();	
 	m_hitOnObj = NULL;
 
 	// if the object is selected
@@ -52,6 +50,48 @@ void CSelectObjectController::onLMouseDown(int x, int y)
 	{
 		m_selectState = true;
 		
+		// check all select object
+		ArrayGameObjectIter it = currentSelect->begin(), end = currentSelect->end();
+		
+		// set move state
+		m_moveState = 0;
+
+		while ( it != end )
+		{			
+			CGameObject *pObj = (*it);
+
+			// hit on ox
+			if ( pObj->isHittestObjectVector( x,y, 1 ) )
+				m_moveState = 1;
+			// hit on oy
+			else if ( pObj->isHittestObjectVector( x,y, 2 ) )				
+				m_moveState = 2;			
+			// hit on oz
+			else if ( pObj->isHittestObjectVector( x,y, 3 ) )
+				m_moveState = 3;			
+		
+			if ( m_moveState != 0 )
+			{
+				m_selectState = false;
+				m_hitOnObj = pObj;
+				m_hitPosition = pObj->getPosition();
+
+				// ray
+				core::line3df	ray = getIView()->getSelectRay();
+				core::vector3df v	= m_hitOnObj->getUp();
+				
+				if ( m_moveState == 2 )
+					v = m_hitOnObj->getRight();
+
+				core::plane3df	plane( pObj->getPosition(), v );
+				plane.getIntersectionWithLine( ray.start, ray.getVector(), m_hitPosition );
+				break;
+			}
+		
+			it++;
+		}
+
+
 		// get select ray
 		core::line3df selectRay = getIView()->getSelectRay();
 
@@ -71,41 +111,18 @@ void CSelectObjectController::onLMouseDown(int x, int y)
 		if ( selectedSceneNode )
 		{
 			CGameObject *pObj =	pDoc->searchObject( selectedSceneNode->getID() );
-			
 			if ( pObj && pObj->getObjectState() != CGameObject::Normal )
 			{
 				m_selectState = false;
+
 				m_hitOnObj = pObj;
 				m_hitPosition = intersection;
-			}
-			
+
+				// move xyz
+				m_moveState = 0;
+			}			
 		}
-
-		/*
-		// check all select object
-		ArrayGameObjectIter iObj = currentSelect->begin(), iEnd = currentSelect->end();
-		while ( iObj != iEnd )
-		{
-			// get object
-			CGameObject *p = (*iObj);			
-			ISceneNode *pNode = p->getSceneNode();
-
-			// get bounding object box 
-			core::aabbox3df objBox = pNode->getBoundingBox();
-			pNode->getAbsoluteTransformation().transformBox( objBox );
-			
-
-			// check collision
-			if ( objBox.intersectsWithLine( selectRay ) )
-			{
-				m_selectState = false;
-				m_hitOnObj = p;
-				break;
-			}
-
-			iObj++;
-		}
-		*/
+	
 	}
 	else
 	{
@@ -193,11 +210,15 @@ void CSelectObjectController::onMouseMove(int x, int y)
 
 		// move object
 		core::line3df	ray = pView->getSelectRay();
-		core::plane3df	plane( m_hitPosition, m_hitOnObj->getUp() );
+
+		core::vector3df planeVector = m_hitOnObj->getUp();
+		if ( m_moveState == 2 )
+			planeVector = m_hitOnObj->getRight();		
+		core::plane3df	plane( m_hitPosition, planeVector);
 		
 
 		// get position
-		core::vector3df hit;
+		core::vector3df hit;		
 		bool b = plane.getIntersectionWithLine( ray.start, ray.getVector(), hit );
 		
 		if ( b )
@@ -222,10 +243,6 @@ void CSelectObjectController::onMouseMove(int x, int y)
 
 				iObj++;
 			}
-
-			// set property for object
-			getIView()->setObjectProperty( m_hitOnObj );
-
 		}
 
 	}

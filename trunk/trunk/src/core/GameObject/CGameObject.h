@@ -32,10 +32,9 @@ public:
 	enum ObjectType
 	{
 		GameObject,
-		TerrainObject,
 		ZoneObject,
-		Trigger,
-		Cinematic,
+		WaypointObject,
+		CameraObject,
 		NumObject
 	};
 	
@@ -72,7 +71,8 @@ protected:
 
 	bool				m_enable;
 	bool				m_visible;
-	
+	bool				m_lighting;
+
 	bool				m_needSortComponent;
 
 	CGameObject			*m_parent;
@@ -342,6 +342,13 @@ public:
 		}
 	}
 
+	virtual void setLighting( bool b );
+
+	virtual bool isLighting()
+	{
+		return m_lighting;
+	}
+
 	// updateObject
 	// update object by frame...
 	virtual void updateObject();	
@@ -396,6 +403,16 @@ public:
 
 public:
 
+#ifdef GSEDITOR
+	// isLineHit
+	// mouse x, y is hit on line x1y1 - x2y2
+	bool isLineHit( int X1, int Y1, int X2, int Y2, int X, int Y );
+
+	// isHittestObjectVector
+	// typeVector:	1 ox, 2 oy, 3, oz
+	bool isHittestObjectVector( int x, int y, int typeVector );
+#endif
+
 	// drawFrontUpLeftVector
 	// draw front, left, up vector
 	void drawFrontUpLeftVector();
@@ -403,6 +420,14 @@ public:
 	// drawCircleAroundObj
 	// draw circle around object
 	void drawCircleAroundObject();
+
+#ifdef GSEDITOR
+	// drawObject
+	// draw another on node
+	virtual void drawObject()
+	{
+	}
+#endif
 
 	// updateNodeRotation
 	// update irr node rotation

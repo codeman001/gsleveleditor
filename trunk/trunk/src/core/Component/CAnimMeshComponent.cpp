@@ -36,7 +36,7 @@ void CAnimMeshComponent::loadFromFile( char *lpFilename )
 	// turn off lighting
 	int numMesh = animMesh->getMeshBufferCount();
 	for ( int i = 0; i < numMesh; i++ )
-		animMesh->getMeshBuffer(i)->getMaterial().Lighting = false;
+		animMesh->getMeshBuffer(i)->getMaterial().Lighting = m_gameObject->isLighting();
 	
 	// create scene node
 	m_animNode = new CGameAnimatedMeshSceneNode( m_gameObject, animMesh, smgr->getRootSceneNode(), smgr );	

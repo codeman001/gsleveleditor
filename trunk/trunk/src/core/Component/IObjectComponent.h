@@ -16,7 +16,8 @@ public:
 		ObjectTransform,
 		ObjectCollision,
 		Shadow,
-		NumBuildInComponent = Shadow
+		BoxObject,
+		NumBuildInComponent = BoxObject
 	};
 
 	static const char *s_compType[];

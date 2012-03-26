@@ -34,6 +34,10 @@ void CGameAnimatedMeshSceneNode::render()
 		setDebugDataVisible( EDS_BBOX );
 	else
 		setDebugDataVisible( 0 );
+
+	// call object draw
+	m_owner->drawObject();
+
 #endif
 	// draw animesh
 	CAnimatedMeshSceneNode::render();

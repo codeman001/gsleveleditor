@@ -45,6 +45,11 @@
         <Image>ribbonIcon/object_trigger.bmp</Image>
       </Command.LargeImages>
     </Command>
+    <Command Name="cmdAddWaypoint" LabelTitle="Add waypoint" Symbol="ID_ADDWAYPOINT">      
+    </Command>
+    <Command Name="cmdAddCamera" LabelTitle="Add camera" Symbol="ID_ADDCAMERA">      
+    </Command>
+    
 
     <Command Name="cmdGroupCamera" LabelTitle="Camera" />
     <Command Name="cmdCameraView" LabelTitle="Camera view" Symbol="ID_CAMERAVIEW">
@@ -171,9 +176,11 @@
           <Group CommandName="cmdGroupCamera" SizeDefinition="OneButton">
             <ToggleButton CommandName="cmdCameraView" />
           </Group>                      
-          <Group CommandName="cmdGroupObject" SizeDefinition="TwoButtons">
+          <Group CommandName="cmdGroupObject" SizeDefinition="FourButtons">
             <ToggleButton CommandName="cmdAddObject" />
-            <ToggleButton CommandName="cmdAddTrigger"/>            
+            <ToggleButton CommandName="cmdAddTrigger"/>
+            <ToggleButton CommandName="cmdAddWaypoint"/>
+            <ToggleButton CommandName="cmdAddCamera"/>            
           </Group>
           <Group CommandName="cmdGroupObjTransform" SizeDefinition="ThreeButtons">
             <ToggleButton CommandName="cmdSelectObject" />

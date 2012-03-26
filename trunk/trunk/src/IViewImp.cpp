@@ -20,8 +20,11 @@ IView::~IView()
 {	
 	m_eventReceivers.clear();
 
+#ifndef GSEDITOR
 	UIDEBUG_TRACE("Debug leak memory: \n");
 	UIDEBUG_DUMPLEAK();
+#endif
+
 }
 
 // getSelectRay

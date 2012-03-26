@@ -5,6 +5,7 @@
 #include "CRotateObjectController.h"
 #include "CScaleObjectController.h"
 #include "CAddObjectController.h"
+#include "CAddWaypointController.h"
 
 // CControllerManager
 // 
@@ -21,6 +22,7 @@ CControllerManager::CControllerManager()
 	m_controller[ (int)IController::RotateObject ]		= new CRotateObjectController();
 	m_controller[ (int)IController::ScaleObject ]		= new CScaleObjectController();
 	m_controller[ (int)IController::AddObject ]			= new CAddObjectController();
+	m_controller[ (int)IController::AddWaypoint ]		= new CAddWaypointController();
 
 	// default is null controller
 	m_currentController = m_controller[ (int)IController::NullController ];

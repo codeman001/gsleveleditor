@@ -64,6 +64,16 @@ END
 ID_ADDTRIGGER_LargeImages_RESID    BITMAP    "ribbonIcon\\object_trigger.bmp" /* LargeImages ID_ADDTRIGGER_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
+    ID_ADDWAYPOINT_LabelTitle_RESID L"Add waypoint" /* LabelTitle ID_ADDWAYPOINT_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    ID_ADDCAMERA_LabelTitle_RESID L"Add camera" /* LabelTitle ID_ADDCAMERA_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
     cmdGroupCamera_LabelTitle_RESID L"Camera" /* LabelTitle cmdGroupCamera_LabelTitle_RESID: (null) */
 END
 

@@ -1,28 +1,29 @@
 #include "stdafx.h"
-#include "CGameMeshSceneNode.h"
+#include "CGameBoxSceneNode.h"
 #include "CGameObject.h"
 
-CGameMeshSceneNode::CGameMeshSceneNode(
-				CGameObject *owner,
-				IMesh* mesh, ISceneNode* parent, ISceneManager* mgr,
-				const core::vector3df& position,
-				const core::vector3df& rotation,
-				const core::vector3df& scale
-			)
-	:CMeshSceneNode(mesh, parent, mgr, owner->getID(), position, rotation, scale)
+CGameBoxSceneNode::CGameBoxSceneNode
+	(
+		CGameObject *owner,
+		f32 size, ISceneNode* parent, ISceneManager* mgr, s32 id,
+		const core::vector3df& position,
+		const core::vector3df& rotation,
+		const core::vector3df& scale
+	)
+	:CCubeSceneNode( size, parent, mgr, id, position, rotation, scale )
 {
 	m_owner = owner;
 }
 
-CGameMeshSceneNode::~CGameMeshSceneNode()
+CGameBoxSceneNode::~CGameBoxSceneNode()
 {
-
 }
 
 // render
 // override render state
-void CGameMeshSceneNode::render()
+void CGameBoxSceneNode::render()
 {
+
 #ifdef GSEDITOR
 	CGameObject::ObjectState state = m_owner->getObjectState();
 	
@@ -37,11 +38,11 @@ void CGameMeshSceneNode::render()
 
 	// call object draw
 	m_owner->drawObject();
+
 #endif
 
-	// draw mesh
-	CMeshSceneNode::render();
-
+	CCubeSceneNode::render();
+	
 #ifdef GSEDITOR	
 	// draw move
 	if ( 

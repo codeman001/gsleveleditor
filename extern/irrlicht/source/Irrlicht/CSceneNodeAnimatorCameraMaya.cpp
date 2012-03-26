@@ -55,8 +55,7 @@ bool CSceneNodeAnimatorCameraMaya::OnEvent(const SEvent& event)
 	switch(event.MouseInput.Event)
 	{
 	case EMIE_LMOUSE_PRESSED_DOWN:
-		if ( event.MouseInput.Alt ||  event.MouseInput.Control || event.MouseInput.Shift )
-			MouseKeys[0] = true;
+		MouseKeys[0] = true;
 		break;
 	case EMIE_RMOUSE_PRESSED_DOWN:
 		MouseKeys[2] = true;
@@ -134,7 +133,7 @@ void CSceneNodeAnimatorCameraMaya::animateNode(ISceneNode *node, u32 timeMs)
 		else
 		{
 			const f32 targetMinDistance = 0.1f;
-			nZoom += (ZoomStart.Y - MousePos.Y) * ZoomSpeed;
+			nZoom += (ZoomStart.X - MousePos.X) * ZoomSpeed;
 
 			if (nZoom < targetMinDistance) // jox: fixed bug: bounce back when zooming to close
 				nZoom = targetMinDistance;
@@ -143,7 +142,7 @@ void CSceneNodeAnimatorCameraMaya::animateNode(ISceneNode *node, u32 timeMs)
 	else if (Zooming)
 	{
 		const f32 old = CurrentZoom;
-		CurrentZoom = CurrentZoom + (ZoomStart.Y - MousePos.Y ) * ZoomSpeed;
+		CurrentZoom = CurrentZoom + (ZoomStart.X - MousePos.X ) * ZoomSpeed;
 		nZoom = CurrentZoom;
 
 		if (nZoom < 0)

@@ -552,6 +552,23 @@ void CDocument::clearSelect()
 	m_selectObjects.clear();
 }
 
+// clearSelectObject
+// remove a object in list select
+void CDocument::clearSelectObject( CGameObject *p )
+{
+	ArrayGameObjectIter i = m_selectObjects.begin(), end = m_selectObjects.end();
+	while ( i != end )
+	{
+		if ( (*i) == p )
+		{
+			p->setObjectState( CGameObject::Normal );
+			m_selectObjects.erase( i );
+			return;
+		}
+		i++;
+	}
+}
+
 // getData
 // get data to serializable
 void CDocument::getData( CSerializable *pObj )

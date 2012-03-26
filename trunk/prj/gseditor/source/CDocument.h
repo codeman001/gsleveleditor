@@ -99,6 +99,10 @@ public:
 	// clear all select
 	virtual void clearSelect();
 
+	// clearSelectObject
+	// remove a object in list select
+	virtual void clearSelectObject( CGameObject *p );
+
 	// getSelectObject
 	// get list of object is selected
 	virtual ArrayGameObject* getSelectObject()

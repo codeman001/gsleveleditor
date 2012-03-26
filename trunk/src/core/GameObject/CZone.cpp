@@ -9,6 +9,7 @@
 
 #include "CObjTemplateFactory.h"
 
+
 CZone::CZone()
 {
 	m_needSortObject = true;
@@ -138,6 +139,43 @@ CGameObject* CZone::spawnObject( wchar_t* objTemplate )
 	return p;
 }
 
+
+// spawnWaypoint
+// create a waypoint object
+CWayPoint* CZone::spawnWaypoint()
+{
+	CWayPoint *p = new CWayPoint();
+	if ( p == NULL )
+		return NULL;
+
+	wchar_t lpName[1024];
+	swprintf( lpName, 1024, L"%s_%d", L"waypoint", (int)CGameObject::s_objectID );
+	
+	p->setID( CGameObject::s_objectID++ );
+	p->setParent( this );
+
+	
+#ifdef GSEDITOR
+	// create tree item
+	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) lpName );
+	CDocument *pDoc = (CDocument*) getIView()->getDocument();
+
+	pTreeItem->setIconIndex( 4 );
+	pTreeItem->setIconStateIndex( 4 );
+	pTreeItem->update();
+
+	pTreeItem->setData( p );
+	p->setTreeItem( pTreeItem );
+	m_treeItem->update();
+	m_treeItem->expandChild( true );
+#endif
+
+	p->setName( lpName );
+
+	addChild( p );
+	return p;
+}
+
 // addChild
 // add a game object to child list
 void CZone::addChild( CGameObject *p )
@@ -180,49 +218,49 @@ void CZone::removeObject( CGameObject *pObj )
 // save data
 void CZone::saveData( CSerializable *pObj )
 {
-	//pObj->addGroup	("Game zone");
+	pObj->addGroup	("Game zone");
 
-	//pObj->addLong	("objectID",	m_objectID, true);
-	//pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
+	pObj->addLong	("objectID",	m_objectID, true);
+	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
 
-	//char lpText[1024] = {0};
-	//uiString::convertUnicodeToUTF8( (unsigned short*)m_name.c_str(), lpText );
-	//pObj->addString	("objectName",	lpText, false);
+	char lpText[1024] = {0};
+	uiString::convertUnicodeToUTF8( (unsigned short*)m_name.c_str(), lpText );
+	pObj->addString	("objectName",	lpText, false);
 
-	//pObj->addBool	("enable",		m_enable );
-	//pObj->addBool	("visible",		m_visible );
+	pObj->addBool	("enable",		m_enable );
+	pObj->addBool	("visible",		m_visible );
 }
 
 // loadData
 // load data
 void CZone::loadData( CSerializable *pObj )
 {
-	//pObj->nextRecord();
-	//
-	//// object id
-	//m_objectID	= pObj->readLong();
+	pObj->nextRecord();
+	
+	// object id
+	m_objectID	= pObj->readLong();
 
-	//// object type
-	//char *type = pObj->readString();
-	//for ( int i = 0; i < CGameObject::NumObject; i++ )
-	//{
-	//	if ( strcmp(s_stringObjType[i], type) == 0 )
-	//	{
-	//		m_objectType = (CGameObject::ObjectType)i;
-	//		break;
-	//	}
-	//}
+	// object type
+	char *type = pObj->readString();
+	for ( int i = 0; i < CGameObject::NumObject; i++ )
+	{
+		if ( strcmp(s_stringObjType[i], type) == 0 )
+		{
+			m_objectType = (CGameObject::ObjectType)i;
+			break;
+		}
+	}
 
-	//// read obj name
-	//wchar_t lpText[1024] = {0};
-	//uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
-	//setName( lpText );
+	// read obj name
+	wchar_t lpText[1024] = {0};
+	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
+	setName( lpText );
 
-	//// object enable
-	//m_enable	= pObj->readBool();
+	// object enable
+	m_enable	= pObj->readBool();
 
-	//// object visible
-	//m_visible	= pObj->readBool();
+	// object visible
+	m_visible	= pObj->readBool();
 }
 
 // getData

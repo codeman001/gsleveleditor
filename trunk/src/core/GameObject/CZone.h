@@ -2,6 +2,7 @@
 #define _CZONE_H_
 
 #include "CGameObject.h"
+#include "CWayPoint.h"
 
 class CZone: public CGameObject
 {
@@ -34,6 +35,10 @@ public:
 	// spawnObject
 	// create a template object
 	CGameObject* spawnObject( wchar_t* objTemplate );
+
+	// spawnWaypoint
+	// create a waypoint object
+	CWayPoint* spawnWaypoint();
 
 	// removeObject
 	// remove object

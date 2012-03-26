@@ -97,5 +97,6 @@ void CAnimMeshComponent::loadData( CSerializable* pObj )
 
 	// read anim speed
 	m_animSpeed = pObj->readFloat();
-	m_animNode->setAnimationSpeed( m_animSpeed );
+	if ( m_animNode )
+		m_animNode->setAnimationSpeed( m_animSpeed );
 }

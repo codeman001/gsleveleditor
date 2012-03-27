@@ -264,11 +264,11 @@
 					Name="Animators"
 					>
 					<File
-						RelativePath="..\..\src\core\Animators\CGameGSCameraAnimators.cpp"
+						RelativePath="..\..\src\core\Animators\CGameGSCameraAnimator.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\core\Animators\CGameGSCameraAnimators.h"
+						RelativePath="..\..\src\core\Animators\CGameGSCameraAnimator.h"
 						>
 					</File>
 				</Filter>
@@ -281,6 +281,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\core\Component\CAnimMeshComponent.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CBoxObjectComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CBoxObjectComponent.h"
 						>
 					</File>
 					<File
@@ -344,11 +352,35 @@
 					Name="GameObject"
 					>
 					<File
+						RelativePath="..\..\src\core\GameObject\CGameCamera.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CGameCamera.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\GameObject\CGameObject.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\core\GameObject\CGameObject.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CTrigger.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CTrigger.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CWayPoint.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CWayPoint.h"
 						>
 					</File>
 					<File
@@ -389,6 +421,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\core\SceneNode\CGameAnimatedMeshSceneNode.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameBoxSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameBoxSceneNode.h"
 						>
 					</File>
 					<File

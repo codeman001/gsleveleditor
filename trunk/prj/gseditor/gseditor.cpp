@@ -27,7 +27,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         return FALSE;
     }
 
-	CGlobalInstance::getInstance();
+	CGlobalInstance::createGetInstance();
 
 	CMainFrame *pMainWnd = new CMainFrame();
 
@@ -47,7 +47,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	CoUninitialize();
 
-	CGlobalInstance::destroyInstance();
+	CGlobalInstance::releaseInstance();
 	uiApplication::destroy();	
 
 	return 0;

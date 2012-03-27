@@ -53,6 +53,9 @@ public:
 	void getDisplayLocation(POINT &pt, HWND hWnd);
 
 public:
+	void onUndo();
+	void onRedo();
+
 	void onEditorCameraCommand();
 	void onSelectedCameraCommand();
 

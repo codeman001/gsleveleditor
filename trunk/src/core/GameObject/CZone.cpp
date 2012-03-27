@@ -136,6 +136,7 @@ CGameObject* CZone::createObject( wchar_t* objTemplate )
 	p->setName( lpName );
 
 	addChild( p );
+	
 	return p;
 }
 
@@ -171,6 +172,7 @@ CWayPoint* CZone::createWaypoint()
 	p->setName( lpName );
 
 	addChild( p );
+
 	return p;
 }
 
@@ -221,7 +223,7 @@ void CZone::addChild( CGameObject *p )
 // removeObject
 // remove object
 void CZone::removeObject( CGameObject *pObj )
-{
+{			
 	ArrayGameObjectIter iObj = m_childs.begin(), end = m_childs.end();
 	while ( iObj != end )
 	{
@@ -244,7 +246,7 @@ void CZone::removeObject( CGameObject *pObj )
 		}
 
 		iObj++;
-	}
+	}	
 }
 
 // saveData

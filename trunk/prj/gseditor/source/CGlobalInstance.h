@@ -3,15 +3,13 @@
 
 #include "RibbonCommandHandler.h"
 
-class CGlobalInstance
+class CGlobalInstance: public uiSingleton<CGlobalInstance>
 {
-protected:
-	static CGlobalInstance *s_instance;
-protected:
+public:
 	CGlobalInstance();
 	virtual ~CGlobalInstance();
 
-public:
+
 	CRibbonCommandHandler	*m_ribbonCommand;
 	IUIFramework			*m_ribbonFramework;
 	uiWindow				*m_mainFrame;
@@ -19,8 +17,7 @@ public:
 public:
 	
 public:
-	static CGlobalInstance *getInstance();
-	static void destroyInstance();
+	
 };
 
 #endif

@@ -54,14 +54,25 @@ void CAddWaypointController::onLMouseUp	(int x, int y)
 			pObj->setPosition( hit );
 			pObj->setVisible( true );
 
+			// add history
+			CHistoryManager* pHistory = CHistoryManager::createGetInstance();
+			pHistory->beginHistory();
+			pHistory->addHistoryCreateObj( pObj );
+
 			if ( m_connect )
 			{
+				pHistory->addHistoryBeginModifyObj( m_connect );
 				m_connect->setNext( pObj );
+				pHistory->addHistoryEndModifyObj( m_connect );
+				
+				pHistory->addHistoryBeginModifyObj( pObj );
 				pObj->setBack( m_connect );
+				pHistory->addHistoryEndModifyObj( pObj );
 			}
-			
-			m_connect = pObj;
+									
+			pHistory->endHistory();
 
+			m_connect = pObj;
 		}
 		else
 			pView->alertError( L"Can not create object because is too far" );

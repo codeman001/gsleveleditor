@@ -49,6 +49,11 @@ void CAddCameraController::onLMouseUp(int x, int y)
 			pObj->setPosition( hit );
 			pObj->setVisible( true );
 
+			// add history
+			CHistoryManager::getInstance()->beginHistory();
+			CHistoryManager::getInstance()->addHistoryCreateObj( pObj );
+			CHistoryManager::getInstance()->endHistory();
+
 		}
 		else
 			pView->alertError( L"Can not create object because is too far" );

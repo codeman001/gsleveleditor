@@ -2,7 +2,9 @@
 
 #include "CViewWindow.h"
 #include "CMainFrame.h"
+
 #include "CGlobalInstance.h"
+#include "CHistoryManager.h"
 
 #include "IController.h"
 #include "CDocument.h"
@@ -25,6 +27,7 @@ CViewWindow::CViewWindow( WCHAR* lpString, uiWindow *p )
 	
 	// init controller
 	CControllerManager::createGetInstance();
+	CHistoryManager::createGetInstance();	
 
 	// init document
 	m_document = new CDocument();
@@ -47,7 +50,8 @@ CViewWindow::~CViewWindow()
 
 	// destroy controller
 	CControllerManager::releaseInstance();
-	
+	CHistoryManager::releaseInstance();
+
 	CComponentFactory::freeData();
 	CObjTemplateFactory::freeData();
 

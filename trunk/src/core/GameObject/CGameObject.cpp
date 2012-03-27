@@ -269,6 +269,12 @@ void CGameObject::saveData( CSerializable* pObj )
 	pObj->addGroup	("Game object");
 
 	pObj->addLong	("objectID",	m_objectID, true);
+	
+	long parentID = -1;
+	if ( m_parent )
+		parentID = m_parent->getID();
+	pObj->addLong	("parentID",	parentID, true);
+
 	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
 
 	char lpText[1024] = {0};
@@ -311,6 +317,17 @@ void CGameObject::loadData( CSerializable* pObj )
 	pObj->nextRecord();
 
 	m_objectID	= pObj->readLong();
+
+	long parentID = pObj->readLong();
+	if ( parentID == -1 )
+		setParent( NULL );
+	else
+	{
+#ifdef GSEDITOR
+		CGameObject *p = getIView()->getDocument()->searchObject( parentID );
+		setParent( p );
+#endif
+	}
 
 	char *type = pObj->readString();
 	for ( int i = 0; i < CGameObject::NumObject; i++ )
@@ -369,6 +386,12 @@ void CGameObject::getData( CSerializable* pObj )
 	pObj->addGroup	("Game object");
 
 	pObj->addLong	("objectID",	m_objectID, true);
+	
+	long parentID = -1;
+	if ( m_parent )
+		parentID = m_parent->getID();
+	pObj->addLong	("parentID",	parentID, true);
+
 	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
 
 	char lpText[1024] = {0};
@@ -402,6 +425,17 @@ void CGameObject::updateData( CSerializable* pObj )
 	pObj->nextRecord();
 
 	m_objectID	= pObj->readLong();
+
+	long parentID = pObj->readLong();
+	if ( parentID == -1 )
+		setParent( NULL );
+	else
+	{
+#ifdef GSEDITOR
+		CGameObject *p = getIView()->getDocument()->searchObject( parentID );
+		setParent( p );
+#endif
+	}
 
 	char *type = pObj->readString();
 	for ( int i = 0; i < CGameObject::NumObject; i++ )

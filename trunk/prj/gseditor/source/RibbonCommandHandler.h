@@ -53,8 +53,11 @@ public:
 	void getDisplayLocation(POINT &pt, HWND hWnd);
 
 public:
-	void onCameraViewCommand();
+	void onEditorCameraCommand();
+	void onSelectedCameraCommand();
+
 	void onAddObjectCommand();
+	void onAddCameraCommand();
 	void onAddWaypointCommand();
 
 	void onSelectObjectCommand();

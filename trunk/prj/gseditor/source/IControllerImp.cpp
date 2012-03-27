@@ -6,6 +6,7 @@
 #include "CScaleObjectController.h"
 #include "CAddObjectController.h"
 #include "CAddWaypointController.h"
+#include "CAddCameraController.h"
 
 // CControllerManager
 // 
@@ -23,6 +24,7 @@ CControllerManager::CControllerManager()
 	m_controller[ (int)IController::ScaleObject ]		= new CScaleObjectController();
 	m_controller[ (int)IController::AddObject ]			= new CAddObjectController();
 	m_controller[ (int)IController::AddWaypoint ]		= new CAddWaypointController();
+	m_controller[ (int)IController::AddCamera ]			= new CAddCameraController();
 
 	// default is null controller
 	m_currentController = m_controller[ (int)IController::NullController ];

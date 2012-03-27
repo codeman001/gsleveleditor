@@ -429,11 +429,11 @@
 					Name="Animators"
 					>
 					<File
-						RelativePath="..\..\src\core\Animators\CGameGSCameraAnimators.cpp"
+						RelativePath="..\..\src\core\Animators\CGameGSCameraAnimator.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\core\Animators\CGameGSCameraAnimators.h"
+						RelativePath="..\..\src\core\Animators\CGameGSCameraAnimator.h"
 						>
 					</File>
 				</Filter>
@@ -517,11 +517,11 @@
 					Name="GameObject"
 					>
 					<File
-						RelativePath="..\..\src\core\GameObject\CCamera.cpp"
+						RelativePath="..\..\src\core\GameObject\CGameCamera.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\core\GameObject\CCamera.h"
+						RelativePath="..\..\src\core\GameObject\CGameCamera.h"
 						>
 					</File>
 					<File
@@ -720,6 +720,14 @@
 				<Filter
 					Name="AddObject"
 					>
+					<File
+						RelativePath=".\source\CAddCameraController.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\source\CAddCameraController.h"
+						>
+					</File>
 					<File
 						RelativePath=".\source\CAddObjectController.cpp"
 						>

@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "CGameObject.h"
+#include "CGameCamera.h"
 
 class IDoc: public uiObject
 {
@@ -12,13 +13,17 @@ protected:
 
 	bool	m_shadowMode;
 public:
+
 	IDoc()
 	{
 		m_isGirdDocument	= false;
 		m_gridSize			= 20;
-
 		m_shadowMode		= false;
 	}
+
+	virtual ~IDoc()
+	{
+	};
 
 	// newDocument
 	// new 3d scene document
@@ -139,13 +144,11 @@ public:
 	inline bool isShadowMode()
 	{
 		return m_shadowMode;
-	}
+	}	
 
-	// setAspectRatioAllCamera	
-	virtual void setAspectRatioAllCamera(float f) = 0;
-
-	// getCamera
-	virtual ICameraSceneNode *getCamera() = 0;
+	// getDesignCamera
+	// get camera
+	virtual CGameCamera* getDesignCamera() = 0;
 };
 
 #endif

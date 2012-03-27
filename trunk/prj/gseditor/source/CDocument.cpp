@@ -8,6 +8,8 @@
 
 #include "CGameOxyzSceneNode.h"
 #include "CGameGSCameraAnimators.h"
+#include "CShadowComponent.h"
+
 
 static bool s_isFirstDocument = true;
 
@@ -18,6 +20,9 @@ CDocument::CDocument()
 
 CDocument::~CDocument()
 {
+	// delete camera
+	delete m_designCamera;
+
 	// delete grid
 	m_gridNode->drop();
 
@@ -39,32 +44,24 @@ void CDocument::newDocument()
 	ISceneManager *smgr = getIView()->getSceneMgr();
 	IrrlichtDevice *device = getIView()->getDevice();
 
-	// add camera
-	scene::ICameraSceneNode* cam = smgr->addCameraSceneNode();
-	cam->setTarget(core::vector3df(300,100,300));
-	cam->setPosition( core::vector3df(0, 200, 0) );
-	cam->setFOV( core::degToRad(60.0f) );
-	cam->setFarValue( 8000.0f );
-	
-	CGameGSCameraAnimators* camAnimator = new CGameGSCameraAnimators( device->getCursorControl() );
-	cam->addAnimator( camAnimator );
-	camAnimator->drop();
-	
-	// add ortho
-	m_cam = cam;
-	m_camOrtho = smgr->addCameraSceneNode();
-
-	smgr->setActiveCamera( m_cam );
-
+	// create design camera
+	m_designCamera = new CGameCamera();
+	m_designCamera->setName( L"Design camera" );
+	m_designCamera->setTarget(core::vector3df(300,100,300));
+	m_designCamera->setPosition( core::vector3df(0, 200, 0) );	
+	getIView()->setActiveCamera( m_designCamera );
+		
 	// add oxyz plane node
 	CGameOxyzSceneNode *oxyPlane = new CGameOxyzSceneNode( smgr->getRootSceneNode(), smgr, 1 );
 	m_gridNode = oxyPlane;
 
 	// add ligth
 	ISceneNode* pNode = smgr->addEmptySceneNode();
-	ILightSceneNode *light = smgr->addLightSceneNode( pNode, core::vector3df(0, 0, 0) );
-	light->setLightType( video::ELT_DIRECTIONAL );	
 
+	ILightSceneNode *light = smgr->addLightSceneNode( pNode, core::vector3df(0, 0, 0) );
+	light->setLightType( video::ELT_DIRECTIONAL );		
+
+	// reset file path
 	m_filePath = L"";
 
 	// begin id
@@ -186,7 +183,7 @@ bool CDocument::readDocumentFromData( char *lpData )
 				uiString::convertUTF8ToUnicode( r->data, (unsigned short*) lpString );
 
 				// create game object
-				CGameObject *pGameObj = currentZone->spawnObject( lpString );
+				CGameObject *pGameObj = currentZone->createObject( lpString );
 				if ( pGameObj )
 					pGameObj->updateData( &objData );
 			}
@@ -272,10 +269,13 @@ wchar_t* CDocument::getCurrentFile()
 // updateDocument
 // update all object in doc by frame...
 void CDocument::updateDocument()
-{	
+{		
 	// update time
 	IrrlichtDevice *device = getIView()->getDevice();
 	device->getTimer()->tick();
+
+	// update design
+	m_designCamera->updateObject();
 
 	// update all zone
 	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
@@ -577,21 +577,6 @@ void CDocument::getData( CSerializable *pObj )
 
 	pObj->addBool(	"gridGame",	m_isGirdDocument );
 	pObj->addInt(	"gridSize",	m_gridSize );
-
-	if ( m_cam )
-	{
-		m_saveCamPos	= m_cam->getAbsolutePosition() ;
-		m_saveCamTarget	= m_cam->getTarget();
-	}
-
-	pObj->addFloat(	"camX",	m_saveCamPos.X );
-	pObj->addFloat(	"camY",	m_saveCamPos.Y );
-	pObj->addFloat(	"camZ",	m_saveCamPos.Z );
-
-	pObj->addFloat(	"camTargetX",	m_saveCamTarget.X );
-	pObj->addFloat(	"camTargetY",	m_saveCamTarget.Y );
-	pObj->addFloat(	"camTargetZ",	m_saveCamTarget.Z );
-
 }
 
 // updateData
@@ -601,26 +586,14 @@ void CDocument::updateData( CSerializable *pObj )
 	pObj->nextRecord();
 
 	m_isGirdDocument	= pObj->readBool();
-	m_gridSize			= pObj->readInt();
-
-	// cam pos
-	m_saveCamPos.X = pObj->readFloat();
-	m_saveCamPos.Y = pObj->readFloat();
-	m_saveCamPos.Z = pObj->readFloat();
-
-	// cam target
-	m_saveCamTarget.X = pObj->readFloat();
-	m_saveCamTarget.Y = pObj->readFloat();
-	m_saveCamTarget.Z = pObj->readFloat();
+	m_gridSize			= pObj->readInt();	
 }
 
 // setShadowMode
 // change shadow mode
-
-#include "CShadowComponent.h"
-
 void CDocument::setShadowMode( bool b )
 {
+	/*
 	IDoc::setShadowMode( b );
 
 	ISceneManager *smgr = getIView()->getSceneMgr();
@@ -690,5 +663,5 @@ void CDocument::setShadowMode( bool b )
 		
 		smgr->setActiveCamera(m_cam);
 	}
-
+	*/
 }

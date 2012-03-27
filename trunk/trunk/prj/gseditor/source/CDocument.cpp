@@ -595,6 +595,17 @@ void CDocument::getData( CSerializable *pObj )
 
 	pObj->addBool(	"gridGame",	m_isGirdDocument );
 	pObj->addInt(	"gridSize",	m_gridSize );
+
+	core::vector3df& camPos		= m_designCamera->getPosition();
+	core::vector3df& camTarget	= m_designCamera->getTarget(); 
+
+	pObj->addFloat( "cameraX", camPos.X, true );
+	pObj->addFloat( "cameraY", camPos.Y, true );
+	pObj->addFloat( "cameraZ", camPos.Z, true );
+
+	pObj->addFloat( "cameraTargetX", camTarget.X, true );
+	pObj->addFloat( "cameraTargetY", camTarget.Y, true );
+	pObj->addFloat( "cameraTargetZ", camTarget.Z, true );
 }
 
 // updateData
@@ -605,6 +616,20 @@ void CDocument::updateData( CSerializable *pObj )
 
 	m_isGirdDocument	= pObj->readBool();
 	m_gridSize			= pObj->readInt();	
+
+	core::vector3df camPos;
+	core::vector3df camTarget;
+
+	camPos.X = pObj->readFloat();
+	camPos.Y = pObj->readFloat();
+	camPos.Z = pObj->readFloat();
+
+	camTarget.X = pObj->readFloat();
+	camTarget.Y = pObj->readFloat();
+	camTarget.Z = pObj->readFloat();
+	
+	m_designCamera->setPosition( camPos );
+	m_designCamera->setTarget( camTarget );
 }
 
 // setShadowMode

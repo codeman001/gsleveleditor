@@ -158,8 +158,8 @@ CWayPoint* CZone::createWaypoint()
 	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) lpName );
 	CDocument *pDoc = (CDocument*) getIView()->getDocument();
 
-	pTreeItem->setIconIndex( 4 );
-	pTreeItem->setIconStateIndex( 4 );
+	pTreeItem->setIconIndex( 7 );
+	pTreeItem->setIconStateIndex( 7 );
 	pTreeItem->update();
 
 	pTreeItem->setData( p );
@@ -193,8 +193,8 @@ CGameCamera* CZone::createCamera()
 	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) lpName );
 	CDocument *pDoc = (CDocument*) getIView()->getDocument();
 
-	pTreeItem->setIconIndex( 4 );
-	pTreeItem->setIconStateIndex( 4 );
+	pTreeItem->setIconIndex( 8 );
+	pTreeItem->setIconStateIndex( 8 );
 	pTreeItem->update();
 
 	pTreeItem->setData( p );

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CGameGSCameraAnimators.h"
+#include "CGameGSCameraAnimator.h"
 
 //! Constructor
 CGameGSCameraAnimators::CGameGSCameraAnimators(	gui::ICursorControl* cursorControl,	f32 rotateSpeed,	f32 moveSpeed)

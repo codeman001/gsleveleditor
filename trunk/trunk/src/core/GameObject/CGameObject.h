@@ -211,7 +211,7 @@ public:
 
 	// setPosition
 	// set 3d position
-	inline void setPosition(core::vector3df& pos)
+	virtual void setPosition(core::vector3df& pos)
 	{
 		m_position = pos;
 		updateNodePosition();
@@ -226,7 +226,7 @@ public:
 
 	// setRotation
 	// set 3d rotation
-	void setRotation(core::vector3df& rot);	
+	virtual void setRotation(core::vector3df& rot);	
 
 	// getPitch
 	inline float getPitch()	{	return m_rotation.X;	}

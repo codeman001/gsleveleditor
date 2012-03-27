@@ -44,6 +44,9 @@ void CDocument::newDocument()
 	ISceneManager *smgr = getIView()->getSceneMgr();
 	IrrlichtDevice *device = getIView()->getDevice();
 
+	// clear all history
+	CHistoryManager::getInstance()->clearAll();
+
 	// create design camera
 	m_designCamera = new CGameCamera();
 	m_designCamera->setName( L"Design camera" );
@@ -340,7 +343,12 @@ CGameObject* CDocument::searchObject( long id )
 	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
 	while ( iZone != iEnd )
 	{		
-		CGameObject* p = (*iZone)->searchObject( id );
+		CZone *pZone = (*iZone);
+		
+		if ( pZone->getID() == id )
+			return pZone;
+
+		CGameObject* p = pZone->searchObject( id );
 		
 		if ( p )
 			return p;

@@ -15,6 +15,15 @@ void CScaleObjectController::cancelController()
 void CScaleObjectController::onLMouseDown(int x, int y)
 {
 	m_isLMouseDown = true;
+
+	ArrayGameObject *pListSelect = getIView()->getDocument()->getSelectObject();
+	ArrayGameObjectIter i = pListSelect->begin(), end = pListSelect->end();
+	while ( i != end )
+	{
+		CGameObject *pObj = (*i);
+		pObj->saveTransform();
+		i++;
+	}
 }
 
 void CScaleObjectController::onLMouseUp(int x, int y)
@@ -24,7 +33,34 @@ void CScaleObjectController::onLMouseUp(int x, int y)
 	// set property for object
 	ArrayGameObject *pListSelect = getIView()->getDocument()->getSelectObject();
 	if ( pListSelect->size() > 0 )
+	{
 		getIView()->setObjectProperty( pListSelect->front() );
+
+		CHistoryManager *pHistory = CHistoryManager::getInstance();
+		pHistory->beginHistory();
+
+		ArrayGameObjectIter iObj = pListSelect->begin(), iEnd = pListSelect->end();
+		while ( iObj != iEnd )
+		{
+			CGameObject *pObj = (*iObj);				
+
+			// restore transform
+			core::vector3df v =	pObj->getScale();
+
+			pObj->loadTransform();			
+			pHistory->addHistoryBeginModifyObj( pObj );
+
+			pObj->setScale(v);
+			pObj->updateNodeRotation();
+			pObj->updateNodePosition();
+			
+			pHistory->addHistoryEndModifyObj( pObj );
+
+			iObj++;
+		}
+
+		pHistory->endHistory();
+	}
 }
 
 void CScaleObjectController::onMouseMove(int x, int y)

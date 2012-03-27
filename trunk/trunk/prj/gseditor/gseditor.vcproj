@@ -669,6 +669,14 @@
 					RelativePath=".\source\CDocument.h"
 					>
 				</File>
+				<File
+					RelativePath=".\source\CHistoryManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\source\CHistoryManager.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Controller"

@@ -180,6 +180,34 @@ void CSelectObjectController::onLMouseUp(int x, int y)
 		// set state for select object
 		setStateForSelectObject();
 	}
+	else
+	{
+		CHistoryManager *pHistory = CHistoryManager::getInstance();
+		pHistory->beginHistory();
+
+		ArrayGameObject *currentSelect = getIView()->getDocument()->getSelectObject();
+		ArrayGameObjectIter iObj = currentSelect->begin(), iEnd = currentSelect->end();
+		while ( iObj != iEnd )
+		{
+			CGameObject *pObj = (*iObj);				
+
+			// restore transform
+			core::vector3df v =	pObj->getPosition();
+
+			pObj->loadTransform();			
+			pHistory->addHistoryBeginModifyObj( pObj );
+
+			pObj->setPosition(v);
+			pObj->updateNodeRotation();
+			pObj->updateNodePosition();
+			
+			pHistory->addHistoryEndModifyObj( pObj );
+
+			iObj++;
+		}
+
+		pHistory->endHistory();
+	}
 
 	// set property for object
 	getIView()->setObjectProperty( pDoc->getFirstObjSelect() );

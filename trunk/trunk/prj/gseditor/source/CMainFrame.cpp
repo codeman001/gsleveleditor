@@ -81,6 +81,12 @@ LRESULT	CMainFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam
 			int id = LOWORD(wParam);
 			switch ( id )
 			{
+			case ID_UNDO_COMMAND:
+				CGlobalInstance::getInstance()->m_ribbonCommand->onUndo();
+				break;
+			case ID_REDO_COMMAND:
+				CGlobalInstance::getInstance()->m_ribbonCommand->onRedo();
+				break;
 			case ID_SELECT_COMMAND:
 				CGlobalInstance::getInstance()->m_ribbonCommand->onSelectObjectCommand();
 				break;

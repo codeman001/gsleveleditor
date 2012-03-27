@@ -2,6 +2,7 @@
 #define _ICONTROLLER_H_
 
 #include "stdafx.h"
+#include "CHistoryManager.h"
 
 // interface controller
 class IController

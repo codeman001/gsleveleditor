@@ -8,7 +8,7 @@
 class CZone: public CGameObject
 {
 protected:
-	ArrayGameObject		m_childs;		
+	ArrayGameObject		m_childs;
 	bool				m_needSortObject;
 
 protected:
@@ -29,6 +29,13 @@ public:
 	// sort object by id in list child
 	void sortObjectByID();
 	
+	// setSortObject
+	// tell the zone need sort object
+	inline void setSortObject( bool b )
+	{
+		m_needSortObject = true;
+	}
+
 	// searchObject
 	// search object by id
 	CGameObject* searchObject( long objectID );

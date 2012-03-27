@@ -1,35 +1,30 @@
 #include "stdafx.h"
-#include "CAddWaypointController.h"
-
+#include "CAddCameraController.h"
 #include "IView.h"
-#include "CGameObject.h"
 #include "CZone.h"
-#include "CObjTemplateFactory.h"
 
-CAddWaypointController::CAddWaypointController()
+CAddCameraController::CAddCameraController()
 {
-	m_temp = new CWayPoint();
+	m_temp = new CGameCamera();
 	m_temp->setVisible( false );
 }
 
-CAddWaypointController::~CAddWaypointController()
+CAddCameraController::~CAddCameraController()
 {
 	delete m_temp;
 }
 
-void CAddWaypointController::initController()
-{	
-	m_temp->setVisible( false );
-	m_connect = NULL;
-}
-
-void CAddWaypointController::cancelController()
+void CAddCameraController::initController()
 {
 	m_temp->setVisible( false );
-	m_connect = NULL;
+}
+
+void CAddCameraController::cancelController()
+{
+	m_temp->setVisible( false );
 }
 			
-void CAddWaypointController::onLMouseUp	(int x, int y)
+void CAddCameraController::onLMouseUp(int x, int y)
 {
 	IView *pView = getIView();
 	ICameraSceneNode *cam = pView->getSceneMgr()->getActiveCamera();
@@ -49,18 +44,10 @@ void CAddWaypointController::onLMouseUp	(int x, int y)
 
 		if ( camRay.getLength() < 5000 )
 		{
-			CWayPoint *pObj =	pView->getCurrentZone()->createWaypoint();
+			CGameCamera *pObj =	pView->getCurrentZone()->createCamera();
 			
 			pObj->setPosition( hit );
 			pObj->setVisible( true );
-
-			if ( m_connect )
-			{
-				m_connect->setNext( pObj );
-				pObj->setBack( m_connect );
-			}
-			
-			m_connect = pObj;
 
 		}
 		else
@@ -70,12 +57,11 @@ void CAddWaypointController::onLMouseUp	(int x, int y)
 		pView->alertError( L"Can not create object because is too far" );
 }
 
-void CAddWaypointController::onRMouseUp(int x, int y)
+void CAddCameraController::onRMouseUp(int x, int y)
 {
-	m_connect = NULL;
 }
 
-void CAddWaypointController::onMouseMove(int x, int y)
+void CAddCameraController::onMouseMove(int x, int y)
 {
 	IView *pView = getIView();
 

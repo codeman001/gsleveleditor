@@ -92,8 +92,7 @@ void CViewWindow::_OnSize(	uiSizeEvent sizeEvent, int nWidth, int nHeight)
 	if ( m_driver )
 	{
 		m_driver->OnResize( core::dimension2d<u32>(nWidth, nHeight) );
-
-		getIView()->getDocument()->setAspectRatioAllCamera( (f32) nWidth/nHeight );		
+		getIView()->setCameraAspectRatio( (f32) nWidth/nHeight );		
 	}
 }
 

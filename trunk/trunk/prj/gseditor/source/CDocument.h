@@ -3,8 +3,11 @@
 
 #include "stdafx.h"
 #include "IDoc.h"
+
 #include "CGameObject.h"
+#include "CGameCamera.h"
 #include "CZone.h"
+
 #include "CObjTemplateFactory.h"
 
 class CDocument: public IDoc
@@ -15,17 +18,13 @@ protected:
 	ArrayGameObject	m_selectObjects;
 	ArrayGameObject	m_backupSelectObj;
 
-	uiTreeViewItem	*m_treeViewRoot;
-	
-	wstring			m_filePath;
+	uiTreeViewItem	*m_treeViewRoot;	
+	wstring			m_filePath;	
 	
 	ISceneNode		*m_gridNode;
 
-	core::vector3df	m_saveCamPos;
-	core::vector3df m_saveCamTarget;
+	CGameCamera		*m_designCamera;
 
-	scene::ICameraSceneNode*	m_cam;
-	scene::ICameraSceneNode*	m_camOrtho;
 public:
 	CDocument();
 
@@ -156,17 +155,12 @@ public:
 	// change shadow mode
 	virtual void setShadowMode( bool b );
 
-	// setAspectRatioAllCamera	
-	virtual void setAspectRatioAllCamera(float f)
+	// getDesignCamera
+	virtual CGameCamera* getDesignCamera()
 	{
-		m_cam->setAspectRatio( f );		
+		return m_designCamera;
 	}
 
-	// getCamera
-	virtual ICameraSceneNode *getCamera()
-	{
-		return m_cam;
-	}
 protected:
 	// readDocumentFromData
 	// parse document from data

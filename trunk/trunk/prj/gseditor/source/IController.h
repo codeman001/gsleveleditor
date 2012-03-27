@@ -15,6 +15,7 @@ public:
 		ScaleObject,
 		AddObject,
 		AddWaypoint,
+		AddCamera,
 		NumController
 	};
 

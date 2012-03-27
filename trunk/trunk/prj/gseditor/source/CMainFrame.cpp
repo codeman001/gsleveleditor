@@ -95,7 +95,7 @@ LRESULT	CMainFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam
 				break;
 
 			case ID_CAMERA_COMMAND:
-				CGlobalInstance::getInstance()->m_ribbonCommand->onCameraViewCommand();
+				CGlobalInstance::getInstance()->m_ribbonCommand->onEditorCameraCommand();
 				break;
 			case ID_ADDOBJ_COMMAND:
 				CGlobalInstance::getInstance()->m_ribbonCommand->onAddObjectCommand();
@@ -218,8 +218,8 @@ void CMainFrame::_OnCreate()
 
 	pTabView->setMargin( 0, 0, 5, 0 );
 	pTabView->addTab( L"Design mode", m_viewWnd );	
-	pTabView->addTab( L"Shadow export mode", NULL );
-	pTabView->setEventOnTabChanged<CMainFrame, &CMainFrame::onTabChange>( this );
+	//pTabView->addTab( L"Shadow export mode", NULL );
+	//pTabView->setEventOnTabChanged<CMainFrame, &CMainFrame::onTabChange>( this );
 	m_tabView = pTabView;
 
 	m_mainSplitWnd->setWindow( m_leftSplitWnd,	0,0 );
@@ -243,7 +243,7 @@ void CMainFrame::_OnCreate()
 	CDocument *pDoc = (CDocument*) getIView()->getDocument();
 	pDoc->newDocument();
 
-	CGlobalInstance::getInstance()->m_ribbonCommand->onCameraViewCommand();
+	CGlobalInstance::getInstance()->m_ribbonCommand->onEditorCameraCommand();
 }
 
 void CMainFrame::_OnSize(uiSizeEvent sizeEvent, int nWidth, int nHeight)

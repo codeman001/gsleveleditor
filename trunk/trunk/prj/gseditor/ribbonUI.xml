@@ -174,7 +174,14 @@
       <Ribbon.Tabs>
         <Tab CommandName="cmdTabHome">
           <Group CommandName="cmdGroupCamera" SizeDefinition="OneButton">
-            <ToggleButton CommandName="cmdCameraView" />
+            <!-- <ToggleButton CommandName="cmdCameraView" /> -->
+            <SplitButtonGallery CommandName="cmdCameraView" TextPosition="Right" Type="Items" ItemHeight="24" ItemWidth="64">
+              <SplitButtonGallery.MenuLayout>
+                <!-- <VerticalMenuLayout/>  -->
+                <FlowMenuLayout/>
+              </SplitButtonGallery.MenuLayout>
+            </SplitButtonGallery>
+            
           </Group>                      
           <Group CommandName="cmdGroupObject" SizeDefinition="FourButtons">
             <ToggleButton CommandName="cmdAddObject" />

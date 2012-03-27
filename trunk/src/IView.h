@@ -10,6 +10,7 @@
 
 class	CZone;
 class	CGameObject;
+class	CGameCamera;
 
 class IView
 {
@@ -25,6 +26,8 @@ protected:
 	CGameObject*			m_contextObj;
 #endif
 
+	CGameCamera*			m_camera;
+	float					m_cameraAspect;
 public:
 
 	IView();
@@ -84,6 +87,21 @@ public:
 	// getSelectRay
 	// get 3d ray from camera to pointer
 	core::line3df getSelectRay();
+
+	// setActiveCamera
+	// set active camera
+	void setActiveCamera( CGameCamera* cam );
+
+	// getActiveCamera
+	// get camera
+	inline CGameCamera* getActiveCamera()
+	{
+		return m_camera;
+	}
+
+	// setCameraAspectRatio
+	// set camera aspect
+	virtual void setCameraAspectRatio(float f);	
 
 public:	
 

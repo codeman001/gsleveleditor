@@ -18,14 +18,14 @@ public:
 	// setNext
 	// set the next way point
 	inline void setNext( CWayPoint *p )
-	{
+	{		
 		m_next = p;
 	}
 
 	// setBack
 	// set the next way point
 	inline void setBack( CWayPoint *p )
-	{
+	{	
 		m_back = p;
 	}
 

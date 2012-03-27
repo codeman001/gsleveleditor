@@ -3,6 +3,7 @@
 
 #include "CGameObject.h"
 #include "CWayPoint.h"
+#include "CGameCamera.h"
 
 class CZone: public CGameObject
 {
@@ -32,13 +33,17 @@ public:
 	// search object by id
 	CGameObject* searchObject( long objectID );
 
-	// spawnObject
+	// createObject
 	// create a template object
-	CGameObject* spawnObject( wchar_t* objTemplate );
+	CGameObject* createObject( wchar_t* objTemplate );
 
-	// spawnWaypoint
+	// createWaypoint
 	// create a waypoint object
-	CWayPoint* spawnWaypoint();
+	CWayPoint* createWaypoint();
+
+	// createCamera
+	// create a cameraObject
+	CGameCamera* createCamera();
 
 	// removeObject
 	// remove object

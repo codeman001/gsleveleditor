@@ -1,5 +1,10 @@
 #include "stdafx.h"
 #include "IView.h"
+#include "CGameCamera.h"
+
+#ifdef GSEDITOR
+#include "CGameGSCameraAnimators.h"
+#endif
 
 IView::IView()
 {
@@ -14,6 +19,10 @@ IView::IView()
 
 	m_mouseX = 0;
 	m_mouseY = 0;
+
+	m_camera = NULL;
+
+	m_cameraAspect = 1.0f;
 }
 
 IView::~IView()
@@ -90,10 +99,29 @@ bool IView::getScreenCoordinatesFrom3DPosition(const core::vector3df& pos3d, int
 	return transformedPos[3] >= 0;
 }
 
+// setActiveCamera
+// set active camera
+void IView::setActiveCamera( CGameCamera* cam )
+{
+	m_camera = cam;
+	
+	// active camera
+	m_smgr->setActiveCamera( m_camera->getCameraNode() );	
+
+	// adjust aspect
+	// m_camera->getCameraNode()->setAspectRatio( m_cameraAspect );
+}
+
+// setCameraAspectRatio
+// set camera aspect
+void IView::setCameraAspectRatio(float f)
+{
+	m_cameraAspect;
+	if ( m_camera )
+		m_camera->getCameraNode()->setAspectRatio( f );
+}
+
 #ifdef GSEDITOR
-
-#include "CGameGSCameraAnimators.h"
-
 // enableFreeCamera
 // disable or enable change camera view on editor
 void IView::enableFreeCamera( bool b )

@@ -102,9 +102,9 @@ CGameObject* CZone::searchObject( long objectID )
 	return NULL;
 }
 
-// spawnObject
+// createObject
 // create a template object
-CGameObject* CZone::spawnObject( wchar_t* objTemplate )
+CGameObject* CZone::createObject( wchar_t* objTemplate )
 {
 	CGameObject *p = CObjTemplateFactory::spawnObject( objTemplate );
 	if ( p == NULL )
@@ -140,14 +140,12 @@ CGameObject* CZone::spawnObject( wchar_t* objTemplate )
 }
 
 
-// spawnWaypoint
+// createWaypoint
 // create a waypoint object
-CWayPoint* CZone::spawnWaypoint()
+CWayPoint* CZone::createWaypoint()
 {
 	CWayPoint *p = new CWayPoint();
-	if ( p == NULL )
-		return NULL;
-
+	
 	wchar_t lpName[1024];
 	swprintf( lpName, 1024, L"%s_%d", L"waypoint", (int)CGameObject::s_objectID );
 	
@@ -176,6 +174,41 @@ CWayPoint* CZone::spawnWaypoint()
 	return p;
 }
 
+
+// createCamera
+// create a cameraObject
+CGameCamera* CZone::createCamera()
+{
+	CGameCamera *p = new CGameCamera();
+
+	wchar_t lpName[1024];
+	swprintf( lpName, 1024, L"%s_%d", L"camera", (int)CGameObject::s_objectID );
+	
+	p->setID( CGameObject::s_objectID++ );
+	p->setParent( this );
+
+	
+#ifdef GSEDITOR
+	// create tree item
+	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) lpName );
+	CDocument *pDoc = (CDocument*) getIView()->getDocument();
+
+	pTreeItem->setIconIndex( 4 );
+	pTreeItem->setIconStateIndex( 4 );
+	pTreeItem->update();
+
+	pTreeItem->setData( p );
+	p->setTreeItem( pTreeItem );
+	m_treeItem->update();
+	m_treeItem->expandChild( true );	
+#endif
+
+	p->setName( lpName );
+	addChild( p );
+
+	return p;
+}
+
 // addChild
 // add a game object to child list
 void CZone::addChild( CGameObject *p )
@@ -198,7 +231,7 @@ void CZone::removeObject( CGameObject *pObj )
 #ifdef GSEDITOR
 			uiTreeViewItem *pTreeItem = pObj->getTreeItem();
 			if ( pTreeItem )
-				m_treeItem->destroyChild( pTreeItem );
+				m_treeItem->destroyChild( pTreeItem );			
 #endif
 
 			// delete gameObject

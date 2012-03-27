@@ -251,7 +251,7 @@ void CZone::removeObject( CGameObject *pObj )
 // save data
 void CZone::saveData( CSerializable *pObj )
 {
-	pObj->addGroup	("Game zone");
+	pObj->addGroup	( s_stringObjType[m_objectType] );
 
 	pObj->addLong	("objectID",	m_objectID, true);
 	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
@@ -300,7 +300,7 @@ void CZone::loadData( CSerializable *pObj )
 // get data from zone
 void CZone::getData( CSerializable* pObj )
 {
-	pObj->addGroup	("Game zone");
+	pObj->addGroup	( s_stringObjType[m_objectType] );
 
 	pObj->addLong	("objectID",	m_objectID, true);
 	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);

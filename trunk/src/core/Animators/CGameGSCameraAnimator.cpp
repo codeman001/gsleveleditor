@@ -113,7 +113,7 @@ void CGameGSCameraAnimators::animateNode(ISceneNode* node, u32 timeMs)
 	core::vector3df pos = camera->getPosition();
 
 	// Update rotation
-	core::vector3df target = (camera->getTarget() - camera->getAbsolutePosition());
+	core::vector3df target = (camera->getTarget() - pos);
 	core::vector3df relativeRotation = target.getHorizontalAngle();
 	
 	const float MaxVerticalAngle = 88;

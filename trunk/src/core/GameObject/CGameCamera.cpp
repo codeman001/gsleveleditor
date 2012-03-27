@@ -2,9 +2,10 @@
 #include "CGameCamera.h"
 #include "IView.h"
 #include "CGameBoxSceneNode.h"
+#include "CZone.h"
 
 #ifdef GSEDITOR
-#include "CGameGSCameraAnimators.h"
+#include "CGameGSCameraAnimator.h"
 #endif
 
 CGameCamera::CGameCamera()
@@ -67,8 +68,9 @@ void CGameCamera::updateObject()
 	}
 #ifdef GSEDITOR
 	else
-	{		
-		m_targetPos = m_camera->getTarget();
+	{
+		if ( getIView()->getActiveCamera() == this )
+			m_targetPos = m_camera->getTarget();
 	}
 
 	// maybe modify by free animator
@@ -87,6 +89,17 @@ void CGameCamera::updateObject()
 // save data to serializable ( use for save in game .sav )
 void CGameCamera::saveData( CSerializable* pObj )
 {
+	pObj->addGroup	( s_stringObjType[m_objectType] );
+
+	pObj->addFloat( "targetX", m_targetPos.X, true );
+	pObj->addFloat( "targetY", m_targetPos.Y, true );
+	pObj->addFloat( "targetZ", m_targetPos.Z, true );
+	
+	long id = -1;
+	if ( m_targetObject )
+		id = m_targetObject->getID();
+	pObj->addLong( "targetID", id );
+
 	CGameObject::saveData( pObj );
 }
 
@@ -94,6 +107,26 @@ void CGameCamera::saveData( CSerializable* pObj )
 // load data to serializable ( use for load in game .sav )
 void CGameCamera::loadData( CSerializable* pObj )
 {
+	pObj->nextRecord();
+
+	m_targetPos.X = pObj->readFloat();
+	m_targetPos.Y = pObj->readFloat();
+	m_targetPos.Z = pObj->readFloat();
+	setTarget( m_targetPos );
+
+	CZone* pZone = (CZone*) getParent();
+
+	// next waypoint
+	m_targetObject = NULL;
+
+	long id = pObj->readLong();
+	if ( id != -1 )
+	{
+		CGameObject *p = pZone->searchObject( id );
+		if ( p != this )
+			m_targetObject = p;
+	}
+
 	CGameObject::loadData( pObj );
 }
 
@@ -101,6 +134,18 @@ void CGameCamera::loadData( CSerializable* pObj )
 // get basic data to serializable
 void CGameCamera::getData( CSerializable* pObj )
 {
+	pObj->addGroup	( s_stringObjType[m_objectType] );
+
+	pObj->addFloat( "targetX", m_targetPos.X, true );
+	pObj->addFloat( "targetY", m_targetPos.Y, true );
+	pObj->addFloat( "targetZ", m_targetPos.Z, true );
+
+	long id = -1;
+	if ( m_targetObject )
+		id = m_targetObject->getID();
+	pObj->addLong( "targetID", id );
+
+	
 	CGameObject::getData( pObj );
 }
 
@@ -108,6 +153,26 @@ void CGameCamera::getData( CSerializable* pObj )
 // update data
 void CGameCamera::updateData( CSerializable* pObj )
 {
+	pObj->nextRecord();
+
+	m_targetPos.X = pObj->readFloat();
+	m_targetPos.Y = pObj->readFloat();
+	m_targetPos.Z = pObj->readFloat();
+	setTarget( m_targetPos );
+
+	CZone* pZone = (CZone*) getParent();
+
+	// next waypoint
+	m_targetObject = NULL;
+
+	long id = pObj->readLong();
+	if ( id != -1 )
+	{
+		CGameObject *p = pZone->searchObject( id );
+		if ( p != this )
+			m_targetObject = p;
+	}
+
 	CGameObject::updateData( pObj );
 }
 

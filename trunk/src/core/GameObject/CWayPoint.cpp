@@ -43,7 +43,7 @@ CWayPoint::~CWayPoint()
 // save data to serializable ( use for save in game .sav )
 void CWayPoint::saveData( CSerializable* pObj )
 {
-	pObj->addGroup	("Waypoint");
+	pObj->addGroup( s_stringObjType[m_objectType] );
 	
 	long id = -1;
 	if ( m_next )
@@ -115,7 +115,7 @@ void CWayPoint::loadData( CSerializable* pObj )
 // get basic data to serializable
 void CWayPoint::getData( CSerializable* pObj )
 {
-	pObj->addGroup	("Waypoint");
+	pObj->addGroup	( s_stringObjType[m_objectType] );
 	
 	long id = -1;
 		

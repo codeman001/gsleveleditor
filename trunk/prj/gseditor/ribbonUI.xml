@@ -45,9 +45,15 @@
         <Image>ribbonIcon/object_trigger.bmp</Image>
       </Command.LargeImages>
     </Command>
-    <Command Name="cmdAddWaypoint" LabelTitle="Add waypoint" Symbol="ID_ADDWAYPOINT">      
+    <Command Name="cmdAddWaypoint" LabelTitle="Add waypoint" Symbol="ID_ADDWAYPOINT">
+      <Command.LargeImages>
+        <Image>ribbonIcon/add_waypoint.bmp</Image>
+      </Command.LargeImages>
     </Command>
-    <Command Name="cmdAddCamera" LabelTitle="Add camera" Symbol="ID_ADDCAMERA">      
+    <Command Name="cmdAddCamera" LabelTitle="Add camera" Symbol="ID_ADDCAMERA">
+      <Command.LargeImages>
+        <Image>ribbonIcon/add_camera.bmp</Image>
+      </Command.LargeImages>
     </Command>
     
 

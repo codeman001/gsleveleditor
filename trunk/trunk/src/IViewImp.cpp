@@ -3,7 +3,7 @@
 #include "CGameCamera.h"
 
 #ifdef GSEDITOR
-#include "CGameGSCameraAnimators.h"
+#include "CGameGSCameraAnimator.h"
 #endif
 
 IView::IView()

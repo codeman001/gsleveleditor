@@ -7,7 +7,7 @@
 #include "CObjTemplateFactory.h"
 
 #include "CGameOxyzSceneNode.h"
-#include "CGameGSCameraAnimators.h"
+#include "CGameGSCameraAnimator.h"
 #include "CShadowComponent.h"
 
 
@@ -178,7 +178,7 @@ bool CDocument::readDocumentFromData( char *lpData )
 		
 			// parse object info
 			SSerializableRec *r = objData.getProperty("objectTemplate");
-			if ( r != NULL && currentZone )
+			if ( r != NULL && currentZone && uiString::length(r->data) > 0 )
 			{
 				uiString::convertUTF8ToUnicode( r->data, (unsigned short*) lpString );
 
@@ -189,12 +189,30 @@ bool CDocument::readDocumentFromData( char *lpData )
 			}
 			else
 			{
+				#define strOfType(type)		( CGameObject::s_stringObjType[ (int)type ] )
+
 				char *objType = objData.getAllRecord()->front().data;
-				if ( strcmp( objType, "Game zone" ) == 0 )
+				if ( strcmp( objType, strOfType( CGameObject::ZoneObject ) ) == 0 )
 				{
 					// create zone
 					currentZone = (CZone*)createZone();
 					currentZone->updateData( &objData );
+				}
+				else if ( strcmp( objType, strOfType( CGameObject::WaypointObject ) ) == 0 )
+				{
+					if ( currentZone )
+					{
+						CWayPoint *obj = currentZone->createWaypoint();
+						obj->updateData( &objData );
+					}
+				}
+				else if ( strcmp( objType, strOfType( CGameObject::CameraObject ) ) == 0 )
+				{
+					if ( currentZone )
+					{
+						CGameCamera *obj = currentZone->createCamera();
+						obj->updateData( &objData );
+					}
 				}
 				else if ( strcmp( objType, "Game level" ) == 0 )
 				{

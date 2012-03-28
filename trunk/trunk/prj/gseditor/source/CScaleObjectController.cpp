@@ -18,9 +18,59 @@ void CScaleObjectController::onLMouseDown(int x, int y)
 
 	ArrayGameObject *pListSelect = getIView()->getDocument()->getSelectObject();
 	ArrayGameObjectIter i = pListSelect->begin(), end = pListSelect->end();
+	
+	ISceneCollisionManager *collMan = getIView()->getSceneMgr()->getSceneCollisionManager();
+
+	m_scaleState = 0;
+	bool checkHitVector = true;
+
 	while ( i != end )
 	{
 		CGameObject *pObj = (*i);
+
+		// we need check to scale x, y, z or all 
+		if ( checkHitVector )
+		{
+			if ( m_scaleState == 0   )
+			{
+				// hit on ox
+				if ( pObj->isHittestObjectVector( x,y, 1 ) )
+					m_scaleState = 1;
+				// hit on oy
+				else if ( pObj->isHittestObjectVector( x,y, 2 ) )				
+					m_scaleState = 2;			
+				// hit on oz
+				else if ( pObj->isHittestObjectVector( x,y, 3 ) )
+					m_scaleState = 3;
+			}
+
+			if ( m_scaleState != 0 )
+			{
+				checkHitVector = false;
+
+				// get select ray
+				core::line3df selectRay = getIView()->getSelectRay();
+
+				// check hit test
+				core::vector3df intersection;
+				core::triangle3df hitTriangle;
+
+				// check select
+				ISceneNode *selectedSceneNode = collMan->getSceneNodeAndCollisionPointFromRay
+					(
+						selectRay,
+						intersection,
+						hitTriangle
+					);
+				
+				// check hit test
+				if ( selectedSceneNode )
+				{
+					m_scaleState = 0;
+				}
+			}
+		}
+
 		pObj->saveTransform();
 		i++;
 	}
@@ -50,8 +100,8 @@ void CScaleObjectController::onLMouseUp(int x, int y)
 			pObj->loadTransform();			
 			pHistory->addHistoryBeginModifyObj( pObj );
 
-			pObj->setScale(v);			
-			pObj->updateNodeScale();			
+			pObj->setScale(v);
+			pObj->updateNodeScale();
 			
 			pHistory->addHistoryEndModifyObj( pObj );
 
@@ -88,7 +138,17 @@ void CScaleObjectController::onMouseMove(int x, int y)
 			CGameObject *pObj = (*i);
 
 			// rotate object
-			core::vector3df scaleVector = pObj->getScale() * speed;
+			core::vector3df scaleVector = pObj->getScale();
+			
+			if ( m_scaleState == 0 )
+				scaleVector = scaleVector * speed;
+			else if ( m_scaleState == 1 )
+				scaleVector.X = scaleVector.X * speed;
+			else if ( m_scaleState == 2 )
+				scaleVector.Y = scaleVector.Y * speed;
+			else
+				scaleVector.Z = scaleVector.Z * speed;
+
 			float len = scaleVector.getLength();
 
 			if ( len >= 0.5f )

@@ -69,21 +69,19 @@ bool CHistoryManager::doCreate(	SAction* action, bool redo )
 		wchar_t objTemplate[1024];
 		uiString::convertUTF8ToUnicode( pObjectTemplate->data, (unsigned short*) objTemplate );
 
+		CGameObject *pObj = NULL;
+
 		if ( strcmp( pObjectType->data, strOfObjType( CGameObject::GameObject ) ) == 0 )
-		{
-			CGameObject *pObj = pZone->createObject( objTemplate );
-			pObj->updateData( pObject );
-			pZone->setSortObject( true );
-		}
-		else if ( strcmp( pObjectType->data, strOfObjType( CGameObject::CameraObject ) ) == 0 )
-		{
-			CGameCamera *pObj = pZone->createCamera();
-			pObj->updateData( pObject );
-			pZone->setSortObject( true );
-		}
+			pObj = pZone->createObject( objTemplate );			
+		else if ( strcmp( pObjectType->data, strOfObjType( CGameObject::CameraObject ) ) == 0 )		
+			pObj = pZone->createCamera();			
 		else if ( strcmp( pObjectType->data, strOfObjType( CGameObject::WaypointObject ) ) == 0 )
+			pObj = pZone->createWaypoint();		
+		else if ( strcmp( pObjectType->data, strOfObjType( CGameObject::TriggerObject ) ) == 0 )		
+			pObj = pZone->createTrigger();			
+		
+		if ( pObj )
 		{
-			CWayPoint *pObj = pZone->createWaypoint();
 			pObj->updateData( pObject );
 			pZone->setSortObject( true );
 		}

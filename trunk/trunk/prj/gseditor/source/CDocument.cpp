@@ -58,11 +58,13 @@ void CDocument::newDocument()
 	CGameOxyzSceneNode *oxyPlane = new CGameOxyzSceneNode( smgr->getRootSceneNode(), smgr, 1 );
 	m_gridNode = oxyPlane;
 
-	// add ligth
+	// add light
 	ISceneNode* pNode = smgr->addEmptySceneNode();
 
+	// default light
+	//smgr->setAmbientLight( video::SColorf(0.2f, 0.2f, 0.2f ,1.0f) );
 	ILightSceneNode *light = smgr->addLightSceneNode( pNode, core::vector3df(0, 0, 0) );
-	light->setLightType( video::ELT_DIRECTIONAL );		
+	light->setLightType( video::ELT_DIRECTIONAL );
 
 	// reset file path
 	m_filePath = L"";
@@ -214,6 +216,14 @@ bool CDocument::readDocumentFromData( char *lpData )
 					if ( currentZone )
 					{
 						CGameCamera *obj = currentZone->createCamera();
+						obj->updateData( &objData );
+					}
+				}
+				else if ( strcmp( objType, strOfType( CGameObject::TriggerObject ) ) == 0 )
+				{
+					if ( currentZone )
+					{
+						CTrigger *obj = currentZone->createTrigger();
 						obj->updateData( &objData );
 					}
 				}

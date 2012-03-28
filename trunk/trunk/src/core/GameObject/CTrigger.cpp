@@ -48,6 +48,16 @@ CTrigger::~CTrigger()
 void CTrigger::saveData( CSerializable* pObj )
 {
 	pObj->addGroup( s_stringObjType[m_objectType] );
+	
+	pObj->addPath	( "scriptFile", m_scriptFile.c_str() );
+	pObj->addString	( "onAlways",	m_onAlways.c_str() );
+	pObj->addString	( "onWhileIn",	m_onWhileIn.c_str() );
+	pObj->addString	( "onWhileOut",	m_onWhileOut.c_str() );
+	pObj->addString	( "onEnder",	m_onEnter.c_str() );
+	pObj->addString	( "onExit",		m_onExit.c_str() );
+	pObj->addString	( "onEnable",	m_onEnable.c_str() );
+	pObj->addString	( "onDisable",	m_onDisable.c_str() );
+
 	CGameObject::saveData( pObj );
 }
 
@@ -56,6 +66,16 @@ void CTrigger::saveData( CSerializable* pObj )
 void CTrigger::loadData( CSerializable* pObj )
 {
 	pObj->nextRecord();
+	
+	m_scriptFile	= pObj->readString();
+	m_onAlways		= pObj->readString();
+	m_onWhileIn		= pObj->readString();
+	m_onWhileOut	= pObj->readString();
+	m_onEnter		= pObj->readString();
+	m_onExit		= pObj->readString();
+	m_onEnable		= pObj->readString();
+	m_onDisable		= pObj->readString();
+
 	CGameObject::loadData( pObj );
 }
 
@@ -64,6 +84,16 @@ void CTrigger::loadData( CSerializable* pObj )
 void CTrigger::getData( CSerializable* pObj )
 {
 	pObj->addGroup( s_stringObjType[m_objectType] );
+
+	pObj->addPath	( "scriptFile", m_scriptFile.c_str() );
+	pObj->addString	( "onAlways",	m_onAlways.c_str() );
+	pObj->addString	( "onWhileIn",	m_onWhileIn.c_str() );
+	pObj->addString	( "onWhileOut",	m_onWhileOut.c_str() );
+	pObj->addString	( "onEnder",	m_onEnter.c_str() );
+	pObj->addString	( "onExit",		m_onExit.c_str() );
+	pObj->addString	( "onEnable",	m_onEnable.c_str() );
+	pObj->addString	( "onDisable",	m_onDisable.c_str() );
+
 	CGameObject::getData( pObj );
 }
 
@@ -72,5 +102,15 @@ void CTrigger::getData( CSerializable* pObj )
 void CTrigger::updateData( CSerializable* pObj )
 {
 	pObj->nextRecord();	
+
+	m_scriptFile	= pObj->readString();
+	m_onAlways		= pObj->readString();
+	m_onWhileIn		= pObj->readString();
+	m_onWhileOut	= pObj->readString();
+	m_onEnter		= pObj->readString();
+	m_onExit		= pObj->readString();
+	m_onEnable		= pObj->readString();
+	m_onDisable		= pObj->readString();
+
 	CGameObject::updateData( pObj );
 }

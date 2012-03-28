@@ -75,13 +75,12 @@ void CGameCamera::updateObject()
 
 	// maybe modify by free animator
 	core::vector3df pos = m_camera->getPosition();
-	setPosition( pos );
-	
+	setPosition( pos );	
+
 	if ( getIView()->getActiveCamera() == this )
 		m_cameraMesh->setVisible( false );
-	else
-		m_cameraMesh->setVisible( true );
-
+	else			
+		m_cameraMesh->setVisible( true );	
 #endif
 }
 

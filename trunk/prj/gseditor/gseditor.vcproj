@@ -745,6 +745,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\source\CAddTriggerController.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\source\CAddTriggerController.h"
+						>
+					</File>
+					<File
 						RelativePath=".\source\CAddWaypointController.cpp"
 						>
 					</File>

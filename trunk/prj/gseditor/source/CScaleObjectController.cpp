@@ -50,9 +50,8 @@ void CScaleObjectController::onLMouseUp(int x, int y)
 			pObj->loadTransform();			
 			pHistory->addHistoryBeginModifyObj( pObj );
 
-			pObj->setScale(v);
-			pObj->updateNodeRotation();
-			pObj->updateNodePosition();
+			pObj->setScale(v);			
+			pObj->updateNodeScale();			
 			
 			pHistory->addHistoryEndModifyObj( pObj );
 

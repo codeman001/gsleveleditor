@@ -62,6 +62,7 @@ public:
 	void onAddObjectCommand();
 	void onAddCameraCommand();
 	void onAddWaypointCommand();
+	void onAddTriggerCommand();
 
 	void onSelectObjectCommand();
 	void onRotateObjectCommand();

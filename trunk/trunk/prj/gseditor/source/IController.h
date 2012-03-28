@@ -17,6 +17,7 @@ public:
 		AddObject,
 		AddWaypoint,
 		AddCamera,
+		AddTrigger,
 		NumController
 	};
 

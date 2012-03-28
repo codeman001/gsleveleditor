@@ -35,6 +35,7 @@ public:
 		ZoneObject,
 		WaypointObject,
 		CameraObject,
+		TriggerObject,
 		NumObject
 	};
 	

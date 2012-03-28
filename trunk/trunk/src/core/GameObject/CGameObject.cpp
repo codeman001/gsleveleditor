@@ -15,6 +15,7 @@ const char* CGameObject::s_stringObjType[] =
 	"Zone Object",
 	"Waypoint Object",
 	"Camera Object",
+	"TriggerObject",
 	"NumObject"
 };
 
@@ -716,7 +717,9 @@ bool CGameObject::isHittestObjectVector( int x, int y, int typeVector )
 	IView *pView = getIView();
 
 	IVideoDriver* driver = pView->getDriver();	
-	core::vector3df bBoxLength = m_node->getBoundingBox().MaxEdge - m_node->getBoundingBox().MinEdge;
+	
+	core::aabbox3df box = m_node->getTransformedBoundingBox();
+	core::vector3df bBoxLength = box.MaxEdge - box.MinEdge;
 	float length = bBoxLength.getLength() * 1.5f;
 
 	core::vector3df	ox = m_position + m_right	* length;
@@ -749,7 +752,8 @@ void CGameObject::drawFrontUpLeftVector()
 
 	IVideoDriver* driver = getIView()->getDriver();
 	
-	core::vector3df bBoxLength =	m_node->getBoundingBox().MaxEdge - m_node->getBoundingBox().MinEdge;
+	core::aabbox3df box  = m_node->getTransformedBoundingBox();
+	core::vector3df bBoxLength =	box.MaxEdge - box.MinEdge;
 
 	float length = bBoxLength.getLength() * 1.5f;
 	
@@ -784,13 +788,14 @@ void CGameObject::drawCircleAroundObject()
 
 	IVideoDriver* driver = getIView()->getDriver();
 	
-	core::vector3df bBoxLength	=	m_node->getBoundingBox().MaxEdge - m_node->getBoundingBox().MinEdge;
+	core::aabbox3df box  = m_node->getTransformedBoundingBox();
+	core::vector3df bBoxLength = box.MaxEdge - box.MinEdge;
 	
 	float radius = -1.0f;
 	if ( radius <= 0 )
 		radius = bBoxLength.getLength()/2;
 
-	float height =	m_position.Y + m_node->getBoundingBox().getCenter().Y;
+	float height =	m_position.Y + box.getCenter().Y;
 
 	// set material
 	SMaterial debug_mat;	

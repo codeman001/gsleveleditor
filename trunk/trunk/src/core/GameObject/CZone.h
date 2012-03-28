@@ -4,6 +4,7 @@
 #include "CGameObject.h"
 #include "CWayPoint.h"
 #include "CGameCamera.h"
+#include "CTrigger.h"
 
 class CZone: public CGameObject
 {
@@ -51,6 +52,10 @@ public:
 	// createCamera
 	// create a cameraObject
 	CGameCamera* createCamera();
+
+	// createTrigger
+	// create a trigger object
+	CTrigger* createTrigger();
 
 	// removeObject
 	// remove object

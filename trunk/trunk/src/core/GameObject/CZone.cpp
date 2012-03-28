@@ -211,6 +211,39 @@ CGameCamera* CZone::createCamera()
 	return p;
 }
 
+// createTrigger
+// create a trigger object
+CTrigger* CZone::createTrigger()
+{
+	CTrigger *p = new CTrigger();
+	
+	wchar_t lpName[1024];
+	swprintf( lpName, 1024, L"%s_%d", L"trigger", (int)CGameObject::s_objectID );
+	
+	p->setID( CGameObject::s_objectID++ );
+	p->setParent( this );
+
+#ifdef GSEDITOR
+	// create tree item
+	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) lpName );
+	CDocument *pDoc = (CDocument*) getIView()->getDocument();
+
+	pTreeItem->setIconIndex( 5 );
+	pTreeItem->setIconStateIndex( 5 );
+	pTreeItem->update();
+
+	pTreeItem->setData( p );
+	p->setTreeItem( pTreeItem );
+	m_treeItem->update();
+	m_treeItem->expandChild( true );	
+#endif
+
+	p->setName( lpName );
+	addChild( p );
+
+	return p;
+}
+
 // addChild
 // add a game object to child list
 void CZone::addChild( CGameObject *p )

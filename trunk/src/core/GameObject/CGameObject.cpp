@@ -15,7 +15,7 @@ const char* CGameObject::s_stringObjType[] =
 	"Zone Object",
 	"Waypoint Object",
 	"Camera Object",
-	"TriggerObject",
+	"Trigger Object",
 	"NumObject"
 };
 

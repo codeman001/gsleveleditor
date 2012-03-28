@@ -14,6 +14,8 @@ protected:
 	int		m_beginY;
 
 	float	m_oldYaw;
+
+	int		m_scaleState;
 public:
 	virtual void initController();
 

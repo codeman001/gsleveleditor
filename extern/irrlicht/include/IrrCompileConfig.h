@@ -125,7 +125,9 @@ headers, e.g. Summer 2004.  This is a Microsoft issue, not an Irrlicht one.
 //! Define _IRR_COMPILE_WITH_OPENGL_ to compile the Irrlicht engine with OpenGL.
 /** If you do not wish the engine to be compiled with OpenGL, comment this
 define out. */
-#define _IRR_COMPILE_WITH_OPENGL_
+//#define _IRR_COMPILE_WITH_OPENGL_
+
+#define _IRR_COMPILE_WITH_OPENGL_ES_
 
 //! Define _IRR_COMPILE_WITH_SOFTWARE_ to compile the Irrlicht engine with software driver
 /** If you do not need the software driver, or want to use Burning's Video instead,

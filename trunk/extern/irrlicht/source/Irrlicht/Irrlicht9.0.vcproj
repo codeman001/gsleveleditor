@@ -2595,63 +2595,6 @@
 						>
 					</File>
 				</Filter>
-				<Filter
-					Name="OpenGLES"
-					>
-					<File
-						RelativePath=".\CCommonGLDriver.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\CCommonGLDriver.h"
-						>
-					</File>
-					<File
-						RelativePath=".\CCommonGLExtensionHandler.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\CCommonGLExtensionHandler.h"
-						>
-					</File>
-					<File
-						RelativePath=".\CCommonGLExtensionList.h"
-						>
-						<FileConfiguration
-							Name="Static lib - Debug|Win32"
-							>
-							<Tool
-								Name="VCCustomBuildTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath=".\CCommonGLHeaders.h"
-						>
-						<FileConfiguration
-							Name="Static lib - Debug|Win32"
-							>
-							<Tool
-								Name="VCCustomBuildTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath=".\CCommonGLMaterialRenderer.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\CCommonGLMaterialRenderer.h"
-						>
-						<FileConfiguration
-							Name="Static lib - Debug|Win32"
-							>
-							<Tool
-								Name="VCCustomBuildTool"
-							/>
-						</FileConfiguration>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="irr"

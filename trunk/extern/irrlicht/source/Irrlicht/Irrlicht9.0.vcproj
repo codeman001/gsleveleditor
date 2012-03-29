@@ -2595,6 +2595,42 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="OpenGLES"
+					>
+					<File
+						RelativePath=".\COpenGLESDriver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESDriver.h"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESExtensionHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESExtensionHandler.h"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESExtensionList.h"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESHeaders.h"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESTexture.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESTexture.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="irr"

@@ -354,7 +354,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;zlib"
+				AdditionalIncludeDirectories="..\..\include;zlib;..\..\..\PowerVR\OGLES\Include;..\..\..\PowerVR\OGLES\Windows\Include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;_IRR_STATIC_LIB_;_CRT_SECURE_NO_DEPRECATE"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
@@ -2593,6 +2593,63 @@
 					<File
 						RelativePath="SoftwareDriver2_helper.h"
 						>
+					</File>
+				</Filter>
+				<Filter
+					Name="OpenGLES"
+					>
+					<File
+						RelativePath=".\CCommonGLDriver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\CCommonGLDriver.h"
+						>
+					</File>
+					<File
+						RelativePath=".\CCommonGLExtensionHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\CCommonGLExtensionHandler.h"
+						>
+					</File>
+					<File
+						RelativePath=".\CCommonGLExtensionList.h"
+						>
+						<FileConfiguration
+							Name="Static lib - Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\CCommonGLHeaders.h"
+						>
+						<FileConfiguration
+							Name="Static lib - Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\CCommonGLMaterialRenderer.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\CCommonGLMaterialRenderer.h"
+						>
+						<FileConfiguration
+							Name="Static lib - Debug|Win32"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
 					</File>
 				</Filter>
 			</Filter>

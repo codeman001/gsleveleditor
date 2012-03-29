@@ -2,8 +2,8 @@
 #define __egl_h_
 
 /* EGL Types */
-#include "gl.h"
-#include "egltypes.h"
+#include <GLES/gl.h>
+#include <GLES/egltypes.h>
 
 /* preliminary definitions for EGL 1.2/1.3 types */
 typedef EGLint EGLenum;

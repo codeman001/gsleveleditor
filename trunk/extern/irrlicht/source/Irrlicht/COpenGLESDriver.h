@@ -42,14 +42,21 @@ public:
 	//! Returns whether setting was a success or not.
 	bool setActiveTexture(u32 stage, const video::ITexture* texture);
 
+	//! disables all textures beginning with the optional fromStage parameter. Otherwise all texture stages are disabled.
+	//! Returns whether disabling was successful or not.
+	bool disableTextures(u32 fromStage=0);
+
 	//! checks if an OpenGL error has happend and prints it
 	//! for performance reasons only available in debug mode
 	bool testGLError();
 
 	ITexture* createDepthTexture(ITexture* texture, bool shared=true);
+	
 	void removeDepthTexture(ITexture* texture);
 
-};
+	void setBasicRenderStates(const SMaterial& material, const SMaterial& lastmaterial, bool resetAllRenderStates);
+
+}
 
 }
 

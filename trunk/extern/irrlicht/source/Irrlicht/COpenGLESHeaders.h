@@ -32,8 +32,6 @@
 // Remove extension suffix to OpenGL functions for each implementation 
 // and make sure to map to the right function
 // ----------------------------------------------------------------------------
-#if defined(_IRR_COMPILE_WITH_OPENGL_ES_)
-/// Mapping to OpenGL OES Functions
 	#define glMapBuffer					glMapBufferOES
 	#define glUnmapBuffer				glUnmapBufferOES
 	#define glGetBufferPointerv			glGetBufferPointervOES
@@ -49,7 +47,11 @@
 	#define glRenderbufferStorage		glRenderbufferStorageOES
 
 	#define GL_SOURCE0_ALPHA			GL_SRC0_ALPHA
+	#define GL_SOURCE1_ALPHA			GL_SRC1_ALPHA
+	#define GL_SOURCE2_ALPHA			GL_SRC2_ALPHA
 	#define GL_SOURCE0_RGB				GL_SRC0_RGB
+	#define GL_SOURCE1_RGB				GL_SRC1_RGB
+	#define GL_SOURCE2_RGB				GL_SRC2_RGB
 	#define GL_RENDERBUFFER				GL_RENDERBUFFER_OES
 	#define GL_FRAMEBUFFER				GL_FRAMEBUFFER_OES
 	#define GL_COLOR_ATTACHMENT0		GL_COLOR_ATTACHMENT0_OES
@@ -68,7 +70,6 @@
 	#define GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS			GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_OES
 	#define GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT	GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_OES
 	#define GL_FRAMEBUFFER_UNSUPPORTED						GL_FRAMEBUFFER_UNSUPPORTED_OES
-#endif // _IRR_COMPILE_WITH_OPENGL_ || _IRR_COMPILE_WITH_OPENGL_ES_
 
 #endif
 #endif // __C_COMMON_INCLUDES_GL_H_INCLUDED__

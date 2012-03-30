@@ -49,6 +49,16 @@ bool COpenGLESDriver::setActiveTexture(u32 stage, const video::ITexture* texture
 	return true;
 }
 
+//! disables all textures beginning with the optional fromStage parameter. Otherwise all texture stages are disabled.
+//! Returns whether disabling was successful or not.
+bool COpenGLESDriver::disableTextures(u32 fromStage)
+{
+	bool result=true;
+	for (u32 i=fromStage; i<MaxTextureUnits; ++i)
+		result &= setActiveTexture(i, 0);
+	return result;
+}
+
 //! prints error if an error happened.
 bool COpenGLESDriver::testGLError()
 {
@@ -101,10 +111,10 @@ ITexture* COpenGLESDriver::createDepthTexture(ITexture* texture, bool shared)
 				return DepthTextures[i];
 			}
 		}
-		DepthTextures.push_back(new COpenGLFBODepthTexture(texture->getSize(), "depth1", this));
+		DepthTextures.push_back(new COpenGLESFBODepthTexture(texture->getSize(), "depth1", this));
 		return DepthTextures.getLast();
 	}
-	return (new COpenGLFBODepthTexture(texture->getSize(), "depth1", this));
+	return (new COpenGLESFBODepthTexture(texture->getSize(), "depth1", this));
 }
 
 

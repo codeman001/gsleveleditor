@@ -142,20 +142,17 @@ GLint COpenGLESTexture::getOpenGLFormatAndParametersFromColorFormat(ECOLOR_FORMA
 		// TODO: needs validation (doesn't seems like this works)
 		InternalFormat=GL_RGBA;
 		PixelFormat=GL_BGRA;
-		PixelType=GL_UNSIGNED_SHORT_5_5_5_1;
-		return ECF_A1R5G5B5;
+		PixelType=GL_UNSIGNED_SHORT_5_5_5_1;		
 		break;
 	case ECF_R5G6B5:
 		InternalFormat=GL_RGB;
 		PixelFormat=GL_RGB;
 		PixelType=GL_UNSIGNED_SHORT_5_6_5;
-		return ECF_R5G6B5;
 		break;
 	case ECF_R8G8B8:
 		InternalFormat=GL_RGB;
 		PixelFormat=GL_RGB; //GL_BGR;
 		PixelType=GL_UNSIGNED_BYTE;
-		return ECF_R8G8B8;
 		break;
 	case ECF_A8R8G8B8:
 		#ifdef _IRR_USE_WINDOWS_DEVICE_
@@ -166,7 +163,6 @@ GLint COpenGLESTexture::getOpenGLFormatAndParametersFromColorFormat(ECOLOR_FORMA
 			PixelFormat   = GL_BGRA;
 		#endif
 		PixelType=GL_UNSIGNED_BYTE;
-		return ECF_A8R8G8B8;
 		break;	
 	//case ECF_A8:
 	//	InternalFormat=GL_ALPHA;
@@ -176,7 +172,7 @@ GLint COpenGLESTexture::getOpenGLFormatAndParametersFromColorFormat(ECOLOR_FORMA
 		os::Printer::log("Unsupported texture format", ELL_ERROR);
 		break;
 	}	
-	return format;
+	return InternalFormat;
 }
 
 
@@ -552,7 +548,7 @@ void COpenGLESTexture::unbindRTT()
 static bool checkFBOStatus(COpenGLESDriver* Driver);
 
 //! RTT ColorFrameBuffer constructor
-COpenGLFBOTexture::COpenGLFBOTexture(const core::dimension2d<u32>& size,
+COpenGLESFBOTexture::COpenGLESFBOTexture(const core::dimension2d<u32>& size,
 					const io::path& name, COpenGLESDriver* driver,
 					const ECOLOR_FORMAT format)
 	: COpenGLESTexture(name, driver), DepthTexture(0), ColorFrameBuffer(0)
@@ -569,11 +565,11 @@ COpenGLFBOTexture::COpenGLFBOTexture(const core::dimension2d<u32>& size,
 
 	HasMipMaps = false;
 	IsRenderTarget = true;
+	
 
-#ifdef GL_EXT_framebuffer_object
 	// generate frame buffer
-	Driver->extGlGenFramebuffers(1, &ColorFrameBuffer);
-	Driver->extGlBindFramebuffer(GL_FRAMEBUFFER_EXT, ColorFrameBuffer);
+	Driver->genFramebuffers(1, &ColorFrameBuffer);
+	Driver->bindFramebuffer(GL_FRAMEBUFFER, ColorFrameBuffer);
 
 	// generate color texture
 	glGenTextures(1, &TextureName);
@@ -585,18 +581,17 @@ COpenGLFBOTexture::COpenGLFBOTexture(const core::dimension2d<u32>& size,
 		ImageSize.Height, 0, PixelFormat, PixelType, 0);
 
 	// attach color texture to frame buffer
-	Driver->extGlFramebufferTexture2D(GL_FRAMEBUFFER_EXT,
-						GL_COLOR_ATTACHMENT0_EXT,
+	Driver->framebufferTexture2D(GL_FRAMEBUFFER,
+						GL_COLOR_ATTACHMENT0,
 						GL_TEXTURE_2D,
 						TextureName,
 						0);
-#endif
 	unbindRTT();
 }
 
 
 //! destructor
-COpenGLFBOTexture::~COpenGLFBOTexture()
+COpenGLESFBOTexture::~COpenGLESFBOTexture()
 {
 	if (DepthTexture)
 		if (DepthTexture->drop())
@@ -606,41 +601,37 @@ COpenGLFBOTexture::~COpenGLFBOTexture()
 }
 
 
-bool COpenGLFBOTexture::isFrameBufferObject() const
+bool COpenGLESFBOTexture::isFrameBufferObject() const
 {
 	return true;
 }
 
 
 //! Bind Render Target Texture
-void COpenGLFBOTexture::bindRTT()
+void COpenGLESFBOTexture::bindRTT()
 {
-#ifdef GL_EXT_framebuffer_object
 	if (ColorFrameBuffer != 0)
-		Driver->extGlBindFramebuffer(GL_FRAMEBUFFER_EXT, ColorFrameBuffer);
-#endif
+		Driver->bindFramebuffer(GL_FRAMEBUFFER, ColorFrameBuffer);
 }
 
 
 //! Unbind Render Target Texture
-void COpenGLFBOTexture::unbindRTT()
+void COpenGLESFBOTexture::unbindRTT()
 {
-#ifdef GL_EXT_framebuffer_object
 	if (ColorFrameBuffer != 0)
-		Driver->extGlBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
-#endif
+		Driver->bindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 
 /* FBO Depth Textures */
 
 //! RTT DepthBuffer constructor
-COpenGLFBODepthTexture::COpenGLFBODepthTexture(
+COpenGLESFBODepthTexture::COpenGLESFBODepthTexture(
 		const core::dimension2d<u32>& size,
 		const io::path& name,
 		COpenGLESDriver* driver,
 		bool useStencil)
-	: COpenGLFBOTexture(size, name, driver), DepthRenderBuffer(0),
+	: COpenGLESFBOTexture(size, name, driver), DepthRenderBuffer(0),
 	StencilRenderBuffer(0), UseStencil(useStencil)
 {
 #ifdef _DEBUG
@@ -661,6 +652,7 @@ COpenGLFBODepthTexture::COpenGLFBODepthTexture(
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 #ifdef GL_EXT_packed_depth_stencil
 		if (Driver->queryOpenGLFeature(COpenGLExtensionHandler::IRR_EXT_packed_depth_stencil))
 		{
@@ -675,20 +667,6 @@ COpenGLFBODepthTexture::COpenGLFBODepthTexture(
 			// generate depth texture
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, ImageSize.Width,
 				ImageSize.Height, 0, GL_DEPTH_COMPONENT16_OES, GL_UNSIGNED_BYTE, 0);
-
-			// we 're in trouble! the code below does not complete
-			// the FBO currently...  stencil buffer is only
-			// supported with EXT_packed_depth_stencil extension
-			// (above)
-
-//			// generate stencil texture
-//			glGenTextures(1, &StencilRenderBuffer);
-//			glBindTexture(GL_TEXTURE_2D, StencilRenderBuffer);
-//			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//			glTexImage2D(GL_TEXTURE_2D, 0, GL_STENCIL_INDEX, ImageSize.Width,
-//			ImageSize.Height, 0, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, 0);
-//			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		}
 	}
 #ifdef _IRR_COMPILE_WITH_OPENGL_ES_
@@ -706,7 +684,7 @@ COpenGLFBODepthTexture::COpenGLFBODepthTexture(
 
 
 //! destructor
-COpenGLFBODepthTexture::~COpenGLFBODepthTexture()
+COpenGLESFBODepthTexture::~COpenGLESFBODepthTexture()
 {	
 	if (DepthRenderBuffer && UseStencil)
 		glDeleteTextures(1, &DepthRenderBuffer);
@@ -718,25 +696,25 @@ COpenGLFBODepthTexture::~COpenGLFBODepthTexture()
 
 
 //combine depth texture and rtt
-bool COpenGLFBODepthTexture::attach(ITexture* renderTex)
+bool COpenGLESFBODepthTexture::attach(ITexture* renderTex)
 {
 	if (!renderTex)
 		return false;
-	video::COpenGLFBOTexture* rtt = static_cast<video::COpenGLFBOTexture*>(renderTex);
+	video::COpenGLESFBOTexture* rtt = static_cast<video::COpenGLESFBOTexture*>(renderTex);
 	rtt->bindRTT();
-#ifdef GL_EXT_framebuffer_object
+
 	if (UseStencil)
-	{
+	{		
 		// attach stencil texture to stencil buffer
-		Driver->extGlFramebufferTexture2D(GL_FRAMEBUFFER_EXT,
-						GL_STENCIL_ATTACHMENT_EXT,
+		Driver->framebufferTexture2D(GL_FRAMEBUFFER,
+						GL_STENCIL_ATTACHMENT,
 						GL_TEXTURE_2D,
 						StencilRenderBuffer,
 						0);
 
 		// attach depth texture to depth buffer
-		Driver->extGlFramebufferTexture2D(GL_FRAMEBUFFER_EXT,
-						GL_DEPTH_ATTACHMENT_EXT,
+		Driver->framebufferTexture2D(GL_FRAMEBUFFER,
+						GL_DEPTH_ATTACHMENT,
 						GL_TEXTURE_2D,
 						DepthRenderBuffer,
 						0);
@@ -744,12 +722,13 @@ bool COpenGLFBODepthTexture::attach(ITexture* renderTex)
 	else
 	{
 		// attach depth renderbuffer to depth buffer
-		Driver->extGlFramebufferRenderbuffer(GL_FRAMEBUFFER_EXT,
-						GL_DEPTH_ATTACHMENT_EXT,
-						GL_RENDERBUFFER_EXT,
+		Driver->framebufferRenderbuffer(GL_FRAMEBUFFER,
+						GL_DEPTH_ATTACHMENT,
+						GL_RENDERBUFFER,
 						DepthRenderBuffer);
 	}
-#endif
+
+
 	// check the status
 	if (!checkFBOStatus(Driver))
 	{
@@ -764,73 +743,51 @@ bool COpenGLFBODepthTexture::attach(ITexture* renderTex)
 
 
 //! Bind Render Target Texture
-void COpenGLFBODepthTexture::bindRTT()
+void COpenGLESFBODepthTexture::bindRTT()
 {
 }
 
 
 //! Unbind Render Target Texture
-void COpenGLFBODepthTexture::unbindRTT()
+void COpenGLESFBODepthTexture::unbindRTT()
 {
 }
 
 
 bool checkFBOStatus(COpenGLESDriver* Driver)
 {
-#ifdef GL_EXT_framebuffer_object
-	GLenum status = Driver->extGlCheckFramebufferStatus(GL_FRAMEBUFFER_EXT);
+
+	GLenum status = Driver->checkFramebufferStatus(GL_FRAMEBUFFER);
 
 	switch (status)
 	{
 		//Our FBO is perfect, return true
-		case GL_FRAMEBUFFER_COMPLETE_EXT:
+		case GL_FRAMEBUFFER_COMPLETE:
 			return true;
 
-		case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
-			os::Printer::log("FBO has invalid read buffer", ELL_ERROR);
-			break;
-
-		case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
-			os::Printer::log("FBO has invalid draw buffer", ELL_ERROR);
-			break;
-
-		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
+		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
 			os::Printer::log("FBO has one or several incomplete image attachments", ELL_ERROR);
 			break;
 
-		case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+		case GL_FRAMEBUFFER_INCOMPLETE_FORMATS:
 			os::Printer::log("FBO has one or several image attachments with different internal formats", ELL_ERROR);
 			break;
 
-		case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+		case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
 			os::Printer::log("FBO has one or several image attachments with different dimensions", ELL_ERROR);
 			break;
 
-// not part of fbo_object anymore, but won't harm as it is just a return value
-#ifdef GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT
-		case GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT:
-			os::Printer::log("FBO has a duplicate image attachment", ELL_ERROR);
-			break;
-#endif
-
-		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
+		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
 			os::Printer::log("FBO missing an image attachment", ELL_ERROR);
 			break;
-
-#ifdef GL_EXT_framebuffer_multisample
-		case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT:
-			os::Printer::log("FBO wrong multisample setup", ELL_ERROR);
-			break;
-#endif
-
-		case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+		case GL_FRAMEBUFFER_UNSUPPORTED:
 			os::Printer::log("FBO format unsupported", ELL_ERROR);
 			break;
 
 		default:
 			break;
 	}
-#endif
+
 	os::Printer::log("FBO error", ELL_ERROR);
 	return false;
 }

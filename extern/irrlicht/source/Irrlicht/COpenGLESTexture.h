@@ -135,16 +135,16 @@ protected:
 };
 
 //! OpenGL FBO texture.
-class COpenGLFBOTexture : public COpenGLESTexture
+class COpenGLESFBOTexture : public COpenGLESTexture
 {
 public:
 
 	//! FrameBufferObject constructor
-	COpenGLFBOTexture(const core::dimension2d<u32>& size, const io::path& name,
+	COpenGLESFBOTexture(const core::dimension2d<u32>& size, const io::path& name,
 		COpenGLESDriver* driver = 0, const ECOLOR_FORMAT format = ECF_UNKNOWN);
 
 	//! destructor
-	virtual ~COpenGLFBOTexture();
+	virtual ~COpenGLESFBOTexture();
 
 	//! Is it a FrameBufferObject?
 	virtual bool isFrameBufferObject() const;
@@ -162,14 +162,14 @@ protected:
 
 
 //! OpenGL FBO depth texture.
-class COpenGLFBODepthTexture : public COpenGLFBOTexture
+class COpenGLESFBODepthTexture : public COpenGLESFBOTexture
 {
 public:
 	//! FrameBufferObject depth constructor
-	COpenGLFBODepthTexture(const core::dimension2d<u32>& size, const io::path& name, COpenGLESDriver* driver=0, bool useStencil=false);
+	COpenGLESFBODepthTexture(const core::dimension2d<u32>& size, const io::path& name, COpenGLESDriver* driver=0, bool useStencil=false);
 
 	//! destructor
-	virtual ~COpenGLFBODepthTexture();
+	virtual ~COpenGLESFBODepthTexture();
 
 	//! Bind RenderTargetTexture
 	virtual void bindRTT();

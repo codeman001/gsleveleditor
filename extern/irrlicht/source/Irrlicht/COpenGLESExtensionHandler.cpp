@@ -93,8 +93,6 @@ void COpenGLESExtensionHandler::initExtensions(bool stencilBuffer)
 		os::Printer::log("OpenGL|ES driver version is 1.1 or better.", ELL_INFORMATION);
 	else
 		os::Printer::log("OpenGL|ES driver version is not 1.1 or better.", ELL_WARNING);
-
-	
 	{
 		const char* t = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
 		const size_t len = strlen(t);

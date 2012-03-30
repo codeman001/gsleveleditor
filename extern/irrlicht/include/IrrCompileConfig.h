@@ -125,6 +125,8 @@ headers, e.g. Summer 2004.  This is a Microsoft issue, not an Irrlicht one.
 //! Define _IRR_COMPILE_WITH_OPENGL_ to compile the Irrlicht engine with OpenGL.
 /** If you do not wish the engine to be compiled with OpenGL, comment this
 define out. */
+
+
 #define _IRR_COMPILE_WITH_OPENGL_
 
 //#define _IRR_COMPILE_WITH_OPENGL_ES_
@@ -147,12 +149,8 @@ define out. */
 //! Define _IRR_OPENGL_USE_EXTPOINTER_ if the OpenGL renderer should use OpenGL extensions via function pointers.
 /** On some systems there is no support for the dynamic extension of OpenGL
 	via function pointers such that this has to be undef'ed. */
-#if !defined(_IRR_OSX_PLATFORM_) && !defined(_IRR_SOLARIS_PLATFORM_)
-	
-	#ifndef _IRR_COMPILE_WITH_OPENGL_ES_
-		#define _IRR_OPENGL_USE_EXTPOINTER_	
-	#endif
-
+#if !defined(_IRR_OSX_PLATFORM_) && !defined(_IRR_SOLARIS_PLATFORM_)	
+	#define _IRR_OPENGL_USE_EXTPOINTER_	
 #endif
 
 //! On some Linux systems the XF86 vidmode extension or X11 RandR are missing. Use these flags

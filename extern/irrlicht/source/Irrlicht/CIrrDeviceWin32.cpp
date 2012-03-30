@@ -37,6 +37,11 @@ namespace irr
 		IVideoDriver* createOpenGLDriver(const irr::SIrrlichtCreationParameters& params,
 			io::IFileSystem* io, CIrrDeviceWin32* device);
 		#endif
+	
+		#ifdef _IRR_COMPILE_WITH_OPENGL_ES_
+		IVideoDriver* createOpenGLESDriver(const irr::SIrrlichtCreationParameters& params, io::IFileSystem* io);
+		#endif
+
 	}
 } // end namespace irr
 
@@ -705,7 +710,21 @@ void CIrrDeviceWin32::createDriver()
 		os::Printer::log("OpenGL driver was not compiled in.", ELL_ERROR);
 		#endif
 		break;
+	case video::EDT_OPENGLES:
 
+		#ifdef _IRR_COMPILE_WITH_OPENGL_ES_
+		switchToFullScreen();
+		
+		VideoDriver = video::createOpenGLESDriver(CreationParams, FileSystem);
+		if (!VideoDriver)
+		{
+			os::Printer::log("Could not create OpenGL|ES driver.", ELL_ERROR);
+		}
+		#else
+			os::Printer::log("OpenGL|ES driver was not compiled in.", ELL_ERROR);		
+		#endif
+
+		break;
 	case video::EDT_SOFTWARE:
 
 		#ifdef _IRR_COMPILE_WITH_SOFTWARE_

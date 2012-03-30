@@ -2623,6 +2623,42 @@
 						>
 					</File>
 					<File
+						RelativePath=".\COpenGLESMaterialRenderer.h"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESNormalMapRenderer.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESNormalMapRenderer.h"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESParallaxMapRenderer.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESParallaxMapRenderer.h"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESShaderMaterialRenderer.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESShaderMaterialRenderer.h"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESSLMaterialRenderer.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\COpenGLESSLMaterialRenderer.h"
+						>
+					</File>
+					<File
 						RelativePath=".\COpenGLESTexture.cpp"
 						>
 					</File>

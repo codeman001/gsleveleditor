@@ -1,9 +1,9 @@
-// Copyright (C) 2002-2010 Nikolaus Gebhardt
+// Copyright (C) 2002-2007 Nikolaus Gebhardt
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __C_OPEN_GL_TEXTURE_H_INCLUDED__
-#define __C_OPEN_GL_TEXTURE_H_INCLUDED__
+#ifndef __C_OPEN_GLES_TEXTURE_H_INCLUDED__
+#define __C_OPEN_GLES_TEXTURE_H_INCLUDED__
 
 #include "ITexture.h"
 #include "IImage.h"
@@ -11,18 +11,10 @@
 #include "IrrCompileConfig.h"
 #ifdef _IRR_COMPILE_WITH_OPENGL_ES_
 
-#if defined(_IRR_OPENGLES_USE_EXTPOINTER_)
-	#define GL_GLEXT_LEGACY 1
-#else
-	#define GL_GLEXT_PROTOTYPES 1
-#endif
-
-#ifdef _IRR_WINDOWS_API_
-	// include windows headers for HWND
-	#define WIN32_LEAN_AND_MEAN
-	#include <windows.h>
+#ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_  
 	#include <GLES/gl.h>
-
+	#include <GLES/glext.h>
+	#include <GLES/egl.h>
 #endif
 
 
@@ -32,30 +24,34 @@ namespace video
 {
 
 class COpenGLESDriver;
+
+
 //! OpenGL texture.
 class COpenGLESTexture : public ITexture
 {
 public:
 
 	//! constructor
-	COpenGLESTexture(IImage* surface, const io::path& name, void* mipmapData=0, COpenGLESDriver* driver=0);
+	COpenGLESTexture(IImage* surface, const char* name, COpenGLESDriver* driver=0);
+	//! FrameBufferObject constructor (disabled for OpenGL|ES)
+	COpenGLESTexture(const core::dimension2d<u32>& size, bool extPackedDepthStencilSupported, const char* name, COpenGLESDriver* driver=0);
 
 	//! destructor
 	virtual ~COpenGLESTexture();
 
 	//! lock function
-	virtual void* lock(bool readOnly=false, u32 mipmapLevel=0);
+	virtual void* lock(bool readOnly = false, u32 mipmapLevel=0);
 
 	//! unlock function
 	virtual void unlock();
 
-	//! Returns original size of the texture (image).
+	//! Returns original size of the texture.
 	virtual const core::dimension2d<u32>& getOriginalSize() const;
 
 	//! Returns size of the texture.
 	virtual const core::dimension2d<u32>& getSize() const;
 
-	//! returns driver type of texture (=the driver, that created it)
+	//! returns driver type of texture (=the driver, who created the texture)
 	virtual E_DRIVER_TYPE getDriverType() const;
 
 	//! returns color format of texture
@@ -64,125 +60,63 @@ public:
 	//! returns pitch of texture (in bytes)
 	virtual u32 getPitch() const;
 
-	//! getTextureID
-	virtual unsigned int getTextureID();
-
 	//! return open gl texture name
 	GLuint getOpenGLTextureName() const;
 
 	//! return whether this texture has mipmaps
 	virtual bool hasMipMaps() const;
 
-	//! Regenerates the mip map levels of the texture.
-	/** Useful after locking and modifying the texture
-	\param mipmapData Pointer to raw mipmap data, including all necessary mip levels, in the same format as the main texture image. If not set the mipmaps are derived from the main image. */
-	virtual void regenerateMipMapLevels(void* mipmapData=0);
+	//! Regenerates the mip map levels of the texture. Useful after
+	//! locking and modifying the texture
+	virtual void regenerateMipMapLevels(void* mipmapData = 0);
 
 	//! Is it a render target?
 	virtual bool isRenderTarget() const;
 
 	//! Is it a FrameBufferObject?
-	virtual bool isFrameBufferObject() const;
+	bool isFrameBufferObject() const;
 
-	//! Bind RenderTargetTexture
-	virtual void bindRTT();
+	//! Bind FrameBufferObject (valid only if isFrameBufferObject() returns true).
+	void bindFrameBufferObject();
 
-	//! Unbind RenderTargetTexture
-	virtual void unbindRTT();
+	//! Unbind FrameBufferObject (valid only if isFrameBufferObject() returns true).
+	void unbindFrameBufferObject();
 
 	//! sets whether this texture is intended to be used as a render target.
-	void setIsRenderTarget(bool isTarget);
+  void setRenderTarget(bool isTarget);
 
-protected:
-
-	//! protected constructor with basic setup, no GL texture name created, for derived classes
-	COpenGLESTexture(const io::path& name, COpenGLESDriver* driver);
+private:
 
 	//! get the desired color format based on texture creation flags and the input format.
 	ECOLOR_FORMAT getBestColorFormat(ECOLOR_FORMAT format);
 
-	//! Get the OpenGL color format parameters based on the given Irrlicht color format
-	GLint getOpenGLFormatAndParametersFromColorFormat(
-		ECOLOR_FORMAT format, GLint& filtering, GLenum& colorformat, GLenum& type);
+	//! convert the image into an internal image with better properties for this driver.
+	void getImageData(IImage* image);
 
-	//! get important numbers of the image and hw texture
-	void getImageValues(IImage* image);
+	//! copies the the texture into an open gl texture.
+	//! \param: newTexture is true if method is called from a newly created texture for the first time. Otherwise call with false to improve memory handling.
+	void copyTexture(bool newTexture=true);
 
-	//! copies the texture into an OpenGL texture.
-	/** \param newTexture True if method is called for a newly created texture for the first time. Otherwise call with false to improve memory handling.
-	\param mipmapData Pointer to raw mipmap data, including all necessary mip levels, in the same format as the main texture image.
-	\param mipLevel If set to non-zero, only that specific miplevel is updated, using the MipImage member. */
-	void uploadTexture(bool newTexture=false, void* mipmapData=0, u32 mipLevel=0);
+	//! returns the size of a texture which would be the optimize size for rendering it
+	inline u32 getTextureSizeFromSurfaceSize(u32 size) const;
 
 	core::dimension2d<u32> ImageSize;
-	core::dimension2d<u32> TextureSize;
-	ECOLOR_FORMAT ColorFormat;
 	COpenGLESDriver* Driver;
 	IImage* Image;
-	IImage* MipImage;
 
 	GLuint TextureName;
 	GLint InternalFormat;
 	GLenum PixelFormat;
 	GLenum PixelType;
-
-	u8 MipLevelStored;
 	bool HasMipMaps;
 	bool IsRenderTarget;
 	bool AutomaticMipmapUpdate;
-	bool ReadOnlyLock;
-	bool KeepImage;
-};
 
-//! OpenGL FBO texture.
-class COpenGLESFBOTexture : public COpenGLESTexture
-{
-public:
+	GLuint ColorFrameBuffer; // for FBO path
+	GLuint DepthRenderBuffer; // for FBO path
+	GLuint StencilRenderBuffer; // for FBO path
 
-	//! FrameBufferObject constructor
-	COpenGLESFBOTexture(const core::dimension2d<u32>& size, const io::path& name,
-		COpenGLESDriver* driver = 0, const ECOLOR_FORMAT format = ECF_UNKNOWN);
-
-	//! destructor
-	virtual ~COpenGLESFBOTexture();
-
-	//! Is it a FrameBufferObject?
-	virtual bool isFrameBufferObject() const;
-
-	//! Bind RenderTargetTexture
-	virtual void bindRTT();
-
-	//! Unbind RenderTargetTexture
-	virtual void unbindRTT();
-
-	ITexture* DepthTexture;
-protected:
-	GLuint ColorFrameBuffer;
-};
-
-
-//! OpenGL FBO depth texture.
-class COpenGLESFBODepthTexture : public COpenGLESFBOTexture
-{
-public:
-	//! FrameBufferObject depth constructor
-	COpenGLESFBODepthTexture(const core::dimension2d<u32>& size, const io::path& name, COpenGLESDriver* driver=0, bool useStencil=false);
-
-	//! destructor
-	virtual ~COpenGLESFBODepthTexture();
-
-	//! Bind RenderTargetTexture
-	virtual void bindRTT();
-
-	//! Unbind RenderTargetTexture
-	virtual void unbindRTT();
-
-	bool attach(ITexture*);
-
-protected:
-	GLuint DepthRenderBuffer;
-	GLuint StencilRenderBuffer;
-	bool UseStencil;
+	u32 Locks;
 };
 
 
@@ -190,5 +124,5 @@ protected:
 } // end namespace irr
 
 #endif
-#endif // _IRR_COMPILE_WITH_OPENGL_
+#endif // __C_OPEN_GLES_TEXTURE_H_INCLUDED__
 

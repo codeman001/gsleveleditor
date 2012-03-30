@@ -52,6 +52,8 @@ namespace video
 		primitives. */
 		EDT_OPENGL,
 
+		EDT_OPENGLES,
+
 		//! No driver, just for counting the elements
 		EDT_COUNT
 	};

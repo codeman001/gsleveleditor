@@ -4,10 +4,14 @@
 #include "stdafx.h"
 #include "IView.h"
 
+#include "CGameObject.h"
+#include "CGameCamera.h"
+#include "CObjTemplateFactory.h"
+
 class CLevel
 {
 protected:
-	
+	CGameCamera	*m_playerCamera;	
 public:
 	CLevel();
 

@@ -89,10 +89,11 @@ void CObjTemplateFactory::loadAllObjectTemplate()
 
 #ifdef GSEDITOR
 	uiApplication::getAppPath( (LPWSTR)path, MAX_PATH );
-#else
-	
-#endif
 	swprintf( fileName, MAX_PATH, L"%s\\objectTemplate.css", path );
+#else
+	swprintf( fileName, MAX_PATH, L"objectTemplate.css", path );
+#endif
+	
 
 	std::ifstream file( fileName );
 

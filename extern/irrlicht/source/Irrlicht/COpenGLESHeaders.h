@@ -1,3 +1,5 @@
+// Copyright (C) 2012 update OpenGL|ES by pham hong duc (hongduc.pr@gmail.com)
+
 #ifndef __C_OPENGLES_INCLUDES_GL_H_INCLUDED__
 #define __C_OPENGLES_INCLUDES_GL_H_INCLUDED__
 

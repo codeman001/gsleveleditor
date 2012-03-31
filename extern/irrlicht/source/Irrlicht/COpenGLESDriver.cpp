@@ -243,6 +243,24 @@ void COpenGLESDriver::createMaterialRenderers()
 	renderer->drop();
 	renderer = new COpenGLESParallaxMapRenderer(this, tmp, MaterialRenderers[EMT_TRANSPARENT_VERTEX_ALPHA].Renderer);
 	renderer->drop();
+#else
+	//	fake EMT_NORMAL_MAP_SOLID
+	addAndDropMaterialRenderer(new COpenGLESMaterialRenderer_SOLID( this));
+
+	//	fake EMT_TRANSPARENT_ADD_COLOR
+	addAndDropMaterialRenderer(new COpenGLESMaterialRenderer_SOLID( this));
+
+	//	fake EMT_TRANSPARENT_VERTEX_ALPHA
+	addAndDropMaterialRenderer(new COpenGLESMaterialRenderer_SOLID( this));
+
+	//	fake EMT_PARALLAX_MAP_SOLID
+	addAndDropMaterialRenderer(new COpenGLESMaterialRenderer_SOLID( this));
+
+	// fake EMT_TRANSPARENT_ADD_COLOR
+	addAndDropMaterialRenderer(new COpenGLESMaterialRenderer_SOLID( this));
+
+	// fake EMT_TRANSPARENT_VERTEX_ALPHA
+	addAndDropMaterialRenderer(new COpenGLESMaterialRenderer_SOLID( this));
 #endif // _IRR_HAS_SHADER
 
 	// add basic 1 texture blending

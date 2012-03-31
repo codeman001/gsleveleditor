@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "uiClass", "..\..\extern\uiC
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Irrlicht", "..\..\extern\irrlicht\source\Irrlicht\Irrlicht9.0.vcproj", "{E08E042A-6C45-411B-92BE-3CC31331019F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SPARK Engine IRR LIB", "..\..\extern\spark\projects\vc2008\SPARK engine\SPARK IRR LIB.vcproj", "{3F79E633-E34E-43C0-BC14-F033C8B16E34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -60,6 +62,20 @@ Global
 		{E08E042A-6C45-411B-92BE-3CC31331019F}.Static lib - Release - Fast FPU|Win32.Build.0 = Static lib - Release - Fast FPU|Win32
 		{E08E042A-6C45-411B-92BE-3CC31331019F}.Static lib - Release|Win32.ActiveCfg = Static lib - Release|Win32
 		{E08E042A-6C45-411B-92BE-3CC31331019F}.Static lib - Release|Win32.Build.0 = Static lib - Release|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.Debug|Win32.Build.0 = Debug|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.Release - Fast FPU|Win32.ActiveCfg = Release|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.Release - Fast FPU|Win32.Build.0 = Release|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.Release|Win32.ActiveCfg = Release|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.Release|Win32.Build.0 = Release|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.SDL-Debug|Win32.ActiveCfg = Debug|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.SDL-Debug|Win32.Build.0 = Debug|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.Static lib - Debug|Win32.ActiveCfg = Debug|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.Static lib - Debug|Win32.Build.0 = Debug|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.Static lib - Release - Fast FPU|Win32.ActiveCfg = Release|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.Static lib - Release - Fast FPU|Win32.Build.0 = Release|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.Static lib - Release|Win32.ActiveCfg = Release|Win32
+		{3F79E633-E34E-43C0-BC14-F033C8B16E34}.Static lib - Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

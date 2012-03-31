@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src;..\..\..\extern\irrlicht\include;..\..\..\extern\irrlicht\source\Irrlicht;..\..\..\extern\uiClass;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Serializable"
+				AdditionalIncludeDirectories="..\..\src;..\..\..\extern\irrlicht\include;..\..\..\extern\irrlicht\source\Irrlicht;..\..\..\extern\uiClass;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Serializable;..\..\..\extern\spark\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Irrlicht.lib"
+				AdditionalDependencies="Irrlicht.lib SPARK_IRR_debug.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\bin"
 				GenerateDebugInformation="true"

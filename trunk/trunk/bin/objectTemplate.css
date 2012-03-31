@@ -59,3 +59,11 @@ skybox
 		skyTexture: data/skydome2.jpg | filePathType;
 	}
 }
+box
+{
+	Box object component
+	{
+		size: 100.0000000 | floatType;
+		textureFile: data/boxTexture.jpg | filePathType;
+	}
+}

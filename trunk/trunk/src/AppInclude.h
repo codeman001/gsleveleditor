@@ -14,6 +14,13 @@ using namespace irr;
 using namespace irr::scene;
 using namespace irr::video;
 
+
+// SPARK lib
+#include <SPK.h>
+#include <SPK_IRR.h>
+using namespace SPK;
+using namespace SPK::IRR;
+
 #include <algorithm>
 #include <vector>
 #include <list>

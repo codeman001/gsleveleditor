@@ -6,6 +6,7 @@
 
 #include "CGameObject.h"
 #include "CGameCamera.h"
+#include "CGameGSCameraAnimator.h"
 #include "CObjTemplateFactory.h"
 
 class CLevel

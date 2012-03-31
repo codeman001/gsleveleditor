@@ -5,7 +5,6 @@
 #include "snake3d.h"
 
 #include "IView.h"
-
 #include "CLevel.h"
 
 IView* g_view = NULL;
@@ -31,11 +30,16 @@ public:
 
 	virtual bool OnEvent(const SEvent& event)
 	{
-		vector<eventType>::iterator i = m_eventReceivers.begin(), end = m_eventReceivers.end();
-		while ( i != end )
+		if ( m_smgr )
 		{
-			(*i).second->OnEvent( event );
-			i++;
+			m_smgr->postEventFromUser( event );
+
+			vector<eventType>::iterator i = m_eventReceivers.begin(), end = m_eventReceivers.end();
+			while ( i != end )
+			{
+				(*i).second->OnEvent( event );
+				i++;
+			}
 		}
 		return true;
 	}
@@ -118,7 +122,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	CApplication myApp;
 	g_view = myApp.getIView();
 
-	IrrlichtDevice* device = createDevice( irr::video::EDT_OPENGL, core::dimension2d<u32>(960, 640), 16, false, false, false, &myApp );
+	IrrlichtDevice* device = createDevice( irr::video::EDT_OPENGLES, core::dimension2d<u32>(960, 640), 16, false, false, false, &myApp );
 	myApp.initApplication( device );
 
 	while(device->run())

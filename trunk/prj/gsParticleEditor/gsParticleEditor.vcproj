@@ -454,6 +454,14 @@
 			Name="Frame"
 			>
 			<File
+				RelativePath=".\CIrrWindow.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CIrrWindow.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CMainFrame.cpp"
 				>
 			</File>

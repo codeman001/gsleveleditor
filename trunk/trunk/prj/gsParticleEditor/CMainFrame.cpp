@@ -2,20 +2,9 @@
 #include "CMainFrame.h"
 #include "Resource.h"
 
-CMainFrame *g_mainFrame = NULL;
-
-IView* getIView()
-{
-	if ( g_mainFrame )
-	{
-		g_mainFrame->getIView();
-	}
-	return NULL;
-}
-
 CMainFrame::CMainFrame()
 {
-	g_mainFrame = this;
+	m_irrWin = ref<CIrrWindow>( new CIrrWindow(L"irrWindow", this) );	
 }
 
 CMainFrame::~CMainFrame()
@@ -29,6 +18,7 @@ void CMainFrame::_OnPaint(uiGraphics * pG)
 
 void CMainFrame::_OnSize(uiSizeEvent sizeEvent, int nWidth, int nHeight)
 {
+	uiForm::_OnSize( sizeEvent, nWidth, nHeight );
 }
 	
 bool CMainFrame::_OnKeyDown( uiKeyEvent keyEvent )
@@ -47,6 +37,7 @@ void CMainFrame::_OnMouseWheel	( uiMouseEvent mouseEvent, int x, int y )
 
 void CMainFrame::_OnIdle()
 {
+	m_irrWin->irrUpdate();
 }
 
 // registerWindow

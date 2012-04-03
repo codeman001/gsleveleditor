@@ -2,22 +2,17 @@
 #define _CMAINFRAME_
 
 #include "stdafx.h"
-#include "IView.h"
+#include "CIrrWindow.h"
 
-class CMainFrame: public uiForm, public IView
+class CMainFrame: public uiForm
 {
 protected:
+	CIrrWindow	*m_irrWin;
 	
-protected:
-
 public:
 	CMainFrame();
 	virtual ~CMainFrame();
-	
-	inline IView *getIView()
-	{
-		return (IView*)this;
-	}
+
 public:
 
 	virtual void _OnPaint(uiGraphics * pG);

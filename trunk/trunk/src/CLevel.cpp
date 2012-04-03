@@ -38,7 +38,7 @@ void addTestParticle()
 	// Renderers
 	IRRQuadRenderer* fireRenderer = IRRQuadRenderer::create(  device );
 	//fireRenderer->setScale(0.3f,0.3f);
-	fireRenderer->setTexture(driver->getTexture("data/particle/fire2.bmp"));
+	fireRenderer->setTexture(driver->getTexture("data/particle/explosion.bmp"));
 	fireRenderer->setTexturingMode(TEXTURE_2D);
 	fireRenderer->setBlending(BLENDING_ADD);
 	fireRenderer->enableRenderingHint(DEPTH_WRITE,false);

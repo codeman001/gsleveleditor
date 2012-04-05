@@ -17,7 +17,8 @@ public:
 		ObjectCollision,
 		Shadow,
 		BoxObject,
-		NumBuildInComponent = BoxObject
+		Billboard,
+		NumBuildInComponent = Billboard
 	};
 
 	static const char *s_compType[];

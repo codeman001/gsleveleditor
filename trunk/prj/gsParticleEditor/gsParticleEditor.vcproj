@@ -261,6 +261,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\SceneNode\CGameBillboardSceneNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\SceneNode\CGameBillboardSceneNode.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\SceneNode\CGameBoxSceneNode.cpp"
 					>
 				</File>
@@ -338,6 +346,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\Component\CAnimMeshComponent.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Component\CBillboardComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Component\CBillboardComponent.h"
 					>
 				</File>
 				<File

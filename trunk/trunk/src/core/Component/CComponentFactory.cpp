@@ -8,6 +8,7 @@
 #include "CObjectCollisionComponent.h"
 #include "CShadowComponent.h"
 #include "CBoxObjectComponent.h"
+#include "CBillboardComponent.h"
 
 #define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
 
@@ -74,6 +75,14 @@ void CComponentFactory::initComponentTemplate()
 	p->addGroup	(stringOfComponent(IObjectComponent::BoxObject));	
 	p->addFloat("size", 100 );
 	p->addPath("textureFile", "data/boxTexture.jpg");
+
+	// add billboard
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::Billboard ];
+	p->addGroup	(stringOfComponent(IObjectComponent::Billboard));	
+	p->addPath("textureFile", "data/particle/particlewhite.bmp");
+	p->addFloat("billboardWidth", 50 );
+	p->addFloat("billboardHeight", 50 );
 
 	loadAllTemplate();
 }
@@ -252,6 +261,8 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 		pComp = new CShadowComponent( pObj );
 	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::BoxObject ) ) == 0 )
 		pComp = new CBoxObjectComponent( pObj );
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Billboard ) ) == 0 )
+		pComp = new CBillboardComponent( pObj );
 
 	if ( pComp )
 		pComp->loadData( data );

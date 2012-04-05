@@ -10,7 +10,8 @@ const char *IObjectComponent::s_compType[] =
 	"Object transform component",
 	"Object collision component",
 	"Object shadow component",
-	"Box object component"
+	"Box object component",
+	"Billboard component"
 };
 
 IObjectComponent::IObjectComponent(CGameObject *pObj, int compID)

@@ -31,6 +31,8 @@ LANGUAGE 9, 1
 IDI_GSPARTICLEEDITOR       ICON         "gsParticleEditor.ico"
 IDI_SMALL               ICON         "small.ico"
 
+IDI_TOOLBARADD	ICON	"toolbar-Add.ico"
+IDI_TOOLBARDEL	ICON	"toolbar-Delete.ico"
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu

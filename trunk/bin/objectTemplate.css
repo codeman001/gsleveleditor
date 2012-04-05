@@ -67,3 +67,12 @@ box
 		textureFile: data/boxTexture.jpg | filePathType;
 	}
 }
+testBillboard
+{
+	Billboard component
+	{
+		textureFile: data/particle/particlewhite.bmp | filePathType;
+		billboardWidth: 50.0000000 | floatType;
+		billboardHeight: 50.0000000 | floatType;
+	}
+}

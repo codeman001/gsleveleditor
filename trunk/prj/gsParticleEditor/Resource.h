@@ -17,6 +17,10 @@
 #ifndef IDC_STATIC
 #define IDC_STATIC				-1
 #endif
+
+#define IDI_TOOLBARADD			7000
+#define IDI_TOOLBARDEL			7001
+
 // Next default values for new objects
 //
 #ifdef APSTUDIO_INVOKED

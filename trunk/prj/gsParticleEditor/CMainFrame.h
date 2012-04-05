@@ -7,13 +7,22 @@
 class CMainFrame: public uiForm
 {
 protected:
-	CIrrWindow	*m_irrWin;
+	CIrrWindow		*m_irrWin;
 	
+	uiTreeView		*m_effectTreeWin;
+	uiListProperty	*m_effectPropertyWin;
+
+	uiToolbarButton*	m_addButton;
+	uiToolbarButton*	m_delButton;
 public:
 	CMainFrame();
 	virtual ~CMainFrame();
 
 public:
+
+	// create
+	// Khoi tao cua so
+	virtual int create(LPWSTR lpTitle, int x, int y, int w, int h,uiWindow* pParent, LPWSTR lpName);
 
 	virtual void _OnPaint(uiGraphics * pG);
 	virtual void _OnSize(uiSizeEvent sizeEvent, int nWidth, int nHeight);
@@ -32,7 +41,16 @@ public:
 	// messageMap
 	// Phan tich su kien cho uiForm
 	virtual LRESULT	messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+protected:
+
+	void onMenuNewEffects( uiObject *pSender );
+	void onMenuOpenEffects( uiObject *pSender );
+	void onMenuSaveEffects( uiObject *pSender );
+	void onMenuExit( uiObject *pSender );
 	
+	void onToolbarAdd( uiObject *pSender );
+	void onToolbarDel( uiObject *pSender );
 };
 
 #endif

@@ -16,11 +16,7 @@ IView* getIView()
 CIrrWindow::CIrrWindow( WCHAR* lpString, uiWindow *pParent )
 	:uiWindow( lpString, 0, 0, 100, 100, pParent )
 {
-	this->setDock( pParent, UIDOCK_FILL );
-	this->changeWindowStyle( UISTYLE_CHILD );
-	this->showWindow(true);
-	
-	
+	showWindow(true);
 	createIrrDevice();
 }
 
@@ -132,7 +128,7 @@ void CIrrWindow::irrUpdate()
 
 void CIrrWindow::_OnSize(uiSizeEvent sizeEvent, int nWidth, int nHeight)
 {
-	if ( m_driver )
+	if ( m_driver && nWidth > 0 && nHeight > 0 )
 	{
 		m_driver->OnResize( core::dimension2d<u32>(nWidth, nHeight) );
 		getIView()->setCameraAspectRatio( (f32) nWidth/nHeight );		

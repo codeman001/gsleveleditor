@@ -8,11 +8,17 @@
 #include "CGameOxyzSceneNode.h"
 #include "CGameGSCameraAnimator.h"
 
+#include "CParticleComponent.h"
+
 class CIrrWindow: public uiWindow, public IView
 {
 protected:
 	CGameCamera *m_designCamera;
+
+	CGameObject *m_particleObject;
+
 public:
+
 	CIrrWindow( WCHAR* lpString, uiWindow *pParent );
 	
 	virtual ~CIrrWindow();
@@ -25,9 +31,15 @@ public:
 	void createIrrDevice();
 
 	void initScene();
+
 	void destroyScene();
 
 	void irrUpdate();
+	
+	inline CGameObject* getParticle()
+	{
+		return m_particleObject;
+	}
 
 	virtual void _OnSize(uiSizeEvent sizeEvent, int nWidth, int nHeight);
 	virtual void _OnMouseMove	( uiMouseEvent mouseEvent, int x, int y );

@@ -95,6 +95,15 @@ void CIrrWindow::initScene()
 	ILightSceneNode *light = smgr->addLightSceneNode( pNode, core::vector3df(0, 0, 0) );
 	light->setLightType( video::ELT_DIRECTIONAL );
 
+
+	// add demo particle
+	m_particleObject = new CGameObject();
+
+	CParticleComponent *particleComp = new CParticleComponent(m_particleObject);
+	particleComp->initParticle();
+
+	m_particleObject->m_components.push_back( particleComp );
+
 }
 
 void CIrrWindow::destroyScene()
@@ -107,6 +116,9 @@ void CIrrWindow::irrUpdate()
 	// draw document
 	IVideoDriver* driver = m_driver;
 	ISceneManager* smgr = m_smgr;
+
+	// tick device
+	m_device->getTimer()->tick();
 
 	// draw 3d scene
 	driver->beginScene( true, true, 0, getIView()->getVideoData() );

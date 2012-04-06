@@ -48,16 +48,17 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	// add rebar
 	uiRebar *pRebar = ref<uiRebar>( new uiRebar(L"RebarTool", 0,0, 300,30, this) );		
 
-	// add tool bar
-	uiToolbar *pToolbar = ref<uiToolbar>( new uiToolbar(L"Command", 0,0,0,0, 24,24, this ) );
+
+	// toolbar add/delete	
+	uiToolbar *pToolbar = ref<uiToolbar>( new uiToolbar(L"Command", 0,0,0,0, 24,24, pRebar ) );
 
 	uiIcon iconAdd( MAKEINTRESOURCE(IDI_TOOLBARADD) );	
 	uiIcon iconDel( MAKEINTRESOURCE(IDI_TOOLBARDEL) );
 
 	DWORD iconAddIndex = pToolbar->pushImage( &iconAdd );	
 	DWORD iconDelIndex = pToolbar->pushImage( &iconDel );
-	
-	SendMessageW( pToolbar->getHandle(), TB_SETBUTTONWIDTH, 0, 70);
+		
+	pToolbar->setButtonWidth(70);
 	pToolbar->setTextRight(true);
 
 	// add button
@@ -66,17 +67,32 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 		
 	// delete button
 	m_delButton	= pToolbar->addButton(L"Delete", iconDelIndex);	
-	m_delButton->setEventOnClicked<CMainFrame, &CMainFrame::onToolbarDel>( this );
+	m_delButton->setEventOnClicked<CMainFrame, &CMainFrame::onToolbarDel>( this );		
 
 	// setup band of toolbar
 	uiRebarBand bandToolbar( pToolbar,L"");	
-	bandToolbar.setWidth(200);	
-	bandToolbar.setMinWidthHeight(0, 30);
-	bandToolbar.enableGripper( true );
-	bandToolbar.setBreakBand( true );
 	
+
+
+	// tool bar play
+	uiToolbar *pToolbarPlay = ref<uiToolbar>( new uiToolbar(L"Command", 0,0,0,0, 24,24, pRebar ) );
+
+	uiBitmap iconPlay( MAKEINTRESOURCE(IDB_TOOLBARPLAY), true );	
+	uiBitmap iconStop( MAKEINTRESOURCE(IDB_TOOLBARSTOP), true );	
+
+	DWORD iconPlayIndex = pToolbarPlay->pushImage( &iconPlay );
+	DWORD iconStopIndex = pToolbarPlay->pushImage( &iconStop );
+	
+	m_playStopParticleButton = pToolbarPlay->addButton(L"Play particle", iconPlayIndex);
+	
+	uiRebarBand bandToolbarPlay( pToolbarPlay,L"Review particle");	
+	
+
+
 	// add band to rebar
 	pRebar->addBand( &bandToolbar );
+	pRebar->addBand( &bandToolbarPlay );
+
 	pRebar->setDock( this, UIDOCK_TOP );	
 	pRebar->showBandBorder( false );
 	pRebar->showWindow(true);
@@ -206,5 +222,9 @@ void CMainFrame::onToolbarAdd( uiObject *pSender )
 }
 
 void CMainFrame::onToolbarDel( uiObject *pSender )
+{
+}
+
+void CMainFrame::onToolbarPlayStopParticle( uiObject *pSender )
 {
 }

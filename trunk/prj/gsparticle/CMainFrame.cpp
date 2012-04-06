@@ -42,12 +42,12 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 
 	// add menu
 	createAccelTable( &e );
-	setMenu( pMainMenu );
-	
+	setMenu( pMainMenu );	
+
+
 
 	// add rebar
 	uiRebar *pRebar = ref<uiRebar>( new uiRebar(L"RebarTool", 0,0, 300,30, this) );		
-
 
 	// toolbar add/delete	
 	uiToolbar *pToolbar = ref<uiToolbar>( new uiToolbar(L"Command", 0,0,0,0, 24,24, pRebar ) );
@@ -74,8 +74,8 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	
 
 
-	// tool bar play
-	uiToolbar *pToolbarPlay = ref<uiToolbar>( new uiToolbar(L"Command", 0,0,0,0, 24,24, pRebar ) );
+	// toolbar play
+	uiToolbar *pToolbarPlay = ref<uiToolbar>( new uiToolbar(L"Review", 0,0,0,0, 24,24, pRebar ) );
 
 	uiBitmap iconPlay( MAKEINTRESOURCE(IDB_TOOLBARPLAY), true );	
 	uiBitmap iconStop( MAKEINTRESOURCE(IDB_TOOLBARSTOP), true );	
@@ -85,16 +85,52 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	
 	m_playStopParticleButton = pToolbarPlay->addButton(L"Play particle", iconPlayIndex);
 	
-	uiRebarBand bandToolbarPlay( pToolbarPlay,L"Review particle");	
+	uiRebarBand bandToolbarPlay( pToolbarPlay,L"Review particle");
+	bandToolbarPlay.setWidth( 140 );
 	
+
+	// toolbar emitter/affector
+	uiToolbar *pToolbarEdit = ref<uiToolbar>( new uiToolbar(L"Edit", 0,0,0,0, 24,24, pRebar ) );	
+	pToolbarEdit->setButtonWidth(80);
+	pToolbarEdit->setTextRight(true);
+
+	uiBitmap iconEmitter( MAKEINTRESOURCE(IDB_TOOLBAREMITTER), true );	
+	uiBitmap iconAffector( MAKEINTRESOURCE(IDB_TOOLBARAFFECTOR), true );	
+
+	DWORD iconEmitterIndex	= pToolbarEdit->pushImage( &iconEmitter );
+	DWORD iconAffectorIndex = pToolbarEdit->pushImage( &iconAffector );
+
+	m_emitterButton = pToolbarEdit->addButton(L"Emitter", iconEmitterIndex);
+	uiMenuPopup *pMenu = ref<uiMenuPopup>( new uiMenuPopup() );		
+	pMenu->appendMenuItem(L"Point");
+	pMenu->appendMenuItem(L"Box");
+	pMenu->appendMenuItem(L"Cylinder");
+	pMenu->appendMenuItem(L"Ring");
+	pMenu->appendMenuItem(L"Sphere");
+	m_emitterButton->setButtonType( UITOOLBARBUTTON_DROPDOWN );
+	m_emitterButton->setMenuPopup( pMenu );	
+
+	m_affectorButton = pToolbarEdit->addButton(L"Affector", iconAffectorIndex);	
+	pMenu = ref<uiMenuPopup>( new uiMenuPopup() );	
+	pMenu->appendMenuItem(L"Fade out");
+	pMenu->appendMenuItem(L"Gravity");
+	pMenu->appendMenuItem(L"Rotation");
+	pMenu->appendMenuItem(L"Scale");	
+	m_affectorButton->setButtonType( UITOOLBARBUTTON_DROPDOWN );
+	m_affectorButton->setMenuPopup( pMenu );	
+
+	uiRebarBand bandToolbarEdit( pToolbarEdit,L"Edit particle");
+	bandToolbarEdit.setBreakBand( false );
+	bandToolbarEdit.setMinWidthHeight( 0, 39 );
 
 
 	// add band to rebar
 	pRebar->addBand( &bandToolbar );
 	pRebar->addBand( &bandToolbarPlay );
+	pRebar->addBand( &bandToolbarEdit );
 
 	pRebar->setDock( this, UIDOCK_TOP );	
-	pRebar->showBandBorder( false );
+	pRebar->showBandBorder( true );
 	pRebar->showWindow(true);
 
 

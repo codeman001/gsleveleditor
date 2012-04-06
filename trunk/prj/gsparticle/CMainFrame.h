@@ -14,7 +14,10 @@ protected:
 
 	uiToolbarButton*	m_addButton;
 	uiToolbarButton*	m_delButton;
+
 	uiToolbarButton*	m_playStopParticleButton;
+	uiToolbarButton*	m_emitterButton;
+	uiToolbarButton*	m_affectorButton;
 public:
 	CMainFrame();
 	virtual ~CMainFrame();

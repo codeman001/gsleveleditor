@@ -71,8 +71,8 @@ void CIrrWindow::initScene()
 	// create design camera
 	m_designCamera = new CGameCamera();
 	m_designCamera->setName( L"Design camera" );
-	m_designCamera->setTarget(core::vector3df(300,100,300));
-	m_designCamera->setPosition( core::vector3df(0, 200, 0) );	
+	m_designCamera->setTarget(core::vector3df(0,0,0));
+	m_designCamera->setPosition( core::vector3df(-400, 200, -400) );	
 	
 	// add animator
 	CGameGSCameraAnimators* camAnimator = new CGameGSCameraAnimators( device->getCursorControl() );

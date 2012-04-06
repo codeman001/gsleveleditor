@@ -286,10 +286,12 @@ void CMainFrame::onToolbarEmiter( uiObject *pSender )
 
 	// create new particle system
 	IParticleSystemSceneNode *ps = pParticleComponent->createParticle();
+	ps->getMaterial(0).setFlag( EMF_LIGHTING, false );
 	ps->setDebugDataVisible( EDS_BBOX );
 	
 	// create emitter
 	IParticleEmitter *emitter = NULL;
+
 	if ( pSender == m_mnuPointEmitter )
 		emitter = ps->createPointEmitter();
 	else if ( pSender == m_mnuBoxEmitter )
@@ -302,8 +304,7 @@ void CMainFrame::onToolbarEmiter( uiObject *pSender )
 		emitter = ps->createSphereEmitter( core::vector3df(0,0,0), 40 );
 
 	if ( emitter )
-		ps->setEmitter( emitter );
-
+		ps->setEmitter( emitter );	
 }
 
 void CMainFrame::onToolbarAffector( uiObject *pSender )

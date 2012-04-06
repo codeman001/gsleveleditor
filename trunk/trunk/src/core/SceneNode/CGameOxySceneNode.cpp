@@ -36,10 +36,10 @@ void CGameOxyzSceneNode::render()
 
 	int		nGrid = 50;
 	float	gridSize = 100.0f;
-	float	size = (float)nGrid * gridSize;
+	float	size = (float)nGrid * gridSize * 0.5f;
 
-	start	= core::vector3df( 0,0,0 );
-	end		= core::vector3df( size, 0,0 );
+	start	= core::vector3df( -size, 0, -size );
+	end		= core::vector3df(  size, 0, -size );
 
 	for ( int i = 0; i <= nGrid; i++ )
 	{
@@ -48,8 +48,8 @@ void CGameOxyzSceneNode::render()
 		end.Z	+= gridSize;
 	}
 
-	start	= core::vector3df( 0,0,0 );
-	end		= core::vector3df( 0,0,size );
+	start	= core::vector3df( -size,0,-size );
+	end		= core::vector3df( -size,0, size );
 
 	for ( int i = 0; i <= nGrid; i++ )
 	{
@@ -58,6 +58,6 @@ void CGameOxyzSceneNode::render()
 		end.X	+= gridSize;
 	}
 		
-	Box.addInternalPoint( core::vector3df(0, 0, 0) );
-	Box.addInternalPoint( core::vector3df(size, 10, size) );	
+	Box.addInternalPoint( core::vector3df(-size*2, 0, -size*2) );
+	Box.addInternalPoint( core::vector3df( size*2, 10, size*2) );	
 }

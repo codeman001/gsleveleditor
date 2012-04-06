@@ -14,6 +14,7 @@ protected:
 
 	uiToolbarButton*	m_addButton;
 	uiToolbarButton*	m_delButton;
+	uiToolbarButton*	m_playStopParticleButton;
 public:
 	CMainFrame();
 	virtual ~CMainFrame();
@@ -51,6 +52,7 @@ protected:
 	
 	void onToolbarAdd( uiObject *pSender );
 	void onToolbarDel( uiObject *pSender );
+	void onToolbarPlayStopParticle( uiObject *pSender );
 };
 
 #endif

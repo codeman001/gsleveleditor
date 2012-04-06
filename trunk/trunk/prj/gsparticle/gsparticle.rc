@@ -33,6 +33,9 @@ IDI_SMALL               ICON         "small.ico"
 
 IDI_TOOLBARADD	ICON	"toolbar-Add.ico"
 IDI_TOOLBARDEL	ICON	"toolbar-Delete.ico"
+
+IDB_TOOLBARPLAY	BITMAP	"toolbar-Play.bmp"
+IDB_TOOLBARSTOP	BITMAP	"toolbar-Stop.bmp"
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu

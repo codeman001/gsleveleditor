@@ -20,17 +20,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                      LPTSTR    lpCmdLine,
                      int       nCmdShow)
 {
-	//HRESULT hr = CoInitialize(NULL);
-    //if (FAILED(hr))
-    //{
-    //    return FALSE;
-    //}
-
 	CMainFrame *pMainWnd = new CMainFrame();
 
 	pMainWnd->create( TEXT( STR_APP_TITLE ),50,50,1024,768,NULL, TEXT("gsParticleEditor") );	
-	pMainWnd->setPositionCenterOfScreen();
-	//pMainWnd->setWindowState( SW_MAXIMIZE );
+	pMainWnd->setPositionCenterOfScreen();	
 	pMainWnd->showWindow(true);		
 	pMainWnd->updateWindow();
 	pMainWnd->setForegroundWindow();
@@ -42,8 +35,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	uiApplication::run( pMainWnd );
 	delete pMainWnd;
 
-	//CoUninitialize();
-	uiApplication::destroy();	
-
+	uiApplication::destroy();
 	return (int) 1;
 }

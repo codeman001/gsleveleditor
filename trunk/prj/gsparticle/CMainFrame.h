@@ -18,6 +18,18 @@ protected:
 	uiToolbarButton*	m_playStopParticleButton;
 	uiToolbarButton*	m_emitterButton;
 	uiToolbarButton*	m_affectorButton;
+
+	uiMenuItem*			m_mnuPointEmitter;
+	uiMenuItem*			m_mnuBoxEmitter;
+	uiMenuItem*			m_mnuCylinderEmitter;
+	uiMenuItem*			m_mnuRingEmitter;
+	uiMenuItem*			m_mnuSphereEmitter;
+	
+	uiMenuItem*			m_mnuFadeOutAffector;
+	uiMenuItem*			m_mnuGravityAffector;
+	uiMenuItem*			m_mnuRotationAffector;
+	uiMenuItem*			m_mnuScaleAffector;
+	
 public:
 	CMainFrame();
 	virtual ~CMainFrame();
@@ -52,10 +64,10 @@ protected:
 	void onMenuOpenEffects( uiObject *pSender );
 	void onMenuSaveEffects( uiObject *pSender );
 	void onMenuExit( uiObject *pSender );
-	
-	void onToolbarAdd( uiObject *pSender );
-	void onToolbarDel( uiObject *pSender );
+
 	void onToolbarPlayStopParticle( uiObject *pSender );
+	void onToolbarEmiter( uiObject *pSender );
+	void onToolbarAffector( uiObject *pSender );
 };
 
 #endif

@@ -18,6 +18,7 @@ public:
 		Shadow,
 		BoxObject,
 		Billboard,
+		Particle,
 		NumBuildInComponent = Billboard
 	};
 

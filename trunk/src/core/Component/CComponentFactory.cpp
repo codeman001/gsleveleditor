@@ -9,6 +9,7 @@
 #include "CShadowComponent.h"
 #include "CBoxObjectComponent.h"
 #include "CBillboardComponent.h"
+#include "CParticleComponent.h"
 
 #define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
 
@@ -263,6 +264,8 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 		pComp = new CBoxObjectComponent( pObj );
 	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Billboard ) ) == 0 )
 		pComp = new CBillboardComponent( pObj );
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Particle ) ) == 0 )
+		pComp = new CParticleComponent( pObj );
 
 	if ( pComp )
 		pComp->loadData( data );

@@ -389,6 +389,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\Component\CParticleComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Component\CParticleComponent.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\Component\CShadowComponent.cpp"
 					>
 				</File>

@@ -50,7 +50,7 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	uiRebar *pRebar = ref<uiRebar>( new uiRebar(L"RebarTool", 0,0, 300,30, this) );		
 
 	// toolbar add/delete	
-	uiToolbar *pToolbar = ref<uiToolbar>( new uiToolbar(L"Command", 0,0,0,0, 24,24, pRebar ) );
+	/*uiToolbar *pToolbar = ref<uiToolbar>( new uiToolbar(L"Command", 0,0,0,0, 24,24, pRebar ) );
 
 	uiIcon iconAdd( MAKEINTRESOURCE(IDI_TOOLBARADD) );	
 	uiIcon iconDel( MAKEINTRESOURCE(IDI_TOOLBARDEL) );
@@ -70,9 +70,8 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	m_delButton->setEventOnClicked<CMainFrame, &CMainFrame::onToolbarDel>( this );		
 
 	// setup band of toolbar
-	uiRebarBand bandToolbar( pToolbar,L"");	
+	uiRebarBand bandToolbar( pToolbar,L"");*/
 	
-
 
 	// toolbar play
 	uiToolbar *pToolbarPlay = ref<uiToolbar>( new uiToolbar(L"Review", 0,0,0,0, 24,24, pRebar ) );
@@ -101,21 +100,39 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	DWORD iconAffectorIndex = pToolbarEdit->pushImage( &iconAffector );
 
 	m_emitterButton = pToolbarEdit->addButton(L"Emitter", iconEmitterIndex);
-	uiMenuPopup *pMenu = ref<uiMenuPopup>( new uiMenuPopup() );		
-	pMenu->appendMenuItem(L"Point");
-	pMenu->appendMenuItem(L"Box");
-	pMenu->appendMenuItem(L"Cylinder");
-	pMenu->appendMenuItem(L"Ring");
-	pMenu->appendMenuItem(L"Sphere");
+	uiMenuPopup *pMenu = ref<uiMenuPopup>( new uiMenuPopup() );	
+
+	m_mnuPointEmitter		= pMenu->appendMenuItem(L"Point");
+	m_mnuBoxEmitter			= pMenu->appendMenuItem(L"Box");
+	m_mnuCylinderEmitter	= pMenu->appendMenuItem(L"Cylinder");
+	m_mnuRingEmitter		= pMenu->appendMenuItem(L"Ring");
+	m_mnuSphereEmitter		= pMenu->appendMenuItem(L"Sphere");
+
+	// add event handler
+	m_mnuPointEmitter->setEventOnClick		<CMainFrame, &CMainFrame::onToolbarEmiter>( this );
+	m_mnuBoxEmitter->setEventOnClick		<CMainFrame, &CMainFrame::onToolbarEmiter>( this );
+	m_mnuCylinderEmitter->setEventOnClick	<CMainFrame, &CMainFrame::onToolbarEmiter>( this );
+	m_mnuRingEmitter->setEventOnClick		<CMainFrame, &CMainFrame::onToolbarEmiter>( this );
+	m_mnuSphereEmitter->setEventOnClick		<CMainFrame, &CMainFrame::onToolbarEmiter>( this );
+
+
 	m_emitterButton->setButtonType( UITOOLBARBUTTON_DROPDOWN );
 	m_emitterButton->setMenuPopup( pMenu );	
 
 	m_affectorButton = pToolbarEdit->addButton(L"Affector", iconAffectorIndex);	
 	pMenu = ref<uiMenuPopup>( new uiMenuPopup() );	
-	pMenu->appendMenuItem(L"Fade out");
-	pMenu->appendMenuItem(L"Gravity");
-	pMenu->appendMenuItem(L"Rotation");
-	pMenu->appendMenuItem(L"Scale");	
+
+	m_mnuFadeOutAffector	= pMenu->appendMenuItem(L"Fade out");
+	m_mnuGravityAffector	= pMenu->appendMenuItem(L"Gravity");
+	m_mnuRotationAffector	= pMenu->appendMenuItem(L"Rotation");
+	m_mnuScaleAffector		= pMenu->appendMenuItem(L"Scale");
+	
+	// add event handler
+	m_mnuFadeOutAffector->setEventOnClick		<CMainFrame, &CMainFrame::onToolbarAffector>( this );
+	m_mnuGravityAffector->setEventOnClick		<CMainFrame, &CMainFrame::onToolbarAffector>( this );
+	m_mnuRotationAffector->setEventOnClick		<CMainFrame, &CMainFrame::onToolbarAffector>( this );
+	m_mnuScaleAffector->setEventOnClick			<CMainFrame, &CMainFrame::onToolbarAffector>( this );	
+
 	m_affectorButton->setButtonType( UITOOLBARBUTTON_DROPDOWN );
 	m_affectorButton->setMenuPopup( pMenu );	
 
@@ -125,7 +142,7 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 
 
 	// add band to rebar
-	pRebar->addBand( &bandToolbar );
+	//pRebar->addBand( &bandToolbar );
 	pRebar->addBand( &bandToolbarPlay );
 	pRebar->addBand( &bandToolbarEdit );
 
@@ -253,14 +270,44 @@ void CMainFrame::onMenuExit( uiObject *pSender )
 	uiApplication::exit();
 }
 
-void CMainFrame::onToolbarAdd( uiObject *pSender )
-{
-}
-
-void CMainFrame::onToolbarDel( uiObject *pSender )
-{
-}
-
 void CMainFrame::onToolbarPlayStopParticle( uiObject *pSender )
 {
+}
+
+void CMainFrame::onToolbarEmiter( uiObject *pSender )
+{
+	CGameObject *pParticle = m_irrWin->getParticle();
+	if ( pParticle == NULL )
+		return;
+	
+	CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );
+	if ( pParticleComponent == NULL )
+		return;
+
+	// create new particle system
+	IParticleSystemSceneNode *ps = pParticleComponent->createParticle();
+	ps->setDebugDataVisible( EDS_BBOX );
+	
+	// create emitter
+	IParticleEmitter *emitter = NULL;
+	if ( pSender == m_mnuPointEmitter )
+		emitter = ps->createPointEmitter();
+	else if ( pSender == m_mnuBoxEmitter )
+		emitter = ps->createBoxEmitter();
+	else if ( pSender == m_mnuCylinderEmitter )
+		emitter = ps->createCylinderEmitter( core::vector3df(0,0,0), 40, core::vector3df(0,1,0), 40 );
+	else if ( pSender == m_mnuRingEmitter )
+		emitter = ps->createRingEmitter( core::vector3df(0,0,0), 40, 4 );
+	else if ( pSender == m_mnuSphereEmitter )
+		emitter = ps->createSphereEmitter( core::vector3df(0,0,0), 40 );
+
+	if ( emitter )
+		ps->setEmitter( emitter );
+
+}
+
+void CMainFrame::onToolbarAffector( uiObject *pSender )
+{
+	CGameObject *pParticle = m_irrWin->getParticle();
+
 }

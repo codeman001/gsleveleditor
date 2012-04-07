@@ -136,8 +136,8 @@ void CParticleRingEmitter::deserializeAttributes(io::IAttributes* in, io::SAttri
 	RingThickness = in->getAttributeAsFloat("RingThickness"); 
 
 	Direction = in->getAttributeAsVector3d("Direction");
-	if (Direction.getLength() == 0)
-		Direction.set(0,0.01f,0);
+	//if (Direction.getLength() == 0)
+	//	Direction.set(0,0.01f,0);
 
 	int idx = -1;
 	idx = in->findAttribute("MinStartSizeWidth");

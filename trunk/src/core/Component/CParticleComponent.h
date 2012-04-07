@@ -69,6 +69,10 @@ public:
 	// get particle info
 	SParticleInfo* getParticleInfo( IParticleSystemSceneNode *ps );	
 
+	// getParticleInfo
+	// get the id of particle
+	int getParticleID( IParticleSystemSceneNode *ps );	
+
 	// removeParticle
 	// remove particle at i
 	void removeParticle( int i );

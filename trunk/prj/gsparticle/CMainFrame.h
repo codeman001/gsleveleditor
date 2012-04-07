@@ -16,6 +16,8 @@ protected:
 	uiToolbarButton*	m_delButton;
 
 	uiToolbarButton*	m_playStopParticleButton;
+	uiToolbarButton*	m_deleteParticleButton;
+
 	uiToolbarButton*	m_emitterButton;
 	uiToolbarButton*	m_affectorButton;
 
@@ -76,6 +78,7 @@ protected:
 	void onPropertyEffectChange( uiObject *pSender );
 
 	void onToolbarPlayStopParticle( uiObject *pSender );
+	void onToolbarDeleteParticle( uiObject *pSender );
 	void onToolbarEmiter( uiObject *pSender );
 	void onToolbarAffector( uiObject *pSender );
 };

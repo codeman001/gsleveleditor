@@ -645,13 +645,20 @@ void CParticleSystemSceneNode::deserializeAttributes(io::IAttributes* in, io::SA
 
 	removeAllAffectors();
 	u32 cnt = in->getAttributeCount();
-
+		
 	while(idx < cnt)
-	{
+	{	
+
+#if 0
 		const char* name = in->getAttributeName(idx);
 
 		if (!name || strcmp("Affector", name))
 			return;
+#else
+		idx = in->findAttribute("Affector", idx);
+		if (idx == -1)
+			return;
+#endif
 
 		E_PARTICLE_AFFECTOR_TYPE atype =
 			(E_PARTICLE_AFFECTOR_TYPE)in->getAttributeAsEnumeration(idx, ParticleAffectorTypeNames);
@@ -692,7 +699,7 @@ void CParticleSystemSceneNode::deserializeAttributes(io::IAttributes* in, io::SA
 #endif
 
 			addAffector(aff);
-			aff->drop();
+			aff->drop();			
 		}
 	}
 }

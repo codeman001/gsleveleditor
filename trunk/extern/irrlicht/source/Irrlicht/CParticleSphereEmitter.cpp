@@ -135,8 +135,8 @@ void CParticleSphereEmitter::deserializeAttributes(io::IAttributes* in, io::SAtt
 	Radius = in->getAttributeAsFloat("Radius");
 
 	Direction = in->getAttributeAsVector3d("Direction");
-	if (Direction.getLength() == 0)
-		Direction.set(0,0.01f,0);
+	//if (Direction.getLength() == 0)
+	//	Direction.set(0,0.01f,0);
 
 	int idx = -1;
 	idx = in->findAttribute("MinStartSizeWidth");

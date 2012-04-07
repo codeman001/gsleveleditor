@@ -230,9 +230,9 @@ void CAttributes::setAttribute(s32 index, const core::array<core::stringw>& valu
 
 
 //! Returns attribute index from name, -1 if not found
-s32 CAttributes::findAttribute(const c8* attributeName)
+s32 CAttributes::findAttribute(const c8* attributeName, int fromPos)
 {
-	for (u32 i=0; i<Attributes.size(); ++i)
+	for (u32 i=fromPos; i<Attributes.size(); ++i)
 		if (Attributes[i]->Name == attributeName)
 			return i;
 

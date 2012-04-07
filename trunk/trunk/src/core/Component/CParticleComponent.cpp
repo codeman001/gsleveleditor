@@ -27,14 +27,18 @@ void CParticleComponent::updateComponent()
 // save data to serializable
 void CParticleComponent::saveData( CSerializable* pObj )
 {
+	pObj->addGroup( IObjectComponent::s_compType[ m_componentID ] );
 }
 
 // loadData
 // load data to serializable
 void CParticleComponent::loadData( CSerializable* pObj )
 {
+	pObj->nextRecord();
+	
 	initParticle();
 }
+
 
 // initParticle
 // create empty particle
@@ -44,6 +48,7 @@ void CParticleComponent::initParticle()
 
 	// create an empty node
 	m_gameObject->m_node = smgr->addEmptySceneNode( smgr->getRootSceneNode() );
+	m_gameObject->m_node->grab();
 }
 
 // createParticle
@@ -54,8 +59,11 @@ IParticleSystemSceneNode* CParticleComponent::createParticle()
 
 	// create an empty particle
 	IParticleSystemSceneNode *ps = smgr->addParticleSystemSceneNode( false, m_gameObject->m_node );
+	
+	SParticleInfo psInfo;
+	psInfo.ps = ps;
 
-	m_arrayParticle.push_back( ps );
+	m_arrayParticle.push_back( psInfo );
 	return ps;
 }
 
@@ -66,4 +74,21 @@ void CParticleComponent::removeParticle( int i )
 	IParticleSystemSceneNode* ps = getParticle(i);
 	if ( ps )	
 		ps->remove();
+}
+
+// getParticleInfo
+// get particle info
+SParticleInfo* CParticleComponent::getParticleInfo( IParticleSystemSceneNode *ps )
+{
+	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+	while (i != end )
+	{
+		SParticleInfo& p = (*i);
+		
+		if ( p.ps == ps )		
+			return &p;		
+
+		i++;
+	}
+	return NULL;
 }

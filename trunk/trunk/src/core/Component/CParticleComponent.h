@@ -4,11 +4,18 @@
 #include "IObjectComponent.h"
 #include "CGameObject.h"
 
+typedef struct tagParticleInfo
+{
+	IParticleSystemSceneNode*	ps;
+	std::string					texture;
+}SParticleInfo;
+
 class CParticleComponent: public IObjectComponent
 {
 protected:
-	vector<IParticleSystemSceneNode*>	m_arrayParticle;
+	vector<SParticleInfo>	m_arrayParticle;
 
+	std::string							m_xmlPath;
 public:
 	CParticleComponent(CGameObject *pObj);
 
@@ -45,8 +52,22 @@ public:
 		if ( i >= (int)m_arrayParticle.size() || i < 0 )
 			return NULL;
 
-		return m_arrayParticle[i];
+		return m_arrayParticle[i].ps;
 	}
+
+	// getParticleTexture
+	// get texture of particle
+	inline std::string getParticleTexture( int i )
+	{
+		if ( i >= (int)m_arrayParticle.size() || i < 0 )
+			return "";
+
+		return m_arrayParticle[i].texture;
+	}
+
+	// getParticleInfo
+	// get particle info
+	SParticleInfo* getParticleInfo( IParticleSystemSceneNode *ps );	
 
 	// removeParticle
 	// remove particle at i

@@ -98,16 +98,15 @@ void CIrrWindow::initScene()
 
 	// add demo particle
 	m_particleObject = new CGameObject();
-
 	CParticleComponent *particleComp = new CParticleComponent(m_particleObject);
 	particleComp->initParticle();
-
 	m_particleObject->m_components.push_back( particleComp );
 
 }
 
 void CIrrWindow::destroyScene()
 {
+	delete m_particleObject;
 	delete m_designCamera;
 }
 

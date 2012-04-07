@@ -4,6 +4,7 @@
 
 CMainFrame::CMainFrame()
 {	
+	m_currentParticle = NULL;
 }
 
 CMainFrame::~CMainFrame()
@@ -47,31 +48,7 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 
 
 	// add rebar
-	uiRebar *pRebar = ref<uiRebar>( new uiRebar(L"RebarTool", 0,0, 300,30, this) );		
-
-	// toolbar add/delete	
-	/*uiToolbar *pToolbar = ref<uiToolbar>( new uiToolbar(L"Command", 0,0,0,0, 24,24, pRebar ) );
-
-	uiIcon iconAdd( MAKEINTRESOURCE(IDI_TOOLBARADD) );	
-	uiIcon iconDel( MAKEINTRESOURCE(IDI_TOOLBARDEL) );
-
-	DWORD iconAddIndex = pToolbar->pushImage( &iconAdd );	
-	DWORD iconDelIndex = pToolbar->pushImage( &iconDel );
-		
-	pToolbar->setButtonWidth(70);
-	pToolbar->setTextRight(true);
-
-	// add button
-	m_addButton	= pToolbar->addButton(L"Add", iconAddIndex);
-	m_addButton->setEventOnClicked<CMainFrame, &CMainFrame::onToolbarAdd>( this );
-		
-	// delete button
-	m_delButton	= pToolbar->addButton(L"Delete", iconDelIndex);	
-	m_delButton->setEventOnClicked<CMainFrame, &CMainFrame::onToolbarDel>( this );		
-
-	// setup band of toolbar
-	uiRebarBand bandToolbar( pToolbar,L"");*/
-	
+	uiRebar *pRebar = ref<uiRebar>( new uiRebar(L"RebarTool", 0,0, 300,30, this) );	
 
 	// toolbar play
 	uiToolbar *pToolbarPlay = ref<uiToolbar>( new uiToolbar(L"Review", 0,0,0,0, 24,24, pRebar ) );
@@ -83,7 +60,8 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	DWORD iconStopIndex = pToolbarPlay->pushImage( &iconStop );
 	
 	m_playStopParticleButton = pToolbarPlay->addButton(L"Play particle", iconPlayIndex);
-	
+	m_playStopParticleButton->setEventOnClicked<CMainFrame, &CMainFrame::onToolbarPlayStopParticle>(this);
+
 	uiRebarBand bandToolbarPlay( pToolbarPlay,L"Review particle");
 	bandToolbarPlay.setWidth( 140 );
 	
@@ -140,9 +118,7 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	bandToolbarEdit.setBreakBand( false );
 	bandToolbarEdit.setMinWidthHeight( 0, 39 );
 
-
-	// add band to rebar
-	//pRebar->addBand( &bandToolbar );
+	// add band to rebar	
 	pRebar->addBand( &bandToolbarPlay );
 	pRebar->addBand( &bandToolbarEdit );
 
@@ -155,19 +131,21 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	uiSplitContainer *split = ref<uiSplitContainer>( new uiSplitContainer(L"MainSplit", 0,0, 400, 400, this, 1, 2) );	
 	uiSplitContainer *splitLeft = ref<uiSplitContainer>( new uiSplitContainer(L"LeftSplit", 0,0, 400, 400, split, 2, 1) );
 	
-	m_effectTreeWin		= ref<uiTreeView>( new uiTreeView(L"EffectTree", 0,0, 100, 100, true, splitLeft) );	
+	m_effectTreeWin		= ref<uiTreeView>( new uiTreeView(L"EffectTree", 0,0, 100, 100, false, splitLeft) );	
+	m_effectTreeWin->setEventOnSelectChange<CMainFrame, &CMainFrame::onTreeEffectChange>( this );
 	m_effectTreeWin->changeWindowStyle( UISTYLE_CHILD );	
 
 	m_effectPropertyWin	= ref<uiListProperty>( new uiListProperty(L"EffectProperty", 0,0, 100, 100, splitLeft, 2) ) ;
 	m_effectPropertyWin->changeWindowStyle( UISTYLE_CHILD );	
 	m_effectPropertyWin->showWindow( true );
-		
+	m_effectPropertyWin->setEventOnUpdateProperty<CMainFrame, &CMainFrame::onPropertyEffectChange> (this);		
+
 	m_irrWin = ref<CIrrWindow>( new CIrrWindow(L"irrWindow", this) );
 
 	// config split left
 	splitLeft->setWindow( m_effectTreeWin, 0, 0 );
 	splitLeft->setWindow( m_effectPropertyWin, 1, 0 );
-	splitLeft->setRowSize( 0, h/2 );
+	splitLeft->setRowSize( 0, 200 );
 	splitLeft->setRowSize( 1, h/2 );
 	splitLeft->setExpanderSize( 5 );
 	splitLeft->changeWindowStyle( UISTYLE_CHILD );
@@ -177,8 +155,8 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	split->setWindow( splitLeft, 0, 0 );
 	split->setWindow( m_irrWin,  0, 1 );
 		
-	split->setColSize( 0, 220 );
-	split->setColSize( 1, w - 220 );	
+	split->setColSize( 0, 300 );
+	split->setColSize( 1, w - 300 );	
 
 	split->setExpanderSize( 5 );
 	split->setDock( this, UIDOCK_FILL );
@@ -251,6 +229,146 @@ LRESULT	CMainFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam
 }
 
 
+void CMainFrame::setAttribToPropertyControl( irr::io::IAttributes *attrb )
+{	
+	m_effectPropertyWin->deleteAllItem();
+	
+	WCHAR	lpAttribNameW[1024] = {0};
+	WCHAR	lpAttribValueW[1024] = {0};
+
+	int attrbCount = attrb->getAttributeCount();
+	for ( int i = 0; i < attrbCount; i++ )
+	{
+		io::E_ATTRIBUTE_TYPE atrbType = attrb->getAttributeType(i);
+		
+		const char *lpAttribName = (const char *)attrb->getAttributeName(i);
+		core::stringc value = attrb->getAttributeAsString(i);
+
+		// convert to nameW		
+		uiString::copy<WCHAR, const char>( lpAttribNameW, lpAttribName );
+		uiString::copy<WCHAR, const char>( lpAttribValueW, value.c_str() );
+
+		// create new row
+		uiListPropertyRow *row = m_effectPropertyWin->addRowItem( lpAttribNameW );
+		row->setText( lpAttribValueW, 1 );
+
+		// set edit
+		if ( atrbType != io::EAT_ENUM )
+			row->setControl( UILISTPROPERTY_EDIT, 1, NULL );
+
+	}
+	
+	m_effectPropertyWin->reDrawInterface();
+
+}
+
+void CMainFrame::getAttribFromPropertyControl( irr::io::IAttributes *attrb )
+{
+	if ( m_currentParticle == NULL )
+		return;
+
+	irr::io::IAttributes *currentAttrb = getIView()->getDevice()->getFileSystem()->createEmptyAttributes();
+	m_currentParticle->serializeAttributes( currentAttrb );
+	
+	WCHAR	lpAttribValueW[1024] = {0};
+	char	lpAttribValue[1024] = {0};
+
+	int nRow = m_effectPropertyWin->getItemCount(); 
+	for ( int i = 1; i < nRow; i++ )
+	{
+		uiListPropertyItem *pItem = m_effectPropertyWin->getItem(i);
+
+		// get type of attrb
+		io::E_ATTRIBUTE_TYPE atrbType = currentAttrb->getAttributeType( i - 1 );
+
+		uiListPropertyRow *pRow = (uiListPropertyRow*) pItem;
+		pRow->getText( lpAttribValueW, 1 );
+
+
+		uiString::copy<char, WCHAR>( lpAttribValue, lpAttribValueW );
+		const char *lpAttribName = (const char *)currentAttrb->getAttributeName(i - 1);
+
+		switch( atrbType )
+		{
+		case io::EAT_STRING:
+			{
+				attrb->addString( lpAttribName, lpAttribValue );
+			}
+			break;
+		case io::EAT_INT:
+			{
+				int value;
+				sscanf( lpAttribValue, "%d", &value );
+				attrb->addInt( lpAttribName, value );
+			}
+			break;
+		case io::EAT_FLOAT:
+			{
+				float value;
+				sscanf( lpAttribValue, "%f", &value );
+				attrb->addFloat( lpAttribName, value );
+			}
+			break;
+		case io::EAT_BOOL:
+			{
+				if ( stricmp( lpAttribValue, "true") == 0 )
+					attrb->addBool( lpAttribName, true );
+				else
+					attrb->addBool( lpAttribName, false );
+			}
+			break;
+		case io::EAT_ENUM:
+			{
+				core::array< core::stringc > listEnum;
+				currentAttrb->getAttributeEnumerationLiteralsOfEnumeration( i - 1, listEnum );
+				
+				c8** enumValue;
+				int numOfEnum = listEnum.size();
+
+				enumValue = new c8*[ numOfEnum + 1 ];			
+				int i = 0;
+				for ( i = 0; i < numOfEnum; i++ )
+				{
+					enumValue[i] = new c8[ listEnum[i].size() + 1 ];
+					strcpy( enumValue[i], listEnum[i].c_str() );
+				}	
+				enumValue[i] = 0;
+
+				attrb->addEnum( lpAttribName, lpAttribValue, enumValue );
+				
+				for ( i = 0; i < numOfEnum; i++ )				
+					delete enumValue[i];
+
+				delete enumValue;
+			}
+			break;
+		case io::EAT_VECTOR3D:
+			{
+				core::vector3df v;
+				sscanf(lpAttribValue, "%f,%f,%f", &v.X, &v.Y, &v.Z );
+				attrb->addVector3d( lpAttribName, v );
+			}
+			break;
+		case io::EAT_COLOR:
+			{
+				u32 r,g,b,a;
+				sscanf(lpAttribValue, "%d,%d,%d", &r, &g, &b, &a );
+				video::SColor color( a, r, g, b );
+				attrb->addColor( lpAttribName, color );
+			}
+			break;	
+		default:
+			{			
+			}
+			break;
+		}
+	}
+
+	currentAttrb->drop();
+
+}
+
+
 
 
 void CMainFrame::onMenuNewEffects( uiObject *pSender )
@@ -270,6 +388,72 @@ void CMainFrame::onMenuExit( uiObject *pSender )
 	uiApplication::exit();
 }
 
+void CMainFrame::onTreeEffectChange( uiObject *pSender )
+{
+	uiListTreeViewItem listSelect;
+	m_effectTreeWin->getItemSelected( &listSelect );
+
+	// turn of bouding box
+	m_currentParticle->setDebugDataVisible( 0 );
+
+	if ( listSelect.size() > 0 )
+	{
+		uiTreeViewItem *pTreeItem = listSelect.front();
+		uiTreeViewItem *pParentItem = pTreeItem->getFather();
+
+		if ( pParentItem == NULL )
+		{
+			// particle item
+			IParticleSystemSceneNode *ps = (IParticleSystemSceneNode*) pTreeItem->getData();
+			m_currentParticle = ps;
+		}
+		else
+		{
+			// affector item
+			IParticleSystemSceneNode *ps = (IParticleSystemSceneNode*) pParentItem->getData();
+			m_currentParticle = ps;		
+		}
+	}
+
+	// get particle component
+	CGameObject *pParticle = m_irrWin->getParticle();	
+	CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );	
+
+	// get particle info
+	SParticleInfo *psInfo = pParticleComponent->getParticleInfo( m_currentParticle );
+
+	if ( psInfo )
+	{
+		// turn on debug bbox
+		m_currentParticle->setDebugDataVisible( EDS_BBOX );
+
+		// get attrib
+		irr::io::IAttributes *attrib = getIView()->getDevice()->getFileSystem()->createEmptyAttributes();
+				
+		attrib->addString( "Texture", (const c8*) psInfo->texture.c_str() );		
+		m_currentParticle->serializeAttributes(  attrib );
+
+		// set attrib to control
+		setAttribToPropertyControl( attrib );
+
+		attrib->drop();
+	}
+}
+
+void CMainFrame::onPropertyEffectChange( uiObject *pSender )
+{
+	if ( m_currentParticle == NULL )
+		return;
+
+	// get attrib
+	irr::io::IAttributes *attrib = getIView()->getDevice()->getFileSystem()->createEmptyAttributes();
+	getAttribFromPropertyControl( attrib );
+
+	m_currentParticle->deserializeAttributes(  attrib );
+
+	attrib->drop();
+}
+
 void CMainFrame::onToolbarPlayStopParticle( uiObject *pSender )
 {
 }
@@ -286,25 +470,59 @@ void CMainFrame::onToolbarEmiter( uiObject *pSender )
 
 	// create new particle system
 	IParticleSystemSceneNode *ps = pParticleComponent->createParticle();
-	ps->getMaterial(0).setFlag( EMF_LIGHTING, false );
-	ps->setDebugDataVisible( EDS_BBOX );
-	
+	ps->getMaterial(0).setFlag( EMF_LIGHTING, false );	
+	ps->setName("effect");
+
 	// create emitter
 	IParticleEmitter *emitter = NULL;
+		
 
 	if ( pSender == m_mnuPointEmitter )
-		emitter = ps->createPointEmitter();
+	{
+		ps->setName("pointEmitter");
+		emitter = ps->createPointEmitter();		
+	}
 	else if ( pSender == m_mnuBoxEmitter )
+	{
+		ps->setName("boxEmitter");
 		emitter = ps->createBoxEmitter();
+	}
 	else if ( pSender == m_mnuCylinderEmitter )
+	{
+		ps->setName("cylinderEmitter");
 		emitter = ps->createCylinderEmitter( core::vector3df(0,0,0), 40, core::vector3df(0,1,0), 40 );
+	}
 	else if ( pSender == m_mnuRingEmitter )
+	{
+		ps->setName("ringEmitter");
 		emitter = ps->createRingEmitter( core::vector3df(0,0,0), 40, 4 );
+	}
 	else if ( pSender == m_mnuSphereEmitter )
+	{
+		ps->setName("sphereEmitter");
 		emitter = ps->createSphereEmitter( core::vector3df(0,0,0), 40 );
+	}
 
 	if ( emitter )
-		ps->setEmitter( emitter );	
+	{
+		ps->setEmitter( emitter );
+		emitter->drop();
+	}
+
+	//ISceneNodeAnimator *animator = getIView()->getSceneMgr()->createFlyCircleAnimator();
+	//ps->addAnimator( animator );
+	//animator->drop();
+
+	WCHAR	label[512];
+	uiString::copy<WCHAR,const irr::c8>( label, ps->getName() );
+
+	uiTreeViewItem *pTreeItem =	m_effectTreeWin->addItem( label );
+	m_effectTreeWin->selectItem( pTreeItem );
+
+	pTreeItem->setData( (uiObject*) ps );	
+
+	m_currentParticle = ps;
+	onTreeEffectChange( this );
 }
 
 void CMainFrame::onToolbarAffector( uiObject *pSender )

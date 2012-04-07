@@ -30,6 +30,8 @@ protected:
 	uiMenuItem*			m_mnuRotationAffector;
 	uiMenuItem*			m_mnuScaleAffector;
 	
+	IParticleSystemSceneNode	*m_currentParticle;
+
 public:
 	CMainFrame();
 	virtual ~CMainFrame();
@@ -60,10 +62,18 @@ public:
 
 protected:
 
+	void setAttribToPropertyControl( irr::io::IAttributes *attrb );
+	void getAttribFromPropertyControl( irr::io::IAttributes *attrb );
+
+protected:
+
 	void onMenuNewEffects( uiObject *pSender );
 	void onMenuOpenEffects( uiObject *pSender );
 	void onMenuSaveEffects( uiObject *pSender );
 	void onMenuExit( uiObject *pSender );
+
+	void onTreeEffectChange( uiObject *pSender );
+	void onPropertyEffectChange( uiObject *pSender );
 
 	void onToolbarPlayStopParticle( uiObject *pSender );
 	void onToolbarEmiter( uiObject *pSender );

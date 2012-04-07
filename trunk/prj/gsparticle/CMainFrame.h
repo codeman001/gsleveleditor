@@ -67,6 +67,8 @@ protected:
 	void setAttribToPropertyControl( irr::io::IAttributes *attrb );
 	void getAttribFromPropertyControl( irr::io::IAttributes *attrb );
 
+	uiTreeViewItem *getTreeItem( IParticleSystemSceneNode *ps );
+
 protected:
 
 	void onMenuNewEffects( uiObject *pSender );

@@ -55,12 +55,17 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 
 	uiBitmap iconPlay( MAKEINTRESOURCE(IDB_TOOLBARPLAY), true );	
 	uiBitmap iconStop( MAKEINTRESOURCE(IDB_TOOLBARSTOP), true );	
+	uiBitmap iconDelete( MAKEINTRESOURCE(IDB_TOOLBARDELETE), true );
 
 	DWORD iconPlayIndex = pToolbarPlay->pushImage( &iconPlay );
 	DWORD iconStopIndex = pToolbarPlay->pushImage( &iconStop );
+	DWORD iconDeleteIndex = pToolbarPlay->pushImage( &iconDelete );
 	
 	m_playStopParticleButton = pToolbarPlay->addButton(L"Play particle", iconPlayIndex);
 	m_playStopParticleButton->setEventOnClicked<CMainFrame, &CMainFrame::onToolbarPlayStopParticle>(this);
+
+	m_deleteParticleButton = pToolbarPlay->addButton(L"Delete particle, affector", iconDeleteIndex);
+	m_deleteParticleButton->setEventOnClicked<CMainFrame, &CMainFrame::onToolbarDeleteParticle>(this);
 
 	uiRebarBand bandToolbarPlay( pToolbarPlay,L"Review particle");
 	bandToolbarPlay.setWidth( 140 );
@@ -115,7 +120,7 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	m_affectorButton->setMenuPopup( pMenu );	
 
 	uiRebarBand bandToolbarEdit( pToolbarEdit,L"Edit particle");
-	bandToolbarEdit.setBreakBand( false );
+	bandToolbarEdit.setBreakBand( true );
 	bandToolbarEdit.setMinWidthHeight( 0, 39 );
 
 	// add band to rebar	
@@ -394,7 +399,7 @@ void CMainFrame::onTreeEffectChange( uiObject *pSender )
 	m_effectTreeWin->getItemSelected( &listSelect );
 
 	// turn of bouding box
-	m_currentParticle->setDebugDataVisible( 0 );
+	// m_currentParticle->setDebugDataVisible( 0 );
 
 	if ( listSelect.size() > 0 )
 	{
@@ -425,7 +430,7 @@ void CMainFrame::onTreeEffectChange( uiObject *pSender )
 	if ( psInfo )
 	{
 		// turn on debug bbox
-		m_currentParticle->setDebugDataVisible( EDS_BBOX );
+		// m_currentParticle->setDebugDataVisible( EDS_BBOX );
 
 		// get attrib
 		irr::io::IAttributes *attrib = getIView()->getDevice()->getFileSystem()->createEmptyAttributes();
@@ -456,6 +461,46 @@ void CMainFrame::onPropertyEffectChange( uiObject *pSender )
 
 void CMainFrame::onToolbarPlayStopParticle( uiObject *pSender )
 {
+}
+
+void CMainFrame::onToolbarDeleteParticle( uiObject *pSender )
+{
+	if ( m_currentParticle )
+	{
+		WCHAR	text[1024];
+		swprintf(text, 1024, L"Do you want delete the selected particle?");
+
+		if ( question( text, L"delete" ) == true )
+		{
+			CGameObject *pParticle = m_irrWin->getParticle();	
+			CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );
+
+			int id = pParticleComponent->getParticleID( m_currentParticle );
+			if ( id >= 0 )
+			{				
+				// clear property
+				m_effectPropertyWin->deleteAllItem();
+
+				// remove on treeview
+				DWORD nCount = m_effectTreeWin->getChildCount();
+				for ( int i = 0; i < nCount; i++ )
+				{
+					uiTreeViewItem *pTreeItem = m_effectTreeWin->getChild(i);
+
+					if ( pTreeItem->getData() == (uiObject*)m_currentParticle )
+					{
+						m_effectTreeWin->deleteItem( pTreeItem );
+						break;
+					}
+				}
+
+				// remove particle
+				pParticleComponent->removeParticle( id );
+
+			}			
+		}
+
+	}
 }
 
 void CMainFrame::onToolbarEmiter( uiObject *pSender )

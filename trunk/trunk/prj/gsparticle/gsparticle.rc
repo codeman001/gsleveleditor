@@ -36,8 +36,10 @@ IDI_TOOLBARDEL	ICON	"toolbar-Delete.ico"
 
 IDB_TOOLBARPLAY	BITMAP	"toolbar-Play.bmp"
 IDB_TOOLBARSTOP	BITMAP	"toolbar-Stop.bmp"
+
 IDB_TOOLBAREMITTER		BITMAP	"toolbar-Emitter.bmp"
 IDB_TOOLBARAFFECTOR		BITMAP	"toolbar-Affector.bmp"
+IDB_TOOLBARDELETE		BITMAP	"toolbar-Delete.bmp"
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu

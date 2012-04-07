@@ -73,7 +73,10 @@ void CParticleComponent::removeParticle( int i )
 {
 	IParticleSystemSceneNode* ps = getParticle(i);
 	if ( ps )	
+	{
 		ps->remove();
+		m_arrayParticle.erase( m_arrayParticle.begin() + i );
+	}
 }
 
 // getParticleInfo
@@ -91,4 +94,23 @@ SParticleInfo* CParticleComponent::getParticleInfo( IParticleSystemSceneNode *ps
 		i++;
 	}
 	return NULL;
+}
+
+// getParticleInfo
+// get the id of particle
+int CParticleComponent::getParticleID( IParticleSystemSceneNode *ps )
+{
+	int id = 0;
+	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+	while (i != end )
+	{
+		SParticleInfo& p = (*i);
+		
+		if ( p.ps == ps )		
+			return id;
+
+		id++;
+		i++;
+	}
+	return -1;
 }

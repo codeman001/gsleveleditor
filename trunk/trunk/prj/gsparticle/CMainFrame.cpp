@@ -373,7 +373,20 @@ void CMainFrame::getAttribFromPropertyControl( irr::io::IAttributes *attrb )
 
 }
 
+uiTreeViewItem *CMainFrame::getTreeItem( IParticleSystemSceneNode *ps )
+{
+	DWORD nCount = m_effectTreeWin->getChildCount();
+	for ( int i = 0; i < nCount; i++ )
+	{
+		uiTreeViewItem *pTreeItem = m_effectTreeWin->getChild(i);
 
+		if ( pTreeItem->getData() == (uiObject*)m_currentParticle )
+		{
+			return pTreeItem;
+		}
+	}
+	return NULL;
+}
 
 
 void CMainFrame::onMenuNewEffects( uiObject *pSender )
@@ -396,10 +409,9 @@ void CMainFrame::onMenuExit( uiObject *pSender )
 void CMainFrame::onTreeEffectChange( uiObject *pSender )
 {
 	uiListTreeViewItem listSelect;
-	m_effectTreeWin->getItemSelected( &listSelect );
+	m_effectTreeWin->getItemSelected( &listSelect );	
 
-	// turn of bouding box
-	// m_currentParticle->setDebugDataVisible( 0 );
+	IParticleSystemSceneNode *particle = NULL;
 
 	if ( listSelect.size() > 0 )
 	{
@@ -410,15 +422,22 @@ void CMainFrame::onTreeEffectChange( uiObject *pSender )
 		{
 			// particle item
 			IParticleSystemSceneNode *ps = (IParticleSystemSceneNode*) pTreeItem->getData();
-			m_currentParticle = ps;
+			particle = ps;
 		}
 		else
 		{
 			// affector item
 			IParticleSystemSceneNode *ps = (IParticleSystemSceneNode*) pParentItem->getData();
-			m_currentParticle = ps;		
+			particle = ps;		
 		}
 	}
+
+	if ( m_currentParticle == particle )
+		return;
+
+	m_currentParticle = particle;
+	if ( m_currentParticle == NULL )
+		return;
 
 	// get particle component
 	CGameObject *pParticle = m_irrWin->getParticle();	
@@ -428,10 +447,7 @@ void CMainFrame::onTreeEffectChange( uiObject *pSender )
 	SParticleInfo *psInfo = pParticleComponent->getParticleInfo( m_currentParticle );
 
 	if ( psInfo )
-	{
-		// turn on debug bbox
-		// m_currentParticle->setDebugDataVisible( EDS_BBOX );
-
+	{		
 		// get attrib
 		irr::io::IAttributes *attrib = getIView()->getDevice()->getFileSystem()->createEmptyAttributes();
 				
@@ -482,24 +498,14 @@ void CMainFrame::onToolbarDeleteParticle( uiObject *pSender )
 				m_effectPropertyWin->deleteAllItem();
 
 				// remove on treeview
-				DWORD nCount = m_effectTreeWin->getChildCount();
-				for ( int i = 0; i < nCount; i++ )
-				{
-					uiTreeViewItem *pTreeItem = m_effectTreeWin->getChild(i);
-
-					if ( pTreeItem->getData() == (uiObject*)m_currentParticle )
-					{
-						m_effectTreeWin->deleteItem( pTreeItem );
-						break;
-					}
-				}
+				uiTreeViewItem *pTreeItem = getTreeItem( m_currentParticle );
+				if ( pTreeItem )
+					m_effectTreeWin->deleteItem( pTreeItem );
 
 				// remove particle
 				pParticleComponent->removeParticle( id );
-
-			}			
+			}
 		}
-
 	}
 }
 
@@ -554,10 +560,6 @@ void CMainFrame::onToolbarEmiter( uiObject *pSender )
 		emitter->drop();
 	}
 
-	//ISceneNodeAnimator *animator = getIView()->getSceneMgr()->createFlyCircleAnimator();
-	//ps->addAnimator( animator );
-	//animator->drop();
-
 	WCHAR	label[512];
 	uiString::copy<WCHAR,const irr::c8>( label, ps->getName() );
 
@@ -572,6 +574,52 @@ void CMainFrame::onToolbarEmiter( uiObject *pSender )
 
 void CMainFrame::onToolbarAffector( uiObject *pSender )
 {
-	CGameObject *pParticle = m_irrWin->getParticle();
+	if ( m_currentParticle == NULL )
+		return;
 
+	IParticleAffector *affector = NULL;
+
+	WCHAR	label[512];
+	
+	if ( pSender == m_mnuFadeOutAffector )
+	{
+		affector = m_currentParticle->createFadeOutParticleAffector();
+		uiString::copy<WCHAR,const irr::c8>( label, "fadeOutAffector" );
+	}
+	else if ( pSender == m_mnuGravityAffector )
+	{
+		affector = m_currentParticle->createGravityAffector();
+		uiString::copy<WCHAR,const irr::c8>( label, "gravityAffector" );
+	}
+	else if ( pSender == m_mnuRotationAffector )
+	{
+		affector = m_currentParticle->createRotationAffector();
+		uiString::copy<WCHAR,const irr::c8>( label, "rotationAffector" );
+	}
+	else if ( pSender == m_mnuScaleAffector )
+	{
+		affector = m_currentParticle->createScaleParticleAffector();
+		uiString::copy<WCHAR,const irr::c8>( label, "scaleAffector" );
+	}
+
+	// add new affector
+	m_currentParticle->addAffector( affector );
+	
+	// create tree item
+	uiTreeViewItem *pTreeItem =	getTreeItem( m_currentParticle );
+	if ( pTreeItem )
+	{
+		uiTreeViewItem *pTreeItemAffector = pTreeItem->addChild( label );
+		
+
+
+	}
+
+	affector->drop();
+
+	pTreeItem->expandChild(true);
+	pTreeItem->update();
+
+	m_currentParticle = NULL;
+	onTreeEffectChange( this );
 }

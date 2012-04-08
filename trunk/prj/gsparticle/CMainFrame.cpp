@@ -5,6 +5,7 @@
 CMainFrame::CMainFrame()
 {	
 	m_currentParticle = NULL;
+	m_selectTreeItem = NULL;
 }
 
 CMainFrame::~CMainFrame()
@@ -375,7 +376,7 @@ void CMainFrame::getAttribFromPropertyControl( irr::io::IAttributes *attrb )
 
 uiTreeViewItem *CMainFrame::getTreeItem( IParticleSystemSceneNode *ps )
 {
-	DWORD nCount = m_effectTreeWin->getChildCount();
+	int nCount = (int)m_effectTreeWin->getChildCount();
 	for ( int i = 0; i < nCount; i++ )
 	{
 		uiTreeViewItem *pTreeItem = m_effectTreeWin->getChild(i);
@@ -386,6 +387,17 @@ uiTreeViewItem *CMainFrame::getTreeItem( IParticleSystemSceneNode *ps )
 		}
 	}
 	return NULL;
+}
+
+int CMainFrame::getChildTreeID( uiTreeViewItem *p, uiTreeViewItem *child )
+{	
+	DWORD count = p->getChildCount();
+	for ( DWORD i = 0; i < count; i++ )
+	{
+		if ( p->getChild(i) == child )
+			return i;
+	}
+	return -1;
 }
 
 
@@ -418,6 +430,9 @@ void CMainFrame::onTreeEffectChange( uiObject *pSender )
 		uiTreeViewItem *pTreeItem = listSelect.front();
 		uiTreeViewItem *pParentItem = pTreeItem->getFather();
 
+		// set current tree item
+		m_selectTreeItem = pTreeItem;
+		
 		if ( pParentItem == NULL )
 		{
 			// particle item
@@ -481,16 +496,19 @@ void CMainFrame::onToolbarPlayStopParticle( uiObject *pSender )
 
 void CMainFrame::onToolbarDeleteParticle( uiObject *pSender )
 {
-	if ( m_currentParticle )
+	if ( m_currentParticle == NULL )
+		return;
+
+	CGameObject *pParticle = m_irrWin->getParticle();	
+	CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );
+
+	if ( m_selectTreeItem && m_selectTreeItem->getFather() == NULL )
 	{
 		WCHAR	text[1024];
 		swprintf(text, 1024, L"Do you want delete the selected particle?");
 
-		if ( question( text, L"delete" ) == true )
-		{
-			CGameObject *pParticle = m_irrWin->getParticle();	
-			CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );
-
+		if ( question( text, L"Delete particle" ) == true )
+		{			
 			int id = pParticleComponent->getParticleID( m_currentParticle );
 			if ( id >= 0 )
 			{				
@@ -506,6 +524,40 @@ void CMainFrame::onToolbarDeleteParticle( uiObject *pSender )
 				pParticleComponent->removeParticle( id );
 			}
 		}
+	}
+	else
+	{
+		WCHAR	text[1024];
+		swprintf(text, 1024, L"Do you want delete the selected affector?");
+
+		if ( question( text, L"Delete affector" ) == true )
+		{
+			int id = pParticleComponent->getParticleID( m_currentParticle );
+			if ( id >= 0 )
+			{								
+				// remove on treeview
+				uiTreeViewItem *pTreeItem = m_selectTreeItem;
+				uiTreeViewItem *pParentItem = pTreeItem->getFather();
+
+				if ( pTreeItem )
+				{
+					int childID = getChildTreeID( pParentItem, m_selectTreeItem );
+					if ( childID >= 0 )
+					{
+						// delete affector
+						m_currentParticle->removeAffector( childID );
+						
+						pParentItem->destroyChild( m_selectTreeItem );
+						m_selectTreeItem = pParentItem;
+
+						irr::io::IAttributes *currentAttrb = getIView()->getDevice()->getFileSystem()->createEmptyAttributes();
+						m_currentParticle->serializeAttributes( currentAttrb );						
+						setAttribToPropertyControl( currentAttrb );
+						currentAttrb->drop();
+					}
+				}
+			}
+		}	// question
 	}
 }
 
@@ -569,6 +621,8 @@ void CMainFrame::onToolbarEmiter( uiObject *pSender )
 	pTreeItem->setData( (uiObject*) ps );	
 
 	m_currentParticle = ps;
+	m_selectTreeItem = pTreeItem;
+
 	onTreeEffectChange( this );
 }
 
@@ -609,10 +663,8 @@ void CMainFrame::onToolbarAffector( uiObject *pSender )
 	uiTreeViewItem *pTreeItem =	getTreeItem( m_currentParticle );
 	if ( pTreeItem )
 	{
-		uiTreeViewItem *pTreeItemAffector = pTreeItem->addChild( label );
-		
-
-
+		uiTreeViewItem *pTreeItemAffector = pTreeItem->addChild( label );		
+		m_selectTreeItem = pTreeItem;
 	}
 
 	affector->drop();

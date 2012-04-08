@@ -36,6 +36,9 @@ public:
 	//! Gets the particle emitter, which creates the particles.
 	virtual IParticleEmitter* getEmitter();
 
+	//! Gets the particle affector
+	virtual IParticleAffector* getAffector(int id);
+
 	//! Sets the particle emitter, which creates the particles.
 	virtual void setEmitter(IParticleEmitter* emitter);
 
@@ -44,6 +47,9 @@ public:
 
 	//! Removes all particle affectors in the particle system.
 	virtual void removeAllAffectors();
+
+	//! Remove the affector at position id
+	virtual void removeAffector( int id );
 
 	//! Returns the material based on the zero based index i.
 	virtual video::SMaterial& getMaterial(u32 i);
@@ -203,7 +209,10 @@ private:
 
 	core::list<IParticleAffector*> AffectorList;
 	IParticleEmitter* Emitter;
+
 	core::array<SParticle> Particles;
+
+private:
 	core::dimension2d<f32> ParticleSize;
 	u32 LastEmitTime;
 	s32 MaxParticles;

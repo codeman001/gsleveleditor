@@ -34,7 +34,9 @@ protected:
 	uiMenuItem*			m_mnuAttractionAffector;
 	
 	IParticleSystemSceneNode	*m_currentParticle;
-	uiTreeViewItem	*m_selectTreeItem;
+	uiTreeViewItem				*m_selectTreeItem;
+
+	std::string			m_currentFile;
 
 public:
 	CMainFrame();

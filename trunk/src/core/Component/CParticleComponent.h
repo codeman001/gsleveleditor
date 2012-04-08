@@ -14,8 +14,7 @@ class CParticleComponent: public IObjectComponent
 {
 protected:
 	vector<SParticleInfo>	m_arrayParticle;
-
-	std::string							m_xmlPath;
+	std::string				m_xmlPath;
 public:
 	CParticleComponent(CGameObject *pObj);
 
@@ -76,6 +75,18 @@ public:
 	// removeParticle
 	// remove particle at i
 	void removeParticle( int i );
+
+	// removeAllParticle
+	// remove all particle
+	void removeAllParticle();
+
+	// saveXML
+	// save list particle to xml file
+	void saveXML( const char *lpFileName );
+
+	// loadXML
+	// load particle from xml file
+	void loadXML( const char *lpFileName );
 };
 
 #endif

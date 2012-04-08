@@ -6,6 +6,8 @@ CMainFrame::CMainFrame()
 {	
 	m_currentParticle = NULL;
 	m_selectTreeItem = NULL;
+
+	m_currentFile = "";
 }
 
 CMainFrame::~CMainFrame()
@@ -451,14 +453,83 @@ int CMainFrame::getChildTreeID( uiTreeViewItem *p, uiTreeViewItem *child )
 
 void CMainFrame::onMenuNewEffects( uiObject *pSender )
 {
+	m_effectTreeWin->deleteAllItem();
+	m_effectPropertyWin->deleteAllItem();
+	
+	CGameObject *pParticle = m_irrWin->getParticle();	
+	CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );
+	pParticleComponent->removeAllParticle();
+
+	m_currentFile = "";
+	setCaption( TEXT( STR_APP_TITLE ) );	
 }
 
 void CMainFrame::onMenuOpenEffects( uiObject *pSender )
 {
+	IView *pView = getIView();
+
+	WCHAR lpPath[ MAX_PATH ] = {0};	
+	char lpFileName[ MAX_PATH ] = {0};
+	
+	uiSaveOpenDialog dialog;	
+	dialog.clearAllFileExt();
+	dialog.addFileExt( L"Particle (.xml)", L"*.xml" );
+	dialog.addFileExt( L"All files (.*)", L"*.*" );
+	if ( dialog.doModal( uiApplication::getRoot(), false ) == false )
+		return;
+	
+	// new renew document
+	onMenuNewEffects(this);
+		
+	dialog.getFileName( lpPath );
+	uiString::copy<char, WCHAR>( lpFileName, lpPath );
+
+	CGameObject *pParticle = m_irrWin->getParticle();	
+	CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );
+
+	// load particle system
+	pParticleComponent->loadXML( lpFileName );
+	
+	m_currentFile = lpFileName;
+	WCHAR title[1024];
+	swprintf(title, 1024, L"%s - %s", TEXT( STR_APP_TITLE ), lpPath);
+	setCaption( title );
 }
 
 void CMainFrame::onMenuSaveEffects( uiObject *pSender )
 {
+	CGameObject *pParticle = m_irrWin->getParticle();	
+	CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );
+
+	WCHAR lpPath[ MAX_PATH ] = {0};	
+	char lpFileName[ MAX_PATH ] = {0};
+
+	if ( m_currentFile.size() == 0 )
+	{
+		uiSaveOpenDialog dialog;	
+		dialog.clearAllFileExt();
+		dialog.addFileExt( L"Particle (.xml)", L"*.xml");
+		dialog.addFileExt( L"All files (.*)", L"*.*" );
+		if ( dialog.doModal( uiApplication::getRoot(), true ) == false )
+			return;
+
+		dialog.getFileName( lpPath );
+		uiString::copy<char, WCHAR>( lpFileName, lpPath );
+		pParticleComponent->saveXML( lpFileName );
+
+		m_currentFile = lpFileName;
+	}
+	else
+	{
+		pParticleComponent->saveXML( m_currentFile.c_str() );		
+	}
+
+	uiString::copy<WCHAR, const char>( lpPath, m_currentFile.c_str() );
+
+	WCHAR title[1024];
+	swprintf(title, 1024, L"%s - %s", TEXT( STR_APP_TITLE ), lpPath);
+	setCaption( title );
+
 }
 
 void CMainFrame::onMenuExit( uiObject *pSender )

@@ -110,12 +110,14 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	m_mnuGravityAffector	= pMenu->appendMenuItem(L"Gravity");
 	m_mnuRotationAffector	= pMenu->appendMenuItem(L"Rotation");
 	m_mnuScaleAffector		= pMenu->appendMenuItem(L"Scale");
-	
+	m_mnuAttractionAffector	= pMenu->appendMenuItem(L"Attraction");
+
 	// add event handler
 	m_mnuFadeOutAffector->setEventOnClick		<CMainFrame, &CMainFrame::onToolbarAffector>( this );
 	m_mnuGravityAffector->setEventOnClick		<CMainFrame, &CMainFrame::onToolbarAffector>( this );
 	m_mnuRotationAffector->setEventOnClick		<CMainFrame, &CMainFrame::onToolbarAffector>( this );
-	m_mnuScaleAffector->setEventOnClick			<CMainFrame, &CMainFrame::onToolbarAffector>( this );	
+	m_mnuScaleAffector->setEventOnClick			<CMainFrame, &CMainFrame::onToolbarAffector>( this );
+	m_mnuAttractionAffector->setEventOnClick	<CMainFrame, &CMainFrame::onToolbarAffector>( this );			
 
 	m_affectorButton->setButtonType( UITOOLBARBUTTON_DROPDOWN );
 	m_affectorButton->setMenuPopup( pMenu );	
@@ -279,10 +281,56 @@ void CMainFrame::getAttribFromPropertyControl( irr::io::IAttributes *attrb )
 	WCHAR	lpAttribValueW[1024] = {0};
 	char	lpAttribValue[1024] = {0};
 
+	uiListPropertyItem *pItem = m_effectPropertyWin->getItem(0);
+
+	uiListPropertyRow* pRow = (uiListPropertyRow*) pItem;
+	pRow->getText( lpAttribValueW, 1 );
+	uiString::copy<char, WCHAR>( lpAttribValue, lpAttribValueW );
+	uiString::trim<char>( lpAttribValue );
+
+	// get particle component
+	CGameObject *pParticle = m_irrWin->getParticle();	
+	CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );	
+
+	// get particle info
+	SParticleInfo *psInfo = pParticleComponent->getParticleInfo( m_currentParticle );
+	psInfo->texture = lpAttribValue;
+
+	if ( uiString::length<char>( lpAttribValue ) > 0 )
+	{
+		std::string textureFile = lpAttribValue;
+
+		// set texture to particle
+		ITexture *pTex = getIView()->getDriver()->getTexture( textureFile.c_str() );
+		if ( pTex == NULL )
+		{
+			WCHAR appPath[MAX_PATH];
+			char  appPathA[MAX_PATH];
+
+			uiApplication::getAppPath(appPath, MAX_PATH);
+			uiString::copy<char, WCHAR>( appPathA, appPath  );
+			
+			std::string path = appPathA;
+			path += "\\";
+			path += textureFile;
+			
+			pTex = getIView()->getDriver()->getTexture(path.c_str());
+		}
+
+		if ( pTex )
+		{
+			m_currentParticle->setMaterialTexture(0, pTex );
+			m_currentParticle->setMaterialFlag(	video::EMF_LIGHTING, false );
+			m_currentParticle->setMaterialType(	video::EMT_TRANSPARENT_ADD_COLOR);
+		}
+
+	}
+
+
 	int nRow = m_effectPropertyWin->getItemCount(); 
 	for ( int i = 1; i < nRow; i++ )
 	{
-		uiListPropertyItem *pItem = m_effectPropertyWin->getItem(i);
+		pItem = m_effectPropertyWin->getItem(i);
 
 		// get type of attrb
 		io::E_ATTRIBUTE_TYPE atrbType = currentAttrb->getAttributeType( i - 1 );
@@ -550,10 +598,8 @@ void CMainFrame::onToolbarDeleteParticle( uiObject *pSender )
 						pParentItem->destroyChild( m_selectTreeItem );
 						m_selectTreeItem = pParentItem;
 
-						irr::io::IAttributes *currentAttrb = getIView()->getDevice()->getFileSystem()->createEmptyAttributes();
-						m_currentParticle->serializeAttributes( currentAttrb );						
-						setAttribToPropertyControl( currentAttrb );
-						currentAttrb->drop();
+						m_currentParticle = NULL;
+						onTreeEffectChange( this );
 					}
 				}
 			}
@@ -651,9 +697,14 @@ void CMainFrame::onToolbarAffector( uiObject *pSender )
 		uiString::copy<WCHAR,const irr::c8>( label, "rotationAffector" );
 	}
 	else if ( pSender == m_mnuScaleAffector )
-	{
+	{				
 		affector = m_currentParticle->createScaleParticleAffector();
 		uiString::copy<WCHAR,const irr::c8>( label, "scaleAffector" );
+	}
+	else if ( pSender == m_mnuAttractionAffector )
+	{
+		affector = m_currentParticle->createAttractionAffector( core::vector3df(0,0,0) );
+		uiString::copy<WCHAR,const irr::c8>( label, "attractionAffector" );
 	}
 
 	// add new affector

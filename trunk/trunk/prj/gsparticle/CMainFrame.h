@@ -33,6 +33,7 @@ protected:
 	uiMenuItem*			m_mnuScaleAffector;
 	
 	IParticleSystemSceneNode	*m_currentParticle;
+	uiTreeViewItem	*m_selectTreeItem;
 
 public:
 	CMainFrame();
@@ -68,7 +69,7 @@ protected:
 	void getAttribFromPropertyControl( irr::io::IAttributes *attrb );
 
 	uiTreeViewItem *getTreeItem( IParticleSystemSceneNode *ps );
-
+	int getChildTreeID( uiTreeViewItem *p, uiTreeViewItem *child );
 protected:
 
 	void onMenuNewEffects( uiObject *pSender );

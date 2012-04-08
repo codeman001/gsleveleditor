@@ -31,6 +31,7 @@ protected:
 	uiMenuItem*			m_mnuGravityAffector;
 	uiMenuItem*			m_mnuRotationAffector;
 	uiMenuItem*			m_mnuScaleAffector;
+	uiMenuItem*			m_mnuAttractionAffector;
 	
 	IParticleSystemSceneNode	*m_currentParticle;
 	uiTreeViewItem	*m_selectTreeItem;

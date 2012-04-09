@@ -206,6 +206,7 @@ void CParticleComponent::loadXML( const char *lpFileName )
 		return;	
 
 	IParticleSystemSceneNode *particle = NULL;
+	SParticleInfo*	particleInfo = NULL;
 
 	while ( xmlRead->read() )
 	{
@@ -222,7 +223,8 @@ void CParticleComponent::loadXML( const char *lpFileName )
 						if (core::stringw(L"ps") == xmlRead->getNodeName())
 						{
 							particle = createParticle();
-					
+							particleInfo = CParticleComponent::getParticleInfo( particle );
+
 							const wchar_t *attribValue = xmlRead->getAttributeValue(L"name");
 							char attribValueA[1024] = {0};
 							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );
@@ -230,6 +232,9 @@ void CParticleComponent::loadXML( const char *lpFileName )
 
 							attribValue = xmlRead->getAttributeValue(L"texture");							
 							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );							
+
+							if ( particleInfo )
+								particleInfo->texture = attribValueA;
 
 							ITexture *pTex = driver->getTexture( attribValueA );
 

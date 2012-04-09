@@ -486,14 +486,45 @@ void CMainFrame::onMenuOpenEffects( uiObject *pSender )
 
 	CGameObject *pParticle = m_irrWin->getParticle();	
 	CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );
-
+	
 	// load particle system
 	pParticleComponent->loadXML( lpFileName );
-	
+
+	int i = 0;
+	IParticleSystemSceneNode *ps = pParticleComponent->getParticle(i);
+
+	char	lpTextA[1024];
+	wchar_t	lpText[1024];
+
+	while (ps)
+	{
+		uiString::copy<WCHAR, const c8>( lpText, ps->getName() );
+
+		uiTreeViewItem *pTreeItemPs = m_effectTreeWin->addItem( lpText );
+		pTreeItemPs->setData( (uiObject*) ps );
+
+		int j = 0;		
+		IParticleAffector *affector = ps->getAffector(j);
+		while ( affector != NULL )
+		{
+			uiString::copy<WCHAR, const c8>( lpText, affector->getDebugName() );
+			pTreeItemPs->addChild( lpText );
+
+			affector = ps->getAffector(++j);
+		}
+
+		pTreeItemPs->expandChild( true );
+		pTreeItemPs->update();
+
+		ps = pParticleComponent->getParticle(++i);		
+	}
+
+	m_currentParticle = NULL;
+
 	m_currentFile = lpFileName;
 	WCHAR title[1024];
 	swprintf(title, 1024, L"%s - %s", TEXT( STR_APP_TITLE ), lpPath);
-	setCaption( title );
+	setCaption( title );	
 }
 
 void CMainFrame::onMenuSaveEffects( uiObject *pSender )
@@ -754,31 +785,30 @@ void CMainFrame::onToolbarAffector( uiObject *pSender )
 	
 	if ( pSender == m_mnuFadeOutAffector )
 	{
-		affector = m_currentParticle->createFadeOutParticleAffector();
-		uiString::copy<WCHAR,const irr::c8>( label, "fadeOutAffector" );
+		affector = m_currentParticle->createFadeOutParticleAffector();		
 	}
 	else if ( pSender == m_mnuGravityAffector )
 	{
-		affector = m_currentParticle->createGravityAffector();
-		uiString::copy<WCHAR,const irr::c8>( label, "gravityAffector" );
+		affector = m_currentParticle->createGravityAffector();		
 	}
 	else if ( pSender == m_mnuRotationAffector )
 	{
-		affector = m_currentParticle->createRotationAffector();
-		uiString::copy<WCHAR,const irr::c8>( label, "rotationAffector" );
+		affector = m_currentParticle->createRotationAffector();		
 	}
 	else if ( pSender == m_mnuScaleAffector )
 	{				
-		affector = m_currentParticle->createScaleParticleAffector();
-		uiString::copy<WCHAR,const irr::c8>( label, "scaleAffector" );
+		affector = m_currentParticle->createScaleParticleAffector();		
 	}
 	else if ( pSender == m_mnuAttractionAffector )
 	{
-		affector = m_currentParticle->createAttractionAffector( core::vector3df(0,0,0) );
-		uiString::copy<WCHAR,const irr::c8>( label, "attractionAffector" );
+		affector = m_currentParticle->createAttractionAffector( core::vector3df(0,0,0) );		
 	}
 
 	// add new affector
+	if ( affector == NULL )
+		return;
+
+	uiString::copy<WCHAR,const irr::c8>( label, affector->getDebugName() );
 	m_currentParticle->addAffector( affector );
 	
 	// create tree item

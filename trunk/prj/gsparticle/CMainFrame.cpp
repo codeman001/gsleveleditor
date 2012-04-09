@@ -64,8 +64,11 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	DWORD iconStopIndex = pToolbarPlay->pushImage( &iconStop );
 	DWORD iconDeleteIndex = pToolbarPlay->pushImage( &iconDelete );
 	
-	m_playStopParticleButton = pToolbarPlay->addButton(L"Play particle", iconPlayIndex);
-	m_playStopParticleButton->setEventOnClicked<CMainFrame, &CMainFrame::onToolbarPlayStopParticle>(this);
+	m_playParticleButton = pToolbarPlay->addButton(L"Play particle", iconPlayIndex);
+	m_playParticleButton->setEventOnClicked<CMainFrame, &CMainFrame::onToolbarPlayStopParticle>(this);
+
+	m_stopParticleButton = pToolbarPlay->addButton(L"Stop particle", iconStopIndex);
+	m_stopParticleButton->setEventOnClicked<CMainFrame, &CMainFrame::onToolbarPlayStopParticle>(this);	
 
 	m_deleteParticleButton = pToolbarPlay->addButton(L"Delete particle, affector", iconDeleteIndex);
 	m_deleteParticleButton->setEventOnClicked<CMainFrame, &CMainFrame::onToolbarDeleteParticle>(this);
@@ -328,21 +331,43 @@ void CMainFrame::getAttribFromPropertyControl( irr::io::IAttributes *attrb )
 
 	}
 
+	// start time
+	pRow = (uiListPropertyRow*)m_effectPropertyWin->getItem(1);
+	pRow->getText( lpAttribValueW, 1 );
+	uiString::copy<char, WCHAR>( lpAttribValue, lpAttribValueW );
+	uiString::trim<char>( lpAttribValue );
+
+	if ( uiString::length<char>( lpAttribValue ) > 0 )	
+		sscanf( lpAttribValue, "%d", &psInfo->startTime );
+	else
+		psInfo->startTime = 0;
+
+	// life time
+	pRow = (uiListPropertyRow*)m_effectPropertyWin->getItem(2);
+	pRow->getText( lpAttribValueW, 1 );
+	uiString::copy<char, WCHAR>( lpAttribValue, lpAttribValueW );
+	uiString::trim<char>( lpAttribValue );
+	
+	if ( uiString::length<char>( lpAttribValue ) > 0 )
+		sscanf( lpAttribValue, "%d", &psInfo->lifeTime );
+	else
+		psInfo->startTime = -1;
+
 
 	int nRow = m_effectPropertyWin->getItemCount(); 
-	for ( int i = 1; i < nRow; i++ )
+	for ( int i = 3; i < nRow; i++ )
 	{
 		pItem = m_effectPropertyWin->getItem(i);
 
 		// get type of attrb
-		io::E_ATTRIBUTE_TYPE atrbType = currentAttrb->getAttributeType( i - 1 );
+		io::E_ATTRIBUTE_TYPE atrbType = currentAttrb->getAttributeType( i - 3 );
 
 		uiListPropertyRow *pRow = (uiListPropertyRow*) pItem;
 		pRow->getText( lpAttribValueW, 1 );
 
 
 		uiString::copy<char, WCHAR>( lpAttribValue, lpAttribValueW );
-		const char *lpAttribName = (const char *)currentAttrb->getAttributeName(i - 1);
+		const char *lpAttribName = (const char *)currentAttrb->getAttributeName(i - 3);
 
 		switch( atrbType )
 		{
@@ -367,7 +392,7 @@ void CMainFrame::getAttribFromPropertyControl( irr::io::IAttributes *attrb )
 			break;
 		case io::EAT_BOOL:
 			{
-				if ( stricmp( lpAttribValue, "true") == 0 )
+				if ( strcmp( lpAttribValue, "true") == 0 )
 					attrb->addBool( lpAttribName, true );
 				else
 					attrb->addBool( lpAttribName, false );
@@ -492,8 +517,7 @@ void CMainFrame::onMenuOpenEffects( uiObject *pSender )
 
 	int i = 0;
 	IParticleSystemSceneNode *ps = pParticleComponent->getParticle(i);
-
-	char	lpTextA[1024];
+	
 	wchar_t	lpText[1024];
 
 	while (ps)
@@ -616,7 +640,13 @@ void CMainFrame::onTreeEffectChange( uiObject *pSender )
 		// get attrib
 		irr::io::IAttributes *attrib = getIView()->getDevice()->getFileSystem()->createEmptyAttributes();
 				
-		attrib->addString( "Texture", (const c8*) psInfo->texture.c_str() );		
+		attrib->addString( "Texture", (const c8*) psInfo->texture.c_str() );
+		attrib->addInt("StartTime", psInfo->startTime);
+		attrib->addInt("LifeTime", psInfo->lifeTime);
+
+		m_currentParticle->getEmitter()->setMinParticlesPerSecond( psInfo->minParticle );
+		m_currentParticle->getEmitter()->setMaxParticlesPerSecond( psInfo->maxParticle );
+
 		m_currentParticle->serializeAttributes(  attrib );
 
 		// set attrib to control
@@ -631,23 +661,41 @@ void CMainFrame::onPropertyEffectChange( uiObject *pSender )
 	if ( m_currentParticle == NULL )
 		return;
 
+	CGameObject *pParticle = m_irrWin->getParticle();	
+	CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );	
+
 	// get attrib
 	irr::io::IAttributes *attrib = getIView()->getDevice()->getFileSystem()->createEmptyAttributes();
 	getAttribFromPropertyControl( attrib );
 
 	m_currentParticle->deserializeAttributes(  attrib );
 
+	SParticleInfo *psInfo =	pParticleComponent->getParticleInfo(m_currentParticle);	
+	psInfo->minParticle = m_currentParticle->getEmitter()->getMinParticlesPerSecond();
+	psInfo->maxParticle = m_currentParticle->getEmitter()->getMaxParticlesPerSecond();
+
 	attrib->drop();
 }
 
 void CMainFrame::onToolbarPlayStopParticle( uiObject *pSender )
 {
+	CGameObject *pParticle = m_irrWin->getParticle();	
+	CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );	
+
+	if ( pSender == m_playParticleButton )
+		pParticleComponent->startParticle();
+	else
+		pParticleComponent->stopParticle();
+
 }
 
 void CMainFrame::onToolbarDeleteParticle( uiObject *pSender )
 {
 	if ( m_currentParticle == NULL )
+	{
+		alert(L"Please select particle or affector!", L"Delete particle");
 		return;
+	}
 
 	CGameObject *pParticle = m_irrWin->getParticle();	
 	CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );
@@ -723,6 +771,7 @@ void CMainFrame::onToolbarEmiter( uiObject *pSender )
 	IParticleSystemSceneNode *ps = pParticleComponent->createParticle();
 	ps->getMaterial(0).setFlag( EMF_LIGHTING, false );	
 	ps->setName("effect");
+	
 
 	// create emitter
 	IParticleEmitter *emitter = NULL;
@@ -757,6 +806,12 @@ void CMainFrame::onToolbarEmiter( uiObject *pSender )
 	if ( emitter )
 	{
 		ps->setEmitter( emitter );
+
+		SParticleInfo *psInfo = pParticleComponent->getParticleInfo( ps );
+		
+		psInfo->minParticle = ps->getEmitter()->getMinParticlesPerSecond();
+		psInfo->maxParticle = ps->getEmitter()->getMaxParticlesPerSecond();
+
 		emitter->drop();
 	}
 

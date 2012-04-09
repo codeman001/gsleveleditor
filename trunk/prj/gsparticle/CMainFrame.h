@@ -15,7 +15,8 @@ protected:
 	uiToolbarButton*	m_addButton;
 	uiToolbarButton*	m_delButton;
 
-	uiToolbarButton*	m_playStopParticleButton;
+	uiToolbarButton*	m_playParticleButton;
+	uiToolbarButton*	m_stopParticleButton;
 	uiToolbarButton*	m_deleteParticleButton;
 
 	uiToolbarButton*	m_emitterButton;

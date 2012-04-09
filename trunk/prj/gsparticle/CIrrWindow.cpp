@@ -119,6 +119,9 @@ void CIrrWindow::irrUpdate()
 	// tick device
 	m_device->getTimer()->tick();
 
+	// update particle
+	m_particleObject->updateObject();
+
 	// draw 3d scene
 	driver->beginScene( true, true, 0, getIView()->getVideoData() );
 		

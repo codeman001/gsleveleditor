@@ -10,6 +10,7 @@
 #endif
 
 #include <irrlicht.h>
+#include <os.h>
 using namespace irr;
 using namespace irr::scene;
 using namespace irr::video;

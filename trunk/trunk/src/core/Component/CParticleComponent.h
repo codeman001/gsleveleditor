@@ -8,6 +8,22 @@ typedef struct tagParticleInfo
 {
 	IParticleSystemSceneNode*	ps;
 	std::string					texture;
+	long						startTime;
+	long						lifeTime;	
+	int							minParticle;
+	int							maxParticle;
+	bool						isStop;
+
+	tagParticleInfo()
+	{
+		ps = NULL;
+		texture = "";
+		startTime = 0;
+		lifeTime = -1;
+		isStop = false;
+		minParticle = 1;
+		maxParticle = 1;
+	}
 }SParticleInfo;
 
 class CParticleComponent: public IObjectComponent
@@ -15,6 +31,9 @@ class CParticleComponent: public IObjectComponent
 protected:
 	vector<SParticleInfo>	m_arrayParticle;
 	std::string				m_xmlPath;
+	
+	unsigned long			m_time;
+	bool					m_stopEmitter;
 public:
 	CParticleComponent(CGameObject *pObj);
 
@@ -87,6 +106,14 @@ public:
 	// loadXML
 	// load particle from xml file
 	void loadXML( const char *lpFileName );
+
+	// stopParticle
+	// stop particle emitter
+	void stopParticle();
+
+	// startParticle
+	// begin particle emitter
+	void startParticle();
 };
 
 #endif

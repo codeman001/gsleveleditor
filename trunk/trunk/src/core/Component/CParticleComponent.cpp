@@ -21,6 +21,43 @@ void CParticleComponent::initComponent()
 // run when update per frame
 void CParticleComponent::updateComponent()
 {
+	if ( m_stopEmitter == true )
+		return;
+
+	bool isStop = false;
+
+	if ( m_time == 0 )
+	{				
+		m_time = (long) irr::os::Timer::getTime();
+		return;
+	}
+	
+	long currentTime = (long) irr::os::Timer::getTime();
+	long deltaTime = currentTime - m_time;
+
+	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+	while (i != end )
+	{
+		SParticleInfo& p = (*i);
+		
+		if ( 
+				p.startTime > deltaTime || 
+				( p.lifeTime > 0 && p.startTime + p.lifeTime < deltaTime )
+			)
+		{
+			p.ps->getEmitter()->setMinParticlesPerSecond( 0 );
+			p.ps->getEmitter()->setMaxParticlesPerSecond( 0 );
+			p.isStop = true;
+		}
+		else
+		{
+			p.ps->getEmitter()->setMinParticlesPerSecond( p.minParticle );
+			p.ps->getEmitter()->setMaxParticlesPerSecond( p.maxParticle );
+			p.isStop = false;
+		}
+
+		i++;
+	}
 }
 
 // saveData
@@ -53,6 +90,9 @@ void CParticleComponent::initParticle()
 
 	// load particle
 	loadXML( m_xmlPath.c_str() );
+
+	m_time = 0;
+	m_stopEmitter = false;
 }
 
 // createParticle
@@ -68,6 +108,10 @@ IParticleSystemSceneNode* CParticleComponent::createParticle()
 	psInfo.ps = ps;
 
 	m_arrayParticle.push_back( psInfo );
+
+	// reset particle
+	m_time = 0;
+
 	return ps;
 }
 
@@ -157,21 +201,42 @@ void CParticleComponent::saveXML( const char *lpFileName )
 
 	io::IAttributes *attrb = fs->createEmptyAttributes();
 	
-	wchar_t lpTemp1[1024];
-	wchar_t lpTemp2[1024];
+	wchar_t lpTemp[1024];	
 
 	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
 	while (i != end )
 	{
 		SParticleInfo& p = (*i);	
-
+		
+		core::array<core::stringw>	propertyName;
+		core::array<core::stringw>	propertyValue;
 					
+		p.ps->getEmitter()->setMinParticlesPerSecond( p.minParticle );
+		p.ps->getEmitter()->setMaxParticlesPerSecond( p.maxParticle );
+
 		p.ps->serializeAttributes( attrb );
 
-		uiString::copy<wchar_t,const irr::c8>(lpTemp1, p.ps->getName());
-		uiString::copy<wchar_t,const char>(lpTemp2, p.texture.c_str());
+		// particle name
+		uiString::copy<wchar_t,const irr::c8>(lpTemp, p.ps->getName());
+		propertyName.push_back( L"name" );
+		propertyValue.push_back( core::stringw(lpTemp) );
 
-		xmlWrite->writeElement(L"ps",false, L"name", lpTemp1, L"texture", lpTemp2);
+		// particle texture
+		uiString::copy<wchar_t,const char>(lpTemp, p.texture.c_str());
+		propertyName.push_back( L"texture" );
+		propertyValue.push_back( core::stringw(lpTemp) );
+		
+		// time start
+		uiString::format<wchar_t>( lpTemp, L"%d", p.startTime);
+		propertyName.push_back( L"startTime" );
+		propertyValue.push_back( core::stringw(lpTemp) );
+
+		// life time
+		uiString::format<wchar_t>( lpTemp, L"%d", p.lifeTime);
+		propertyName.push_back( L"lifeTime" );
+		propertyValue.push_back( core::stringw(lpTemp) );
+
+		xmlWrite->writeElement(L"ps",false, propertyName, propertyValue);
 		xmlWrite->writeLineBreak();
 
 		// write <attribute>
@@ -233,8 +298,8 @@ void CParticleComponent::loadXML( const char *lpFileName )
 							attribValue = xmlRead->getAttributeValue(L"texture");							
 							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );							
 
-							if ( particleInfo )
-								particleInfo->texture = attribValueA;
+							// set texture
+							particleInfo->texture = attribValueA;
 
 							ITexture *pTex = driver->getTexture( attribValueA );
 
@@ -260,6 +325,17 @@ void CParticleComponent::loadXML( const char *lpFileName )
 								particle->setMaterialFlag(	video::EMF_LIGHTING, false );
 								particle->setMaterialType(	video::EMT_TRANSPARENT_ADD_COLOR);
 							}
+
+							// set start time
+							attribValue = xmlRead->getAttributeValue(L"startTime");							
+							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );	
+							sscanf(attribValueA, "%d", &particleInfo->startTime );
+
+							// set life time
+							attribValue = xmlRead->getAttributeValue(L"lifeTime");							
+							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );
+							sscanf(attribValueA, "%d", &particleInfo->lifeTime );							
+
 						}
 						else if (core::stringw(L"attributes") == xmlRead->getNodeName())
 						{
@@ -269,6 +345,12 @@ void CParticleComponent::loadXML( const char *lpFileName )
 							if ( particle )
 								particle->deserializeAttributes( attributes );
 							
+							if ( particleInfo )
+							{
+								particleInfo->minParticle =	particle->getEmitter()->getMinParticlesPerSecond();
+								particleInfo->maxParticle =	particle->getEmitter()->getMaxParticlesPerSecond();
+							}
+
 							attributes->drop();
 							particle = NULL;
 						}
@@ -282,4 +364,32 @@ void CParticleComponent::loadXML( const char *lpFileName )
 	}
 
 	xmlRead->drop();
+}
+
+// stopParticle
+// stop particle emitter
+void CParticleComponent::stopParticle()
+{
+	m_time = 0;
+	m_stopEmitter = true;
+
+	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+	while (i != end )
+	{
+		SParticleInfo& p = (*i);
+		
+		p.ps->getEmitter()->setMinParticlesPerSecond(0);
+		p.ps->getEmitter()->setMaxParticlesPerSecond(0);
+
+		i++;
+	}
+
+}
+
+// startParticle
+// begin particle emitter
+void CParticleComponent::startParticle()
+{
+	m_time = 0;
+	m_stopEmitter = false;
 }

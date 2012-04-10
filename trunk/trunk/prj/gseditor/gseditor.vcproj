@@ -621,6 +621,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\SceneNode\CGameContainerSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameContainerSceneNode.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\SceneNode\CGameMeshSceneNode.cpp"
 						>
 					</File>

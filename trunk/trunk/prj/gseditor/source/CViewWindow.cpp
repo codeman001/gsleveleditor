@@ -93,7 +93,7 @@ void CViewWindow::createIrrDevice()
 
 void CViewWindow::_OnSize(	uiSizeEvent sizeEvent, int nWidth, int nHeight)
 {
-	if ( m_driver )
+	if ( m_driver && nWidth > 0 && nHeight > 0 )
 	{
 		m_driver->OnResize( core::dimension2d<u32>(nWidth, nHeight) );
 		getIView()->setCameraAspectRatio( (f32) nWidth/nHeight );		

@@ -2,6 +2,8 @@
 #include "CParticleComponent.h"
 #include "IView.h"
 
+#include "CGameContainerSceneNode.h"
+
 CParticleComponent::CParticleComponent(CGameObject *pObj)
 	:IObjectComponent(pObj, IObjectComponent::Particle)
 {
@@ -84,9 +86,14 @@ void CParticleComponent::initParticle()
 {
 	ISceneManager *smgr = getIView()->getSceneMgr();
 
-	// create an empty node
-	m_gameObject->m_node = smgr->addEmptySceneNode( m_gameObject->getParentSceneNode() );
-	m_gameObject->m_node->grab();
+	// create an container node
+	m_gameObject->m_node = new CGameContainerSceneNode
+		( 
+			m_gameObject, 
+			m_gameObject->getParentSceneNode(), 
+			smgr, 
+			m_gameObject->getID() 
+		);
 
 	// load particle
 	loadXML( m_xmlPath.c_str() );

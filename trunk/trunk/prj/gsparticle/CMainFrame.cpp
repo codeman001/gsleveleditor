@@ -589,7 +589,11 @@ void CMainFrame::onMenuSaveEffects( uiObject *pSender )
 
 void CMainFrame::onMenuExit( uiObject *pSender )
 {
-	uiApplication::exit();
+	if ( GetFocus() == this->getHandle() )
+	{
+		if ( question(L"Do you want exit?", L"exit") == true )
+			uiApplication::exit();
+	}
 }
 
 void CMainFrame::onTreeEffectChange( uiObject *pSender )

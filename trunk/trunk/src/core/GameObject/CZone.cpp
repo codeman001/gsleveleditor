@@ -14,6 +14,13 @@ CZone::CZone()
 {
 	m_needSortObject = true;
 	m_objectType = CGameObject::ZoneObject;
+	
+	// root node
+	ISceneManager *smgr = getIView()->getSceneMgr();
+
+	// create empty node
+	m_node = smgr->addEmptySceneNode( smgr->getRootSceneNode(), -1);	
+	m_node->grab();
 }
 
 CZone::~CZone()
@@ -106,17 +113,14 @@ CGameObject* CZone::searchObject( long objectID )
 // create a template object
 CGameObject* CZone::createObject( wchar_t* objTemplate )
 {
-	CGameObject *p = CObjTemplateFactory::spawnObject( objTemplate );
+	CGameObject *p = CObjTemplateFactory::spawnObject( objTemplate, this );
 	if ( p == NULL )
 		return NULL;
 
 	wchar_t lpName[1024];
 	swprintf( lpName, 1024, L"%s_%d", objTemplate, (int)CGameObject::s_objectID );
 	
-	p->setID( CGameObject::s_objectID++ );
-	p->setParent( this );
-
-	
+	p->setID( CGameObject::s_objectID++ );	
 	
 #ifdef GSEDITOR
 	// create tree item
@@ -145,7 +149,7 @@ CGameObject* CZone::createObject( wchar_t* objTemplate )
 // create a waypoint object
 CWayPoint* CZone::createWaypoint()
 {
-	CWayPoint *p = new CWayPoint();
+	CWayPoint *p = new CWayPoint(this);
 	
 	wchar_t lpName[1024];
 	swprintf( lpName, 1024, L"%s_%d", L"waypoint", (int)CGameObject::s_objectID );
@@ -215,7 +219,7 @@ CGameCamera* CZone::createCamera()
 // create a trigger object
 CTrigger* CZone::createTrigger()
 {
-	CTrigger *p = new CTrigger();
+	CTrigger *p = new CTrigger(this);
 	
 	wchar_t lpName[1024];
 	swprintf( lpName, 1024, L"%s_%d", L"trigger", (int)CGameObject::s_objectID );

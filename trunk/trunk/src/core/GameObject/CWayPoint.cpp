@@ -30,6 +30,38 @@ CWayPoint::CWayPoint()
 #endif
 }
 
+CWayPoint::CWayPoint(CGameObject *parent)
+{
+	m_objectType	= CGameObject::WaypointObject;
+	m_next			= NULL;
+	m_back			= NULL;
+	m_timeWait		= 0;
+
+	ISceneManager *smgr = getIView()->getSceneMgr();
+
+	// set parent
+	m_parent = parent;
+
+	ISceneNode *parentNode = smgr->getRootSceneNode();
+	if ( parent )
+		parentNode = parent->getSceneNode();
+
+	// init box	
+	m_node = new CGameBoxSceneNode(this, 5, parentNode, smgr, m_objectID);
+	m_node->getMaterial(0).Lighting = true;	
+
+#ifdef GSEDITOR
+	setVisible ( true );
+
+	// add collision
+	ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( m_node );
+	m_node->setTriangleSelector(selector);
+	selector->drop();
+#else
+	setVisible ( false );
+#endif
+}
+
 CWayPoint::~CWayPoint()
 {
 	if ( m_back )

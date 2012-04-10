@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CGameContainerSceneNode.h"
+#include "IView.h"
 
 CGameContainerSceneNode::CGameContainerSceneNode(
 			CGameObject *owner,
@@ -11,6 +12,9 @@ CGameContainerSceneNode::CGameContainerSceneNode(
 	:ISceneNode( parent, mgr, id, position, rotation, scale )
 {
 	m_owner = owner;
+
+	// turn on culling when draw
+	AutomaticCullingState = EAC_BOX;
 }
 
 CGameContainerSceneNode::~CGameContainerSceneNode()
@@ -32,10 +36,41 @@ void CGameContainerSceneNode::OnRegisterSceneNode()
 
 		// only register child if container is visible
 		ISceneNode::OnRegisterSceneNode();
+
+		// need update bouding box
+		ISceneNodeList::Iterator it = Children.begin(), end = Children.end();
+		
+		// box is equal first child
+		Box.reset(core::vector3df(0,0,0));
+		if ( it != end )
+		{
+			Box = (*it)->getTransformedBoundingBox();
+			it++;
+		}
+
+		// update another child
+		for (; it != end; ++it)
+		{			
+			Box.addInternalBox( (*it)->getTransformedBoundingBox() );
+		}
 	}
 }
 
 //! does nothing.
 void CGameContainerSceneNode::render()
 {
+	IVideoDriver *driver = getIView()->getDriver();
+
+	if ( DebugDataVisible & scene::EDS_BBOX )
+	{
+		driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
+		video::SMaterial deb_m;
+		deb_m.Lighting = false;
+		driver->setMaterial(deb_m);
+
+		core::aabbox3d<f32> tbox = Box;
+		getAbsoluteTransformation().transformBoxEx(tbox);
+
+		driver->draw3DBox( tbox, video::SColor(255,255,0,255));
+	}
 }

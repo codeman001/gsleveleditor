@@ -8,7 +8,7 @@
 #endif
 
 #include "CObjTemplateFactory.h"
-
+#include "CGameContainerSceneNode.h"
 
 CZone::CZone()
 {
@@ -19,8 +19,12 @@ CZone::CZone()
 	ISceneManager *smgr = getIView()->getSceneMgr();
 
 	// create empty node
-	m_node = smgr->addEmptySceneNode( smgr->getRootSceneNode(), -1);	
-	m_node->grab();
+	m_node = new CGameContainerSceneNode( this, smgr->getRootSceneNode(), smgr, -1 );
+
+#ifdef GSEDITOR
+	m_node->setDebugDataVisible( EDS_BBOX );
+#endif
+
 }
 
 CZone::~CZone()

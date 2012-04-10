@@ -257,6 +257,26 @@ void CSelectObjectController::onMouseMove(int x, int y)
 			// calc offset
 			core::vector3df offset = hit - m_hitPosition;
 
+			// move oy
+			if ( m_moveState == 2 )
+			{
+				offset.Z = 0;
+				offset.X = 0;
+			}
+			// move ox
+			else if ( m_moveState == 1 )
+			{
+				offset.Z = 0;
+				offset.Y = 0;
+			}
+			// move oz
+			else if ( m_moveState == 3 )
+			{
+				offset.X = 0;
+				offset.Y = 0;
+			}
+
+
 			ArrayGameObjectIter iObj = currentSelect->begin(), iEnd = currentSelect->end();
 			while ( iObj != iEnd )
 			{

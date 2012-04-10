@@ -19,6 +19,9 @@ protected:
 
 public:
 	CTrigger();
+
+	CTrigger(CGameObject *parent);
+
 	virtual ~CTrigger();
 
 	// saveData

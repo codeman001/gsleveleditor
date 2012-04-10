@@ -85,7 +85,7 @@ void CParticleComponent::initParticle()
 	ISceneManager *smgr = getIView()->getSceneMgr();
 
 	// create an empty node
-	m_gameObject->m_node = smgr->addEmptySceneNode( smgr->getRootSceneNode() );
+	m_gameObject->m_node = smgr->addEmptySceneNode( m_gameObject->getParentSceneNode() );
 	m_gameObject->m_node->grab();
 
 	// load particle

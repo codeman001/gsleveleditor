@@ -37,7 +37,7 @@ void CBoxObjectComponent::createBox()
 	IVideoDriver *driver = getIView()->getDriver();
 
 	// create box
-	ISceneNode *node = new CGameBoxSceneNode( m_gameObject, m_size, smgr->getRootSceneNode(), smgr, m_gameObject->getID()	);
+	ISceneNode *node = new CGameBoxSceneNode( m_gameObject, m_size, m_gameObject->getParentSceneNode(), smgr, m_gameObject->getID()	);
 	
 	if ( m_textureFile.size() > 0 )
 		node->setMaterialTexture(0, driver->getTexture(m_textureFile.c_str()));

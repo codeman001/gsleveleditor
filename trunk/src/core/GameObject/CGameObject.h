@@ -90,8 +90,14 @@ public:
 
 	CGameObject();
 
+	CGameObject(CGameObject *parent);
+
 	virtual ~CGameObject();
 
+protected:
+	void initNull();
+
+public:
 	// setID
 	// set id for object
 	virtual void setID( long id )
@@ -306,6 +312,10 @@ public:
 	{
 		return m_node;
 	}
+
+	// getParentSceneNode
+	// return irrlicht node of parent
+	ISceneNode* getParentSceneNode();	
 
 	// isEnable
 	// check the object is enable

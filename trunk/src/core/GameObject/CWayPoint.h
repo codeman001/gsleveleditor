@@ -13,6 +13,8 @@ protected:
 public:
 	CWayPoint();
 
+	CWayPoint(CGameObject *parent);
+
 	virtual ~CWayPoint();
 
 	// setNext

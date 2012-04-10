@@ -21,6 +21,19 @@ const char* CGameObject::s_stringObjType[] =
 
 CGameObject::CGameObject()
 {
+	initNull();
+}
+
+CGameObject::CGameObject(CGameObject *parent)
+{
+	initNull();
+
+	// set parent
+	m_parent = parent;
+}
+
+void CGameObject::initNull()
+{
 	m_objectID		= -1;
 	m_name			= L"noNameObj";
 	m_objectTemplate= L"";
@@ -257,7 +270,7 @@ void CGameObject::destroyNode()
 {
 	if ( m_node )
 	{
-		m_node->drop();
+		m_node->drop();		
 		m_node->remove();
 		m_node = NULL;
 	}
@@ -848,4 +861,14 @@ void CGameObject::updateObject()
 		(*iComp)->updateComponent();
 		iComp++;
 	}
+}
+
+// getParentSceneNode
+// return irrlicht node of parent
+ISceneNode* CGameObject::getParentSceneNode()
+{
+	if ( m_parent )
+		return m_parent->getSceneNode();
+	else
+		return getIView()->getSceneMgr()->getRootSceneNode();
 }

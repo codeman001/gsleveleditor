@@ -39,6 +39,48 @@ CTrigger::CTrigger()
 
 }
 
+CTrigger::CTrigger(CGameObject *parent)
+{
+	m_objectType	= CGameObject::TriggerObject;
+
+	// init box
+	ISceneManager *smgr = getIView()->getSceneMgr();
+
+	m_boxSize = 20.0f;
+
+	// set parent
+	m_parent = parent;
+
+	ISceneNode *parentNode = smgr->getRootSceneNode();
+	if ( parent )
+		parentNode = parent->getSceneNode();
+
+	// create node
+	m_node = new CGameBoxSceneNode(this, m_boxSize, parentNode, smgr, m_objectID);
+
+#ifdef GSEDITOR
+	video::SMaterial& mat = m_node->getMaterial(0);	
+	mat.Lighting = true;
+	mat.DiffuseColor	= video::SColor(100, 0,255,0 );
+	mat.AmbientColor	= video::SColor(100, 0,255,0 );
+	mat.SpecularColor	= video::SColor(100, 0,255,0 );
+
+	mat.setFlag( EMF_COLOR_MATERIAL, false );	
+	mat.MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;
+#endif
+
+	// add collision
+	ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( m_node );
+	m_node->setTriangleSelector(selector);
+	selector->drop();
+
+#ifdef GSEDITOR
+	setVisible ( true );	
+#else
+	setVisible ( false );
+#endif
+}
+
 CTrigger::~CTrigger()
 {
 }

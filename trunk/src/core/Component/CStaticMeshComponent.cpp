@@ -60,7 +60,7 @@ void CStaticMeshComponent::loadFromFile( char *lpFilename )
 	}	
 
 	// create scene node
-	m_meshNode = new CGameMeshSceneNode( m_gameObject, staticMesh, smgr->getRootSceneNode(), smgr );	
+	m_meshNode = new CGameMeshSceneNode( m_gameObject, staticMesh, m_gameObject->getParentSceneNode(), smgr );	
 	staticMesh->drop();
 
 #ifdef GSEDITOR

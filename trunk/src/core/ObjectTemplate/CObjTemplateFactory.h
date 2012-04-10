@@ -44,6 +44,10 @@ public:
 	// create a object on template
 	static CGameObject* spawnObject( wchar_t* templateName );
 
+	// spawnObject
+	// create a object on template with parent
+	static CGameObject* spawnObject( wchar_t* templateName, CGameObject *parent );
+
 	// getTemplate
 	// get template
 	static CObjectTemplate* getTemplate( wchar_t* templateName );

@@ -39,7 +39,7 @@ void CAnimMeshComponent::loadFromFile( char *lpFilename )
 		animMesh->getMeshBuffer(i)->getMaterial().Lighting = m_gameObject->isLighting();
 	
 	// create scene node
-	m_animNode = new CGameAnimatedMeshSceneNode( m_gameObject, animMesh, smgr->getRootSceneNode(), smgr );	
+	m_animNode = new CGameAnimatedMeshSceneNode( m_gameObject, animMesh, m_gameObject->getParentSceneNode(), smgr );	
 	m_animNode->setAnimationSpeed( m_animSpeed );	
 
 #ifdef GSEDITOR

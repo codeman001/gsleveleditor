@@ -9,7 +9,7 @@
 #include "CGameOxyzSceneNode.h"
 #include "CGameGSCameraAnimator.h"
 #include "CShadowComponent.h"
-
+#include "CParticleComponent.h"
 
 static bool s_isFirstDocument = true;
 
@@ -189,8 +189,8 @@ bool CDocument::readDocumentFromData( char *lpData )
 
 				// create game object
 				CGameObject *pGameObj = currentZone->createObject( lpString );
-				if ( pGameObj )
-					pGameObj->updateData( &objData );
+				if ( pGameObj )				
+					pGameObj->updateData( &objData );				
 			}
 			else
 			{

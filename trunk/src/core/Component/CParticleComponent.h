@@ -116,6 +116,10 @@ public:
 	// startParticle
 	// begin particle emitter
 	void startParticle();
+
+	// fixParticlePosition
+	// fix affector rotation & affector attraction
+	void fixParticlePosition();
 };
 
 #endif

@@ -66,6 +66,7 @@ void CSkyboxComponent::loadSkyTextureFile( char *lpFileName )
 
 	// set scenenode
 	m_gameObject->m_node = skydome;
+	m_gameObject->setLighting( false );
 	skydome->grab();
 
 	// set visibke

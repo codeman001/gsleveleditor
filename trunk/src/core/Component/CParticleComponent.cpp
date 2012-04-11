@@ -31,36 +31,7 @@ void CParticleComponent::updateComponent()
 		m_time = (long) irr::os::Timer::getTime();
 		m_totalLifeTime = -1;
 
-
-
-		// ajust affector
-		vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
-		while (i != end )
-		{
-			SParticleInfo& p = (*i);	
-			int idAffector = 0;
-			IParticleAffector *affector = p.ps->getAffector(idAffector);
-			while ( affector )
-			{						
-				E_PARTICLE_AFFECTOR_TYPE affectorType = affector->getType();
-
-				if ( affectorType == EPAT_ATTRACT )
-				{
-					IParticleAttractionAffector *af = (IParticleAttractionAffector*) affector;
-					af->setPoint( p.ps->getAbsolutePosition() );
-				}
-				else if ( affectorType == EPAT_ROTATE )
-				{
-					IParticleRotationAffector *af = (IParticleRotationAffector*) affector;
-					af->setPivotPoint( p.ps->getAbsolutePosition() );
-				}
-
-				idAffector++;
-				affector = p.ps->getAffector(idAffector);
-			}
-			i++;
-		}
-
+		fixParticlePosition();
 		return;
 	}
 	
@@ -145,6 +116,8 @@ void CParticleComponent::initParticle()
 			smgr, 
 			m_gameObject->getID() 
 		);
+
+	m_gameObject->setLighting( false );
 
 #ifdef GSEDITOR
 	// add collision
@@ -334,8 +307,26 @@ void CParticleComponent::loadXML( const char *lpFileName )
 
 	io::IXMLReader *xmlRead = fs->createXMLReader( lpFileName );
 	if ( xmlRead == NULL )
-		return;	
+	{
+#if defined(GSEDITOR) || defined(PARTICLE_EDITOR)
+		WCHAR appPath[MAX_PATH];
+		char  appPathA[MAX_PATH];
 
+		uiApplication::getAppPath(appPath, MAX_PATH);
+		uiString::copy<char, WCHAR>( appPathA, appPath  );
+								
+		std::string path = appPathA;
+		path += "\\";
+		path += std::string(lpFileName);
+								
+		xmlRead = fs->createXMLReader( path.c_str() );
+
+		if ( xmlRead == NULL )
+			return;
+#else
+		return;	
+#endif		
+	}
 	IParticleSystemSceneNode *particle = NULL;
 	SParticleInfo*	particleInfo = NULL;
 
@@ -458,4 +449,42 @@ void CParticleComponent::startParticle()
 {
 	m_time = 0;
 	m_stopEmitter = false;
+}
+
+// fixParticlePosition
+// fix affector rotation & affector attraction
+void CParticleComponent::fixParticlePosition()
+{
+	// ajust affector
+	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+	while (i != end )
+	{
+		SParticleInfo& p = (*i);	
+		int idAffector = 0;
+		IParticleAffector *affector = p.ps->getAffector(idAffector);
+
+		// calc position
+		m_gameObject->m_node->updateAbsolutePosition();
+		p.ps->updateAbsolutePosition();
+
+		while ( affector )
+		{						
+			E_PARTICLE_AFFECTOR_TYPE affectorType = affector->getType();
+
+			if ( affectorType == EPAT_ATTRACT )
+			{
+				IParticleAttractionAffector *af = (IParticleAttractionAffector*) affector;
+				af->setPoint( p.ps->getAbsolutePosition() );
+			}
+			else if ( affectorType == EPAT_ROTATE )
+			{
+				IParticleRotationAffector *af = (IParticleRotationAffector*) affector;
+				af->setPivotPoint( p.ps->getAbsolutePosition() );
+			}
+
+			idAffector++;
+			affector = p.ps->getAffector(idAffector);
+		}
+		i++;
+	}
 }

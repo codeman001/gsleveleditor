@@ -33,6 +33,8 @@ protected:
 	std::string				m_xmlPath;
 	
 	unsigned long			m_time;
+	unsigned long			m_totalLifeTime;
+
 	bool					m_stopEmitter;
 public:
 	CParticleComponent(CGameObject *pObj);

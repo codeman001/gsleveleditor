@@ -80,10 +80,16 @@ void CComponentFactory::initComponentTemplate()
 	// add billboard
 	s_compTemplate.push_back( CSerializable() );
 	p = &s_compTemplate[ IObjectComponent::Billboard ];
-	p->addGroup	(stringOfComponent(IObjectComponent::Billboard));	
+	p->addGroup(stringOfComponent(IObjectComponent::Billboard));
 	p->addPath("textureFile", "data/particle/particlewhite.bmp");
 	p->addFloat("billboardWidth", 50 );
 	p->addFloat("billboardHeight", 50 );
+
+	// add particle
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::Particle ];
+	p->addGroup(stringOfComponent(IObjectComponent::Particle));
+	p->addPath( "particleXml", "data/particle/particle.xml" );
 
 	loadAllTemplate();
 }

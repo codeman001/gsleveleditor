@@ -25,18 +25,50 @@ void CParticleComponent::updateComponent()
 {
 	if ( m_stopEmitter == true )
 		return;
-
-	bool isStop = false;
-
+	
 	if ( m_time == 0 )
 	{				
 		m_time = (long) irr::os::Timer::getTime();
+		m_totalLifeTime = -1;
+
+
+
+		// ajust affector
+		vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+		while (i != end )
+		{
+			SParticleInfo& p = (*i);	
+			int idAffector = 0;
+			IParticleAffector *affector = p.ps->getAffector(idAffector);
+			while ( affector )
+			{						
+				E_PARTICLE_AFFECTOR_TYPE affectorType = affector->getType();
+
+				if ( affectorType == EPAT_ATTRACT )
+				{
+					IParticleAttractionAffector *af = (IParticleAttractionAffector*) affector;
+					af->setPoint( p.ps->getAbsolutePosition() );
+				}
+				else if ( affectorType == EPAT_ROTATE )
+				{
+					IParticleRotationAffector *af = (IParticleRotationAffector*) affector;
+					af->setPivotPoint( p.ps->getAbsolutePosition() );
+				}
+
+				idAffector++;
+				affector = p.ps->getAffector(idAffector);
+			}
+			i++;
+		}
+
 		return;
 	}
 	
 	long currentTime = (long) irr::os::Timer::getTime();
 	long deltaTime = currentTime - m_time;
 
+	bool isStop = true;
+	
 	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
 	while (i != end )
 	{
@@ -56,10 +88,29 @@ void CParticleComponent::updateComponent()
 			p.ps->getEmitter()->setMinParticlesPerSecond( p.minParticle );
 			p.ps->getEmitter()->setMaxParticlesPerSecond( p.maxParticle );
 			p.isStop = false;
+
+			// need stop emitter
+			isStop = false;
 		}
 
 		i++;
 	}
+
+	if ( isStop == true )
+	{
+		// calc total time
+		if ( m_totalLifeTime == -1 )		
+			m_totalLifeTime = currentTime - m_time;
+		
+#ifdef GSEDITOR
+		// need reset after 1s
+		if ( currentTime - m_time > m_totalLifeTime + 1000 )
+			m_time = 0;
+#else
+		m_stopEmitter = true;
+#endif
+	}
+
 }
 
 // saveData
@@ -99,6 +150,7 @@ void CParticleComponent::initParticle()
 	loadXML( m_xmlPath.c_str() );
 
 	m_time = 0;
+	m_totalLifeTime = -1;
 	m_stopEmitter = false;
 }
 
@@ -110,7 +162,7 @@ IParticleSystemSceneNode* CParticleComponent::createParticle()
 
 	// create an empty particle
 	IParticleSystemSceneNode *ps = smgr->addParticleSystemSceneNode( false, m_gameObject->m_node );
-	
+
 	SParticleInfo psInfo;
 	psInfo.ps = ps;
 
@@ -294,7 +346,7 @@ void CParticleComponent::loadXML( const char *lpFileName )
 					{
 						if (core::stringw(L"ps") == xmlRead->getNodeName())
 						{
-							particle = createParticle();
+							particle = createParticle();							
 							particleInfo = CParticleComponent::getParticleInfo( particle );
 
 							const wchar_t *attribValue = xmlRead->getAttributeValue(L"name");

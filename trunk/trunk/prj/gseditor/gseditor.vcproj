@@ -644,6 +644,14 @@
 						RelativePath="..\..\src\core\SceneNode\CGameOxyzSceneNode.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameParticleContainerSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameParticleContainerSceneNode.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Serializable"

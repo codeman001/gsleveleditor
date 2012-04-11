@@ -2,7 +2,7 @@
 #include "CParticleComponent.h"
 #include "IView.h"
 
-#include "CGameContainerSceneNode.h"
+#include "CGameParticleContainerSceneNode.h"
 
 CParticleComponent::CParticleComponent(CGameObject *pObj)
 	:IObjectComponent(pObj, IObjectComponent::Particle)
@@ -138,13 +138,20 @@ void CParticleComponent::initParticle()
 	ISceneManager *smgr = getIView()->getSceneMgr();
 
 	// create an container node
-	m_gameObject->m_node = new CGameContainerSceneNode
+	m_gameObject->m_node = new CGameParticleContainerSceneNode
 		( 
 			m_gameObject, 
 			m_gameObject->getParentSceneNode(), 
 			smgr, 
 			m_gameObject->getID() 
 		);
+
+#ifdef GSEDITOR
+	// add collision
+	ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox(m_gameObject->m_node);
+	m_gameObject->m_node->setTriangleSelector(selector);
+	selector->drop();
+#endif
 
 	// load particle
 	loadXML( m_xmlPath.c_str() );

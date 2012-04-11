@@ -76,3 +76,10 @@ testBillboard
 		billboardHeight: 50.0000000 | floatType;
 	}
 }
+particleBoom
+{
+	Particle component
+	{
+		particleXml: data/particle/particle.xml | filePathType;
+	}
+}

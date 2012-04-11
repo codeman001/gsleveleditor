@@ -63,6 +63,7 @@ void CBillboardComponent::createBillboard()
 	// set visibke
 	m_gameObject->m_node = node;
 	m_gameObject->m_node->setVisible( true );	
+	m_gameObject->setLighting( false );
 
 	// update position
 	m_gameObject->updateNodePosition();

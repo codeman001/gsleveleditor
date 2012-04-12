@@ -263,18 +263,18 @@ void CSelectObjectController::onMouseMove(int x, int y)
 				offset.Z = 0;
 				offset.X = 0;
 			}
-			// move ox
-			else if ( m_moveState == 1 )
-			{
-				offset.Z = 0;
-				offset.Y = 0;
-			}
-			// move oz
-			else if ( m_moveState == 3 )
-			{
-				offset.X = 0;
-				offset.Y = 0;
-			}
+			//// move ox
+			//else if ( m_moveState == 1 )
+			//{
+			//	offset.Z = 0;
+			//	offset.Y = 0;				
+			//}
+			//// move oz
+			//else if ( m_moveState == 3 )
+			//{
+			//	offset.X = 0;
+			//	offset.Y = 0;
+			//}
 
 
 			ArrayGameObjectIter iObj = currentSelect->begin(), iEnd = currentSelect->end();

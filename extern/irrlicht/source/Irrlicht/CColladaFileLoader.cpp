@@ -1642,6 +1642,10 @@ void CColladaFileLoader::readGeometry(io::IXMLReaderUTF8* reader)
 
 	core::stringc VertexPositionSource; // each mesh has exactly one <vertex> member, containing
 										// a POSITION input. This string stores the source of this input.
+
+	// pham hong duc add texCoord	
+	core::stringc VertexTexCoordSource;
+
 	core::array<SSource> sources;
 	bool okToReadArray = false;
 
@@ -1728,9 +1732,15 @@ void CColladaFileLoader::readGeometry(io::IXMLReaderUTF8* reader)
 				#endif
 				// read vertex input position source
 				readColladaInputs(reader, verticesSectionName);
+				
 				SColladaInput* input = getColladaInput(ECIS_POSITION);
 				if (input)
 					VertexPositionSource = input->Source;
+				
+				// pham hong duc add texcoord
+				input = getColladaInput(ECIS_TEXCOORD);
+				if (input)
+					VertexTexCoordSource = input->Source;
 			}
 			else
 			// lines and linestrips missing
@@ -1739,7 +1749,7 @@ void CColladaFileLoader::readGeometry(io::IXMLReaderUTF8* reader)
 				trianglesSectionName == nodeName)
 			{
 				// read polygons section
-				readPolygonSection(reader, VertexPositionSource, sources, mesh, id);
+				readPolygonSection(reader, VertexPositionSource, VertexTexCoordSource, sources, mesh, id);
 			}
 			else
 			// trifans, and tristrips missing
@@ -1849,7 +1859,9 @@ struct SPolygon
 
 //! reads a polygons section and creates a mesh from it
 void CColladaFileLoader::readPolygonSection(io::IXMLReaderUTF8* reader,
-	const core::stringc& vertexPositionSource, core::array<SSource>& sources,
+	const core::stringc& vertexPositionSource, 
+	const core::stringc& vertexTexCoordSource, 
+	core::array<SSource>& sources,
 	scene::SMesh* mesh, const core::stringc& geometryId)
 {
 	#ifdef COLLADA_READER_DEBUG
@@ -1889,13 +1901,17 @@ void CColladaFileLoader::readPolygonSection(io::IXMLReaderUTF8* reader,
 				SColladaInput& inp = Inputs.getLast();
 				core::stringc sourceArrayURI;
 
+#if 0
 				// get input source array id, if it is a vertex input, take
 				// the <vertex><input>-source attribute.
 				if (inp.Semantic == ECIS_VERTEX)
 					sourceArrayURI = vertexPositionSource;
 				else
 					sourceArrayURI = inp.Source;
-
+#else
+				// pham hong duc modify
+				sourceArrayURI = vertexPositionSource;
+#endif
 				uriToId(sourceArrayURI);
 
 				// find source array (we'll ignore accessors for this implementation)
@@ -1910,6 +1926,29 @@ void CColladaFileLoader::readPolygonSection(io::IXMLReaderUTF8* reader,
 						break;
 					}
 				}
+				
+				// pham hong duc texcoord input				
+				sourceArrayURI = vertexTexCoordSource;
+				uriToId(sourceArrayURI);
+				for (s=0; s<sources.size(); ++s)
+				{
+					if (sources[s].Id == sourceArrayURI)
+					{
+						// slot found
+						SColladaInput texCoordInput;
+						
+						texCoordInput.Semantic = ECIS_TEXCOORD;
+						texCoordInput.Source = sourceArrayURI;
+						
+						texCoordInput.Data = sources[s].Array.Data.pointer();
+						texCoordInput.Stride = sources[s].Accessors[0].Stride;
+		
+						Inputs.push_back( texCoordInput );
+
+						break;
+					}
+				}
+				// -------------------------
 
 				if (s == sources.size())
 				{
@@ -2124,7 +2163,13 @@ void CColladaFileLoader::readPolygonSection(io::IXMLReaderUTF8* reader,
 					case ECIS_TEXCOORD:
 					case ECIS_UV:
 						vtx.TCoords.X = Inputs[k].Data[idx+0];
+
+						// pham hong duc modify texcoord
+#if 0
 						vtx.TCoords.Y = 1-Inputs[k].Data[idx+1];
+#else
+						vtx.TCoords.Y = Inputs[k].Data[idx+1];
+#endif
 						break;
 					case ECIS_TANGENT:
 						break;

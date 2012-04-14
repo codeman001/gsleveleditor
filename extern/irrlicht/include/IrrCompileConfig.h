@@ -271,7 +271,7 @@ B3D, MS3D or X meshes */
 //! Define _IRR_COMPILE_WITH_3DS_LOADER_ if you want to load 3D Studio Max files
 //#define _IRR_COMPILE_WITH_3DS_LOADER_
 //! Define _IRR_COMPILE_WITH_COLLADA_LOADER_ if you want to load Collada files
-//#define _IRR_COMPILE_WITH_COLLADA_LOADER_
+#define _IRR_COMPILE_WITH_COLLADA_LOADER_
 //! Define _IRR_COMPILE_WITH_CSM_LOADER_ if you want to load Cartography Shop files
 //#define _IRR_COMPILE_WITH_CSM_LOADER_
 //! Define _IRR_COMPILE_WITH_BSP_LOADER_ if you want to load Quake 3 BSP files

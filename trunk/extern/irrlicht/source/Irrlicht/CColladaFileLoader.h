@@ -319,7 +319,9 @@ private:
 
 	//! reads a polygons section and creates a mesh from it
 	void readPolygonSection(io::IXMLReaderUTF8* reader,
-		const core::stringc& vertexPositionSource, core::array<SSource>& sources,
+		const core::stringc& vertexPositionSource, 
+		const core::stringc& vertexTexCoordSource, 
+		core::array<SSource>& sources,
 		scene::SMesh* mesh, const core::stringc& geometryId);
 
 	//! finds a material, possible instancing it

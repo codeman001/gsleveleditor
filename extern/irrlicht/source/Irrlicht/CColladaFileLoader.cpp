@@ -2163,11 +2163,11 @@ void CColladaFileLoader::readPolygonSection(io::IXMLReaderUTF8* reader,
 					case ECIS_TEXCOORD:
 					case ECIS_UV:
 						vtx.TCoords.X = Inputs[k].Data[idx+0];
-
-						// pham hong duc modify texcoord
+						
 #if 0
 						vtx.TCoords.Y = 1-Inputs[k].Data[idx+1];
 #else
+						// pham hong duc modify texcoord
 						vtx.TCoords.Y = Inputs[k].Data[idx+1];
 #endif
 						break;

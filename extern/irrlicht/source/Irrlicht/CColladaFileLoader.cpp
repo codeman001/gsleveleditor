@@ -1528,7 +1528,13 @@ void CColladaFileLoader::readEffect(io::IXMLReaderUTF8* reader, SColladaEffect *
 		effect->Mat.ZWriteEnable = false;
 	}
 	effect->Mat.setFlag(video::EMF_TEXTURE_WRAP, !Parameters.getAttributeAsBool("wrap_s"));
+#if 0
 	effect->Mat.setFlag(video::EMF_BILINEAR_FILTER, Parameters.getAttributeAsBool("bilinear"));
+#else
+	// pham hong duc modify for allway use bilinear filter
+	effect->Mat.setFlag(video::EMF_BILINEAR_FILTER, true);
+#endif
+
 	effect->Mat.setFlag(video::EMF_TRILINEAR_FILTER, Parameters.getAttributeAsBool("trilinear"));
 	effect->Mat.setFlag(video::EMF_ANISOTROPIC_FILTER, Parameters.getAttributeAsBool("anisotropic"));
 }

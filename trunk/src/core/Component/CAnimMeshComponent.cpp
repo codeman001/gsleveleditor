@@ -6,7 +6,7 @@ CAnimMeshComponent::CAnimMeshComponent( CGameObject *pObj )
 	:IObjectComponent( pObj, (int)IObjectComponent::AnimMesh )
 {
 	m_animNode = NULL;
-	m_animSpeed = 24.0f;
+	m_animSpeed = 24.0f;	
 }
 
 CAnimMeshComponent::~CAnimMeshComponent()
@@ -42,7 +42,7 @@ void CAnimMeshComponent::loadFromFile( char *lpFilename )
 	m_animNode = new CGameAnimatedMeshSceneNode( m_gameObject, animMesh, m_gameObject->getParentSceneNode(), smgr );	
 	m_animNode->setAnimationSpeed( m_animSpeed );	
 
-#ifdef GSEDITOR
+#ifdef GSEDITOR	
 	// add collision
 	ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox(m_animNode);
 	m_animNode->setTriangleSelector(selector);

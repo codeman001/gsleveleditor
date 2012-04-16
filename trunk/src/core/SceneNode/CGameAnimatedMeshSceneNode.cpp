@@ -38,6 +38,7 @@ void CGameAnimatedMeshSceneNode::render()
 	// call object draw
 	m_owner->drawObject();
 
+	setDebugDataVisible( EDS_SKELETON );
 #endif
 	// draw animesh
 	CAnimatedMeshSceneNode::render();

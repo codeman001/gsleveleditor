@@ -83,3 +83,18 @@ particleBoom
 		particleXml: data/particle/particle.xml | filePathType;
 	}
 }
+daeCharacter
+{
+	Anim mesh component
+	{
+		meshFile: data/mesh/marine_2_mesh.dae | filePathType;
+		animSpeed: 24.0000000 | floatType;
+	}
+}
+wave
+{
+	Particle component
+	{
+		particleXml: data/particle/test1.xml | filePathType;
+	}
+}

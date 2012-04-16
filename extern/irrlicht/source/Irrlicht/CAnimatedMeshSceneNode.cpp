@@ -414,6 +414,20 @@ void CAnimatedMeshSceneNode::render()
 						driver->draw3DLine(joint->GlobalAnimatedMatrix.getTranslation(),
 								joint->Children[n]->GlobalAnimatedMatrix.getTranslation(),
 								video::SColor(255,51,66,255));
+
+
+						// test (slowly)
+						core::matrix4 mat1 = joint->GlobalInversedMatrix;
+						mat1.makeInverse();
+
+						core::matrix4 mat2 = joint->Children[n]->GlobalInversedMatrix;
+						mat2.makeInverse();
+
+						driver->draw3DLine(
+								mat1.getTranslation(),
+								mat2.getTranslation(),
+								video::SColor(255,0,255,0)
+								);
 					}
 				}
 			}

@@ -38,6 +38,11 @@ enum ECOLLADA_PARAM_NAME
 	ECPN_ZNEAR,
 	ECPN_ZFAR,
 
+	// pham hong duc add for skin
+	ECPN_JOINT,
+	ECPN_TRANSFORM,
+	ECPN_WEIGHT,
+
 	ECPN_COUNT
 };
 
@@ -148,6 +153,12 @@ struct SNumberArray // for storing float and int arrays
 	core::array<f32> Data;
 };
 
+struct SNameArray
+{
+	core::stringc Name;
+	core::array<core::stringc> Data;
+};
+
 struct SAccessor
 {
 	SAccessor()
@@ -166,6 +177,7 @@ struct SSource
 {
 	core::stringc Id;
 	SNumberArray Array;
+	SNameArray	ArrayName;
 	core::array<SAccessor> Accessors;
 };
 
@@ -275,6 +287,9 @@ private:
 	//! reads a <geometry> element and stores it as mesh if possible
 	void readGeometry(io::IXMLReaderUTF8* reader);
 
+	//! reads a <controller> element	(pham hong duc add)
+	void readController(io::IXMLReaderUTF8* reader);
+	
 	//! parses a float from a char pointer and moves the pointer to
 	//! the end of the parsed float
 	inline f32 readFloat(const c8** p);
@@ -375,6 +390,19 @@ public:
 
 	//! returns id of this prefab
 	virtual const core::stringc& getId() = 0;
+
+	//! return true on geometry prefab
+	virtual bool isGeometryPrefab()
+	{
+		return false;
+	}
+	
+	//! return true on scene prefab
+	virtual bool isScenePrefab()
+	{
+		return false;
+	}
+
 };
 
 

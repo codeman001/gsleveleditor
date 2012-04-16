@@ -10,6 +10,8 @@
 #include "IXMLReader.h"
 #include "IDummyTransformationSceneNode.h"
 #include "SAnimatedMesh.h"
+#include "ISkinnedMesh.h"
+#include "CSkinnedMesh.h"
 #include "fast_atof.h"
 #include "quaternion.h"
 #include "ILightSceneNode.h"
@@ -42,6 +44,10 @@ namespace
 	const core::stringc libraryCamerasSectionName = "library_cameras";
 	const core::stringc libraryLightsSectionName = "library_lights";
 	const core::stringc libraryEffectsSectionName = "library_effects";
+
+	// pham hong duc add
+	const core::stringc libraryControllerSectionName = "library_controllers";
+
 	const core::stringc assetSectionName =     "asset";
 	const core::stringc sceneSectionName =     "scene";
 	const core::stringc visualSceneSectionName = "visual_scene";
@@ -53,6 +59,13 @@ namespace
 	const core::stringc imageSectionName =     "image";
 	const core::stringc textureSectionName =   "texture";
 	const core::stringc effectSectionName =    "effect";
+
+	// pham hong duc add
+	const core::stringc controllerSectionName =    "controller";
+	const core::stringc skinSectionName =    "skin";
+	const core::stringc jointsSectionName =    "joints";	
+	const core::stringc weightsSectionName = "vertex_weights";
+	const core::stringc nameArraySectionName ="Name_array";
 
 	const core::stringc pointSectionName =     "point";
 	const core::stringc directionalSectionName ="directional";
@@ -123,6 +136,8 @@ namespace
 
 	const char* const inputSemanticNames[] = {"POSITION", "VERTEX", "NORMAL", "TEXCOORD",
 		"UV", "TANGENT", "IMAGE", "TEXTURE", 0};
+
+	// pham hong duc add 
 }
 
 	//! following class is for holding and creating instances of library
@@ -187,7 +202,23 @@ namespace
 		}
 	};
 
+	// pham hong duc add
+	struct SColladaWeight
+	{
+		//! Index of the vertex
+		u32 vertex_id; //Store global ID here
 
+		//! Weight Strength/Percentage (0-1)
+		f32 strength;
+	};
+
+	struct SColladaJoint
+	{
+		core::stringc			Name;
+		core::matrix4			InvMatrix;
+		core::array<SColladaWeight>	Weight;
+	};
+	
 	//! prefab for a mesh scene node
 	class CGeometryPrefab : public CPrefab
 	{
@@ -195,9 +226,13 @@ namespace
 
 		CGeometryPrefab(const core::stringc& id) : CPrefab(id)
 		{
+			IsSkinMesh = false;
 		}
 
 		scene::IMesh* Mesh;
+
+		bool IsSkinMesh;
+		core::array<SColladaJoint>	Joints;
 
 		//! creates an instance of this prefab
 		virtual scene::ISceneNode* addInstance(scene::ISceneNode* parent,
@@ -211,9 +246,14 @@ namespace
 			if (m)
 			{
 				m->setName(getId());
-//				m->setDebugDataVisible(scene::EDS_FULL);
 			}
 			return m;
+		}
+
+		//! return true on geometry prefab
+		virtual bool isGeometryPrefab()
+		{
+			return true;
 		}
 	};
 
@@ -268,6 +308,9 @@ namespace
 			#ifdef COLLADA_READER_DEBUG
 			os::Printer::log("COLLADA: loaded scene prefab", Id.c_str());
 			#endif
+
+			data = NULL;
+			parent = NULL;
 		}
 
 		//! creates an instance of this prefab
@@ -301,8 +344,18 @@ os::Printer::log("COLLADA: Transformation", t.c_str());
 			return s;
 		}
 
+		virtual bool isScenePrefab()
+		{
+			return true;
+		}
+
 		core::array<IColladaPrefab*> Childs;
 		core::matrix4 Transformation;
+		core::stringc sid;
+		core::stringc type;
+
+		void *data;
+		CScenePrefab *parent;
 	};
 
 
@@ -464,6 +517,9 @@ void CColladaFileLoader::readColladaSection(io::IXMLReaderUTF8* reader)
 		if (libraryGeometriesSectionName == reader->getNodeName())
 			readLibrarySection(reader);
 		else
+		if ( libraryControllerSectionName == reader->getNodeName())
+			readLibrarySection(reader);
+		else
 		if (libraryMaterialsSectionName == reader->getNodeName())
 			readLibrarySection(reader);
 		else
@@ -486,7 +542,7 @@ void CColladaFileLoader::readColladaSection(io::IXMLReaderUTF8* reader)
 			readAssetSection(reader);
 		else
 		if (sceneSectionName == reader->getNodeName())
-			readSceneSection(reader);
+			readSceneSection(reader);		
 		else
 		{
 			os::Printer::log("COLLADA loader warning: Wrong tag usage found", reader->getNodeName(), ELL_WARNING);
@@ -521,6 +577,9 @@ void CColladaFileLoader::readLibrarySection(io::IXMLReaderUTF8* reader)
 			else
 			if (imageSectionName == reader->getNodeName())
 				readImage(reader);
+			else
+			if (controllerSectionName == reader->getNodeName())	// pham hong duc add for read controller
+				readController(reader);
 			else
 			if (lightPrefabName == reader->getNodeName())
 				readLightPrefab(reader);
@@ -563,10 +622,106 @@ void CColladaFileLoader::readLibrarySection(io::IXMLReaderUTF8* reader)
 				break; // end reading.
 			if (libraryCamerasSectionName == reader->getNodeName())
 				break; // end reading.
+			if (libraryControllerSectionName == reader->getNodeName())
+				break; // end reading.
 		}
 	}
 }
 
+
+void updateJointOnPrefab( CGeometryPrefab*	geometryPrefab, CScenePrefab *root )
+{
+	ISkinnedMesh* skinMesh = (ISkinnedMesh*)geometryPrefab->Mesh;
+	if ( skinMesh == NULL || geometryPrefab->IsSkinMesh == false )
+		return;
+		
+	core::list<CScenePrefab*>	stackScenePrefab;
+	core::list<CScenePrefab*>	listBoneScenePrefab;
+
+	stackScenePrefab.push_back( root );
+	
+	
+	core::array<SColladaJoint>	Joints;
+
+	while ( stackScenePrefab.size() )
+	{
+		CScenePrefab *node = *(stackScenePrefab.getLast());
+		
+		if ( node->type == core::stringc("JOINT") )
+		{
+			// save to list bone prefab
+			listBoneScenePrefab.push_back( node );
+
+			// get parent joint
+			ISkinnedMesh::SJoint *parentJoint = NULL;
+			if (  node->parent != NULL && node->parent->data != NULL )
+			{
+				parentJoint = (ISkinnedMesh::SJoint*) node->parent->data;
+			}
+						
+			ISkinnedMesh::SJoint* nodeJoint = skinMesh->addJoint(parentJoint);
+			node->data = nodeJoint;
+
+			SColladaJoint *sourceJoint = NULL;
+
+			if ( node->sid.size() > 0 )
+			{
+				int nJoint = geometryPrefab->Joints.size();
+				for ( int i = 0; i < nJoint; i++ )
+				{
+					if ( geometryPrefab->Joints[i].Name == node->sid )
+					{
+						sourceJoint = &geometryPrefab->Joints[i];
+						break;
+					}
+				}
+			}
+
+			if ( sourceJoint )
+			{
+				int nWeight = sourceJoint->Weight.size();
+				for ( int i = 0; i < nWeight; i++ )
+				{
+					ISkinnedMesh::SWeight* w = skinMesh->addWeight( nodeJoint );
+					w->buffer_id = 0;			
+					w->vertex_id = sourceJoint->Weight[i].vertex_id;
+					w->strength = sourceJoint->Weight[i].strength;
+				}				
+
+				// set global invert matrix
+				nodeJoint->GlobalInversedMatrix = sourceJoint->InvMatrix.getTransposed();			
+			}
+
+			// set local matrix
+			nodeJoint->LocalMatrix = node->Transformation;
+		}	
+
+		stackScenePrefab.erase( stackScenePrefab.getLast() );
+
+		int nChild = (int)node->Childs.size();
+		for ( int i = 0; i < nChild; i++ )
+		{
+			if ( node->Childs[i]->isScenePrefab() )
+			{
+				CScenePrefab *boneScene = (CScenePrefab*)node->Childs[i];
+
+				// set parent
+				boneScene->parent = node;
+				stackScenePrefab.push_back( boneScene );
+			}
+		}
+	}
+
+	// final loaded the mesh
+	skinMesh->finalize();
+
+	core::list<CScenePrefab*>::Iterator i = listBoneScenePrefab.begin(), end = listBoneScenePrefab.end();
+	while ( i != end )
+	{
+		(*i)->data = NULL;
+		i++;
+	}
+}
 
 //! reads a <visual_scene> element and stores it as a prefab
 void CColladaFileLoader::readVisualSceneLibrary(io::IXMLReaderUTF8* reader)
@@ -601,6 +756,16 @@ void CColladaFileLoader::readVisualSceneLibrary(io::IXMLReaderUTF8* reader)
 			else
 			if ((visualSceneSectionName == reader->getNodeName()) && p)
 			{
+				// pham hong duc add need apply prefab to bone				
+				for (u32 i=0; i<Prefabs.size(); ++i)
+				{					
+					if ( Prefabs[i]->isGeometryPrefab() == true )
+					{
+						CGeometryPrefab* geometryPrefab = (CGeometryPrefab*)Prefabs[i];					
+						updateJointOnPrefab( geometryPrefab, p );					
+					}
+				}
+
 				Prefabs.push_back(p);
 				p = 0;
 			}
@@ -723,6 +888,10 @@ void CColladaFileLoader::readNodeSection(io::IXMLReaderUTF8* reader, scene::ISce
 
 	core::stringc name = readId(reader);
 
+	// pham hong duc add to read sid
+	core::stringc sid = reader->getAttributeValue("sid");
+	core::stringc type = reader->getAttributeValue("type");	
+
 	core::matrix4 transform; // transformation of this node
 	core::aabbox3df bbox;
 	scene::ISceneNode* node = 0; // instance
@@ -731,6 +900,9 @@ void CColladaFileLoader::readNodeSection(io::IXMLReaderUTF8* reader, scene::ISce
 	if (p)
 	{
 		nodeprefab = new CScenePrefab(readId(reader));
+		nodeprefab->sid = sid;
+		nodeprefab->type = type;
+
 		p->Childs.push_back(nodeprefab);
 		Prefabs.push_back(nodeprefab); // in order to delete them later on
 	}
@@ -1342,20 +1514,20 @@ void CColladaFileLoader::readEffect(io::IXMLReaderUTF8* reader, SColladaEffect *
 	if (!effect) os::Printer::log("COLLADA reading effect");
 	#endif
 
-	static const core::stringc constantNode("constant");
-	static const core::stringc lambertNode("lambert");
-	static const core::stringc phongNode("phong");
-	static const core::stringc blinnNode("blinn");
-	static const core::stringc emissionNode("emission");
-	static const core::stringc ambientNode("ambient");
-	static const core::stringc diffuseNode("diffuse");
-	static const core::stringc specularNode("specular");
-	static const core::stringc shininessNode("shininess");
-	static const core::stringc reflectiveNode("reflective");
-	static const core::stringc reflectivityNode("reflectivity");
-	static const core::stringc transparentNode("transparent");
-	static const core::stringc transparencyNode("transparency");
-	static const core::stringc indexOfRefractionNode("index_of_refraction");
+	const core::stringc constantNode("constant");
+	const core::stringc lambertNode("lambert");
+	const core::stringc phongNode("phong");
+	const core::stringc blinnNode("blinn");
+	const core::stringc emissionNode("emission");
+	const core::stringc ambientNode("ambient");
+	const core::stringc diffuseNode("diffuse");
+	const core::stringc specularNode("specular");
+	const core::stringc shininessNode("shininess");
+	const core::stringc reflectiveNode("reflective");
+	const core::stringc reflectivityNode("reflectivity");
+	const core::stringc transparentNode("transparent");
+	const core::stringc transparencyNode("transparency");
+	const core::stringc indexOfRefractionNode("index_of_refraction");
 
 	if (!effect)
 	{
@@ -1636,6 +1808,404 @@ void CColladaFileLoader::readBindMaterialSection(io::IXMLReaderUTF8* reader, con
 	}
 }
 
+// ! setup joint for controller
+void setJointOnPrefab( CGeometryPrefab*	geometryPrefab, core::array<int>& vCount, core::array<int>& vArray, core::array<SSource>& source )
+{
+	if ( geometryPrefab == NULL )
+		return;
+
+	SSource *joint = NULL, *jointMatrix = NULL, *weight = NULL;
+
+	int sourceCount = source.size();
+	for ( int i = 0; i < sourceCount; i++ )
+	{
+		SSource& s = source[i];
+		if ( s.Accessors.size() > 0 )
+		{
+			SAccessor& access = s.Accessors[0];
+			SColladaParam& param = access.Parameters[0];
+
+			if ( param.Name == ECPN_JOINT)
+				joint = &s;
+			else if ( param.Name == ECPN_TRANSFORM)
+				jointMatrix = &s;
+			else if ( param.Name == ECPN_WEIGHT) 
+				weight = &s;
+
+		}
+	}
+
+	if ( joint == NULL || jointMatrix == NULL || weight == NULL )
+		return;
+
+	int numJoint = (int)joint->ArrayName.Data.size();
+
+	// get array float
+	f32* f = (f32*)jointMatrix->Array.Data.pointer();
+
+	for ( int i = 0; i < numJoint; i++ )
+	{
+		SColladaJoint	newJoint;
+
+		newJoint.Name = joint->ArrayName.Data[i];
+
+		core::matrix4 mat;
+		mat.setM( f + i*16 );
+		newJoint.InvMatrix = mat;
+
+		geometryPrefab->Joints.push_back( newJoint );
+	}
+	
+	// set vertex weight
+	int nVertex = 0;//(int)vCount.size();
+	int id = 0;
+
+	for ( int i = 0; i < nVertex; i++ )
+	{
+		// num of bone in vertex
+		int nBone = vCount[i];
+
+		// loop on bone in vertex		
+		for ( int iBone = 0; iBone < nBone; iBone++, id+=2 )
+		{
+			u32 boneId		= vArray[id];
+			u32 weightId	= vArray[id + 1];
+			f32 f			= weight->Array.Data[weightId];
+			
+			SColladaWeight colldataWeight;
+			colldataWeight.vertex_id = i;
+			colldataWeight.strength = f;
+
+			// add weight on bone
+			geometryPrefab->Joints[boneId].Weight.push_back( colldataWeight );
+		}
+
+	}
+
+#ifdef COLLADA_READER_DEBUG	
+	int numSize = vArray.size();
+	if ( numSize != id )
+	{
+		os::Printer::log("COLLADA maybe error on reading weight info");
+	}
+#endif
+
+}
+
+//! reads a <controller> element( pham hong duc add )
+void CColladaFileLoader::readController(io::IXMLReaderUTF8* reader)
+{
+	#ifdef COLLADA_READER_DEBUG
+	os::Printer::log("COLLADA reading controller");
+	#endif
+
+	core::stringc id = readId(reader);
+
+	core::array<SSource> sources;
+
+	SAnimatedMesh* amesh = NULL;
+	CSkinnedMesh* skinMesh = NULL;
+	bool firstMesh = true;
+	
+	CGeometryPrefab*	geometryPrefab;
+
+	bool okToReadArray = false;
+	bool okToReadNameArray = false;
+	
+	bool okToReadVCount = false;
+	bool okToReadV = false;
+
+	core::array<int>	vcountArray;
+	core::array<int>	vArray;
+
+	if (!reader->isEmptyElement())
+	while(reader->read())
+	{
+		if (reader->getNodeType() == io::EXN_ELEMENT)
+		{
+			const char* nodeName = reader->getNodeName();
+
+			// <skin source="#mesh">
+			if (skinSectionName == nodeName)
+			{
+				
+				sources.clear();
+				vcountArray.clear();
+				vArray.clear();
+				
+				skinMesh = NULL;
+				geometryPrefab = NULL;
+
+				core::stringc meshUri = reader->getAttributeValue("source");
+				
+				if ( meshUri.size() > 1 )
+				{
+					uriToId(meshUri);
+					
+					for (u32 i=0; i<Prefabs.size(); ++i)
+					{
+						if ( meshUri == Prefabs[i]->getId())
+						{
+							geometryPrefab = (CGeometryPrefab*)Prefabs[i];
+							amesh = (SAnimatedMesh*) geometryPrefab->Mesh;
+
+								
+							// pham hong duc
+							// we need add a CSkinnedMesh from SAnimatedMesh
+							skinMesh = new CSkinnedMesh();
+							scene::SSkinMeshBuffer *buffer = skinMesh->addMeshBuffer();
+
+							// set standard vertex type
+							buffer->VertexType = video::EVT_STANDARD;
+
+							// copy vertex data
+							const u32 vcount = amesh->getMeshBuffer(0)->getVertexCount();
+							buffer->Vertices_Standard.reallocate(vcount);
+							video::S3DVertex* vertices = (video::S3DVertex*)amesh->getMeshBuffer(0)->getVertices();
+							for (u32 i=0; i < vcount; ++i)
+								buffer->Vertices_Standard.push_back(vertices[i]);
+
+							// copy index polygon
+							const u32 icount = amesh->getMeshBuffer(0)->getIndexCount();
+							buffer->Indices.reallocate(icount);
+							u16* indices = amesh->getMeshBuffer(0)->getIndices();
+							for (u32 i=0; i < icount; ++i)
+								buffer->Indices.push_back(indices[i]);
+														
+							// set material
+							buffer->getMaterial() = amesh->getMeshBuffer(0)->getMaterial();
+							buffer->recalculateBoundingBox();							
+														
+							geometryPrefab->Mesh = skinMesh;							
+							geometryPrefab->IsSkinMesh = true;
+
+							if ( firstMesh == true )
+							{
+								if ( FirstLoadedMesh )
+									FirstLoadedMesh->drop();
+								if ( DummyMesh )						
+									DummyMesh->drop();
+
+								DummyMesh = skinMesh;
+								DummyMesh->grab();
+
+								FirstLoadedMesh = skinMesh;
+								FirstLoadedMesh->grab();
+
+								firstMesh = false;
+								skinMesh->drop();
+							}
+						}
+					}
+				}
+			}
+			else
+			if (sourceSectionName == nodeName)
+			{
+				// create a new source
+				sources.push_back(SSource());
+				sources.getLast().Id = readId(reader);
+
+				#ifdef COLLADA_READER_DEBUG
+				os::Printer::log("Reading source", sources.getLast().Id.c_str());
+				#endif
+			}
+			else
+			if (arraySectionName == nodeName || floatArraySectionName == nodeName || intArraySectionName == nodeName)
+			{
+				// create a new array and read it.
+				if (!sources.empty())
+				{
+					sources.getLast().Array.Name = readId(reader);
+
+					int count = reader->getAttributeValueAsInt("count");
+					sources.getLast().Array.Data.set_used(count); // pre allocate
+
+					// check if type of array is ok
+					const char* type = reader->getAttributeValue("type");
+					okToReadArray = (type && (!strcmp("float", type) || !strcmp("int", type))) || floatArraySectionName == nodeName || intArraySectionName == nodeName;
+
+					#ifdef COLLADA_READER_DEBUG
+					os::Printer::log("Read array", sources.getLast().Array.Name.c_str());
+					#endif
+				}
+				#ifdef COLLADA_READER_DEBUG
+				else
+					os::Printer::log("Warning, array outside source found",
+						readId(reader).c_str());
+				#endif
+
+			}
+			else if ( nameArraySectionName == nodeName )
+			{
+				// create a new array and read it.
+				if (!sources.empty())
+				{
+					sources.getLast().ArrayName.Name = readId(reader);
+
+					int count = reader->getAttributeValueAsInt("count");
+					
+					for ( int i = 0; i < count; i++ )
+					{
+						sources.getLast().ArrayName.Data.push_back( core::stringc("") );
+					}
+
+					okToReadNameArray = true;
+
+					#ifdef COLLADA_READER_DEBUG
+					os::Printer::log("Read array", sources.getLast().ArrayName.Name.c_str());
+					#endif
+				}				
+			}
+			else
+			if (accessorSectionName == nodeName) // child of source (below a technique tag)
+			{
+				#ifdef COLLADA_READER_DEBUG
+				os::Printer::log("Reading accessor");
+				#endif
+				SAccessor accessor;
+				accessor.Count = reader->getAttributeValueAsInt("count");
+				accessor.Offset = reader->getAttributeValueAsInt("offset");
+				accessor.Stride = reader->getAttributeValueAsInt("stride");
+				if (accessor.Stride == 0)
+					accessor.Stride = 1;
+
+				// the accessor contains some information on how to access (boi!) the array,
+				// the info is stored in collada style parameters, so just read them.
+				readColladaParameters(reader, accessorSectionName);
+				if (!sources.empty())
+				{
+					sources.getLast().Accessors.push_back(accessor);
+					sources.getLast().Accessors.getLast().Parameters = ColladaParameters;
+				}
+			}
+			else
+			if (jointsSectionName == nodeName) // child of source (below a technique tag)
+			{
+
+			}
+			else
+			if (weightsSectionName == nodeName) // child of source (below a technique tag)
+			{
+
+			}
+			else 
+			if (vcountName == nodeName)
+			{
+				okToReadVCount = true;	
+			}
+			else
+			if ( core::stringc("v") == nodeName )
+			{
+				okToReadV = true;
+			}
+
+		}
+		else if (reader->getNodeType() == io::EXN_ELEMENT_END)
+		{
+			if ( controllerSectionName == reader->getNodeName())
+			{
+				// need create joint			
+				setJointOnPrefab( geometryPrefab, vcountArray, vArray, sources );
+				
+				break;
+			}
+		}
+		else
+		if (reader->getNodeType() == io::EXN_TEXT)
+		{
+			// read array data
+			if (okToReadArray && !sources.empty())
+			{
+				core::array<f32>& a = sources.getLast().Array.Data;
+				core::stringc data = reader->getNodeData();
+				data.trim();
+				const c8* p = &data[0];
+
+				for (u32 i=0; i<a.size(); ++i)
+				{
+					findNextNoneWhiteSpace(&p);
+					if (*p)
+						a[i] = readFloat(&p);
+					else
+						a[i] = 0.0f;
+				}
+			} // end reading array
+			else if ( okToReadNameArray && !sources.empty())
+			{
+				core::array<core::stringc>& a = sources.getLast().ArrayName.Data;
+				core::stringc data = reader->getNodeData();
+				data.trim();
+				
+				c8* p = &data[0];
+				c8* begin = &data[0];
+
+				for (u32 i=0; i<a.size(); ++i)
+				{
+					while(*p && !(*p==' ' || *p=='\n' || *p=='\r' || *p=='\t'))
+						++p;
+
+					*p = NULL;
+
+					if (*begin)
+						a[i] = core::stringc(begin);
+					else
+						a[i] = core::stringc("");
+
+					p++;
+					begin = p;
+				}
+			}
+			else if ( okToReadVCount )
+			{
+				core::stringc data = reader->getNodeData();
+				data.trim();
+
+				const c8* p = &data[0];
+				
+				while(*p )
+				{
+					vcountArray.push_back( readInt(&p) );
+
+					while ( *p && (*p==' ' || *p=='\n' || *p=='\r' || *p=='\t') )
+					{
+						p++;
+					}					
+				}
+					
+			}
+			else if ( okToReadV )
+			{
+				core::stringc data = reader->getNodeData();
+				data.trim();
+				
+				const c8* p = &data[0];
+				
+				while(*p )
+				{
+					vArray.push_back( readInt(&p) );
+
+					while ( *p && (*p==' ' || *p=='\n' || *p=='\r' || *p=='\t') )
+					{
+						p++;
+					}					
+				}
+			}
+
+			okToReadArray = false;
+			okToReadNameArray = false;
+			
+			okToReadVCount = false;
+			okToReadV = false;
+
+		} // end if node type is text		
+	}
+
+	/*
+	
+	*/
+
+}
 
 //! reads a <geometry> element and stores it as mesh if possible
 void CColladaFileLoader::readGeometry(io::IXMLReaderUTF8* reader)
@@ -1654,6 +2224,7 @@ void CColladaFileLoader::readGeometry(io::IXMLReaderUTF8* reader)
 
 	core::array<SSource> sources;
 	bool okToReadArray = false;
+
 
 	SAnimatedMesh* amesh = new SAnimatedMesh();
 	scene::SMesh* mesh = new SMesh();
@@ -2110,6 +2681,9 @@ void CColladaFileLoader::readPolygonSection(io::IXMLReaderUTF8* reader,
 	if ( textureCoordSetCount < 2 )
 	{
 		// standard mesh buffer
+		
+		// pham hong duc add
+		core::array<int> conditionner;
 
 		scene::SMeshBuffer* mbuffer = new SMeshBuffer();
 		buffer = mbuffer;
@@ -2128,6 +2702,9 @@ void CColladaFileLoader::readPolygonSection(io::IXMLReaderUTF8* reader,
 				video::S3DVertex vtx;
 				vtx.Color.set(255,255,255,255);
 
+
+				u32 vertexIndex = 0;
+
 				// for all input semantics
 				for (u32 k=0; k<Inputs.size(); ++k)
 				{
@@ -2135,7 +2712,8 @@ void CColladaFileLoader::readPolygonSection(io::IXMLReaderUTF8* reader,
 						continue;
 					// build vertex from input semantics.
 
-					const u32 idx = Inputs[k].Stride*polygons[i].Indices[v+Inputs[k].Offset];
+					u32	vIndex = polygons[i].Indices[v+Inputs[k].Offset];
+					const u32 idx = Inputs[k].Stride*vIndex;
 
 					switch(Inputs[k].Semantic)
 					{
@@ -2195,6 +2773,8 @@ void CColladaFileLoader::readPolygonSection(io::IXMLReaderUTF8* reader,
 					indices.push_back(mbuffer->getVertexCount());
 					mbuffer->Vertices.push_back(vtx);
 					vertMap.insert(vtx, mbuffer->getVertexCount()-1);
+
+					conditionner.push_back( vertexIndex );
 				}
 			} // end for all vertices
 
@@ -2522,7 +3102,7 @@ void CColladaFileLoader::readColladaParameters(io::IXMLReaderUTF8* reader,
 	ColladaParameters.clear();
 
 	const char* const paramNames[] = {"COLOR", "AMBIENT", "DIFFUSE",
-		"SPECULAR", "SHININESS", "YFOV", "ZNEAR", "ZFAR", 0};
+		"SPECULAR", "SHININESS", "TRANSPARENCY", "YFOV", "ZNEAR", "ZFAR", "JOINT", "TRANSFORM", "WEIGHT", 0};
 
 	const char* const typeNames[] = {"float", "float2", "float3", 0};
 
@@ -2539,7 +3119,7 @@ void CColladaFileLoader::readColladaParameters(io::IXMLReaderUTF8* reader,
 			u32 i;
 			core::stringc typeName = reader->getAttributeValue("type");
 			for (i=0; typeNames[i]; ++i)
-				if (typeName == typeNames[i])
+				if (typeName == core::stringc(typeNames[i]) )
 				{
 					p.Type = (ECOLLADA_PARAM_TYPE)i;
 					break;
@@ -2547,8 +3127,8 @@ void CColladaFileLoader::readColladaParameters(io::IXMLReaderUTF8* reader,
 
 			// get name
 			core::stringc nameName = reader->getAttributeValue("name");
-			for (i=0; typeNames[i]; ++i)
-				if (nameName == paramNames[i])
+			for (i=0; paramNames[i]; ++i)
+				if (nameName == core::stringc( paramNames[i]) )
 				{
 					p.Name = (ECOLLADA_PARAM_NAME)i;
 					break;

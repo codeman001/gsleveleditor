@@ -7,6 +7,10 @@
 #include "CDocument.h"
 #endif
 
+#ifdef GSANIMATION
+#include "IView.h"
+#endif
+
 #include "CObjTemplateFactory.h"
 #include "CGameContainerSceneNode.h"
 

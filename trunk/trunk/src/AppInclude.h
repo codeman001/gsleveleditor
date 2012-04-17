@@ -1,7 +1,7 @@
 #ifndef _APP_INCLUDE_
 #define _APP_INCLUDE_
 
-#if defined(GSEDITOR) || defined(PARTICLE_EDITOR)
+#if defined(GSEDITOR) || defined(PARTICLE_EDITOR) || defined(GSANIMATION)
 	#include "uiClass.h"
 	using namespace uiClass;
 #else

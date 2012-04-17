@@ -29,7 +29,7 @@ IView::~IView()
 {	
 	m_eventReceivers.clear();
 
-#if !defined(GSEDITOR) && !defined(PARTICLE_EDITOR)
+#if !defined(GSEDITOR) && !defined(PARTICLE_EDITOR) && !defined(GSANIMATION)
 	UIDEBUG_TRACE("Debug leak memory: \n");
 	UIDEBUG_DUMPLEAK();
 #endif

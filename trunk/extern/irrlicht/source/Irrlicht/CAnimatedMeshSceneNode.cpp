@@ -416,18 +416,19 @@ void CAnimatedMeshSceneNode::render()
 								video::SColor(255,51,66,255));
 
 
-						// test (slowly)
-						core::matrix4 mat1 = joint->GlobalInversedMatrix;
-						mat1.makeInverse();
+						// pham hong duc add
+						// test basic bone (slowly)
+						//core::matrix4 mat1 = joint->GlobalInversedMatrix;
+						//mat1.makeInverse();
 
-						core::matrix4 mat2 = joint->Children[n]->GlobalInversedMatrix;
-						mat2.makeInverse();
+						//core::matrix4 mat2 = joint->Children[n]->GlobalInversedMatrix;
+						//mat2.makeInverse();
 
-						driver->draw3DLine(
-								mat1.getTranslation(),
-								mat2.getTranslation(),
-								video::SColor(255,0,255,0)
-								);
+						//driver->draw3DLine(
+						//		mat1.getTranslation(),
+						//		mat2.getTranslation(),
+						//		video::SColor(255,0,255,0)
+						//		);
 					}
 				}
 			}

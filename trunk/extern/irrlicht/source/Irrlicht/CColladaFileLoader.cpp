@@ -689,7 +689,7 @@ void updateJointOnPrefab( CGeometryPrefab*	geometryPrefab, CScenePrefab *root )
 				}				
 
 				// set global invert matrix
-				nodeJoint->GlobalInversedMatrix = sourceJoint->InvMatrix.getTransposed();			
+				nodeJoint->GlobalInversedMatrix = sourceJoint->InvMatrix;				
 			}
 
 			// set local matrix
@@ -1809,7 +1809,7 @@ void CColladaFileLoader::readBindMaterialSection(io::IXMLReaderUTF8* reader, con
 }
 
 // ! setup joint for controller
-void setJointOnPrefab( CGeometryPrefab*	geometryPrefab, core::array<int>& vCount, core::array<int>& vArray, core::array<SSource>& source )
+void setJointOnPrefab( CGeometryPrefab*	geometryPrefab, core::array<int>& vCount, core::array<int>& vArray, core::array<SSource>& source, bool FlipAxis )
 {
 	if ( geometryPrefab == NULL )
 		return;
@@ -1851,13 +1851,33 @@ void setJointOnPrefab( CGeometryPrefab*	geometryPrefab, core::array<int>& vCount
 
 		core::matrix4 mat;
 		mat.setM( f + i*16 );
-		newJoint.InvMatrix = mat;
+		
+		if (FlipAxis)
+		{
+			core::matrix4 mat2(mat, core::matrix4::EM4CONST_TRANSPOSED);
+
+			mat2[1]=mat[8];
+			mat2[2]=mat[4];
+			mat2[4]=mat[2];
+			mat2[5]=mat[10];
+			mat2[6]=mat[6];
+			mat2[8]=mat[1];
+			mat2[9]=mat[9];
+			mat2[10]=mat[5];
+			mat2[12]=mat[3];
+			mat2[13]=mat[11];
+			mat2[14]=mat[7];
+
+			newJoint.InvMatrix = mat2;
+		}
+		else
+			newJoint.InvMatrix = mat.getTransposed();
 
 		geometryPrefab->Joints.push_back( newJoint );
 	}
 	
 	// set vertex weight
-	int nVertex = 0;//(int)vCount.size();
+	int nVertex = (int)vCount.size();
 	int id = 0;
 
 	for ( int i = 0; i < nVertex; i++ )
@@ -2106,7 +2126,7 @@ void CColladaFileLoader::readController(io::IXMLReaderUTF8* reader)
 			if ( controllerSectionName == reader->getNodeName())
 			{
 				// need create joint			
-				setJointOnPrefab( geometryPrefab, vcountArray, vArray, sources );
+				setJointOnPrefab( geometryPrefab, vcountArray, vArray, sources, FlipAxis );
 				
 				break;
 			}

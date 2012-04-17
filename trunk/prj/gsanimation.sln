@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gsanimation", "gsanimation\gsanimation.vcproj", "{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "uiClass", "..\..\extern\uiClass\uiClass.vcproj", "{F6927C75-E736-465E-8B59-FF1A716DEE6A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Irrlicht", "..\..\extern\irrlicht\source\Irrlicht\Irrlicht9.0.vcproj", "{E08E042A-6C45-411B-92BE-3CC31331019F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release - Fast FPU|Win32 = Release - Fast FPU|Win32
+		Release|Win32 = Release|Win32
+		SDL-Debug|Win32 = SDL-Debug|Win32
+		Static lib - Debug|Win32 = Static lib - Debug|Win32
+		Static lib - Release - Fast FPU|Win32 = Static lib - Release - Fast FPU|Win32
+		Static lib - Release|Win32 = Static lib - Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.Debug|Win32.Build.0 = Debug|Win32
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.Release - Fast FPU|Win32.ActiveCfg = Release|Win32
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.Release - Fast FPU|Win32.Build.0 = Release|Win32
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.Release|Win32.ActiveCfg = Release|Win32
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.Release|Win32.Build.0 = Release|Win32
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.SDL-Debug|Win32.ActiveCfg = Debug|Win32
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.SDL-Debug|Win32.Build.0 = Debug|Win32
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.Static lib - Debug|Win32.ActiveCfg = Debug|Win32
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.Static lib - Debug|Win32.Build.0 = Debug|Win32
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.Static lib - Release - Fast FPU|Win32.ActiveCfg = Release|Win32
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.Static lib - Release - Fast FPU|Win32.Build.0 = Release|Win32
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.Static lib - Release|Win32.ActiveCfg = Release|Win32
+		{E58A842A-6374-4D10-84CA-3CAD0B8D91BC}.Static lib - Release|Win32.Build.0 = Release|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.Debug|Win32.Build.0 = Debug|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.Release - Fast FPU|Win32.ActiveCfg = Release|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.Release - Fast FPU|Win32.Build.0 = Release|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.Release|Win32.ActiveCfg = Release|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.Release|Win32.Build.0 = Release|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.SDL-Debug|Win32.ActiveCfg = Debug|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.SDL-Debug|Win32.Build.0 = Debug|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.Static lib - Debug|Win32.ActiveCfg = Debug|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.Static lib - Debug|Win32.Build.0 = Debug|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.Static lib - Release - Fast FPU|Win32.ActiveCfg = Release|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.Static lib - Release - Fast FPU|Win32.Build.0 = Release|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.Static lib - Release|Win32.ActiveCfg = Release|Win32
+		{F6927C75-E736-465E-8B59-FF1A716DEE6A}.Static lib - Release|Win32.Build.0 = Release|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Debug|Win32.ActiveCfg = Static lib - Debug|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Debug|Win32.Build.0 = Static lib - Debug|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Release - Fast FPU|Win32.ActiveCfg = Release - Fast FPU|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Release - Fast FPU|Win32.Build.0 = Release - Fast FPU|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Release|Win32.ActiveCfg = Release|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Release|Win32.Build.0 = Release|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.SDL-Debug|Win32.ActiveCfg = SDL-Debug|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.SDL-Debug|Win32.Build.0 = SDL-Debug|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Static lib - Debug|Win32.ActiveCfg = Static lib - Debug|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Static lib - Debug|Win32.Build.0 = Static lib - Debug|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Static lib - Release - Fast FPU|Win32.ActiveCfg = Static lib - Release - Fast FPU|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Static lib - Release - Fast FPU|Win32.Build.0 = Static lib - Release - Fast FPU|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Static lib - Release|Win32.ActiveCfg = Static lib - Release|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Static lib - Release|Win32.Build.0 = Static lib - Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

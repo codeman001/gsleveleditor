@@ -13,7 +13,7 @@
 // Windows Header Files:
 #include <windows.h>
 
-#if defined(GSEDITOR) || defined(PARTICLE_EDITOR)
+#if defined(GSEDITOR) || defined(PARTICLE_EDITOR) || defined(GSANIMATION)
 
 // Windows Header Files:
 #include <windows.h>

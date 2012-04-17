@@ -91,10 +91,3 @@ daeCharacter
 		animSpeed: 24.0000000 | floatType;
 	}
 }
-wave
-{
-	Particle component
-	{
-		particleXml: data/particle/test1.xml | filePathType;
-	}
-}

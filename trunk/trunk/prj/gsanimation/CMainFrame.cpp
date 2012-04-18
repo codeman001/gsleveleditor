@@ -16,6 +16,41 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 {
 	int ret = uiForm::create( lpTitle, x, y, w, h, pParent, lpName );	
 
+	// add rebar
+	uiRebar *pRebar = ref<uiRebar>( new uiRebar(L"RebarTool", 0,0, 300,30, this) );	
+
+	// toolbar play
+	uiToolbar *pToolbar = ref<uiToolbar>( new uiToolbar(L"Tools", 0,0,0,0, 32,32, pRebar ) );
+	
+	uiBitmap iconOpen( MAKEINTRESOURCE(IDB_TOOLBAROPEN), true );	
+	uiBitmap iconSave( MAKEINTRESOURCE(IDB_TOOLBARSAVE), true );	
+	uiBitmap iconMesh( MAKEINTRESOURCE(IDB_TOOLBARMESH), true );
+	uiBitmap iconAnim( MAKEINTRESOURCE(IDB_TOOLBARANIM), true );
+
+	pToolbar->pushImage( &iconOpen );
+	pToolbar->pushImage( &iconSave );
+	pToolbar->pushImage( &iconMesh );
+	pToolbar->pushImage( &iconAnim );
+
+	pToolbar->setButtonWidth(120);	
+	pToolbar->setTextRight(true);
+
+	pToolbar->addButton(L"Open animation", 0);
+	pToolbar->addButton(L"Save animation", 1);	
+	pToolbar->addButton(L"Load mesh", 2);
+	pToolbar->addButton(L"Load animation", 3);
+
+	uiRebarBand bandToolbar( pToolbar,L"");
+	bandToolbar.setBreakBand( true );	
+	bandToolbar.enableGripper(false);
+	bandToolbar.setMinWidthHeight( 0, 39 );
+
+	// add band to rebar	
+	pRebar->addBand( &bandToolbar );
+	pRebar->setDock( this, UIDOCK_TOP );	
+	pRebar->showBandBorder( false );
+	pRebar->showWindow(true);
+
 	m_irrWin = ref<CIrrWindow>( new CIrrWindow(L"irrWindow", this) );
 	m_irrWin->changeWindowStyle( UISTYLE_CHILD );
 	m_irrWin->setDock( this, UIDOCK_FILL );

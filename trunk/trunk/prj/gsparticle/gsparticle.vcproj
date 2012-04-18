@@ -277,6 +277,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\SceneNode\CGameContainerSceneNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\SceneNode\CGameContainerSceneNode.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\SceneNode\CGameMeshSceneNode.cpp"
 					>
 				</File>
@@ -290,6 +298,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\SceneNode\CGameOxyzSceneNode.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\SceneNode\CGameParticleContainerSceneNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\SceneNode\CGameParticleContainerSceneNode.h"
 					>
 				</File>
 			</Filter>

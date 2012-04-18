@@ -1,14 +1,10 @@
 #include "stdafx.h"
 #include "CZone.h"
+#include "IView.h"
 
 #ifdef GSEDITOR
 #include "IDoc.h"
-#include "IView.h"
 #include "CDocument.h"
-#endif
-
-#ifdef GSANIMATION
-#include "IView.h"
 #endif
 
 #include "CObjTemplateFactory.h"

@@ -31,6 +31,11 @@ LANGUAGE 9, 1
 IDI_GSANIMATION       ICON         "gsanimation.ico"
 IDI_SMALL               ICON         "small.ico"
 
+IDB_TOOLBAROPEN		BITMAP		"toolbarIconOpen.bmp"
+IDB_TOOLBARSAVE		BITMAP		"toolbarIconSave.bmp"
+IDB_TOOLBARMESH		BITMAP		"toolbarIconMesh.bmp"
+IDB_TOOLBARANIM		BITMAP		"toolbarIconAnim.bmp"
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu

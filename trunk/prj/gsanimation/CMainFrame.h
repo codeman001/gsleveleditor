@@ -9,6 +9,7 @@ class CMainFrame: public uiForm
 protected:
 	CIrrWindow		*m_irrWin;
 	
+	uiListProperty	*m_propertyWin;
 public:
 	CMainFrame();
 	virtual ~CMainFrame();

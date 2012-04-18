@@ -14,6 +14,12 @@
 #define IDI_SMALL				108
 #define IDC_GSANIMATION			109
 #define IDC_MYICON				2
+
+#define IDB_TOOLBAROPEN			200
+#define IDB_TOOLBARSAVE			201
+#define IDB_TOOLBARMESH			202
+#define IDB_TOOLBARANIM			203
+
 #ifndef IDC_STATIC
 #define IDC_STATIC				-1
 #endif

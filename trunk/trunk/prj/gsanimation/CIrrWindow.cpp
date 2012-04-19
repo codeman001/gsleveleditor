@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CIrrWindow.h"
 
+
+
 CIrrWindow *g_irrView = NULL;
 
 IView* getIView()
@@ -95,8 +97,10 @@ void CIrrWindow::initScene()
 	ILightSceneNode *light = smgr->addLightSceneNode( pNode, core::vector3df(0, 0, 0) );
 	light->setLightType( video::ELT_DIRECTIONAL );
 
-	// add demo particle
+	// add demo mesh
 	m_animObject = new CGameObject();	
+	CAnimMeshComponent *animComponent = new CAnimMeshComponent(m_animObject);
+	m_animObject->m_components.push_back( animComponent );
 
 }
 

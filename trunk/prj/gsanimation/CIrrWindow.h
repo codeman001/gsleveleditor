@@ -8,7 +8,7 @@
 #include "CGameOxyzSceneNode.h"
 #include "CGameGSCameraAnimator.h"
 
-#include "CParticleComponent.h"
+#include "CAnimMeshComponent.h"
 
 class CIrrWindow: public uiWindow, public IView
 {
@@ -39,6 +39,11 @@ public:
 	inline CGameObject* getAnimObject()
 	{
 		return m_animObject;
+	}
+
+	CAnimMeshComponent* getAnimComponent()
+	{
+		return (CAnimMeshComponent*) m_animObject->getComponent( IObjectComponent::AnimMesh );
 	}
 
 	virtual void _OnSize(uiSizeEvent sizeEvent, int nWidth, int nHeight);

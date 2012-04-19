@@ -70,7 +70,7 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	pHeader->setColText(L"Next name", 1);
 	pHeader->setColText(L"Anim name", 2);
 	pHeader->setColText(L"Time begin", 3);
-	pHeader->setColText(L"Time", 4);
+	pHeader->setColText(L"Duration", 4);
 
 	m_propertyWin->showWindow( true );
 
@@ -193,7 +193,7 @@ void CMainFrame::toolbarLoadMesh( uiObject *pSender )
 	
 	uiSaveOpenDialog dialog;	
 	dialog.clearAllFileExt();
-	dialog.addFileExt( L"Mesh file (.x, *.dae)", L"*.x|*.dae" );
+	dialog.addFileExt( L"Mesh file (.x, *.dae)", L"*.x;*.dae" );
 	dialog.addFileExt( L"All files (.*)", L"*.*" );
 	if ( dialog.doModal( uiApplication::getRoot(), false ) == false )
 		return;
@@ -201,9 +201,28 @@ void CMainFrame::toolbarLoadMesh( uiObject *pSender )
 	dialog.getFileName( lpPath );
 	uiString::copy<char, WCHAR>( lpFileName, lpPath );
 
+	// load anim from file
+	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
+	animComponent->loadFromFile( lpFileName );
+
 }
 
 void CMainFrame::toolbarLoadAnimDae( uiObject *pSender )
 {
+	WCHAR lpPath[ MAX_PATH ] = {0};	
+	char lpFileName[ MAX_PATH ] = {0};
 	
+	uiSaveOpenDialog dialog;	
+	dialog.clearAllFileExt();
+	dialog.addFileExt( L"dae animation file (.*.dae)", L"*.dae" );
+	dialog.addFileExt( L"All files (.*)", L"*.*" );
+	if ( dialog.doModal( uiApplication::getRoot(), false ) == false )
+		return;
+		
+	dialog.getFileName( lpPath );
+	uiString::copy<char, WCHAR>( lpFileName, lpPath );
+
+	// load anim from file
+	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
+	animComponent->loadAnimFile( lpFileName );
 }

@@ -5,6 +5,39 @@
 #include "IObjectComponent.h"
 #include "CGameAnimatedMeshSceneNode.h"
 
+const int k_linear = 0;
+
+struct SAnimFrame
+{
+	float		m_time;
+
+	float		m_rotX;
+	float		m_rotY;
+	float		m_rotZ;
+	float		m_rotAngle;
+	
+	float		m_translateX;
+	float		m_translateY;
+	float		m_translateZ;
+
+	int			m_interpolation;
+};
+
+typedef vector<SAnimFrame>		ArrayAnimationFrame;
+
+
+
+struct SAnimClip
+{
+	std::string			m_id;
+	float				m_time;
+	float				m_duration;
+	bool				m_loop;	
+};
+
+typedef map<string, SAnimClip>				AnimationData;
+typedef map<string, ArrayAnimationFrame>	JointAnimation;
+
 class CAnimMeshComponent: public IObjectComponent
 {
 public:
@@ -13,7 +46,14 @@ protected:
 	CGameAnimatedMeshSceneNode*	m_animNode;
 
 	std::string					m_animeshFile;
+	std::string					m_animFile;
+
 	float						m_animSpeed;
+
+	AnimationData				m_animationData;
+	vector<string>				m_animationName;
+	JointAnimation				m_jointAnimation;
+
 public:
 	CAnimMeshComponent( CGameObject *pObj );
 
@@ -31,6 +71,17 @@ public:
 	// load anim object from file
 	void loadFromFile( char *lpFilename );
 
+	// loadAnimFile
+	// load animation bone from dae file
+	void loadAnimFile( char *lpFileName );
+
+protected:
+	
+	// parseAnimationNode
+	// parse anim node
+	void parseAnimationNode( io::IXMLReader *xmlRead );
+
+public:
 	// getMeshFile
 	// get current mesh file name
 	const char *getMeshFile()

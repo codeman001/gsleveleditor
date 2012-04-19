@@ -14,6 +14,10 @@ public:
 	CMainFrame();
 	virtual ~CMainFrame();
 
+protected:
+	
+	string	m_currentFile;
+
 public:
 
 	// create
@@ -37,6 +41,13 @@ public:
 	// messageMap
 	// Phan tich su kien cho uiForm
 	virtual LRESULT	messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+public:
+	
+	void toolbarOpenAnim( uiObject *pSender );
+	void toolbarSaveAnim( uiObject *pSender );
+	void toolbarLoadMesh( uiObject *pSender );
+	void toolbarLoadAnimDae( uiObject *pSender );
 
 };
 

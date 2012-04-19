@@ -3,7 +3,8 @@
 #include "Resource.h"
 
 CMainFrame::CMainFrame()
-{		
+{
+	m_currentFile = "";
 }
 
 CMainFrame::~CMainFrame()
@@ -35,10 +36,17 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	pToolbar->setButtonWidth(120);	
 	pToolbar->setTextRight(true);
 
-	pToolbar->addButton(L"Open animation", 0);
-	pToolbar->addButton(L"Save animation", 1);	
-	pToolbar->addButton(L"Load mesh", 2);
-	pToolbar->addButton(L"Load animation", 3);
+	uiToolbarButton *toolbarButton = pToolbar->addButton(L"Open animation", 0);
+	toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarOpenAnim>( this );
+
+	toolbarButton = pToolbar->addButton(L"Save animation", 1);	
+	toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarSaveAnim>( this );
+
+	toolbarButton = pToolbar->addButton(L"Load mesh", 2);
+	toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarLoadMesh>( this );
+
+	toolbarButton = pToolbar->addButton(L"Load animation", 3);
+	toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarLoadAnimDae>( this );
 
 	uiRebarBand bandToolbar( pToolbar,L"");
 	bandToolbar.setBreakBand( true );	
@@ -138,4 +146,64 @@ bool CMainFrame::registerWindow(LPWSTR lpNameApp, HINSTANCE hInst)
 LRESULT	CMainFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	return uiForm::messageMap(hWnd, uMsg, wParam, lParam);
+}
+
+void CMainFrame::toolbarOpenAnim( uiObject *pSender )
+{
+
+}
+
+void CMainFrame::toolbarSaveAnim( uiObject *pSender )
+{
+	WCHAR lpPath[ MAX_PATH ] = {0};	
+	char lpFileName[ MAX_PATH ] = {0};
+
+	if ( m_currentFile.size() == 0 )
+	{
+		uiSaveOpenDialog dialog;	
+		dialog.clearAllFileExt();
+		dialog.addFileExt( L"Animation (.anim)", L"*.anim");
+		dialog.addFileExt( L"All files (.*)", L"*.*" );
+		if ( dialog.doModal( uiApplication::getRoot(), true ) == false )
+			return;
+
+		dialog.getFileName( lpPath );
+		uiString::copy<char, WCHAR>( lpFileName, lpPath );
+		
+		//pParticleComponent->saveXML( lpFileName );
+
+		m_currentFile = lpFileName;
+	}
+	else
+	{
+		//pParticleComponent->saveXML( m_currentFile.c_str() );		
+	}
+
+	uiString::copy<WCHAR, const char>( lpPath, m_currentFile.c_str() );
+
+	WCHAR title[1024];
+	swprintf(title, 1024, L"%s - %s", TEXT( STR_APP_TITLE ), lpPath);
+	setCaption( title );
+}
+
+void CMainFrame::toolbarLoadMesh( uiObject *pSender )
+{
+	WCHAR lpPath[ MAX_PATH ] = {0};	
+	char lpFileName[ MAX_PATH ] = {0};
+	
+	uiSaveOpenDialog dialog;	
+	dialog.clearAllFileExt();
+	dialog.addFileExt( L"Mesh file (.x, *.dae)", L"*.x|*.dae" );
+	dialog.addFileExt( L"All files (.*)", L"*.*" );
+	if ( dialog.doModal( uiApplication::getRoot(), false ) == false )
+		return;
+		
+	dialog.getFileName( lpPath );
+	uiString::copy<char, WCHAR>( lpFileName, lpPath );
+
+}
+
+void CMainFrame::toolbarLoadAnimDae( uiObject *pSender )
+{
+	
 }

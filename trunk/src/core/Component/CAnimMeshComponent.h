@@ -81,6 +81,14 @@ protected:
 	// parse anim node
 	void parseAnimationNode( io::IXMLReader *xmlRead );
 
+	// getFrameAtTime
+	// get a frame at time
+	bool getFrameAtTime( ArrayAnimationFrame* frames, float time, SAnimFrame* frame );
+
+	// applyAnimation
+	// apply Animation to skin joint
+	void applyAnimation();
+
 public:
 	// getMeshFile
 	// get current mesh file name

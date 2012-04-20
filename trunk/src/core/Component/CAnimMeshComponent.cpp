@@ -150,6 +150,8 @@ void CAnimMeshComponent::loadAnimFile( char *lpFileName )
 	}
 	
 	xmlRead->drop();
+	
+	applyAnimation();
 }
 
 
@@ -310,6 +312,134 @@ void CAnimMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
 		}
 	}
 }
+
+// applyAnimation
+// apply Animation to skin joint
+void CAnimMeshComponent::applyAnimation()
+{
+	if ( m_animNode == NULL )
+		return;
+	
+	if ( m_animNode->getMesh()->getMeshType() != EAMT_SKINNED )
+		return;
+
+	ISkinnedMesh* mesh = (ISkinnedMesh*)m_animNode->getMesh();
+	if ( mesh == NULL )
+		return;
+	
+	core::array<ISkinnedMesh::SJoint*>&	allJoint = mesh->getAllJoints();
+	int nJoints = allJoint.size();
+	
+	float deltaTime = 1.0f/50;	
+	int frame = 0;
+
+	for ( int i = 0; i < nJoints; i++ )
+	{
+		ISkinnedMesh::SJoint* j = allJoint[i];
+		
+		core::matrix4 mat =	j->LocalMatrix;
+
+		j->PositionKeys.clear();
+		j->ScaleKeys.clear();
+		j->RotationKeys.clear();
+
+		JointAnimation::iterator it = m_jointAnimation.find( std::string(j->Name.c_str()) );
+
+		if ( it != m_jointAnimation.end() )
+		{
+			ArrayAnimationFrame& arrayFrame = it->second;
+
+			// get frame
+			SAnimFrame clip;
+			float time = 0;
+						
+			ISkinnedMesh::SPositionKey	pos;
+			ISkinnedMesh::SRotationKey	rot;
+
+			frame = 0;
+
+			while ( getFrameAtTime( &arrayFrame, time, &clip ) == true )
+			{
+				rot.frame = (float)frame;
+				rot.rotation.fromAngleAxis(
+						clip.m_rotAngle*core::DEGTORAD, 
+						core::vector3df(clip.m_rotX, clip.m_rotZ, clip.m_rotY)
+					);						
+				
+				pos.frame = (float)frame;
+				pos.position.X = clip.m_translateX;
+				pos.position.Y = clip.m_translateZ;
+				pos.position.Z = clip.m_translateY;				
+
+				mat.transformVect( pos.position );
+
+				j->RotationKeys.push_back( rot );
+				j->PositionKeys.push_back( pos );
+
+				time = time + deltaTime;
+				frame++;
+			}					
+
+		}
+	}
+
+	// update skin mesh
+	mesh->useAnimationFrom( mesh );
+	m_animNode->setFrameLoop(0, frame);
+
+}
+
+// getFrameAtTime
+// get a frame at time
+ bool CAnimMeshComponent::getFrameAtTime( ArrayAnimationFrame* frames, float time, SAnimFrame* outFrame )
+{
+	int nFrames = frames->size();
+
+	int first = 0, last = nFrames - 2;
+	int mid = 0;
+		
+	while (first <= last) 
+	{
+		mid = (first + last) / 2;
+				
+		if ( 
+				time > frames->at(mid).m_time && 
+				time > frames->at(mid + 1).m_time
+			)
+			first = mid + 1;
+		else if ( time < frames->at(mid).m_time )
+			last = mid - 1;
+		else
+		{
+			SAnimFrame frame = frames->at(mid);
+			SAnimFrame& nextFrame = frames->at(mid + 1);
+			
+			float dt = (nextFrame.m_time - frame.m_time);
+			float t = time - frame.m_time;
+			float f = t/dt;
+
+			// LINEAR calc
+			frame.m_time		= time;
+
+			frame.m_rotX		= frame.m_rotX + (nextFrame.m_rotX - frame.m_rotX)*f;
+			frame.m_rotY		= frame.m_rotY + (nextFrame.m_rotY - frame.m_rotY)*f;
+			frame.m_rotZ		= frame.m_rotZ + (nextFrame.m_rotZ - frame.m_rotZ)*f;
+			frame.m_rotAngle	= frame.m_rotAngle + (nextFrame.m_rotAngle - frame.m_rotAngle)*f;
+			
+			frame.m_translateX	= frame.m_translateX + (nextFrame.m_translateX - frame.m_translateX)*f;
+			frame.m_translateY	= frame.m_translateY + (nextFrame.m_translateY - frame.m_translateY)*f;
+			frame.m_translateZ	= frame.m_translateZ + (nextFrame.m_translateZ - frame.m_translateZ)*f;
+
+			*outFrame = frame;
+			return true;
+		}
+	}
+
+	*outFrame = frames->at(nFrames-1);
+	return false;
+
+}
+
 
 // init
 // run when init object

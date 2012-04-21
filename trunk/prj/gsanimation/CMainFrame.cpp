@@ -106,19 +106,11 @@ bool CMainFrame::_OnKeyUp( uiKeyEvent keyEvent )
 {
 	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
 	if ( animComponent == NULL )
-		return true;
-
-	static int s_frame = 0;
-	
-	s_frame++;
-	if ( s_frame > animComponent->getCurrentAnim().m_frames )
-		s_frame = 0;
+		return true;	
 
 	CGameAnimatedMeshSceneNode *node = animComponent->getAnimNode();
 	if ( node == NULL )
 		return true;
-
-	node->setFrameLoop(s_frame, s_frame);
 
 	return true;
 }
@@ -241,6 +233,5 @@ void CMainFrame::toolbarLoadAnimDae( uiObject *pSender )
 	// load anim from file
 	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
 	animComponent->loadAnimFile( lpFileName );
-	//animComponent->getAnimNode()->setFrameLoop(0,0);
 
 }

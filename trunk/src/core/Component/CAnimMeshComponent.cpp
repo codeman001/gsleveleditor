@@ -6,7 +6,7 @@ CAnimMeshComponent::CAnimMeshComponent( CGameObject *pObj )
 	:IObjectComponent( pObj, (int)IObjectComponent::AnimMesh )
 {
 	m_animNode = NULL;
-	m_animSpeed = 30.0f;	
+	m_animSpeed = 24.0f;
 }
 
 CAnimMeshComponent::~CAnimMeshComponent()
@@ -330,15 +330,12 @@ void CAnimMeshComponent::applyAnimation()
 	core::array<ISkinnedMesh::SJoint*>&	allJoint = mesh->getAllJoints();
 	int nJoints = allJoint.size();
 	
-	float deltaTime = 1.0f/m_animSpeed;
-	int frame = 0;
-
 	// get anim time data
-	const SAnimClip& animClip = m_animationData["walk"];
-
-	// get frame
-	SAnimFrame animFrame;
-	int atFrameID = 0;
+	SAnimClip& animClip = m_animationData["run"];
+	
+	int fromFrame = 0, toFrame = 0;
+	core::quaternion q1, q2;
+	core::vector3df v1, v2;
 
 	for ( int i = 0; i < nJoints; i++ )
 	{
@@ -360,34 +357,50 @@ void CAnimMeshComponent::applyAnimation()
 			ISkinnedMesh::SPositionKey	pos;
 			ISkinnedMesh::SRotationKey	rot;
 
-			frame = 0;
-
+			float currentTime = 0;
 			float time	= animClip.m_time;
 			float end	= animClip.m_time + animClip.m_duration;
-
-			while ( time < end )
+			
+			getFrameAtTime( &arrayFrame, time, &fromFrame,	&q1, &v1 );
+			getFrameAtTime( &arrayFrame, end,  &toFrame,	&q2, &v2 );
+			
+			// save frame data			
+			animClip.m_frames = (int) ((end - time) * m_animSpeed);
+			
+			for ( int i = fromFrame; i <= toFrame; i++ )
 			{
-				getFrameAtTime( &arrayFrame, time, &animFrame, &atFrameID );
-
-
-				rot.frame = (float)frame;
-				rot.rotation.fromAngleAxis(
-						animFrame.m_rotAngle*core::DEGTORAD, 
-						core::vector3df(animFrame.m_rotX, animFrame.m_rotZ, animFrame.m_rotY)
-					);						
-
-				pos.frame = (float)frame;
+				SAnimFrame& animFrame = arrayFrame[i];
+								
+				if ( i == fromFrame )
+				{
+					currentTime = 0;
+					rot.rotation = q1;
+				}
+				else if ( i == toFrame )
+				{
+					rot.rotation = q2;
+					currentTime = end - time;
+				}
+				else
+				{
+					currentTime =  animFrame.m_time - time;
+					rot.rotation.fromAngleAxis(
+							animFrame.m_rotAngle*core::DEGTORAD, 
+							core::vector3df(animFrame.m_rotX, animFrame.m_rotZ, animFrame.m_rotY)
+						);						
+				}
+				
 				pos.position.X = 0;//animFrame.m_translateY;
 				pos.position.Y = 0;//animFrame.m_translateZ;
 				pos.position.Z = 0;//animFrame.m_translateX;
 
 				mat.transformVect( pos.position );
 
+				rot.frame = currentTime * m_animSpeed;
+				pos.frame = currentTime * m_animSpeed;
+
 				j->RotationKeys.push_back( rot );
 				j->PositionKeys.push_back( pos );
-
-				time = time + deltaTime;
-				frame++;
 			}					
 
 		}		
@@ -395,16 +408,16 @@ void CAnimMeshComponent::applyAnimation()
 
 	// update skin mesh
 	mesh->useAnimationFrom( mesh );
-	m_animNode->setFrameLoop(0, frame);
+	m_animNode->setFrameLoop( 0, animClip.m_frames );
+	m_animNode->setAnimationSpeed( m_animSpeed );
 
 	// update current anim
 	m_currentAnim = animClip;	
-	m_currentAnim.m_frames = frame;
 }
 
 // getFrameAtTime
 // get a frame at time
- bool CAnimMeshComponent::getFrameAtTime( ArrayAnimationFrame* frames, float time, SAnimFrame* outFrame, int *frameID )
+ bool CAnimMeshComponent::getFrameAtTime( ArrayAnimationFrame* frames, float time, int *frameID, core::quaternion *rotateData, core::vector3df *translateData )
 {
 	int nFrames = frames->size();
 
@@ -420,37 +433,26 @@ void CAnimMeshComponent::applyAnimation()
 		else if ( time < frames->at(mid).m_time )
 			last = mid - 1;
 		else
-		{
-			SAnimFrame frame = frames->at(mid);
-			SAnimFrame& nextFrame = frames->at(mid + 1);
-			
-			float dt = (nextFrame.m_time - frame.m_time);
-			float t = time - frame.m_time;
-			float f = t/dt;
+		{			
+			SAnimFrame &frame1 = frames->at( mid );
+			SAnimFrame &frame2 = frames->at( mid + 1 );
+
+			core::quaternion q1, q2;
+			q1.fromAngleAxis( core::DEGTORAD * frame1.m_rotAngle, core::vector3df( frame1.m_rotX, frame1.m_rotZ, frame1.m_rotY ) );
+			q2.fromAngleAxis( core::DEGTORAD * frame2.m_rotAngle, core::vector3df( frame2.m_rotX, frame2.m_rotZ, frame2.m_rotY ) );
+
+			float f = (time - frame1.m_time)/(frame2.m_time - frame1.m_time);
+
+			// calc rotate
+			rotateData->slerp( q1, q2, f );
 
 			// set frame id
-			*frameID = mid;
-
-			// LINEAR calc
-			frame.m_time		= time;
-
-			frame.m_rotX		= frame.m_rotX;// + (nextFrame.m_rotX - frame.m_rotX)*f;
-			frame.m_rotY		= frame.m_rotY;// + (nextFrame.m_rotY - frame.m_rotY)*f;
-			frame.m_rotZ		= frame.m_rotZ;// + (nextFrame.m_rotZ - frame.m_rotZ)*f;
-			frame.m_rotAngle	= frame.m_rotAngle;// + (nextFrame.m_rotAngle - frame.m_rotAngle)*f;
-			
-			frame.m_translateX	= frame.m_translateX + (nextFrame.m_translateX - frame.m_translateX)*f;
-			frame.m_translateY	= frame.m_translateY + (nextFrame.m_translateY - frame.m_translateY)*f;
-			frame.m_translateZ	= frame.m_translateZ + (nextFrame.m_translateZ - frame.m_translateZ)*f;
-
-			*outFrame = frame;
+			*frameID = mid;		
 			return true;
 		}
 	}
-
-	*outFrame = frames->at(nFrames-1);
+	
 	*frameID = nFrames-1;
-
 	return false;
 
 }

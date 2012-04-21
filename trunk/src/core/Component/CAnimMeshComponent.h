@@ -32,7 +32,8 @@ struct SAnimClip
 	std::string			m_id;
 	float				m_time;
 	float				m_duration;
-	bool				m_loop;	
+	bool				m_loop;
+	int					m_frames;
 };
 
 typedef map<string, SAnimClip>				AnimationData;
@@ -53,6 +54,9 @@ protected:
 	AnimationData				m_animationData;
 	vector<string>				m_animationName;
 	JointAnimation				m_jointAnimation;
+
+
+	SAnimClip					m_currentAnim;
 
 public:
 	CAnimMeshComponent( CGameObject *pObj );
@@ -83,7 +87,7 @@ protected:
 
 	// getFrameAtTime
 	// get a frame at time
-	bool getFrameAtTime( ArrayAnimationFrame* frames, float time, SAnimFrame* frame );
+	bool getFrameAtTime( ArrayAnimationFrame* frames, float time, SAnimFrame* frame, int *frameID );
 
 	// applyAnimation
 	// apply Animation to skin joint
@@ -108,6 +112,20 @@ public:
 			m_animNode->setAnimationSpeed( speed );
 
 		m_animSpeed = speed;
+	}
+
+	// getCurrentAnim
+	// get current anim
+	inline const SAnimClip& getCurrentAnim()
+	{
+		return m_currentAnim;
+	}
+
+	// CGameAnimatedMeshSceneNode
+	// return anim node
+	inline CGameAnimatedMeshSceneNode* getAnimNode()
+	{
+		return m_animNode;
 	}
 
 public:

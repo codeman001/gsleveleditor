@@ -6,7 +6,7 @@ CAnimMeshComponent::CAnimMeshComponent( CGameObject *pObj )
 	:IObjectComponent( pObj, (int)IObjectComponent::AnimMesh )
 {
 	m_animNode = NULL;
-	m_animSpeed = 24.0f;	
+	m_animSpeed = 30.0f;	
 }
 
 CAnimMeshComponent::~CAnimMeshComponent()
@@ -276,12 +276,12 @@ void CAnimMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
 							else
 							{
 								if ( isRotation && numArray == 4 )
-								{
+								{				
 									frameData.m_rotX = arrayFloat[0];
 									frameData.m_rotY = arrayFloat[1];
 									frameData.m_rotZ = arrayFloat[2];
 									frameData.m_rotAngle = arrayFloat[3];
-
+																			
 									numArray = 0;
 									frame++;
 								}
@@ -330,46 +330,56 @@ void CAnimMeshComponent::applyAnimation()
 	core::array<ISkinnedMesh::SJoint*>&	allJoint = mesh->getAllJoints();
 	int nJoints = allJoint.size();
 	
-	float deltaTime = 1.0f/50;	
+	float deltaTime = 1.0f/m_animSpeed;
 	int frame = 0;
+
+	// get anim time data
+	const SAnimClip& animClip = m_animationData["walk"];
+
+	// get frame
+	SAnimFrame animFrame;
+	int atFrameID = 0;
 
 	for ( int i = 0; i < nJoints; i++ )
 	{
 		ISkinnedMesh::SJoint* j = allJoint[i];
-		
-		core::matrix4 mat =	j->LocalMatrix;
-
+				
 		j->PositionKeys.clear();
 		j->ScaleKeys.clear();
 		j->RotationKeys.clear();
+				
+		// get local matrix of skin joint
+		const core::matrix4& mat =	j->LocalMatrix;	
 
+		// get joint node
 		JointAnimation::iterator it = m_jointAnimation.find( std::string(j->Name.c_str()) );
-
 		if ( it != m_jointAnimation.end() )
 		{
-			ArrayAnimationFrame& arrayFrame = it->second;
-
-			// get frame
-			SAnimFrame clip;
-			float time = 0;
+			ArrayAnimationFrame& arrayFrame = it->second;			
 						
 			ISkinnedMesh::SPositionKey	pos;
 			ISkinnedMesh::SRotationKey	rot;
 
 			frame = 0;
 
-			while ( getFrameAtTime( &arrayFrame, time, &clip ) == true )
+			float time	= animClip.m_time;
+			float end	= animClip.m_time + animClip.m_duration;
+
+			while ( time < end )
 			{
+				getFrameAtTime( &arrayFrame, time, &animFrame, &atFrameID );
+
+
 				rot.frame = (float)frame;
 				rot.rotation.fromAngleAxis(
-						clip.m_rotAngle*core::DEGTORAD, 
-						core::vector3df(clip.m_rotX, clip.m_rotZ, clip.m_rotY)
+						animFrame.m_rotAngle*core::DEGTORAD, 
+						core::vector3df(animFrame.m_rotX, animFrame.m_rotZ, animFrame.m_rotY)
 					);						
-				
+
 				pos.frame = (float)frame;
-				pos.position.X = clip.m_translateX;
-				pos.position.Y = clip.m_translateZ;
-				pos.position.Z = clip.m_translateY;				
+				pos.position.X = 0;//animFrame.m_translateY;
+				pos.position.Y = 0;//animFrame.m_translateZ;
+				pos.position.Z = 0;//animFrame.m_translateX;
 
 				mat.transformVect( pos.position );
 
@@ -381,17 +391,24 @@ void CAnimMeshComponent::applyAnimation()
 			}					
 
 		}
+
+		if ( i == 1 )
+			break;
+		
 	}
 
 	// update skin mesh
 	mesh->useAnimationFrom( mesh );
 	m_animNode->setFrameLoop(0, frame);
 
+	// update current anim
+	m_currentAnim = animClip;	
+	m_currentAnim.m_frames = frame;
 }
 
 // getFrameAtTime
 // get a frame at time
- bool CAnimMeshComponent::getFrameAtTime( ArrayAnimationFrame* frames, float time, SAnimFrame* outFrame )
+ bool CAnimMeshComponent::getFrameAtTime( ArrayAnimationFrame* frames, float time, SAnimFrame* outFrame, int *frameID )
 {
 	int nFrames = frames->size();
 
@@ -401,11 +418,8 @@ void CAnimMeshComponent::applyAnimation()
 	while (first <= last) 
 	{
 		mid = (first + last) / 2;
-				
-		if ( 
-				time > frames->at(mid).m_time && 
-				time > frames->at(mid + 1).m_time
-			)
+
+		if ( time > frames->at(mid).m_time && time > frames->at(mid + 1).m_time )
 			first = mid + 1;
 		else if ( time < frames->at(mid).m_time )
 			last = mid - 1;
@@ -417,6 +431,9 @@ void CAnimMeshComponent::applyAnimation()
 			float dt = (nextFrame.m_time - frame.m_time);
 			float t = time - frame.m_time;
 			float f = t/dt;
+
+			// set frame id
+			*frameID = mid;
 
 			// LINEAR calc
 			frame.m_time		= time;
@@ -436,6 +453,8 @@ void CAnimMeshComponent::applyAnimation()
 	}
 
 	*outFrame = frames->at(nFrames-1);
+	*frameID = nFrames-1;
+
 	return false;
 
 }

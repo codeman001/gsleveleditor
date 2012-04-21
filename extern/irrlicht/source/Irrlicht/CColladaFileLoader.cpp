@@ -660,7 +660,9 @@ void updateJointOnPrefab( CGeometryPrefab*	geometryPrefab, CScenePrefab *root )
 			}
 						
 			ISkinnedMesh::SJoint* nodeJoint = skinMesh->addJoint(parentJoint);
+			
 			node->data = nodeJoint;
+			nodeJoint->Name = node->getId();
 
 			SColladaJoint *sourceJoint = NULL;
 

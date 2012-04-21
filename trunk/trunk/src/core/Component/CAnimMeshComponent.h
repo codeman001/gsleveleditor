@@ -33,6 +33,7 @@ struct SAnimClip
 	float				m_time;
 	float				m_duration;
 	bool				m_loop;
+	
 	int					m_frames;
 };
 
@@ -87,7 +88,7 @@ protected:
 
 	// getFrameAtTime
 	// get a frame at time
-	bool getFrameAtTime( ArrayAnimationFrame* frames, float time, SAnimFrame* frame, int *frameID );
+	bool getFrameAtTime( ArrayAnimationFrame* frames, float time, int *frameID, core::quaternion *rotateData, core::vector3df *translateData );
 
 	// applyAnimation
 	// apply Animation to skin joint

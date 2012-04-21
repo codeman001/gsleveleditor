@@ -104,6 +104,22 @@ bool CMainFrame::_OnKeyDown( uiKeyEvent keyEvent )
 
 bool CMainFrame::_OnKeyUp( uiKeyEvent keyEvent )
 {
+	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
+	if ( animComponent == NULL )
+		return true;
+
+	static int s_frame = 0;
+	
+	s_frame++;
+	if ( s_frame > animComponent->getCurrentAnim().m_frames )
+		s_frame = 0;
+
+	CGameAnimatedMeshSceneNode *node = animComponent->getAnimNode();
+	if ( node == NULL )
+		return true;
+
+	node->setFrameLoop(s_frame, s_frame);
+
 	return true;
 }
 
@@ -144,7 +160,7 @@ bool CMainFrame::registerWindow(LPWSTR lpNameApp, HINSTANCE hInst)
 // messageMap
 // Phan tich su kien cho uiForm
 LRESULT	CMainFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+{	
 	return uiForm::messageMap(hWnd, uMsg, wParam, lParam);
 }
 
@@ -225,4 +241,6 @@ void CMainFrame::toolbarLoadAnimDae( uiObject *pSender )
 	// load anim from file
 	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
 	animComponent->loadAnimFile( lpFileName );
+	//animComponent->getAnimNode()->setFrameLoop(0,0);
+
 }

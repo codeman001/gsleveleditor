@@ -331,7 +331,7 @@ void CAnimMeshComponent::applyAnimation()
 	int nJoints = allJoint.size();
 	
 	// get anim time data
-	SAnimClip& animClip = m_animationData["run"];
+	SAnimClip& animClip = m_animationData["melee"];
 	
 	int fromFrame = 0, toFrame = 0;
 	core::quaternion q1, q2;
@@ -390,9 +390,9 @@ void CAnimMeshComponent::applyAnimation()
 						);						
 				}
 				
-				pos.position.X = 0;//animFrame.m_translateY;
-				pos.position.Y = 0;//animFrame.m_translateZ;
-				pos.position.Z = 0;//animFrame.m_translateX;
+				pos.position.X = animFrame.m_translateY;
+				pos.position.Y = animFrame.m_translateZ;
+				pos.position.Z = animFrame.m_translateX;
 
 				mat.transformVect( pos.position );
 

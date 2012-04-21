@@ -390,11 +390,7 @@ void CAnimMeshComponent::applyAnimation()
 				frame++;
 			}					
 
-		}
-
-		if ( i == 1 )
-			break;
-		
+		}		
 	}
 
 	// update skin mesh
@@ -438,10 +434,10 @@ void CAnimMeshComponent::applyAnimation()
 			// LINEAR calc
 			frame.m_time		= time;
 
-			frame.m_rotX		= frame.m_rotX + (nextFrame.m_rotX - frame.m_rotX)*f;
-			frame.m_rotY		= frame.m_rotY + (nextFrame.m_rotY - frame.m_rotY)*f;
-			frame.m_rotZ		= frame.m_rotZ + (nextFrame.m_rotZ - frame.m_rotZ)*f;
-			frame.m_rotAngle	= frame.m_rotAngle + (nextFrame.m_rotAngle - frame.m_rotAngle)*f;
+			frame.m_rotX		= frame.m_rotX;// + (nextFrame.m_rotX - frame.m_rotX)*f;
+			frame.m_rotY		= frame.m_rotY;// + (nextFrame.m_rotY - frame.m_rotY)*f;
+			frame.m_rotZ		= frame.m_rotZ;// + (nextFrame.m_rotZ - frame.m_rotZ)*f;
+			frame.m_rotAngle	= frame.m_rotAngle;// + (nextFrame.m_rotAngle - frame.m_rotAngle)*f;
 			
 			frame.m_translateX	= frame.m_translateX + (nextFrame.m_translateX - frame.m_translateX)*f;
 			frame.m_translateY	= frame.m_translateY + (nextFrame.m_translateY - frame.m_translateY)*f;

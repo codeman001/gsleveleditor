@@ -7,6 +7,8 @@ CAnimMeshComponent::CAnimMeshComponent( CGameObject *pObj )
 {
 	m_animNode = NULL;
 	m_animSpeed = 24.0f;
+
+	m_currentAnim = NULL;
 }
 
 CAnimMeshComponent::~CAnimMeshComponent()
@@ -151,7 +153,6 @@ void CAnimMeshComponent::loadAnimFile( char *lpFileName )
 	
 	xmlRead->drop();
 	
-	applyAnimation();
 }
 
 
@@ -313,9 +314,9 @@ void CAnimMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
 	}
 }
 
-// applyAnimation
+// setAnimation
 // apply Animation to skin joint
-void CAnimMeshComponent::applyAnimation()
+void CAnimMeshComponent::setAnimation(const char *lpAnimName)
 {
 	if ( m_animNode == NULL )
 		return;
@@ -331,7 +332,14 @@ void CAnimMeshComponent::applyAnimation()
 	int nJoints = allJoint.size();
 	
 	// get anim time data
-	SAnimClip& animClip = m_animationData["melee"];
+	AnimationData::iterator animIt = m_animationData.find( std::string(lpAnimName) );
+	if ( animIt == m_animationData.end() )
+		return;
+
+	const float defaultFps = 30.0f;
+	const float defaultTpf = 1.0f/defaultFps;
+
+	SAnimClip& animClip = animIt->second;
 	
 	int fromFrame = 0, toFrame = 0;
 	core::quaternion q1, q2;
@@ -365,21 +373,25 @@ void CAnimMeshComponent::applyAnimation()
 			getFrameAtTime( &arrayFrame, end,  &toFrame,	&q2, &v2 );
 			
 			// save frame data			
-			animClip.m_frames = (int) ((end - time) * m_animSpeed);
+			animClip.m_frames = (int) ((end - time) * defaultFps);
 			
 			for ( int i = fromFrame; i <= toFrame; i++ )
 			{
 				SAnimFrame& animFrame = arrayFrame[i];
-								
+				
+				pos.position.X = 0;
+				pos.position.Y = 0;
+				pos.position.Z = 0;
+
 				if ( i == fromFrame )
 				{
 					currentTime = 0;
-					rot.rotation = q1;
+					rot.rotation = q1;					
 				}
 				else if ( i == toFrame )
 				{
 					rot.rotation = q2;
-					currentTime = end - time;
+					currentTime = end - time;				
 				}
 				else
 				{
@@ -387,17 +399,21 @@ void CAnimMeshComponent::applyAnimation()
 					rot.rotation.fromAngleAxis(
 							animFrame.m_rotAngle*core::DEGTORAD, 
 							core::vector3df(animFrame.m_rotX, animFrame.m_rotZ, animFrame.m_rotY)
-						);						
+						);					
 				}
 				
-				pos.position.X = animFrame.m_translateY;
-				pos.position.Y = animFrame.m_translateZ;
-				pos.position.Z = animFrame.m_translateX;
+				if ( animClip.m_movePosition )
+				{
+					pos.position.X = animFrame.m_translateY;
+					pos.position.Y = animFrame.m_translateZ;
+					pos.position.Z = animFrame.m_translateX;
+				}
+
 
 				mat.transformVect( pos.position );
 
-				rot.frame = currentTime * m_animSpeed;
-				pos.frame = currentTime * m_animSpeed;
+				rot.frame = currentTime * defaultFps;
+				pos.frame = currentTime * defaultFps;
 
 				j->RotationKeys.push_back( rot );
 				j->PositionKeys.push_back( pos );
@@ -408,11 +424,10 @@ void CAnimMeshComponent::applyAnimation()
 
 	// update skin mesh
 	mesh->useAnimationFrom( mesh );
-	m_animNode->setFrameLoop( 0, animClip.m_frames );
-	m_animNode->setAnimationSpeed( m_animSpeed );
+	m_animNode->setFrameLoop( 0, animClip.m_frames );	
 
 	// update current anim
-	m_currentAnim = animClip;	
+	m_currentAnim = &animClip;	
 }
 
 // getFrameAtTime
@@ -445,6 +460,11 @@ void CAnimMeshComponent::applyAnimation()
 
 			// calc rotate
 			rotateData->slerp( q1, q2, f );
+
+			core::vector3df v1(frame1.m_translateY, frame1.m_rotZ, frame1.m_rotX);
+			core::vector3df v2(frame2.m_translateY, frame2.m_rotZ, frame2.m_rotX);
+
+			*translateData = v1 + (v2 - v1) * f;
 
 			// set frame id
 			*frameID = mid;		

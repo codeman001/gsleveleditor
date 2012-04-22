@@ -40,6 +40,13 @@ void CGameAnimatedMeshSceneNode::render()
 
 	setDebugDataVisible( EDS_SKELETON );
 #endif
+
+
+#ifdef GSANIMATION
+	setDebugDataVisible( EDS_BBOX | EDS_SKELETON );
+	m_owner->drawFrontUpLeftVector();	
+#endif
+
 	// draw animesh
 	CAnimatedMeshSceneNode::render();
 

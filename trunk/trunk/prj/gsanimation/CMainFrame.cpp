@@ -62,7 +62,7 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	uiSplitContainer *split = ref<uiSplitContainer>( new uiSplitContainer(L"mainSplit", 0, 0, 1000, 600, this, 2, 1) );
 	
 	m_irrWin = ref<CIrrWindow>( new CIrrWindow(L"irrWindow", split) );
-	m_propertyWin = ref<uiListProperty>( new uiListProperty(L"propertyWindow", 0,0, 1000, 30, split,5) );
+	m_propertyWin = ref<uiListProperty>( new uiListProperty(L"propertyWindow", 0,0, 1000, 30, split,7) );
 	
 	uiListPropertyGroup *pHeader = m_propertyWin->addGroup(L"Animation header");
 	pHeader->enableColText(true);
@@ -71,8 +71,11 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	pHeader->setColText(L"Anim name", 2);
 	pHeader->setColText(L"Time begin", 3);
 	pHeader->setColText(L"Duration", 4);
+	pHeader->setColText(L"Loop", 5);
+	pHeader->setColText(L"MovePosition", 6);
 
-	m_propertyWin->showWindow( true );
+	m_propertyWin->showWindow( true );	
+	m_propertyWin->setEventOnItemChange<CMainFrame, &CMainFrame::listPropertyOnItenChange>( this );
 
 	split->setWindow( m_irrWin, 0, 0 );
 	split->setWindow( m_propertyWin, 1, 0 );
@@ -233,5 +236,93 @@ void CMainFrame::toolbarLoadAnimDae( uiObject *pSender )
 	// load anim from file
 	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
 	animComponent->loadAnimFile( lpFileName );
+
+	// update anim data
+	updateAnimDataToUI();
+}
+
+
+void CMainFrame::updateAnimDataToUI()
+{	
+	m_propertyWin->deleteAllItem();
+
+	uiListPropertyGroup *pHeader = m_propertyWin->addGroup(L"Animation header");
+	pHeader->enableColText(true);
+	pHeader->setColText(L"State name", 0);
+	pHeader->setColText(L"Next name", 1);
+	pHeader->setColText(L"Anim name", 2);
+	pHeader->setColText(L"Time begin", 3);
+	pHeader->setColText(L"Duration", 4);
+	pHeader->setColText(L"Loop", 5);
+	pHeader->setColText(L"Move Position", 6);
+
+	WCHAR	wstringBuff[1024];
+
+	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
+	int numAnim = animComponent->getAnimCount();
+
+	for ( int i = 0; i < numAnim; i++ )
+	{
+		const char *animName = animComponent->getAnimName(i);
+		SAnimClip *clipInfo = animComponent->getAnimClip( animName );
+
+		if ( clipInfo == NULL )
+			continue;
+
+		uiString::copy<WCHAR, const char>( wstringBuff, animName );
+		
+		// add new row
+		uiListPropertyRow* pRow = m_propertyWin->addRowItem( wstringBuff );
+		
+		// set name of anim
+		pRow->setText( wstringBuff, 2 );
+		
+		// set time of anim
+		uiString::format<WCHAR>( wstringBuff, L"%f", clipInfo->m_time );
+		pRow->setText( wstringBuff, 3 );
+
+		// set duration on anim
+		uiString::format<WCHAR>( wstringBuff, L"%f", clipInfo->m_duration );
+		pRow->setText( wstringBuff, 4 );
+
+		// set looping of anim
+		if ( clipInfo->m_loop )
+			pRow->setText( L"true", 5 );
+		else
+			pRow->setText( L"false", 5 );
+
+		// set move position of anim
+		if ( clipInfo->m_movePosition )
+			pRow->setText( L"true", 6 );
+		else
+			pRow->setText( L"false", 6 );
+
+	}
+
+	// update list property
+	m_propertyWin->updateListProperty();
+
+}
+
+void CMainFrame::listPropertyOnItenChange( uiObject *pSender )
+{
+	uiListPropertyItem *pItem =	m_propertyWin->getLastClickItem();
+	if ( pItem == NULL )
+		return;
+
+	if ( pItem->getObjectType() != 2 )
+		return;
+
+	uiListPropertyRow *pRow = (uiListPropertyRow*) pItem;
+
+	WCHAR	wstringBuff[1024];
+	char	animName[1024];
+
+	pRow->getText( wstringBuff, 2 );
+	uiString::copy<char, WCHAR>( animName, wstringBuff );
+
+	// set animation for anim mesh
+	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
+	animComponent->setAnimation( animName );
 
 }

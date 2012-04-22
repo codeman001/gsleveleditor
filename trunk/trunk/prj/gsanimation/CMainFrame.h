@@ -44,10 +44,14 @@ public:
 
 public:
 	
+	void listPropertyOnItenChange( uiObject *pSender );
+
 	void toolbarOpenAnim( uiObject *pSender );
 	void toolbarSaveAnim( uiObject *pSender );
 	void toolbarLoadMesh( uiObject *pSender );
 	void toolbarLoadAnimDae( uiObject *pSender );
+
+	void updateAnimDataToUI();
 
 };
 

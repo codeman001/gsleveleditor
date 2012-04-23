@@ -8,7 +8,7 @@
 #include "CGameOxyzSceneNode.h"
 #include "CGameGSCameraAnimator.h"
 
-#include "CAnimMeshComponent.h"
+#include "CColladaMeshComponent.h"
 
 class CIrrWindow: public uiWindow, public IView
 {
@@ -41,9 +41,9 @@ public:
 		return m_animObject;
 	}
 
-	CAnimMeshComponent* getAnimComponent()
+	CColladaMeshComponent* getAnimComponent()
 	{
-		return (CAnimMeshComponent*) m_animObject->getComponent( IObjectComponent::AnimMesh );
+		return (CColladaMeshComponent*) m_animObject->getComponent( IObjectComponent::ColladaMesh );
 	}
 
 	virtual void _OnSize(uiSizeEvent sizeEvent, int nWidth, int nHeight);

@@ -19,7 +19,8 @@ public:
 		BoxObject,
 		Billboard,
 		Particle,
-		NumBuildInComponent = Billboard
+		ColladaMesh,
+		NumBuildInComponent = ColladaMesh
 	};
 
 	static const char *s_compType[];

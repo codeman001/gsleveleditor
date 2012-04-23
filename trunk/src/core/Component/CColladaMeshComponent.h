@@ -5,7 +5,17 @@
 #include "IObjectComponent.h"
 
 
+// const for animation
 const int k_linear = 0;
+
+// const for buffer
+const int k_positionBuffer = 0;
+const int k_normalBuffer = 1;
+const int k_texCoordBuffer = 2;
+
+// const for mesh
+const int k_mesh = 0;
+const int k_skinMesh = 1;
 
 struct SAnimFrame
 {
@@ -63,7 +73,33 @@ struct SEffect
 		return Id < other.Id;
 	}
 };
-typedef vector<SEffect>						ArrayEffects;
+typedef vector<SEffect> ArrayEffects;
+
+
+struct SEffectParam
+{
+	std::wstring		Name;
+	std::wstring		Source;
+	std::wstring		InitFromTexture;
+};
+typedef vector<SEffectParam> ArrayEffectParams;
+
+
+struct SBufferParam
+{
+	std::wstring		Name;
+	float				*FloatArray;
+	int					ArrayCount;
+	int					Type;
+};
+
+struct SMeshParam
+{
+	std::wstring			Name;
+	vector<SBufferParam>	Buffers;
+	int						Type;
+};
+typedef vector<SMeshParam>	ArrayMeshParams;
 
 
 class CColladaMeshComponent: public IObjectComponent
@@ -87,6 +123,8 @@ protected:
 
 	//	list of effect in collada scene
 	ArrayEffects				m_listEffects;
+	ArrayEffectParams			m_listEffectsParam;
+	ArrayMeshParams				m_listMesh;
 
 	// current node
 	ISceneNode					*m_colladaNode;
@@ -108,6 +146,10 @@ protected:
 	// parseEffectNode
 	// parse effect material node
 	void parseEffectNode( io::IXMLReader *xmlRead, SEffect* effect = NULL );
+	
+	// parseGeometryNode
+	// parse mesh data
+	void parseGeometryNode( io::IXMLReader *xmlRead );
 
 	// parseAnimationNode
 	// parse anim node

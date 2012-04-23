@@ -93,11 +93,62 @@ struct SBufferParam
 	int					Type;
 };
 
+struct SVerticesParam
+{
+	std::wstring		Name;
+	SBufferParam		*Position;
+	SBufferParam		*Normal;
+	SBufferParam		*TexCoord1;
+	SBufferParam		*TexCoord2;
+
+	SVerticesParam()
+	{
+		Position = NULL;
+		Normal = NULL;
+		TexCoord1 = NULL;
+		TexCoord2 = NULL;
+	}
+};
+
+struct STrianglesParam
+{
+	SVerticesParam		*Vertices;
+	SEffect				*Material;
+	int					NumTri;
+	s32					*IndexBuffer;
+
+	STrianglesParam()
+	{
+		Material = NULL;
+		Vertices = NULL;
+		NumTri = 0;
+		IndexBuffer = NULL;
+	}
+};
+
+
+struct SWeightParam
+{
+	u32 VertexID;		
+	f32 Strength;
+};
+
+struct SJointParam
+{
+	std::wstring			Name;
+	core::matrix4			InvMatrix;
+	vector<SWeightParam>	Weights;
+};
+
+
 struct SMeshParam
 {
 	std::wstring			Name;
 	vector<SBufferParam>	Buffers;
-	int						Type;
+	vector<SVerticesParam>	Vertices;
+	vector<STrianglesParam>	Triangles;
+	vector<SJointParam>		Joints;
+	int						Type;		
 };
 typedef vector<SMeshParam>	ArrayMeshParams;
 
@@ -151,6 +202,10 @@ protected:
 	// parse mesh data
 	void parseGeometryNode( io::IXMLReader *xmlRead );
 
+	// parseSkinNode
+	// parse skin data
+	void parseSkinNode( io::IXMLReader *xmlRead );
+
 	// parseAnimationNode
 	// parse anim node
 	void parseAnimationNode( io::IXMLReader *xmlRead );
@@ -159,6 +214,9 @@ protected:
 	// get a frame at time
 	bool getFrameAtTime( AnimationFrames* frames, float time, int *frameID, core::quaternion *rotateData, core::vector3df *translateData );
 
+	// updateJointToMesh
+	// update joint
+	void updateJointToMesh( SMeshParam *mesh, vector<wstring>& arrayName, float *arrayWeight, float *arrayTransform, vector<s32>& vCountArray, vector<s32>& vArray, bool flipZ );
 public:
 	// setAnimation
 	// apply Animation to skin joint

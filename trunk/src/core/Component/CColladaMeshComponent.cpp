@@ -5,12 +5,17 @@
 wstring			readId(io::IXMLReader *xmlRead);
 void			findNextNoneWhiteSpace(const c8** start);
 inline f32		readFloat(const c8** p);
+void			readIntsInsideElement(io::IXMLReader* reader, s32* ints, u32 count);
+void			readIntsInsideElement(io::IXMLReader* reader, vector<s32>& arrayInt);
 void			readFloatsInsideElement(io::IXMLReader* reader, f32* floats, u32 count);
+void			readStringInsideElement(io::IXMLReader* reader, vector<std::wstring>& arrayString);
 SColorf			readColorNode(io::IXMLReader* reader);
 f32				readFloatNode(io::IXMLReader* reader);
 ITexture*		getTextureFromImage( std::wstring& uri, ArrayEffectParams& listEffectParam);
 SBufferParam*	getBufferWithUri( std::wstring& uri, SMeshParam* mesh );
-
+SVerticesParam* getVerticesWithUri( std::wstring& uri, SMeshParam* mesh );
+SEffect*		getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam );
+SMeshParam*		getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam );
 
 CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 	:IObjectComponent( pObj, (int)IObjectComponent::ColladaMesh )
@@ -66,6 +71,7 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 
 	const std::wstring effectSectionName(L"effect");
 	const std::wstring geometrySectionName(L"geometry");
+	const std::wstring skinSectionName(L"skin");
 
 	while ( xmlRead->read() )
 	{
@@ -83,6 +89,11 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 				{
 					parseGeometryNode( xmlRead );
 				}
+				else if ( nodeName == skinSectionName )
+				{
+					parseSkinNode( xmlRead );
+				}
+				
 			}
 		case io::EXN_ELEMENT_END:
 			{
@@ -156,6 +167,9 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 			//<vertices>
 			else if ( nodeName == verticesNode )
 			{
+				SVerticesParam	verticesParam;
+				verticesParam.Name = readId( xmlRead );
+
 				while(xmlRead->read())
 				{		
 					if (xmlRead->getNodeType() == io::EXN_ELEMENT )
@@ -170,11 +184,24 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 							if ( buffer )
 							{
 								if ( semantic == L"POSITION" )
+								{
 									buffer->Type = k_positionBuffer;
+									verticesParam.Position = buffer;
+								}
 								else if ( semantic == L"NORMAL" )
+								{
 									buffer->Type = k_normalBuffer;
+									verticesParam.Normal = buffer;
+								}
 								else if ( semantic == L"TEXCOORD" )
+								{
 									buffer->Type = k_texCoordBuffer;
+									
+									if ( verticesParam.TexCoord1 == NULL )
+										verticesParam.TexCoord1 = buffer;
+									else if ( verticesParam.TexCoord1 != buffer )
+										verticesParam.TexCoord2 = buffer;
+								}
 							}
 
 						}
@@ -185,25 +212,47 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 							break;
 					}
 				}
+
+				// add vertex param
+				mesh.Vertices.push_back( verticesParam );
 			}
 			//<triangles>
 			else if ( nodeName == trianglesNode )
 			{
+				STrianglesParam triangle;
+				
+				triangle.NumTri = xmlRead->getAttributeValueAsInt(L"count");
+
+				std::wstring materialName = xmlRead->getAttributeValue(L"material");
+				triangle.Material = getEffectWithUri( materialName, m_listEffects );
 
 				while(xmlRead->read())
-				{		
+				{							
 					if (xmlRead->getNodeType() == io::EXN_ELEMENT )
 					{
-						if ( xmlRead->getNodeName() == L"p" )
+						if ( xmlRead->getNodeName() == inputNode )
 						{
+							std::wstring source = xmlRead->getAttributeValue(L"source");
+							source.erase( source.begin() );
+
+							triangle.Vertices = getVerticesWithUri( source, &mesh );
+						}
+						else if ( xmlRead->getNodeName() == std::wstring(L"p") && triangle.Vertices != NULL )
+						{
+							triangle.IndexBuffer = new s32[triangle.NumTri];
+							readIntsInsideElement( xmlRead, triangle.IndexBuffer, triangle.NumTri );
 						}
 					}					
 					else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END )
 					{
 						if ( xmlRead->getNodeName() == trianglesNode )
 							break;
-					}
+					}				
 				}
+
+				// add triangles
+				if ( triangle.IndexBuffer != NULL )
+					mesh.Triangles.push_back( triangle );
 			}
 		}
 		else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END)
@@ -216,6 +265,110 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 	m_listMesh.push_back( mesh );
 
 }
+
+// parseSkinNode
+// parse skin data
+void CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
+{
+	std::wstring source = xmlRead->getAttributeValue(L"source");
+	source.erase( source.begin() );
+
+	SMeshParam *mesh = getMeshWithUri( source, m_listMesh );
+	if ( mesh == NULL )
+		return;
+	
+	const std::wstring paramSectionName(L"param");
+	const std::wstring skinSectionName(L"skin");
+	const std::wstring jointsSectionName(L"joints");
+	const std::wstring weightsSectionName(L"vertex_weights");
+	const std::wstring nameArraySectionName(L"Name_array");
+	const std::wstring floatArraySectionName(L"float_array");
+	const std::wstring intArraySectionName(L"int_array");
+	const std::wstring vcountNode(L"vcount");
+	const std::wstring vNode(L"v");
+	const std::wstring sourceNode(L"source");
+
+	vector<std::wstring>	nameArray;
+
+	int						numArray = 0;
+	float					*jointArray = NULL;
+	float					*transformArray = NULL;
+	float					*weightArray = NULL;
+	
+	vector<s32>				vCountArray;
+	vector<s32>				vArray;
+
+	while(xmlRead->read())
+	{							
+		if (xmlRead->getNodeType() == io::EXN_ELEMENT )
+		{
+			std::wstring node = xmlRead->getNodeName();
+
+			// <source>
+			if ( node == sourceNode )
+			{
+				float *f = NULL;
+
+				while(xmlRead->read())
+				{
+					if (xmlRead->getNodeType() == io::EXN_ELEMENT )
+					{
+						// <Name_array>
+						if ( xmlRead->getNodeName() == nameArraySectionName )
+						{
+							int count = xmlRead->getAttributeValueAsInt(L"count");
+							nameArray.resize( count );
+							numArray = count;
+							readStringInsideElement( xmlRead, nameArray );
+						}
+						// <float_array>
+						else if ( xmlRead->getNodeName() == floatArraySectionName )
+						{
+							int count = xmlRead->getAttributeValueAsInt(L"count");
+							numArray = count;
+							f = new float[count];
+							readFloatsInsideElement( xmlRead, f, count );
+						}
+						// <param>	inside <accessor>
+						else if ( xmlRead->getNodeName() == paramSectionName )
+						{
+							std::wstring name = xmlRead->getAttributeValue(L"name");
+							if ( name == L"TRANSFORM" )
+								transformArray = f;
+							else if ( name == L"WEIGHT" )
+								weightArray = f;
+						}
+					}				
+					else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END )
+					{
+						if ( xmlRead->getNodeName() == sourceNode )
+							break;
+					}
+				}
+			}
+			// <vcount>
+			else if ( node == vcountNode )
+			{
+				readIntsInsideElement( xmlRead, vCountArray );
+			}
+			// <vNode>
+			else if ( node == vNode )
+			{
+				readIntsInsideElement( xmlRead, vArray );
+			}
+		}		
+		else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END )
+		{
+			if ( xmlRead->getNodeName() == skinSectionName )
+				break;
+		}
+	}
+	
+	mesh->Type = k_skinMesh;
+	updateJointToMesh( mesh, nameArray, weightArray, transformArray, vCountArray, vArray, true );
+
+}
+
 
 
 // parseEffectNode
@@ -700,6 +853,78 @@ void CColladaMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
 	}
 }
 
+// updateJointToMesh
+// update joint
+void CColladaMeshComponent::updateJointToMesh( SMeshParam *mesh, vector<wstring>& arrayName, float *arrayWeight, float *arrayTransform, vector<s32>& vCountArray, vector<s32>& vArray, bool flipZ )
+{
+	int numJoint = (int)arrayName.size();
+
+	// get array float
+	f32* f = (f32*)arrayTransform;
+
+	for ( int i = 0; i < numJoint; i++ )
+	{
+		SJointParam newJoint;
+
+		newJoint.Name = arrayName[i];
+
+		core::matrix4 mat;
+		mat.setM( f + i*16 );
+		
+		if (flipZ)
+		{
+			core::matrix4 mat2(mat, core::matrix4::EM4CONST_TRANSPOSED);
+
+			mat2[1]=mat[8];
+			mat2[2]=mat[4];
+			mat2[4]=mat[2];
+			mat2[5]=mat[10];
+			mat2[6]=mat[6];
+			mat2[8]=mat[1];
+			mat2[9]=mat[9];
+			mat2[10]=mat[5];
+			mat2[12]=mat[3];
+			mat2[13]=mat[11];
+			mat2[14]=mat[7];
+
+			newJoint.InvMatrix = mat2;
+		}
+		else
+			newJoint.InvMatrix = mat.getTransposed();
+
+		
+		// add joint to controller
+		mesh->Joints.push_back( newJoint );
+	}
+	
+	// set vertex weight
+	int nVertex = (int)vCountArray.size();
+	int id = 0;
+
+	for ( int i = 0; i < nVertex; i++ )
+	{
+		// num of bone in vertex
+		int nBone = vCountArray[i];
+
+		// loop on bone in vertex		
+		for ( int iBone = 0; iBone < nBone; iBone++, id+=2 )
+		{
+			u32 boneId		= vArray[id];
+			u32 weightId	= vArray[id + 1];
+			f32 f			= arrayWeight[weightId];
+			
+			SWeightParam weightParam;
+
+			weightParam.VertexID = i;
+			weightParam.Strength = f;
+
+			// add weight on bone
+			mesh->Joints[boneId].Weights.push_back( weightParam );
+		}
+
+	}
+}
+
 // setAnimation
 // apply Animation to skin joint
 void CColladaMeshComponent::setAnimation(const char *lpAnimName)
@@ -977,7 +1202,7 @@ void readFloatsInsideElement(io::IXMLReader* reader, f32* floats, u32 count)
 
 
 //! reads ints from inside of xml element until end of xml element
-void readIntsInsideElement(io::IXMLReaderUTF8* reader, s32* ints, u32 count)
+void readIntsInsideElement(io::IXMLReader* reader, s32* ints, u32 count)
 {
 	if (reader->isEmptyElement())
 		return;
@@ -1001,6 +1226,92 @@ void readIntsInsideElement(io::IXMLReaderUTF8* reader, s32* ints, u32 count)
 					ints[i] = (s32)readFloat(&p);
 				else
 					ints[i] = 0;
+			}
+		}
+		else
+		if (reader->getNodeType() == io::EXN_ELEMENT_END)
+			break; // end parsing text
+	}
+}
+
+//! reads ints from inside of xml element until end of xml element
+void readIntsInsideElement(io::IXMLReader* reader, vector<s32>& arrayInt)
+{
+	if (reader->isEmptyElement())
+		return;
+
+	while(reader->read())
+	{
+		// TODO: check for comments inside the element
+		// and ignore them.
+
+		if (reader->getNodeType() == io::EXN_TEXT)
+		{
+			core::stringw data = reader->getNodeData();
+			data.trim();
+			
+			wchar_t* p = &data[0];
+			wchar_t* begin = &data[0];
+
+			int value = 0;
+					
+
+			while ( *p )
+			{
+				while(*p && !(*p==L' ' || *p==L'\n' || *p==L'\r' || *p==L'\t'))
+					++p;
+
+				*p = NULL;
+
+				if (*begin)
+				{
+					uiString::parseToInt<wchar_t>( begin, &value );
+					arrayInt.push_back( value );
+				}				
+
+				p++;
+				begin = p;
+			}
+
+		}
+		else
+		if (reader->getNodeType() == io::EXN_ELEMENT_END)
+			break; // end parsing text
+	}
+}				
+
+void readStringInsideElement(io::IXMLReader* reader, vector<std::wstring>& arrayString)
+{
+	if (reader->isEmptyElement())
+		return;
+
+	while(reader->read())
+	{
+		// TODO: check for comments inside the element
+		// and ignore them.
+
+		if (reader->getNodeType() == io::EXN_TEXT)
+		{
+			core::stringw data = reader->getNodeData();
+			data.trim();
+			
+			wchar_t* p = &data[0];
+			wchar_t* begin = &data[0];
+
+			for (u32 i=0; i< arrayString.size(); ++i)
+			{
+				while(*p && !(*p==L' ' || *p==L'\n' || *p==L'\r' || *p==L'\t'))
+					++p;
+
+				*p = NULL;
+
+				if (*begin)
+					arrayString[i] = std::wstring(begin);
+				else
+					arrayString[i] = std::wstring(L"");
+
+				p++;
+				begin = p;
 			}
 		}
 		else
@@ -1071,5 +1382,47 @@ SBufferParam* getBufferWithUri( std::wstring& uri, SMeshParam* mesh )
 			return &mesh->Buffers[i];
 		}
 	}
+	return NULL;
+}
+
+SVerticesParam* getVerticesWithUri( std::wstring& uri, SMeshParam* mesh )
+{	
+	int n = mesh->Vertices.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( mesh->Vertices[i].Name == uri )
+		{
+			return &mesh->Vertices[i];
+		}
+	}
+	return NULL;
+}
+
+SEffect* getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam )
+{
+	std::wstring fxName = uri + L"-fx";
+
+	int n = listEffectParam.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listEffectParam[i].Id == fxName )
+		{
+			return &listEffectParam[i];
+		}
+	}
+	return NULL;
+}
+
+SMeshParam*	getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam )
+{
+	int n = listMeshParam.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listMeshParam[i].Name == uri )
+		{
+			return &listMeshParam[i];
+		}
+	}
+
 	return NULL;
 }

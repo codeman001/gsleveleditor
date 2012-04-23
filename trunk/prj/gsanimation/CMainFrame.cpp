@@ -107,14 +107,6 @@ bool CMainFrame::_OnKeyDown( uiKeyEvent keyEvent )
 
 bool CMainFrame::_OnKeyUp( uiKeyEvent keyEvent )
 {
-	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
-	if ( animComponent == NULL )
-		return true;	
-
-	CGameAnimatedMeshSceneNode *node = animComponent->getAnimNode();
-	if ( node == NULL )
-		return true;
-
 	return true;
 }
 
@@ -213,8 +205,8 @@ void CMainFrame::toolbarLoadMesh( uiObject *pSender )
 	uiString::copy<char, WCHAR>( lpFileName, lpPath );
 
 	// load anim from file
-	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
-	animComponent->loadFromFile( lpFileName );
+	CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
+	colladaComponent->loadFromFile( lpFileName );
 
 }
 
@@ -234,8 +226,8 @@ void CMainFrame::toolbarLoadAnimDae( uiObject *pSender )
 	uiString::copy<char, WCHAR>( lpFileName, lpPath );
 
 	// load anim from file
-	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
-	animComponent->loadAnimFile( lpFileName );
+	CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
+	colladaComponent->loadAnimFile( lpFileName );
 
 	// update anim data
 	updateAnimDataToUI();
@@ -258,13 +250,13 @@ void CMainFrame::updateAnimDataToUI()
 
 	WCHAR	wstringBuff[1024];
 
-	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
-	int numAnim = animComponent->getAnimCount();
+	CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
+	int numAnim = colladaComponent->getAnimCount();
 
 	for ( int i = 0; i < numAnim; i++ )
 	{
-		const char *animName = animComponent->getAnimName(i);
-		SAnimClip *clipInfo = animComponent->getAnimClip( animName );
+		const char *animName = colladaComponent->getAnimName(i);
+		SAnimClip *clipInfo = colladaComponent->getAnimClip( animName );
 
 		if ( clipInfo == NULL )
 			continue;
@@ -322,7 +314,7 @@ void CMainFrame::listPropertyOnItenChange( uiObject *pSender )
 	uiString::copy<char, WCHAR>( animName, wstringBuff );
 
 	// set animation for anim mesh
-	CAnimMeshComponent* animComponent = m_irrWin->getAnimComponent();
-	animComponent->setAnimation( animName );
+	CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
+	colladaComponent->setAnimation( animName );
 
 }

@@ -265,6 +265,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\Component\CColladaMeshComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Component\CColladaMeshComponent.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\Component\CComponentFactory.cpp"
 					>
 				</File>

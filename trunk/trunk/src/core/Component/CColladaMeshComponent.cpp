@@ -8,8 +8,8 @@ inline f32		readFloat(const c8** p);
 void			readFloatsInsideElement(io::IXMLReader* reader, f32* floats, u32 count);
 SColorf			readColorNode(io::IXMLReader* reader);
 f32				readFloatNode(io::IXMLReader* reader);
-ITexture*		getTextureFromImage( std::wstring uri);
-
+ITexture*		getTextureFromImage( std::wstring& uri, ArrayEffectParams& listEffectParam);
+SBufferParam*	getBufferWithUri( std::wstring& uri, SMeshParam* mesh );
 
 
 CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
@@ -65,6 +65,7 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 	}
 
 	const std::wstring effectSectionName(L"effect");
+	const std::wstring geometrySectionName(L"geometry");
 
 	while ( xmlRead->read() )
 	{
@@ -77,6 +78,10 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 				if ( nodeName == effectSectionName )
 				{
 					parseEffectNode( xmlRead );
+				}
+				else if ( nodeName == geometrySectionName )
+				{
+					parseGeometryNode( xmlRead );
 				}
 			}
 		case io::EXN_ELEMENT_END:
@@ -91,6 +96,124 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 	}
 	
 	xmlRead->drop();
+
+}
+
+// parseGeometryNode
+// parse mesh data
+void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
+{
+	const std::wstring geometrySectionName(L"geometry");
+	const std::wstring sourceNode(L"source");
+	const std::wstring verticesNode(L"vertices");
+	const std::wstring trianglesNode(L"triangles");
+	const std::wstring floatArrayNode(L"float_array");
+	const std::wstring inputNode(L"input");
+
+	SMeshParam mesh;
+	
+	mesh.Type = k_mesh;
+	mesh.Name = readId( xmlRead );
+
+	while(xmlRead->read())
+	{
+		if (xmlRead->getNodeType() == io::EXN_ELEMENT)
+		{	
+			std::wstring nodeName = xmlRead->getNodeName();
+
+			//<source>
+			if ( nodeName == sourceNode )
+			{
+				SBufferParam buffer;
+
+				buffer.Name = readId( xmlRead );
+				buffer.Type = k_positionBuffer;
+				buffer.ArrayCount = 0;
+				buffer.FloatArray = NULL;
+
+				while(xmlRead->read())
+				{		
+					if (xmlRead->getNodeType() == io::EXN_ELEMENT )
+					{
+						if ( xmlRead->getNodeName() == floatArrayNode )
+						{
+							buffer.ArrayCount = xmlRead->getAttributeValueAsInt(L"count");							
+							buffer.FloatArray = new float[ buffer.ArrayCount ];
+
+							readFloatsInsideElement( xmlRead, buffer.FloatArray, buffer.ArrayCount );							
+						}
+					}
+					else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END )
+					{
+						if ( xmlRead->getNodeName() == sourceNode )
+							break;
+					}
+				}
+				
+				mesh.Buffers.push_back( buffer );
+				
+			}
+			//<vertices>
+			else if ( nodeName == verticesNode )
+			{
+				while(xmlRead->read())
+				{		
+					if (xmlRead->getNodeType() == io::EXN_ELEMENT )
+					{
+						if ( xmlRead->getNodeName() == inputNode )
+						{
+							std::wstring semantic = xmlRead->getAttributeValue(L"semantic");
+							std::wstring source = xmlRead->getAttributeValue(L"source");
+							source.erase( source.begin() );
+
+							SBufferParam *buffer = getBufferWithUri( source, &mesh );
+							if ( buffer )
+							{
+								if ( semantic == L"POSITION" )
+									buffer->Type = k_positionBuffer;
+								else if ( semantic == L"NORMAL" )
+									buffer->Type = k_normalBuffer;
+								else if ( semantic == L"TEXCOORD" )
+									buffer->Type = k_texCoordBuffer;
+							}
+
+						}
+					}
+					else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END )
+					{
+						if ( xmlRead->getNodeName() == verticesNode )
+							break;
+					}
+				}
+			}
+			//<triangles>
+			else if ( nodeName == trianglesNode )
+			{
+
+				while(xmlRead->read())
+				{		
+					if (xmlRead->getNodeType() == io::EXN_ELEMENT )
+					{
+						if ( xmlRead->getNodeName() == L"p" )
+						{
+						}
+					}					
+					else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END )
+					{
+						if ( xmlRead->getNodeName() == trianglesNode )
+							break;
+					}
+				}
+			}
+		}
+		else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END)
+		{		
+			if ( xmlRead->getNodeName() == geometrySectionName )
+				break;
+		}
+	}
+	
+	m_listMesh.push_back( mesh );
 
 }
 
@@ -135,6 +258,9 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 	const std::wstring extraNodeName(L"extra");
 	const std::wstring newParamName(L"newparam");
 
+	const std::wstring initFromNode(L"init_from");
+	const std::wstring sourceNode(L"source");
+
 	bool hasBumpMapping = false;
 
 	while(xmlRead->read())
@@ -144,7 +270,48 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 			std::wstring nodeName = xmlRead->getNodeName();
 			
 			if ( nodeName == profileCOMMONSectionName || nodeName == techniqueNodeName )
-				parseEffectNode(xmlRead,effect);			
+			{
+				parseEffectNode(xmlRead,effect);
+			}
+			else if ( nodeName == newParamName )
+			{
+				int m_readState = 0;
+					
+				SEffectParam effectParam;
+				effectParam.Name = xmlRead->getAttributeValue(L"sid");
+
+				while(xmlRead->read())
+				{
+					std::wstring node = xmlRead->getNodeName();
+
+					if (xmlRead->getNodeType() == io::EXN_ELEMENT)
+					{
+						if (node == initFromNode)
+							m_readState = 1;
+						else if ( node == sourceNode )
+							m_readState = 2;
+
+					}
+					else if (xmlRead->getNodeType() == io::EXN_TEXT)
+					{
+						if ( m_readState == 1 )
+							effectParam.InitFromTexture = xmlRead->getNodeData();
+						else if ( m_readState == 2 )
+							effectParam.Source = xmlRead->getNodeData();
+
+						m_readState = 0;
+					}
+					else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END)
+					{
+						if ( nodeName == newParamName )
+							break;
+					}
+				}
+
+				// add to list effect params
+				m_listEffectsParam.push_back( effectParam );
+
+			}
 			else if ( constantNode == nodeName || lambertNode == nodeName || phongNode == nodeName || blinnNode == nodeName || bumpNode == nodeName )
 			{
 				// set phong shading
@@ -186,7 +353,7 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 										wstring tname = xmlRead->getAttributeValue(L"texture");
 										
 										if ( node == diffuseNode )
-											effect->Mat.setTexture(0, getTextureFromImage(tname));									
+											effect->Mat.setTexture(0, getTextureFromImage(tname, m_listEffectsParam ));									
 										else if ( node == ambientNode )
 										{
 											// ambient texture: todo later
@@ -759,7 +926,7 @@ std::wstring readId(io::IXMLReader *xmlRead)
 	std::wstring str = xmlRead->getAttributeValue(L"id");
 	if (str.size()==0)
 		str = xmlRead->getAttributeValue(L"name");
-
+	
 	return str;
 }
 
@@ -808,6 +975,40 @@ void readFloatsInsideElement(io::IXMLReader* reader, f32* floats, u32 count)
 	}
 }
 
+
+//! reads ints from inside of xml element until end of xml element
+void readIntsInsideElement(io::IXMLReaderUTF8* reader, s32* ints, u32 count)
+{
+	if (reader->isEmptyElement())
+		return;
+
+	while(reader->read())
+	{
+		// TODO: check for comments inside the element
+		// and ignore them.
+
+		if (reader->getNodeType() == io::EXN_TEXT)
+		{
+			// parse float data
+			core::stringc data = reader->getNodeData();
+			data.trim();
+			const c8* p = &data[0];
+
+			for (u32 i=0; i<count; ++i)
+			{
+				findNextNoneWhiteSpace(&p);
+				if (*p)
+					ints[i] = (s32)readFloat(&p);
+				else
+					ints[i] = 0;
+			}
+		}
+		else
+		if (reader->getNodeType() == io::EXN_ELEMENT_END)
+			break; // end parsing text
+	}
+}
+
 video::SColorf readColorNode(io::IXMLReader* reader)
 {
 	const core::stringc colorNodeName = "color";
@@ -835,7 +1036,40 @@ f32 readFloatNode(io::IXMLReader* reader)
 	return result;
 }
 
-video::ITexture* getTextureFromImage( std::wstring uri)
+video::ITexture* getTextureFromImage( std::wstring& uri, ArrayEffectParams& listEffectParam)
 {	
+	int n = listEffectParam.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listEffectParam[i].Name == uri )
+		{
+			if ( listEffectParam[i].InitFromTexture.size() > 0 )
+			{
+				std::wstring textureName = listEffectParam[i].InitFromTexture;
+				
+				char textureNameA[1024];
+				uiString::copy<char, const wchar_t>( textureNameA, textureName.c_str() );
+					
+				return getIView()->getDriver()->getTexture( textureNameA );
+			}
+			else if ( listEffectParam[i].Source.size() > 0 )
+				return getTextureFromImage( listEffectParam[i].Source, listEffectParam );
+
+			return NULL;
+		}
+	}
+	return NULL;
+}
+
+SBufferParam* getBufferWithUri( std::wstring& uri, SMeshParam* mesh )
+{
+	int n = mesh->Buffers.size();
+	for ( int i =0; i < n; i++ )
+	{
+		if ( mesh->Buffers[i].Name == uri )
+		{
+			return &mesh->Buffers[i];
+		}
+	}
 	return NULL;
 }

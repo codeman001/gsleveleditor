@@ -96,17 +96,17 @@ struct SBufferParam
 struct SVerticesParam
 {
 	std::wstring		Name;
-	SBufferParam		*Position;
-	SBufferParam		*Normal;
-	SBufferParam		*TexCoord1;
-	SBufferParam		*TexCoord2;
+	int					PositionIndex;
+	int					NormalIndex;
+	int					TexCoord1Index;
+	int					TexCoord2Index;
 
 	SVerticesParam()
 	{
-		Position = NULL;
-		Normal = NULL;
-		TexCoord1 = NULL;
-		TexCoord2 = NULL;
+		PositionIndex	= -1;
+		NormalIndex		= -1;
+		TexCoord1Index	= -1;
+		TexCoord2Index	= -1;
 	}
 };
 
@@ -114,14 +114,14 @@ struct STrianglesParam
 {
 	int					VerticesIndex;
 	int					EffectIndex;
-	int					NumTri;
+	int					NumVertex;
 	s32					*IndexBuffer;
 
 	STrianglesParam()
 	{		
 		VerticesIndex = -1;
 		EffectIndex = -1;
-		NumTri = 0;
+		NumVertex = 0;
 		IndexBuffer = NULL;
 	}
 };
@@ -207,6 +207,14 @@ public:
 	void loadAnimFile( char *lpFileName );
 
 protected:
+	// constructScene
+	// create scene node
+	void constructScene();
+
+	// constructMeshBuffer
+	// create mesh buffer
+	void constructMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri, IMeshBuffer *buffer, bool flip );
+
 	// parseEffectNode
 	// parse effect material node
 	void parseEffectNode( io::IXMLReader *xmlRead, SEffect* effect = NULL );

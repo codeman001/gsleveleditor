@@ -2,6 +2,10 @@
 #include "CColladaMeshComponent.h"
 #include "IView.h"
 
+#include "SAnimatedMesh.h"
+#include "ISkinnedMesh.h"
+#include "CSkinnedMesh.h"
+
 wstring			readId(io::IXMLReader *xmlRead);
 void			findNextNoneWhiteSpace(const c8** start);
 inline f32		readFloat(const c8** p);
@@ -17,10 +21,10 @@ core::matrix4	readTranslateNode(io::IXMLReader* reader, bool flip);
 core::matrix4	readRotateNode(io::IXMLReader* reader, bool flip);
 
 ITexture*		getTextureFromImage( std::wstring& uri, ArrayEffectParams& listEffectParam);
-SBufferParam*	getBufferWithUri( std::wstring& uri, SMeshParam* mesh );
+int				getBufferWithUri( std::wstring& uri, SMeshParam* mesh );
 int				getVerticesWithUri( std::wstring& uri, SMeshParam* mesh );
 int				getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam );
-SMeshParam*		getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam );
+int				getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam );
 
 
 CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
@@ -119,6 +123,8 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 	
 	xmlRead->drop();
 
+	// create scene node
+	constructScene();
 }
 
 // parseGeometryNode
@@ -191,27 +197,30 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 							std::wstring source = xmlRead->getAttributeValue(L"source");
 							source.erase( source.begin() );
 
-							SBufferParam *buffer = getBufferWithUri( source, &mesh );
-							if ( buffer )
+							int bufferID = getBufferWithUri( source, &mesh );
+														
+							if ( bufferID != -1 )
 							{
+								SBufferParam *buffer = &mesh.Buffers[bufferID];
+
 								if ( semantic == L"POSITION" )
 								{
 									buffer->Type = k_positionBuffer;
-									verticesParam.Position = buffer;
+									verticesParam.PositionIndex = bufferID;
 								}
 								else if ( semantic == L"NORMAL" )
 								{
 									buffer->Type = k_normalBuffer;
-									verticesParam.Normal = buffer;
+									verticesParam.NormalIndex = bufferID;
 								}
 								else if ( semantic == L"TEXCOORD" )
 								{
 									buffer->Type = k_texCoordBuffer;
 									
-									if ( verticesParam.TexCoord1 == NULL )
-										verticesParam.TexCoord1 = buffer;
-									else if ( verticesParam.TexCoord1 != buffer )
-										verticesParam.TexCoord2 = buffer;
+									if ( verticesParam.TexCoord1Index == -1 )
+										verticesParam.TexCoord1Index = bufferID;
+									else if ( verticesParam.TexCoord1Index != bufferID )
+										verticesParam.TexCoord2Index = bufferID;
 								}
 							}
 
@@ -232,7 +241,7 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 			{
 				STrianglesParam triangle;
 				
-				triangle.NumTri = xmlRead->getAttributeValueAsInt(L"count");
+				triangle.NumVertex = xmlRead->getAttributeValueAsInt(L"count");
 
 				std::wstring materialName = xmlRead->getAttributeValue(L"material");
 				triangle.EffectIndex = getEffectWithUri( materialName, m_listEffects );
@@ -250,8 +259,8 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 						}
 						else if ( xmlRead->getNodeName() == std::wstring(L"p") && triangle.VerticesIndex != -1 )
 						{
-							triangle.IndexBuffer = new s32[triangle.NumTri];
-							readIntsInsideElement( xmlRead, triangle.IndexBuffer, triangle.NumTri );
+							triangle.IndexBuffer = new s32[triangle.NumVertex];
+							readIntsInsideElement( xmlRead, triangle.IndexBuffer, triangle.NumVertex );
 						}
 					}					
 					else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END )
@@ -284,10 +293,12 @@ void CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 	std::wstring source = xmlRead->getAttributeValue(L"source");
 	source.erase( source.begin() );
 
-	SMeshParam *mesh = getMeshWithUri( source, m_listMesh );
-	if ( mesh == NULL )
+	int meshID = getMeshWithUri( source, m_listMesh );
+	if ( meshID == -1 )
 		return;
 	
+	SMeshParam *mesh = &m_listMesh[ meshID ];
+
 	const std::wstring paramSectionName(L"param");
 	const std::wstring skinSectionName(L"skin");
 	const std::wstring jointsSectionName(L"joints");
@@ -1206,10 +1217,14 @@ void CColladaMeshComponent::loadData( CSerializable* pObj )
 {		
 	pObj->nextRecord();
 
+	// release if mesh is loaded
+	if ( m_gameObject->m_node )
+		m_gameObject->destroyNode();
+
 	// read mesh file
 	char *string = pObj->readString();
 	loadFromFile( string );
-
+	
 	// read anim file
 	string = pObj->readString();
 	loadAnimFile( string );
@@ -1219,7 +1234,108 @@ void CColladaMeshComponent::loadData( CSerializable* pObj )
 	m_animSpeed = pObj->readFloat();	
 }
 
+// create scene node
+void CColladaMeshComponent::constructScene()
+{
+	ISceneManager *smgr = getIView()->getSceneMgr();
 
+	// release if mesh is loaded
+	if ( m_gameObject->m_node )
+		m_gameObject->destroyNode();
+
+	// create new scene node
+	m_gameObject->m_node = smgr->addEmptySceneNode( m_gameObject->getParentSceneNode(), m_gameObject->getID() );
+	m_gameObject->m_node->grab();
+
+	int nMesh = m_listMesh.size();
+	for ( int i = 0; i < nMesh; i++ )
+	{
+		SMeshParam& mesh = m_listMesh[i];				
+
+		if ( mesh.Type == k_skinMesh )
+		{
+			// create new skin mesh
+			CSkinnedMesh *skinMesh = new CSkinnedMesh();		
+
+			// add mesh buffer to skin mesh
+			int nBuffer = mesh.Triangles.size();
+			for ( int i = 0; i < nBuffer; i++ )
+			{
+				STrianglesParam& tri = mesh.Triangles[i];
+				//SSkinMeshBuffer *meshBuffer = skinMesh->addMeshBuffer();
+
+				// create mesh buffer
+				scene::SMeshBuffer* meshBuffer = new SMeshBuffer();
+				constructMeshBuffer( &mesh, &tri, meshBuffer, true );
+			}
+		}
+		else
+		{
+			SMesh *staticMesh = new SMesh();
+			
+			// add mesh buffer to skin mesh
+			int nBuffer = mesh.Triangles.size();
+			for ( int i = 0; i < nBuffer; i++ )
+			{
+				STrianglesParam& tri = mesh.Triangles[i];
+				
+				// create mesh buffer
+				scene::SMeshBuffer* meshBuffer = new SMeshBuffer();
+				constructMeshBuffer( &mesh, &tri, meshBuffer, true );
+
+				// add mesh buffer
+				staticMesh->addMeshBuffer( meshBuffer );
+				meshBuffer->drop();
+			}
+
+		}
+
+	}
+}
+
+// constructMeshBuffer
+// create mesh buffer
+void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMeshBuffer *buffer, bool flip )
+{
+	scene::SMeshBuffer *mbuffer = (scene::SMeshBuffer*) buffer;
+		
+	int vertexCount = tri->NumVertex;
+	
+	// alloc vertex
+	mbuffer->Vertices.reallocate(mbuffer->Vertices.size() + vertexCount);
+	
+	video::S3DVertex vtx;
+	vtx.Color.set(255,255,255,255);
+
+	SVerticesParam	*vertices = &mesh->Vertices[ tri->VerticesIndex ];
+	
+	SEffect	*effect = NULL;
+	SBufferParam *position	= NULL;
+	SBufferParam *normal	= NULL;
+	SBufferParam *texCoord1 = NULL;
+	SBufferParam *texCoord2 = NULL;
+		
+	if ( tri->EffectIndex != -1 )
+		effect = &m_listEffects[ tri->EffectIndex ];
+
+	if ( vertices->PositionIndex != -1 )
+		position = &mesh->Buffers[vertices->PositionIndex];
+
+	if ( vertices->NormalIndex != -1 )
+		normal = &mesh->Buffers[vertices->NormalIndex];
+
+	if ( vertices->TexCoord1Index != -1 )
+		texCoord1 =	&mesh->Buffers[vertices->TexCoord1Index];
+
+	if ( vertices->TexCoord2Index != -1 )
+		texCoord2 =	&mesh->Buffers[vertices->TexCoord2Index];
+
+	for ( int i = 0; i < vertexCount; i++ )
+	{
+	}
+
+
+}
 
 
 //! changes the XML URI into an internal id
@@ -1434,86 +1550,6 @@ f32 readFloatNode(io::IXMLReader* reader)
 	return result;
 }
 
-video::ITexture* getTextureFromImage( std::wstring& uri, ArrayEffectParams& listEffectParam)
-{	
-	int n = listEffectParam.size();
-	for ( int i = 0; i < n; i++ )
-	{
-		if ( listEffectParam[i].Name == uri )
-		{
-			if ( listEffectParam[i].InitFromTexture.size() > 0 )
-			{
-				std::wstring textureName = listEffectParam[i].InitFromTexture;
-				
-				char textureNameA[1024];
-				uiString::copy<char, const wchar_t>( textureNameA, textureName.c_str() );
-					
-				return getIView()->getDriver()->getTexture( textureNameA );
-			}
-			else if ( listEffectParam[i].Source.size() > 0 )
-				return getTextureFromImage( listEffectParam[i].Source, listEffectParam );
-
-			return NULL;
-		}
-	}
-	return NULL;
-}
-
-SBufferParam* getBufferWithUri( std::wstring& uri, SMeshParam* mesh )
-{
-	int n = mesh->Buffers.size();
-	for ( int i =0; i < n; i++ )
-	{
-		if ( mesh->Buffers[i].Name == uri )
-		{
-			return &mesh->Buffers[i];
-		}
-	}
-	return NULL;
-}
-
-int getVerticesWithUri( std::wstring& uri, SMeshParam* mesh )
-{	
-	int n = mesh->Vertices.size();
-	for ( int i = 0; i < n; i++ )
-	{
-		if ( mesh->Vertices[i].Name == uri )
-		{
-			return i;
-		}
-	}
-	return -1;
-}
-
-int getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam )
-{
-	std::wstring fxName = uri + L"-fx";
-
-	int n = listEffectParam.size();
-	for ( int i = 0; i < n; i++ )
-	{
-		if ( listEffectParam[i].Id == fxName )
-		{
-			return i;
-		}
-	}
-	return -1;
-}
-
-SMeshParam*	getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam )
-{
-	int n = listMeshParam.size();
-	for ( int i = 0; i < n; i++ )
-	{
-		if ( listMeshParam[i].Name == uri )
-		{
-			return &listMeshParam[i];
-		}
-	}
-
-	return NULL;
-}
-
 //! reads a <translate> element and its content and creates a matrix from it
 core::matrix4 readTranslateNode(io::IXMLReader* reader, bool flip)
 {
@@ -1554,3 +1590,84 @@ core::matrix4 readRotateNode(io::IXMLReader* reader, bool flip)
 	else
 		return core::IdentityMatrix;
 }
+
+video::ITexture* getTextureFromImage( std::wstring& uri, ArrayEffectParams& listEffectParam)
+{	
+	int n = listEffectParam.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listEffectParam[i].Name == uri )
+		{
+			if ( listEffectParam[i].InitFromTexture.size() > 0 )
+			{
+				std::wstring textureName = listEffectParam[i].InitFromTexture;
+				
+				char textureNameA[1024];
+				uiString::copy<char, const wchar_t>( textureNameA, textureName.c_str() );
+					
+				return getIView()->getDriver()->getTexture( textureNameA );
+			}
+			else if ( listEffectParam[i].Source.size() > 0 )
+				return getTextureFromImage( listEffectParam[i].Source, listEffectParam );
+
+			return NULL;
+		}
+	}
+	return NULL;
+}
+
+int getBufferWithUri( std::wstring& uri, SMeshParam* mesh )
+{
+	int n = mesh->Buffers.size();
+	for ( int i =0; i < n; i++ )
+	{
+		if ( mesh->Buffers[i].Name == uri )
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+int getVerticesWithUri( std::wstring& uri, SMeshParam* mesh )
+{	
+	int n = mesh->Vertices.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( mesh->Vertices[i].Name == uri )
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+int getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam )
+{
+	std::wstring fxName = uri + L"-fx";
+
+	int n = listEffectParam.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listEffectParam[i].Id == fxName )
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+int	getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam )
+{
+	int n = listMeshParam.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listMeshParam[i].Name == uri )
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+

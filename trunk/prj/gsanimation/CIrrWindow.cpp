@@ -98,7 +98,7 @@ void CIrrWindow::initScene()
 	light->setLightType( video::ELT_DIRECTIONAL );
 
 	// add demo mesh
-	m_animObject = new CGameObject();
+	m_animObject = new CGameObject();	
 
 	CColladaMeshComponent *colladaComponent = new CColladaMeshComponent(m_animObject);
 	m_animObject->m_components.push_back( colladaComponent );

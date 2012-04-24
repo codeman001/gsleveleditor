@@ -107,6 +107,39 @@ bool CMainFrame::_OnKeyDown( uiKeyEvent keyEvent )
 
 bool CMainFrame::_OnKeyUp( uiKeyEvent keyEvent )
 {
+	CGameObject* pObj = m_irrWin->getAnimObject();
+	core::vector3df scale =	pObj->getScale();
+
+	if ( keyEvent.getVKeyCode() == VK_ADD )
+	{
+		scale *= 2.0f;
+		pObj->setScale( scale );
+	}
+	else if ( keyEvent.getVKeyCode() == VK_SUBTRACT )
+	{
+		scale /= 2.0f;
+		pObj->setScale( scale );
+	}
+	else if ( keyEvent.getAnsiKey() == 'l' || keyEvent.getAnsiKey() == 'L' )
+	{		
+		bool light = pObj->isLighting();
+
+		pObj->setLighting( !light );
+		ISceneNode *pNode =	pObj->getSceneNode();
+		if ( pNode )
+		{
+			pNode->setMaterialFlag( video::EMF_LIGHTING, !light );
+
+			core::list<ISceneNode*>::ConstIterator i = pNode->getChildren().begin(), end = pNode->getChildren().end();
+
+			while ( i != end )
+			{
+				(*i)->setMaterialFlag( video::EMF_LIGHTING, !light );
+				i++;
+			}
+		}
+	}
+
 	return true;
 }
 

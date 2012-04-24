@@ -31,6 +31,20 @@ public:
 	// load data to serializable
 	virtual void loadData( CSerializable* pObj );
 
+	// setScale
+	// set scale the object
+	inline void setScale(core::vector3df& v)
+	{
+		m_scale = v;
+	}
+
+	// setRotate
+	// set rotate the object
+	inline void setRotate(core::vector3df v)
+	{
+		m_rotate = v;
+	}
+
 };
 
 #endif

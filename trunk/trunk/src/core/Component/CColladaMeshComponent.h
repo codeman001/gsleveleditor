@@ -114,14 +114,14 @@ struct STrianglesParam
 {
 	int					VerticesIndex;
 	int					EffectIndex;
-	int					NumVertex;
+	int					NumPolygon;
 	s32					*IndexBuffer;
 
 	STrianglesParam()
 	{		
 		VerticesIndex = -1;
 		EffectIndex = -1;
-		NumVertex = 0;
+		NumPolygon = 0;
 		IndexBuffer = NULL;
 	}
 };
@@ -137,7 +137,7 @@ struct SJointParam
 {
 	std::wstring			Name;
 	core::matrix4			InvMatrix;
-	vector<SWeightParam>	Weights;
+	vector<SWeightParam>	Weights;	
 };
 
 
@@ -161,6 +161,13 @@ struct SNodeParam
 	core::matrix4			Transform;
 	vector<SNodeParam*>		Childs;
 	SNodeParam*				Parent;
+
+	ISkinnedMesh::SJoint	*Joint;
+
+	SNodeParam()
+	{
+		Joint = NULL;
+	}
 };
 typedef vector<SNodeParam*>	ArrayNodeParams;
 
@@ -215,6 +222,10 @@ protected:
 	// create mesh buffer
 	void constructMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri, IMeshBuffer *buffer, bool flip );
 
+	// constructSkinMesh
+	// apply bone to vertex
+	void constructSkinMesh( SMeshParam *meshParam, ISkinnedMesh *mesh );
+
 	// parseEffectNode
 	// parse effect material node
 	void parseEffectNode( io::IXMLReader *xmlRead, SEffect* effect = NULL );
@@ -246,6 +257,9 @@ protected:
 	// updateJointToMesh
 	// update joint
 	void updateJointToMesh( SMeshParam *mesh, vector<wstring>& arrayName, float *arrayWeight, float *arrayTransform, vector<s32>& vCountArray, vector<s32>& vArray, bool flipZ );
+
+	// setAnim
+	void setAnim(const char *lpAnimName, IAnimatedMeshSceneNode *node);
 public:
 	// setAnimation
 	// apply Animation to skin joint

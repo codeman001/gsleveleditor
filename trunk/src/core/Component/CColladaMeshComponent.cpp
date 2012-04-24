@@ -125,6 +125,9 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 
 	// create scene node
 	constructScene();
+
+	// clean data
+	cleanData();
 }
 
 // parseGeometryNode
@@ -359,6 +362,15 @@ void CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 								transformArray = f;
 							else if ( name == L"WEIGHT" )
 								weightArray = f;
+							else
+							{
+								// delete float buffer on another accessor
+								if ( f != NULL )
+								{
+									delete f;
+									f = NULL;
+								}
+							}
 						}
 					}				
 					else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END )
@@ -388,6 +400,12 @@ void CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 	
 	mesh->Type = k_skinMesh;
 	updateJointToMesh( mesh, nameArray, weightArray, transformArray, vCountArray, vArray, true );
+
+	if ( weightArray )
+		delete weightArray;
+
+	if ( transformArray )
+		delete transformArray;
 
 }
 
@@ -1128,8 +1146,9 @@ void CColladaMeshComponent::setAnim(const char *lpAnimName, IAnimatedMeshSceneNo
 	}
 
 	// update skin mesh
-	mesh->useAnimationFrom( mesh );	
-
+	mesh->useAnimationFrom( mesh );
+	node->setFrameLoop( 0, animClip.m_frames );
+	
 	// update current anim
 	m_currentAnim = &animClip;	
 }
@@ -1141,16 +1160,10 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 	if ( m_colladaNode == NULL )
 		return;
 	
-	core::list<ISceneNode*>::ConstIterator i = m_colladaNode->getChildren().begin(), 
-		end = m_colladaNode->getChildren().end();
+	vector<IAnimatedMeshSceneNode*>::iterator i = m_listAnimNode.begin(), end = m_listAnimNode.end();
 	while ( i != end )
-	{
-		const c8* name = (*i)->getDebugName();
-		if ( strcmp(name, "CAnimatedMeshSceneNode") == 0 )
-		{
-			setAnim( lpAnimName, (IAnimatedMeshSceneNode*) (*i) );
-		}
-
+	{		
+		setAnim( lpAnimName, (IAnimatedMeshSceneNode*) (*i) );
 		i++;
 	}
 	
@@ -1261,12 +1274,16 @@ void CColladaMeshComponent::constructScene()
 	if ( m_gameObject->m_node )
 		m_gameObject->destroyNode();
 
+	m_listAnimNode.clear();
+
 	// create new scene node
 	m_gameObject->m_node = smgr->addEmptySceneNode( m_gameObject->getParentSceneNode(), m_gameObject->getID() );
 	m_gameObject->m_node->grab();
 
 	// apply collada node
 	m_colladaNode = m_gameObject->m_node;
+
+	char meshName[1024];
 
 	int nMesh = m_listMesh.size();
 	for ( int i = 0; i < nMesh; i++ )
@@ -1309,16 +1326,23 @@ void CColladaMeshComponent::constructScene()
 											
 				// set material
 				buffer->getMaterial() = meshBuffer->getMaterial();
-				buffer->recalculateBoundingBox();	
+				buffer->recalculateBoundingBox();
+
+				meshBuffer->drop();
 			}
 			
 			// apply bone to mesh
 			constructSkinMesh( &mesh, skinMesh );
 
 			// create new scene node
-			ISceneNode *node = smgr->addAnimatedMeshSceneNode( skinMesh, m_gameObject->m_node, m_gameObject->getID() );
-			node->setDebugDataVisible( EDS_BBOX );
+			IAnimatedMeshSceneNode *node = smgr->addAnimatedMeshSceneNode( skinMesh, m_gameObject->m_node, m_gameObject->getID() );
+			node->setDebugDataVisible( EDS_BBOX | EDS_SKELETON );
 
+			uiString::copy<char, const wchar_t>( meshName, mesh.Name.c_str() );
+			node->setName( meshName );
+			m_listAnimNode.push_back( node );
+			
+			skinMesh->drop();			
 		}
 		else
 		{
@@ -1342,6 +1366,11 @@ void CColladaMeshComponent::constructScene()
 			// create new scene node
 			ISceneNode *node =	smgr->addMeshSceneNode( staticMesh, m_gameObject->m_node, m_gameObject->getID() );
 			node->setDebugDataVisible( EDS_BBOX );
+
+			uiString::copy<char, const wchar_t>( meshName, mesh.Name.c_str() );
+			node->setName( meshName );
+
+			staticMesh->drop();
 		}
 
 	}
@@ -1409,20 +1438,20 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 		}
 
 		// set normal
-		//if ( normal != NULL )
-		//{
-		//	vtx.Normal.X = normal->FloatArray[idx+0];
-		//	if (flip)
-		//	{
-		//		vtx.Normal.Z = normal->FloatArray[idx+1];
-		//		vtx.Normal.Y = normal->FloatArray[idx+2];
-		//	}
-		//	else
-		//	{
-		//		vtx.Normal.Y = normal->FloatArray[idx+1];
-		//		vtx.Normal.Z = normal->FloatArray[idx+2];
-		//	}
-		//}
+		if ( normal != NULL )
+		{
+			vtx.Normal.X = normal->FloatArray[idx+0];
+			if (flip)
+			{
+				vtx.Normal.Z = normal->FloatArray[idx+1];
+				vtx.Normal.Y = normal->FloatArray[idx+2];
+			}
+			else
+			{
+				vtx.Normal.Y = normal->FloatArray[idx+1];
+				vtx.Normal.Z = normal->FloatArray[idx+2];
+			}
+		}
 
 		// set texcoord
 		idx = vIndex * 2;
@@ -1477,7 +1506,7 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 	}
 
 	// calc normal vector
-	//if (!normal)
+	if (!normal)
 		getIView()->getSceneMgr()->getMeshManipulator()->recalculateNormals(mbuffer, true);
 
 	// recalculate bounding box
@@ -1586,6 +1615,53 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, ISkinnedMe
 		(*i)->Joint = NULL;
 		i++;
 	}
+}
+
+// cleanData
+// free all data from parse dae
+void CColladaMeshComponent::cleanData()
+{
+	m_listEffects.clear();
+	
+	m_listEffectsParam.clear();
+
+	ArrayMeshParams::iterator i = m_listMesh.begin(), end = m_listMesh.end();
+	while ( i != end )
+	{
+		SMeshParam& mesh = (*i);
+		
+		int n = (int)mesh.Buffers.size();
+		int j = 0;
+
+		for ( j = 0; j < n; j++ )
+			delete mesh.Buffers[j].FloatArray;
+
+		n = (int)mesh.Triangles.size();
+		for ( j = 0; j < n; j++ )
+			delete mesh.Triangles[j].IndexBuffer;
+
+		i++;
+	}
+	m_listMesh.clear();
+
+	for ( int j = 0; j < (int)m_listNode.size(); j++ )
+	{
+		SNodeParam* pNode = m_listNode[j];
+		
+		stack<SNodeParam*>	stackNode;
+		stackNode.push( pNode );
+		while ( stackNode.size() )
+		{
+			pNode = stackNode.top();
+			stackNode.pop();
+
+			for ( int i = 0; i < (int)pNode->Childs.size(); i++ )
+				stackNode.push( pNode->Childs[i] );
+
+			delete pNode;
+		}		
+	}
+	m_listNode.clear();
 }
 
 

@@ -91,6 +91,11 @@ struct SBufferParam
 	float				*FloatArray;
 	int					ArrayCount;
 	int					Type;
+
+	SBufferParam()
+	{
+		FloatArray = NULL;
+	}
 };
 
 struct SVerticesParam
@@ -200,6 +205,7 @@ protected:
 	// current node
 	ISceneNode					*m_colladaNode;
 
+	vector<IAnimatedMeshSceneNode*>	m_listAnimNode;
 public:
 	CColladaMeshComponent( CGameObject *pObj );
 
@@ -260,6 +266,10 @@ protected:
 
 	// setAnim
 	void setAnim(const char *lpAnimName, IAnimatedMeshSceneNode *node);
+
+	// cleanData
+	// free all data from parse dae
+	void cleanData();
 public:
 	// setAnimation
 	// apply Animation to skin joint

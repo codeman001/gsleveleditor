@@ -112,15 +112,15 @@ struct SVerticesParam
 
 struct STrianglesParam
 {
-	SVerticesParam		*Vertices;
-	SEffect				*Material;
+	int					VerticesIndex;
+	int					EffectIndex;
 	int					NumTri;
 	s32					*IndexBuffer;
 
 	STrianglesParam()
-	{
-		Material = NULL;
-		Vertices = NULL;
+	{		
+		VerticesIndex = -1;
+		EffectIndex = -1;
 		NumTri = 0;
 		IndexBuffer = NULL;
 	}
@@ -153,6 +153,18 @@ struct SMeshParam
 typedef vector<SMeshParam>	ArrayMeshParams;
 
 
+struct SNodeParam
+{
+	std::wstring			Name;
+	std::wstring			Type;
+	std::wstring			SID;
+	core::matrix4			Transform;
+	vector<SNodeParam*>		Childs;
+	SNodeParam*				Parent;
+};
+typedef vector<SNodeParam*>	ArrayNodeParams;
+
+
 class CColladaMeshComponent: public IObjectComponent
 {
 protected:
@@ -176,6 +188,7 @@ protected:
 	ArrayEffects				m_listEffects;
 	ArrayEffectParams			m_listEffectsParam;
 	ArrayMeshParams				m_listMesh;
+	ArrayNodeParams				m_listNode;
 
 	// current node
 	ISceneNode					*m_colladaNode;
@@ -205,6 +218,14 @@ protected:
 	// parseSkinNode
 	// parse skin data
 	void parseSkinNode( io::IXMLReader *xmlRead );
+
+	// parseSceneNode
+	// parse scene data
+	void parseSceneNode( io::IXMLReader *xmlRead );
+
+	// parseNode
+	// parse <node> element
+	SNodeParam* parseNode( io::IXMLReader *xmlRead, SNodeParam* parent );
 
 	// parseAnimationNode
 	// parse anim node

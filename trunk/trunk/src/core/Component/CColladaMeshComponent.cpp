@@ -5,17 +5,23 @@
 wstring			readId(io::IXMLReader *xmlRead);
 void			findNextNoneWhiteSpace(const c8** start);
 inline f32		readFloat(const c8** p);
+
 void			readIntsInsideElement(io::IXMLReader* reader, s32* ints, u32 count);
 void			readIntsInsideElement(io::IXMLReader* reader, vector<s32>& arrayInt);
 void			readFloatsInsideElement(io::IXMLReader* reader, f32* floats, u32 count);
 void			readStringInsideElement(io::IXMLReader* reader, vector<std::wstring>& arrayString);
+
 SColorf			readColorNode(io::IXMLReader* reader);
 f32				readFloatNode(io::IXMLReader* reader);
+core::matrix4	readTranslateNode(io::IXMLReader* reader, bool flip);
+core::matrix4	readRotateNode(io::IXMLReader* reader, bool flip);
+
 ITexture*		getTextureFromImage( std::wstring& uri, ArrayEffectParams& listEffectParam);
 SBufferParam*	getBufferWithUri( std::wstring& uri, SMeshParam* mesh );
-SVerticesParam* getVerticesWithUri( std::wstring& uri, SMeshParam* mesh );
-SEffect*		getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam );
+int				getVerticesWithUri( std::wstring& uri, SMeshParam* mesh );
+int				getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam );
 SMeshParam*		getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam );
+
 
 CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 	:IObjectComponent( pObj, (int)IObjectComponent::ColladaMesh )
@@ -72,6 +78,7 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 	const std::wstring effectSectionName(L"effect");
 	const std::wstring geometrySectionName(L"geometry");
 	const std::wstring skinSectionName(L"skin");
+	const std::wstring sceneSectionName(L"visual_scene");
 
 	while ( xmlRead->read() )
 	{
@@ -92,6 +99,10 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 				else if ( nodeName == skinSectionName )
 				{
 					parseSkinNode( xmlRead );
+				}
+				else if ( nodeName == sceneSectionName )
+				{
+					parseSceneNode( xmlRead );
 				}
 				
 			}
@@ -224,7 +235,7 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 				triangle.NumTri = xmlRead->getAttributeValueAsInt(L"count");
 
 				std::wstring materialName = xmlRead->getAttributeValue(L"material");
-				triangle.Material = getEffectWithUri( materialName, m_listEffects );
+				triangle.EffectIndex = getEffectWithUri( materialName, m_listEffects );
 
 				while(xmlRead->read())
 				{							
@@ -235,9 +246,9 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 							std::wstring source = xmlRead->getAttributeValue(L"source");
 							source.erase( source.begin() );
 
-							triangle.Vertices = getVerticesWithUri( source, &mesh );
+							triangle.VerticesIndex = getVerticesWithUri( source, &mesh );
 						}
-						else if ( xmlRead->getNodeName() == std::wstring(L"p") && triangle.Vertices != NULL )
+						else if ( xmlRead->getNodeName() == std::wstring(L"p") && triangle.VerticesIndex != -1 )
 						{
 							triangle.IndexBuffer = new s32[triangle.NumTri];
 							readIntsInsideElement( xmlRead, triangle.IndexBuffer, triangle.NumTri );
@@ -369,6 +380,82 @@ void CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 
 }
 
+// parseSceneNode
+// parse scene data
+void CColladaMeshComponent::parseSceneNode( io::IXMLReader *xmlRead )
+{
+	const std::wstring sceneSectionName(L"visual_scene");
+	const std::wstring nodeSectionName(L"node");
+
+	while(xmlRead->read())
+	{			
+		std::wstring nodeName =	xmlRead->getNodeName();
+
+		if (xmlRead->getNodeType() == io::EXN_ELEMENT )
+		{
+			if ( nodeName == nodeSectionName )
+			{
+				SNodeParam* pNewNode = parseNode( xmlRead, NULL );
+				m_listNode.push_back( pNewNode );
+			}
+		}
+		else if ( xmlRead->getNodeType() == io::EXN_ELEMENT_END )
+		{
+			if ( nodeName == sceneSectionName )
+				break;
+		}
+	}
+}
+
+// parseNode
+// parse <node> element
+SNodeParam* CColladaMeshComponent::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
+{	
+	const std::wstring nodeSectionName(L"node");
+	const std::wstring translateSectionName(L"translate");
+	const std::wstring rotateSectionName(L"rotate");
+
+	SNodeParam *pNode = new SNodeParam();
+	
+	pNode->Name = xmlRead->getAttributeValue(L"id");
+
+	if ( xmlRead->getAttributeValue(L"sid") )
+		pNode->SID	= xmlRead->getAttributeValue(L"sid");	
+	
+	pNode->Type = xmlRead->getAttributeValue(L"type");
+	
+	pNode->Parent = parent;
+	if ( parent )
+		parent->Childs.push_back( pNode );
+
+	while(xmlRead->read())
+	{
+		if (xmlRead->getNodeType() == io::EXN_ELEMENT )
+		{
+			if ( xmlRead->getNodeName() == nodeSectionName )
+			{
+				parseNode( xmlRead, pNode );
+			}
+			else if ( xmlRead->getNodeName() == translateSectionName )
+			{
+				// mul translate
+				pNode->Transform *= readTranslateNode(xmlRead, true);
+			}
+			else if ( xmlRead->getNodeName() == rotateSectionName )
+			{
+				// mul rotate
+				pNode->Transform *= readRotateNode(xmlRead, true);
+			}
+		}
+		else if ( xmlRead->getNodeType() == io::EXN_ELEMENT_END )
+		{
+			if ( xmlRead->getNodeName() == nodeSectionName )
+				break;
+		}
+	}
+
+	return pNode;
+}
 
 
 // parseEffectNode
@@ -1385,20 +1472,20 @@ SBufferParam* getBufferWithUri( std::wstring& uri, SMeshParam* mesh )
 	return NULL;
 }
 
-SVerticesParam* getVerticesWithUri( std::wstring& uri, SMeshParam* mesh )
+int getVerticesWithUri( std::wstring& uri, SMeshParam* mesh )
 {	
 	int n = mesh->Vertices.size();
 	for ( int i = 0; i < n; i++ )
 	{
 		if ( mesh->Vertices[i].Name == uri )
 		{
-			return &mesh->Vertices[i];
+			return i;
 		}
 	}
-	return NULL;
+	return -1;
 }
 
-SEffect* getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam )
+int getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam )
 {
 	std::wstring fxName = uri + L"-fx";
 
@@ -1407,10 +1494,10 @@ SEffect* getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam )
 	{
 		if ( listEffectParam[i].Id == fxName )
 		{
-			return &listEffectParam[i];
+			return i;
 		}
 	}
-	return NULL;
+	return -1;
 }
 
 SMeshParam*	getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam )
@@ -1425,4 +1512,45 @@ SMeshParam*	getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam )
 	}
 
 	return NULL;
+}
+
+//! reads a <translate> element and its content and creates a matrix from it
+core::matrix4 readTranslateNode(io::IXMLReader* reader, bool flip)
+{
+	core::matrix4 mat;
+	if (reader->isEmptyElement())
+		return mat;
+
+	f32 floats[3];
+	readFloatsInsideElement(reader, floats, 3);
+
+	if (flip)
+		mat.setTranslation(core::vector3df(floats[0], floats[2], floats[1]));
+	else
+		mat.setTranslation(core::vector3df(floats[0], floats[1], floats[2]));
+
+	return mat;
+}
+
+//! reads a <rotate> element and its content and creates a matrix from it
+core::matrix4 readRotateNode(io::IXMLReader* reader, bool flip)
+{
+	core::matrix4 mat;
+	if (reader->isEmptyElement())
+		return mat;
+
+	f32 floats[4];
+	readFloatsInsideElement(reader, floats, 4);
+
+	if (!core::iszero(floats[3]))
+	{
+		core::quaternion q;
+		if (flip)
+			q.fromAngleAxis(floats[3]*core::DEGTORAD, core::vector3df(floats[0], floats[2], floats[1]));
+		else
+			q.fromAngleAxis(floats[3]*core::DEGTORAD, core::vector3df(floats[0], floats[1], floats[2]));
+		return q.getMatrix();
+	}
+	else
+		return core::IdentityMatrix;
 }

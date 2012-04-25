@@ -1443,11 +1443,9 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 		texCoord2 =	&mesh->Buffers[vertices->TexCoord2Index];
 
 	// alloc vertex
-	int vertexCount = tri->NumPolygon * 3;	
+	int vertexCount = position->ArrayCount/3;
 	mbuffer->Vertices.reallocate(mbuffer->Vertices.size() + vertexCount);
-	
-	core::map<video::S3DVertex, int> vertMap;
-
+		
 	core::array<u16> indices;
 
 	for ( int i = 0; i < vertexCount; i++ )
@@ -1455,7 +1453,7 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 		video::S3DVertex vtx;
 		vtx.Color.set(255,255,255,255);
 
-		int vIndex = tri->IndexBuffer[i];		
+		int vIndex = i;
 		int idx = vIndex * 3;
 
 		// set position
@@ -1495,22 +1493,17 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 			vtx.TCoords.Y = texCoord1->FloatArray[idx+1];
 		}
 
-		
-		//first, try to find this vertex in the mesh
-		core::map<video::S3DVertex, int>::Node* n = vertMap.find(vtx);
-		if (n)
-		{
-			indices.push_back(n->getValue());
-		}
-		else
-		{
-			indices.push_back(mbuffer->getVertexCount());
-			mbuffer->Vertices.push_back(vtx);
-			vertMap.insert(vtx, mbuffer->getVertexCount()-1);
-		}
-		
-
+		mbuffer->Vertices.push_back( vtx );
 	}
+
+	int nIndex = tri->NumPolygon*3;
+	indices.set_used(nIndex);
+
+	for ( int i = 0; i < nIndex; i++ )
+	{
+		indices[i] = tri->IndexBuffer[i];
+	}
+
 
 	// it's just triangles
 	u32 nPoly = indices.size()/3;
@@ -1607,7 +1600,7 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, ISkinnedMe
 				ISkinnedMesh::SWeight* w = skinMesh->addWeight( nodeJoint );
 				w->buffer_id	= 0;			
 				w->vertex_id	= sourceJoint->Weights[i].VertexID;
-				w->strength		= sourceJoint->Weights[i].Strength;
+				w->strength		= sourceJoint->Weights[i].Strength;				
 			}				
 
 			// set global invert matrix

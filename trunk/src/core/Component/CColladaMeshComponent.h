@@ -153,7 +153,8 @@ struct SMeshParam
 	vector<SVerticesParam>	Vertices;
 	vector<STrianglesParam>	Triangles;
 	vector<SJointParam>		Joints;
-	int						Type;		
+	int						Type;
+	core::matrix4			BindShapeMatrix;
 };
 typedef vector<SMeshParam>	ArrayMeshParams;
 

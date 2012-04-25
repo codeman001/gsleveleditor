@@ -19,6 +19,7 @@ SColorf			readColorNode(io::IXMLReader* reader);
 f32				readFloatNode(io::IXMLReader* reader);
 core::matrix4	readTranslateNode(io::IXMLReader* reader, bool flip);
 core::matrix4	readRotateNode(io::IXMLReader* reader, bool flip);
+core::matrix4	readScaleNode(io::IXMLReader* reader, bool flip);
 
 ITexture*		getTextureFromImage( std::wstring& uri, ArrayEffectParams& listEffectParam);
 int				getBufferWithUri( std::wstring& uri, SMeshParam* mesh );
@@ -40,6 +41,55 @@ CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 CColladaMeshComponent::~CColladaMeshComponent()
 {
 
+}
+
+
+// init
+// run when init object
+void CColladaMeshComponent::initComponent()
+{
+}
+
+// updateComponent
+// update object by frame
+void CColladaMeshComponent::updateComponent()
+{
+}
+
+ 
+// saveData
+// save data to serializable
+void CColladaMeshComponent::saveData( CSerializable* pObj )
+{
+	// save mesh file
+	pObj->addGroup( IObjectComponent::s_compType[ m_componentID ] );
+
+	pObj->addPath("meshFile", m_animeshFile.c_str(), true);
+	pObj->addPath("animFile", m_animFile.c_str(), true);
+	pObj->addFloat("animSpeed", m_animSpeed, true );	
+}
+
+// loadData
+// load data to serializable
+void CColladaMeshComponent::loadData( CSerializable* pObj )
+{		
+	pObj->nextRecord();
+
+	// release if mesh is loaded
+	if ( m_gameObject->m_node )
+		m_gameObject->destroyNode();
+
+	// read mesh file
+	char *string = pObj->readString();
+	loadFromFile( string );
+	
+	// read anim file
+	string = pObj->readString();
+	loadAnimFile( string );
+
+
+	// read anim speed
+	m_animSpeed = pObj->readFloat();	
 }
 
 // loadFromFile
@@ -312,6 +362,7 @@ void CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 	const std::wstring vcountNode(L"vcount");
 	const std::wstring vNode(L"v");
 	const std::wstring sourceNode(L"source");
+	const std::wstring bindShapeMatrix(L"bind_shape_matrix");
 
 	vector<std::wstring>	nameArray;
 
@@ -328,9 +379,36 @@ void CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 		if (xmlRead->getNodeType() == io::EXN_ELEMENT )
 		{
 			std::wstring node = xmlRead->getNodeName();
+			if ( node == bindShapeMatrix )
+			{
+				float f[16];
+				readFloatsInsideElement(  xmlRead, f, 16 );
+				
+				core::matrix4 mat;
+				mat.setM( f );		
+				if (true)
+				{
+					core::matrix4 mat2(mat, core::matrix4::EM4CONST_TRANSPOSED);
 
+					mat2[1]=mat[8];
+					mat2[2]=mat[4];
+					mat2[4]=mat[2];
+					mat2[5]=mat[10];
+					mat2[6]=mat[6];
+					mat2[8]=mat[1];
+					mat2[9]=mat[9];
+					mat2[10]=mat[5];
+					mat2[12]=mat[3];
+					mat2[13]=mat[11];
+					mat2[14]=mat[7];
+
+					mesh->BindShapeMatrix = mat2;
+				}
+				else
+					mesh->BindShapeMatrix = mat.getTransposed();				
+			}
 			// <source>
-			if ( node == sourceNode )
+			else if ( node == sourceNode )
 			{
 				float *f = NULL;
 
@@ -443,6 +521,7 @@ SNodeParam* CColladaMeshComponent::parseNode( io::IXMLReader *xmlRead, SNodePara
 	const std::wstring nodeSectionName(L"node");
 	const std::wstring translateSectionName(L"translate");
 	const std::wstring rotateSectionName(L"rotate");
+	const std::wstring scaleSectionName(L"scale");
 
 	SNodeParam *pNode = new SNodeParam();
 	
@@ -474,6 +553,10 @@ SNodeParam* CColladaMeshComponent::parseNode( io::IXMLReader *xmlRead, SNodePara
 			{
 				// mul rotate
 				pNode->Transform *= readRotateNode(xmlRead, true);
+			}
+			else if ( xmlRead->getNodeName() == scaleSectionName )
+			{
+				pNode->Transform *= readScaleNode(xmlRead, true);
 			}
 		}
 		else if ( xmlRead->getNodeType() == io::EXN_ELEMENT_END )
@@ -1216,55 +1299,6 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 
 }
 
-
-// init
-// run when init object
-void CColladaMeshComponent::initComponent()
-{
-}
-
-// updateComponent
-// update object by frame
-void CColladaMeshComponent::updateComponent()
-{
-}
-
- 
-// saveData
-// save data to serializable
-void CColladaMeshComponent::saveData( CSerializable* pObj )
-{
-	// save mesh file
-	pObj->addGroup( IObjectComponent::s_compType[ m_componentID ] );
-
-	pObj->addPath("meshFile", m_animeshFile.c_str(), true);
-	pObj->addPath("animFile", m_animFile.c_str(), true);
-	pObj->addFloat("animSpeed", m_animSpeed, true );	
-}
-
-// loadData
-// load data to serializable
-void CColladaMeshComponent::loadData( CSerializable* pObj )
-{		
-	pObj->nextRecord();
-
-	// release if mesh is loaded
-	if ( m_gameObject->m_node )
-		m_gameObject->destroyNode();
-
-	// read mesh file
-	char *string = pObj->readString();
-	loadFromFile( string );
-	
-	// read anim file
-	string = pObj->readString();
-	loadAnimFile( string );
-
-
-	// read anim speed
-	m_animSpeed = pObj->readFloat();	
-}
-
 // create scene node
 void CColladaMeshComponent::constructScene()
 {
@@ -1517,16 +1551,13 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 // constructSkinMesh
 // apply bone to vertex
 void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, ISkinnedMesh *skinMesh )
-{
-			
+{		
 	std::list<SNodeParam*>	stackScenePrefab;
 	std::list<SNodeParam*>	listBoneScenePrefab;
 
 	int nNode = m_listNode.size();
 	for ( int i = 0; i < nNode; i++ )
 		stackScenePrefab.push_back( m_listNode[i] );
-
-	
 	
 	vector<SJointParam>	Joints;
 
@@ -1534,63 +1565,58 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, ISkinnedMe
 
 	while ( stackScenePrefab.size() )
 	{
-		SNodeParam *node = stackScenePrefab.back();
+		SNodeParam *node = stackScenePrefab.back();		
 		
-		if ( node->Type == L"JOINT" )
+		// save to list bone prefab
+		listBoneScenePrefab.push_back( node );
+
+		// get parent joint
+		ISkinnedMesh::SJoint *parentJoint = NULL;
+		if (  node->Parent != NULL && node->Parent->Joint != NULL )
+			parentJoint = node->Parent->Joint;
+					
+		ISkinnedMesh::SJoint* nodeJoint = skinMesh->addJoint(parentJoint);
+		
+		uiString::copy<char, const wchar_t>( name, node->Name.c_str() );
+		nodeJoint->Name = name;
+
+		node->Joint = nodeJoint;
+		
+		
+		SJointParam *sourceJoint = NULL;
+
+		if ( node->SID.size() > 0 )
 		{
-			// save to list bone prefab
-			listBoneScenePrefab.push_back( node );
+			int nJoint = meshParam->Joints.size();
 
-			// get parent joint
-			ISkinnedMesh::SJoint *parentJoint = NULL;
-			if (  node->Parent != NULL && node->Parent->Joint != NULL )
+			for ( int i = 0; i < nJoint; i++ )
 			{
-				parentJoint = node->Parent->Joint;
-			}
-						
-			ISkinnedMesh::SJoint* nodeJoint = skinMesh->addJoint(parentJoint);
-			
-			uiString::copy<char, const wchar_t>( name, node->Name.c_str() );
-			nodeJoint->Name = name;
-
-			node->Joint = nodeJoint;
-			
-			
-			SJointParam *sourceJoint = NULL;
-
-			if ( node->SID.size() > 0 )
-			{
-				int nJoint = meshParam->Joints.size();
-
-				for ( int i = 0; i < nJoint; i++ )
+				if ( meshParam->Joints[i].Name == node->SID )
 				{
-					if ( meshParam->Joints[i].Name == node->SID )
-					{
-						sourceJoint = &meshParam->Joints[i];
-						break;
-					}
+					sourceJoint = &meshParam->Joints[i];
+					break;
 				}
 			}
+		}
 
-			if ( sourceJoint )
+		if ( sourceJoint )
+		{
+			int nWeight = sourceJoint->Weights.size();
+			for ( int i = 0; i < nWeight; i++ )
 			{
-				int nWeight = sourceJoint->Weights.size();
-				for ( int i = 0; i < nWeight; i++ )
-				{
-					ISkinnedMesh::SWeight* w = skinMesh->addWeight( nodeJoint );
-					w->buffer_id	= 0;			
-					w->vertex_id	= sourceJoint->Weights[i].VertexID;
-					w->strength		= sourceJoint->Weights[i].Strength;
-				}				
+				ISkinnedMesh::SWeight* w = skinMesh->addWeight( nodeJoint );
+				w->buffer_id	= 0;			
+				w->vertex_id	= sourceJoint->Weights[i].VertexID;
+				w->strength		= sourceJoint->Weights[i].Strength;
+			}				
 
-				// set global invert matrix
-				nodeJoint->GlobalInversedMatrix = sourceJoint->InvMatrix;				
-			}
+			// set global invert matrix
+			nodeJoint->GlobalInversedMatrix = sourceJoint->InvMatrix;				
+		}
 
-			// set local matrix
-			nodeJoint->LocalMatrix = node->Transform;
-		}	
-
+		// set local matrix
+		nodeJoint->LocalMatrix = node->Transform;		
+			
 		stackScenePrefab.erase( --stackScenePrefab.end() );
 
 		int nChild = (int)node->Childs.size();
@@ -1875,6 +1901,24 @@ f32 readFloatNode(io::IXMLReader* reader)
 	}
 
 	return result;
+}
+
+//! reads a <scale> element and its content and creates a matrix from it
+core::matrix4 readScaleNode(io::IXMLReader* reader, bool flip)
+{
+	core::matrix4 mat;
+	if (reader->isEmptyElement())
+		return mat;
+
+	f32 floats[3];
+	readFloatsInsideElement(reader, floats, 3);
+
+	if (flip)
+		mat.setScale(core::vector3df(floats[0], floats[2], floats[1]));
+	else
+		mat.setScale(core::vector3df(floats[0], floats[1], floats[2]));
+
+	return mat;
 }
 
 //! reads a <translate> element and its content and creates a matrix from it

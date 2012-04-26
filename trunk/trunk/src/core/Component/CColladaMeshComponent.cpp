@@ -6,6 +6,9 @@
 #include "ISkinnedMesh.h"
 #include "CSkinnedMesh.h"
 
+#include "CGameAnimatedMeshSceneNode.h"
+#include "CGameMeshSceneNode.h"
+
 wstring			readId(io::IXMLReader *xmlRead);
 void			findNextNoneWhiteSpace(const c8** start);
 inline f32		readFloat(const c8** p);
@@ -534,7 +537,13 @@ SNodeParam* CColladaMeshComponent::parseNode( io::IXMLReader *xmlRead, SNodePara
 	
 	pNode->Parent = parent;
 	if ( parent )
+	{
 		parent->Childs.push_back( pNode );
+		pNode->ChildLevel = parent->ChildLevel+1;
+	}
+	else
+		pNode->ChildLevel = 0;
+
 
 	while(xmlRead->read())
 	{
@@ -1368,14 +1377,22 @@ void CColladaMeshComponent::constructScene()
 			// apply bone to mesh
 			constructSkinMesh( &mesh, skinMesh );
 
-			// create new scene node
-			IAnimatedMeshSceneNode *node = smgr->addAnimatedMeshSceneNode( skinMesh, m_gameObject->m_node, m_gameObject->getID() );
-			node->setDebugDataVisible( EDS_BBOX | EDS_SKELETON );
+			// create new scene node			
+			CGameAnimatedMeshSceneNode* node = new CGameAnimatedMeshSceneNode
+				( 
+					m_gameObject, 
+					skinMesh, 
+					m_gameObject->m_node, 
+					getIView()->getSceneMgr() 
+				);
 
 			uiString::copy<char, const wchar_t>( meshName, mesh.Name.c_str() );
 			node->setName( meshName );
 			m_listAnimNode.push_back( node );
 			
+			node->setDebugDataVisible( EDS_BBOX );
+
+			node->drop();
 			skinMesh->drop();			
 		}
 		else
@@ -1391,20 +1408,28 @@ void CColladaMeshComponent::constructScene()
 				// create mesh buffer
 				scene::SMeshBuffer* meshBuffer = new SMeshBuffer();
 				constructMeshBuffer( &mesh, &tri, meshBuffer, true );
-
-				// add mesh buffer
+				
+				// add mesh buffer								
 				staticMesh->addMeshBuffer( meshBuffer );
+				staticMesh->recalculateBoundingBox();
 				meshBuffer->drop();
 			}
 			
 			// create new scene node
-			ISceneNode *node =	smgr->addMeshSceneNode( staticMesh, m_gameObject->m_node, m_gameObject->getID() );
+			CGameMeshSceneNode *node = new CGameMeshSceneNode
+				( 
+					m_gameObject, 
+					staticMesh, 
+					m_gameObject->m_node, 
+					getIView()->getSceneMgr() 
+				);
 			node->setDebugDataVisible( EDS_BBOX );
 
 			uiString::copy<char, const wchar_t>( meshName, mesh.Name.c_str() );
 			node->setName( meshName );
-
+			
 			staticMesh->drop();
+			node->drop();
 		}
 
 	}
@@ -1540,6 +1565,31 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 	mbuffer->recalculateBoundingBox();
 }
 
+#define CONVERT_NODE_TO_JOINT
+
+core::matrix4 getAbsoluteJointMatrix( SNodeParam* node )
+{	
+	core::matrix4 ret;
+	while ( node )
+	{
+		ret = node->Transform * ret;
+		node = node->Parent;		
+	}
+	return ret;
+}
+
+SNodeParam* getParentJoint( SNodeParam *node )
+{
+	SNodeParam* p = node->Parent;	
+
+#ifndef CONVERT_NODE_TO_JOINT
+	if ( p && p->Type == L"JOINT" )
+		return p;
+	return NULL;
+#else
+	return p;
+#endif	
+}
 
 // constructSkinMesh
 // apply bone to vertex
@@ -1558,58 +1608,71 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, ISkinnedMe
 
 	while ( stackScenePrefab.size() )
 	{
-		SNodeParam *node = stackScenePrefab.back();		
+		SNodeParam *node = stackScenePrefab.back();
 		
 		// save to list bone prefab
 		listBoneScenePrefab.push_back( node );
 
-		// get parent joint
-		ISkinnedMesh::SJoint *parentJoint = NULL;
-		if (  node->Parent != NULL && node->Parent->Joint != NULL )
-			parentJoint = node->Parent->Joint;
-					
-		ISkinnedMesh::SJoint* nodeJoint = skinMesh->addJoint(parentJoint);
-		
-		uiString::copy<char, const wchar_t>( name, node->Name.c_str() );
-		nodeJoint->Name = name;
-
-		node->Joint = nodeJoint;
-		
-		
-		SJointParam *sourceJoint = NULL;
-
-		if ( node->SID.size() > 0 )
+#ifndef CONVERT_NODE_TO_JOINT
+		if ( node->Type == L"JOINT" )
+#endif
 		{
-			int nJoint = meshParam->Joints.size();
+			// get parent joint
+			ISkinnedMesh::SJoint *parentJoint = NULL;				
+			SNodeParam* parent = getParentJoint(node);
+			if ( parent )
+				parentJoint = parent->Joint;
 
-			for ( int i = 0; i < nJoint; i++ )
+			ISkinnedMesh::SJoint* nodeJoint = skinMesh->addJoint(parentJoint);
+			
+			uiString::copy<char, const wchar_t>( name, node->Name.c_str() );
+			nodeJoint->Name = name;
+
+			node->Joint = nodeJoint;
+			
+			
+			SJointParam *sourceJoint = NULL;
+
+			if ( node->SID.size() > 0 )
 			{
-				if ( meshParam->Joints[i].Name == node->SID )
+				int nJoint = meshParam->Joints.size();
+
+				for ( int i = 0; i < nJoint; i++ )
 				{
-					sourceJoint = &meshParam->Joints[i];
-					break;
+					if ( meshParam->Joints[i].Name == node->SID )
+					{
+						sourceJoint = &meshParam->Joints[i];
+						break;
+					}
 				}
 			}
-		}
 
-		if ( sourceJoint )
-		{
-			int nWeight = sourceJoint->Weights.size();
-			for ( int i = 0; i < nWeight; i++ )
+			if ( sourceJoint )
 			{
-				ISkinnedMesh::SWeight* w = skinMesh->addWeight( nodeJoint );
-				w->buffer_id	= 0;			
-				w->vertex_id	= sourceJoint->Weights[i].VertexID;
-				w->strength		= sourceJoint->Weights[i].Strength;				
-			}				
+				int nWeight = sourceJoint->Weights.size();
+				for ( int i = 0; i < nWeight; i++ )
+				{
+					ISkinnedMesh::SWeight* w = skinMesh->addWeight( nodeJoint );
+					w->buffer_id	= 0;			
+					w->vertex_id	= sourceJoint->Weights[i].VertexID;
+					w->strength		= sourceJoint->Weights[i].Strength;				
+				}				
 
-			// set global invert matrix
-			nodeJoint->GlobalInversedMatrix = sourceJoint->InvMatrix;				
+				// set global invert matrix
+				nodeJoint->GlobalInversedMatrix = sourceJoint->InvMatrix;
+			}
+
+			// set local matrix
+#ifndef CONVERT_NODE_TO_JOINT
+			if (  node->Parent != NULL && node->Parent->Type == L"NODE" )
+				nodeJoint->LocalMatrix = getAbsoluteJointMatrix(node);
+			else
+				nodeJoint->LocalMatrix = node->Transform;			
+#else
+			nodeJoint->LocalMatrix = node->Transform;
+#endif
 		}
 
-		// set local matrix
-		nodeJoint->LocalMatrix = node->Transform;		
-			
 		stackScenePrefab.erase( --stackScenePrefab.end() );
 
 		int nChild = (int)node->Childs.size();

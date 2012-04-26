@@ -82,6 +82,7 @@ void CIrrWindow::initScene()
 	camAnimator->drop();
 
 	// set active camera
+	m_designCamera->getCameraNode()->setFOV( core::degToRad(40.0f) );
 	getIView()->setActiveCamera( m_designCamera );
 
 
@@ -124,7 +125,7 @@ void CIrrWindow::irrUpdate()
 	m_animObject->updateObject();
 
 	// draw 3d scene
-	driver->beginScene( true, true, 0, getIView()->getVideoData() );
+	driver->beginScene( true, true, SColor(255,200,200,200), getIView()->getVideoData() );
 		
 	// draw all scene
 	smgr->drawAll();	

@@ -169,10 +169,12 @@ struct SNodeParam
 	SNodeParam*				Parent;
 
 	ISkinnedMesh::SJoint	*Joint;
+	int						ChildLevel;
 
 	SNodeParam()
 	{
 		Joint = NULL;
+		ChildLevel = 0;
 	}
 };
 typedef vector<SNodeParam*>	ArrayNodeParams;

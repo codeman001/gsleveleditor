@@ -2,6 +2,10 @@
 #include "CGameAnimatedMeshSceneNode.h"
 #include "CGameObject.h"
 
+#ifdef GSANIMATION
+#include "IView.h"
+#endif
+
 CGameAnimatedMeshSceneNode::CGameAnimatedMeshSceneNode
 	(
 		CGameObject *owner,
@@ -42,9 +46,46 @@ void CGameAnimatedMeshSceneNode::render()
 #endif
 
 
-#ifdef GSANIMATION
-	setDebugDataVisible( EDS_BBOX | EDS_SKELETON );
-	m_owner->drawFrontUpLeftVector();	
+#ifdef GSANIMATION		
+	// get driver
+	IVideoDriver* driver = getSceneManager()->getVideoDriver();
+
+	ISkinnedMesh *mesh = (ISkinnedMesh*)getMesh();
+	IView *pView = getIView();
+
+	irr::gui::IGUIFont* font = getSceneManager()->getGUIEnvironment()->getBuiltInFont();	
+
+	video::SMaterial debug_mat;
+	debug_mat.Lighting = false;
+	debug_mat.AntiAliasing = 0;
+	debug_mat.ZBuffer = video::ECFN_NEVER;
+	driver->setMaterial(debug_mat);
+	
+	for (u32 g=0; g < mesh->getAllJoints().size(); ++g)
+	{
+		ISkinnedMesh::SJoint *joint = mesh->getAllJoints()[g];
+		core::vector3df v;
+		
+		//basic bone
+		//core::matrix4 mat1 = joint->GlobalInversedMatrix;
+		//mat1.makeInverse();
+
+		//anim bone
+		core::matrix4 mat1 = joint->GlobalAnimatedMatrix;
+
+		// get position
+		mat1.transformVect( v );
+		
+		// scale with character
+		v *= m_owner->getScale();
+
+		// draw name bone on screen
+		int x, y;
+		pView->getScreenCoordinatesFrom3DPosition( v, &x, &y );
+		wchar_t text[1024];
+		uiString::copy<wchar_t, const c8>( text, joint->Name.c_str() );		
+		font->draw( text, core::rect<s32>( x,y, x + 100, y + 50), SColor(255, 255,255,0) );
+	}
 #endif
 
 	// draw animesh

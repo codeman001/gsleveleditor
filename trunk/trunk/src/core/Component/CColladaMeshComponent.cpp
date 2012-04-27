@@ -1151,7 +1151,7 @@ void CColladaMeshComponent::setAnim(const char *lpAnimName, IAnimatedMeshSceneNo
 	if ( animIt == m_clipAnimation.end() )
 		return;
 
-	const float defaultFps = 30.0f;
+	const float defaultFps = 40.0f;
 	const float defaultTpf = 1.0f/defaultFps;
 
 	SAnimClip& animClip = animIt->second;

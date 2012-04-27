@@ -45,6 +45,8 @@ void CGameAnimatedMeshSceneNode::render()
 	setDebugDataVisible( EDS_SKELETON );
 #endif
 
+	// draw animesh
+	CAnimatedMeshSceneNode::render();
 
 #ifdef GSANIMATION		
 	// get driver
@@ -84,12 +86,15 @@ void CGameAnimatedMeshSceneNode::render()
 		pView->getScreenCoordinatesFrom3DPosition( v, &x, &y );
 		wchar_t text[1024];
 		uiString::copy<wchar_t, const c8>( text, joint->Name.c_str() );		
-		font->draw( text, core::rect<s32>( x,y, x + 100, y + 50), SColor(255, 255,255,0) );
+		
+		// draw bone position
+		SColor c = SColor(255,0,0,255);		
+		driver->draw2DRectangle( c, core::rect<s32>( x - 2, y - 2, x + 2, y + 2 ) ); 
+
+		// draw text
+		font->draw( text, core::rect<s32>( x + 10, y, x + 100, y + 50), SColor(255, 255,255,0) );
 	}
 #endif
-
-	// draw animesh
-	CAnimatedMeshSceneNode::render();
 
 #ifdef GSEDITOR	
 	// draw move

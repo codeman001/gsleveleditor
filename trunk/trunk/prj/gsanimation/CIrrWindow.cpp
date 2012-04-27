@@ -140,6 +140,8 @@ void CIrrWindow::irrUpdate()
 
 	// end scene
 	driver->endScene();
+
+	Sleep(10);
 }
 
 void CIrrWindow::_OnSize(uiSizeEvent sizeEvent, int nWidth, int nHeight)

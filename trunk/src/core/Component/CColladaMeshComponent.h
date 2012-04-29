@@ -4,6 +4,7 @@
 #include "CGameObject.h"
 #include "IObjectComponent.h"
 
+#include "CGameColladaSceneNode.h"
 
 // const for animation
 const int k_linear = 0;
@@ -169,11 +170,13 @@ struct SNodeParam
 	SNodeParam*				Parent;
 
 	ISkinnedMesh::SJoint	*Joint;
+	ISceneNode				*SceneNode;
 	int						ChildLevel;
 
 	SNodeParam()
 	{
 		Joint = NULL;
+		SceneNode = NULL;
 		ChildLevel = 0;
 	}
 };
@@ -206,9 +209,9 @@ protected:
 	ArrayNodeParams				m_listNode;
 
 	// current node
-	ISceneNode					*m_colladaNode;
+	ISceneNode									*m_colladaNode;
+	map<std::string, CGameColladaSceneNode*>	m_mapNode;
 
-	vector<IAnimatedMeshSceneNode*>	m_listAnimNode;
 public:
 	CColladaMeshComponent( CGameObject *pObj );
 

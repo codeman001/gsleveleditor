@@ -110,12 +110,12 @@ bool CMainFrame::_OnKeyUp( uiKeyEvent keyEvent )
 	CGameObject* pObj = m_irrWin->getAnimObject();
 	core::vector3df scale =	pObj->getScale();
 
-	if ( keyEvent.getVKeyCode() == VK_ADD )
+	if ( keyEvent.getVKeyCode() == VK_ADD || keyEvent.getAnsiKey() == 'i' || keyEvent.getAnsiKey() == 'I' )
 	{
 		scale *= 2.0f;
 		pObj->setScale( scale );
 	}
-	else if ( keyEvent.getVKeyCode() == VK_SUBTRACT )
+	else if ( keyEvent.getVKeyCode() == VK_SUBTRACT || keyEvent.getAnsiKey() == 'o' || keyEvent.getAnsiKey() == 'O' )
 	{
 		scale /= 2.0f;
 		pObj->setScale( scale );

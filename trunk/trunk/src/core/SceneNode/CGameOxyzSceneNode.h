@@ -3,7 +3,6 @@
 
 
 #include "ISceneNode.h"
-
 #include "matrix4.h"
 
 class CGameOxyzSceneNode: public ISceneNode

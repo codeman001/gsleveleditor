@@ -55,14 +55,13 @@ void CGameAnimatedMeshSceneNode::render()
 	ISkinnedMesh *mesh = (ISkinnedMesh*)getMesh();
 	IView *pView = getIView();
 
-	irr::gui::IGUIFont* font = getSceneManager()->getGUIEnvironment()->getBuiltInFont();	
+	irr::gui::IGUIFont* font = getSceneManager()->getGUIEnvironment()->getBuiltInFont();
 
 	video::SMaterial debug_mat;
 	debug_mat.Lighting = false;
 	debug_mat.AntiAliasing = 0;
 	debug_mat.ZBuffer = video::ECFN_NEVER;
-	driver->setMaterial(debug_mat);
-	
+		
 	for (u32 g=0; g < mesh->getAllJoints().size(); ++g)
 	{
 		ISkinnedMesh::SJoint *joint = mesh->getAllJoints()[g];
@@ -88,7 +87,8 @@ void CGameAnimatedMeshSceneNode::render()
 		uiString::copy<wchar_t, const c8>( text, joint->Name.c_str() );		
 		
 		// draw bone position
-		SColor c = SColor(255,0,0,255);		
+		SColor c = SColor(255,0,0,255);	
+		driver->setMaterial(debug_mat);
 		driver->draw2DRectangle( c, core::rect<s32>( x - 2, y - 2, x + 2, y + 2 ) ); 
 
 		// draw text

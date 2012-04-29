@@ -1133,6 +1133,7 @@ void CColladaMeshComponent::updateJointToMesh( SMeshParam *mesh, vector<wstring>
 	}
 }
 
+#if 0
 // setAnim
 void CColladaMeshComponent::setAnim(const char *lpAnimName, IAnimatedMeshSceneNode *node)
 {
@@ -1221,7 +1222,7 @@ void CColladaMeshComponent::setAnim(const char *lpAnimName, IAnimatedMeshSceneNo
 				{
 					pos.position.X = animFrame.m_translateY;
 					pos.position.Y = animFrame.m_translateZ;
-					pos.position.Z = animFrame.m_translateX;
+					pos.position.Z = -animFrame.m_translateX;
 				}
 
 
@@ -1244,6 +1245,7 @@ void CColladaMeshComponent::setAnim(const char *lpAnimName, IAnimatedMeshSceneNo
 	// update current anim
 	m_currentAnim = &animClip;	
 }
+#endif
 
 // setAnimation
 // apply Animation to skin joint
@@ -1251,14 +1253,133 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 {
 	if ( m_colladaNode == NULL )
 		return;
-	
+
+#if 0
 	vector<IAnimatedMeshSceneNode*>::iterator i = m_listAnimNode.begin(), end = m_listAnimNode.end();
 	while ( i != end )
 	{		
 		setAnim( lpAnimName, (IAnimatedMeshSceneNode*) (*i) );
 		i++;
 	}
+#endif	
 	
+	// get anim time data
+	ClipAnimation::iterator animIt = m_clipAnimation.find( std::string(lpAnimName) );
+	if ( animIt == m_clipAnimation.end() )
+		return;
+
+	const float defaultFps = 40.0f;
+	const float defaultTpf = 1.0f/defaultFps;
+
+	SAnimClip& animClip = animIt->second;
+	
+	int fromFrame = 0, toFrame = 0;
+	core::quaternion q1, q2;
+	core::vector3df v1, v2;
+
+	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+
+	while ( i != end )
+	{
+		CGameColladaSceneNode* j = (*i).second;
+				
+		// clear old key frame
+		j->clearAllKeyFrame();
+				
+		// get local matrix of skin joint
+		const core::matrix4& mat =	j->getLocalMatrix();	
+
+		// get joint node
+		JointAnimation::iterator it = m_jointAnimation.find( std::string( j->getName() ) );
+		if ( it != m_jointAnimation.end() )
+		{
+			AnimationFrames& arrayFrame = it->second;			
+						
+			CGameColladaSceneNode::SPositionKey	pos;
+			CGameColladaSceneNode::SRotationKey	rot;
+
+			float currentTime = 0;
+			float time	= animClip.m_time;
+			float end	= animClip.m_time + animClip.m_duration;
+			
+			getFrameAtTime( &arrayFrame, time, &fromFrame,	&q1, &v1 );
+			getFrameAtTime( &arrayFrame, end,  &toFrame,	&q2, &v2 );
+			
+			// save frame data			
+			animClip.m_frames = (int) ((end - time) * defaultFps);
+			
+			if ( fromFrame == toFrame )
+			{			
+				// frame 1
+				rot.frame = 0;
+				rot.rotation = q1;
+
+				pos.frame = 0;
+				pos.position = v1;
+				mat.transformVect( pos.position );
+
+				j->RotationKeys.push_back( rot );
+				j->PositionKeys.push_back( pos );
+
+				// frame 2
+				rot.frame = end * defaultFps;
+				rot.rotation = q2;
+
+				pos.frame = end * defaultFps;;
+				pos.position = v2;
+				mat.transformVect( pos.position );
+
+				j->RotationKeys.push_back( rot );
+				j->PositionKeys.push_back( pos );
+			}
+			else
+			{
+				for ( int i = fromFrame; i <= toFrame; i++ )
+				{
+					SAnimFrame& animFrame = arrayFrame[i];										
+
+					if ( i == fromFrame )
+					{
+						currentTime = 0;
+						rot.rotation = q1;		
+						pos.position = v1;
+					}
+					else if ( i == toFrame )
+					{
+						currentTime = end - time;
+						rot.rotation = q2;
+						pos.position = v2;						
+					}
+					else
+					{
+						currentTime =  animFrame.m_time - time;
+						rot.rotation.fromAngleAxis(
+								animFrame.m_rotAngle*core::DEGTORAD, 
+								core::vector3df(animFrame.m_rotX, animFrame.m_rotZ, animFrame.m_rotY)
+							);
+
+						pos.position.X =  animFrame.m_translateY;
+						pos.position.Y =  animFrame.m_translateZ;
+						pos.position.Z =  -animFrame.m_translateX;
+					}					
+
+					mat.transformVect( pos.position );
+
+					rot.frame = currentTime * defaultFps;
+					pos.frame = currentTime * defaultFps;
+
+					// add key frame
+					j->RotationKeys.push_back( rot );
+					j->PositionKeys.push_back( pos );
+				}	
+			}
+
+		}	
+
+		// next node
+		i++;
+	}
+
 }
 
 // getFrameAtTime
@@ -1292,9 +1413,9 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 			// calc rotate
 			rotateData->slerp( q1, q2, f );
 
-			core::vector3df v1(frame1.m_translateY, frame1.m_rotZ, frame1.m_rotX);
-			core::vector3df v2(frame2.m_translateY, frame2.m_rotZ, frame2.m_rotX);
-
+			core::vector3df v1(frame1.m_translateY, frame1.m_translateZ, -frame1.m_translateX);
+			core::vector3df v2(frame2.m_translateY, frame2.m_translateZ, -frame2.m_translateX);
+			
 			*translateData = v1 + (v2 - v1) * f;
 
 			// set frame id
@@ -1307,6 +1428,94 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 	return false;
 
 }
+
+void CColladaMeshComponent::constructScene()
+{
+	ISceneManager *smgr = getIView()->getSceneMgr();
+
+	// release if mesh is loaded
+	if ( m_gameObject->m_node )
+		m_gameObject->destroyNode();
+
+	// clear all map
+	m_mapNode.clear();
+
+	// create new scene node
+	m_gameObject->m_node = smgr->addEmptySceneNode( m_gameObject->getParentSceneNode(), m_gameObject->getID() );
+	m_gameObject->m_node->grab();
+
+	// collada node
+	m_colladaNode = m_gameObject->m_node;
+
+
+	std::list<SNodeParam*>	stackScene;
+	std::list<SNodeParam*>	listScene;
+
+	int nNode = m_listNode.size();
+	for ( int i = 0; i < nNode; i++ )
+	{
+		SNodeParam* root = m_listNode[i];
+		stackScene.push_back( root );
+	}
+
+	while ( stackScene.size() )
+	{
+		SNodeParam *node = stackScene.back();
+		
+		// save to list bone prefab
+		listScene.push_back( node );
+		
+		// to do create node
+		char name[1024];
+		uiString::copy<char, const wchar_t>( name, node->Name.c_str() );
+
+		
+		// create new scene node
+		ISceneNode *parent = m_colladaNode;
+		if ( node->Parent && node->Parent->SceneNode )
+			parent = node->Parent->SceneNode;
+
+		// crate new scene node
+		CGameColladaSceneNode *colladaSceneNode = new CGameColladaSceneNode( parent, smgr, -1 );
+		colladaSceneNode->setName( name );
+		
+		// get position from transform		
+		node->SceneNode = colladaSceneNode;
+		
+		// store this node
+		m_mapNode[name] = colladaSceneNode;
+
+		// set relative position		
+		colladaSceneNode->setLocalMatrix( node->Transform );
+		
+		// pop stack
+		stackScene.erase( --stackScene.end() );
+		
+		// add child to continue loop
+		int nChild = (int)node->Childs.size();
+		for ( int i = 0; i < nChild; i++ )
+		{			
+			SNodeParam *childNode = node->Childs[i];
+
+			// set parent
+			childNode->Parent = node;
+			stackScene.push_back( childNode );		
+		}
+	}
+
+	// clear node data
+	std::list<SNodeParam*>::iterator i = listScene.begin(), end = listScene.end();
+	while ( i != end )
+	{
+		(*i)->Joint = NULL;
+		(*i)->SceneNode->drop();
+		(*i)->SceneNode = NULL;
+		i++;
+	}
+
+}
+
+#if 0
 
 // create scene node
 void CColladaMeshComponent::constructScene()
@@ -1435,6 +1644,7 @@ void CColladaMeshComponent::constructScene()
 	}
 }
 
+#endif
 // constructMeshBuffer
 // create mesh buffer
 void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMeshBuffer *buffer, bool flip )
@@ -1591,6 +1801,7 @@ SNodeParam* getParentJoint( SNodeParam *node )
 #endif	
 }
 
+#if 0
 // constructSkinMesh
 // apply bone to vertex
 void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, ISkinnedMesh *skinMesh )
@@ -1698,6 +1909,7 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, ISkinnedMe
 		i++;
 	}
 }
+#endif
 
 // cleanData
 // free all data from parse dae

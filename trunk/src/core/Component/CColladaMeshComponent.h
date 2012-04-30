@@ -155,6 +155,10 @@ struct SMeshParam
 	vector<SVerticesParam>	Vertices;
 	vector<STrianglesParam>	Triangles;
 	vector<SJointParam>		Joints;
+	
+	vector<s32>				JointVertexIndex;
+	vector<s32>				JointIndex;
+
 	int						Type;
 	core::matrix4			BindShapeMatrix;
 };
@@ -172,7 +176,7 @@ struct SNodeParam
 	SNodeParam*				Parent;
 
 	ISkinnedMesh::SJoint	*Joint;
-	ISceneNode				*SceneNode;
+	CGameColladaSceneNode	*SceneNode;
 	int						ChildLevel;
 
 	SNodeParam()
@@ -213,6 +217,7 @@ protected:
 	// current node
 	ISceneNode									*m_colladaNode;
 	map<std::string, CGameColladaSceneNode*>	m_mapNode;
+	map<std::string, CGameColladaSceneNode*>	m_sidNode;
 
 public:
 	CColladaMeshComponent( CGameObject *pObj );
@@ -238,7 +243,7 @@ protected:
 
 	// constructSkinMesh
 	// apply bone to vertex
-	void constructSkinMesh( SMeshParam *meshParam, ISkinnedMesh *mesh );
+	void constructSkinMesh( SMeshParam *meshParam, CGameColladaMesh *mesh );
 
 	// parseEffectNode
 	// parse effect material node

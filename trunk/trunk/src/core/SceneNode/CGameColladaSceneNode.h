@@ -3,6 +3,138 @@
 
 #include "stdafx.h"
 
+class CGameColladaSceneNode;
+
+class CGameColladaMesh: public IMesh
+{
+public:
+	//! constructor
+	CGameColladaMesh()
+	{
+		#ifdef _DEBUG
+		setDebugName("CGameColladaMesh");
+		#endif
+	}
+
+	//! destructor
+	virtual ~CGameColladaMesh()
+	{
+		// drop buffers
+		for (u32 i=0; i<MeshBuffers.size(); ++i)
+			MeshBuffers[i]->drop();
+	}
+
+	//! returns amount of mesh buffers.
+	virtual u32 getMeshBufferCount() const
+	{
+		return MeshBuffers.size();
+	}
+
+	//! returns pointer to a mesh buffer
+	virtual IMeshBuffer* getMeshBuffer(u32 nr) const
+	{
+		return MeshBuffers[nr];
+	}
+
+	//! returns a meshbuffer which fits a material
+	/** reverse search */
+	virtual IMeshBuffer* getMeshBuffer( const video::SMaterial & material) const
+	{
+		for (s32 i = (s32)MeshBuffers.size()-1; i >= 0; --i)
+		{
+			if ( material == MeshBuffers[i]->getMaterial())
+				return MeshBuffers[i];
+		}
+
+		return 0;
+	}
+
+	//! returns an axis aligned bounding box
+	virtual const core::aabbox3d<f32>& getBoundingBox() const
+	{
+		return BoundingBox;
+	}
+
+	//! set user axis aligned bounding box
+	virtual void setBoundingBox( const core::aabbox3df& box)
+	{
+		BoundingBox = box;
+	}
+
+	//! recalculates the bounding box
+	void recalculateBoundingBox()
+	{
+		if (MeshBuffers.size())
+		{
+			BoundingBox = MeshBuffers[0]->getBoundingBox();
+			for (u32 i=1; i<MeshBuffers.size(); ++i)
+				BoundingBox.addInternalBox(MeshBuffers[i]->getBoundingBox());
+		}
+		else
+			BoundingBox.reset(0.0f, 0.0f, 0.0f);
+	}
+
+	//! adds a MeshBuffer
+	void addMeshBuffer(IMeshBuffer* buf)
+	{
+		if (buf)
+		{
+			buf->grab();
+			MeshBuffers.push_back(buf);
+		}
+	}
+
+	//! sets a flag of all contained materials to a new value
+	virtual void setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue)
+	{
+		for (u32 i=0; i<MeshBuffers.size(); ++i)
+			MeshBuffers[i]->getMaterial().setFlag(flag, newvalue);
+	}
+
+	//! set the hardware mapping hint, for driver
+	virtual void setHardwareMappingHint( E_HARDWARE_MAPPING newMappingHint, E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX )
+	{
+		if ( IsStaticMesh == true )
+		{
+			for (u32 i=0; i<MeshBuffers.size(); ++i)
+				MeshBuffers[i]->setHardwareMappingHint(newMappingHint, buffer);
+		}
+	}
+
+	//! flags the meshbuffer as changed, reloads hardware buffers
+	virtual void setDirty(E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX)
+	{
+		for (u32 i=0; i<MeshBuffers.size(); ++i)
+			MeshBuffers[i]->setDirty(buffer);
+	}
+
+	//! The meshbuffers of this mesh
+	core::array<IMeshBuffer*>	MeshBuffers;
+
+	//! The bounding box of this mesh
+	core::aabbox3d<f32>			BoundingBox;
+
+	// ! For Skinning
+	struct SWeight
+	{	
+		u16 buffer_id;
+		u32 vertex_id;
+		f32 strength;
+	};
+
+	struct SJoint
+	{
+		std::wstring			name;
+		core::array<SWeight>	weights;
+		CGameColladaSceneNode*	node;
+	};
+	
+	core::array<SJoint>			Joints;
+
+	bool						IsStaticMesh;
+};
+
+
 class CGameColladaSceneNode: public ISceneNode
 {
 protected:
@@ -14,6 +146,9 @@ protected:
 
 	core::matrix4	LocalMatrix;
 	core::matrix4	GlobalInversedMatrix;
+
+	CGameColladaMesh	*ColladaMesh;
+
 public:
 	CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id);
 
@@ -43,12 +178,28 @@ public:
 		return Box;
 	}
 
+	// setColladaMesh
+	// Set current collada mesh
+	void setColladaMesh(CGameColladaMesh* mesh)
+	{
+		if ( ColladaMesh )
+			ColladaMesh->drop();
+
+		ColladaMesh = mesh;
+
+		if ( ColladaMesh )
+			ColladaMesh->grab();
+	}
+
 public:
 	
 	// getMaterialCount
 	// get num material of mesh
 	virtual u32 getMaterialCount() const
 	{
+		if ( ColladaMesh )
+			return ColladaMesh->getMeshBufferCount();
+
 		return 1;
 	}
 
@@ -56,6 +207,9 @@ public:
 	// get material of mesh
 	virtual video::SMaterial& getMaterial(u32 i)
 	{
+		if ( ColladaMesh )
+			return ColladaMesh->getMeshBuffer(i)->getMaterial();
+
 		return Material;
 	}
 

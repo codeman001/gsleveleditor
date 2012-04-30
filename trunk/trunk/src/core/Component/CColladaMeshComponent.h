@@ -150,6 +150,7 @@ struct SJointParam
 struct SMeshParam
 {
 	std::wstring			Name;
+	std::wstring			ControllerName;
 	vector<SBufferParam>	Buffers;
 	vector<SVerticesParam>	Vertices;
 	vector<STrianglesParam>	Triangles;
@@ -165,6 +166,7 @@ struct SNodeParam
 	std::wstring			Name;
 	std::wstring			Type;
 	std::wstring			SID;
+	std::wstring			Instance;
 	core::matrix4			Transform;
 	vector<SNodeParam*>		Childs;
 	SNodeParam*				Parent;
@@ -248,7 +250,11 @@ protected:
 
 	// parseSkinNode
 	// parse skin data
-	void parseSkinNode( io::IXMLReader *xmlRead );
+	SMeshParam* parseSkinNode( io::IXMLReader *xmlRead );
+
+	// parseControllersNode
+	// parse controllser
+	void parseControllerNode( io::IXMLReader *xmlRead );
 
 	// parseSceneNode
 	// parse scene data
@@ -261,6 +267,10 @@ protected:
 	// parseAnimationNode
 	// parse anim node
 	void parseAnimationNode( io::IXMLReader *xmlRead );
+
+	// parseClipNode
+	// parse clip time node
+	void parseClipNode( io::IXMLReader *xmlRead );
 
 	// getFrameAtTime
 	// get a frame at time

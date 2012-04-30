@@ -14,10 +14,14 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	m_posHint = 0;
 	m_scaleHint = 0;
 	m_rotHint = 0;
+
+	ColladaMesh = NULL;
 }
 
 CGameColladaSceneNode::~CGameColladaSceneNode()
 {
+	if ( ColladaMesh )
+		ColladaMesh->drop();
 }
 
 void CGameColladaSceneNode::OnRegisterSceneNode()
@@ -288,53 +292,98 @@ void CGameColladaSceneNode::getFrameData(f32 frame,
 
 void CGameColladaSceneNode::render()
 {
-#ifdef GSANIMATION		
 	// get driver
-	IVideoDriver* driver = getSceneManager()->getVideoDriver();
-	
-	IView *pView = getIView();
+	IVideoDriver* driver = getSceneManager()->getVideoDriver();	
+	IView *pView = getIView();	
 
-	irr::gui::IGUIFont* font = getSceneManager()->getGUIEnvironment()->getBuiltInFont();	
-
-	video::SMaterial debug_mat;
-	debug_mat.Lighting = false;
-	debug_mat.AntiAliasing = 0;
-	debug_mat.ZBuffer = video::ECFN_NEVER;
-	driver->setMaterial(debug_mat);
-			
-	// get current position node
-	core::vector3df position = getAbsolutePosition();
-
-	int x, y;
-	if ( pView->getScreenCoordinatesFrom3DPosition( position, &x, &y ) == true )
-	{
-		wchar_t text[1024];
-		uiString::copy<wchar_t, const c8>( text, getName() );
+	if ( ColladaMesh )
+	{		
+		bool isTransparentPass = SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
 		
-		// draw bone position
-		SColor c = SColor(255,0,0,255);
-		driver->draw2DRectangle( c, core::rect<s32>( x - 2, y - 2, x + 2, y + 2 ) ); 
+		// set transform
+		driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
 
-		// draw text
-		font->draw( text, core::rect<s32>( x + 10, y, x + 100, y + 50), SColor(255, 255,255,0) );
+		for (u32 i=0; i<ColladaMesh->getMeshBufferCount(); ++i)
+		{
+			scene::IMeshBuffer* mb = ColladaMesh->getMeshBuffer(i);
+			if (mb)
+			{
+				const video::SMaterial& material = mb->getMaterial();
+
+				video::IMaterialRenderer* rnd = driver->getMaterialRenderer(material.MaterialType);
+				bool transparent = (rnd && rnd->isTransparent());
+
+				// only render transparent buffer if this is the transparent render pass
+				// and solid only in solid pass
+				if (transparent == isTransparentPass)
+				{
+					driver->setMaterial(material);
+					driver->drawMeshBuffer(mb);
+				}
+			}
+		}
+
+		Box = ColladaMesh->getBoundingBox();
 	}
-
-	// draw parent line
-	driver->setMaterial(debug_mat);	
-	
-	core::list<ISceneNode*>::Iterator i = Children.begin(), end = Children.end();
-	while ( i != end )
+#ifdef GSANIMATION
+	else
 	{
-		driver->draw3DLine( position, (*i)->getAbsolutePosition(), SColor(255,255,0,255) );
-		i++;
+		// set identity transform
+		driver->setTransform(video::ETS_WORLD, core::IdentityMatrix );
+
+		irr::gui::IGUIFont* font = getSceneManager()->getGUIEnvironment()->getBuiltInFont();	
+
+		video::SMaterial debug_mat;
+		debug_mat.Lighting = false;
+		debug_mat.AntiAliasing = 0;
+		debug_mat.ZBuffer = video::ECFN_NEVER;
+		driver->setMaterial(debug_mat);
+				
+		// get current position node
+		core::vector3df position = getAbsolutePosition();
+
+		int x, y;
+		if ( pView->getScreenCoordinatesFrom3DPosition( position, &x, &y ) == true )
+		{
+			wchar_t text[1024];
+			uiString::copy<wchar_t, const c8>( text, getName() );
+			
+			// draw bone position
+			SColor c = SColor(255,0,0,255);
+			driver->draw2DRectangle( c, core::rect<s32>( x - 2, y - 2, x + 2, y + 2 ) ); 
+
+			// draw text
+			font->draw( text, core::rect<s32>( x + 10, y, x + 100, y + 50), SColor(255, 255,255,0) );
+		}
+
+		// draw parent line
+		driver->setMaterial(debug_mat);	
+		
+		core::list<ISceneNode*>::Iterator i = Children.begin(), end = Children.end();
+		while ( i != end )
+		{
+			driver->draw3DLine( position, (*i)->getAbsolutePosition(), SColor(255,255,0,255) );
+			i++;
+		}
+
+		Box.MinEdge = core::vector3df(-2, -2, -2);
+		Box.MaxEdge = core::vector3df( 2,  2,  2);
 	}
 #endif
 
-	Box.MinEdge = core::vector3df(-2,-2,-2);
-	Box.MaxEdge = core::vector3df(2,2,2);
-
-	//if (DebugDataVisible & scene::EDS_BBOX)
+#ifndef GSANIMATION
+	if (DebugDataVisible & scene::EDS_BBOX)
+#endif
 	{		
+		// set identity transform
+		driver->setTransform(video::ETS_WORLD, core::IdentityMatrix );
+
+		video::SMaterial debug_mat;
+		debug_mat.Lighting = false;
+		debug_mat.AntiAliasing = 0;
+		debug_mat.ZBuffer = video::ECFN_NEVER;
+		
+		driver->setMaterial(debug_mat);
 		driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,255,255,255));
 	}
 	

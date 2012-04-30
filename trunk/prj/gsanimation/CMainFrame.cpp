@@ -126,18 +126,28 @@ bool CMainFrame::_OnKeyUp( uiKeyEvent keyEvent )
 
 		pObj->setLighting( !light );
 		ISceneNode *pNode =	pObj->getSceneNode();
-		if ( pNode )
-		{
-			pNode->setMaterialFlag( video::EMF_LIGHTING, !light );
 
-			core::list<ISceneNode*>::ConstIterator i = pNode->getChildren().begin(), end = pNode->getChildren().end();
+		stack<ISceneNode*>	stackNode;
+		
+		stackNode.push( pNode );
+
+		while ( stackNode.size() )
+		{
+			ISceneNode *currentNode = stackNode.top();
+			stackNode.pop();
+
+			currentNode->setMaterialFlag( video::EMF_LIGHTING, !light );
+
+			core::list<ISceneNode*>::ConstIterator i = currentNode->getChildren().begin(), 
+				end = currentNode->getChildren().end();
 
 			while ( i != end )
 			{
-				(*i)->setMaterialFlag( video::EMF_LIGHTING, !light );
+				stackNode.push( (*i) );
 				i++;
 			}
 		}
+
 	}
 
 	return true;

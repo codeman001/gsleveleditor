@@ -9,6 +9,7 @@
 #include "CGameAnimatedMeshSceneNode.h"
 #include "CGameMeshSceneNode.h"
 
+void			uriToId(std::wstring& str);
 wstring			readId(io::IXMLReader *xmlRead);
 void			findNextNoneWhiteSpace(const c8** start);
 inline f32		readFloat(const c8** p);
@@ -29,6 +30,7 @@ int				getBufferWithUri( std::wstring& uri, SMeshParam* mesh );
 int				getVerticesWithUri( std::wstring& uri, SMeshParam* mesh );
 int				getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam );
 int				getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam );
+int				getMeshWithControllerName( std::wstring& controllerName, ArrayMeshParams& listMeshParam );
 
 
 CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
@@ -132,9 +134,9 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 #endif
 	}
 
+	const std::wstring controllerSectionName(L"controller");
 	const std::wstring effectSectionName(L"effect");
-	const std::wstring geometrySectionName(L"geometry");
-	const std::wstring skinSectionName(L"skin");
+	const std::wstring geometrySectionName(L"geometry");	
 	const std::wstring sceneSectionName(L"visual_scene");
 
 	while ( xmlRead->read() )
@@ -153,9 +155,9 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 				{
 					parseGeometryNode( xmlRead );
 				}
-				else if ( nodeName == skinSectionName )
-				{
-					parseSkinNode( xmlRead );
+				else if ( nodeName == controllerSectionName )
+				{				
+					parseControllerNode( xmlRead );					
 				}
 				else if ( nodeName == sceneSectionName )
 				{
@@ -342,19 +344,50 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 
 }
 
+// parseControllersNode
+// parse controllser
+void CColladaMeshComponent::parseControllerNode( io::IXMLReader *xmlRead )
+{	
+	const std::wstring skinSectionName(L"skin");
+	const std::wstring controllerSectionName(L"controller");
+
+	std::wstring controllerName = xmlRead->getAttributeValue(L"id");	
+
+	while(xmlRead->read())
+	{							
+		if (xmlRead->getNodeType() == io::EXN_ELEMENT )
+		{
+			std::wstring node = xmlRead->getNodeName();
+
+			if ( node == skinSectionName )
+			{
+				SMeshParam *mesh = parseSkinNode( xmlRead );
+
+				if ( mesh )
+					mesh->ControllerName = controllerName;
+			}
+		}
+		else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END )
+		{
+			if ( xmlRead->getNodeName() == controllerSectionName )
+				break;
+		}	
+	}
+}
+
 // parseSkinNode
 // parse skin data
-void CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
+SMeshParam* CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 {
 	std::wstring source = xmlRead->getAttributeValue(L"source");
 	source.erase( source.begin() );
 
 	int meshID = getMeshWithUri( source, m_listMesh );
 	if ( meshID == -1 )
-		return;
+		return NULL;
 	
 	SMeshParam *mesh = &m_listMesh[ meshID ];
-
+	
 	const std::wstring paramSectionName(L"param");
 	const std::wstring skinSectionName(L"skin");
 	const std::wstring jointsSectionName(L"joints");
@@ -382,6 +415,7 @@ void CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 		if (xmlRead->getNodeType() == io::EXN_ELEMENT )
 		{
 			std::wstring node = xmlRead->getNodeName();
+			
 			if ( node == bindShapeMatrix )
 			{
 				float f[16];
@@ -488,6 +522,7 @@ void CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 	if ( transformArray )
 		delete transformArray;
 
+	return mesh;
 }
 
 // parseSceneNode
@@ -525,6 +560,9 @@ SNodeParam* CColladaMeshComponent::parseNode( io::IXMLReader *xmlRead, SNodePara
 	const std::wstring translateSectionName(L"translate");
 	const std::wstring rotateSectionName(L"rotate");
 	const std::wstring scaleSectionName(L"scale");
+
+	const std::wstring instanceGeometrySectionName(L"instance_geometry");
+	const std::wstring instanceControllerSectionName(L"instance_controller");
 
 	SNodeParam *pNode = new SNodeParam();
 	
@@ -565,8 +603,22 @@ SNodeParam* CColladaMeshComponent::parseNode( io::IXMLReader *xmlRead, SNodePara
 			}
 			else if ( xmlRead->getNodeName() == scaleSectionName )
 			{
+				// mul scale
 				pNode->Transform *= readScaleNode(xmlRead, true);
+			}			
+			else if ( xmlRead->getNodeName() == instanceGeometrySectionName )
+			{
+				// <instance_geometry url="#MESHNAME">
+				pNode->Instance = xmlRead->getAttributeValue(L"url");
+				uriToId( pNode->Instance );
 			}
+			else if ( xmlRead->getNodeName() == instanceControllerSectionName )
+			{
+				// <instance_controller url="#MESHNAME">
+				pNode->Instance = xmlRead->getAttributeValue(L"url");
+				uriToId( pNode->Instance );
+			}
+
 		}
 		else if ( xmlRead->getNodeType() == io::EXN_ELEMENT_END )
 		{
@@ -844,13 +896,49 @@ void CColladaMeshComponent::loadAnimFile( char *lpFileName )
 #else
 		return;	
 #endif
-	}
-	
-	char charBuffer[1024];
+	}	
 
 	m_clipAnimation.clear();
 	m_animationName.clear();
 	m_jointAnimation.clear();
+
+	while ( xmlRead->read() )
+	{
+		switch (xmlRead->getNodeType())
+		{		
+		case io::EXN_ELEMENT:
+			{
+				core::stringw nodeName = xmlRead->getNodeName();
+				if ( core::stringw(L"library_animation_clips") == nodeName )
+				{
+					parseClipNode( xmlRead );
+				}				
+				else if ( core::stringw(L"animation")  == nodeName )
+				{					
+					parseAnimationNode( xmlRead );				
+				}
+			}
+			break;
+		case io::EXN_ELEMENT_END:
+			{
+			}
+			break;
+		case io::EXN_TEXT:
+			{
+			}
+			break;
+		}
+	}
+	
+	xmlRead->drop();
+	
+}
+
+// parseClipNode
+// parse clip time node
+void CColladaMeshComponent::parseClipNode( io::IXMLReader *xmlRead )
+{
+	char charBuffer[1024];
 
 	while ( xmlRead->read() )
 	{
@@ -881,27 +969,18 @@ void CColladaMeshComponent::loadAnimFile( char *lpFileName )
 					
 					m_animationName.push_back( clip.m_id );
 				}
-				else if ( core::stringw(L"animation")  == nodeName )
-				{					
-					parseAnimationNode( xmlRead );				
-				}
+				break;
 			}
-			break;
 		case io::EXN_ELEMENT_END:
 			{
-			}
-			break;
-		case io::EXN_TEXT:
-			{
-			}
-			break;
+				core::stringw nodeName = xmlRead->getNodeName();
+
+				if ( core::stringw(L"library_animation_clips") == nodeName )
+					return;
+			}		
 		}
 	}
-	
-	xmlRead->drop();
-	
 }
-
 
 // parseAnimationNode
 // parse anim node
@@ -1365,6 +1444,51 @@ void CColladaMeshComponent::constructScene()
 		// set relative position		
 		colladaSceneNode->setLocalMatrix( node->Transform );
 		
+		
+		// construct geometry & controller in node
+		if ( node->Instance.size() > 0 )
+		{
+			int meshID = getMeshWithUri( node->Instance, m_listMesh );
+			if ( meshID == -1 )			
+				meshID = getMeshWithControllerName( node->Instance, m_listMesh );
+
+			if ( meshID != -1 )
+			{
+				SMeshParam *pMesh = &m_listMesh[meshID];
+
+				CGameColladaMesh *pColladaMesh = new CGameColladaMesh();
+				
+				// add mesh buffer to skin mesh
+				int nBuffer = pMesh->Triangles.size();
+
+				for ( int i = 0; i < nBuffer; i++ )
+				{
+					STrianglesParam& tri = pMesh->Triangles[i];
+					
+					// create mesh buffer
+					scene::SMeshBuffer* meshBuffer = new SMeshBuffer();
+					constructMeshBuffer( pMesh, &tri, meshBuffer, true );
+					
+					// add mesh buffer								
+					pColladaMesh->addMeshBuffer( meshBuffer );
+					pColladaMesh->recalculateBoundingBox();
+
+					meshBuffer->drop();
+				}
+				
+				if ( pMesh->Type == k_skinMesh )
+					pColladaMesh->IsStaticMesh = false;
+				else
+					pColladaMesh->IsStaticMesh = true;
+			
+				// set mesh for scene node
+				colladaSceneNode->setColladaMesh( pColladaMesh );
+				pColladaMesh->drop();
+
+			}
+
+		}
+
 		// pop stack
 		stackScene.erase( --stackScene.end() );
 		
@@ -1392,136 +1516,6 @@ void CColladaMeshComponent::constructScene()
 
 }
 
-#if 0
-
-// create scene node
-void CColladaMeshComponent::constructScene()
-{
-	ISceneManager *smgr = getIView()->getSceneMgr();
-
-	// release if mesh is loaded
-	if ( m_gameObject->m_node )
-		m_gameObject->destroyNode();
-
-	m_listAnimNode.clear();
-
-	// create new scene node
-	m_gameObject->m_node = smgr->addEmptySceneNode( m_gameObject->getParentSceneNode(), m_gameObject->getID() );
-	m_gameObject->m_node->grab();
-
-	// apply collada node
-	m_colladaNode = m_gameObject->m_node;
-
-	char meshName[1024];
-
-	int nMesh = m_listMesh.size();
-	for ( int i = 0; i < nMesh; i++ )
-	{
-		SMeshParam& mesh = m_listMesh[i];				
-
-		if ( mesh.Type == k_skinMesh )
-		{
-			// create new skin mesh
-			CSkinnedMesh *skinMesh = new CSkinnedMesh();		
-
-			// add mesh buffer to skin mesh
-			int nBuffer = mesh.Triangles.size();
-			for ( int i = 0; i < nBuffer; i++ )
-			{
-				STrianglesParam& tri = mesh.Triangles[i];
-
-				// create mesh buffer
-				scene::SMeshBuffer* meshBuffer = new SMeshBuffer();
-				constructMeshBuffer( &mesh, &tri, meshBuffer, true );
-
-				SSkinMeshBuffer *buffer = skinMesh->addMeshBuffer();
-				
-				// set standard vertex type
-				buffer->VertexType = video::EVT_STANDARD;
-
-				// copy vertex data
-				const u32 vcount = meshBuffer->getVertexCount();
-				buffer->Vertices_Standard.reallocate(vcount);
-				video::S3DVertex* vertices = (video::S3DVertex*)meshBuffer->getVertices();
-				for (u32 i=0; i < vcount; ++i)
-					buffer->Vertices_Standard.push_back(vertices[i]);
-
-				// copy index polygon
-				const u32 icount = meshBuffer->getIndexCount();
-				buffer->Indices.reallocate(icount);
-				u16* indices = meshBuffer->getIndices();
-				for (u32 i=0; i < icount; ++i)
-					buffer->Indices.push_back(indices[i]);
-											
-				// set material
-				buffer->getMaterial() = meshBuffer->getMaterial();
-				buffer->recalculateBoundingBox();
-
-				meshBuffer->drop();
-			}
-			
-			// apply bone to mesh
-			constructSkinMesh( &mesh, skinMesh );
-
-			// create new scene node			
-			CGameAnimatedMeshSceneNode* node = new CGameAnimatedMeshSceneNode
-				( 
-					m_gameObject, 
-					skinMesh, 
-					m_gameObject->m_node, 
-					getIView()->getSceneMgr() 
-				);
-
-			uiString::copy<char, const wchar_t>( meshName, mesh.Name.c_str() );
-			node->setName( meshName );
-			m_listAnimNode.push_back( node );
-			
-			node->setDebugDataVisible( EDS_BBOX );
-
-			node->drop();
-			skinMesh->drop();			
-		}
-		else
-		{
-			SMesh *staticMesh = new SMesh();
-			
-			// add mesh buffer to skin mesh
-			int nBuffer = mesh.Triangles.size();
-			for ( int i = 0; i < nBuffer; i++ )
-			{
-				STrianglesParam& tri = mesh.Triangles[i];
-				
-				// create mesh buffer
-				scene::SMeshBuffer* meshBuffer = new SMeshBuffer();
-				constructMeshBuffer( &mesh, &tri, meshBuffer, true );
-				
-				// add mesh buffer								
-				staticMesh->addMeshBuffer( meshBuffer );
-				staticMesh->recalculateBoundingBox();
-				meshBuffer->drop();
-			}
-			
-			// create new scene node
-			CGameMeshSceneNode *node = new CGameMeshSceneNode
-				( 
-					m_gameObject, 
-					staticMesh, 
-					m_gameObject->m_node, 
-					getIView()->getSceneMgr() 
-				);
-			node->setDebugDataVisible( EDS_BBOX );
-
-			uiString::copy<char, const wchar_t>( meshName, mesh.Name.c_str() );
-			node->setName( meshName );
-			
-			staticMesh->drop();
-			node->drop();
-		}
-
-	}
-}
-
-#endif
 
 // constructMeshBuffer
 // create mesh buffer
@@ -1564,7 +1558,7 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 	for ( int i = 0; i < vertexCount; i++ )
 	{
 		video::S3DVertex vtx;
-		vtx.Color.set(255,255,255,255);
+		vtx.Color = SColor(0xFFFFFFFF);
 
 		int vIndex = i;
 		int idx = vIndex * 3;
@@ -1642,7 +1636,12 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 	// set material
 	if ( effect )
 	{
-		mbuffer->getMaterial() = effect->Mat;		
+		mbuffer->getMaterial() = effect->Mat;
+		if ( effect->Mat.TextureLayer[0].Texture )
+		{
+			if ( effect->Mat.TextureLayer[0].Texture->hasAlpha() == true )
+				mbuffer->getMaterial().MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
+		}
 	}
 
 	// calc normal vector
@@ -2191,3 +2190,16 @@ int	getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam )
 	return -1;
 }
 
+int getMeshWithControllerName( std::wstring& controllerName, ArrayMeshParams& listMeshParam )
+{
+	int n = listMeshParam.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listMeshParam[i].ControllerName == controllerName )
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}

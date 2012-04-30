@@ -1133,135 +1133,12 @@ void CColladaMeshComponent::updateJointToMesh( SMeshParam *mesh, vector<wstring>
 	}
 }
 
-#if 0
-// setAnim
-void CColladaMeshComponent::setAnim(const char *lpAnimName, IAnimatedMeshSceneNode *node)
-{
-	if ( node->getMesh()->getMeshType() != EAMT_SKINNED )
-		return;
-
-	ISkinnedMesh* mesh = (ISkinnedMesh*)node->getMesh();
-	if ( mesh == NULL )
-		return;
-	
-	core::array<ISkinnedMesh::SJoint*>&	allJoint = mesh->getAllJoints();
-	int nJoints = allJoint.size();
-	
-	// get anim time data
-	ClipAnimation::iterator animIt = m_clipAnimation.find( std::string(lpAnimName) );
-	if ( animIt == m_clipAnimation.end() )
-		return;
-
-	const float defaultFps = 40.0f;
-	const float defaultTpf = 1.0f/defaultFps;
-
-	SAnimClip& animClip = animIt->second;
-	
-	int fromFrame = 0, toFrame = 0;
-	core::quaternion q1, q2;
-	core::vector3df v1, v2;
-
-	for ( int i = 0; i < nJoints; i++ )
-	{
-		ISkinnedMesh::SJoint* j = allJoint[i];
-				
-		j->PositionKeys.clear();
-		j->ScaleKeys.clear();
-		j->RotationKeys.clear();
-				
-		// get local matrix of skin joint
-		const core::matrix4& mat =	j->LocalMatrix;	
-
-		// get joint node
-		JointAnimation::iterator it = m_jointAnimation.find( std::string(j->Name.c_str()) );
-		if ( it != m_jointAnimation.end() )
-		{
-			AnimationFrames& arrayFrame = it->second;			
-						
-			ISkinnedMesh::SPositionKey	pos;
-			ISkinnedMesh::SRotationKey	rot;
-
-			float currentTime = 0;
-			float time	= animClip.m_time;
-			float end	= animClip.m_time + animClip.m_duration;
-			
-			getFrameAtTime( &arrayFrame, time, &fromFrame,	&q1, &v1 );
-			getFrameAtTime( &arrayFrame, end,  &toFrame,	&q2, &v2 );
-			
-			// save frame data			
-			animClip.m_frames = (int) ((end - time) * defaultFps);
-			
-			for ( int i = fromFrame; i <= toFrame; i++ )
-			{
-				SAnimFrame& animFrame = arrayFrame[i];
-				
-				pos.position.X = 0;
-				pos.position.Y = 0;
-				pos.position.Z = 0;
-
-				if ( i == fromFrame )
-				{
-					currentTime = 0;
-					rot.rotation = q1;					
-				}
-				else if ( i == toFrame )
-				{
-					rot.rotation = q2;
-					currentTime = end - time;				
-				}
-				else
-				{
-					currentTime =  animFrame.m_time - time;
-					rot.rotation.fromAngleAxis(
-							animFrame.m_rotAngle*core::DEGTORAD, 
-							core::vector3df(animFrame.m_rotX, animFrame.m_rotZ, animFrame.m_rotY)
-						);					
-				}
-				
-				if ( animClip.m_movePosition )
-				{
-					pos.position.X = animFrame.m_translateY;
-					pos.position.Y = animFrame.m_translateZ;
-					pos.position.Z = -animFrame.m_translateX;
-				}
-
-
-				mat.transformVect( pos.position );
-
-				rot.frame = currentTime * defaultFps;
-				pos.frame = currentTime * defaultFps;
-
-				j->RotationKeys.push_back( rot );
-				j->PositionKeys.push_back( pos );
-			}					
-
-		}		
-	}
-
-	// update skin mesh
-	mesh->useAnimationFrom( mesh );
-	node->setFrameLoop( 0, animClip.m_frames );
-	
-	// update current anim
-	m_currentAnim = &animClip;	
-}
-#endif
-
 // setAnimation
 // apply Animation to skin joint
 void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 {
 	if ( m_colladaNode == NULL )
 		return;
-
-#if 0
-	vector<IAnimatedMeshSceneNode*>::iterator i = m_listAnimNode.begin(), end = m_listAnimNode.end();
-	while ( i != end )
-	{		
-		setAnim( lpAnimName, (IAnimatedMeshSceneNode*) (*i) );
-		i++;
-	}
-#endif	
 	
 	// get anim time data
 	ClipAnimation::iterator animIt = m_clipAnimation.find( std::string(lpAnimName) );
@@ -1645,6 +1522,7 @@ void CColladaMeshComponent::constructScene()
 }
 
 #endif
+
 // constructMeshBuffer
 // create mesh buffer
 void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMeshBuffer *buffer, bool flip )
@@ -1775,6 +1653,9 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 	mbuffer->recalculateBoundingBox();
 }
 
+
+#if 0
+
 #define CONVERT_NODE_TO_JOINT
 
 core::matrix4 getAbsoluteJointMatrix( SNodeParam* node )
@@ -1801,7 +1682,7 @@ SNodeParam* getParentJoint( SNodeParam *node )
 #endif	
 }
 
-#if 0
+
 // constructSkinMesh
 // apply bone to vertex
 void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, ISkinnedMesh *skinMesh )

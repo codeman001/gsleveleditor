@@ -26,12 +26,23 @@ void CGameColladaSceneNode::OnRegisterSceneNode()
 		SceneManager->registerNodeForRendering(this);
 
 	ISceneNode::OnRegisterSceneNode();
+	
+}
+
+void CGameColladaSceneNode::updateAbsolutePosition()
+{
+	// calc absolute transform
+	if ( Parent )
+		AbsoluteTransformation = Parent->getAbsoluteTransformation() * AnimationMatrix;
+	else
+		AbsoluteTransformation = AnimationMatrix;
+
 }
 
 void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 {
 	ISceneNode::OnAnimate( timeMs );
-	
+		
 	if ( m_timer == 0 )
 	{
 		m_timer = timeMs;
@@ -288,18 +299,9 @@ void CGameColladaSceneNode::render()
 	video::SMaterial debug_mat;
 	debug_mat.Lighting = false;
 	debug_mat.AntiAliasing = 0;
-	//debug_mat.ZBuffer = video::ECFN_NEVER;
+	debug_mat.ZBuffer = video::ECFN_NEVER;
 	driver->setMaterial(debug_mat);
-	
-	// set identity  matrix transform
-	core::matrix4 mat;
-	mat.makeIdentity();
-	driver->setTransform(video::ETS_WORLD, mat );
-
-
-	// calc absolute transform
-	AbsoluteTransformation = Parent->getAbsoluteTransformation() * AnimationMatrix;
-
+			
 	// get current position node
 	core::vector3df position = getAbsolutePosition();
 
@@ -319,15 +321,21 @@ void CGameColladaSceneNode::render()
 
 	// draw parent line
 	driver->setMaterial(debug_mat);	
-	driver->draw3DLine( position, getParent()->getAbsolutePosition(), SColor(255,255,0,255) );
+	
+	core::list<ISceneNode*>::Iterator i = Children.begin(), end = Children.end();
+	while ( i != end )
+	{
+		driver->draw3DLine( position, (*i)->getAbsolutePosition(), SColor(255,255,0,255) );
+		i++;
+	}
 #endif
 
 	Box.MinEdge = core::vector3df(-2,-2,-2);
 	Box.MaxEdge = core::vector3df(2,2,2);
 
 	//if (DebugDataVisible & scene::EDS_BBOX)
-	{
-		driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
-		driver->draw3DBox(Box, video::SColor(255,255,255,255));
+	{		
+		driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,255,255,255));
 	}
+	
 }

@@ -28,6 +28,10 @@ public:
 	// ISceneNode override implement 
 	virtual void OnRegisterSceneNode();
 
+	// updateAbsolutePosition
+	// ISceneNode override implement
+	virtual void updateAbsolutePosition();
+
 	// render
 	// ISceneNode override implement 
 	virtual void render();

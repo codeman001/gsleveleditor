@@ -120,16 +120,24 @@ public:
 		u16 buffer_id;
 		u32 vertex_id;
 		f32 strength;
+		core::vector3df staticPos;
+		core::vector3df staticNormal;
 	};
 
 	struct SJoint
 	{
 		std::wstring			name;
 		core::array<SWeight>	weights;
-		CGameColladaSceneNode*	node;
+
+		core::matrix4			globalInversedMatrix;
+		core::matrix4			skinningMatrix;
+
+		CGameColladaSceneNode*	node;		
 	};
 	
 	core::array<SJoint>			Joints;
+	core::array<s32>			JointIndex;
+	core::array<s32>			JointVertexIndex;
 
 	bool						IsStaticMesh;
 };
@@ -144,8 +152,7 @@ protected:
 
 	core::matrix4	AnimationMatrix;
 
-	core::matrix4	LocalMatrix;
-	core::matrix4	GlobalInversedMatrix;
+	core::matrix4	LocalMatrix;	
 
 	CGameColladaMesh	*ColladaMesh;
 
@@ -191,6 +198,11 @@ public:
 			ColladaMesh->grab();
 	}
 
+	CGameColladaMesh* getMesh()
+	{
+		return ColladaMesh;
+	}
+
 public:
 	
 	// getMaterialCount
@@ -224,16 +236,6 @@ public:
 	const core::matrix4& getLocalMatrix()
 	{
 		return LocalMatrix;
-	}
-
-	void setGlobalInversedMatrix( const core::matrix4& mat )
-	{
-		GlobalInversedMatrix = mat;
-	}
-	
-	const core::matrix4& getGlobalInversedMatrix()
-	{
-		return GlobalInversedMatrix;
 	}
 
 public:
@@ -300,6 +302,10 @@ protected:
 				core::vector3df &position,	s32 &positionHint,
 				core::vector3df &scale,		s32 &scaleHint,
 				core::quaternion &rotation, s32 &rotationHint);
+
+	// skin
+	// skin mesh
+	void skin();
 public:
 	
 	// getCurrentFrame

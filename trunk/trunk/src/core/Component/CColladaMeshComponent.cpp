@@ -407,7 +407,7 @@ SMeshParam* CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 	float					*transformArray = NULL;
 	float					*weightArray = NULL;
 	
-	vector<s32>				vCountArray;
+	vector<s32>				&vCountArray	= mesh->JointVertexIndex;
 	vector<s32>				vArray;
 
 	while(xmlRead->read())
@@ -1187,7 +1187,7 @@ void CColladaMeshComponent::updateJointToMesh( SMeshParam *mesh, vector<wstring>
 	// set vertex weight
 	int nVertex = (int)vCountArray.size();
 	int id = 0;
-
+	
 	for ( int i = 0; i < nVertex; i++ )
 	{
 		// num of bone in vertex
@@ -1207,6 +1207,9 @@ void CColladaMeshComponent::updateJointToMesh( SMeshParam *mesh, vector<wstring>
 
 			// add weight on bone
 			mesh->Joints[boneId].Weights.push_back( weightParam );
+			
+			mesh->JointIndex.push_back( boneId );
+			mesh->JointIndex.push_back( mesh->Joints[boneId].Weights.size() - 1 );
 		}
 
 	}
@@ -1441,6 +1444,13 @@ void CColladaMeshComponent::constructScene()
 		// store this node
 		m_mapNode[name] = colladaSceneNode;
 
+		// store joint sid node
+		if ( node->SID.size() > 0 )
+		{
+			uiString::copy<char, const wchar_t>( name, node->SID.c_str() );
+			m_sidNode[name] = colladaSceneNode;
+		}
+
 		// set relative position		
 		colladaSceneNode->setLocalMatrix( node->Transform );
 		
@@ -1508,12 +1518,23 @@ void CColladaMeshComponent::constructScene()
 	std::list<SNodeParam*>::iterator i = listScene.begin(), end = listScene.end();
 	while ( i != end )
 	{
-		(*i)->Joint = NULL;
-		(*i)->SceneNode->drop();
-		(*i)->SceneNode = NULL;
+		SNodeParam *pNode = (*i);
+		
+		// apply skin
+		CGameColladaMesh* pMesh = pNode->SceneNode->getMesh();
+		if ( pMesh != NULL && pMesh->IsStaticMesh == false )
+		{
+			int meshID = getMeshWithControllerName( pNode->Instance, m_listMesh );
+			constructSkinMesh( &m_listMesh[meshID], pMesh);			
+		}
+
+		// clear node
+		pNode->Joint = NULL;		
+		pNode->SceneNode->drop();
+		pNode->SceneNode = NULL;
 		i++;
 	}
-
+	listScene.clear();
 }
 
 
@@ -1652,144 +1673,61 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 	mbuffer->recalculateBoundingBox();
 }
 
-
-#if 0
-
-#define CONVERT_NODE_TO_JOINT
-
-core::matrix4 getAbsoluteJointMatrix( SNodeParam* node )
-{	
-	core::matrix4 ret;
-	while ( node )
-	{
-		ret = node->Transform * ret;
-		node = node->Parent;		
-	}
-	return ret;
-}
-
-SNodeParam* getParentJoint( SNodeParam *node )
-{
-	SNodeParam* p = node->Parent;	
-
-#ifndef CONVERT_NODE_TO_JOINT
-	if ( p && p->Type == L"JOINT" )
-		return p;
-	return NULL;
-#else
-	return p;
-#endif	
-}
-
-
 // constructSkinMesh
 // apply bone to vertex
-void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, ISkinnedMesh *skinMesh )
-{		
-	std::list<SNodeParam*>	stackScenePrefab;
-	std::list<SNodeParam*>	listBoneScenePrefab;
+void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColladaMesh *mesh )
+{	
+	int nJoint = meshParam->Joints.size();
 
-	int nNode = m_listNode.size();
-	for ( int i = 0; i < nNode; i++ )
-		stackScenePrefab.push_back( m_listNode[i] );
-	
-	vector<SJointParam>	Joints;
+	char sidName[1024];
 
-	char name[1024];
-
-	while ( stackScenePrefab.size() )
+	for ( int i = 0; i < nJoint; i++ )
 	{
-		SNodeParam *node = stackScenePrefab.back();
+		SJointParam& joint = meshParam->Joints[i];
 		
-		// save to list bone prefab
-		listBoneScenePrefab.push_back( node );
+		// add joint to mesh
+		mesh->Joints.push_back( CGameColladaMesh::SJoint() );
 
-#ifndef CONVERT_NODE_TO_JOINT
-		if ( node->Type == L"JOINT" )
-#endif
-		{
-			// get parent joint
-			ISkinnedMesh::SJoint *parentJoint = NULL;				
-			SNodeParam* parent = getParentJoint(node);
-			if ( parent )
-				parentJoint = parent->Joint;
+		// get last joint
+		CGameColladaMesh::SJoint& newJoint = mesh->Joints.getLast();
 
-			ISkinnedMesh::SJoint* nodeJoint = skinMesh->addJoint(parentJoint);
+		video::S3DVertex *vertex = (video::S3DVertex*)mesh->getMeshBuffer(0)->getVertices();
+
+		// set weight data
+		int nWeight = joint.Weights.size();
+		for ( int j = 0; j < nWeight; j++ )
+		{						
+			SWeightParam& weight = joint.Weights[j];
+
+			newJoint.weights.push_back( CGameColladaMesh::SWeight() );
+			CGameColladaMesh::SWeight &newWeight = newJoint.weights.getLast();
+
+			newWeight.buffer_id = 0;
+			newWeight.strength = weight.Strength;
+			newWeight.vertex_id = weight.VertexID;
 			
-			uiString::copy<char, const wchar_t>( name, node->Name.c_str() );
-			nodeJoint->Name = name;
-
-			node->Joint = nodeJoint;
-			
-			
-			SJointParam *sourceJoint = NULL;
-
-			if ( node->SID.size() > 0 )
-			{
-				int nJoint = meshParam->Joints.size();
-
-				for ( int i = 0; i < nJoint; i++ )
-				{
-					if ( meshParam->Joints[i].Name == node->SID )
-					{
-						sourceJoint = &meshParam->Joints[i];
-						break;
-					}
-				}
-			}
-
-			if ( sourceJoint )
-			{
-				int nWeight = sourceJoint->Weights.size();
-				for ( int i = 0; i < nWeight; i++ )
-				{
-					ISkinnedMesh::SWeight* w = skinMesh->addWeight( nodeJoint );
-					w->buffer_id	= 0;			
-					w->vertex_id	= sourceJoint->Weights[i].VertexID;
-					w->strength		= sourceJoint->Weights[i].Strength;				
-				}				
-
-				// set global invert matrix
-				nodeJoint->GlobalInversedMatrix = sourceJoint->InvMatrix;
-			}
-
-			// set local matrix
-#ifndef CONVERT_NODE_TO_JOINT
-			if (  node->Parent != NULL && node->Parent->Type == L"NODE" )
-				nodeJoint->LocalMatrix = getAbsoluteJointMatrix(node);
-			else
-				nodeJoint->LocalMatrix = node->Transform;			
-#else
-			nodeJoint->LocalMatrix = node->Transform;
-#endif
+			newWeight.staticPos = vertex[ weight.VertexID ].Pos;
+			newWeight.staticNormal = vertex[ weight.VertexID ].Normal;
 		}
+		
+		// set node data
+		uiString::copy<char, const wchar_t>( sidName, joint.Name.c_str() );
+		newJoint.node = m_sidNode[ std::string(sidName) ];
 
-		stackScenePrefab.erase( --stackScenePrefab.end() );
+		// set invert matrix
+		newJoint.globalInversedMatrix = joint.InvMatrix;
 
-		int nChild = (int)node->Childs.size();
-
-		for ( int i = 0; i < nChild; i++ )
-		{			
-			SNodeParam *boneScene = (SNodeParam*)node->Childs[i];
-
-			// set parent
-			boneScene->Parent = node;
-			stackScenePrefab.push_back( boneScene );		
-		}
 	}
+	
+	// set joint index
+	mesh->JointIndex.set_used( meshParam->JointIndex.size() );
+	for ( int i = 0; i < (int)meshParam->JointIndex.size(); i++ )
+		mesh->JointIndex[i] = meshParam->JointIndex[i];
 
-	// final loaded the mesh
-	skinMesh->finalize();
-
-	std::list<SNodeParam*>::iterator i = listBoneScenePrefab.begin(), end = listBoneScenePrefab.end();
-
-	while ( i != end )
-	{
-		(*i)->Joint = NULL;
-		i++;
-	}
+	mesh->JointVertexIndex.set_used( meshParam->JointVertexIndex.size() );
+	for ( int i = 0; i < (int)meshParam->JointVertexIndex.size(); i++ )
+		mesh->JointVertexIndex[i] = meshParam->JointVertexIndex[i];
 }
-#endif
 
 // cleanData
 // free all data from parse dae

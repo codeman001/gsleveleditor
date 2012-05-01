@@ -465,6 +465,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\Component\CColladaMeshComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CColladaMeshComponent.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Component\CComponentFactory.cpp"
 						>
 					</File>
@@ -618,6 +626,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\core\SceneNode\CGameBoxSceneNode.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameColladaSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameColladaSceneNode.h"
 						>
 					</File>
 					<File

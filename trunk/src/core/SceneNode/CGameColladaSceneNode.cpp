@@ -9,13 +9,14 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	m_totalFrame = 0;
 	m_framePerSecond = 24.0f;
 	m_animationLoop = true;
+	m_isRootColladaNode = true;
 	m_timer = 0;
 
 	m_posHint = 0;
 	m_scaleHint = 0;
 	m_rotHint = 0;
 
-	ColladaMesh = NULL;
+	ColladaMesh = NULL;	
 }
 
 CGameColladaSceneNode::~CGameColladaSceneNode()
@@ -41,6 +42,12 @@ void CGameColladaSceneNode::updateAbsolutePosition()
 		AbsoluteTransformation = Parent->getAbsoluteTransformation() * AnimationMatrix;
 	else
 		AbsoluteTransformation = AnimationMatrix;
+
+	// calc absolute animation
+	if ( m_isRootColladaNode == true )
+		AbsoluteAnimationMatrix = AnimationMatrix;
+	else
+		AbsoluteAnimationMatrix = ((CGameColladaSceneNode*)Parent)->AbsoluteAnimationMatrix * AnimationMatrix;
 
 }
 
@@ -104,7 +111,7 @@ void CGameColladaSceneNode::skin()
 
 	// calc joint matrix
 	for ( int i = 0; i < nJoint; i++, pJoint++ )
-		pJoint->skinningMatrix.setbyproduct( pJoint->node->getAbsoluteTransformation(), pJoint->globalInversedMatrix );
+		pJoint->skinningMatrix.setbyproduct( pJoint->node->AbsoluteAnimationMatrix, pJoint->globalInversedMatrix );
 
 	// skinning in vertex
 	core::vector3df thisVertexMove, thisNormalMove;
@@ -118,10 +125,10 @@ void CGameColladaSceneNode::skin()
 		
 		s32 nJointCount = jointInVertex[i];
 
-		for ( int iJoint = 0; iJoint < nJointCount; iJoint++, id+=2 )
+		for ( int iJoint = 0; iJoint < nJointCount; iJoint++, jointIndex++ )
 		{
-			u32 boneId		= jointIndex[id];
-			u32 weightId	= jointIndex[id + 1];
+			u32 boneId		= *jointIndex;
+			u32 weightId	= *(++jointIndex);
 			
 			CGameColladaMesh::SJoint	*pJoint		= &arrayJoint[boneId];
 			CGameColladaMesh::SWeight	*pWeight	= &pJoint->weights[weightId];
@@ -362,7 +369,10 @@ void CGameColladaSceneNode::render()
 {
 	// get driver
 	IVideoDriver* driver = getSceneManager()->getVideoDriver();	
+
+#ifdef GSANIMATION
 	IView *pView = getIView();	
+#endif
 
 	if ( ColladaMesh )
 	{		

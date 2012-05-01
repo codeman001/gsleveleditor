@@ -238,7 +238,7 @@ void CGameObject::updateNodeRotation()
 	{	
 		// flip ox
 		core::vector3df rot(m_rotation);
-		rot.Y += 180.f;
+		//rot.Y += 180.f;
 
 		m_node->setRotation( rot );
 	}

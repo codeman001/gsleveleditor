@@ -8,6 +8,7 @@
 
 #include "CGameAnimatedMeshSceneNode.h"
 #include "CGameMeshSceneNode.h"
+#include "CGameContainerSceneNode.h"
 
 void			uriToId(std::wstring& str);
 wstring			readId(io::IXMLReader *xmlRead);
@@ -94,7 +95,7 @@ void CColladaMeshComponent::loadData( CSerializable* pObj )
 
 
 	// read anim speed
-	m_animSpeed = pObj->readFloat();	
+	m_animSpeed = pObj->readFloat();
 }
 
 // loadFromFile
@@ -183,6 +184,19 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 
 	// clean data
 	cleanData();
+
+#ifdef GSEDITOR
+	if ( m_gameObject->m_node )
+	{
+		ISceneManager *smgr = getIView()->getSceneMgr();
+
+		// add collision
+		ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( m_gameObject->m_node );
+		m_gameObject->m_node->setTriangleSelector(selector);
+		selector->drop();
+	}
+#endif
+
 }
 
 // parseGeometryNode
@@ -1400,8 +1414,16 @@ void CColladaMeshComponent::constructScene()
 	m_mapNode.clear();
 
 	// create new scene node
-	m_gameObject->m_node = smgr->addEmptySceneNode( m_gameObject->getParentSceneNode(), m_gameObject->getID() );
-	m_gameObject->m_node->grab();
+	//m_gameObject->m_node = smgr->addEmptySceneNode( m_gameObject->getParentSceneNode(), m_gameObject->getID() );
+	//m_gameObject->m_node->grab();
+
+	m_gameObject->m_node = new CGameChildContainerSceneNode( 
+			m_gameObject, 
+			m_gameObject->getParentSceneNode(),
+			smgr,
+			m_gameObject->getID() 
+		);
+	
 
 	// collada node
 	m_colladaNode = m_gameObject->m_node;
@@ -1438,6 +1460,11 @@ void CColladaMeshComponent::constructScene()
 		CGameColladaSceneNode *colladaSceneNode = new CGameColladaSceneNode( parent, smgr, -1 );
 		colladaSceneNode->setName( name );
 		
+		if ( node->Parent == NULL )
+			colladaSceneNode->setRootColladaNode( true );
+		else
+			colladaSceneNode->setRootColladaNode( false );
+
 		// get position from transform		
 		node->SceneNode = colladaSceneNode;
 		
@@ -1496,6 +1523,9 @@ void CColladaMeshComponent::constructScene()
 				pColladaMesh->drop();
 
 			}
+
+			// add update bounding box with this child
+			((CGameChildContainerSceneNode*)m_gameObject->m_node)->addBoundingBoxOfChild( colladaSceneNode );
 
 		}
 

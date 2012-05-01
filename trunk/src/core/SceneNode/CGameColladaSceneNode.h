@@ -151,10 +151,13 @@ protected:
 	SMaterial Material;
 
 	core::matrix4	AnimationMatrix;
+	core::matrix4	AbsoluteAnimationMatrix;
 
 	core::matrix4	LocalMatrix;	
 
 	CGameColladaMesh	*ColladaMesh;
+
+	bool	m_isRootColladaNode;
 
 public:
 	CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id);
@@ -290,6 +293,7 @@ protected:
 	s32		m_posHint;
 	s32		m_scaleHint;
 	s32		m_rotHint;
+	
 protected:
 	
 	// updateAnimation
@@ -325,6 +329,9 @@ public:
 	// set animation speed
 	inline void setFPS( float f )			{ m_framePerSecond = f; }
 	inline float getFPS()					{ return m_framePerSecond; }
+
+	inline void setRootColladaNode( bool b )	{ m_isRootColladaNode = b; }
+	inline bool isRootColladaNode()				{ return m_isRootColladaNode; }
 };
 
 #endif

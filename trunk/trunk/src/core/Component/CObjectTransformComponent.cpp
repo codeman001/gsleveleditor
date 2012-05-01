@@ -16,15 +16,15 @@ CObjectTransformComponent::~CObjectTransformComponent()
 // run when init object
 void CObjectTransformComponent::initComponent()
 {
-
+	m_gameObject->setRotation	( m_rotate );
+	m_gameObject->setScale		( m_scale );
 }
 
 // update
 // run when update per frame
 void CObjectTransformComponent::updateComponent()
 {
-	m_gameObject->setRotation	( m_rotate );
-	m_gameObject->setScale		( m_scale );
+	
 }
 
 // saveData

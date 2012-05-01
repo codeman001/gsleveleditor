@@ -500,8 +500,28 @@ void CGameObject::updateData( CSerializable* pObj )
 
 void CGameObject::setLighting( bool b )
 {
-	m_node->setMaterialFlag( video::EMF_LIGHTING, b );
 	m_lighting = b;
+
+	if ( m_node == NULL )
+		return;
+
+	stack<ISceneNode*>	stackNode;
+	stackNode.push( m_node );
+	
+	while ( stackNode.size() )
+	{
+		ISceneNode *node =  stackNode.top();
+		stackNode.pop();
+
+		node->setMaterialFlag( video::EMF_LIGHTING, b );
+		
+		core::list<ISceneNode*>::ConstIterator i = node->getChildren().begin(), end = node->getChildren().end();
+		while ( i != end )
+		{
+			stackNode.push( *i );
+			i++;
+		}
+	}
 }
 
 // releaseAllComponent

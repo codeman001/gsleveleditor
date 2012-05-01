@@ -11,6 +11,7 @@
 #include "CBillboardComponent.h"
 #include "CParticleComponent.h"
 #include "CColladaMeshComponent.h"
+#include "CTerrainComponent.h"
 
 #define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
 
@@ -283,6 +284,8 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 		pComp = new CParticleComponent( pObj );
 	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ColladaMesh ) ) == 0 )
 		pComp = new CColladaMeshComponent( pObj );
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Terrain ) ) == 0 )
+		pComp = new CTerrainComponent( pObj );
 
 	if ( pComp )
 		pComp->loadData( data );

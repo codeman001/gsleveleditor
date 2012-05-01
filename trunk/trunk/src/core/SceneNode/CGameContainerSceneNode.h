@@ -38,9 +38,41 @@ public:
 		return NULL;
 	}
 
-private:
+protected:
 
 	core::aabbox3d<f32> Box;
+};
+
+
+class CGameChildContainerSceneNode: public CGameContainerSceneNode
+{
+protected:
+	vector<ISceneNode*>		m_boundingBoxOfChild;
+
+public:
+	CGameChildContainerSceneNode(
+			CGameObject *owner,
+			ISceneNode* parent, ISceneManager* mgr, s32 id,
+			const core::vector3df& position = core::vector3df(0,0,0),
+			const core::vector3df& rotation = core::vector3df(0,0,0),
+			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f)
+			);
+
+	virtual ~CGameChildContainerSceneNode();
+
+	//! This method is called just before the rendering process of the whole scene.
+	virtual void OnRegisterSceneNode();
+
+	void addBoundingBoxOfChild( ISceneNode *p )
+	{
+		if ( std::find( m_boundingBoxOfChild.begin(), m_boundingBoxOfChild.end(), p ) == m_boundingBoxOfChild.end() )
+		{
+			p->grab();
+			m_boundingBoxOfChild.push_back( p );
+		}
+	}
+
+	virtual void render();
 };
 
 #endif

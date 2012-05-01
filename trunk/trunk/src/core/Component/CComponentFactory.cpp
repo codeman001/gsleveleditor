@@ -10,6 +10,7 @@
 #include "CBoxObjectComponent.h"
 #include "CBillboardComponent.h"
 #include "CParticleComponent.h"
+#include "CColladaMeshComponent.h"
 
 #define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
 
@@ -90,6 +91,14 @@ void CComponentFactory::initComponentTemplate()
 	p = &s_compTemplate[ IObjectComponent::Particle ];
 	p->addGroup(stringOfComponent(IObjectComponent::Particle));
 	p->addPath( "particleXml", "data/particle/particle.xml" );
+
+	// add collada mesh
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::ColladaMesh ];
+	p->addGroup(stringOfComponent(IObjectComponent::ColladaMesh));
+	p->addPath("meshFile", "data/mesh/marine_2_mesh.dae");
+	p->addPath("animFile", "");
+	p->addFloat("animSpeed", 24.0f);	
 
 	loadAllTemplate();
 }
@@ -272,6 +281,8 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 		pComp = new CBillboardComponent( pObj );
 	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Particle ) ) == 0 )
 		pComp = new CParticleComponent( pObj );
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ColladaMesh ) ) == 0 )
+		pComp = new CColladaMeshComponent( pObj );
 
 	if ( pComp )
 		pComp->loadData( data );

@@ -20,7 +20,8 @@ public:
 		Billboard,
 		Particle,
 		ColladaMesh,
-		NumBuildInComponent = ColladaMesh
+		Terrain,
+		NumBuildInComponent = Terrain
 	};
 
 	static const char *s_compType[];

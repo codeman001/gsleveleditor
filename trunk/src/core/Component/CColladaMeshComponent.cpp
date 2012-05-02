@@ -2111,7 +2111,26 @@ video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& uri, 
 				uiString::copy<char, const char>( textureNameA, path.c_str() );
 				uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
 					
-				return getIView()->getDriver()->getTexture( textureNameA );
+				ITexture *tex =	getIView()->getDriver()->getTexture( textureNameA );
+
+#if defined(GSEDITOR) || defined(GSANIMATION)
+				if ( tex == NULL )
+				{
+					WCHAR appPath[MAX_PATH];
+					char  appPathA[MAX_PATH];
+
+					uiApplication::getAppPath(appPath, MAX_PATH);
+					uiString::copy<char, WCHAR>( appPathA, appPath  );
+											
+					std::string path = appPathA;
+					path += "\\";					
+					path += std::string(textureNameA);
+
+					tex = getIView()->getDriver()->getTexture( path.c_str() );
+				}
+#endif
+
+				return tex;
 			}
 			else if ( listEffectParam[i].Source.size() > 0 )
 				return getTextureFromImage( basePath,listEffectParam[i].Source, listEffectParam );

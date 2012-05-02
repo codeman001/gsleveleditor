@@ -72,7 +72,8 @@ void CColladaMeshComponent::saveData( CSerializable* pObj )
 
 	pObj->addPath("meshFile", m_animeshFile.c_str(), true);
 	pObj->addPath("animFile", m_animFile.c_str(), true);
-	pObj->addFloat("animSpeed", m_animSpeed, true );	
+	pObj->addFloat("animSpeed", m_animSpeed, true );
+	pObj->addString("defaultNode", m_defaultNode.c_str(), true);
 }
 
 // loadData
@@ -86,16 +87,20 @@ void CColladaMeshComponent::loadData( CSerializable* pObj )
 		m_gameObject->destroyNode();
 
 	// read mesh file
-	char *string = pObj->readString();
-	loadFromFile( string );
-	
+	char *lpFilename = pObj->readString();
+		
 	// read anim file
-	string = pObj->readString();
-	loadAnimFile( string );
-
-
+	char *lpAnimFile = pObj->readString();
+	
 	// read anim speed
 	m_animSpeed = pObj->readFloat();
+
+	// read default node
+	m_defaultNode = pObj->readString();
+
+	// begin parse file
+	loadFromFile( lpFilename );
+	loadAnimFile( lpAnimFile );
 }
 
 // loadFromFile
@@ -1417,7 +1422,7 @@ void CColladaMeshComponent::constructScene()
 	//m_gameObject->m_node = smgr->addEmptySceneNode( m_gameObject->getParentSceneNode(), m_gameObject->getID() );
 	//m_gameObject->m_node->grab();
 
-	m_gameObject->m_node = new CGameChildContainerSceneNode( 
+	m_colladaNode = new CGameChildContainerSceneNode( 
 			m_gameObject, 
 			m_gameObject->getParentSceneNode(),
 			smgr,
@@ -1426,7 +1431,7 @@ void CColladaMeshComponent::constructScene()
 	
 
 	// collada node
-	m_colladaNode = m_gameObject->m_node;
+	m_gameObject->m_node = m_colladaNode;
 
 
 	std::list<SNodeParam*>	stackScene;

@@ -76,6 +76,9 @@ public:
 	/** \return The particle emitter. Can be 0 if none is set. */
 	virtual IParticleEmitter* getEmitter() =0;
 
+	//! Get the affector
+	virtual IParticleAffector* getAffector(int id) = 0;
+
 	//! Sets the particle emitter, which creates the particles.
 	/** A particle emitter can be created using one of the createEmitter
 	methods. For example to create and use a simple PointEmitter, call
@@ -105,6 +108,8 @@ public:
 
 	//! Removes all particle affectors in the particle system.
 	virtual void removeAllAffectors() = 0;
+	//! Removes a particle affectors
+	virtual void removeAffector( int id ) = 0;
 
 	//! Creates a particle emitter for an animated mesh scene node
 	/** \param node: Pointer to the animated mesh scene node to emit

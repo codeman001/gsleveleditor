@@ -159,17 +159,15 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 		png_set_palette_to_rgb(png_ptr);
 
 	// Convert low bit colors to 8 bit colors
+#if 0
 	if (BitDepth < 8)
 	{
 		if (ColorType==PNG_COLOR_TYPE_GRAY || ColorType==PNG_COLOR_TYPE_GRAY_ALPHA)
-#if (PNG_LIBPNG_VER_MAJOR > 1) || (PNG_LIBPNG_VER_MINOR > 3)
-			png_set_expand_gray_1_2_4_to_8(png_ptr);
-#else
 			png_set_gray_1_2_4_to_8(png_ptr);
-#endif
 		else
 			png_set_packing(png_ptr);
 	}
+#endif
 
 	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
 		png_set_tRNS_to_alpha(png_ptr);
@@ -182,22 +180,7 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 	if (ColorType==PNG_COLOR_TYPE_GRAY || ColorType==PNG_COLOR_TYPE_GRAY_ALPHA)
 		png_set_gray_to_rgb(png_ptr);
 
-	int intent;
-	const double screen_gamma = 2.2;
-
-	if (png_get_sRGB(png_ptr, info_ptr, &intent))
-		png_set_gamma(png_ptr, screen_gamma, 0.45455);
-	else
-	{
-		double image_gamma;
-		if (png_get_gAMA(png_ptr, info_ptr, &image_gamma))
-			png_set_gamma(png_ptr, screen_gamma, image_gamma);
-		else
-			png_set_gamma(png_ptr, screen_gamma, 0.45455);
-	}
-
-	// Update the changes in between, as we need to get the new color type
-	// for proper processing of the RGBA type
+	// Update the changes
 	png_read_update_info(png_ptr, info_ptr);
 	{
 		// Use temporary variables to avoid passing casted pointers
@@ -218,6 +201,18 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 #else
 		png_set_bgr(png_ptr);
 #endif
+	}
+
+	// Update the changes
+	{
+		// Use temporary variables to avoid passing casted pointers
+		png_uint_32 w,h;
+		// Extract info
+		png_get_IHDR(png_ptr, info_ptr,
+			&w, &h,
+			&BitDepth, &ColorType, NULL, NULL, NULL);
+		Width=w;
+		Height=h;
 	}
 
 	// Create the image structure to be filled by png data

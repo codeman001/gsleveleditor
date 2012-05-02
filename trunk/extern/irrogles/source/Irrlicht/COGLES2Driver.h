@@ -32,8 +32,11 @@
 #include "fast_atof.h"
 
 #ifdef _MSC_VER
-#pragma comment(lib, "libEGL.lib")
-#pragma comment(lib, "libGLESv2.lib")
+	#include <GLES/gl.h>
+	#include <GLES/egl.h>
+	#include <GLES/glext.h> 
+
+	#pragma comment(lib,"libgles_cm.lib")
 #endif
 #include "COGLES2ExtensionHandler.h"
 

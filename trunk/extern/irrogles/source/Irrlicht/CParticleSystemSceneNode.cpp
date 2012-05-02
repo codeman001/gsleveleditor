@@ -68,6 +68,47 @@ IParticleEmitter* CParticleSystemSceneNode::getEmitter()
 	return Emitter;
 }
 
+//! Get the affector
+IParticleAffector* CParticleSystemSceneNode::getAffector(int id)
+{
+	if ( id < 0 || id >= (int)AffectorList.size() )
+		return NULL;
+
+	core::list<IParticleAffector*>::Iterator it = AffectorList.begin(), end = AffectorList.end();
+	int i = 0;
+
+	while ( it != end )
+	{
+		if ( i == id )
+			return (*it);
+
+		i++;
+		it++;
+	}
+
+	return NULL;
+}
+
+//! Remove the affector at position id
+void CParticleSystemSceneNode::removeAffector( int id )
+{
+	if ( id < 0 || id >= (int)AffectorList.size() )
+		return;
+
+	core::list<IParticleAffector*>::Iterator it = AffectorList.begin(), end = AffectorList.end();
+	int i = 0;
+
+	while ( it != end )
+	{
+		if ( i == id )
+		{
+			AffectorList.erase( it );
+			return;
+		}
+		i++;
+		it++;
+	}	
+}
 
 //! Sets the particle emitter, which creates the particles.
 void CParticleSystemSceneNode::setEmitter(IParticleEmitter* emitter)
@@ -665,10 +706,16 @@ void CParticleSystemSceneNode::deserializeAttributes(io::IAttributes* in, io::SA
 
 	while(idx < cnt)
 	{
+#if 0
 		const char* name = in->getAttributeName(idx);
 
 		if (!name || strcmp("Affector", name))
 			return;
+#else
+		idx = in->findAttribute("Affector", idx);
+		if (idx == -1)
+			return;
+#endif
 
 		E_PARTICLE_AFFECTOR_TYPE atype =
 			(E_PARTICLE_AFFECTOR_TYPE)in->getAttributeAsEnumeration(idx, ParticleAffectorTypeNames);

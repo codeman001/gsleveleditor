@@ -68,7 +68,7 @@ public:
 	virtual bool existsAttribute(const c8* attributeName) = 0;
 
 	//! Returns attribute index from name, -1 if not found
-	virtual s32 findAttribute(const c8* attributeName) const =0;
+	virtual s32 findAttribute(const c8* attributeName, int fromPos = 0) = 0;
 
 	//! Removes all attributes
 	virtual void clear() = 0;

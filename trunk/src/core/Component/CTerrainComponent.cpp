@@ -102,7 +102,7 @@ bool CTerrainComponent::getCollisionFromRay( core::line3df & ray, f32 &outBestDi
 		
 		core::vector3df		candidateCollisionPoint;
 		core::triangle3df	candidateTriangle;		
-		const ISceneNode *	hitNode = 0;
+		ISceneNode			*hitNode = 0;
 
 		// if hit on selector
 		if ( colMgr->getCollisionPoint(ray, selector, candidateCollisionPoint, candidateTriangle, hitNode) == true )

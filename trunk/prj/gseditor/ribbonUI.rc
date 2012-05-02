@@ -110,6 +110,11 @@ END
 ID_SCALE_LargeImages_RESID    BITMAP    "ribbonIcon\\transform_scale-icon.bmp" /* LargeImages ID_SCALE_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
+    ID_ONTERRAIN_LabelTitle_RESID L"On Terrain" /* LabelTitle ID_ONTERRAIN_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
     ID_CREATEZONE_LabelTitle_RESID L"Create new zone" /* LabelTitle ID_CREATEZONE_LabelTitle_RESID: (null) */
 END
 

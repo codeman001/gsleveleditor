@@ -26,7 +26,7 @@ core::matrix4	readTranslateNode(io::IXMLReader* reader, bool flip);
 core::matrix4	readRotateNode(io::IXMLReader* reader, bool flip);
 core::matrix4	readScaleNode(io::IXMLReader* reader, bool flip);
 
-ITexture*		getTextureFromImage( std::wstring& uri, ArrayEffectParams& listEffectParam);
+ITexture*		getTextureFromImage( std::string& basePath, std::wstring& uri, ArrayEffectParams& listEffectParam);
 int				getBufferWithUri( std::wstring& uri, SMeshParam* mesh );
 int				getVerticesWithUri( std::wstring& uri, SMeshParam* mesh );
 int				getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam );
@@ -785,7 +785,7 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 										wstring tname = xmlRead->getAttributeValue(L"texture");
 										
 										if ( node == diffuseNode )
-											effect->Mat.setTexture(0, getTextureFromImage(tname, m_listEffectsParam ));									
+											effect->Mat.setTexture(0, getTextureFromImage( m_animeshFile, tname, m_listEffectsParam ));									
 										else if ( node == ambientNode )
 										{
 											// ambient texture: todo later
@@ -2083,7 +2083,7 @@ core::matrix4 readRotateNode(io::IXMLReader* reader, bool flip)
 		return core::IdentityMatrix;
 }
 
-video::ITexture* getTextureFromImage( std::wstring& uri, ArrayEffectParams& listEffectParam)
+video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& uri, ArrayEffectParams& listEffectParam)
 {	
 	int n = listEffectParam.size();
 	for ( int i = 0; i < n; i++ )
@@ -2094,13 +2094,27 @@ video::ITexture* getTextureFromImage( std::wstring& uri, ArrayEffectParams& list
 			{
 				std::wstring textureName = listEffectParam[i].InitFromTexture;
 				
+				std::string path = basePath;
+
+				int i = basePath.length() - 1;
+				while ( i > 0 )
+				{
+					if ( basePath[i] == '\\' || basePath[i] == '/' )
+					{
+						path = basePath.substr(0, i + 1);
+						break;
+					}
+					i--;
+				}
+
 				char textureNameA[1024];
-				uiString::copy<char, const wchar_t>( textureNameA, textureName.c_str() );
+				uiString::copy<char, const char>( textureNameA, path.c_str() );
+				uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
 					
 				return getIView()->getDriver()->getTexture( textureNameA );
 			}
 			else if ( listEffectParam[i].Source.size() > 0 )
-				return getTextureFromImage( listEffectParam[i].Source, listEffectParam );
+				return getTextureFromImage( basePath,listEffectParam[i].Source, listEffectParam );
 
 			return NULL;
 		}

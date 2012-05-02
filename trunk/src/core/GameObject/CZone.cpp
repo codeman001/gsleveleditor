@@ -10,6 +10,8 @@
 #include "CObjTemplateFactory.h"
 #include "CGameContainerSceneNode.h"
 
+#include "CTerrainComponent.h"
+
 CZone::CZone()
 {
 	m_needSortObject = true;
@@ -388,6 +390,71 @@ void CZone::updateData( CSerializable* pObj )
 	// object visible
 	m_visible	= pObj->readBool();
 }
+
+// registerTerrainObj
+// add obj to terrain list
+void CZone::registerTerrainObj( CGameObject *pObj )
+{
+	if ( std::find( m_terrains.begin(), m_terrains.end(), pObj ) == m_terrains.end() )
+		m_terrains.push_back( pObj );
+}
+
+// unRegisterTerrainObj
+// remove obj from list terrain
+void CZone::unRegisterTerrainObj( CGameObject *pObj )
+{
+	ArrayGameObjectIter it = std::find( m_terrains.begin(), m_terrains.end(), pObj );
+	if ( it != m_terrains.end() )
+		m_terrains.erase( it );
+
+}
+
+// getTerrainCollision
+// check hit with a ray with a terrain
+bool CZone::getTerrainCollision( core::line3df & ray, f32 &outBestDistanceSquared, core::vector3df &outBestCollisionPoint, core::triangle3df &outBestTriangle )
+{
+	ArrayGameObjectIter it = m_terrains.begin(), end = m_terrains.end();
+	while ( it != end )
+	{
+		CTerrainComponent *terrainComp = (CTerrainComponent*) (*it)->getComponent( IObjectComponent::Terrain );		
+		if ( terrainComp->getCollisionFromRay( ray, outBestDistanceSquared, outBestCollisionPoint, outBestTriangle ) == true )
+			return true;
+
+		it++;
+	}
+
+	return false;
+}
+
+// getHeigthFromTerraint
+// get height of terrain at position
+bool CZone::getHeigthFromTerrain( core::vector3df &position, float *h, core::triangle3df *outTri )
+{
+	core::line3df ray;
+
+	float outDistance = 10000.0f;
+
+	ray.start = position;
+	ray.end = position + core::vector3df(0, -outDistance, 0);
+
+	core::vector3df		collisionPoint;
+	core::triangle3df	collisionTriangle;
+	
+	outDistance *= outDistance;
+
+	if ( getTerrainCollision( ray, outDistance, collisionPoint, collisionTriangle ) == true )
+	{
+		*h = collisionPoint.Y;
+
+		if ( outTri != NULL )
+			*outTri = collisionTriangle;
+
+		return true;
+	}
+
+	return false;
+}
+
 
 #ifdef GSEDITOR
 

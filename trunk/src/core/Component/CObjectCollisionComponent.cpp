@@ -4,6 +4,7 @@
 #include "CObjectCollisionComponent.h"
 #include "CAnimMeshComponent.h"
 #include "CStaticMeshComponent.h"
+#include "CColladaMeshComponent.h"
 
 CObjectCollisionComponent::CObjectCollisionComponent(CGameObject *owner)
 	:IObjectComponent( owner, IObjectComponent::ObjectCollision )
@@ -33,6 +34,13 @@ void CObjectCollisionComponent::initComponent()
 		pMesh = ((IMeshSceneNode*) node)->getMesh();
 	else if ( m_gameObject->getComponent( IObjectComponent::AnimMesh ) != NULL )
 		pMesh = ((IAnimatedMeshSceneNode*) node)->getMesh();
+	else if ( m_gameObject->getComponent( IObjectComponent::ColladaMesh ) != NULL )
+	{
+		CColladaMeshComponent *comp = (CColladaMeshComponent*)m_gameObject->getComponent( IObjectComponent::ColladaMesh );
+		CGameColladaSceneNode *node = comp->getDefaultNode();
+		if ( node )
+			pMesh = node->getMesh();
+	}
 
 	if ( pMesh == NULL )
 		return;

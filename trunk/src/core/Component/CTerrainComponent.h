@@ -26,6 +26,10 @@ public:
 	// loadData
 	// load data to serializable
 	void loadData( CSerializable* pObj );
+
+	// getCollisionFromRay
+	// get collision from the ray
+	bool getCollisionFromRay( core::line3df & ray, f32 &outBestDistanceSquared, core::vector3df &outBestCollisionPoint, core::triangle3df &outBestTriangle);
 };
 
 #endif

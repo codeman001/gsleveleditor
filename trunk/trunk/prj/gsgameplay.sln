@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gsgameplay", "gsgameplay\gsgameplay.vcproj", "{1BF4C078-E3DB-4E0D-AD33-884B4E6D944F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Irrlicht", "..\..\extern\irrlicht\source\Irrlicht\Irrlicht9.0.vcproj", "{E08E042A-6C45-411B-92BE-3CC31331019F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Irrlicht", "..\..\extern\irrogles\source\Irrlicht\Irrlicht9.0.vcproj", "{E08E042A-6C45-411B-92BE-3CC31331019F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

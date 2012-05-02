@@ -28,14 +28,10 @@ void CAddCameraController::onLMouseUp(int x, int y)
 {
 	IView *pView = getIView();
 	ICameraSceneNode *cam = pView->getSceneMgr()->getActiveCamera();
-
-	// move object
-	core::line3df	ray = pView->getSelectRay();
-	core::plane3df	plane( core::vector3df(0.0f, 0.0f, 0.0f), core::vector3df(0.0f, 1.0f, 0.0f) );
-	
+		
 	// get position
 	core::vector3df hit;
-	bool b = plane.getIntersectionWithLine( ray.start, ray.getVector(), hit );
+	bool b = getPickPosition( &hit );
 	
 	if ( b )
 	{
@@ -70,13 +66,9 @@ void CAddCameraController::onMouseMove(int x, int y)
 {
 	IView *pView = getIView();
 
-	// move object
-	core::line3df	ray = pView->getSelectRay();
-	core::plane3df	plane( core::vector3df(0.0f, 0.0f, 0.0f), core::vector3df(0.0f, 1.0f, 0.0f) );
-	
 	// get position
 	core::vector3df hit;
-	bool b = plane.getIntersectionWithLine( ray.start, ray.getVector(), hit );
+	bool b = getPickPosition( &hit );
 	
 	if ( b )
 	{

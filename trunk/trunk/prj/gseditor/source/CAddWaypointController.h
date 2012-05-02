@@ -3,10 +3,11 @@
 
 #include "stdafx.h"
 #include "IController.h"
+#include "CBaseAddController.h"
 #include "CGameObject.h"
 #include "CWaypoint.h"
 
-class CAddWaypointController: public IController
+class CAddWaypointController: public CBaseAddController
 {
 protected:
 	CWayPoint	*m_temp;

@@ -3,9 +3,10 @@
 
 #include "stdafx.h"
 #include "IController.h"
+#include "CBaseAddController.h"
 #include "CGameObject.h"
 
-class CAddObjectController: public IController
+class CAddObjectController: public CBaseAddController
 {
 protected:
 

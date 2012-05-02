@@ -5,6 +5,7 @@
 #include "IObjectComponent.h"
 
 #include "CGameColladaSceneNode.h"
+#include "CGameContainerSceneNode.h"
 
 // const for animation
 const int k_linear = 0;
@@ -194,6 +195,7 @@ class CColladaMeshComponent: public IObjectComponent
 protected:
 	std::string					m_animeshFile;	
 	std::string					m_animFile;
+	std::string					m_defaultNode;
 	float						m_animSpeed;
 
 	// map animation name & animation frame data 
@@ -215,7 +217,8 @@ protected:
 	ArrayNodeParams				m_listNode;
 
 	// current node
-	ISceneNode									*m_colladaNode;
+	CGameChildContainerSceneNode				*m_colladaNode;
+
 	map<std::string, CGameColladaSceneNode*>	m_mapNode;
 	map<std::string, CGameColladaSceneNode*>	m_sidNode;
 
@@ -232,6 +235,19 @@ public:
 	// load animation bone from dae file
 	void loadAnimFile( char *lpFileName );
 
+	// getSceneNode
+	// find child node with name
+	CGameColladaSceneNode* getSceneNode( const char *name )
+	{
+		return m_mapNode[ std::string(name) ];
+	}
+
+	// getDefaultNode
+	// get default node
+	CGameColladaSceneNode* getDefaultNode()
+	{
+		return m_mapNode[ m_defaultNode ];
+	}
 protected:
 	// constructScene
 	// create scene node

@@ -329,6 +329,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\Component\CTerrainComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Component\CTerrainComponent.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\Component\IObjectComponent.cpp"
 					>
 				</File>

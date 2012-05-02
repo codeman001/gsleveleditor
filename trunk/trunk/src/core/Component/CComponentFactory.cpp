@@ -100,6 +100,7 @@ void CComponentFactory::initComponentTemplate()
 	p->addPath("meshFile", "data/mesh/marine_2_mesh.dae");
 	p->addPath("animFile", "");
 	p->addFloat("animSpeed", 24.0f);	
+	p->addString("defaultNode", "" );
 
 	loadAllTemplate();
 }

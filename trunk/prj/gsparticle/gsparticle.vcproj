@@ -277,6 +277,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\SceneNode\CGameColladaSceneNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\SceneNode\CGameColladaSceneNode.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\SceneNode\CGameContainerSceneNode.cpp"
 					>
 				</File>
@@ -381,6 +389,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\Component\CColladaMeshComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Component\CColladaMeshComponent.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\Component\CComponentFactory.cpp"
 					>
 				</File>
@@ -434,6 +450,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\Component\CStaticMeshComponent.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Component\CTerrainComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Component\CTerrainComponent.h"
 					>
 				</File>
 				<File

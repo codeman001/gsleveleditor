@@ -36,7 +36,7 @@ using namespace std;
 #ifdef GSEDITOR
 	#define STR_APP_TITLE "gseditor"
 #else
-	#define STR_APP_TITLE "game"
+	#define STR_APP_TITLE L"game"
 #endif
 
 #endif

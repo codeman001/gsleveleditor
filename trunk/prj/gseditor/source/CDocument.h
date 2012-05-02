@@ -161,6 +161,12 @@ public:
 		return m_designCamera;
 	}
 
+	// getAllZone
+	ArrayZone *getAllZone()
+	{
+		return &m_zones;
+	}
+
 protected:
 	// readDocumentFromData
 	// parse document from data

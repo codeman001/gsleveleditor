@@ -824,6 +824,14 @@
 						RelativePath=".\source\CAddWaypointController.h"
 						>
 					</File>
+					<File
+						RelativePath=".\source\CBaseAddController.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\source\CBaseAddController.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>

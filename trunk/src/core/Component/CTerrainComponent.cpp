@@ -109,7 +109,7 @@ bool CTerrainComponent::getCollisionFromRay( core::line3df & ray, f32 &outBestDi
 		{			
 			const f32 distanceSquared = (candidateCollisionPoint - ray.start).getLengthSQ();
 
-			if(distanceSquared < outBestDistanceSquared)
+			//if(distanceSquared < outBestDistanceSquared)
 			{
 				outBestDistanceSquared = distanceSquared;
 				

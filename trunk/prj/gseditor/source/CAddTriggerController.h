@@ -3,10 +3,11 @@
 
 #include "stdafx.h"
 #include "IController.h"
+#include "CBaseAddController.h"
 #include "CGameObject.h"
 #include "CTrigger.h"
 
-class CAddTriggerController: public IController
+class CAddTriggerController: public CBaseAddController
 {
 protected:
 	CTrigger	*m_temp;

@@ -3,10 +3,11 @@
 
 #include "stdafx.h"
 #include "IController.h"
+#include "CBaseAddController.h"
 #include "CGameObject.h"
 #include "CGameCamera.h"
 
-class CAddCameraController: public IController
+class CAddCameraController: public CBaseAddController
 {
 protected:
 	CGameCamera	*m_temp;

@@ -83,6 +83,9 @@
         <Image>ribbonIcon/transform_scale-icon.bmp</Image>
       </Command.LargeImages>
     </Command>
+
+    <Command Name="cmdOnToTerrain" LabelTitle="On Terrain" Symbol="ID_ONTERRAIN">
+    </Command>      
     
     <Command Name="cmdMenuCreateZone" LabelTitle="Create new zone" Symbol="ID_CREATEZONE"/>
     <Command Name="cmdDrawGrid" LabelTitle="Draw grid" Symbol="ID_DRAWGRID"/>
@@ -195,10 +198,11 @@
             <ToggleButton CommandName="cmdAddWaypoint"/>
             <ToggleButton CommandName="cmdAddCamera"/>            
           </Group>
-          <Group CommandName="cmdGroupObjTransform" SizeDefinition="ThreeButtons">
+          <Group CommandName="cmdGroupObjTransform" SizeDefinition="FourButtons">
             <ToggleButton CommandName="cmdSelectObject" />
             <ToggleButton CommandName="cmdRotateObject"/>
             <ToggleButton CommandName="cmdScaleObject"/>
+            <Button CommandName="cmdOnToTerrain"/>
           </Group>
         </Tab>        
       </Ribbon.Tabs>

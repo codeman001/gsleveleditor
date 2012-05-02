@@ -102,6 +102,11 @@ void CComponentFactory::initComponentTemplate()
 	p->addFloat("animSpeed", 24.0f);	
 	p->addString("defaultNode", "" );
 
+	// add terrain
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::Terrain ];
+	p->addGroup(stringOfComponent(IObjectComponent::Terrain));
+
 	loadAllTemplate();
 }
 

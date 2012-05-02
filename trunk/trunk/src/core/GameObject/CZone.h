@@ -10,6 +10,8 @@ class CZone: public CGameObject
 {
 protected:
 	ArrayGameObject		m_childs;
+	ArrayGameObject		m_terrains;
+
 	bool				m_needSortObject;
 
 protected:
@@ -91,7 +93,22 @@ public:
 	{
 		return &m_childs;
 	}
-	
+
+	// registerTerrainObj
+	// add obj to terrain list
+	void registerTerrainObj( CGameObject *pObj );
+
+	// unRegisterTerrainObj
+	// remove obj from list terrain
+	void unRegisterTerrainObj( CGameObject *pObj );
+
+	// getTerrainCollision
+	// check hit with a ray with a terrain
+	bool getTerrainCollision( core::line3df & ray, f32 &outBestDistanceSquared, core::vector3df &outBestCollisionPoint, core::triangle3df &outBestTriangle);
+
+	// getHeigthFromTerraint
+	// get height of terrain at position
+	bool getHeigthFromTerrain( core::vector3df &position, float *h, core::triangle3df *outTri = NULL );
 };
 
 typedef vector<CZone*>				ArrayZone;

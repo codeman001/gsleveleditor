@@ -85,9 +85,14 @@ particleBoom
 }
 daeCharacter
 {
-	Anim mesh component
+	Collada mesh component
 	{
-		meshFile: data/mesh/marine_2_mesh.dae | filePathType;
+		meshFile: data/mesh/Chapter02_Level1.dae | filePathType;
+		animFile:  | filePathType;
 		animSpeed: 24.0000000 | floatType;
+		defaultNode: Plane02-node | stringType;
+	}
+	Terrain component
+	{
 	}
 }

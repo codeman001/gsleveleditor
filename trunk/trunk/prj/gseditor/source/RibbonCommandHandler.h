@@ -67,6 +67,7 @@ public:
 	void onSelectObjectCommand();
 	void onRotateObjectCommand();
 	void onScaleObjectCommand();
+	void onSnapObjOnTerrainCommand();
 	void onDeleteSelectObjectCommand();
 
 	bool onNewDocumentCommand();

@@ -10,7 +10,7 @@
 #include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_OGLES2_
-#include <GLES/egl.h>
+#include <GLES2/egl.h>
 #include <GLES2/gl2.h>
 // seems to be missing...
 typedef char GLchar;

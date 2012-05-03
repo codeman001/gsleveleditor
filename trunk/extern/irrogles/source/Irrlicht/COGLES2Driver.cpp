@@ -18,7 +18,7 @@
 #include "CImage.h"
 #include "os.h"
 
-#include <EGL/egl.h>
+#include <GLES2/egl.h>
 #include <GLES2/gl2.h>
 
 namespace irr
@@ -55,9 +55,9 @@ namespace video
 #endif
 		ExposedData = data;
 #if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
-		EglWindow = (NativeWindowType)data.OpenGLWin32.HWnd;
+		EglWindow = (EGLNativeWindowType)data.OpenGLWin32.HWnd;
 		HDc = GetDC((HWND)EglWindow);
-		EglDisplay = eglGetDisplay((NativeDisplayType)HDc);
+		EglDisplay = eglGetDisplay((EGLNativeDisplayType)HDc);
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 		EglWindow = (NativeWindowType)ExposedData.OpenGLLinux.X11Window;
 		EglDisplay = eglGetDisplay((NativeDisplayType)ExposedData.OpenGLLinux.X11Display);
@@ -67,7 +67,7 @@ namespace video
 		if (EglDisplay == EGL_NO_DISPLAY)
 		{
 			os::Printer::log("Getting OpenGL-ES2 display.");
-			EglDisplay = eglGetDisplay((NativeDisplayType) EGL_DEFAULT_DISPLAY);
+			EglDisplay = eglGetDisplay((EGLNativeDisplayType) EGL_DEFAULT_DISPLAY);
 		}
 		if (EglDisplay == EGL_NO_DISPLAY)
 		{

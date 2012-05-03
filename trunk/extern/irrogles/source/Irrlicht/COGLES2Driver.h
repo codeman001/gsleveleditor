@@ -24,7 +24,7 @@
 
 #ifdef _IRR_COMPILE_WITH_OGLES2_
 
-#include <EGL/eglplatform.h>
+#include <GLES2/eglplatform.h>
 
 #include "CNullDriver.h"
 #include "IMaterialRendererServices.h"
@@ -32,11 +32,8 @@
 #include "fast_atof.h"
 
 #ifdef _MSC_VER
-	#include <GLES/gl.h>
-	#include <GLES/egl.h>
-	#include <GLES/glext.h> 
-
-	#pragma comment(lib,"libgles_cm.lib")
+#pragma comment(lib, "libEGL.lib")
+#pragma comment(lib, "libGLESv2.lib")
 #endif
 #include "COGLES2ExtensionHandler.h"
 
@@ -445,7 +442,7 @@ namespace video
 #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
 		HDC HDc;
 #endif
-		NativeWindowType EglWindow;
+		EGLNativeWindowType EglWindow;
 		void* EglDisplay;
 		void* EglSurface;
 		void* EglContext;

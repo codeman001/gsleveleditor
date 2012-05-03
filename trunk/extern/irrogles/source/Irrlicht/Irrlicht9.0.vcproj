@@ -354,7 +354,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;zlib;..\..\..\PowerVR\OGLES\Include;..\..\..\PowerVR\OGLES\Windows\Include"
+				AdditionalIncludeDirectories="..\..\include;zlib;..\..\..\PowerVR\OGLES2\Include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;_IRR_STATIC_LIB_;_CRT_SECURE_NO_DEPRECATE"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"

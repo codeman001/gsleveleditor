@@ -101,8 +101,13 @@ bool CTerrainComponent::getCollisionFromRay( core::line3df & ray, f32 &outBestDi
 		ISceneCollisionManager *colMgr = getIView()->getSceneMgr()->getSceneCollisionManager();
 		
 		core::vector3df		candidateCollisionPoint;
-		core::triangle3df	candidateTriangle;		
+		core::triangle3df	candidateTriangle;
+
+#ifdef GSGAMEPLAY
 		ISceneNode			*hitNode = 0;
+#else
+		const ISceneNode	*hitNode = 0;
+#endif
 
 		// if hit on selector
 		if ( colMgr->getCollisionPoint(ray, selector, candidateCollisionPoint, candidateTriangle, hitNode) == true )

@@ -18,7 +18,7 @@ public:
 	int		m_fps;
 
 protected:
-	
+	gui::IGUIFont*	m_font;
 public:
 
 	virtual bool OnEvent(const SEvent& event)
@@ -49,6 +49,8 @@ public:
 		m_fps = 0;
 
 		m_device->setWindowCaption( STR_APP_TITLE );
+
+		m_font	= device->getGUIEnvironment()->getFont("data/bigfont.png");
 	}
 
 	void destroyApplication()
@@ -70,14 +72,18 @@ public:
 		
 
 		int fps = m_driver->getFPS();
-
+		
 		// draw fps string		
-		core::stringw tmp(L"Snake 3D - ");
+		core::stringw tmp(L"gsgameplay - ");
 		tmp += m_driver->getName();
-		tmp += L" fps: ";
+
+		tmp += L"\nfps: ";
 		tmp += fps;
-			
-		//m_font->draw( tmp.c_str(), core::rect<s32>(10,10,300,50), video::SColor(255,255,255,255));			
+		
+		tmp += L"\nPrimitive: ";
+		tmp += m_driver->getPrimitiveCountDrawn();		
+
+		m_font->draw( tmp.c_str(), core::rect<s32>(10,10,300,100), video::SColor(255,255,255,255));			
 
 		m_fps = fps;
 		

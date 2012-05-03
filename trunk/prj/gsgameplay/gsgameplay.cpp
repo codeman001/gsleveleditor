@@ -91,7 +91,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	CApplication myApp;
 	g_view = myApp.getIView();
 
-	IrrlichtDevice* device = createDevice( irr::video::EDT_OGLES1, core::dimension2d<u32>(960, 640), 16, false, false, false, &myApp );
+	IrrlichtDevice* device = createDevice( irr::video::EDT_OGLES2, core::dimension2d<u32>(960, 640), 16, false, false, false, &myApp );
 	myApp.initApplication( device );
 
 	while(device->run())

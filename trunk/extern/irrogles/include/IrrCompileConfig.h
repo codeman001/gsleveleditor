@@ -196,7 +196,8 @@ if using this driver, to avoid problems with the ogl-es emulators.
 #undef _IRR_COMPILE_WITH_OGLES2_
 #endif
 #ifndef IRR_OGLES2_SHADER_PATH 
-#define IRR_OGLES2_SHADER_PATH "../../media/Shaders/"
+//#define IRR_OGLES2_SHADER_PATH "../../media/Shaders/"
+#define IRR_OGLES2_SHADER_PATH "shader/basic/"
 #endif
 
 //! Define _IRR_COMPILE_WITH_SOFTWARE_ to compile the Irrlicht engine with software driver

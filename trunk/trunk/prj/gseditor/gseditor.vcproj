@@ -481,6 +481,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\Component\CGrassComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CGrassComponent.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Component\CObjectCollisionComponent.cpp"
 						>
 					</File>

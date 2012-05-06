@@ -12,6 +12,7 @@
 #include "CParticleComponent.h"
 #include "CColladaMeshComponent.h"
 #include "CTerrainComponent.h"
+#include "CGrassComponent.h"
 
 #define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
 
@@ -106,6 +107,15 @@ void CComponentFactory::initComponentTemplate()
 	s_compTemplate.push_back( CSerializable() );
 	p = &s_compTemplate[ IObjectComponent::Terrain ];
 	p->addGroup(stringOfComponent(IObjectComponent::Terrain));
+
+	// add grass
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::Grass ];
+	p->addGroup(stringOfComponent(IObjectComponent::Grass));	
+	p->addFloat("grassWidth",		100.0f, true);
+	p->addFloat("grassHeight",		50.0f, true);
+	p->addPath("grassTexture",		"data/grass.png", true);
+
 
 	loadAllTemplate();
 }
@@ -292,6 +302,8 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 		pComp = new CColladaMeshComponent( pObj );
 	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Terrain ) ) == 0 )
 		pComp = new CTerrainComponent( pObj );
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Grass ) ) == 0 )
+		pComp = new CGrassComponent( pObj );
 
 	if ( pComp )
 		pComp->loadData( data );

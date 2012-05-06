@@ -1,4 +1,3 @@
-
 uniform sampler2D myTexture;
 
 void main (void)

@@ -21,7 +21,8 @@ public:
 		Particle,
 		ColladaMesh,
 		Terrain,
-		NumBuildInComponent = Terrain
+		Grass,
+		NumBuildInComponent = Grass
 	};
 
 	static const char *s_compType[];

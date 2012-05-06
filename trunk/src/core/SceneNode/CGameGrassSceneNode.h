@@ -38,7 +38,7 @@ public:
 class CGameGrassSceneNode: public ISceneNode
 {
 public:
-	CGameGrassSceneNode(CGameObject *owner, IAnimatedMesh* mesh, ISceneNode* parent, ISceneManager* mgr, 
+	CGameGrassSceneNode(CGameObject *owner, IMesh* mesh, ISceneNode* parent, ISceneManager* mgr, 
 		const core::vector3df& position = core::vector3df(0,0,0), 
 		s32 id = -1);
 
@@ -67,7 +67,7 @@ public:
 protected:
 	CGameObject		*m_owner;
 	int				m_idGrass;
-    IAnimatedMesh	*m_mesh;
+	IMesh			*m_mesh;
     SMaterial		m_Material;
     f32				m_MaxDistance;
 	core::vector3df	m_originalPos;

@@ -14,7 +14,8 @@ const char *IObjectComponent::s_compType[] =
 	"Billboard component",
 	"Particle component",
 	"Collada mesh component",
-	"Terrain component"
+	"Terrain component",
+	"Grass component"
 };
 
 IObjectComponent::IObjectComponent(CGameObject *pObj, int compID)

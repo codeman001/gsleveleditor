@@ -96,3 +96,12 @@ daeCharacter
 	{
 	}
 }
+grass
+{
+	Grass component
+	{
+		grassWidth: 100.0000000 | floatType;
+		grassHeight: 50.0000000 | floatType;
+		grassTexture: data/grass.png | filePathType;
+	}
+}

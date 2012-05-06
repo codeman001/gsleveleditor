@@ -2,7 +2,7 @@
 #include "CGameGrassSceneNode.h"
 #include "CGameObject.h"
 
-CGameGrassSceneNode::CGameGrassSceneNode(CGameObject *owner, IAnimatedMesh* mesh, ISceneNode* parent, ISceneManager* mgr, const core::vector3df& position, s32 id)
+CGameGrassSceneNode::CGameGrassSceneNode(CGameObject *owner, IMesh* mesh, ISceneNode* parent, ISceneManager* mgr, const core::vector3df& position, s32 id)
 	:ISceneNode( parent, mgr, id, position, core::vector3df(0,0,0), core::vector3df(0,0,0) )
 {
 	m_owner = owner;
@@ -11,11 +11,14 @@ CGameGrassSceneNode::CGameGrassSceneNode(CGameObject *owner, IAnimatedMesh* mesh
 	if ( m_mesh == NULL )
 		return;
 
-	CShaderGrassCallBack* grassShaderCB = new CShaderGrassCallBack();
-
+	// grab mesh
+	m_mesh->grab();
+	
 	static s32 s_materialGrass = -1;
 	if ( s_materialGrass == -1 )
 	{
+		CShaderGrassCallBack* grassShaderCB = new CShaderGrassCallBack();
+
 		s_materialGrass = mgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles
 		(
 			"shader/extern/grass.vert", "vertexMain",	video::EVST_VS_1_1,
@@ -27,14 +30,17 @@ CGameGrassSceneNode::CGameGrassSceneNode(CGameObject *owner, IAnimatedMesh* mesh
 		grassShaderCB->drop();
 	}
 	
-	m_Material = m_mesh->getMeshBuffer(1)->getMaterial();
+	m_Material = m_mesh->getMeshBuffer(0)->getMaterial();
 	m_Material.MaterialType = (E_MATERIAL_TYPE)s_materialGrass;
     m_Material.MaterialTypeParam = 0.3f;
+
+	setScale( core::vector3df(1,1,1) );
 
 }
 
 CGameGrassSceneNode::~CGameGrassSceneNode()
 {
+	m_mesh->drop();
 }
 
 // OnRegisterSceneNode

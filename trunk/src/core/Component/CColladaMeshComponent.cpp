@@ -214,6 +214,7 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 	const std::wstring trianglesNode(L"triangles");
 	const std::wstring floatArrayNode(L"float_array");
 	const std::wstring inputNode(L"input");
+	const std::wstring accessorNode(L"accessor");
 
 	SMeshParam mesh;
 	
@@ -234,6 +235,7 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 				buffer.Name = readId( xmlRead );
 				buffer.Type = k_positionBuffer;
 				buffer.ArrayCount = 0;
+				buffer.Strike = 0;
 				buffer.FloatArray = NULL;
 
 				while(xmlRead->read())
@@ -247,7 +249,11 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 
 							readFloatsInsideElement( xmlRead, buffer.FloatArray, buffer.ArrayCount );							
 						}
-					}
+						else if ( xmlRead->getNodeName() == accessorNode )
+						{
+							buffer.Strike = xmlRead->getAttributeValueAsInt(L"stride");
+						}
+					}					
 					else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END )
 					{
 						if ( xmlRead->getNodeName() == sourceNode )
@@ -317,7 +323,10 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 			else if ( nodeName == trianglesNode )
 			{
 				STrianglesParam triangle;
-				
+
+				// default is 1
+				triangle.NumElementPerVertex = 1;
+
 				triangle.NumPolygon = xmlRead->getAttributeValueAsInt(L"count");
 
 				std::wstring materialName = xmlRead->getAttributeValue(L"material");
@@ -330,14 +339,57 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 						if ( xmlRead->getNodeName() == inputNode )
 						{
 							std::wstring source = xmlRead->getAttributeValue(L"source");
-							source.erase( source.begin() );
+							std::wstring semantic = xmlRead->getAttributeValue(L"semantic");
+							
+							int offset = 0;							
+							offset = xmlRead->getAttributeValueAsInt(L"offset");
 
-							triangle.VerticesIndex = getVerticesWithUri( source, &mesh );
+							source.erase( source.begin() );
+														
+							if ( semantic == L"NORMAL" )
+							{
+								int bufferID =	getBufferWithUri( source, &mesh );			
+								mesh.Buffers[bufferID].Type = k_normalBuffer;
+								
+								if ( triangle.VerticesIndex != -1 )
+								{
+									mesh.Vertices[ triangle.VerticesIndex ].NormalIndex = bufferID;
+									triangle.OffsetNormal = offset;
+								}
+
+								triangle.NumElementPerVertex++;
+							}
+							else if ( semantic == L"TEXCOORD" )
+							{
+								int bufferID =	getBufferWithUri( source, &mesh );
+								mesh.Buffers[bufferID].Type = k_texCoordBuffer;
+								if ( triangle.VerticesIndex != -1 )
+								{		
+									SVerticesParam &verticesParam = mesh.Vertices[ triangle.VerticesIndex ];
+									if ( verticesParam.TexCoord1Index == -1 )
+									{
+										verticesParam.TexCoord1Index = bufferID;
+										triangle.OffsetTexcoord1 = offset;
+									}
+									else if ( verticesParam.TexCoord1Index != bufferID )
+									{
+										verticesParam.TexCoord2Index = bufferID;
+										triangle.OffsetTexcoord2 = offset;
+									}
+								}
+
+								triangle.NumElementPerVertex++;
+							}
+							else if ( semantic == L"VERTEX" )
+							{
+								triangle.VerticesIndex = getVerticesWithUri( source, &mesh );
+								triangle.OffsetVertex = offset;
+							}
 						}
 						else if ( xmlRead->getNodeName() == std::wstring(L"p") && triangle.VerticesIndex != -1 )
 						{
-							triangle.IndexBuffer = new s32[triangle.NumPolygon * 3];
-							readIntsInsideElement( xmlRead, triangle.IndexBuffer, triangle.NumPolygon * 3 );
+							triangle.IndexBuffer = new s32[triangle.NumPolygon * triangle.NumElementPerVertex * 3];
+							readIntsInsideElement( xmlRead, triangle.IndexBuffer, triangle.NumPolygon * triangle.NumElementPerVertex *3 );
 						}
 					}					
 					else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END )
@@ -1617,7 +1669,7 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 		vtx.Color = SColor(0xFFFFFFFF);
 
 		int vIndex = i;
-		int idx = vIndex * 3;
+		int idx = vIndex * position->Strike;
 
 		// set position
 		vtx.Pos.X = position->FloatArray[idx+0];
@@ -1632,39 +1684,75 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 			vtx.Pos.Z = position->FloatArray[idx+2];
 		}
 
-		// set normal
-		if ( normal != NULL )
+		if ( tri->NumElementPerVertex == 1 )
 		{
-			vtx.Normal.X = normal->FloatArray[idx+0];
-			if (flip)
-			{
-				vtx.Normal.Z = normal->FloatArray[idx+1];
-				vtx.Normal.Y = normal->FloatArray[idx+2];
+			// set normal
+			if ( normal != NULL )
+			{		
+				int idx = vIndex * position->Strike;
+
+				vtx.Normal.X = normal->FloatArray[idx+0];
+				if (flip)
+				{
+					vtx.Normal.Z = normal->FloatArray[idx+1];
+					vtx.Normal.Y = normal->FloatArray[idx+2];
+				}
+				else
+				{
+					vtx.Normal.Y = normal->FloatArray[idx+1];
+					vtx.Normal.Z = normal->FloatArray[idx+2];
+				}
 			}
-			else
+
+			// set texcoord
+			if ( texCoord1 ) 
 			{
-				vtx.Normal.Y = normal->FloatArray[idx+1];
-				vtx.Normal.Z = normal->FloatArray[idx+2];
+				idx = vIndex * texCoord1->Strike;
+				if ( texCoord1 != NULL )
+				{
+					vtx.TCoords.X = texCoord1->FloatArray[idx+0];
+					vtx.TCoords.Y = texCoord1->FloatArray[idx+1];
+				}
 			}
 		}
-
-		// set texcoord
-		idx = vIndex * 2;
-		if ( texCoord1 != NULL )
-		{
-			vtx.TCoords.X = texCoord1->FloatArray[idx+0];
-			vtx.TCoords.Y = texCoord1->FloatArray[idx+1];
-		}
-
 		mbuffer->Vertices.push_back( vtx );
 	}
+		
+	indices.set_used( tri->NumPolygon * 3 );
 
-	int nIndex = tri->NumPolygon*3;
-	indices.set_used(nIndex);
-
-	for ( int i = 0; i < nIndex; i++ )
+	int totalElement = tri->NumPolygon * tri->NumElementPerVertex * 3;	
+	int index = 0;
+	for ( int i = 0; i < totalElement; i+= tri->NumElementPerVertex)
 	{
-		indices[i] = tri->IndexBuffer[i];
+		indices[index] = tri->IndexBuffer[i];
+
+		if ( tri->NumElementPerVertex != 1 )
+		{
+			video::S3DVertex &vtx = mbuffer->Vertices[ tri->IndexBuffer[i] ];
+			if ( normal != NULL )
+			{
+				int idx = tri->IndexBuffer[i + tri->OffsetNormal] * normal->Strike;
+				if (flip)
+				{
+					vtx.Normal.Z = normal->FloatArray[idx+1];
+					vtx.Normal.Y = normal->FloatArray[idx+2];
+				}
+				else
+				{
+					vtx.Normal.Y = normal->FloatArray[idx+1];
+					vtx.Normal.Z = normal->FloatArray[idx+2];
+				}
+			}
+
+			if ( texCoord1 ) 
+			{
+				int idx = tri->IndexBuffer[i + tri->OffsetTexcoord1] * texCoord1->Strike;
+				vtx.TCoords.X = texCoord1->FloatArray[idx+0];
+				vtx.TCoords.Y = texCoord1->FloatArray[idx+1];
+			}
+		}
+
+		index++;
 	}
 
 
@@ -2155,7 +2243,7 @@ int getBufferWithUri( std::wstring& uri, SMeshParam* mesh )
 }
 
 int getVerticesWithUri( std::wstring& uri, SMeshParam* mesh )
-{	
+{
 	int n = mesh->Vertices.size();
 	for ( int i = 0; i < n; i++ )
 	{
@@ -2164,6 +2252,7 @@ int getVerticesWithUri( std::wstring& uri, SMeshParam* mesh )
 			return i;
 		}
 	}
+
 	return -1;
 }
 

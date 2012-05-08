@@ -637,12 +637,16 @@ SNodeParam* CColladaMeshComponent::parseNode( io::IXMLReader *xmlRead, SNodePara
 
 	SNodeParam *pNode = new SNodeParam();
 	
-	pNode->Name = xmlRead->getAttributeValue(L"id");
+	pNode->Name = L"";
+	if ( xmlRead->getAttributeValue(L"id") )
+		pNode->Name = xmlRead->getAttributeValue(L"id");
 
 	if ( xmlRead->getAttributeValue(L"sid") )
 		pNode->SID	= xmlRead->getAttributeValue(L"sid");	
 	
-	pNode->Type = xmlRead->getAttributeValue(L"type");
+	pNode->Type = L"NODE";
+	if ( xmlRead->getAttributeValue(L"type") )
+		pNode->Type = xmlRead->getAttributeValue(L"type");
 	
 	pNode->Parent = parent;
 	if ( parent )

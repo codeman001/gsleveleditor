@@ -93,6 +93,7 @@ struct SBufferParam
 	float				*FloatArray;
 	int					ArrayCount;
 	int					Type;
+	int					Strike;
 
 	SBufferParam()
 	{
@@ -123,6 +124,11 @@ struct STrianglesParam
 	int					EffectIndex;
 	int					NumPolygon;
 	s32					*IndexBuffer;
+	int					NumElementPerVertex;	
+	int					OffsetVertex;
+	int					OffsetNormal;
+	int					OffsetTexcoord1;
+	int					OffsetTexcoord2;
 
 	STrianglesParam()
 	{		
@@ -130,6 +136,12 @@ struct STrianglesParam
 		EffectIndex = -1;
 		NumPolygon = 0;
 		IndexBuffer = NULL;
+
+		NumElementPerVertex = 1;
+		OffsetVertex = 0;
+		OffsetNormal = 0;
+		OffsetTexcoord1 = 0;
+		OffsetTexcoord2 = 0;
 	}
 };
 

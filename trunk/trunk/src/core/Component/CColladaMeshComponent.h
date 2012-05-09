@@ -234,6 +234,7 @@ protected:
 	map<std::string, CGameColladaSceneNode*>	m_mapNode;
 	map<std::string, CGameColladaSceneNode*>	m_sidNode;
 
+	bool						m_needFlip;
 public:
 	CColladaMeshComponent( CGameObject *pObj );
 

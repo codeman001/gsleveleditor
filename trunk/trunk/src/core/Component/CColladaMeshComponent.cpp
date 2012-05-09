@@ -145,6 +145,9 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 	const std::wstring geometrySectionName(L"geometry");	
 	const std::wstring sceneSectionName(L"visual_scene");
 
+	bool readLUpAxis = false;
+	m_needFlip = false;
+
 	while ( xmlRead->read() )
 	{
 		switch (xmlRead->getNodeType())
@@ -169,6 +172,10 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 				{
 					parseSceneNode( xmlRead );
 				}
+				else if ( nodeName == L"up_axis" )
+				{
+					readLUpAxis = true;
+				}
 				
 			}
 		case io::EXN_ELEMENT_END:
@@ -177,6 +184,15 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 			break;
 		case io::EXN_TEXT:
 			{
+				if ( readLUpAxis == true )
+				{
+					std::wstring text = xmlRead->getNodeData();
+					if ( text == L"Z_UP" )
+					{
+						m_needFlip = true;
+					}
+				}
+				readLUpAxis = false;
 			}
 			break;
 		}
@@ -304,7 +320,7 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 										verticesParam.TexCoord1Index = bufferID;
 									else if ( verticesParam.TexCoord1Index != bufferID )
 										verticesParam.TexCoord2Index = bufferID;
-								}
+								}								
 							}
 
 						}
@@ -384,6 +400,10 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 							{
 								triangle.VerticesIndex = getVerticesWithUri( source, &mesh );
 								triangle.OffsetVertex = offset;
+							}
+							else
+							{
+								triangle.NumElementPerVertex++;
 							}
 						}
 						else if ( xmlRead->getNodeName() == std::wstring(L"p") && triangle.VerticesIndex != -1 )
@@ -669,17 +689,17 @@ SNodeParam* CColladaMeshComponent::parseNode( io::IXMLReader *xmlRead, SNodePara
 			else if ( xmlRead->getNodeName() == translateSectionName )
 			{
 				// mul translate
-				pNode->Transform *= readTranslateNode(xmlRead, true);
+				pNode->Transform *= readTranslateNode(xmlRead, m_needFlip);
 			}
 			else if ( xmlRead->getNodeName() == rotateSectionName )
 			{
 				// mul rotate
-				pNode->Transform *= readRotateNode(xmlRead, true);
+				pNode->Transform *= readRotateNode(xmlRead, m_needFlip);
 			}
 			else if ( xmlRead->getNodeName() == scaleSectionName )
 			{
 				// mul scale
-				pNode->Transform *= readScaleNode(xmlRead, true);
+				pNode->Transform *= readScaleNode(xmlRead, m_needFlip);
 			}			
 			else if ( xmlRead->getNodeName() == instanceGeometrySectionName )
 			{
@@ -1565,7 +1585,7 @@ void CColladaMeshComponent::constructScene()
 					
 					// create mesh buffer
 					scene::SMeshBuffer* meshBuffer = new SMeshBuffer();
-					constructMeshBuffer( pMesh, &tri, meshBuffer, true );
+					constructMeshBuffer( pMesh, &tri, meshBuffer, m_needFlip );
 					
 					// add mesh buffer								
 					pColladaMesh->addMeshBuffer( meshBuffer );

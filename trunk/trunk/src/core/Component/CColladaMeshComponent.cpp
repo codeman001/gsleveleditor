@@ -1601,6 +1601,10 @@ void CColladaMeshComponent::constructScene()
 			
 				// set mesh for scene node
 				colladaSceneNode->setColladaMesh( pColladaMesh );
+				
+				if ( m_defaultNode == "" )
+					m_defaultNode = colladaSceneNode->getName();
+
 				pColladaMesh->drop();
 
 			}

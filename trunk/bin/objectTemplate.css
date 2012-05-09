@@ -1,107 +1,82 @@
-orge
-{
-	Anim mesh component
-	{
-		meshFile: data/mesh/dwarf.x | filePathType;
-		animSpeed: 24.0000000 | floatType;
-	}
-	Object shadow component
-	{
-		shadowCasting: true | boolType;
-		shadowReceiving: false | boolType;
-	}
-}
-lv1_terrain
-{
-	Object collision component
-	{
-		collisionType: 2 | intType;
-		collisionData: 0 | intType;
-	}
-	Object shadow component
-	{
-		shadowCasting: false | boolType;
-		shadowReceiving: true | boolType;
-	}
-	Static mesh component
-	{
-		meshFile: data/mesh/lv1_terrain.x | filePathType;
-	}
-}
-orge_scale
-{
-	Anim mesh component
-	{
-		meshFile: data/mesh/dwarf.x | filePathType;
-		animSpeed: 24.0000000 | floatType;
-	}
-	Object transform component
-	{
-		rotateX: 0.0000000 | floatType;
-		rotateY: 0.0000000 | floatType;
-		rotateZ: 0.0000000 | floatType;
-		scaleX: 1.0000000 | floatType;
-		scaleY: 2.0000000 | floatType;
-		scaleZ: 1.0000000 | floatType;
-	}
-}
-staticOrge
-{
-	Static mesh component
-	{
-		meshFile: data/mesh/dwarf.x | filePathType;
-	}
-}
-skybox
-{
-	Skybox component
-	{
-		skyTexture: data/skydome2.jpg | filePathType;
-	}
-}
-box
-{
-	Box object component
-	{
-		size: 100.0000000 | floatType;
-		textureFile: data/boxTexture.jpg | filePathType;
-	}
-}
-testBillboard
-{
-	Billboard component
-	{
-		textureFile: data/particle/particlewhite.bmp | filePathType;
-		billboardWidth: 50.0000000 | floatType;
-		billboardHeight: 50.0000000 | floatType;
-	}
-}
-particleBoom
-{
-	Particle component
-	{
-		particleXml: data/particle/particle.xml | filePathType;
-	}
-}
-daeCharacter
-{
-	Collada mesh component
-	{
-		meshFile: data/mesh/Chapter02_Level1.dae | filePathType;
-		animFile:  | filePathType;
-		animSpeed: 24.0000000 | floatType;
-		defaultNode: Plane02-node | stringType;
-	}
-	Terrain component
-	{
-	}
-}
-grass
+treeGrass
 {
 	Grass component
 	{
 		grassWidth: 100.0000000 | floatType;
 		grassHeight: 50.0000000 | floatType;
 		grassTexture: data/grass.png | filePathType;
+	}
+}
+treePalms
+{
+	Collada mesh component
+	{
+		meshFile: data/mesh/tree/palms.dae | filePathType;
+		animFile:  | filePathType;
+		animSpeed: 24.0000000 | floatType;
+		defaultNode:  | stringType;
+	}
+}
+treePalm
+{
+	Collada mesh component
+	{
+		meshFile: data/mesh/tree/Palm.dae | filePathType;
+		animFile:  | filePathType;
+		animSpeed: 24.0000000 | floatType;
+		defaultNode:  | stringType;
+	}
+}
+treeMimosa
+{
+	Collada mesh component
+	{
+		meshFile: data/mesh/tree/Mimosa.dae | filePathType;
+		animFile:  | filePathType;
+		animSpeed: 24.0000000 | floatType;
+		defaultNode:  | stringType;
+	}
+}
+treeBanyan
+{
+	Collada mesh component
+	{
+		meshFile: data/mesh/tree/BanyanTree.dae | filePathType;
+		animFile:  | filePathType;
+		animSpeed: 24.0000000 | floatType;
+		defaultNode:  | stringType;
+	}
+}
+treeThin
+{
+	Collada mesh component
+	{
+		meshFile: data/mesh/tree/ThinTree.dae | filePathType;
+		animFile:  | filePathType;
+		animSpeed: 24.0000000 | floatType;
+		defaultNode:  | stringType;
+	}
+}
+treeBanana
+{
+	Collada mesh component
+	{
+		meshFile: data/mesh/tree/BananaPlant.dae | filePathType;
+		animFile:  | filePathType;
+		animSpeed: 24.0000000 | floatType;
+		defaultNode:  | stringType;
+	}
+}
+terrainLevel1
+{
+	Collada mesh component
+	{
+		meshFile: data/mesh/terrain/terrain.dae | filePathType;
+		animFile:  | filePathType;
+		animSpeed: 24.0000000 | floatType;
+		defaultNode: Plane01-node | stringType;
+	}
+	Terrain component
+	{
 	}
 }

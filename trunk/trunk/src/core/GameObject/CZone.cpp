@@ -150,6 +150,7 @@ CGameObject* CZone::createObject( wchar_t* objTemplate )
 	return p;
 }
 
+#if defined(GSEDITOR) || defined(GSGAMEPLAY)
 
 // createWaypoint
 // create a waypoint object
@@ -187,6 +188,42 @@ CWayPoint* CZone::createWaypoint()
 }
 
 
+// createTrigger
+// create a trigger object
+CTrigger* CZone::createTrigger()
+{
+	CTrigger *p = new CTrigger(this);
+	
+	wchar_t lpName[1024];
+	swprintf( lpName, 1024, L"%s_%d", L"trigger", (int)CGameObject::s_objectID );
+	
+	p->setID( CGameObject::s_objectID++ );
+	p->setParent( this );
+
+#ifdef GSEDITOR
+	// create tree item
+	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) lpName );
+	CDocument *pDoc = (CDocument*) getIView()->getDocument();
+
+	pTreeItem->setIconIndex( 5 );
+	pTreeItem->setIconStateIndex( 5 );
+	pTreeItem->update();
+
+	pTreeItem->setData( p );
+	p->setTreeItem( pTreeItem );
+	m_treeItem->update();
+	m_treeItem->expandChild( true );	
+#endif
+
+	p->setName( lpName );
+	addChild( p );
+
+	return p;
+}
+
+
+#endif
+
 // createCamera
 // create a cameraObject
 CGameCamera* CZone::createCamera()
@@ -207,39 +244,6 @@ CGameCamera* CZone::createCamera()
 
 	pTreeItem->setIconIndex( 8 );
 	pTreeItem->setIconStateIndex( 8 );
-	pTreeItem->update();
-
-	pTreeItem->setData( p );
-	p->setTreeItem( pTreeItem );
-	m_treeItem->update();
-	m_treeItem->expandChild( true );	
-#endif
-
-	p->setName( lpName );
-	addChild( p );
-
-	return p;
-}
-
-// createTrigger
-// create a trigger object
-CTrigger* CZone::createTrigger()
-{
-	CTrigger *p = new CTrigger(this);
-	
-	wchar_t lpName[1024];
-	swprintf( lpName, 1024, L"%s_%d", L"trigger", (int)CGameObject::s_objectID );
-	
-	p->setID( CGameObject::s_objectID++ );
-	p->setParent( this );
-
-#ifdef GSEDITOR
-	// create tree item
-	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) lpName );
-	CDocument *pDoc = (CDocument*) getIView()->getDocument();
-
-	pTreeItem->setIconIndex( 5 );
-	pTreeItem->setIconStateIndex( 5 );
 	pTreeItem->update();
 
 	pTreeItem->setData( p );
@@ -391,6 +395,8 @@ void CZone::updateData( CSerializable* pObj )
 	m_visible	= pObj->readBool();
 }
 
+
+#if defined(GSEDITOR) || defined(GSGAMEPLAY)
 // registerTerrainObj
 // add obj to terrain list
 void CZone::registerTerrainObj( CGameObject *pObj )
@@ -454,6 +460,8 @@ bool CZone::getHeigthFromTerrain( core::vector3df &position, float *h, core::tri
 
 	return false;
 }
+
+#endif
 
 
 #ifdef GSEDITOR

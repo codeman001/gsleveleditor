@@ -248,6 +248,18 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 
 // initFromNode
 // init cache from node
+struct SGroupNode
+{
+	ISceneNode *colladaParent;
+	ISceneNode *initChild;
+
+	SGroupNode( ISceneNode* p, ISceneNode* child )
+	{
+		colladaParent = p;
+		initChild = child;
+	}
+};
+
 void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
 {
 	ISceneManager *smgr = getIView()->getSceneMgr();
@@ -262,10 +274,60 @@ void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
 	
 	m_gameObject->m_node = m_colladaNode;
 
+	std::queue< SGroupNode > queueNode;
+	
 	const core::list<ISceneNode*>& childs = node->getChildren();
-	std::stack<ISceneNode*> m_stack;
+	core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
+	while ( it != end )
+	{
+		queueNode.push( SGroupNode(m_colladaNode, (*it) ) );
+		it++;
+	}	
 	
-	
+	while ( queueNode.size() )
+	{
+		SGroupNode& groupNode = queueNode.front();
+		queueNode.pop();
+
+		// clone new node
+		CGameColladaSceneNode *newNode = (CGameColladaSceneNode*)groupNode.initChild->clone( groupNode.colladaParent, smgr );
+		m_colladaNode->addBoundingBoxOfChild( newNode );
+
+		// store name this node
+		std::string name = groupNode.initChild->getName();
+		if ( name.length() > 0 )
+			m_mapNode[ name ] = newNode;
+
+		// store sid this node
+		name = ((CGameColladaSceneNode*)groupNode.initChild)->getSIDName();
+		if ( name.length() > 0 )
+		{
+			m_sidNode[name] = newNode;
+			newNode->setSIDName( name );
+		}
+
+		const core::list<ISceneNode*>& childs = groupNode.initChild->getChildren();
+		core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
+		while ( it != end )
+		{
+			queueNode.push( SGroupNode(newNode,(*it)) );
+			it++;
+		}
+
+		newNode->drop();
+	}
+
+#ifdef GSEDITOR
+	if ( m_gameObject->m_node )
+	{
+		ISceneManager *smgr = getIView()->getSceneMgr();
+
+		// add collision
+		ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( m_gameObject->m_node );
+		m_gameObject->m_node->setTriangleSelector(selector);
+		selector->drop();
+	}
+#endif
 
 }
 
@@ -1606,6 +1668,7 @@ void CColladaMeshComponent::constructScene()
 		{
 			uiString::copy<char, const wchar_t>( name, node->SID.c_str() );
 			m_sidNode[name] = colladaSceneNode;
+			colladaSceneNode->setSIDName( name );
 		}
 
 		// set relative position		

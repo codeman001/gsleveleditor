@@ -47,17 +47,19 @@ public:
 	// create a template object
 	CGameObject* createObject( wchar_t* objTemplate );
 
-	// createWaypoint
-	// create a waypoint object
-	CWayPoint* createWaypoint();
-
 	// createCamera
 	// create a cameraObject
 	CGameCamera* createCamera();
 
+#if defined(GSEDITOR) || defined(GSGAMEPLAY)
+	// createWaypoint
+	// create a waypoint object
+	CWayPoint* createWaypoint();
+
 	// createTrigger
 	// create a trigger object
 	CTrigger* createTrigger();
+#endif
 
 	// removeObject
 	// remove object
@@ -94,6 +96,7 @@ public:
 		return &m_childs;
 	}
 
+#if defined(GSEDITOR) || defined(GSGAMEPLAY)
 	// registerTerrainObj
 	// add obj to terrain list
 	void registerTerrainObj( CGameObject *pObj );
@@ -109,6 +112,8 @@ public:
 	// getHeigthFromTerraint
 	// get height of terrain at position
 	bool getHeigthFromTerrain( core::vector3df &position, float *h, core::triangle3df *outTri = NULL );
+#endif
+
 };
 
 typedef vector<CZone*>				ArrayZone;

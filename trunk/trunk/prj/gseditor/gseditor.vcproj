@@ -545,6 +545,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\Component\CWaterComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CWaterComponent.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Component\IObjectComponent.cpp"
 						>
 					</File>
@@ -690,6 +698,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\core\SceneNode\CGameParticleContainerSceneNode.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameWaterSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameWaterSceneNode.h"
 						>
 					</File>
 				</Filter>

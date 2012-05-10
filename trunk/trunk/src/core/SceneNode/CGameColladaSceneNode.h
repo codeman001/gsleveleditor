@@ -158,7 +158,9 @@ protected:
 
 	CGameColladaMesh	*ColladaMesh;
 
-	bool	m_isRootColladaNode;
+	bool			m_isRootColladaNode;
+
+	std::string		m_sid;
 
 public:
 	CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id);
@@ -209,6 +211,20 @@ public:
 	CGameColladaMesh* getMesh()
 	{
 		return ColladaMesh;
+	}
+
+	// setSIDName
+	// set sid joint name
+	inline void setSIDName( const std::string& name )
+	{
+		m_sid = name;
+	}
+
+	// getSIDName
+	// get sid joint name
+	inline const std::string& getSIDName()
+	{
+		return m_sid;
 	}
 
 public:

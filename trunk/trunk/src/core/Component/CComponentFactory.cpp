@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CComponentFactory.h"
 
+#if defined(GSGAMEPLAY) || defined(GSEDITOR)
 #include "CAnimMeshComponent.h"
 #include "CStaticMeshComponent.h"
 #include "CSkyboxComponent.h"
@@ -9,10 +10,18 @@
 #include "CShadowComponent.h"
 #include "CBoxObjectComponent.h"
 #include "CBillboardComponent.h"
-#include "CParticleComponent.h"
-#include "CColladaMeshComponent.h"
 #include "CTerrainComponent.h"
 #include "CGrassComponent.h"
+#include "CWaterComponent.h"
+#endif 
+
+#if defined(GSANIMATION) || defined(GSGAMEPLAY) || defined(GSEDITOR)
+#include "CColladaMeshComponent.h"
+#endif
+
+#if defined(GSPARTICLE) || defined(GSGAMEPLAY) || defined(GSEDITOR)
+#include "CParticleComponent.h"
+#endif
 
 #define	stringOfComponent( type )	IObjectComponent::s_compType[ (int)type ]
 
@@ -116,6 +125,10 @@ void CComponentFactory::initComponentTemplate()
 	p->addFloat("grassHeight",		50.0f, true);
 	p->addPath("grassTexture",		"data/grass.png", true);
 
+	// add water
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::Water ];
+	p->addGroup(stringOfComponent(IObjectComponent::Water));
 
 	loadAllTemplate();
 }
@@ -280,6 +293,7 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 
 	IObjectComponent* pComp = NULL;
 
+#if defined(GSGAMEPLAY) || defined(GSEDITOR)
 	if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::AnimMesh) ) == 0 )	
 		pComp = new CAnimMeshComponent( pObj );
 	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::StaticMesh ) ) == 0 )	
@@ -296,14 +310,21 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 		pComp = new CBoxObjectComponent( pObj );
 	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Billboard ) ) == 0 )
 		pComp = new CBillboardComponent( pObj );
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Particle ) ) == 0 )
-		pComp = new CParticleComponent( pObj );
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ColladaMesh ) ) == 0 )
-		pComp = new CColladaMeshComponent( pObj );
 	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Terrain ) ) == 0 )
 		pComp = new CTerrainComponent( pObj );
 	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Grass ) ) == 0 )
 		pComp = new CGrassComponent( pObj );
+	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Water ) ) == 0 )
+		pComp = new CWaterComponent( pObj );	
+#endif
+#if defined(GSANIMATION) || defined(GSGAMEPLAY) || defined(GSEDITOR)
+	if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ColladaMesh ) ) == 0 )
+		pComp = new CColladaMeshComponent( pObj );	
+#endif
+#if defined(GSPARTICLE) || defined(GSGAMEPLAY) || defined(GSEDITOR)
+	if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Particle ) ) == 0 )
+		pComp = new CParticleComponent( pObj );	
+#endif
 
 	if ( pComp )
 		pComp->loadData( data );

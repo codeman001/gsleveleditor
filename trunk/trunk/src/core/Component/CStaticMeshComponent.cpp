@@ -41,7 +41,8 @@ void CStaticMeshComponent::loadFromFile( char *lpFilename )
 	
 	// load mesh
 	IAnimatedMesh *animMesh = smgr->getMesh( lpFilename );	
-	
+
+#ifdef CLONE_MESH
 	// copy mesh
 	IMeshManipulator *meshManipulator = smgr->getMeshManipulator();
 	IMesh *staticMesh =	meshManipulator->createMeshCopy( animMesh->getMesh(0) );	
@@ -57,11 +58,18 @@ void CStaticMeshComponent::loadFromFile( char *lpFilename )
 		staticBuffer->getMaterial() = animBuffer->getMaterial();
 		staticBuffer->getMaterial().Lighting = m_gameObject->isLighting();
 		staticBuffer->setHardwareMappingHint( scene::EHM_STATIC );
-	}	
-
+	}
 	// create scene node
 	m_meshNode = new CGameMeshSceneNode( m_gameObject, staticMesh, m_gameObject->getParentSceneNode(), smgr );	
 	staticMesh->drop();
+	animMesh->drop();
+#else
+	// create scene node
+	animMesh->setHardwareMappingHint( EHM_STATIC );
+	m_meshNode = new CGameMeshSceneNode( m_gameObject, animMesh, m_gameObject->getParentSceneNode(), smgr );	
+	animMesh->drop();
+#endif	
+
 
 #ifdef GSEDITOR
 	// add collision

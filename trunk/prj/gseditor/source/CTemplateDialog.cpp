@@ -317,7 +317,7 @@ bool CTemplateDialog::onOKButton()
 		// spawn test object
 		CGameObject *pObj = CObjTemplateFactory::spawnObject( lpName );
 		pObj->setObjectState( CGameObject::Move );
-		CObjTemplateFactory::s_objects.push_back( pObj );
+		CObjTemplateFactory::addTemplateObject( pObj );
 	}
 
 	// save template

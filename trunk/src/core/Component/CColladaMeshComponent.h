@@ -201,7 +201,6 @@ struct SNodeParam
 };
 typedef vector<SNodeParam*>	ArrayNodeParams;
 
-
 class CColladaMeshComponent: public IObjectComponent
 {
 protected:
@@ -235,6 +234,7 @@ protected:
 	map<std::string, CGameColladaSceneNode*>	m_sidNode;
 
 	bool						m_needFlip;
+		
 public:
 	CColladaMeshComponent( CGameObject *pObj );
 
@@ -243,10 +243,14 @@ public:
 	// loadFromFile
 	// load anim object from dae file
 	void loadFromFile( char *lpFilename );
-
+		
 	// loadAnimFile
 	// load animation bone from dae file
 	void loadAnimFile( char *lpFileName );
+	
+	// initFromNode
+	// init cache from node
+	void initFromNode( CGameChildContainerSceneNode* node );
 
 	// getSceneNode
 	// find child node with name
@@ -261,6 +265,7 @@ public:
 	{
 		return m_mapNode[ m_defaultNode ];
 	}
+	
 protected:
 	// constructScene
 	// create scene node
@@ -390,6 +395,41 @@ public:
 	// load data to serializable
 	void loadData( CSerializable* pObj );
 
+};
+
+class CColladaCache
+{
+public:
+	// for cache node
+	static map<string, CGameChildContainerSceneNode*>	s_nodeCache;
+
+	// cacheNode
+	// cache node with name
+	static void cacheNode( const std::string &name, CGameChildContainerSceneNode* node )
+	{
+		s_nodeCache[name] = node;
+		node->grab();
+	}
+
+	// getNodeInCache
+	// get node in cache
+	static CGameChildContainerSceneNode* getNodeInCache( const std::string &name )
+	{
+		return s_nodeCache[name];
+	}
+
+	// destroyCache
+	// destroy all cache
+	static void freeData()
+	{
+		map<string, CGameChildContainerSceneNode*>::iterator i = s_nodeCache.begin(), end = s_nodeCache.end();
+		while ( i != end )
+		{
+			(*i).second->drop();
+			i++;
+		}
+		s_nodeCache.clear();
+	}
 };
 
 #endif

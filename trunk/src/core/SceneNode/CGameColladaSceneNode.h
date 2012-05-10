@@ -84,6 +84,10 @@ public:
 		}
 	}
 
+	// clone
+	// clone this mesh
+	virtual CGameColladaMesh* clone();	
+
 	//! sets a flag of all contained materials to a new value
 	virtual void setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue)
 	{
@@ -94,11 +98,8 @@ public:
 	//! set the hardware mapping hint, for driver
 	virtual void setHardwareMappingHint( E_HARDWARE_MAPPING newMappingHint, E_BUFFER_TYPE buffer=EBT_VERTEX_AND_INDEX )
 	{
-		if ( IsStaticMesh == true )
-		{
-			for (u32 i=0; i<MeshBuffers.size(); ++i)
-				MeshBuffers[i]->setHardwareMappingHint(newMappingHint, buffer);
-		}
+		for (u32 i=0; i<MeshBuffers.size(); ++i)
+			MeshBuffers[i]->setHardwareMappingHint(newMappingHint, buffer);
 	}
 
 	//! flags the meshbuffer as changed, reloads hardware buffers
@@ -187,6 +188,10 @@ public:
 	{
 		return Box;
 	}
+
+	// clone
+	// ISceneNode override implement 
+	virtual ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0);
 
 	// setColladaMesh
 	// Set current collada mesh

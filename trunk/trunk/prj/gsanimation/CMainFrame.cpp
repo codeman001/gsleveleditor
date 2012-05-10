@@ -228,7 +228,7 @@ void CMainFrame::toolbarSaveAnim( uiObject *pSender )
 	uiString::copy<WCHAR, const char>( lpPath, m_currentFile.c_str() );
 
 	WCHAR title[1024];
-	swprintf(title, 1024, L"%s - %s", TEXT( STR_APP_TITLE ), lpPath);
+	swprintf(title, 1024, L"%s - %s", STR_APP_TITLE, lpPath);
 	setCaption( title );
 }
 

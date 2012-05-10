@@ -56,7 +56,7 @@ void CStaticMeshComponent::loadFromFile( char *lpFilename )
 		// copy material
 		staticBuffer->getMaterial() = animBuffer->getMaterial();
 		staticBuffer->getMaterial().Lighting = m_gameObject->isLighting();
-		staticBuffer->setHardwareMappingHint( scene::EHM_STATIC,  scene::EBT_VERTEX_AND_INDEX);
+		staticBuffer->setHardwareMappingHint( scene::EHM_STATIC );
 	}	
 
 	// create scene node

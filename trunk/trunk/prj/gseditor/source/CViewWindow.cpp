@@ -10,6 +10,8 @@
 #include "CDocument.h"
 #include "CZone.h"
 
+#include "CColladaMeshComponent.h"
+
 IView* g_view = NULL;
 
 IView* getIView()
@@ -54,6 +56,7 @@ CViewWindow::~CViewWindow()
 
 	CComponentFactory::freeData();
 	CObjTemplateFactory::freeData();
+	CColladaCache::freeData();
 
 	m_device->drop();
 }

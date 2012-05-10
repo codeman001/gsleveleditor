@@ -34,6 +34,17 @@ int				getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam );
 int				getMeshWithControllerName( std::wstring& controllerName, ArrayMeshParams& listMeshParam );
 
 
+//////////////////////////////////////////////////////////
+// CColladaCache implement
+//////////////////////////////////////////////////////////
+
+map<string, CGameChildContainerSceneNode*>	CColladaCache::s_nodeCache;
+
+
+//////////////////////////////////////////////////////////
+// CColladaMeshComponent implement
+//////////////////////////////////////////////////////////
+
 CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 	:IObjectComponent( pObj, (int)IObjectComponent::ColladaMesh )
 {
@@ -111,6 +122,15 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 		return;
 
 	m_animeshFile = lpFilename;
+
+	// search in cache	
+	CGameChildContainerSceneNode* cacheNode = CColladaCache::getNodeInCache( m_animeshFile );
+	if ( cacheNode != NULL )
+	{
+		initFromNode( cacheNode );
+		return;
+	}
+
 
 	IrrlichtDevice	*device = getIView()->getDevice();
 	IVideoDriver	*driver = getIView()->getDriver();
@@ -206,6 +226,12 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 	// clean data
 	cleanData();
 
+	// cache node
+	if ( m_colladaNode != NULL && CColladaCache::getNodeInCache(m_animeshFile) == NULL )
+	{
+		CColladaCache::cacheNode( m_animeshFile, m_colladaNode );
+	}
+
 #ifdef GSEDITOR
 	if ( m_gameObject->m_node )
 	{
@@ -217,6 +243,29 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 		selector->drop();
 	}
 #endif
+
+}
+
+// initFromNode
+// init cache from node
+void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
+{
+	ISceneManager *smgr = getIView()->getSceneMgr();
+
+	m_colladaNode = new CGameChildContainerSceneNode
+		(
+			m_gameObject,
+			m_gameObject->getParentSceneNode(),
+			smgr,
+			m_gameObject->getID()
+		);
+	
+	m_gameObject->m_node = m_colladaNode;
+
+	const core::list<ISceneNode*>& childs = node->getChildren();
+	std::stack<ISceneNode*> m_stack;
+	
+	
 
 }
 
@@ -1930,6 +1979,10 @@ void CColladaMeshComponent::cleanData()
 	m_listNode.clear();
 }
 
+
+//////////////////////////////////////////////////////////
+// c function implement
+//////////////////////////////////////////////////////////
 
 //! changes the XML URI into an internal id
 void uriToId(std::wstring& str)

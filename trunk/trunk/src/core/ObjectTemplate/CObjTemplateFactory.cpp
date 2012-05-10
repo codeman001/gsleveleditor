@@ -64,7 +64,7 @@ void readTemplateFromData( char *lpData )
 			// create game object
 			CGameObject *pObj = CObjTemplateFactory::spawnObject( lpString );
 			pObj->setObjectState( CGameObject::Move );
-			CObjTemplateFactory::s_objects.push_back( pObj );
+			CObjTemplateFactory::addTemplateObject( pObj );
 #endif
 
 		}
@@ -249,6 +249,13 @@ CGameObject* CObjTemplateFactory::getGameObject( wchar_t* templateName )
 		i++;
 	}
 	return NULL;
+}
+
+// addTemplateObject
+// add a template object
+void CObjTemplateFactory::addTemplateObject( CGameObject *pObj )
+{
+	s_objects.push_back( pObj );
 }
 
 // registerDrawAllObject

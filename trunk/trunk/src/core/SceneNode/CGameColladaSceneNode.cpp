@@ -2,6 +2,22 @@
 #include "CGameColladaSceneNode.h"
 #include "IView.h"
 
+//////////////////////////////////////////////////////////
+// CGameColladaMesh implement
+//////////////////////////////////////////////////////////
+
+// clone
+// clone this mesh
+CGameColladaMesh* CGameColladaMesh::clone()
+{
+	return NULL;
+}
+
+
+//////////////////////////////////////////////////////////
+// CGameColladaSceneNode implement
+//////////////////////////////////////////////////////////
+
 CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id)
 	:ISceneNode( parent, mgr, id )
 {
@@ -465,4 +481,61 @@ void CGameColladaSceneNode::render()
 		driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,255,255,255));
 	}
 	
+}
+
+// clone
+// ISceneNode override implement 
+ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* newManager)
+{
+	if (!newParent) 
+		newParent = Parent;
+
+	if (!newManager)
+		newManager = SceneManager;
+	
+	// clone collada node
+	CGameColladaSceneNode * newNode = new CGameColladaSceneNode( newParent, newManager, -1);
+		
+	// clone basic
+	newNode->cloneMembers(this, newManager);
+
+	newNode->Box = Box;
+	newNode->Material = Material;
+
+	newNode->AnimationMatrix = AnimationMatrix;
+	newNode->AbsoluteAnimationMatrix = AbsoluteAnimationMatrix;
+
+	newNode->LocalMatrix = LocalMatrix;
+	
+	if ( ColladaMesh->IsStaticMesh == true )
+	{
+		// static mesh	
+		newNode->ColladaMesh = ColladaMesh;
+		newNode->ColladaMesh->grab();
+	}
+	else
+	{
+		// dynamic mesh
+		newNode->ColladaMesh = ColladaMesh->clone();
+	}
+
+	newNode->m_isRootColladaNode = m_isRootColladaNode;
+	
+	newNode->PositionKeys		= PositionKeys;
+	newNode->ScaleKeys			= ScaleKeys;
+	newNode->RotationKeys		= RotationKeys;
+
+	newNode->m_currentFrame		= m_currentFrame;
+	newNode->m_totalFrame		= m_totalFrame;
+
+	newNode->m_animationLoop	= m_animationLoop;
+	newNode->m_framePerSecond	= m_framePerSecond;
+
+	newNode->m_timer			= m_timer;
+
+	newNode->m_posHint			= m_posHint;
+	newNode->m_scaleHint		= m_scaleHint;
+	newNode->m_rotHint			= m_rotHint;
+
+	return newNode;
 }

@@ -2,6 +2,10 @@
 #include "CGameContainerSceneNode.h"
 #include "IView.h"
 
+//////////////////////////////////////////////////////////
+// CGameContainerSceneNode implement
+//////////////////////////////////////////////////////////
+
 CGameContainerSceneNode::CGameContainerSceneNode(
 			CGameObject *owner,
 			ISceneNode* parent, ISceneManager* mgr, s32 id,
@@ -74,6 +78,11 @@ void CGameContainerSceneNode::render()
 		driver->draw3DBox( tbox, video::SColor(255,255,0,255));
 	}
 }
+
+
+//////////////////////////////////////////////////////////
+// CGameChildContainerSceneNode implement
+//////////////////////////////////////////////////////////
 
 
 CGameChildContainerSceneNode::CGameChildContainerSceneNode(

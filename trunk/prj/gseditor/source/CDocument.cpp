@@ -326,7 +326,7 @@ void CDocument::drawDocument()
 	ISceneManager* smgr = getIView()->getSceneMgr();
 
 	// draw 3d scene
-	driver->beginScene( true, true, 0, getIView()->getVideoData() );
+	driver->beginScene( true, true, SColor(255,30,30,30), getIView()->getVideoData() );
 		
 	// draw all scene
 	smgr->drawAll();

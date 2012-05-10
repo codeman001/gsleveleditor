@@ -293,6 +293,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\SceneNode\CGameGrassSceneNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\SceneNode\CGameGrassSceneNode.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\SceneNode\CGameMeshSceneNode.cpp"
 					>
 				</File>
@@ -402,6 +410,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\Component\CComponentFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Component\CGrassComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Component\CGrassComponent.h"
 					>
 				</File>
 				<File

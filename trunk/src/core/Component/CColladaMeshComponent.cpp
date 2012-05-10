@@ -1597,8 +1597,11 @@ void CColladaMeshComponent::constructScene()
 				if ( pMesh->Type == k_skinMesh )
 					pColladaMesh->IsStaticMesh = false;
 				else
+				{
 					pColladaMesh->IsStaticMesh = true;
-			
+					pColladaMesh->setHardwareMappingHint( EHM_STATIC );
+				}
+
 				// set mesh for scene node
 				colladaSceneNode->setColladaMesh( pColladaMesh );
 				

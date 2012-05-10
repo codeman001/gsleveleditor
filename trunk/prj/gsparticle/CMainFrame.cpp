@@ -486,7 +486,7 @@ void CMainFrame::onMenuNewEffects( uiObject *pSender )
 	pParticleComponent->removeAllParticle();
 
 	m_currentFile = "";
-	setCaption( TEXT( STR_APP_TITLE ) );	
+	setCaption( STR_APP_TITLE );	
 }
 
 void CMainFrame::onMenuOpenEffects( uiObject *pSender )
@@ -547,7 +547,7 @@ void CMainFrame::onMenuOpenEffects( uiObject *pSender )
 
 	m_currentFile = lpFileName;
 	WCHAR title[1024];
-	swprintf(title, 1024, L"%s - %s", TEXT( STR_APP_TITLE ), lpPath);
+	swprintf(title, 1024, L"%s - %s", STR_APP_TITLE, lpPath);
 	setCaption( title );	
 }
 
@@ -582,7 +582,7 @@ void CMainFrame::onMenuSaveEffects( uiObject *pSender )
 	uiString::copy<WCHAR, const char>( lpPath, m_currentFile.c_str() );
 
 	WCHAR title[1024];
-	swprintf(title, 1024, L"%s - %s", TEXT( STR_APP_TITLE ), lpPath);
+	swprintf(title, 1024, L"%s - %s", STR_APP_TITLE, lpPath);
 	setCaption( title );
 
 }

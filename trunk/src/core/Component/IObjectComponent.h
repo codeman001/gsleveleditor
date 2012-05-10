@@ -22,7 +22,8 @@ public:
 		ColladaMesh,
 		Terrain,
 		Grass,
-		NumBuildInComponent = Grass
+		Water,
+		NumBuildInComponent = Water
 	};
 
 	static const char *s_compType[];

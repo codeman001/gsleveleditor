@@ -494,7 +494,7 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 		newManager = SceneManager;
 	
 	// clone collada node
-	CGameColladaSceneNode * newNode = new CGameColladaSceneNode( newParent, newManager, -1);
+	CGameColladaSceneNode *newNode = new CGameColladaSceneNode( newParent, newManager, -1);
 		
 	// clone basic
 	newNode->cloneMembers(this, newManager);
@@ -507,16 +507,20 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 
 	newNode->LocalMatrix = LocalMatrix;
 	
-	if ( ColladaMesh->IsStaticMesh == true )
+	newNode->ColladaMesh = NULL;
+	if ( ColladaMesh )
 	{
-		// static mesh	
-		newNode->ColladaMesh = ColladaMesh;
-		newNode->ColladaMesh->grab();
-	}
-	else
-	{
-		// dynamic mesh
-		newNode->ColladaMesh = ColladaMesh->clone();
+		if ( ColladaMesh->IsStaticMesh == true )
+		{
+			// static mesh
+			newNode->ColladaMesh = ColladaMesh;
+			newNode->ColladaMesh->grab();
+		}
+		else
+		{
+			// dynamic mesh
+			newNode->ColladaMesh = ColladaMesh->clone();
+		}
 	}
 
 	newNode->m_isRootColladaNode = m_isRootColladaNode;

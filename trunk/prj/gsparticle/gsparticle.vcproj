@@ -253,62 +253,6 @@
 				Name="SceneNode"
 				>
 				<File
-					RelativePath="..\..\src\core\SceneNode\CGameAnimatedMeshSceneNode.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\SceneNode\CGameAnimatedMeshSceneNode.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\SceneNode\CGameBillboardSceneNode.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\SceneNode\CGameBillboardSceneNode.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\SceneNode\CGameBoxSceneNode.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\SceneNode\CGameBoxSceneNode.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\SceneNode\CGameColladaSceneNode.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\SceneNode\CGameColladaSceneNode.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\SceneNode\CGameContainerSceneNode.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\SceneNode\CGameContainerSceneNode.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\SceneNode\CGameGrassSceneNode.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\SceneNode\CGameGrassSceneNode.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\SceneNode\CGameMeshSceneNode.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\SceneNode\CGameMeshSceneNode.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\core\SceneNode\CGameOxySceneNode.cpp"
 					>
 				</File>
@@ -345,22 +289,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\GameObject\CTrigger.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\GameObject\CTrigger.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\GameObject\CWayPoint.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\GameObject\CWayPoint.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\core\GameObject\CZone.cpp"
 					>
 				</File>
@@ -373,38 +301,6 @@
 				Name="Component"
 				>
 				<File
-					RelativePath="..\..\src\core\Component\CAnimMeshComponent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CAnimMeshComponent.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CBillboardComponent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CBillboardComponent.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CBoxObjectComponent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CBoxObjectComponent.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CColladaMeshComponent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CColladaMeshComponent.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\core\Component\CComponentFactory.cpp"
 					>
 				</File>
@@ -413,27 +309,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\Component\CGrassComponent.cpp"
+					RelativePath="..\..\src\core\SceneNode\CGameContainerSceneNode.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\Component\CGrassComponent.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CObjectCollisionComponent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CObjectCollisionComponent.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CObjectTransformComponent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CObjectTransformComponent.h"
+					RelativePath="..\..\src\core\SceneNode\CGameContainerSceneNode.h"
 					>
 				</File>
 				<File
@@ -442,38 +322,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\Component\CParticleComponent.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CShadowComponent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CShadowComponent.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CSkyboxComponent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CSkyboxComponent.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CStaticMeshComponent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CStaticMeshComponent.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CTerrainComponent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\Component\CTerrainComponent.h"
 					>
 				</File>
 				<File

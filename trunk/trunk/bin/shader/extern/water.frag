@@ -7,7 +7,7 @@
 //====================================================================//
 
 //!alphaMap for the ocean (terrain heighmap)
-uniform sampler2D t0;
+//uniform sampler2D t0;
 //!reflection texture
 uniform sampler2D t1;
 //!water normalmap
@@ -33,8 +33,9 @@ vec4 reflection()
 
 void main(void)
 {
-    vec4 alphaMap = texture2D(t0, originalCoord);
+    //vec4 alphaMap = texture2D(t0, originalCoord);
     vec4 ref=reflection()+vec4(0,0,0,1);
     
-    gl_FragColor = ref * vec4(1,1,1,(0.12-alphaMap.b)*6);
+    //gl_FragColor = ref * vec4(1,1,1,(0.12-alphaMap.b)*6);
+	gl_FragColor = ref * vec4(1,1,1,0.5);
 }

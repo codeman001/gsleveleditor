@@ -1,0 +1,218 @@
+<technique name="sea" version="100">
+
+  <pass name="pass0" target="GLES2.0">
+    <uniforms>
+      <var name="inViewProjMatrix" val="matrix.viewproj"/>
+      <var name="inWorldMatrix" val="matrix.world"/>
+	  <var name="inWorldViewMatrixT" val="matrix.worldviewT"/>
+      <var name="inCameraPos" val="camera.positionOS"/>
+	  <var name="inPLightPos" val="plight.positionOS"/>
+	  <var name="Shininess" type="float" val="0.6"  min="0" max="100"/>
+	  <var name="SpecularIntensity" type="float" val="1"  min="0" max="2"/>
+	  <var name="time" type="float" val="driver.time"/>
+	  <var name="amplitude" type="vec4"/>
+	  <var name="wavelength" type="vec4"/>
+	  <var name="normalMapScale" type="vec2"/>
+	  <var name="normalMapSpeed" type="vec2"/>
+	  <var name="speed" type="vec4"/>
+	  <var name="fogStart" type="float" val="fog.start" />
+	  <var name="fogRangeI" type="float" val="fog.rangeI" />
+	  <var name="fogColor" type="vec4" val="fog.color" />
+	  <var name="seaMeshCenter" type="vec2"/>
+    </uniforms>
+    <attributes>
+      <var name="inPos" val="mesh.positions"/>
+      <var name="inNormal" val="mesh.normals"/>
+      <var name="inUV0" val="mesh.uv0"/>
+    </attributes>
+	<samplers>
+		<var name="paletteMap" wrapS="clamp" wrapT="clamp"/>
+		<var name="normalMap"/>
+	</samplers>
+
+	<rendertarget val="default"/>
+	
+    <shader>
+      <vshader>
+        <![CDATA[
+			#ifdef HOST_CLARA
+			#	define USE_FOG
+			#endif
+		
+			uniform highp mat4 inViewProjMatrix;
+			uniform highp mat4 inWorldMatrix;
+			uniform highp mat4 inWorldViewMatrixT;
+			uniform highp int inPLightCount;
+			uniform highp vec3 inPLightPos[MAX_LIGHTS];
+			uniform highp vec3 inCameraPos;
+			uniform lowp vec4 fogColor;
+			uniform highp float fogStart;
+			uniform highp float fogRangeI;
+			uniform highp vec2 seaMeshCenter;
+
+			attribute vec4 inPos;
+			attribute vec4 inNormal;
+			attribute vec2 inUV0;
+
+			varying lowp vec3 normal;
+			varying highp vec3 halfDir;
+			varying highp vec3 eyeDir;
+			varying highp vec2 uv0;
+			varying highp vec2 uv1;
+			varying lowp float fogFactor;
+
+			const highp float pi2 = 3.14159 * 2.0;
+			uniform highp float time;
+			uniform highp vec4 amplitude;
+			uniform highp vec4 wavelength;
+			uniform highp vec4 speed;
+			uniform highp vec2 normalMapScale;
+			uniform highp vec2 normalMapSpeed;
+
+#ifdef IOS_DEVICE
+			highp float waveHeight(highp float x, highp float y, out highp vec3 normal)
+#else			
+			highp float waveHeight(highp float x, highp float y, highp out vec3 normal)
+#endif			
+			{
+				highp float dx = 0.0;
+				highp float dy = 0.0;
+				highp float height = 0.0;
+
+
+				// first wave position
+				highp float frequency0 = pi2 / wavelength.x;
+				highp float phase0 = speed.x * frequency0;
+				highp float theta0 = x;
+				highp float angle0 = theta0 * frequency0 + time * phase0;
+				height += amplitude.x * sin(angle0);
+				// first wave normal
+				highp float A0x = amplitude.x; // dir(1.0, 0.0)
+				dx += A0x * cos(angle0);
+
+
+				// second wave position
+				highp float frequency1 = pi2 / wavelength.y;
+				highp float phase1 = speed.y * frequency1;
+				highp float theta1 = y;
+				highp float angle1 = theta1 * frequency1 + time * phase1;
+				height += amplitude.y * sin(angle1);
+				// second wave normal
+				highp float A1y = amplitude.y; // dir(0.0, 1.0)
+				dy += A1y * cos(angle1);
+
+
+				// third wave position
+				highp float frequency2 = pi2 / wavelength.z;
+				highp float phase2 = speed.z * frequency2;
+				highp float theta2 = dot(vec2(-0.707, -0.707), vec2(x, y));
+				highp float angle2 = theta2 * frequency2 + time * phase2;
+				height += amplitude.z * sin(angle2);
+				// third wave normal
+				highp float A2xy = amplitude.z * -0.707; //dir(0.707, 0.707)
+				highp float cos2 = cos(angle2);
+				dx += A2xy * cos2;
+				dy += A2xy * cos2;
+
+
+				// fourth wave position
+				highp float frequency3 = pi2 / wavelength.w;
+				highp float phase3 = speed.w * frequency3;
+				highp float theta3 = dot(vec2(-0.5, -0.866), vec2(x, y));
+				highp float angle3 = theta3 * frequency3 + time * phase3;
+				height += amplitude.w * sin(angle3);
+				// fourth wave normal
+				highp float A3x = amplitude.w * -0.5; //dir(0.5, 0.866)
+				highp float A3y = amplitude.w * -0.866;
+				highp float cos3 = cos(angle3);
+				dx += A3x * cos3;
+				dy += A3y * cos3;
+
+				highp vec3 n = vec3(-dx, -dy, 1.0);
+				normal = n;
+
+				return height;
+			}
+			
+			void main()
+			{
+				#ifdef USE_FOG
+					highp float vertDepth = dot(inWorldViewMatrixT[2], vec4(inPos.xyz, 1.0));
+					fogFactor = clamp((-vertDepth-fogStart) * fogRangeI, 0.0, 1.0) * fogColor.a;
+				#endif
+
+				highp vec4 worldPos = inWorldMatrix * vec4(inPos.xyz,1.0);
+
+				//worldPos.y += time;
+				
+				vec3 waveNormal;
+				worldPos.z += waveHeight(worldPos.x, worldPos.y, waveNormal);
+				gl_Position = inViewProjMatrix * worldPos;
+				
+				highp vec3 pos = inPos.xyz;
+				eyeDir = normalize(inCameraPos - pos);
+				halfDir = normalize(normalize(inPLightPos[0] - pos) + eyeDir);
+				//normal = inNormal.xyz;
+				normal = waveNormal * 0.5;
+
+				worldPos.xy -= seaMeshCenter;
+				uv0.xy = worldPos.xy * normalMapScale.x + vec2(fract(time * normalMapSpeed.x), 0.0);
+				uv1.xy = worldPos.xy * normalMapScale.y + vec2(0.0, fract(time * normalMapSpeed.y));
+			}
+		]]>
+      </vshader>
+      <fshader>
+        <![CDATA[
+			#ifdef HOST_CLARA
+			#	define USE_FOG
+			#endif
+			
+			varying lowp vec3 normal;
+			varying highp vec3 halfDir;
+			varying highp vec3 eyeDir;
+			varying highp vec2 uv0;
+			varying highp vec2 uv1;
+			varying lowp float fogFactor;
+
+			uniform highp float SpecularIntensity;
+			uniform highp float Shininess;
+			uniform sampler2D paletteMap;
+			uniform sampler2D normalMap;
+			uniform lowp vec4 fogColor;
+
+			void main()
+			{
+				lowp vec3 fragNormal0 = texture2D(normalMap, uv0).xyz;
+				lowp vec3 fragNormal1 = texture2D(normalMap, uv1).xyz;
+				lowp vec3 fragNormal = (fragNormal0 + fragNormal1) - 1.0; //make them from -0.5 to 0.5
+				highp vec3 n = normalize(normal + fragNormal); //the normal is scaled in the vs to -0.5 to 0.5 as well
+
+				//compute half vector
+				highp float hx = halfDir.x;
+				highp float hy = halfDir.y;	
+				highp float hz = sqrt(1.0 - hx*hx - hy*hy);
+				highp vec3 hv = vec3(hx, hy, hz);
+
+				// fresnel lighting
+				highp float NdotE = dot(n, eyeDir);
+				lowp vec3 diffuseCol = texture2D(paletteMap, vec2(0.0, NdotE)).rgb;
+
+				// specular lighting				
+				highp float NdotH = max(dot(n, hv), 0.0);
+				lowp float specIntensity = SpecularIntensity * pow(NdotH, Shininess);
+
+				lowp vec3 color = diffuseCol + vec3(specIntensity);
+
+				#ifdef USE_FOG
+					color = mix(color, fogColor.rgb, fogFactor);
+				#endif
+				
+				lowp vec4 finalColor = vec4(color, color.r + 0.4);
+				gl_FragColor = finalColor;
+			}
+	   ]]>
+      </fshader>
+    </shader>
+  </pass>
+    
+</technique>

@@ -308,25 +308,11 @@ void CParticleComponent::loadXML( const char *lpFileName )
 	io::IXMLReader *xmlRead = fs->createXMLReader( lpFileName );
 	if ( xmlRead == NULL )
 	{
-#if defined(GSEDITOR) || defined(PARTICLE_EDITOR)
-		WCHAR appPath[MAX_PATH];
-		char  appPathA[MAX_PATH];
-
-		uiApplication::getAppPath(appPath, MAX_PATH);
-		uiString::copy<char, WCHAR>( appPathA, appPath  );
-								
-		std::string path = appPathA;
-		path += "\\";
-		path += std::string(lpFileName);
-								
-		xmlRead = fs->createXMLReader( path.c_str() );
-
+		xmlRead = fs->createXMLReader( getIView()->getPath(lpFileName) );
 		if ( xmlRead == NULL )
-			return;
-#else
-		return;	
-#endif		
+			return;	
 	}
+
 	IParticleSystemSceneNode *particle = NULL;
 	SParticleInfo*	particleInfo = NULL;
 
@@ -360,22 +346,11 @@ void CParticleComponent::loadXML( const char *lpFileName )
 
 							ITexture *pTex = driver->getTexture( attribValueA );
 
-#if defined(GSEDITOR) || defined(PARTICLE_EDITOR)
 							if ( pTex == NULL )
 							{
-								WCHAR appPath[MAX_PATH];
-								char  appPathA[MAX_PATH];
-
-								uiApplication::getAppPath(appPath, MAX_PATH);
-								uiString::copy<char, WCHAR>( appPathA, appPath  );
-								
-								std::string path = appPathA;
-								path += "\\";
-								path += std::string(attribValueA);
-								
-								pTex = driver->getTexture(path.c_str());
+								pTex = driver->getTexture( getIView()->getPath(attribValueA) );
 							}
-#endif
+
 							if ( pTex && particle )
 							{
 								particle->setMaterialTexture(0, pTex );

@@ -181,7 +181,13 @@ public:
 	// unRegisterEvent
 	// unregister input event
 	void unRegisterEvent( IEventReceiver *pEvent );
-
+	
+	// getPath
+	// get absolute path
+	char	*getPath(	const std::string& path );
+	wchar_t *getPathW(	const std::string& path );
+	char	*getPath(	const std::wstring& path );
+	wchar_t *getPathW(	const std::wstring& path );
 };
 
 extern IView* getIView();

@@ -41,24 +41,7 @@ void CSkyboxComponent::loadSkyTextureFile( char *lpFileName )
 
 	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);
 
-	ITexture *pTex = driver->getTexture(lpFileName);
-
-#ifdef GSEDITOR
-	if ( pTex == NULL )
-	{
-		WCHAR appPath[MAX_PATH];
-		char  appPathA[MAX_PATH];
-
-		uiApplication::getAppPath(appPath, MAX_PATH);
-		uiString::copy<char, WCHAR>( appPathA, appPath  );
-		
-		std::string path = appPathA;
-		path += "\\";
-		path += lpFileName;
-		
-		pTex = driver->getTexture(path.c_str());
-	}
-#endif
+	ITexture *pTex = driver->getTexture( getIView()->getPath(lpFileName) );
 
 	scene::ISceneNode* skydome = smgr->addSkyDomeSceneNode( pTex, 16,8, 0.95f, 2.0f);
 	

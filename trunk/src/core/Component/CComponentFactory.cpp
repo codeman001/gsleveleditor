@@ -129,6 +129,10 @@ void CComponentFactory::initComponentTemplate()
 	s_compTemplate.push_back( CSerializable() );
 	p = &s_compTemplate[ IObjectComponent::Water ];
 	p->addGroup(stringOfComponent(IObjectComponent::Water));
+	p->addFloat("sizeX", 800.0f, true);
+	p->addFloat("sizeY", 800.0f, true);
+	p->addString("waterTexture", "data/water.tga", true);
+	p->addString("waterNormalTexture", "data/waterNormal.tga", true);
 
 	loadAllTemplate();
 }

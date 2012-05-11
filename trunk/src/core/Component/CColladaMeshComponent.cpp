@@ -131,7 +131,6 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 		return;
 	}
 
-
 	IrrlichtDevice	*device = getIView()->getDevice();
 	IVideoDriver	*driver = getIView()->getDriver();
 	io::IFileSystem *fs = device->getFileSystem();
@@ -140,24 +139,9 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 
 	if ( xmlRead == NULL )
 	{
-#if defined(GSEDITOR) || defined(GSANIMATION)
-		WCHAR appPath[MAX_PATH];
-		char  appPathA[MAX_PATH];
-
-		uiApplication::getAppPath(appPath, MAX_PATH);
-		uiString::copy<char, WCHAR>( appPathA, appPath  );
-								
-		std::string path = appPathA;
-		path += "\\";
-		path += std::string(lpFilename);
-								
-		xmlRead = fs->createXMLReader( path.c_str() );
-
+		xmlRead = fs->createXMLReader( getIView()->getPath(lpFilename) );
 		if ( xmlRead == NULL )
 			return;
-#else
-		return;	
-#endif
 	}
 
 	const std::wstring controllerSectionName(L"controller");
@@ -1083,25 +1067,11 @@ void CColladaMeshComponent::loadAnimFile( char *lpFileName )
 	io::IXMLReader *xmlRead = fs->createXMLReader( lpFileName );
 
 	if ( xmlRead == NULL )
-	{
-#if defined(GSEDITOR) || defined(GSANIMATION)
-		WCHAR appPath[MAX_PATH];
-		char  appPathA[MAX_PATH];
-
-		uiApplication::getAppPath(appPath, MAX_PATH);
-		uiString::copy<char, WCHAR>( appPathA, appPath  );
-								
-		std::string path = appPathA;
-		path += "\\";
-		path += std::string(lpFileName);
-								
-		xmlRead = fs->createXMLReader( path.c_str() );
+	{			
+		xmlRead = fs->createXMLReader( getIView()->getPath(lpFileName) );
 
 		if ( xmlRead == NULL )
 			return;
-#else
-		return;	
-#endif
 	}	
 
 	m_clipAnimation.clear();
@@ -2348,22 +2318,10 @@ video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& uri, 
 					
 				ITexture *tex =	getIView()->getDriver()->getTexture( textureNameA );
 
-#if defined(GSEDITOR) || defined(GSANIMATION)
 				if ( tex == NULL )
 				{
-					WCHAR appPath[MAX_PATH];
-					char  appPathA[MAX_PATH];
-
-					uiApplication::getAppPath(appPath, MAX_PATH);
-					uiString::copy<char, WCHAR>( appPathA, appPath  );
-											
-					std::string path = appPathA;
-					path += "\\";					
-					path += std::string(textureNameA);
-
-					tex = getIView()->getDriver()->getTexture( path.c_str() );
+					tex = getIView()->getDriver()->getTexture( getIView()->getPath(path) );
 				}
-#endif
 
 				return tex;
 			}

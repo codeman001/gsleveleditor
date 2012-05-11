@@ -11,6 +11,11 @@ class CWaterComponent: public IObjectComponent
 protected:
 	CGameWaterSceneNode		*m_waterNode;
 
+	float		m_sizeX;
+	float		m_sizeY;
+	std::string m_waterTexture;
+	std::string m_waterNormalTexture;
+
 public:
 	CWaterComponent( CGameObject *pObj );
 

@@ -7,7 +7,9 @@
 
 
 //!device->getTimer()->getTime()/1000.0f;
-uniform float waterTime;
+uniform float WaterTime;
+uniform float WaveSize;
+uniform float WaveSpeed;
 
 varying vec4 waterpos;
 varying vec2 bumpCoord0;
@@ -19,7 +21,7 @@ void main(void)
 
 	originalCoord = gl_MultiTexCoord0;
 
-	bumpCoord0.xy = gl_MultiTexCoord0.xy * 10 + waterTime * vec2(-0.01,-0.05);
+	bumpCoord0.xy = gl_MultiTexCoord0.xy*WaveSize + WaterTime*vec2(-0.01,-0.01)*WaveSpeed;
 	
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 }

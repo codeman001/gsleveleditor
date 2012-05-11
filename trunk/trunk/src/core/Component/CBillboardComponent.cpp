@@ -30,24 +30,7 @@ void CBillboardComponent::createBillboard()
 	// create box
 	ISceneNode *node = new CGameBillboardSceneNode( m_gameObject, m_gameObject->getParentSceneNode(), smgr, m_gameObject->getID(), core::vector3df(0,0,0), m_billboardSize );
 	
-	ITexture *pTex = driver->getTexture( m_textureFile.c_str() );
-
-#ifdef GSEDITOR
-	if ( pTex == NULL )
-	{
-		WCHAR appPath[MAX_PATH];
-		char  appPathA[MAX_PATH];
-
-		uiApplication::getAppPath(appPath, MAX_PATH);
-		uiString::copy<char, WCHAR>( appPathA, appPath  );
-		
-		std::string path = appPathA;
-		path += "\\";
-		path += m_textureFile;
-		
-		pTex = driver->getTexture(path.c_str());
-	}
-#endif
+	ITexture *pTex = driver->getTexture( getIView()->getPath(m_textureFile) );
 
 	node->setMaterialTexture(0, pTex );
 	node->setMaterialFlag(	video::EMF_LIGHTING, false );

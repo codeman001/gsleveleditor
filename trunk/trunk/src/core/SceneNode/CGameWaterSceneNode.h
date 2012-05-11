@@ -23,10 +23,19 @@ public:
 		IrrlichtDevice *device = getIView()->getDevice();
 
 		float time = device->getTimer()->getTime()/1000.0f;
+		float size = 1.0f;
+		float speed = 1.0f;
+		float transparent = 0.8f;
+		float brightness = 3.0f;
 
-		services->setPixelShaderConstant("waterTime",	(float*)&time, 1);
+		services->setPixelShaderConstant("WaterTime",		(float*)&time, 1);
+		services->setPixelShaderConstant("WaveSize",		(float*)&size, 1);
+		services->setPixelShaderConstant("WaveSpeed",		(float*)&speed, 1);		
+		services->setPixelShaderConstant("WaterTransparent",(float*)&transparent, 1);
+		services->setPixelShaderConstant("WaterBrightness",	(float*)&brightness, 1);
+		
 		services->setPixelShaderConstant("NormalMap",	(float*)&normalMap, 1);
-		services->setPixelShaderConstant("t1",			(float*)&reflectionmap, 1);
+		services->setPixelShaderConstant("WaterMap",	(float*)&reflectionmap, 1);
     }
 };
 
@@ -35,6 +44,7 @@ class CGameWaterSceneNode: public ISceneNode
 {
 protected:
 	IMesh* m_mesh;
+	CGameObject *m_owner;
 public:
 	CGameWaterSceneNode(CGameObject *owner, IMesh* mesh, ISceneNode* parent, ISceneManager* mgr, 
 		const core::vector3df& position = core::vector3df(0,0,0), 

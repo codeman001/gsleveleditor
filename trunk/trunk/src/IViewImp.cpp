@@ -175,3 +175,58 @@ void IView::unRegisterEvent( IEventReceiver *pEvent )
 		i++;
 	}
 }
+
+// getPath
+// get absolute path
+wchar_t g_tempPathW[1024];
+char	g_tempPathA[1024];
+
+char* IView::getPath( const std::string& path )
+{
+#ifdef GSGAMEPLAY
+	uiString::copy<char,const char>( g_tempPathA, path.c_str() );
+#else	
+	uiApplication::getAppPath( (LPWSTR)g_tempPathW, MAX_PATH );
+	uiString::copy<char, wchar_t>( g_tempPathA, g_tempPathW  );
+	uiString::cat<char,char>( g_tempPathA, "\\" );
+	uiString::cat<char,const char>( g_tempPathA, path.c_str() );
+#endif
+	return g_tempPathA;
+}
+
+wchar_t* IView::getPathW( const std::string& path )
+{	
+#ifdef GSGAMEPLAY
+	uiString::copy<wchar_t,const char>( g_tempPathW, path.c_str() );
+#else
+	uiApplication::getAppPath( (LPWSTR)g_tempPathW, MAX_PATH );
+	uiString::cat<wchar_t,char>( g_tempPathW, "\\" );
+	uiString::cat<wchar_t,const char>( g_tempPathW, path.c_str() );
+#endif
+	return g_tempPathW;
+}
+
+char* IView::getPath( const std::wstring& path )
+{
+#ifdef GSGAMEPLAY
+	uiString::copy<char,const char>( g_tempPathA, path.c_str() );
+#else
+	uiApplication::getAppPath( (LPWSTR)g_tempPathW, MAX_PATH );
+	uiString::copy<char, const wchar_t>( g_tempPathA, g_tempPathW  );
+	uiString::cat<char,char>( g_tempPathA, "\\" );
+	uiString::cat<char,const wchar_t>( g_tempPathA, path.c_str() );
+#endif
+	return g_tempPathA;
+}
+
+wchar_t* IView::getPathW( const std::wstring& path )
+{
+#ifdef GSGAMEPLAY
+	uiString::copy<wchar_t,const wchar_t>( g_tempPathW, path.c_str() );
+#else
+	uiApplication::getAppPath( (LPWSTR)g_tempPathW, MAX_PATH );
+	uiString::cat<wchar_t,char>( g_tempPathW, "\\" );
+	uiString::cat<wchar_t,const wchar_t>( g_tempPathW, path.c_str() );
+#endif
+	return g_tempPathW;
+}

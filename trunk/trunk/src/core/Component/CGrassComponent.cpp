@@ -101,24 +101,7 @@ void CGrassComponent::initGrassNode()
 
 	// set texture
 	IVideoDriver *driver = getIView()->getDriver();
-	ITexture *pTex = driver->getTexture( m_texture.c_str() );
-
-#ifdef GSEDITOR
-	if ( pTex == NULL )
-	{
-		WCHAR appPath[MAX_PATH];
-		char  appPathA[MAX_PATH];
-
-		uiApplication::getAppPath(appPath, MAX_PATH);
-		uiString::copy<char, WCHAR>( appPathA, appPath  );
-		
-		std::string path = appPathA;
-		path += "\\";
-		path += m_texture;
-		
-		pTex = driver->getTexture(path.c_str());
-	}
-#endif
+	ITexture *pTex = driver->getTexture( getIView()->getPath(m_texture) );
 
 	meshBuffer->getMaterial().setTexture(0, pTex);
 	meshBuffer->getMaterial().setFlag( video::EMF_LIGHTING, false );

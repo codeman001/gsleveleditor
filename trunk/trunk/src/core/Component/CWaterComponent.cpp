@@ -30,6 +30,10 @@ void CWaterComponent::saveData( CSerializable* pObj )
 {
 	pObj->addGroup( IObjectComponent::s_compType[ m_componentID ] );
 	
+	pObj->addFloat("sizeX", m_sizeX, true);
+	pObj->addFloat("sizeY", m_sizeY, true);
+	pObj->addString("waterTexture", m_waterTexture.c_str(), true);
+	pObj->addString("waterNormalTexture", m_waterNormalTexture.c_str(), true);
 }
 
 // loadData
@@ -37,6 +41,11 @@ void CWaterComponent::saveData( CSerializable* pObj )
 void CWaterComponent::loadData( CSerializable* pObj )
 {
 	pObj->nextRecord();
+
+	m_sizeX		= pObj->readFloat();
+	m_sizeY		= pObj->readFloat();
+	m_waterTexture = pObj->readString();
+	m_waterNormalTexture = pObj->readString();
 
 	initWaterNode();
 }
@@ -51,51 +60,16 @@ void CWaterComponent::initWaterNode()
 	ISceneManager *smgr = getIView()->getSceneMgr();
 	IVideoDriver *driver = getIView()->getDriver();
 
-	core::dimension2df tileSize(80,80);	
-	core::dimension2du tileCount(10,10);
+	core::dimension2df tileSize(800,800);
+	core::dimension2du tileCount(1,1);
 	core::dimension2df countHill(1,1);
 	core::dimension2df textureRepeat(1,1);
-
-	char *waveNormal = "data/wavenormal.png";
-	char *waveRef = "data/clouds.tga";	
-
-	ITexture *pTex = driver->getTexture( waveNormal );
-	ITexture *pTexRef = driver->getTexture( waveRef );
-
-#ifdef GSEDITOR
-	if ( pTex == NULL )
-	{
-		WCHAR appPath[MAX_PATH];
-		char  appPathA[MAX_PATH];
-
-		uiApplication::getAppPath(appPath, MAX_PATH);
-		uiString::copy<char, WCHAR>( appPathA, appPath  );
-		
-		std::string path = appPathA;
-		path += "\\";
-		path += waveNormal;
-		
-		pTex = driver->getTexture(path.c_str());
-	}
-
-	if ( pTexRef == NULL )
-	{
-		WCHAR appPath[MAX_PATH];
-		char  appPathA[MAX_PATH];
-
-		uiApplication::getAppPath(appPath, MAX_PATH);
-		uiString::copy<char, WCHAR>( appPathA, appPath  );
-		
-		std::string path = appPathA;
-		path += "\\";
-		path += waveRef;
-		
-		pTexRef = driver->getTexture(path.c_str());
-	}
-#endif
+	
+	ITexture *pTexNormal= driver->getTexture( getIView()->getPath( m_waterNormalTexture.c_str() ) );
+	ITexture *pTexRef	= driver->getTexture( getIView()->getPath( m_waterTexture.c_str() ) );
 
 	SMaterial mat;
-	mat.TextureLayer[0].Texture = pTex;
+	mat.TextureLayer[0].Texture = pTexNormal;
 	mat.TextureLayer[1].Texture = pTexRef;
 
 	mat.MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;

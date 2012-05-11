@@ -98,7 +98,7 @@ void CWaterComponent::initWaterNode()
 	mat.TextureLayer[0].Texture = pTex;
 	mat.TextureLayer[1].Texture = pTexRef;
 
-	mat.MaterialType = EMT_SOLID;
+	mat.MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;
 	mat.Lighting = false;
 
 	IMesh *waterPlance = smgr->getGeometryCreator()->createHillPlaneMesh(tileSize, tileCount, &mat, 0.0f, countHill, textureRepeat );	

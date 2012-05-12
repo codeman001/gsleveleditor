@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <contributor>
+      <author>MSebea</author>
+      <authoring_tool irr_colllada_version="0.0.257.1889">3dsMax 9 - Feeling ColladaMax v3.05B.</authoring_tool>
+      <comments>ColladaMax Export Options: ExportNormals=0;ExportEPolyAsTriangles=1;ExportEPolyAsTriangleStrips=0;ExportXRefs=1;ExportSelected=0;ExportTangents=0;DeindexVertexData=1;ExportAnimations=0;SampleAnim=1;ExportDegenerateAnimationCurves=0;CubicInterpolation=2;CleanAnimKeys=0;CompressAnimKeys=0;KeyCompressionTolerance=0.0001;OneChannelPerCurve=0;BakeMatrices=1;DecomposeMatrices=1;ExportRelativePaths=1;RemovePaths=0;ReplacePaths=1;ReplacementPath=../textures/;ExportUpAxis=2;WarnOnNegativeScale=1;WarnOnIncompatibleMorphTarget=1;InvertTextureVCoord=1;LibrariesToStrip=65639;RemoveZeroWeights=1;RemoveDuplicateWeights=1;</comments>
+      <source_data>D:/Work/Games/SVN/IPhone_FPS/work/game/props/editor/editor_01.max</source_data>
+    </contributor>
+    <created>2009-02-26T09:20:58Z</created>
+    <modified>2009-02-26T09:21:00Z</modified>
+    <unit meter="0.01" name="centimeter"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Material__36" name="Material__36">
+      <instance_effect url="#Material__36-fx"/>
+    </material>
+    <material id="Material__26" name="Material__26">
+      <instance_effect url="#Material__26-fx"/>
+    </material>
+    <material id="Material__27" name="Material__27">
+      <instance_effect url="#Material__27-fx"/>
+    </material>
+    <material id="Material__28" name="Material__28">
+      <instance_effect url="#Material__28-fx"/>
+    </material>
+    <material id="Material__37" name="Material__37">
+      <instance_effect url="#Material__37-fx"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Material__36-fx" name="Material__36">
+      <profile_COMMON>
+        <technique sid="common">
+          <blinn>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>1 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <color>1 0 0 1</color>
+            </diffuse>
+            <specular>
+              <color>0.9 0.9 0.9 1</color>
+            </specular>
+            <shininess>
+              <float>0.415939</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>1</float>
+            </reflectivity>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </blinn>
+          <extra>
+            <technique profile="FCOLLADA">
+              <spec_level>
+                <float>0</float>
+              </spec_level>
+              <emission_level>
+                <float>0</float>
+              </emission_level>
+            </technique>
+          </extra>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="MAX3D">
+          <faceted>0</faceted>
+          <double_sided>0</double_sided>
+          <wireframe>0</wireframe>
+          <face_map>0</face_map>
+        </technique>
+      </extra>
+    </effect>
+    <effect id="Material__26-fx" name="Material__26">
+      <profile_COMMON>
+        <technique sid="common">
+          <blinn>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0 0 1 1</color>
+            </ambient>
+            <diffuse>
+              <color>0 0 1 1</color>
+            </diffuse>
+            <specular>
+              <color>0.9 0.9 0.9 1</color>
+            </specular>
+            <shininess>
+              <float>0.415939</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>1</float>
+            </reflectivity>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </blinn>
+          <extra>
+            <technique profile="FCOLLADA">
+              <spec_level>
+                <float>0</float>
+              </spec_level>
+              <emission_level>
+                <float>0</float>
+              </emission_level>
+            </technique>
+          </extra>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="MAX3D">
+          <faceted>0</faceted>
+          <double_sided>0</double_sided>
+          <wireframe>0</wireframe>
+          <face_map>0</face_map>
+        </technique>
+      </extra>
+    </effect>
+    <effect id="Material__27-fx" name="Material__27">
+      <profile_COMMON>
+        <technique sid="common">
+          <blinn>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0 1 0 1</color>
+            </ambient>
+            <diffuse>
+              <color>0 1 0 1</color>
+            </diffuse>
+            <specular>
+              <color>0.9 0.9 0.9 1</color>
+            </specular>
+            <shininess>
+              <float>0.415939</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>1</float>
+            </reflectivity>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </blinn>
+          <extra>
+            <technique profile="FCOLLADA">
+              <spec_level>
+                <float>0</float>
+              </spec_level>
+              <emission_level>
+                <float>0</float>
+              </emission_level>
+            </technique>
+          </extra>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="MAX3D">
+          <faceted>0</faceted>
+          <double_sided>0</double_sided>
+          <wireframe>0</wireframe>
+          <face_map>0</face_map>
+        </technique>
+      </extra>
+    </effect>
+    <effect id="Material__28-fx" name="Material__28">
+      <profile_COMMON>
+        <technique sid="common">
+          <blinn>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>1 1 0 1</color>
+            </ambient>
+            <diffuse>
+              <color>1 1 0 1</color>
+            </diffuse>
+            <specular>
+              <color>0.9 0.9 0.9 1</color>
+            </specular>
+            <shininess>
+              <float>0.415939</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>1</float>
+            </reflectivity>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </blinn>
+          <extra>
+            <technique profile="FCOLLADA">
+              <spec_level>
+                <float>0</float>
+              </spec_level>
+              <emission_level>
+                <float>0</float>
+              </emission_level>
+            </technique>
+          </extra>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="MAX3D">
+          <faceted>0</faceted>
+          <double_sided>0</double_sided>
+          <wireframe>0</wireframe>
+          <face_map>0</face_map>
+        </technique>
+      </extra>
+    </effect>
+    <effect id="Material__37-fx" name="Material__37">
+      <profile_COMMON>
+        <technique sid="common">
+          <blinn>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0.588 0.588 0.588 1</color>
+            </ambient>
+            <diffuse>
+              <color>0.588 0.588 0.588 1</color>
+            </diffuse>
+            <specular>
+              <color>0.9 0.9 0.9 1</color>
+            </specular>
+            <shininess>
+              <float>0.415939</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>1</float>
+            </reflectivity>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </blinn>
+          <extra>
+            <technique profile="FCOLLADA">
+              <spec_level>
+                <float>0</float>
+              </spec_level>
+              <emission_level>
+                <float>0</float>
+              </emission_level>
+            </technique>
+          </extra>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="MAX3D">
+          <faceted>0</faceted>
+          <double_sided>0</double_sided>
+          <wireframe>0</wireframe>
+          <face_map>0</face_map>
+        </technique>
+      </extra>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="torus-mesh" name="torus">
+      <mesh>
+        <source id="torus-mesh-positions">
+          <float_array id="torus-mesh-positions-array" count="534">-0.000001 24.9499 5.21665 -0.000001 24.4735 6.6407 12.2367 21.1946 6.6407 12.4749 21.6072 5.21665 -0.000001 23.2261 7.52081 11.6131 20.1144 7.52081 -0.000000 21.6844 7.52081 10.8422 18.7792 7.52081 -0.000000 20.4371 6.6407 10.2185 17.699 6.6407 -0.000000 19.9607 5.21665 9.98032 17.2864 5.21665 -0.000000 20.4371 3.7926 10.2185 17.699 3.7926 -0.000000 21.6844 2.91249 10.8422 18.7792 2.91249 -0.000001 23.2261 2.91249 11.6131 20.1144 2.91249 -0.000001 24.4735 3.7926 12.2367 21.1946 3.7926 -0.000001 24.9499 5.21665 12.4749 21.6072 5.21665 21.1946 12.2367 6.6407 21.6072 12.4749 5.21665 20.1144 11.6131 7.52081 18.7792 10.8422 7.52081 17.699 10.2185 6.6407 17.2864 9.98033 5.21665 17.699 10.2185 3.7926 18.7792 10.8422 2.91249 20.1144 11.6131 2.91249 21.1946 12.2367 3.7926 21.6072 12.4749 5.21665 24.4735 0 6.6407 24.9499 0 5.21665 23.2261 0 7.52081 21.6844 0 7.52081 20.4371 0 6.6407 19.9607 0 5.21665 20.4371 0 3.7926 21.6844 0 2.91249 23.2261 0 2.91249 24.4735 0 3.7926 24.9499 0 5.21665 21.1946 -12.2367 6.6407 21.6072 -12.4749 5.21665 20.1144 -11.6131 7.52081 18.7792 -10.8422 7.52081 17.699 -10.2185 6.6407 17.2864 -9.98033 5.21665 17.699 -10.2185 3.7926 18.7792 -10.8422 2.91249 20.1144 -11.6131 2.91249 21.1946 -12.2367 3.7926 21.6072 -12.4749 5.21665 12.2367 -21.1946 6.6407 12.4749 -21.6072 5.21665 11.6131 -20.1144 7.52081 10.8422 -18.7792 7.52081 10.2185 -17.699 6.6407 9.98032 -17.2864 5.21665 10.2185 -17.699 3.7926 10.8422 -18.7792 2.91249 11.6131 -20.1144 2.91249 12.2367 -21.1946 3.7926 12.4749 -21.6072 5.21665 -0.000001 -24.4735 6.6407 -0.000001 -24.9499 5.21665 -0.000001 -23.2261 7.52081 -0.000000 -21.6844 7.52081 -0.000000 -20.4371 6.6407 -0.000000 -19.9607 5.21665 -0.000000 -20.4371 3.7926 -0.000000 -21.6844 2.91249 -0.000001 -23.2261 2.91249 -0.000001 -24.4735 3.7926 -0.000001 -24.9499 5.21665 -12.2367 -21.1946 6.6407 -12.4749 -21.6072 5.21665 -11.6131 -20.1144 7.52081 -10.8422 -18.7792 7.52081 -10.2185 -17.699 6.6407 -9.98033 -17.2864 5.21665 -10.2185 -17.699 3.7926 -10.8422 -18.7792 2.91249 -11.6131 -20.1144 2.91249 -12.2367 -21.1946 3.7926 -12.4749 -21.6072 5.21665 -21.1946 -12.2367 6.6407 -21.6072 -12.4749 5.21665 -20.1144 -11.6131 7.52081 -18.7792 -10.8422 7.52081 -17.699 -10.2185 6.6407 -17.2864 -9.98033 5.21665 -17.699 -10.2185 3.7926 -18.7792 -10.8422 2.91249 -20.1144 -11.6131 2.91249 -21.1946 -12.2367 3.7926 -21.6072 -12.4749 5.21665 -24.4735 -0.000003 6.6407 -24.9499 -0.000003 5.21665 -23.2261 -0.000003 7.52081 -21.6844 -0.000003 7.52081 -20.4371 -0.000003 6.6407 -19.9607 -0.000003 5.21665 -20.4371 -0.000003 3.7926 -21.6844 -0.000003 2.91249 -23.2261 -0.000003 2.91249 -24.4735 -0.000003 3.7926 -24.9499 -0.000003 5.21665 -21.1946 12.2367 6.6407 -21.6072 12.4749 5.21665 -20.1144 11.6131 7.52081 -18.7792 10.8422 7.52081 -17.699 10.2185 6.6407 -17.2864 9.98032 5.21665 -17.699 10.2185 3.7926 -18.7792 10.8422 2.91249 -20.1144 11.6131 2.91249 -21.1946 12.2367 3.7926 -21.6072 12.4749 5.21665 -12.2367 21.1946 6.6407 -12.4749 21.6072 5.21665 -11.6131 20.1144 7.52081 -10.8422 18.7792 7.52081 -10.2185 17.699 6.6407 -9.98033 17.2864 5.21665 -10.2185 17.699 3.7926 -10.8422 18.7792 2.91249 -11.6131 20.1144 2.91249 -12.2367 21.1946 3.7926 -12.4749 21.6072 5.21665 -0.000001 24.4735 6.6407 -0.000001 24.9499 5.21665 -0.000001 23.2261 7.52081 -0.000000 21.6844 7.52081 -0.000000 20.4371 6.6407 -0.000000 19.9607 5.21665 -0.000000 20.4371 3.7926 -0.000000 21.6844 2.91249 -0.000001 23.2261 2.91249 -0.000001 24.4735 3.7926 -0.000001 24.9499 5.21665 0.034912 8.41689 3.33723 0.034912 -18.8493 3.33723 -3.36051 -18.8493 5.21665 -3.36051 8.41689 5.21665 3.43033 8.41689 5.21665 0.034911 8.41689 7.09607 0.034911 -18.8493 7.09607 3.43033 -18.8493 5.21665 3.43033 -18.8493 5.21665 0.034911 -18.8493 7.09607 -3.36051 -18.8493 5.21665 0.034912 -18.8493 3.33723 3.43033 -18.8493 5.21665 0.034912 8.41689 3.33723 0.034911 8.41689 7.09607 3.43033 8.41689 5.21665 0.034912 8.41689 3.33723 -3.36051 8.41689 5.21665 0.034911 -18.8493 7.09607 -3.36051 8.41689 5.21665 -6.39516 6.25353 5.21665 0.034911 18.8329 5.21665 0.034912 6.25353 1.6575 0.034911 6.25353 8.7758 6.46499 6.25353 5.21665 6.46499 6.25353 5.21665 0.034911 6.25353 8.7758 -6.39516 6.25353 5.21665 0.034912 6.25353 1.6575 0.034912 6.25353 1.6575 0.034911 18.8329 5.21665 6.46499 6.25353 5.21665 0.034911 18.8329 5.21665 -6.39516 6.25353 5.21665 0.034911 6.25353 8.7758</float_array>
+          <technique_common>
+            <accessor source="#torus-mesh-positions-array" count="178" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="torus-mesh-map-channel0">
+          <float_array id="torus-mesh-map-channel0-array" count="534">1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0</float_array>
+          <technique_common>
+            <accessor source="#torus-mesh-map-channel0-array" count="178" stride="3">
+              <param name="R" type="float"/>
+              <param name="G" type="float"/>
+              <param name="B" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="torus-mesh-map-channel1">
+          <float_array id="torus-mesh-map-channel1-array" count="356">0 1 0.1 1 0.1 0.916667 0 0.916667 0.2 1 0.2 0.916667 0.3 1 0.3 0.916667 0.4 1 0.4 0.916667 0.5 1 0.5 0.916667 0.6 1 0.6 0.916667 0.7 1 0.7 0.916667 0.8 1 0.8 0.916667 0.9 1 0.9 0.916667 1 1 1 0.916667 0.1 0.833333 0 0.833333 0.2 0.833333 0.3 0.833333 0.4 0.833333 0.5 0.833333 0.6 0.833333 0.7 0.833333 0.8 0.833333 0.9 0.833333 1 0.833333 0.1 0.75 0 0.75 0.2 0.75 0.3 0.75 0.4 0.75 0.5 0.75 0.6 0.75 0.7 0.75 0.8 0.75 0.9 0.75 1 0.75 0.1 0.666667 0 0.666667 0.2 0.666667 0.3 0.666667 0.4 0.666667 0.5 0.666667 0.6 0.666667 0.7 0.666667 0.8 0.666667 0.9 0.666667 1 0.666667 0.1 0.583333 0 0.583333 0.2 0.583333 0.3 0.583333 0.4 0.583333 0.5 0.583333 0.6 0.583333 0.7 0.583333 0.8 0.583333 0.9 0.583333 1 0.583333 0.1 0.5 0 0.5 0.2 0.5 0.3 0.5 0.4 0.5 0.5 0.5 0.6 0.5 0.7 0.5 0.8 0.5 0.9 0.5 1 0.5 0.1 0.416667 0 0.416667 0.2 0.416667 0.3 0.416667 0.4 0.416667 0.5 0.416667 0.6 0.416667 0.7 0.416667 0.8 0.416667 0.9 0.416667 1 0.416667 0.1 0.333333 0 0.333333 0.2 0.333333 0.3 0.333333 0.4 0.333333 0.5 0.333333 0.6 0.333333 0.7 0.333333 0.8 0.333333 0.9 0.333333 1 0.333333 0.1 0.25 0 0.25 0.2 0.25 0.3 0.25 0.4 0.25 0.5 0.25 0.6 0.25 0.7 0.25 0.8 0.25 0.9 0.25 1 0.25 0.1 0.166667 0 0.166667 0.2 0.166667 0.3 0.166667 0.4 0.166667 0.5 0.166667 0.6 0.166667 0.7 0.166667 0.8 0.166667 0.9 0.166667 1 0.166667 0.1 0.083333 0 0.083333 0.2 0.083333 0.3 0.083333 0.4 0.083333 0.5 0.083333 0.6 0.083333 0.7 0.083333 0.8 0.083333 0.9 0.083333 1 0.083333 0.1 0 0 0 0.2 0 0.3 0 0.4 0 0.5 0 0.6 0 0.7 0 0.8 0 0.9 0 1 0 0 0 0 1 1 1 1 0 1 0 0 0 0 1 1 1 1 0 0 0 0 1 1 1 0 0 1 1 1 0 0 0 0 1 1 1 1 0 0 1 1 1 0.5 0 0 1 0 1 1 1 1 0 0.5 0 0 1 0.5 1 0 0.5 1 0.5 0 0 0 0.5 1 0.5 1 0</float_array>
+          <technique_common>
+            <accessor source="#torus-mesh-map-channel1-array" count="178" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="torus-mesh-vertices">
+          <input semantic="POSITION" source="#torus-mesh-positions"/>
+          <input semantic="COLOR" source="#torus-mesh-map-channel0"/>
+          <input semantic="TEXCOORD" source="#torus-mesh-map-channel1"/>
+          <extra>
+            <technique profile="FCOLLADA">
+              <input semantic="COLOR" source="#torus-mesh-map-channel0" set="0"/>
+              <input semantic="TEXCOORD" source="#torus-mesh-map-channel1" set="0"/>
+            </technique>
+          </extra>
+        </vertices>
+        <triangles material="Material__36" count="258">
+          <input semantic="VERTEX" source="#torus-mesh-vertices" offset="0"/>
+          <p>0 1 2 2 3 0 1 4 5 5 2 1 4 6 7 7 5 4 6 8 9 9 7 6 8 10 11 11 9 8 10 12 13 13 11 10 12 14 15 15 13 12 14 16 17 17 15 14 16 18 19 19 17 16 18 20 21 21 19 18 3 2 22 22 23 3 2 5 24 24 22 2 5 7 25 25 24 5 7 9 26 26 25 7 9 11 27 27 26 9 11 13 28 28 27 11 13 15 29 29 28 13 15 17 30 30 29 15 17 19 31 31 30 17 19 21 32 32 31 19 23 22 33 33 34 23 22 24 35 35 33 22 24 25 36 36 35 24 25 26 37 37 36 25 26 27 38 38 37 26 27 28 39 39 38 27 28 29 40 40 39 28 29 30 41 41 40 29 30 31 42 42 41 30 31 32 43 43 42 31 34 33 44 44 45 34 33 35 46 46 44 33 35 36 47 47 46 35 36 37 48 48 47 36 37 38 49 49 48 37 38 39 50 50 49 38 39 40 51 51 50 39 40 41 52 52 51 40 41 42 53 53 52 41 42 43 54 54 53 42 45 44 55 55 56 45 44 46 57 57 55 44 46 47 58 58 57 46 47 48 59 59 58 47 48 49 60 60 59 48 49 50 61 61 60 49 50 51 62 62 61 50 51 52 63 63 62 51 52 53 64 64 63 52 53 54 65 65 64 53 56 55 66 66 67 56 55 57 68 68 66 55 57 58 69 69 68 57 58 59 70 70 69 58 59 60 71 71 70 59 60 61 72 72 71 60 61 62 73 73 72 61 62 63 74 74 73 62 63 64 75 75 74 63 64 65 76 76 75 64 67 66 77 77 78 67 66 68 79 79 77 66 68 69 80 80 79 68 69 70 81 81 80 69 70 71 82 82 81 70 71 72 83 83 82 71 72 73 84 84 83 72 73 74 85 85 84 73 74 75 86 86 85 74 75 76 87 87 86 75 78 77 88 88 89 78 77 79 90 90 88 77 79 80 91 91 90 79 80 81 92 92 91 80 81 82 93 93 92 81 82 83 94 94 93 82 83 84 95 95 94 83 84 85 96 96 95 84 85 86 97 97 96 85 86 87 98 98 97 86 89 88 99 99 100 89 88 90 101 101 99 88 90 91 102 102 101 90 91 92 103 103 102 91 92 93 104 104 103 92 93 94 105 105 104 93 94 95 106 106 105 94 95 96 107 107 106 95 96 97 108 108 107 96 97 98 109 109 108 97 100 99 110 110 111 100 99 101 112 112 110 99 101 102 113 113 112 101 102 103 114 114 113 102 103 104 115 115 114 103 104 105 116 116 115 104 105 106 117 117 116 105 106 107 118 118 117 106 107 108 119 119 118 107 108 109 120 120 119 108 111 110 121 121 122 111 110 112 123 123 121 110 112 113 124 124 123 112 113 114 125 125 124 113 114 115 126 126 125 114 115 116 127 127 126 115 116 117 128 128 127 116 117 118 129 129 128 117 118 119 130 130 129 118 119 120 131 131 130 119 122 121 132 132 133 122 121 123 134 134 132 121 123 124 135 135 134 123 124 125 136 136 135 124 125 126 137 137 136 125 126 127 138 138 137 126 127 128 139 139 138 127 128 129 140 140 139 128 129 130 141 141 140 129 130 131 142 142 141 130 143 144 145 145 146 143 147 148 149 149 150 147 151 152 153 153 154 151 147 155 144 144 156 147 157 158 159 159 160 157 161 148 162 162 145 161 163 164 165 166 167 164 168 169 170 170 171 168 172 173 174 175 176 177</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="editor_01.max" name="editor_01_max">
+      <node id="torus-node" name="torus" type="NODE">
+        <translate>-0.034911 0.008203 0</translate>
+        <rotate>0 0 0 0</rotate>
+        <scale>1 1 1</scale>
+        <instance_geometry url="#torus-mesh">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__36" target="#Material__36"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+      <extra>
+        <technique profile="FCOLLADA">
+          <start_time>0</start_time>
+          <end_time>3.33333</end_time>
+        </technique>
+      </extra>
+      <extra>
+        <technique profile="MAX3D">
+          <frame_rate>30</frame_rate>
+        </technique>
+      </extra>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#editor_01.max"/>
+  </scene>
+</COLLADA>
+

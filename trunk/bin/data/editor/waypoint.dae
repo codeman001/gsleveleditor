@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <contributor>
+      <author>AMatei</author>
+      <authoring_tool irr_colllada_version="0.0.257.1755">3dsMax 9 - Feeling ColladaMax v3.05B.</authoring_tool>
+      <comments>ColladaMax Export Options: ExportNormals=0;ExportEPolyAsTriangles=1;ExportEPolyAsTriangleStrips=0;ExportXRefs=1;ExportSelected=0;ExportTangents=0;DeindexVertexData=1;ExportAnimations=0;SampleAnim=1;ExportDegenerateAnimationCurves=0;CubicInterpolation=2;CleanAnimKeys=0;CompressAnimKeys=0;KeyCompressionTolerance=0.0001;OneChannelPerCurve=0;BakeMatrices=1;DecomposeMatrices=1;ExportRelativePaths=1;RemovePaths=0;ReplacePaths=1;ReplacementPath=../textures/;ExportUpAxis=2;WarnOnNegativeScale=1;WarnOnIncompatibleMorphTarget=1;InvertTextureVCoord=1;LibrariesToStrip=69671;RemoveZeroWeights=1;RemoveDuplicateWeights=1;</comments>
+      <source_data>E:/_Work/_N/b/editor_01.max</source_data>
+    </contributor>
+    <created>2009-02-16T15:39:32Z</created>
+    <modified>2009-02-16T15:39:34Z</modified>
+    <unit meter="0.01" name="centimeter"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_images>
+    <image id="editor_blue2.tga" name="editor_blue2_tga">
+      <init_from>../textures/editor_blue2.tga</init_from>
+    </image>
+    <image id="editor_blue.tga" name="editor_blue_tga">
+      <init_from>../textures/editor_blue.tga</init_from>
+    </image>
+    <image id="editor_green.tga" name="editor_green_tga">
+      <init_from>../textures/editor_green.tga</init_from>
+    </image>
+    <image id="editor_yellow.tga" name="editor_yellow_tga">
+      <init_from>../textures/editor_yellow.tga</init_from>
+    </image>
+    <image id="editor_gri.tga" name="editor_gri_tga">
+      <init_from>../textures/editor_gri.tga</init_from>
+    </image>
+  </library_images>
+  <library_materials>
+    <material id="Material__36" name="Material__36">
+      <instance_effect url="#Material__36-fx"/>
+    </material>
+    <material id="Material__26" name="Material__26">
+      <instance_effect url="#Material__26-fx"/>
+    </material>
+    <material id="Material__27" name="Material__27">
+      <instance_effect url="#Material__27-fx"/>
+    </material>
+    <material id="Material__28" name="Material__28">
+      <instance_effect url="#Material__28-fx"/>
+    </material>
+    <material id="Material__37" name="Material__37">
+      <instance_effect url="#Material__37-fx"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Material__36-fx" name="Material__36">
+      <profile_COMMON>
+        <newparam sid="editor_blue2_tga-surface">
+          <surface type="2D">
+            <init_from>editor_blue2.tga</init_from>
+            <format>A8R8G8B8</format>
+          </surface>
+        </newparam>
+        <newparam sid="editor_blue2_tga-sampler">
+          <sampler2D>
+            <source>editor_blue2_tga-surface</source>
+            <wrap_s>WRAP</wrap_s>
+            <wrap_t>WRAP</wrap_t>
+            <minfilter>NONE</minfilter>
+            <magfilter>NONE</magfilter>
+            <mipfilter>NONE</mipfilter>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <blinn>
+            <ambient>
+              <color>1 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="editor_blue2_tga-sampler" texcoord="CHANNEL1">
+                <extra>
+                  <technique profile="MAYA">
+                    <mirrorU>0</mirrorU>
+                    <mirrorV>0</mirrorV>
+                    <wrapU>1</wrapU>
+                    <wrapV>1</wrapV>
+                    <repeatU>1</repeatU>
+                    <repeatV>1</repeatV>
+                    <offsetU>0</offsetU>
+                    <offsetV>0</offsetV>
+                    <rotateUV>0</rotateUV>
+                  </technique>
+                  <technique profile="MAX3D">
+                    <amount>1</amount>
+                  </technique>
+                </extra>
+              </texture>
+            </diffuse>
+            <specular>
+              <color>0.9 0.9 0.9 1</color>
+            </specular>
+            <shininess>
+              <float>0.415939</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>1</float>
+            </reflectivity>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </blinn>
+          <extra>
+            <technique profile="FCOLLADA">
+              <spec_level>
+                <float>0</float>
+              </spec_level>
+              <emission_level>
+                <float>0</float>
+              </emission_level>
+            </technique>
+          </extra>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="MAX3D">
+          <faceted>0</faceted>
+          <double_sided>0</double_sided>
+          <wireframe>0</wireframe>
+          <face_map>0</face_map>
+        </technique>
+      </extra>
+    </effect>
+    <effect id="Material__26-fx" name="Material__26">
+      <profile_COMMON>
+        <newparam sid="editor_blue_tga-surface">
+          <surface type="2D">
+            <init_from>editor_blue.tga</init_from>
+            <format>A8R8G8B8</format>
+          </surface>
+        </newparam>
+        <newparam sid="editor_blue_tga-sampler">
+          <sampler2D>
+            <source>editor_blue_tga-surface</source>
+            <wrap_s>WRAP</wrap_s>
+            <wrap_t>WRAP</wrap_t>
+            <minfilter>NONE</minfilter>
+            <magfilter>NONE</magfilter>
+            <mipfilter>NONE</mipfilter>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <blinn>
+            <ambient>
+              <color>0 0 1 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="editor_blue_tga-sampler" texcoord="CHANNEL1">
+                <extra>
+                  <technique profile="MAYA">
+                    <mirrorU>0</mirrorU>
+                    <mirrorV>0</mirrorV>
+                    <wrapU>1</wrapU>
+                    <wrapV>1</wrapV>
+                    <repeatU>1</repeatU>
+                    <repeatV>1</repeatV>
+                    <offsetU>0</offsetU>
+                    <offsetV>0</offsetV>
+                    <rotateUV>0</rotateUV>
+                  </technique>
+                  <technique profile="MAX3D">
+                    <amount>1</amount>
+                  </technique>
+                </extra>
+              </texture>
+            </diffuse>
+            <specular>
+              <color>0.9 0.9 0.9 1</color>
+            </specular>
+            <shininess>
+              <float>0.415939</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>1</float>
+            </reflectivity>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </blinn>
+          <extra>
+            <technique profile="FCOLLADA">
+              <spec_level>
+                <float>0</float>
+              </spec_level>
+              <emission_level>
+                <float>0</float>
+              </emission_level>
+            </technique>
+          </extra>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="MAX3D">
+          <faceted>0</faceted>
+          <double_sided>0</double_sided>
+          <wireframe>0</wireframe>
+          <face_map>0</face_map>
+        </technique>
+      </extra>
+    </effect>
+    <effect id="Material__27-fx" name="Material__27">
+      <profile_COMMON>
+        <newparam sid="editor_green_tga-surface">
+          <surface type="2D">
+            <init_from>editor_green.tga</init_from>
+            <format>A8R8G8B8</format>
+          </surface>
+        </newparam>
+        <newparam sid="editor_green_tga-sampler">
+          <sampler2D>
+            <source>editor_green_tga-surface</source>
+            <wrap_s>WRAP</wrap_s>
+            <wrap_t>WRAP</wrap_t>
+            <minfilter>NONE</minfilter>
+            <magfilter>NONE</magfilter>
+            <mipfilter>NONE</mipfilter>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <blinn>
+            <ambient>
+              <color>0 1 0 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="editor_green_tga-sampler" texcoord="CHANNEL1">
+                <extra>
+                  <technique profile="MAYA">
+                    <mirrorU>0</mirrorU>
+                    <mirrorV>0</mirrorV>
+                    <wrapU>1</wrapU>
+                    <wrapV>1</wrapV>
+                    <repeatU>1</repeatU>
+                    <repeatV>1</repeatV>
+                    <offsetU>0</offsetU>
+                    <offsetV>0</offsetV>
+                    <rotateUV>0</rotateUV>
+                  </technique>
+                  <technique profile="MAX3D">
+                    <amount>1</amount>
+                  </technique>
+                </extra>
+              </texture>
+            </diffuse>
+            <specular>
+              <color>0.9 0.9 0.9 1</color>
+            </specular>
+            <shininess>
+              <float>0.415939</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>1</float>
+            </reflectivity>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </blinn>
+          <extra>
+            <technique profile="FCOLLADA">
+              <spec_level>
+                <float>0</float>
+              </spec_level>
+              <emission_level>
+                <float>0</float>
+              </emission_level>
+            </technique>
+          </extra>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="MAX3D">
+          <faceted>0</faceted>
+          <double_sided>0</double_sided>
+          <wireframe>0</wireframe>
+          <face_map>0</face_map>
+        </technique>
+      </extra>
+    </effect>
+    <effect id="Material__28-fx" name="Material__28">
+      <profile_COMMON>
+        <newparam sid="editor_yellow_tga-surface">
+          <surface type="2D">
+            <init_from>editor_yellow.tga</init_from>
+            <format>A8R8G8B8</format>
+          </surface>
+        </newparam>
+        <newparam sid="editor_yellow_tga-sampler">
+          <sampler2D>
+            <source>editor_yellow_tga-surface</source>
+            <wrap_s>WRAP</wrap_s>
+            <wrap_t>WRAP</wrap_t>
+            <minfilter>NONE</minfilter>
+            <magfilter>NONE</magfilter>
+            <mipfilter>NONE</mipfilter>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <blinn>
+            <ambient>
+              <color>1 1 0 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="editor_yellow_tga-sampler" texcoord="CHANNEL1">
+                <extra>
+                  <technique profile="MAYA">
+                    <mirrorU>0</mirrorU>
+                    <mirrorV>0</mirrorV>
+                    <wrapU>1</wrapU>
+                    <wrapV>1</wrapV>
+                    <repeatU>1</repeatU>
+                    <repeatV>1</repeatV>
+                    <offsetU>0</offsetU>
+                    <offsetV>0</offsetV>
+                    <rotateUV>0</rotateUV>
+                  </technique>
+                  <technique profile="MAX3D">
+                    <amount>1</amount>
+                  </technique>
+                </extra>
+              </texture>
+            </diffuse>
+            <specular>
+              <color>0.9 0.9 0.9 1</color>
+            </specular>
+            <shininess>
+              <float>0.415939</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>1</float>
+            </reflectivity>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </blinn>
+          <extra>
+            <technique profile="FCOLLADA">
+              <spec_level>
+                <float>0</float>
+              </spec_level>
+              <emission_level>
+                <float>0</float>
+              </emission_level>
+            </technique>
+          </extra>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="MAX3D">
+          <faceted>0</faceted>
+          <double_sided>0</double_sided>
+          <wireframe>0</wireframe>
+          <face_map>0</face_map>
+        </technique>
+      </extra>
+    </effect>
+    <effect id="Material__37-fx" name="Material__37">
+      <profile_COMMON>
+        <newparam sid="editor_gri_tga-surface">
+          <surface type="2D">
+            <init_from>editor_gri.tga</init_from>
+            <format>A8R8G8B8</format>
+          </surface>
+        </newparam>
+        <newparam sid="editor_gri_tga-sampler">
+          <sampler2D>
+            <source>editor_gri_tga-surface</source>
+            <wrap_s>WRAP</wrap_s>
+            <wrap_t>WRAP</wrap_t>
+            <minfilter>NONE</minfilter>
+            <magfilter>NONE</magfilter>
+            <mipfilter>NONE</mipfilter>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <blinn>
+            <ambient>
+              <color>0.588 0.588 0.588 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="editor_gri_tga-sampler" texcoord="CHANNEL1">
+                <extra>
+                  <technique profile="MAYA">
+                    <mirrorU>0</mirrorU>
+                    <mirrorV>0</mirrorV>
+                    <wrapU>1</wrapU>
+                    <wrapV>1</wrapV>
+                    <repeatU>1</repeatU>
+                    <repeatV>1</repeatV>
+                    <offsetU>0</offsetU>
+                    <offsetV>0</offsetV>
+                    <rotateUV>0</rotateUV>
+                  </technique>
+                  <technique profile="MAX3D">
+                    <amount>1</amount>
+                  </technique>
+                </extra>
+              </texture>
+            </diffuse>
+            <specular>
+              <color>0.9 0.9 0.9 1</color>
+            </specular>
+            <shininess>
+              <float>0.415939</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>1</float>
+            </reflectivity>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </blinn>
+          <extra>
+            <technique profile="FCOLLADA">
+              <spec_level>
+                <float>0</float>
+              </spec_level>
+              <emission_level>
+                <float>0</float>
+              </emission_level>
+            </technique>
+          </extra>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="MAX3D">
+          <faceted>0</faceted>
+          <double_sided>0</double_sided>
+          <wireframe>0</wireframe>
+          <face_map>0</face_map>
+        </technique>
+      </extra>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="Sphere-mesh" name="Sphere">
+      <mesh>
+        <source id="Sphere-mesh-positions">
+          <float_array id="Sphere-mesh-positions-array" count="267">0 0 21.3819 -0.000000 10.6909 18.5173 -3.94601 9.25863 18.5173 0 0 21.3819 -6.83468 5.34547 18.5173 0 0 21.3819 -7.89201 0.000001 18.5173 0 0 21.3819 -6.83468 -5.34547 18.5173 0 0 21.3819 -3.94601 -9.25863 18.5173 0 0 21.3819 -0.000003 -10.6909 18.5173 0 0 21.3819 3.946 -9.25863 18.5173 0 0 21.3819 6.83468 -5.34548 18.5173 0 0 21.3819 7.89201 -0.000008 18.5173 0 0 21.3819 6.83469 5.34546 18.5173 0 0 21.3819 3.94601 9.25862 18.5173 0 0 21.3819 -0.000000 10.6909 18.5173 -6.83468 16.0364 10.6909 -0.000000 18.5173 10.6909 -11.838 9.25863 10.6909 -13.6694 0.000002 10.6909 -11.838 -9.25862 10.6909 -6.83469 -16.0364 10.6909 -0.000006 -18.5173 10.6909 6.83468 -16.0364 10.6909 11.838 -9.25864 10.6909 13.6694 -0.000014 10.6909 11.838 9.25861 10.6909 6.83469 16.0364 10.6909 -0.000000 18.5173 10.6909 -7.89201 18.5173 -0.000000 -0.000000 21.3819 -0.000000 -13.6694 10.6909 -0.000000 -15.784 0.000003 -0.000000 -13.6694 -10.6909 -0.000000 -7.89202 -18.5172 -0.000000 -0.000007 -21.3819 -0.000000 7.892 -18.5173 -0.000000 13.6694 -10.691 -0.000000 15.784 -0.000016 -0.000000 13.6694 10.6909 -0.000000 7.89202 18.5172 -0.000000 -0.000000 21.3819 -0.000000 -6.83468 16.0364 -10.6909 -0.000000 18.5173 -10.6909 -11.838 9.25863 -10.6909 -13.6694 0.000002 -10.6909 -11.838 -9.25862 -10.6909 -6.83469 -16.0364 -10.6909 -0.000006 -18.5173 -10.6909 6.83467 -16.0364 -10.6909 11.838 -9.25864 -10.6909 13.6694 -0.000014 -10.6909 11.838 9.25861 -10.6909 6.83469 16.0364 -10.6909 -0.000000 18.5173 -10.6909 -3.94601 9.25863 -18.5173 -0.000000 10.6909 -18.5173 -6.83468 5.34547 -18.5173 -7.89201 0.000001 -18.5173 -6.83468 -5.34547 -18.5173 -3.94601 -9.25863 -18.5173 -0.000003 -10.6909 -18.5173 3.946 -9.25863 -18.5173 6.83468 -5.34548 -18.5173 7.89201 -0.000008 -18.5173 6.83469 5.34546 -18.5173 3.94601 9.25862 -18.5173 -0.000000 10.6909 -18.5173 0 0 -21.3819 0 0 -21.3819 0 0 -21.3819 0 0 -21.3819 0 0 -21.3819 0 0 -21.3819 0 0 -21.3819 0 0 -21.3819 0 0 -21.3819 0 0 -21.3819 0 0 -21.3819 0 0 -21.3819</float_array>
+          <technique_common>
+            <accessor source="#Sphere-mesh-positions-array" count="89" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Sphere-mesh-map-channel1">
+          <float_array id="Sphere-mesh-map-channel1-array" count="178">0 0 0 0.166667 0.083333 0.166667 0.083333 0 0.166667 0.166667 0.166667 0 0.25 0.166667 0.25 0 0.333333 0.166667 0.333333 0 0.416667 0.166667 0.416667 0 0.5 0.166667 0.5 0 0.583333 0.166667 0.583333 0 0.666667 0.166667 0.666667 0 0.75 0.166667 0.75 0 0.833333 0.166667 0.833333 0 0.916667 0.166667 0.916667 0 1 0.166667 0.083333 0.333333 0 0.333333 0.166667 0.333333 0.25 0.333333 0.333333 0.333333 0.416667 0.333333 0.5 0.333333 0.583333 0.333333 0.666667 0.333333 0.75 0.333333 0.833333 0.333333 0.916667 0.333333 1 0.333333 0.083333 0.5 0 0.5 0.166667 0.5 0.25 0.5 0.333333 0.5 0.416667 0.5 0.5 0.5 0.583333 0.5 0.666667 0.5 0.75 0.5 0.833333 0.5 0.916667 0.5 1 0.5 0.083333 0.666667 0 0.666667 0.166667 0.666667 0.25 0.666667 0.333333 0.666667 0.416667 0.666667 0.5 0.666667 0.583333 0.666667 0.666667 0.666667 0.75 0.666667 0.833333 0.666667 0.916667 0.666667 1 0.666667 0.083333 0.833333 0 0.833333 0.166667 0.833333 0.25 0.833333 0.333333 0.833333 0.416667 0.833333 0.5 0.833333 0.583333 0.833333 0.666667 0.833333 0.75 0.833333 0.833333 0.833333 0.916667 0.833333 1 0.833333 0 1 0.083333 1 0.166667 1 0.25 1 0.333333 1 0.416667 1 0.5 1 0.583333 1 0.666667 1 0.75 1 0.833333 1 0.916667 1</float_array>
+          <technique_common>
+            <accessor source="#Sphere-mesh-map-channel1-array" count="89" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Sphere-mesh-vertices">
+          <input semantic="POSITION" source="#Sphere-mesh-positions"/>
+          <input semantic="TEXCOORD" source="#Sphere-mesh-map-channel1"/>
+          <extra>
+            <technique profile="FCOLLADA">
+              <input semantic="TEXCOORD" source="#Sphere-mesh-map-channel1" set="0"/>
+            </technique>
+          </extra>
+        </vertices>
+        <triangles material="Material__36" count="120">
+          <input semantic="VERTEX" source="#Sphere-mesh-vertices" offset="0"/>
+          <p>0 1 2 3 2 4 5 4 6 7 6 8 9 8 10 11 10 12 13 12 14 15 14 16 17 16 18 19 18 20 21 20 22 23 22 24 25 2 1 1 26 25 27 4 2 2 25 27 28 6 4 4 27 28 29 8 6 6 28 29 30 10 8 8 29 30 31 12 10 10 30 31 32 14 12 12 31 32 33 16 14 14 32 33 34 18 16 16 33 34 35 20 18 18 34 35 36 22 20 20 35 36 37 24 22 22 36 37 38 25 26 26 39 38 40 27 25 25 38 40 41 28 27 27 40 41 42 29 28 28 41 42 43 30 29 29 42 43 44 31 30 30 43 44 45 32 31 31 44 45 46 33 32 32 45 46 47 34 33 33 46 47 48 35 34 34 47 48 49 36 35 35 48 49 50 37 36 36 49 50 51 38 39 39 52 51 53 40 38 38 51 53 54 41 40 40 53 54 55 42 41 41 54 55 56 43 42 42 55 56 57 44 43 43 56 57 58 45 44 44 57 58 59 46 45 45 58 59 60 47 46 46 59 60 61 48 47 47 60 61 62 49 48 48 61 62 63 50 49 49 62 63 64 51 52 52 65 64 66 53 51 51 64 66 67 54 53 53 66 67 68 55 54 54 67 68 69 56 55 55 68 69 70 57 56 56 69 70 71 58 57 57 70 71 72 59 58 58 71 72 73 60 59 59 72 73 74 61 60 60 73 74 75 62 61 61 74 75 76 63 62 62 75 76 77 64 65 78 66 64 79 67 66 80 68 67 81 69 68 82 70 69 83 71 70 84 72 71 85 73 72 86 74 73 87 75 74 88 76 75</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="editor_01.max" name="editor_01_max">
+      <node id="Sphere-node" name="Sphere" type="NODE">
+        <translate>0 0 0</translate>
+        <rotate>0 0 0 0</rotate>
+        <scale>1 1 1</scale>
+        <instance_geometry url="#Sphere-mesh">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__36" target="#Material__36">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+      <extra>
+        <technique profile="FCOLLADA">
+          <start_time>0</start_time>
+          <end_time>3.33333</end_time>
+        </technique>
+      </extra>
+      <extra>
+        <technique profile="MAX3D">
+          <frame_rate>30</frame_rate>
+        </technique>
+      </extra>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#editor_01.max"/>
+  </scene>
+</COLLADA>
+

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CGameColladaSceneNode.h"
+#include "CColladaMeshComponent.h"
 #include "IView.h"
 
 //////////////////////////////////////////////////////////
@@ -10,9 +11,42 @@
 // clone this mesh
 CGameColladaMesh* CGameColladaMesh::clone()
 {
-	return NULL;
+	CGameColladaMesh* newMesh = new CGameColladaMesh();
+
+	newMesh->Joints = Joints;
+	newMesh->JointIndex = JointIndex;
+	newMesh->JointVertexIndex = JointVertexIndex;
+	newMesh->BoundingBox = BoundingBox;
+	
+	ISceneManager *smgr = getIView()->getSceneMgr();
+	SMesh *mesh = smgr->getMeshManipulator()->createMeshCopy( this );
+
+	int n = mesh->getMeshBufferCount();
+	for ( int i = 0; i < n; i++ )
+	{
+		IMeshBuffer *buffer = mesh->getMeshBuffer(i);
+		buffer->getMaterial() = getMeshBuffer(i)->getMaterial();
+
+		newMesh->addMeshBuffer( buffer );
+	}
+
+	mesh->drop();
+	return newMesh;
 }
 
+// updateJoint
+// remap joint to node
+void CGameColladaMesh::updateJoint()
+{
+	int nJoint = Joints.size();
+	char nameA[1024];
+
+	for ( int i = 0; i < nJoint; i++ )
+	{
+		uiString::copy<char, const wchar_t>( nameA, Joints[i].name.c_str() );
+		Joints[i].node = Component->getSceneNodeBySID( nameA ) ;
+	}
+}
 
 //////////////////////////////////////////////////////////
 // CGameColladaSceneNode implement
@@ -385,10 +419,7 @@ void CGameColladaSceneNode::render()
 {
 	// get driver
 	IVideoDriver* driver = getSceneManager()->getVideoDriver();	
-
-#ifdef GSANIMATION
 	IView *pView = getIView();	
-#endif
 
 	if ( ColladaMesh )
 	{		
@@ -496,8 +527,19 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 	// clone collada node
 	CGameColladaSceneNode *newNode = new CGameColladaSceneNode( newParent, newManager, -1);
 		
-	// clone basic
-	newNode->cloneMembers(this, newManager);
+	newNode->Name = Name;
+	newNode->ID = ID;
+
+	newNode->AbsoluteTransformation = AbsoluteTransformation;
+	newNode->RelativeTranslation = RelativeTranslation;
+	newNode->RelativeRotation = RelativeRotation;
+	newNode->RelativeScale = RelativeScale;
+
+	newNode->AutomaticCullingState = AutomaticCullingState;
+
+	newNode->DebugDataVisible = DebugDataVisible;
+	newNode->IsVisible = IsVisible;
+	newNode->IsDebugObject = IsDebugObject;
 
 	newNode->Box = Box;
 	newNode->Material = Material;
@@ -520,6 +562,7 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 		{
 			// dynamic mesh
 			newNode->ColladaMesh = ColladaMesh->clone();
+			newNode->ColladaMesh->IsStaticMesh = false;
 		}
 	}
 
@@ -540,6 +583,9 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 	newNode->m_posHint			= m_posHint;
 	newNode->m_scaleHint		= m_scaleHint;
 	newNode->m_rotHint			= m_rotHint;
+
+
+	int ref = newNode->getReferenceCount();
 
 	return newNode;
 }

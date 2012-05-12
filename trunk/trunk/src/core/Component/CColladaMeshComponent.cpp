@@ -259,7 +259,8 @@ void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
 	m_gameObject->m_node = m_colladaNode;
 
 	std::queue< SGroupNode > queueNode;
-	
+	std::vector< CGameColladaMesh* > listSkinMesh;
+
 	const core::list<ISceneNode*>& childs = node->getChildren();
 	core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
 	while ( it != end )
@@ -275,8 +276,9 @@ void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
 
 		// clone new node
 		CGameColladaSceneNode *newNode = (CGameColladaSceneNode*)groupNode.initChild->clone( groupNode.colladaParent, smgr );
+		
 		m_colladaNode->addBoundingBoxOfChild( newNode );
-
+				
 		// store name this node
 		std::string name = groupNode.initChild->getName();
 		if ( name.length() > 0 )
@@ -290,6 +292,15 @@ void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
 			newNode->setSIDName( name );
 		}
 
+		// push skin mesh need update
+		CGameColladaMesh* mesh = newNode->getMesh();
+		if ( mesh && mesh->IsStaticMesh == false )
+		{	
+			mesh->Component = this;
+			listSkinMesh.push_back( mesh );
+		}
+	
+
 		const core::list<ISceneNode*>& childs = groupNode.initChild->getChildren();
 		core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
 		while ( it != end )
@@ -298,7 +309,15 @@ void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
 			it++;
 		}
 
-		newNode->drop();
+		newNode->drop();	
+	}
+
+	// need map scenenode to joint
+	vector<CGameColladaMesh*>::iterator iMesh = listSkinMesh.begin(), iMeshEnd = listSkinMesh.end();
+	while ( iMesh != iMeshEnd )
+	{
+		(*iMesh)->updateJoint();
+		iMesh++;
 	}
 
 #ifdef GSEDITOR
@@ -1657,7 +1676,10 @@ void CColladaMeshComponent::constructScene()
 				SMeshParam *pMesh = &m_listMesh[meshID];
 
 				CGameColladaMesh *pColladaMesh = new CGameColladaMesh();
-				
+
+				// need store component
+				pColladaMesh->Component = this;
+
 				// add mesh buffer to skin mesh
 				int nBuffer = pMesh->Triangles.size();
 
@@ -1948,6 +1970,7 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 		
 		// set node data
 		uiString::copy<char, const wchar_t>( sidName, joint.Name.c_str() );
+		newJoint.name = joint.Name;
 		newJoint.node = m_sidNode[ std::string(sidName) ];
 
 		// set invert matrix

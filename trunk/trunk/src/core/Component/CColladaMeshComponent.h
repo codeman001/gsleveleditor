@@ -259,6 +259,13 @@ public:
 		return m_mapNode[ std::string(name) ];
 	}
 
+	// getSceneNodeBySID
+	// find child node with name
+	CGameColladaSceneNode* getSceneNodeBySID( const char *name )
+	{
+		return m_sidNode[ std::string(name) ];
+	}
+	
 	// getDefaultNode
 	// get default node
 	CGameColladaSceneNode* getDefaultNode()

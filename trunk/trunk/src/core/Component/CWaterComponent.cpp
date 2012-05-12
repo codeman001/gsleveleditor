@@ -60,7 +60,7 @@ void CWaterComponent::initWaterNode()
 	ISceneManager *smgr = getIView()->getSceneMgr();
 	IVideoDriver *driver = getIView()->getDriver();
 
-	core::dimension2df tileSize(800,800);
+	core::dimension2df tileSize(m_sizeX,m_sizeY);
 	core::dimension2du tileCount(1,1);
 	core::dimension2df countHill(1,1);
 	core::dimension2df textureRepeat(1,1);

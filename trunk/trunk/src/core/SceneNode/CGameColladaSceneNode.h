@@ -4,6 +4,7 @@
 #include "stdafx.h"
 
 class CGameColladaSceneNode;
+class CColladaMeshComponent;
 
 class CGameColladaMesh: public IMesh
 {
@@ -88,6 +89,10 @@ public:
 	// clone this mesh
 	virtual CGameColladaMesh* clone();	
 
+	// updateJoint
+	// remap joint to node
+	void updateJoint();
+
 	//! sets a flag of all contained materials to a new value
 	virtual void setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue)
 	{
@@ -109,11 +114,14 @@ public:
 			MeshBuffers[i]->setDirty(buffer);
 	}
 
+	// The component contain all node
+	CColladaMeshComponent		*Component;
+
 	//! The meshbuffers of this mesh
 	core::array<IMeshBuffer*>	MeshBuffers;
 
 	//! The bounding box of this mesh
-	core::aabbox3d<f32>			BoundingBox;
+	core::aabbox3d<f32>			BoundingBox;	
 
 	// ! For Skinning
 	struct SWeight

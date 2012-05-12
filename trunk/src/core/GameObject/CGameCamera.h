@@ -29,6 +29,21 @@ public:
 		CGameObject::setID(id);		
 	}
 
+	virtual void setVisible( bool b )
+	{
+		CGameObject::setVisible( b );
+		m_cameraMesh->setVisible( b );
+	}
+
+	// setPosition
+	// set 3d position
+	virtual void setPosition(core::vector3df& pos)
+	{
+		CGameObject::setPosition( pos );
+		if ( m_cameraMesh )
+			m_cameraMesh->setPosition( pos );
+	}
+
 #endif
 
 	// setTarget

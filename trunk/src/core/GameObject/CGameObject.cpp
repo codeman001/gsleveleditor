@@ -751,13 +751,15 @@ bool CGameObject::isHittestObjectVector( int x, int y, int typeVector )
 
 	IVideoDriver* driver = pView->getDriver();	
 	
-	core::aabbox3df box = m_node->getTransformedBoundingBox();
-	core::vector3df bBoxLength = box.MaxEdge - box.MinEdge;
-	float length = bBoxLength.getLength() * 1.5f;
+	core::aabbox3df box = m_node->getBoundingBox();
+	
+	float lx = box.MaxEdge.X - box.MinEdge.X + 100;
+	float ly = box.MaxEdge.Y - box.MinEdge.Y + 100;
+	float lz = box.MaxEdge.Z - box.MinEdge.Z + 100;
 
-	core::vector3df	ox = m_position + m_right	* length;
-	core::vector3df	oy = m_position + m_up		* length;
-	core::vector3df	oz = m_position + m_front	* length;
+	core::vector3df	ox = m_position + m_right	* lx;
+	core::vector3df	oy = m_position + m_up		* ly;
+	core::vector3df	oz = m_position + m_front	* lz;
 
 	int x1, y1, x2, y2;
 	pView->getScreenCoordinatesFrom3DPosition( m_position, &x1, &y1 );
@@ -785,10 +787,11 @@ void CGameObject::drawFrontUpLeftVector()
 
 	IVideoDriver* driver = getIView()->getDriver();
 	
-	core::aabbox3df box  = m_node->getTransformedBoundingBox();
-	core::vector3df bBoxLength =	box.MaxEdge - box.MinEdge;
-
-	float length = bBoxLength.getLength() * 1.5f;
+	core::aabbox3df box  = m_node->getBoundingBox();
+	
+	float lx = box.MaxEdge.X - box.MinEdge.X + 100;
+	float ly = box.MaxEdge.Y - box.MinEdge.Y + 100;
+	float lz = box.MaxEdge.Z - box.MinEdge.Z + 100;
 	
 	// set material
 	SMaterial debug_mat;	
@@ -802,13 +805,13 @@ void CGameObject::drawFrontUpLeftVector()
 	driver->setTransform(video::ETS_WORLD, mat);
 
 	// draw up
-	driver->draw3DLine( m_position, m_position + m_up * length,		SColor(255, 255, 0, 0) );
+	driver->draw3DLine( m_position, m_position + m_up * ly,		SColor(255, 255, 0, 0) );
 
 	// draw front
-	driver->draw3DLine( m_position, m_position + m_front * length,	SColor(255, 0, 255, 0) );
+	driver->draw3DLine( m_position, m_position + m_front * lz,	SColor(255, 0, 255, 0) );
 
 	// draw right
-	driver->draw3DLine( m_position, m_position + m_right * length,	SColor(255, 0, 0, 255) );
+	driver->draw3DLine( m_position, m_position + m_right * lx,	SColor(255, 0, 0, 255) );
 
 }
 

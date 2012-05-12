@@ -6,12 +6,18 @@
 
 #ifdef GSEDITOR
 #include "CGameGSCameraAnimator.h"
+#include "CColladaMeshComponent.h"
+#include "CGameContainerSceneNode.h"
 #endif
 
 CGameCamera::CGameCamera()
 {
 	m_targetObject = NULL;
 	m_objectType = CGameObject::CameraObject;
+
+#ifdef GSEDITOR
+	m_cameraMesh = NULL;
+#endif
 
 	// add camera
 	ISceneManager *smgr = getIView()->getSceneMgr();
@@ -24,15 +30,17 @@ CGameCamera::CGameCamera()
 	m_camera->setFOV( core::degToRad(60.0f) );
 	m_camera->setFarValue( 8000.0f );
 	m_camera->grab();	
-
-	// store node
-	m_node = m_camera;
-
+	
 	setPosition( core::vector3df(0,0,0) );
 	setTarget( core::vector3df(1,0,0) );	
 
-#ifdef GSEDITOR
-	m_cameraMesh = new CGameBoxSceneNode(this, 5, m_camera, smgr, -1);
+#ifdef GSEDITOR	
+	CColladaMeshComponent *comp = new CColladaMeshComponent( this );
+	comp->loadFromFile( getIView()->getPath("data/editor/camera.dae") );
+	addComponenet( comp );
+	setLighting( false );
+
+	m_cameraMesh = m_node;	
 	m_cameraMesh->setVisible( true );	
 
 	ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( m_cameraMesh );
@@ -43,9 +51,12 @@ CGameCamera::CGameCamera()
 	IrrlichtDevice *device = getIView()->getDevice();
 	CGameGSCameraAnimators* camAnimator = new CGameGSCameraAnimators( device->getCursorControl() );
 	m_camera->addAnimator( camAnimator );	
-	camAnimator->drop();
+	camAnimator->drop();	
 #endif
-	
+
+	// set camera node
+	m_node = m_camera;
+
 	// restore camera
 	smgr->setActiveCamera( oldCam );
 }
@@ -79,8 +90,16 @@ void CGameCamera::updateObject()
 
 	if ( getIView()->getActiveCamera() == this )
 		m_cameraMesh->setVisible( false );
-	else			
-		m_cameraMesh->setVisible( true );	
+	else
+	{
+		m_cameraMesh->setVisible( true );
+		m_node = m_cameraMesh;
+
+		core::vector3df rot = m_targetPos - m_position;
+		setOrientation( rot );
+
+		m_node = m_camera;
+	}
 #endif
 }
 
@@ -197,7 +216,7 @@ void CGameCamera::drawObject()
 		// draw up
 		core::vector3df ray = (m_targetPos - m_position).normalize();
 
-		driver->draw3DLine( m_position, m_position + ray*80, SColor(255, 255, 255, 0) );
+		driver->draw3DLine( m_position, m_position + ray*100, SColor(255, 255, 255, 0) );
 	}
 }
 #endif

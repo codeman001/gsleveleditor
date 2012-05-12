@@ -2,6 +2,7 @@
 
 #include "CZone.h"
 #include "CWayPoint.h"
+#include "CColladaMeshComponent.h"
 #include "CGameBoxSceneNode.h"
 
 #include "IView.h"
@@ -13,10 +14,16 @@ CWayPoint::CWayPoint()
 	m_back			= NULL;
 	m_timeWait		= 0;
 
-	// init box
 	ISceneManager *smgr = getIView()->getSceneMgr();
+
+	// init waypoint mesh
+	//CColladaMeshComponent *comp = new CColladaMeshComponent( this );
+	//comp->loadFromFile( getIView()->getPath("data/editor/waypoint.dae") );
+	//addComponenet( comp );
+	//setLighting( false );
+	
 	m_node = new CGameBoxSceneNode(this, 5, smgr->getRootSceneNode(), smgr, m_objectID);
-	m_node->getMaterial(0).Lighting = true;	
+	m_node->getMaterial(0).Lighting = true;
 
 #ifdef GSEDITOR
 	setVisible ( true );
@@ -46,9 +53,14 @@ CWayPoint::CWayPoint(CGameObject *parent)
 	if ( parent )
 		parentNode = parent->getSceneNode();
 
-	// init box	
+	// init waypoint mesh
+	//CColladaMeshComponent *comp = new CColladaMeshComponent( this );
+	//comp->loadFromFile( getIView()->getPath("data/editor/waypoint.dae") );
+	//addComponenet( comp );
+	//setLighting( false );
+
 	m_node = new CGameBoxSceneNode(this, 5, parentNode, smgr, m_objectID);
-	m_node->getMaterial(0).Lighting = true;	
+	m_node->getMaterial(0).Lighting = true;
 
 #ifdef GSEDITOR
 	setVisible ( true );

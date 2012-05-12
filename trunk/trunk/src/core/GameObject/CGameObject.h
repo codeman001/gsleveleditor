@@ -86,6 +86,12 @@ protected:
 public:
 	ISceneNode					*m_node;
 	vector<IObjectComponent*>	m_components;
+
+	void addComponenet( IObjectComponent* comp )
+	{
+		m_components.push_back( comp );
+	}
+
 public:	
 
 	CGameObject();

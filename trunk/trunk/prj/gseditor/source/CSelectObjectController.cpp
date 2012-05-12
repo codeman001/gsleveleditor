@@ -91,38 +91,40 @@ void CSelectObjectController::onLMouseDown(int x, int y)
 			it++;
 		}
 
-
-		// get select ray
-		core::line3df selectRay = getIView()->getSelectRay();
-
-		// check hit test
-		core::vector3df intersection;
-		core::triangle3df hitTriangle;
-
-		// check select
-		ISceneNode *selectedSceneNode = collMan->getSceneNodeAndCollisionPointFromRay
-			(
-				selectRay,
-				intersection,
-				hitTriangle
-			);
-		
-		// check hit test
-		if ( selectedSceneNode )
+		if ( m_moveState == 0 )
 		{
-			CGameObject *pObj =	pDoc->searchObject( selectedSceneNode->getID() );
-			if ( pObj && pObj->getObjectState() != CGameObject::Normal )
+			// get select ray
+			core::line3df selectRay = getIView()->getSelectRay();
+
+			// check hit test
+			core::vector3df intersection;
+			core::triangle3df hitTriangle;
+
+			// check select
+			ISceneNode *selectedSceneNode = collMan->getSceneNodeAndCollisionPointFromRay
+				(
+					selectRay,
+					intersection,
+					hitTriangle
+				);
+			
+			// check hit test
+			if ( selectedSceneNode )
 			{
-				m_selectState = false;
+				CGameObject *pObj =	pDoc->searchObject( selectedSceneNode->getID() );
+				if ( pObj && pObj->getObjectState() != CGameObject::Normal )
+				{
+					m_selectState = false;
 
-				m_hitOnObj = pObj;
-				m_hitPosition = intersection;
+					m_hitOnObj = pObj;
+					m_hitPosition = intersection;
 
-				// move xyz
-				m_moveState = 0;
-			}			
+					// move xyz
+					m_moveState = 0;
+				}			
+			}
 		}
-	
+
 	}
 	else
 	{

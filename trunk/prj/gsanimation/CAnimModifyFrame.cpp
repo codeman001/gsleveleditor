@@ -46,6 +46,8 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 
 	// create info node
 	uiWindow *containerWin = ref<uiWindow>( new uiWindow(L"container", 0,0, 100, 100, m_mainSplit) );
+	containerWin->changeWindowStyle( UISTYLE_CHILD );
+	containerWin->showWindow( true );	
 
 	m_mainSplit->setWindow( m_treeNode, 0, 0 );
 	m_mainSplit->setWindow( containerWin, 0, 1 );
@@ -72,8 +74,9 @@ LRESULT	CAnimModifyFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM 
 	if ( uMsg == WM_CLOSE )
 	{
 		getParent()->showWindow( true );
+		getParent()->setForegroundWindow();
 		showWindow(false);
-		return 1;
+		return 0;
 	}
 	return uiWindow::messageMap( hWnd, uMsg, wParam, lParam );
 }

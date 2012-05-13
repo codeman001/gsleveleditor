@@ -58,7 +58,6 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	m_currentFrame = 0;
 	m_totalFrame = 0;
 	m_framePerSecond = 24.0f;
-	m_animationLoop = true;
 	m_isRootColladaNode = true;
 	m_timer = 0;
 
@@ -67,6 +66,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	m_rotHint = 0;
 
 	ColladaMesh = NULL;	
+	m_component = NULL;
 }
 
 CGameColladaSceneNode::~CGameColladaSceneNode()
@@ -123,15 +123,28 @@ void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 	if ( m_totalFrame == 0 )
 		return;
 
-	// calc current frame
-	m_currentFrame += (timeMs - m_timer) * m_framePerSecond/1000.0f;
-	
-	if ( m_currentFrame > m_totalFrame )
+	if ( m_component && m_component->isPauseAnim() )
 	{
-		if ( m_animationLoop == false )
+		m_currentFrame = m_component->getPauseAnim();
+		if ( m_currentFrame > m_totalFrame )
 			m_currentFrame = m_totalFrame;
-		else		
-			m_currentFrame = 0;
+	}
+	else
+	{
+		// calc current frame	
+		m_currentFrame += (timeMs - m_timer) * m_framePerSecond/1000.0f;
+		
+		if ( m_currentFrame > m_totalFrame )
+		{
+			if ( m_component && 
+				m_component->getCurrentAnim() && 
+				m_component->getCurrentAnim()->m_loop == false )
+			{
+				m_currentFrame = m_totalFrame;
+			}
+			else		
+				m_currentFrame = 0;
+		}
 	}
 	
 	updateAnimation();
@@ -575,7 +588,6 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 	newNode->m_currentFrame		= m_currentFrame;
 	newNode->m_totalFrame		= m_totalFrame;
 
-	newNode->m_animationLoop	= m_animationLoop;
 	newNode->m_framePerSecond	= m_framePerSecond;
 
 	newNode->m_timer			= m_timer;

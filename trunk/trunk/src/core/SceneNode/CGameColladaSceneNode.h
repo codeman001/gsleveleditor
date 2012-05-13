@@ -170,6 +170,8 @@ protected:
 
 	std::string		m_sid;
 
+	CColladaMeshComponent		*m_component;
+
 public:
 	CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id);
 
@@ -233,6 +235,13 @@ public:
 	inline const std::string& getSIDName()
 	{
 		return m_sid;
+	}
+
+	// setComponent
+	// set component
+	void setComponent( CColladaMeshComponent *comp )
+	{
+		m_component = comp;
 	}
 
 public:
@@ -314,7 +323,6 @@ protected:
 	float	m_currentFrame;
 	float	m_totalFrame;
 
-	bool	m_animationLoop;
 	float	m_framePerSecond;
 
 	u32		m_timer;
@@ -343,12 +351,7 @@ public:
 	
 	// getCurrentFrame
 	// get time of current animation
-	inline float getCurrentFrame()			{ return m_currentFrame; }
-
-	// setAnimationLoop
-	// isloop property
-	inline void setAnimationLoop( bool b )	{ m_animationLoop = b; }
-	inline bool isAnimationLoop()			{ return m_animationLoop; }
+	inline float getCurrentFrame()			{ return m_currentFrame; }	
 
 	// getTotalFrame
 	// return animation total time

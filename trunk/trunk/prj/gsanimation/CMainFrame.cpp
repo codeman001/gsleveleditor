@@ -62,23 +62,20 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	uiSplitContainer *split = ref<uiSplitContainer>( new uiSplitContainer(L"mainSplit", 0, 0, 1000, 600, this, 2, 1) );
 	
 	m_irrWin = ref<CIrrWindow>( new CIrrWindow(L"irrWindow", split) );
-	m_propertyWin = ref<uiListProperty>( new uiListProperty(L"propertyWindow", 0,0, 1000, 30, split,7) );
 	
-	uiListPropertyGroup *pHeader = m_propertyWin->addGroup(L"Animation header");
-	pHeader->enableColText(true);
-	pHeader->setColText(L"State name", 0);
-	pHeader->setColText(L"Next name", 1);
-	pHeader->setColText(L"Anim name", 2);
-	pHeader->setColText(L"Time begin", 3);
-	pHeader->setColText(L"Duration", 4);
-	pHeader->setColText(L"Loop", 5);
-	pHeader->setColText(L"MovePosition", 6);
+	m_listView = ref<uiListView>( new uiListView(L"propertyWindow", 0, 0, 1000, 30, false, split) );
+	m_listView->selectedFullRow(true);
 
-	m_propertyWin->showWindow( true );	
-	m_propertyWin->setEventOnItemChange<CMainFrame, &CMainFrame::listPropertyOnItenChange>( this );
+	m_listView->addColumn(L"Anim name", 300);
+	m_listView->addColumn(L"Time begin", 150);
+	m_listView->addColumn(L"Duration", 150);
+	m_listView->addColumn(L"Loop", 150);
+	
+	m_listView->setEventOnClicked<CMainFrame, &CMainFrame::listPropertyOnItemChange>( this );
+	m_listView->setEventOnDbClicked<CMainFrame, &CMainFrame::listPropertyOnItemEdit>( this );
 
 	split->setWindow( m_irrWin, 0, 0 );
-	split->setWindow( m_propertyWin, 1, 0 );
+	split->setWindow( m_listView, 1, 0 );
 	split->setRowSize( 0, 400 );
 	split->setRowSize( 1, 300 );
 	
@@ -86,6 +83,11 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	split->setDock( this, UIDOCK_FILL );
 	split->updateSplit();
 	split->showWindow( true );
+
+	m_editorWin = ref<CAnimModifyFrame>( new CAnimModifyFrame(L"Anim editor", 50,50, 900,400,this)  );
+	m_editorWin->changeWindowStyle( UISTYLE_RESIZE );
+	m_editorWin->setParent(NULL);
+	m_editorWin->showWindow(false);
 
 	return ret;
 }
@@ -271,27 +273,17 @@ void CMainFrame::toolbarLoadAnimDae( uiObject *pSender )
 	// load anim from file
 	CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
 	colladaComponent->loadAnimFile( lpFileName );
-
+		
 	// update anim data
 	updateAnimDataToUI();
 }
 
 
 void CMainFrame::updateAnimDataToUI()
-{	
-	m_propertyWin->deleteAllItem();
-
-	uiListPropertyGroup *pHeader = m_propertyWin->addGroup(L"Animation header");
-	pHeader->enableColText(true);
-	pHeader->setColText(L"State name", 0);
-	pHeader->setColText(L"Next name", 1);
-	pHeader->setColText(L"Anim name", 2);
-	pHeader->setColText(L"Time begin", 3);
-	pHeader->setColText(L"Duration", 4);
-	pHeader->setColText(L"Loop", 5);
-	pHeader->setColText(L"Move Position", 6);
-
+{		
 	WCHAR	wstringBuff[1024];
+
+	m_listView->deleteAllRow();		
 
 	CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
 	int numAnim = colladaComponent->getAnimCount();
@@ -306,58 +298,59 @@ void CMainFrame::updateAnimDataToUI()
 
 		uiString::copy<WCHAR, const char>( wstringBuff, animName );
 		
-		// add new row
-		uiListPropertyRow* pRow = m_propertyWin->addRowItem( wstringBuff );
-		
-		// set name of anim
-		pRow->setText( wstringBuff, 2 );
+		// set name of anim		
+		uiListViewRow *row = m_listView->addRow( wstringBuff );
 		
 		// set time of anim
-		uiString::format<WCHAR>( wstringBuff, L"%f", clipInfo->m_time );
-		pRow->setText( wstringBuff, 3 );
+		uiString::format<WCHAR>( wstringBuff, L"%f", clipInfo->m_time );		
+		row->addParam( wstringBuff );
 
 		// set duration on anim
-		uiString::format<WCHAR>( wstringBuff, L"%f", clipInfo->m_duration );
-		pRow->setText( wstringBuff, 4 );
+		uiString::format<WCHAR>( wstringBuff, L"%f", clipInfo->m_duration );		
+		row->addParam( wstringBuff );
 
 		// set looping of anim
-		if ( clipInfo->m_loop )
-			pRow->setText( L"true", 5 );
-		else
-			pRow->setText( L"false", 5 );
+		if ( clipInfo->m_loop )			
+			row->addParam( wstringBuff );
+		else			
+			row->addParam( wstringBuff );
 
-		// set move position of anim
-		if ( clipInfo->m_movePosition )
-			pRow->setText( L"true", 6 );
-		else
-			pRow->setText( L"false", 6 );
-
+		row->update();
 	}
-
-	// update list property
-	m_propertyWin->updateListProperty();
 
 }
 
-void CMainFrame::listPropertyOnItenChange( uiObject *pSender )
+void CMainFrame::listPropertyOnItemEdit( uiObject *pSender )
 {
-	uiListPropertyItem *pItem =	m_propertyWin->getLastClickItem();
-	if ( pItem == NULL )
+	uiListViewRowSelected selectRow;
+	m_listView->getRowSelected( &selectRow );
+
+	if ( selectRow.size() == 0 )
 		return;
 
-	if ( pItem->getObjectType() != 2 )
+	m_editorWin->setColladaComponent( m_irrWin->getAnimComponent() );
+	m_editorWin->showWindow(true);
+}
+
+void CMainFrame::listPropertyOnItemChange( uiObject *pSender )
+{
+	uiListViewRowSelected selectRow;
+	m_listView->getRowSelected( &selectRow );
+
+	if ( selectRow.size() == 0 )
 		return;
 
-	uiListPropertyRow *pRow = (uiListPropertyRow*) pItem;
+	uiListViewRow *row = selectRow[0];	
 
 	WCHAR	wstringBuff[1024];
 	char	animName[1024];
 
-	pRow->getText( wstringBuff, 2 );
+	row->getParam(0, wstringBuff); 
 	uiString::copy<char, WCHAR>( animName, wstringBuff );
 
 	// set animation for anim mesh
 	CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
 	colladaComponent->setAnimation( animName );
+	colladaComponent->pauseAtFrame( 0 );
 
 }

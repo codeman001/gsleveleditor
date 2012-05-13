@@ -3,13 +3,14 @@
 
 #include "stdafx.h"
 #include "CIrrWindow.h"
+#include "CAnimModifyFrame.h"
 
 class CMainFrame: public uiForm
 {
 protected:
 	CIrrWindow		*m_irrWin;
-	
-	uiListProperty	*m_propertyWin;
+	CAnimModifyFrame *m_editorWin;
+	uiListView		*m_listView;
 public:
 	CMainFrame();
 	virtual ~CMainFrame();
@@ -44,7 +45,8 @@ public:
 
 public:
 	
-	void listPropertyOnItenChange( uiObject *pSender );
+	void listPropertyOnItemChange( uiObject *pSender );
+	void listPropertyOnItemEdit( uiObject *pSender );
 
 	void toolbarOpenAnim( uiObject *pSender );
 	void toolbarSaveAnim( uiObject *pSender );

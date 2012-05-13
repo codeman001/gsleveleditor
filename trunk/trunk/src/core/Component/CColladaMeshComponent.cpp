@@ -53,6 +53,11 @@ CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 	m_animeshFile = "";
 	m_animFile = "";
 	m_animSpeed	= 24.0f;
+
+	m_animFrames = 0.0f;	
+
+	m_pauseAnimFrame = 0.0f;
+	m_pauseAnim = false;
 }
 
 CColladaMeshComponent::~CColladaMeshComponent()
@@ -276,7 +281,8 @@ void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
 
 		// clone new node
 		CGameColladaSceneNode *newNode = (CGameColladaSceneNode*)groupNode.initChild->clone( groupNode.colladaParent, smgr );
-		
+		newNode->setComponent( this );
+
 		m_colladaNode->addBoundingBoxOfChild( newNode );
 				
 		// store name this node
@@ -1426,12 +1432,15 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 	const float defaultTpf = 1.0f/defaultFps;
 
 	SAnimClip& animClip = animIt->second;
-	
+	m_currentAnim = &animClip;
+
 	int fromFrame = 0, toFrame = 0;
 	core::quaternion q1, q2;
 	core::vector3df v1, v2;
 
 	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+
+	m_animFrames = 0.0f;
 
 	while ( i != end )
 	{
@@ -1521,10 +1530,15 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 
 					rot.frame = currentTime * defaultFps;
 					pos.frame = currentTime * defaultFps;
-
+					
 					// add key frame
 					j->RotationKeys.push_back( rot );
 					j->PositionKeys.push_back( pos );
+
+					if ( m_animFrames < rot.frame )
+						m_animFrames = rot.frame;
+					if ( m_animFrames < pos.frame )
+						m_animFrames = pos.frame;				
 				}	
 			}
 
@@ -1639,6 +1653,8 @@ void CColladaMeshComponent::constructScene()
 
 		// crate new scene node
 		CGameColladaSceneNode *colladaSceneNode = new CGameColladaSceneNode( parent, smgr, -1 );
+		colladaSceneNode->setComponent( this );
+
 		colladaSceneNode->setName( name );
 		
 		if ( node->Parent == NULL )

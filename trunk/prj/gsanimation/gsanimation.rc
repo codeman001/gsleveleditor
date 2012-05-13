@@ -29,12 +29,19 @@ LANGUAGE 9, 1
 // remains consistent on all systems.
 
 IDI_GSANIMATION       ICON         "gsanimation.ico"
-IDI_SMALL               ICON         "small.ico"
+IDI_SMALL             ICON         "small.ico"
+
+IDI_TREENODE		ICON         "treeIconNode.ico"
+IDI_TREEMESH		ICON         "treeIconMesh.ico"
 
 IDB_TOOLBAROPEN		BITMAP		"toolbarIconOpen.bmp"
 IDB_TOOLBARSAVE		BITMAP		"toolbarIconSave.bmp"
 IDB_TOOLBARMESH		BITMAP		"toolbarIconMesh.bmp"
 IDB_TOOLBARANIM		BITMAP		"toolbarIconAnim.bmp"
+
+IDB_TOOLBARPLAY		BITMAP		"toolbarIconPlay.bmp"
+IDB_TOOLBARPAUSE	BITMAP		"toolbarIconPause.bmp"
+IDB_TOOLBARSTOP		BITMAP		"toolbarIconStop.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //

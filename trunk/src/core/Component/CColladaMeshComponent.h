@@ -234,7 +234,11 @@ protected:
 	map<std::string, CGameColladaSceneNode*>	m_sidNode;
 
 	bool						m_needFlip;
-		
+
+	float						m_animFrames;	
+	float						m_pauseAnimFrame;
+	bool						m_pauseAnim;
+
 public:
 	CColladaMeshComponent( CGameObject *pObj );
 
@@ -273,6 +277,13 @@ public:
 		return m_mapNode[ m_defaultNode ];
 	}
 	
+	// getColladaNode
+	// get root of collada node
+	CGameChildContainerSceneNode* getColladaNode()
+	{
+		return m_colladaNode;
+	}
+
 protected:
 	// constructScene
 	// create scene node
@@ -359,6 +370,42 @@ public:
 			return NULL;
 
 		return m_animationName[id].c_str();
+	}
+
+	// getCurrentAnimFrames
+	// get number of frames of anim
+	inline float getCurrentAnimFrames()
+	{
+		return m_animFrames;
+	}
+
+	// pauseAtFrame
+	// pause anim at frame id
+	inline void pauseAtFrame( float frame )
+	{
+		m_pauseAnim = true;
+		m_pauseAnimFrame = frame;
+	}
+
+	// resumeAnim
+	// resume animation
+	inline void resumeAnim()
+	{
+		m_pauseAnim = false;		
+	}
+
+	// isPauseAnim
+	// check anim is pause??
+	inline bool isPauseAnim()
+	{
+		return m_pauseAnim;
+	}
+
+	// getPauseAnim
+	// get frame is pause
+	inline float getPauseAnim()
+	{
+		return m_pauseAnimFrame;
 	}
 
 	// getAnimClip	

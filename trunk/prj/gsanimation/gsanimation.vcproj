@@ -376,6 +376,14 @@
 			Name="Frame"
 			>
 			<File
+				RelativePath=".\CAnimModifyFrame.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CAnimModifyFrame.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CIrrWindow.cpp"
 				>
 			</File>

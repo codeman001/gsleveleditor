@@ -14,6 +14,10 @@ protected:
 public:	
 	CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent );
 	virtual ~CAnimModifyFrame();
+	
+	// messageMap
+	// Phan tich su kien cho uiForm
+	virtual LRESULT	messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 	void setColladaComponent( CColladaMeshComponent *comp );
 

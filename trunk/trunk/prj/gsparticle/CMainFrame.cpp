@@ -548,7 +548,7 @@ void CMainFrame::onMenuOpenEffects( uiObject *pSender )
 	m_currentFile = lpFileName;
 	WCHAR title[1024];
 	swprintf(title, 1024, L"%s - %s", STR_APP_TITLE, lpPath);
-	setCaption( title );	
+	setCaption( title );
 }
 
 void CMainFrame::onMenuSaveEffects( uiObject *pSender )

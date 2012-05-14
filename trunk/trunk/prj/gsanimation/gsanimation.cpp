@@ -24,8 +24,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	CMainFrame *pMainWnd = new CMainFrame();
 
 	pMainWnd->create( STR_APP_TITLE, 50,50,1024,700,NULL, TEXT("gsParticleEditor") );	
-	pMainWnd->setPositionCenterOfScreen();		
-	pMainWnd->showWindow(true);	
+	pMainWnd->setPositionCenterOfScreen();
+	pMainWnd->setWindowState(SW_NORMAL);
+	pMainWnd->showWindow(true);
 	pMainWnd->updateWindow();
 	pMainWnd->setForegroundWindow();
 	pMainWnd->setFocus();

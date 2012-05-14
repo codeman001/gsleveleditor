@@ -84,7 +84,7 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	split->updateSplit();
 	split->showWindow( true );
 
-	m_editorWin = ref<CAnimModifyFrame>( new CAnimModifyFrame(L"Anim editor", 50,50, 900,400,this)  );
+	m_editorWin = ref<CAnimModifyFrame>( new CAnimModifyFrame(L"Anim editor", 50,50, 900,700,this)  );
 	m_editorWin->changeWindowStyle( UISTYLE_RESIZE );
 	m_editorWin->setParent(NULL);
 	m_editorWin->showWindow(false);

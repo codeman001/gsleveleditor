@@ -2186,7 +2186,7 @@ void readIntsInsideElement(io::IXMLReader* reader, vector<s32>& arrayInt)
 
 				if (*begin)
 				{
-					uiString::parseToInt<wchar_t>( begin, &value );
+					swscanf(begin,L"%d", &value);
 					arrayInt.push_back( value );
 				}				
 

@@ -2,6 +2,7 @@
 #define _ANIM_MODIFYFRAME_
 
 #include "CColladaMeshComponent.h"
+#include "CTimelineControl.h"
 
 class CAnimModifyFrame: public uiWindow
 {
@@ -10,6 +11,10 @@ protected:
 	
 	uiSplitContainer		*m_mainSplit;
 	uiTreeView				*m_treeNode;
+
+	CTimelineControl		*m_timeControlX;
+	CTimelineControl		*m_timeControlY;
+	CTimelineControl		*m_timeControlZ;
 
 public:	
 	CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent );

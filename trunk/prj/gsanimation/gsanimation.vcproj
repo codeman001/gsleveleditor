@@ -399,6 +399,18 @@
 				RelativePath=".\CMainFrame.h"
 				>
 			</File>
+			<Filter
+				Name="Control"
+				>
+				<File
+					RelativePath=".\CTimelineControl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CTimelineControl.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

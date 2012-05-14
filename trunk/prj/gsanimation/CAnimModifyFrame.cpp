@@ -49,6 +49,12 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	containerWin->changeWindowStyle( UISTYLE_CHILD );
 	containerWin->showWindow( true );	
 
+	m_timeControlX = ref<CTimelineControl>( new CTimelineControl(containerWin, 0,0,100,100) );
+	m_timeControlX->setDock(containerWin, UIDOCK_FILL);
+	//m_timeControlY;
+	//m_timeControlZ;
+
+
 	m_mainSplit->setWindow( m_treeNode, 0, 0 );
 	m_mainSplit->setWindow( containerWin, 0, 1 );
 	m_mainSplit->setColSize( 0, 300 );

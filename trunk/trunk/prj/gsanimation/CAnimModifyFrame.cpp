@@ -38,13 +38,13 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	
 	// create tree view node
 	m_treeNode = ref<uiTreeView>( new uiTreeView(L"treeNode", 0,0, 10,10, true, m_mainSplit) );
-
 	uiIcon iconTreeNode( MAKEINTRESOURCE(IDI_TREENODE) );
 	uiIcon iconTreeMesh( MAKEINTRESOURCE(IDI_TREEMESH) );
 	m_treeNode->pushSmallImage( &iconTreeNode );
 	m_treeNode->pushSmallImage( &iconTreeMesh );
 	m_treeNode->setEventOnSelectChange<CAnimModifyFrame, &CAnimModifyFrame::_onTreeSelect> ( this );
-	
+	m_treeNode->setEventOnRClicked<CAnimModifyFrame, &CAnimModifyFrame::_onTreeRClick> ( this );
+
 	// create info node
 	uiWindow *containerWin = ref<uiWindow>( new uiWindow(L"container", 0,0, 100, 100, m_mainSplit) );
 	containerWin->changeWindowStyle( UISTYLE_CHILD );
@@ -64,6 +64,12 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	m_mainSplit->updateSplit();
 	m_mainSplit->showWindow( true );
 	
+	m_treePopupMenu = ref<uiMenuPopup>( new uiMenuPopup() );
+	m_treePopupMenu->appendMenuItem(L"Show node");
+	m_treePopupMenu->appendMenuItem();
+	m_treePopupMenu->appendMenuItem(L"Disable anim all node");
+	m_treePopupMenu->appendMenuItem(L"Enable anim all node");
+	m_treePopupMenu->appendMenuItem(L"Enable anim this node");
 }
 
 CAnimModifyFrame::~CAnimModifyFrame()
@@ -82,9 +88,43 @@ LRESULT	CAnimModifyFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM 
 		showWindow(false);
 		return 0;
 	}
+	else if ( uMsg == WM_CONTEXTMENU )
+	{
+		POINT pt;
+		POINTSTOPOINT(pt, lParam);		
+		HWND wndSend = (HWND)wParam;		
+
+		//if ( wndSend == m_treeNode->getHandle() )
+		{
+			m_clickTreeItem = NULL;
+
+			POINT point;
+			point.x = pt.x;
+			point.y = pt.y;
+			
+			m_clickTreeItem = NULL;
+			m_clickTreeItem = m_treeNode->getHisTest( point.x, point.y );					
+						
+			if ( m_clickTreeItem )
+			{
+				m_treePopupMenu->getItem(0)->setDisable(false);
+				m_treePopupMenu->getItem(4)->setDisable(false);
+			}
+			else
+			{
+				m_treePopupMenu->getItem(0)->setDisable(true);
+				m_treePopupMenu->getItem(4)->setDisable(true);
+			}
+
+			m_treePopupMenu->popup( this, point.x, point.y );
+		}
+	}
 	return uiWindow::messageMap( hWnd, uMsg, wParam, lParam );
 }
 
+void CAnimModifyFrame::_onTreeRClick( uiObject *pSender )
+{
+}
 
 void CAnimModifyFrame::_onTreeSelect( uiObject *pSender )
 {
@@ -173,10 +213,6 @@ void CAnimModifyFrame::updateTimeLine( CGameColladaSceneNode *node, int type )
 		return;
 	}
 	
-	//core::array<SPositionKey>	PositionKeys;
-	//core::array<SScaleKey>	ScaleKeys;
-	//core::array<SRotationKey>	RotationKeys;
-	
 	if ( type == 0 )
 	{
 		// rotation
@@ -186,8 +222,12 @@ void CAnimModifyFrame::updateTimeLine( CGameColladaSceneNode *node, int type )
 			CGameColladaSceneNode::SRotationKey &key = node->RotationKeys[i];			
 			
 			core::vector3df rotVec = key.rotation.getMatrix().getRotationDegrees();
-			m_timeControl->addValue( key.frame, rotVec.X, rotVec.Y, rotVec.Z );
+			m_timeControl->addValue( key.frame, rotVec.X, rotVec.Y, rotVec.Z );			
 		}
+
+		// set time
+		if ( nKeys > 0 )
+			m_timeControl->setTimeLength( node->RotationKeys.getLast().frame );
 	}
 	else
 	{

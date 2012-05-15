@@ -9,6 +9,8 @@ CTimelineControl::CTimelineControl(uiWindow* parent, int x, int y, int w, int h)
 
 	m_timeLength	= 0.0f;
 	m_timeView		= 0.0f;
+	m_maxValue = 0.0f;
+	m_minValue = 0.0f;
 
 	m_lengthPixel	= 10;	
 	m_needSortValue	= true;	
@@ -55,13 +57,42 @@ void CTimelineControl::sortValue( vector<STimelineValue>& value )
 	}
 }
 
+void CTimelineControl::calcMinMax( vector<STimelineValue>& value )
+{
+	m_maxValue = 0.0f;
+	m_minValue = 0.0f;
+
+	int len = (int)value.size();
+	if ( len > 0 )
+	{
+		m_maxValue = value[0].x;
+		m_minValue = value[0].x;
+	}
+
+	for ( int i = 1; i < len; i++ )
+	{
+		if ( m_minValue > value[i].x )
+			m_minValue = value[i].x;
+		if ( m_minValue > value[i].y )
+			m_minValue = value[i].y;
+		if ( m_minValue > value[i].z )
+			m_minValue = value[i].z;
+
+		if ( m_maxValue < value[i].x )
+			m_maxValue = value[i].x;
+		if ( m_maxValue < value[i].y )
+			m_maxValue = value[i].y;
+		if ( m_maxValue < value[i].z )
+			m_maxValue = value[i].z;
+	}
+}
+
 void CTimelineControl::paintControl( uiGraphics *pG )
 {
 	if ( m_needSortValue == true )
 	{
-		sortValue(m_valueX);
-		sortValue(m_valueY);
-		sortValue(m_valueZ);
+		sortValue(m_value);	
+		calcMinMax(m_value);
 		m_needSortValue = false;
 	}
 
@@ -73,10 +104,36 @@ void CTimelineControl::paintControl( uiGraphics *pG )
 	uiGraphics *graphics = pG->createBackBuffer( nWidth, nHeight );
 
 	// fill background
-	graphics->drawFillRectangle(0,0, nWidth, nHeight, &bgGrey);
+	graphics->drawFillRectangle(0,0, nWidth, nHeight, &bgGrey);	
 	
+	float midValue = (m_maxValue - m_minValue)*0.5f;
+	
+	
+	// draw center line
+	graphics->drawLine(0, getY(midValue), nWidth, getY(midValue));
+	
+	// draw limit line
+	graphics->drawLine(0, getY(m_minValue), nWidth, getY(m_minValue));
+	graphics->drawLine(0, getY(m_maxValue), nWidth, getY(m_maxValue));
 
-	
+
 	pG->swapBuffer(0,0,nWidth, nHeight, graphics, 0,0,nWidth,nHeight, SRCCOPY);
 	graphics->releaseGraphics();	
+}
+
+int CTimelineControl::getY( float v )
+{
+	float paddingY = 10.0f;
+	float height = (float)getClientHeight() - paddingY;
+	
+	if ( v <= m_minValue )
+		return paddingY;
+	else if ( v >= m_maxValue )
+		return paddingY + height;
+
+	float max = m_maxValue;
+	float min = m_minValue;
+
+	float posY = paddingY + height - (m_maxValue - m_minValue)*height/( v - m_minValue );	
+	return (int)posY;
 }

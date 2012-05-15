@@ -43,17 +43,15 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	uiIcon iconTreeMesh( MAKEINTRESOURCE(IDI_TREEMESH) );
 	m_treeNode->pushSmallImage( &iconTreeNode );
 	m_treeNode->pushSmallImage( &iconTreeMesh );
-
+	m_treeNode->setEventOnSelectChange<CAnimModifyFrame, &CAnimModifyFrame::_onTreeSelect> ( this );
+	
 	// create info node
 	uiWindow *containerWin = ref<uiWindow>( new uiWindow(L"container", 0,0, 100, 100, m_mainSplit) );
 	containerWin->changeWindowStyle( UISTYLE_CHILD );
 	containerWin->showWindow( true );	
 
-	m_timeControlX = ref<CTimelineControl>( new CTimelineControl(containerWin, 0,0,100,100) );
-	m_timeControlX->setDock(containerWin, UIDOCK_FILL);
-	//m_timeControlY;
-	//m_timeControlZ;
-
+	m_timeControl = ref<CTimelineControl>( new CTimelineControl(containerWin, 0,0,100,100) );
+	m_timeControl->setDock(containerWin, UIDOCK_FILL);	
 
 	m_mainSplit->setWindow( m_treeNode, 0, 0 );
 	m_mainSplit->setWindow( containerWin, 0, 1 );
@@ -87,6 +85,18 @@ LRESULT	CAnimModifyFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM 
 	return uiWindow::messageMap( hWnd, uMsg, wParam, lParam );
 }
 
+
+void CAnimModifyFrame::_onTreeSelect( uiObject *pSender )
+{
+	uiListTreeViewItem listNodeSelect;
+	m_treeNode->getItemSelected( &listNodeSelect );
+	if ( listNodeSelect.size() > 0 )
+	{
+		uiTreeViewItem* item = listNodeSelect[0];
+		updateTimeLine( (CGameColladaSceneNode*)item->getData(), 0 );
+	}
+}
+
 void CAnimModifyFrame::setColladaComponent( CColladaMeshComponent *comp )
 {
 	// delete all 
@@ -104,7 +114,7 @@ void CAnimModifyFrame::setColladaComponent( CColladaMeshComponent *comp )
 		core::list<ISceneNode*>::ConstIterator it = sceneNode->getChildren().begin(),
 			end = sceneNode->getChildren().end();
 		while ( it != end )
-		{
+		{		
 			addNodeToTreeView( root, (*it) );
 			it++;
 		}
@@ -113,6 +123,8 @@ void CAnimModifyFrame::setColladaComponent( CColladaMeshComponent *comp )
 		root->update();
 
 	}
+
+	updateTimeLine( NULL, 0 );
 }
 
 void CAnimModifyFrame::addNodeToTreeView( uiTreeViewItem *parent, ISceneNode* node )
@@ -149,4 +161,38 @@ void CAnimModifyFrame::addNodeToTreeView( uiTreeViewItem *parent, ISceneNode* no
 	
 	treeItem->expandChild(true);
 	treeItem->update();
+}
+
+void CAnimModifyFrame::updateTimeLine( CGameColladaSceneNode *node, int type )
+{
+	m_timeControl->clearAllValue();
+
+	if ( node == NULL )
+	{		
+		m_timeControl->invalidateRect(NULL, true);
+		return;
+	}
+	
+	//core::array<SPositionKey>	PositionKeys;
+	//core::array<SScaleKey>	ScaleKeys;
+	//core::array<SRotationKey>	RotationKeys;
+	
+	if ( type == 0 )
+	{
+		// rotation
+		int nKeys = node->RotationKeys.size();
+		for ( int i = 0; i < nKeys; i++ )
+		{
+			CGameColladaSceneNode::SRotationKey &key = node->RotationKeys[i];			
+			
+			core::vector3df rotVec = key.rotation.getMatrix().getRotationDegrees();
+			m_timeControl->addValue( key.frame, rotVec.X, rotVec.Y, rotVec.Z );
+		}
+	}
+	else
+	{
+		// translate
+	}
+
+	m_timeControl->invalidateRect(NULL, true);
 }

@@ -106,34 +106,101 @@ void CTimelineControl::paintControl( uiGraphics *pG )
 	// fill background
 	graphics->drawFillRectangle(0,0, nWidth, nHeight, &bgGrey);	
 	
-	float midValue = (m_maxValue - m_minValue)*0.5f;
-	
-	
-	// draw center line
-	graphics->drawLine(0, getY(midValue), nWidth, getY(midValue));
-	
-	// draw limit line
-	graphics->drawLine(0, getY(m_minValue), nWidth, getY(m_minValue));
-	graphics->drawLine(0, getY(m_maxValue), nWidth, getY(m_maxValue));
+	if ( m_maxValue > 0.0f && m_minValue > 0.0f )
+	{		
+		float midValue = (m_maxValue - m_minValue)*0.5f;	
+		
+		uiPen pen(1, PS_SOLID, uiColor(0x888888));
+		uiPen penX(2, PS_SOLID, uiColor(0x0000ff));
+		uiPen penY(2, PS_SOLID, uiColor(0x00ff00));
+		uiPen penZ(2, PS_SOLID, uiColor(0xff0000));
 
+		graphics->selectObject(&pen);
+
+		// draw center line
+		graphics->drawLine(0, getY(midValue), nWidth, getY(midValue));
+		
+		// draw limit line
+		graphics->drawLine(0, getY(m_minValue), nWidth, getY(m_minValue));
+		graphics->drawLine(0, getY(m_maxValue), nWidth, getY(m_maxValue));
+		
+		int len = (int)m_value.size();
+		for ( int i = 1; i < len; i++ )
+		{
+			int x0 = getX( m_value[i-1].time );
+			int x1 = getX( m_value[i].time );
+									
+			int y0 = getY( m_value[i-1].x );
+			int y1 = getY( m_value[i].x );
+			graphics->selectObject(&pen);
+			graphics->drawLine(x1,0, x1,nHeight);
+
+			graphics->selectObject(&penX);
+			graphics->drawLine(x0, y0, x1, y1);
+			
+			y0 = getY( m_value[i-1].y );
+			y1 = getY( m_value[i].y );
+			graphics->selectObject(&penY);
+			graphics->drawLine(x0, y0, x1, y1);
+
+			y0 = getY( m_value[i-1].z );
+			y1 = getY( m_value[i].z );
+			graphics->selectObject(&penZ);
+			graphics->drawLine(x0, y0, x1, y1);
+		}
+		
+		for ( int i = 1; i < len; i++ )
+		{
+			int r = 4;
+			int x0 = getX( m_value[i-1].time );
+			int x1 = getX( m_value[i].time );									
+			int y0 = getY( m_value[i-1].x );
+			int y1 = getY( m_value[i].x );
+			
+			graphics->selectObject(&penX);			
+			graphics->drawRectangle( x1-r,y1-r,x1+r,y1+r );
+			
+			y0 = getY( m_value[i-1].y );
+			y1 = getY( m_value[i].y );
+			graphics->selectObject(&penY);
+			graphics->drawRectangle( x1-r,y1-r,x1+r,y1+r );
+
+			y0 = getY( m_value[i-1].z );
+			y1 = getY( m_value[i].z );
+			graphics->selectObject(&penZ);
+			graphics->drawRectangle( x1-r,y1-r,x1+r,y1+r );
+		}
+
+		graphics->selectObject(&penX);
+		
+	}
 
 	pG->swapBuffer(0,0,nWidth, nHeight, graphics, 0,0,nWidth,nHeight, SRCCOPY);
 	graphics->releaseGraphics();	
 }
 
+int CTimelineControl::getX( float v )
+{
+	if ( v <= 0 || m_timeLength == 0.0f)
+		return 0;
+	
+	float timeWidth = m_lengthPixel*m_timeLength;
+	if ( v >= m_timeLength )
+		return (int)timeWidth;
+
+	return (int)(v*timeWidth/m_timeLength);
+}
+
 int CTimelineControl::getY( float v )
 {
 	float paddingY = 10.0f;
-	float height = (float)getClientHeight() - paddingY;
+	float height = (float)getClientHeight() - paddingY*2;
 	
 	if ( v <= m_minValue )
-		return paddingY;
+		return (int)(paddingY + height);
 	else if ( v >= m_maxValue )
-		return paddingY + height;
+		return (int)paddingY;
 
-	float max = m_maxValue;
-	float min = m_minValue;
-
-	float posY = paddingY + height - (m_maxValue - m_minValue)*height/( v - m_minValue );	
+	float posY = paddingY + (m_maxValue - v)*height/( m_maxValue - m_minValue );	
 	return (int)posY;
 }

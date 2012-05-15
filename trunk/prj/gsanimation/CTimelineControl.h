@@ -67,7 +67,9 @@ public:
 		m_needSortValue = true;
 	}
 
+	int getX( float v );
 	int getY( float v );
+	
 };
 
 #endif

@@ -6,7 +6,9 @@
 struct STimelineValue
 {
 	float	time;
-	float	value;
+	float	x;
+	float	y;
+	float	z;
 };
 
 class CTimelineControl: public uiWindow
@@ -17,11 +19,13 @@ protected:
 	
 	bool				m_needSortValue;
 	
-	vector<STimelineValue>	m_valueX;
-	vector<STimelineValue>	m_valueY;
-	vector<STimelineValue>	m_valueZ;
+	vector<STimelineValue>	m_value;
 	
-	float				m_timeView;
+	float					m_timeView;
+	
+	float					m_maxValue;
+	float					m_minValue;
+
 public:
 	CTimelineControl(uiWindow* parent, int x, int y, int w, int h);
 	virtual ~CTimelineControl();
@@ -40,23 +44,30 @@ public:
 		m_lengthPixel = pixel;
 	}
 
-	void addValue( int type, float time, float value )
+	void addValue( float time, float x, float y, float z )
 	{
 		STimelineValue s;
 		s.time = time;
-		s.value = value;
+		s.x = x;
+		s.y = y;
+		s.z = z;
 		
-		if ( type == 0 )
-			m_valueX.push_back( s );
-		else if ( type == 1 )
-			m_valueY.push_back( s );
-		else
-			m_valueZ.push_back( s );		
+		m_value.push_back( s );	
 
 		m_needSortValue = true;
 	}
 
 	void sortValue( vector<STimelineValue>& value );
+	
+	void calcMinMax( vector<STimelineValue>& value );	
+
+	void clearAllValue()
+	{
+		m_value.clear();
+		m_needSortValue = true;
+	}
+
+	int getY( float v );
 };
 
 #endif

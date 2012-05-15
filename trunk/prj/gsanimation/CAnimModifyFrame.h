@@ -12,9 +12,7 @@ protected:
 	uiSplitContainer		*m_mainSplit;
 	uiTreeView				*m_treeNode;
 
-	CTimelineControl		*m_timeControlX;
-	CTimelineControl		*m_timeControlY;
-	CTimelineControl		*m_timeControlZ;
+	CTimelineControl		*m_timeControl;	
 
 public:	
 	CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent );
@@ -24,9 +22,15 @@ public:
 	// Phan tich su kien cho uiForm
 	virtual LRESULT	messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+	void _onTreeSelect( uiObject *pSender );
+
 	void setColladaComponent( CColladaMeshComponent *comp );
 
 	void addNodeToTreeView( uiTreeViewItem *parent, ISceneNode* node );
+
+	void updateTimeLine( CGameColladaSceneNode *node, int type );
+
+	
 };
 
 #endif

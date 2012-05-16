@@ -21,18 +21,30 @@ protected:
 	
 	vector<STimelineValue>	m_value;
 	
+	bool					m_changeTime;
+	float					m_currentTime;
 	float					m_timeView;
 	
 	float					m_maxValue;
 	float					m_minValue;
 
+	int						m_timerID;
+
+	bool					m_lbuttonDown;
 public:
 	CTimelineControl(uiWindow* parent, int x, int y, int w, int h);
-	virtual ~CTimelineControl();
 
+	virtual ~CTimelineControl();
+	
 	virtual void _OnPaint( uiGraphics *pG );
+	
+	virtual void _OnLButtonDown( uiMouseEvent mouseEvent, int x, int y );
+	virtual void _OnMouseMove( uiMouseEvent mouseEvent, int x, int y );
+	virtual void _OnLButtonUp( uiMouseEvent mouseEvent, int x, int y );
 
 	void paintControl( uiGraphics *pG );
+
+	void update();
 
 	void setTimeLength( float f )
 	{
@@ -57,6 +69,16 @@ public:
 		m_needSortValue = true;
 	}
 
+	void setCurrentTime(float f)
+	{
+		m_currentTime = f;
+	}
+
+	float getCurrentTime()
+	{
+		return m_currentTime;
+	}
+
 	void sortValue( vector<STimelineValue>& value );
 	
 	void calcMinMax( vector<STimelineValue>& value );	
@@ -64,11 +86,18 @@ public:
 	void clearAllValue()
 	{
 		m_value.clear();
+		m_timeLength = 0.0f;
 		m_needSortValue = true;
 	}
 
 	int getX( float v );
 	int getY( float v );
+	float getTimeValue( int v );
+
+	void enableChangeTime( bool b )
+	{
+		m_changeTime = b;
+	}
 	
 };
 

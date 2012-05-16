@@ -235,6 +235,7 @@ protected:
 
 	bool						m_needFlip;
 
+	float						m_currentFrame;
 	float						m_animFrames;	
 	float						m_pauseAnimFrame;
 	bool						m_pauseAnim;
@@ -385,6 +386,19 @@ public:
 	{
 		m_pauseAnim = true;
 		m_pauseAnimFrame = frame;
+	}
+
+	// getCurrentFrame
+	// get current frame of anim
+	float getCurrentFrame()
+	{
+		return m_currentFrame;
+	}
+
+	// setCurrentFrame	
+	void setCurrentFrame(float f)
+	{
+		m_currentFrame = f;
 	}
 
 	// resumeAnim

@@ -4,18 +4,46 @@
 #include "CColladaMeshComponent.h"
 #include "CTimelineControl.h"
 
+class CTreeContainer: public uiWindow
+{
+protected:
+	uiTreeView  *m_treeView;
+	uiMenuPopup	*m_treePopupMenu;
+
+	uiTreeViewItem			*m_clickTreeItem;
+public:
+	CTreeContainer( LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent );
+	virtual ~CTreeContainer();
+
+	uiTreeView* getTreeView()
+	{
+		return m_treeView;
+	}
+
+	// messageMap
+	// Phan tich su kien cho uiForm
+	virtual LRESULT	messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+	// _onMenuCommand
+	// event when menu item click
+	void _onMenuCommand( uiObject *pSender );
+};
+
 class CAnimModifyFrame: public uiWindow
 {
 protected:
 	CColladaMeshComponent	*m_colladaComponent;
 	
 	uiSplitContainer		*m_mainSplit;
-	
-	uiTreeView				*m_treeNode;
-	uiTreeViewItem			*m_clickTreeItem;
+		
+	CTreeContainer			*m_treeContainer;
+	uiTreeView				*m_treeNode;	
 
-	CTimelineControl		*m_timeControl;	
-	uiMenuPopup				*m_treePopupMenu;
+	uiToolbarButton			*m_playButton;
+	uiToolbarButton			*m_stopButton;
+	uiToolbarButton			*m_pauseButton;
+
+	CTimelineControl		*m_timeControl;		
 public:	
 	CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent );
 	virtual ~CAnimModifyFrame();
@@ -26,7 +54,7 @@ public:
 
 	void _onTreeSelect( uiObject *pSender );
 
-	void _onTreeRClick( uiObject *pSender );	
+	void _onToolbarCommand( uiObject *pSender );
 
 	void setColladaComponent( CColladaMeshComponent *comp );
 

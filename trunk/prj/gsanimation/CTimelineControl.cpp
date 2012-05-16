@@ -14,17 +14,42 @@ CTimelineControl::CTimelineControl(uiWindow* parent, int x, int y, int w, int h)
 
 	m_lengthPixel	= 10;	
 	m_needSortValue	= true;	
+	m_changeTime = false;
+
+	m_lbuttonDown = false;
 }
 
 CTimelineControl::~CTimelineControl()
-{
-
+{	
 }
 
 void CTimelineControl::_OnPaint( uiGraphics *pG )
 {
-	uiWindow::_OnPaint(pG);
 	paintControl(pG);
+}
+
+void CTimelineControl::_OnLButtonDown( uiMouseEvent mouseEvent, int x, int y )
+{
+	m_lbuttonDown = true;
+	if ( m_changeTime )
+	{
+		m_currentTime = getTimeValue( x );
+		update();
+	}
+}
+
+void CTimelineControl::_OnMouseMove( uiMouseEvent mouseEvent, int x, int y )
+{
+	if ( m_changeTime && m_lbuttonDown )
+	{
+		m_currentTime = getTimeValue( x );
+		update();
+	}
+}
+
+void CTimelineControl::_OnLButtonUp( uiMouseEvent mouseEvent, int x, int y )
+{
+	m_lbuttonDown = false;
 }
 
 void CTimelineControl::sortValue( vector<STimelineValue>& value )
@@ -87,6 +112,12 @@ void CTimelineControl::calcMinMax( vector<STimelineValue>& value )
 	}
 }
 
+void CTimelineControl::update()
+{
+	uiGraphics g(this);
+	paintControl( &g );
+}
+
 void CTimelineControl::paintControl( uiGraphics *pG )
 {
 	if ( m_needSortValue == true )
@@ -99,7 +130,7 @@ void CTimelineControl::paintControl( uiGraphics *pG )
 	int nWidth = getClientWidth();
 	int nHeight = getClientHeight();
 	
-	uiBrush bgGrey( uiColor(0x9f9f9f) );
+	uiBrush bgGrey( uiColor(0x9f9f9f) );	
 
 	uiGraphics *graphics = pG->createBackBuffer( nWidth, nHeight );
 
@@ -175,13 +206,33 @@ void CTimelineControl::paintControl( uiGraphics *pG )
 		
 	}
 
+	// paint current time
+	uiPen penTime(1, PS_SOLID, uiColor(0x00FFFF));
+	int xTime = getX( m_currentTime );
+
+	graphics->selectObject(&penTime);	
+	graphics->drawLine( xTime, 0, xTime, nHeight );
+
 	pG->swapBuffer(0,0,nWidth, nHeight, graphics, 0,0,nWidth,nHeight, SRCCOPY);
 	graphics->releaseGraphics();	
 }
 
+float CTimelineControl::getTimeValue( int v )
+{
+	if ( v <= 0 || m_timeLength == 0.0f )
+		return 0;
+
+	float timeWidth = m_lengthPixel*m_timeLength;
+	float f = v/timeWidth;
+	if ( f >= 1.0f )
+		f = 1.0f;
+
+	return m_timeLength*f;
+}
+
 int CTimelineControl::getX( float v )
 {
-	if ( v <= 0 || m_timeLength == 0.0f)
+	if ( v <= 0 || m_timeLength == 0.0f )
 		return 0;
 	
 	float timeWidth = m_lengthPixel*m_timeLength;

@@ -187,7 +187,6 @@ void CGameColladaSceneNode::skin()
 	for ( int i = 0; i < nJoint; i++, pJoint++ )
 	{
 		pJoint->skinningMatrix.setbyproduct( pJoint->node->AbsoluteAnimationMatrix, pJoint->globalInversedMatrix );
-		pJoint->skinningMatrix *= ColladaMesh->BindShapeMatrix;
 	}
 
 	// skinning in vertex
@@ -541,6 +540,11 @@ void CGameColladaSceneNode::render()
 			driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,0,255,0));
 		else
 			driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,255,255,255));
+
+		//core::matrix4 mat = GlobalInversedMatrix;
+		//mat.makeInverse();
+		//driver->setTransform(video::ETS_WORLD, mat );
+		//driver->draw3DBox( getBoundingBox(), video::SColor(255,100,100,100));
 	}
 	
 }

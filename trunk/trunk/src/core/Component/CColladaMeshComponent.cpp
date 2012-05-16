@@ -1989,9 +1989,12 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 		newJoint.name = joint.Name;
 		newJoint.node = m_sidNode[ std::string(sidName) ];
 
+		// mul with bindshapematrix
+		newJoint.node->LocalMatrix *= meshParam->BindShapeMatrix;
+
 		// set invert matrix
 		newJoint.globalInversedMatrix = joint.InvMatrix;
-
+		newJoint.node->GlobalInversedMatrix = joint.InvMatrix;
 	}
 	
 	// set joint index
@@ -2278,10 +2281,10 @@ core::matrix4 readScaleNode(io::IXMLReader* reader, bool flip)
 	f32 floats[3];
 	readFloatsInsideElement(reader, floats, 3);
 
-	if (flip)
+	//if (flip)
 		mat.setScale(core::vector3df(floats[0], floats[2], floats[1]));
-	else
-		mat.setScale(core::vector3df(floats[0], floats[1], floats[2]));
+	//else
+	//	mat.setScale(core::vector3df(floats[0], floats[1], floats[2]));
 
 	return mat;
 }
@@ -2296,10 +2299,10 @@ core::matrix4 readTranslateNode(io::IXMLReader* reader, bool flip)
 	f32 floats[3];
 	readFloatsInsideElement(reader, floats, 3);
 
-	if (flip)
+	//if (flip)
 		mat.setTranslation(core::vector3df(floats[0], floats[2], floats[1]));
-	else
-		mat.setTranslation(core::vector3df(floats[0], floats[1], floats[2]));
+	//else
+	//	mat.setTranslation(core::vector3df(floats[0], floats[1], floats[2]));
 
 	return mat;
 }
@@ -2317,10 +2320,10 @@ core::matrix4 readRotateNode(io::IXMLReader* reader, bool flip)
 	if (!core::iszero(floats[3]))
 	{
 		core::quaternion q;
-		if (flip)
+		//if (flip)
 			q.fromAngleAxis(floats[3]*core::DEGTORAD, core::vector3df(floats[0], floats[2], floats[1]));
-		else
-			q.fromAngleAxis(floats[3]*core::DEGTORAD, core::vector3df(floats[0], floats[1], floats[2]));
+		//else
+		//	q.fromAngleAxis(floats[3]*core::DEGTORAD, core::vector3df(floats[0], floats[1], floats[2]));
 		return q.getMatrix();
 	}
 	else

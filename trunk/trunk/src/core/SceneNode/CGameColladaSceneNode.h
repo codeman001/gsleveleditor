@@ -162,13 +162,16 @@ protected:
 	
 	SMaterial Material;
 
+public:
 	core::matrix4	AnimationMatrix;
 	core::matrix4	AbsoluteAnimationMatrix;
 
-	core::matrix4	LocalMatrix;	
+	core::matrix4	LocalMatrix;
+	core::matrix4	GlobalInversedMatrix;
 	
 	CGameColladaMesh	*ColladaMesh;
 
+protected:
 	bool			m_isRootColladaNode;
 	bool			m_enableAnim;
 

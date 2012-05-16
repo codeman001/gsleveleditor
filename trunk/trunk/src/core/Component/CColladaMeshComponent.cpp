@@ -1611,9 +1611,6 @@ void CColladaMeshComponent::constructScene()
 	m_mapNode.clear();
 
 	// create new scene node
-	//m_gameObject->m_node = smgr->addEmptySceneNode( m_gameObject->getParentSceneNode(), m_gameObject->getID() );
-	//m_gameObject->m_node->grab();
-
 	m_colladaNode = new CGameChildContainerSceneNode( 
 			m_gameObject, 
 			m_gameObject->getParentSceneNode(),
@@ -1697,6 +1694,7 @@ void CColladaMeshComponent::constructScene()
 
 				// need store component
 				pColladaMesh->Component = this;
+				pColladaMesh->BindShapeMatrix = pMesh->BindShapeMatrix;
 
 				// add mesh buffer to skin mesh
 				int nBuffer = pMesh->Triangles.size();

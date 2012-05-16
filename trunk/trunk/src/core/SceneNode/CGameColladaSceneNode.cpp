@@ -185,7 +185,10 @@ void CGameColladaSceneNode::skin()
 
 	// calc joint matrix
 	for ( int i = 0; i < nJoint; i++, pJoint++ )
+	{
 		pJoint->skinningMatrix.setbyproduct( pJoint->node->AbsoluteAnimationMatrix, pJoint->globalInversedMatrix );
+		pJoint->skinningMatrix *= ColladaMesh->BindShapeMatrix;
+	}
 
 	// skinning in vertex
 	core::vector3df thisVertexMove, thisNormalMove;

@@ -123,6 +123,9 @@ public:
 	//! The bounding box of this mesh
 	core::aabbox3d<f32>			BoundingBox;	
 
+	//! Shape matrix from dae
+	core::matrix4	BindShapeMatrix;
+
 	// ! For Skinning
 	struct SWeight
 	{	
@@ -163,7 +166,7 @@ protected:
 	core::matrix4	AbsoluteAnimationMatrix;
 
 	core::matrix4	LocalMatrix;	
-
+	
 	CGameColladaMesh	*ColladaMesh;
 
 	bool			m_isRootColladaNode;

@@ -241,7 +241,8 @@ void CMainFrame::toolbarLoadMesh( uiObject *pSender )
 	
 	uiSaveOpenDialog dialog;	
 	dialog.clearAllFileExt();
-	dialog.addFileExt( L"Mesh file (.x, *.dae)", L"*.x;*.dae" );
+	//dialog.addFileExt( L"Mesh file (.x, *.dae)", L"*.x;*.dae" );
+	dialog.addFileExt( L"Mesh file (*.dae)", L"*.dae" );
 	dialog.addFileExt( L"All files (.*)", L"*.*" );
 	if ( dialog.doModal( uiApplication::getRoot(), false ) == false )
 		return;
@@ -253,6 +254,9 @@ void CMainFrame::toolbarLoadMesh( uiObject *pSender )
 	CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
 	colladaComponent->loadFromFile( lpFileName );
 
+	// show editor win
+	m_editorWin->setColladaComponent( m_irrWin->getAnimComponent() );
+	m_editorWin->showWindow(true);
 }
 
 void CMainFrame::toolbarLoadAnimDae( uiObject *pSender )

@@ -55,6 +55,7 @@ CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 	m_animSpeed	= 24.0f;
 
 	m_animFrames = 0.0f;	
+	m_currentFrame = 0.0f;
 
 	m_pauseAnimFrame = 0.0f;
 	m_pauseAnim = false;
@@ -1441,6 +1442,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 
 	m_animFrames = 0.0f;
+	m_currentFrame = 0.0f;
 
 	while ( i != end )
 	{

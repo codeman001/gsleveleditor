@@ -59,6 +59,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	m_totalFrame = 0;
 	m_framePerSecond = 24.0f;
 	m_isRootColladaNode = true;
+	m_enableAnim = true;
 	m_timer = 0;
 
 	m_posHint = 0;
@@ -67,6 +68,10 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 
 	ColladaMesh = NULL;	
 	m_component = NULL;
+
+#ifdef GSANIMATION
+	m_isShowName = false;
+#endif
 }
 
 CGameColladaSceneNode::~CGameColladaSceneNode()
@@ -105,13 +110,16 @@ void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 {
 	ISceneNode::OnAnimate( timeMs );
 	
-	skin();
-
+	// reset timer
 	if ( m_timer == 0 )
 	{
 		m_timer = timeMs;
 		return;
 	}
+
+	// skin mesh
+	if ( ColladaMesh != NULL && ColladaMesh->IsStaticMesh == false )		
+		skin();
 	
 	// get last frame
 	m_totalFrame  = 0;
@@ -146,9 +154,15 @@ void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 				m_currentFrame = 0;
 		}
 	}
-	
-	updateAnimation();
-	
+		
+	// update animation translate
+	if ( m_enableAnim == true )
+	{
+		updateAnimation();
+		if ( m_component )
+			m_component->setCurrentFrame(m_currentFrame);
+	}
+
 	m_timer = timeMs;
 }
 
@@ -156,12 +170,9 @@ void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 // skin mesh
 void CGameColladaSceneNode::skin()
 {	
-	if ( !ColladaMesh )
+	if ( ColladaMesh == NULL || ColladaMesh->IsStaticMesh == true )
 		return;
-	
-	if ( ColladaMesh->IsStaticMesh == true )
-		return;	
-		
+
 	IMeshBuffer *meshBuffer		= ColladaMesh->getMeshBuffer(0);	
 	S3DVertex	*vertexBuffer	= (S3DVertex*)meshBuffer->getVertices();
 	S3DVertex	*vertex			= vertexBuffer;
@@ -481,7 +492,7 @@ void CGameColladaSceneNode::render()
 		core::vector3df position = getAbsolutePosition();
 
 		int x, y;
-		if ( pView->getScreenCoordinatesFrom3DPosition( position, &x, &y ) == true )
+		if ( m_isShowName == true && pView->getScreenCoordinatesFrom3DPosition( position, &x, &y ) == true )
 		{
 			wchar_t text[1024];
 			uiString::copy<wchar_t, const c8>( text, getName() );
@@ -522,7 +533,11 @@ void CGameColladaSceneNode::render()
 		debug_mat.ZBuffer = video::ECFN_NEVER;
 		
 		driver->setMaterial(debug_mat);
-		driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,255,255,255));
+
+		if ( m_isShowName )
+			driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,0,255,0));
+		else
+			driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,255,255,255));
 	}
 	
 }

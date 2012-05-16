@@ -167,6 +167,11 @@ protected:
 	CGameColladaMesh	*ColladaMesh;
 
 	bool			m_isRootColladaNode;
+	bool			m_enableAnim;
+
+#ifdef GSANIMATION
+	bool			m_isShowName;
+#endif
 
 	std::string		m_sid;
 
@@ -237,12 +242,33 @@ public:
 		return m_sid;
 	}
 
+	// isEnableAnim
+	// enable anim on this node
+	inline bool isEnableAnim()
+	{
+		return m_enableAnim;
+	}
+
+	// setEnableAnim
+	// enable/disable anim on this node
+	inline void setEnableAnim(bool b)
+	{
+		m_enableAnim = b;
+	}
+
 	// setComponent
 	// set component
 	void setComponent( CColladaMeshComponent *comp )
 	{
 		m_component = comp;
 	}
+
+#ifdef GSANIMATION
+	void showName( bool b )
+	{
+		m_isShowName = b;
+	}	
+#endif
 
 public:
 	

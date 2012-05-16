@@ -328,6 +328,12 @@ void CMainFrame::listPropertyOnItemEdit( uiObject *pSender )
 	if ( selectRow.size() == 0 )
 		return;
 
+	char label[512];
+	WCHAR labelW[512];
+	sprintf(label,"Anim editor - %s", m_irrWin->getAnimComponent()->getCurrentAnim()->m_id.c_str());
+	uiString::copy<WCHAR, char>( labelW, label );
+
+	m_editorWin->setCaption( labelW );
 	m_editorWin->setColladaComponent( m_irrWin->getAnimComponent() );
 	m_editorWin->showWindow(true);
 }

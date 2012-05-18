@@ -192,9 +192,16 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	containerWin->changeWindowStyle( UISTYLE_CHILD );
 	containerWin->showWindow( true );	
 
-	m_timeControl = ref<CTimelineControl>( new CTimelineControl(containerWin, 0,0,100,100) );
-	m_timeControl->setDock(containerWin, UIDOCK_FILL);	
-	m_timeControl->enableChangeTime( true );
+	uiTabControl *tabWin = ref<uiTabControl>( new uiTabControl(L"tabWin", 0,0, 100, 100, containerWin) );
+	tabWin->setDock( containerWin, UIDOCK_FILL );
+	
+	m_timeControlRot = ref<CTimelineControl>( new CTimelineControl(tabWin, 0,0,100,100) );	
+	m_timeControlRot->enableChangeTime( true );
+	m_timeControlPos = ref<CTimelineControl>( new CTimelineControl(tabWin, 0,0,100,100) );	
+	m_timeControlPos->enableChangeTime( true );
+
+	tabWin->addTab(L"Rotation keys", m_timeControlRot);
+	tabWin->addTab(L"Position keys", m_timeControlPos);
 
 	m_mainSplit->setWindow( m_treeContainer, 0, 0 );
 	m_mainSplit->setWindow( containerWin, 0, 1 );
@@ -233,13 +240,16 @@ LRESULT	CAnimModifyFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM 
 			if ( m_colladaComponent->isPauseAnim() == false )
 			{
 				// update time on timeline control
-				m_timeControl->setCurrentTime( m_colladaComponent->getCurrentFrame() );
-				m_timeControl->update();
+				m_timeControlRot->setCurrentTime( m_colladaComponent->getCurrentFrame() );
+				m_timeControlPos->setCurrentTime( m_colladaComponent->getCurrentFrame() );
+
+				m_timeControlRot->update();
+				m_timeControlPos->update();
 			}
 			else
 			{
 				// set animation frame from timeline control
-				m_colladaComponent->pauseAtFrame( m_timeControl->getCurrentTime() );
+				m_colladaComponent->pauseAtFrame( m_timeControlRot->getCurrentTime() );
 			}
 		}
 	}
@@ -254,17 +264,20 @@ void CAnimModifyFrame::_onToolbarCommand( uiObject *pSender )
 	if ( pSender == m_playButton )
 	{
 		m_colladaComponent->resumeAnim();
-		m_timeControl->enableChangeTime( false );
+		m_timeControlRot->enableChangeTime( false );
+		m_timeControlPos->enableChangeTime( false );
 	}
 	else if ( pSender == m_stopButton )
 	{
 		m_colladaComponent->pauseAtFrame(0);
-		m_timeControl->enableChangeTime( true );
+		m_timeControlRot->enableChangeTime( true );
+		m_timeControlPos->enableChangeTime( true );
 	}
 	else
 	{
 		m_colladaComponent->pauseAtFrame( m_colladaComponent->getCurrentFrame() );
-		m_timeControl->enableChangeTime( true );
+		m_timeControlRot->enableChangeTime( true );
+		m_timeControlPos->enableChangeTime( true );
 	}
 }
 
@@ -284,7 +297,7 @@ void CAnimModifyFrame::_onTreeSelect( uiObject *pSender )
 		CGameColladaSceneNode *node = (CGameColladaSceneNode*)item->getData();
 		if ( node )
 		{
-			updateTimeLine( node, 0 );
+			updateTimeLine( node );
 			node->showName( true );
 			sLastSelectNode = node;
 		}
@@ -318,7 +331,7 @@ void CAnimModifyFrame::setColladaComponent( CColladaMeshComponent *comp )
 
 	}
 
-	updateTimeLine( NULL, 0 );
+	updateTimeLine( NULL );
 }
 
 void CAnimModifyFrame::addNodeToTreeView( uiTreeViewItem *parent, ISceneNode* node )
@@ -357,17 +370,19 @@ void CAnimModifyFrame::addNodeToTreeView( uiTreeViewItem *parent, ISceneNode* no
 	treeItem->update();
 }
 
-void CAnimModifyFrame::updateTimeLine( CGameColladaSceneNode *node, int type )
+void CAnimModifyFrame::updateTimeLine( CGameColladaSceneNode *node )
 {
-	m_timeControl->clearAllValue();
+	m_timeControlRot->clearAllValue();
+	m_timeControlPos->clearAllValue();
 
 	if ( node == NULL )
 	{		
-		m_timeControl->invalidateRect(NULL, true);
+		m_timeControlRot->invalidateRect(NULL, true);
+		m_timeControlPos->invalidateRect(NULL, true);
 		return;
 	}
 	
-	if ( type == 0 )
+	// ROTATION
 	{
 		// rotation
 		int nKeys = node->RotationKeys.size();
@@ -376,17 +391,30 @@ void CAnimModifyFrame::updateTimeLine( CGameColladaSceneNode *node, int type )
 			CGameColladaSceneNode::SRotationKey &key = node->RotationKeys[i];			
 			
 			core::vector3df rotVec = key.rotation.getMatrix().getRotationDegrees();
-			m_timeControl->addValue( key.frame, rotVec.X, rotVec.Y, rotVec.Z );			
+			m_timeControlRot->addValue( key.frame, rotVec.X, rotVec.Y, rotVec.Z );			
 		}
 
 		// set time
 		if ( nKeys > 0 )
-			m_timeControl->setTimeLength( node->RotationKeys.getLast().frame );
+			m_timeControlRot->setTimeLength( node->RotationKeys.getLast().frame );
 	}
-	else
+	
+	// POSITION
 	{
-		// translate
+		// position
+		int nKeys = node->PositionKeys.size();
+		for ( int i = 0; i < nKeys; i++ )
+		{
+			CGameColladaSceneNode::SPositionKey &key = node->PositionKeys[i];			
+						
+			m_timeControlPos->addValue( key.frame, key.position.X, key.position.Y, key.position.Z );			
+		}
+
+		// set time
+		if ( nKeys > 0 )
+			m_timeControlPos->setTimeLength( node->PositionKeys.getLast().frame );
 	}
 
-	m_timeControl->invalidateRect(NULL, true);
+	m_timeControlRot->invalidateRect(NULL, true);
+	m_timeControlPos->invalidateRect(NULL, true);
 }

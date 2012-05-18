@@ -43,7 +43,8 @@ protected:
 	uiToolbarButton			*m_stopButton;
 	uiToolbarButton			*m_pauseButton;
 
-	CTimelineControl		*m_timeControl;		
+	CTimelineControl		*m_timeControlRot;
+	CTimelineControl		*m_timeControlPos;
 public:	
 	CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent );
 	virtual ~CAnimModifyFrame();
@@ -60,7 +61,7 @@ public:
 
 	void addNodeToTreeView( uiTreeViewItem *parent, ISceneNode* node );
 
-	void updateTimeLine( CGameColladaSceneNode *node, int type );
+	void updateTimeLine( CGameColladaSceneNode *node );
 
 	
 };

@@ -137,8 +137,9 @@ void CTimelineControl::paintControl( uiGraphics *pG )
 	// fill background
 	graphics->drawFillRectangle(0,0, nWidth, nHeight, &bgGrey);	
 	
-	if ( m_maxValue > 0.0f && m_minValue > 0.0f )
-	{		
+	//if ( m_maxValue > 0.0f && m_minValue > 0.0f )
+	if ( m_timeLength > 0.0f )
+	{
 		float midValue = (m_maxValue - m_minValue)*0.5f;	
 		
 		uiPen pen(1, PS_SOLID, uiColor(0x888888));

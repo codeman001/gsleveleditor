@@ -10,6 +10,8 @@
 
 #include "CColladaMeshComponent.h"
 
+#include "CIrrWindowController.h"
+
 class CIrrWindow: public uiWindow, public IView
 {
 protected:
@@ -17,6 +19,7 @@ protected:
 
 	CGameObject *m_animObject;
 
+	CIrrWindowController *m_controller;
 public:
 
 	CIrrWindow( WCHAR* lpString, uiWindow *pParent );
@@ -44,6 +47,11 @@ public:
 	CColladaMeshComponent* getAnimComponent()
 	{
 		return (CColladaMeshComponent*) m_animObject->getComponent( IObjectComponent::ColladaMesh );
+	}
+
+	CIrrWindowController* getController()
+	{
+		return m_controller;
 	}
 
 	virtual void _OnSize(uiSizeEvent sizeEvent, int nWidth, int nHeight);

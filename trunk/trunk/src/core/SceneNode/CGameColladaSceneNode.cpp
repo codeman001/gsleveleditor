@@ -72,6 +72,9 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 #ifdef GSANIMATION
 	m_isShowName = false;
 #endif
+
+	Box.MinEdge = core::vector3df(-2, -2, -2);
+	Box.MaxEdge = core::vector3df( 2,  2,  2);
 }
 
 CGameColladaSceneNode::~CGameColladaSceneNode()

@@ -536,11 +536,14 @@ void CGameColladaSceneNode::render()
 		
 		driver->setMaterial(debug_mat);
 
+#ifdef GSANIMATION
 		if ( m_isShowName )
 			driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,0,255,0));
 		else
 			driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,255,255,255));
-
+#else
+		driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,255,255,255));
+#endif
 		//core::matrix4 mat = GlobalInversedMatrix;
 		//mat.makeInverse();
 		//driver->setTransform(video::ETS_WORLD, mat );

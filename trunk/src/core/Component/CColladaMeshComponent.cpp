@@ -1736,6 +1736,15 @@ void CColladaMeshComponent::constructScene()
 			((CGameChildContainerSceneNode*)m_gameObject->m_node)->addBoundingBoxOfChild( colladaSceneNode );
 
 		}
+#ifdef GSANIMATION
+		else
+		{
+			// add collision
+			ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( colladaSceneNode );
+			colladaSceneNode->setTriangleSelector(selector);
+			selector->drop();
+		}
+#endif
 
 		// pop stack
 		stackScene.erase( --stackScene.end() );

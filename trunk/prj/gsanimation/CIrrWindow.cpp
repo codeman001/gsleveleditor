@@ -20,6 +20,8 @@ CIrrWindow::CIrrWindow( WCHAR* lpString, uiWindow *pParent )
 {
 	showWindow(true);
 	createIrrDevice();
+
+	m_controller = new CIrrWindowController();
 }
 
 CIrrWindow::~CIrrWindow()
@@ -27,6 +29,8 @@ CIrrWindow::~CIrrWindow()
 	destroyScene();
 
 	m_device->drop();
+
+	delete m_controller;
 }
 
 void CIrrWindow::createIrrDevice()
@@ -110,6 +114,8 @@ void CIrrWindow::destroyScene()
 {
 	delete m_animObject;
 	delete m_designCamera;
+
+	CColladaCache::freeData();
 }
 
 void CIrrWindow::irrUpdate()
@@ -175,7 +181,7 @@ void CIrrWindow::_OnMouseMove	( uiMouseEvent mouseEvent, int x, int y )
 	m_mouseY = y;
 
 	// controller event
-	// CControllerManager::getInstance()->getCurrentController()->onMouseMove( x, y );
+	m_controller->onMouseMove(x,y);
 }
 
 void CIrrWindow::_OnMouseWheel	( uiMouseEvent mouseEvent, int x, int y )
@@ -219,7 +225,7 @@ void CIrrWindow::_OnLButtonDown	( uiMouseEvent mouseEvent, int x, int y )
 	m_device->postEventFromUser(irrEvent);
 
 	// controller event
-	// CControllerManager::getInstance()->getCurrentController()->onLMouseDown( x, y );
+	m_controller->onLMouseDown(x,y);
 
 	//  set focus
 	uiApplication::getRoot()->setFocus();	
@@ -245,7 +251,7 @@ void CIrrWindow::_OnLButtonUp	( uiMouseEvent mouseEvent, int x, int y )
 	m_device->postEventFromUser(irrEvent);
 
 	// controller event
-	// CControllerManager::getInstance()->getCurrentController()->onLMouseUp( x, y );
+	m_controller->onLMouseUp(x, y);
 
 	//  set focus
 	uiApplication::getRoot()->setFocus();
@@ -272,7 +278,7 @@ void CIrrWindow::_OnRButtonDown	( uiMouseEvent mouseEvent, int x, int y )
 	m_device->postEventFromUser(irrEvent);
 
 	// controller event
-	// CControllerManager::getInstance()->getCurrentController()->onRMouseDown( x, y );
+	m_controller->onRMouseDown(x, y);
 
 	//  set focus
 	uiApplication::getRoot()->setFocus();
@@ -298,7 +304,7 @@ void CIrrWindow::_OnRButtonUp	( uiMouseEvent mouseEvent, int x, int y )
 	m_device->postEventFromUser(irrEvent);
 
 	// controller event
-	// CControllerManager::getInstance()->getCurrentController()->onRMouseUp( x, y );
+	m_controller->onRMouseUp(x, y);
 
 	//  set focus
 	uiApplication::getRoot()->setFocus();

@@ -89,6 +89,9 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	m_editorWin->setParent(NULL);
 	m_editorWin->showWindow(false);
 
+	// set event selected node
+	m_irrWin->getController()->setEventOnNodeSelected<CAnimModifyFrame, &CAnimModifyFrame::_onSelectedNode>(m_editorWin);
+
 	return ret;
 }
 

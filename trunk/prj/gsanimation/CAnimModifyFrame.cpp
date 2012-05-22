@@ -194,7 +194,11 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 
 	uiTabControl *tabWin = ref<uiTabControl>( new uiTabControl(L"tabWin", 0,0, 100, 100, containerWin) );
 	tabWin->setDock( containerWin, UIDOCK_FILL );
+	tabWin->setEventOnTabChanged<CAnimModifyFrame, &CAnimModifyFrame::_onTabChange> (this);
 	
+	m_tabTime = tabWin;
+	m_currentTab = 0;
+
 	m_timeControlRot = ref<CTimelineControl>( new CTimelineControl(tabWin, 0,0,100,100) );	
 	m_timeControlRot->enableChangeTime( true );
 	m_timeControlPos = ref<CTimelineControl>( new CTimelineControl(tabWin, 0,0,100,100) );	
@@ -215,6 +219,8 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	m_mainSplit->showWindow( true );
 	
 	SetTimer(getHandle(), 1, 10, 0);	
+
+	m_lastSelectNode = NULL;
 }
 
 CAnimModifyFrame::~CAnimModifyFrame()
@@ -249,7 +255,17 @@ LRESULT	CAnimModifyFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM 
 			else
 			{
 				// set animation frame from timeline control
-				m_colladaComponent->pauseAtFrame( m_timeControlRot->getCurrentTime() );
+				if ( m_currentTab == 0 )
+				{
+					m_colladaComponent->pauseAtFrame( m_timeControlRot->getCurrentTime() );									
+					m_timeControlPos->setCurrentTime( m_colladaComponent->getCurrentFrame() );
+				}
+				else
+				{
+					m_colladaComponent->pauseAtFrame( m_timeControlPos->getCurrentTime() );
+					m_timeControlRot->setCurrentTime( m_colladaComponent->getCurrentFrame() );
+				}
+				
 			}
 		}
 	}
@@ -270,36 +286,63 @@ void CAnimModifyFrame::_onToolbarCommand( uiObject *pSender )
 	else if ( pSender == m_stopButton )
 	{
 		m_colladaComponent->pauseAtFrame(0);
+		m_timeControlRot->setCurrentTime(0);
 		m_timeControlRot->enableChangeTime( true );
+		m_timeControlPos->setCurrentTime(0);
 		m_timeControlPos->enableChangeTime( true );
+
+		m_timeControlPos->update();
+		m_timeControlRot->update();
 	}
 	else
 	{
 		m_colladaComponent->pauseAtFrame( m_colladaComponent->getCurrentFrame() );
 		m_timeControlRot->enableChangeTime( true );
 		m_timeControlPos->enableChangeTime( true );
-	}
+	}	
+}
+
+void CAnimModifyFrame::_onTabChange( uiObject *pSender )
+{
+	m_currentTab = (int)m_tabTime->getSelectTab();
+}
+
+
+#include "CIrrWindowController.h"
+void CAnimModifyFrame::_onSelectedNode( uiObject *pSender )
+{
+	if ( m_lastSelectNode )
+		m_lastSelectNode->showName( false );
+
+	CIrrWindowController *controller = (CIrrWindowController*)pSender;
+
+	m_lastSelectNode = controller->getSelectNode();
+
+	if ( m_lastSelectNode )
+	{
+		updateTimeLine( m_lastSelectNode );
+		m_lastSelectNode->showName( true );	
+	}	
 }
 
 void CAnimModifyFrame::_onTreeSelect( uiObject *pSender )
 {
-	static CGameColladaSceneNode* sLastSelectNode = NULL;
-
 	uiListTreeViewItem listNodeSelect;
 	m_treeNode->getItemSelected( &listNodeSelect );
+
 	if ( listNodeSelect.size() > 0 )
 	{
 		uiTreeViewItem* item = listNodeSelect[0];
 		
-		if ( sLastSelectNode )
-			sLastSelectNode->showName( false );
+		if ( m_lastSelectNode )
+			m_lastSelectNode->showName( false );
 
 		CGameColladaSceneNode *node = (CGameColladaSceneNode*)item->getData();
 		if ( node )
 		{
 			updateTimeLine( node );
 			node->showName( true );
-			sLastSelectNode = node;
+			m_lastSelectNode = node;
 		}
 	}
 }

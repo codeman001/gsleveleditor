@@ -411,6 +411,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Controller"
+				>
+				<File
+					RelativePath=".\CIrrWindowController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CIrrWindowController.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

@@ -43,8 +43,13 @@ protected:
 	uiToolbarButton			*m_stopButton;
 	uiToolbarButton			*m_pauseButton;
 
+	uiTabControl			*m_tabTime;
 	CTimelineControl		*m_timeControlRot;
 	CTimelineControl		*m_timeControlPos;
+
+	int						m_currentTab;
+
+	CGameColladaSceneNode* m_lastSelectNode;
 public:	
 	CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent );
 	virtual ~CAnimModifyFrame();
@@ -54,6 +59,10 @@ public:
 	virtual LRESULT	messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 	void _onTreeSelect( uiObject *pSender );
+
+	void _onSelectedNode( uiObject *pSender );
+
+	void _onTabChange( uiObject *pSender );
 
 	void _onToolbarCommand( uiObject *pSender );
 

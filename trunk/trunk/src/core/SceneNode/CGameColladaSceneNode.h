@@ -274,6 +274,21 @@ public:
 	{
 		m_isShowName = b;
 	}	
+		
+	// renderListPoint
+	// draw a point to multi point
+	void renderListPoint(core::vector3df *point, int nPoint, SColor color);
+	
+	// renderOxyz
+	// draw oxyz
+	void renderOxyz();
+
+	// buildRotPoint
+	// build list 
+	// type = 0: rotY, 1: rotX, 2: rotZ
+	void buildRotPoint( core::vector3df *point, int nPoint, float radius, int type );
+
+
 #endif
 
 public:

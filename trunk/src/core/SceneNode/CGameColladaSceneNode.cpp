@@ -541,11 +541,35 @@ void CGameColladaSceneNode::render()
 
 #ifdef GSANIMATION
 		if ( m_isShowName )
-			driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,0,255,0));
+		{
+			driver->setTransform(video::ETS_WORLD, AbsoluteTransformation );
+			driver->draw3DBox( getBoundingBox(), video::SColor(255,255,255,0));
+			
+			// circle point
+			core::vector3df circle[20];			
+
+			// draw rotY
+			buildRotPoint( circle, 20, 20.0f, 0 );
+			renderListPoint( circle, 20, SColor(255,255,0,0) );
+
+			// draw rotX
+			buildRotPoint( circle, 20, 30.0f, 1 );
+			renderListPoint( circle, 20, SColor(255,0,255,0) );
+
+			// draw rotZ
+			buildRotPoint( circle, 20, 40.0f, 2 );
+			renderListPoint( circle, 20, SColor(255,0,0,255) );
+
+			renderOxyz();
+		}
 		else
-			driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,255,255,255));
+		{
+			driver->setTransform(video::ETS_WORLD, AbsoluteTransformation );
+			driver->draw3DBox( getBoundingBox(), video::SColor(255,255,255,255));
+		}
 #else
-		driver->draw3DBox( getTransformedBoundingBox(), video::SColor(255,255,255,255));
+		driver->setTransform(video::ETS_WORLD, AbsoluteTransformation );
+		driver->draw3DBox( getBoundingBox(), video::SColor(255,255,255,255));
 #endif
 		//core::matrix4 mat = GlobalInversedMatrix;
 		//mat.makeInverse();
@@ -554,6 +578,79 @@ void CGameColladaSceneNode::render()
 	}
 	
 }
+
+#ifdef GSANIMATION
+
+// renderOxyz
+// draw oxyz	
+void CGameColladaSceneNode::renderOxyz()
+{
+	IVideoDriver* driver = getSceneManager()->getVideoDriver();	
+	
+	core::vector3df ox(50,0,0);
+	core::vector3df oy(0,60,0);
+	core::vector3df oz(0,0,70);
+
+
+	// set transform
+	driver->setTransform(video::ETS_WORLD, AbsoluteTransformation );
+	driver->draw3DLine( core::vector3df(), oy, SColor(255,255,0,0) );
+	driver->draw3DLine( core::vector3df(), ox, SColor(255,0,255,0) );
+	driver->draw3DLine( core::vector3df(), oz, SColor(255,0,0,255) );
+	
+}
+
+// renderListPoint
+// draw a point to multi point
+void CGameColladaSceneNode::renderListPoint(core::vector3df *point, int nPoint, SColor color)
+{
+	IVideoDriver* driver = getSceneManager()->getVideoDriver();
+
+	driver->draw3DLine( point[0], point[nPoint-1], color );
+	for ( int i = 0; i < nPoint - 1; i++ )
+		driver->draw3DLine( point[i], point[i+1], color );
+}
+
+
+// buildRotPoint
+// build list 
+// type = 0: rotY, 1: rotX, 2: rotZ
+void CGameColladaSceneNode::buildRotPoint( core::vector3df *point, int nPoint, float radius, int type )
+{
+	float	rad = 0;
+	float	radInc = core::PI * 2/nPoint;
+	
+	core::vector3df	point1;
+
+	for ( int i = 0; i < nPoint; i++ )
+	{		
+		if ( type == 0 )
+		{
+			// rotY
+			point[i].Y = 0;
+			point[i].X = radius * sin( rad );
+			point[i].Z = radius * cos( rad );
+		}
+		else if ( type == 1 )
+		{
+			// rotX
+			point[i].Y = radius * sin( rad );
+			point[i].X = 0;
+			point[i].Z = radius * cos( rad );
+		}
+		else
+		{
+			// rotZ
+			point[i].Y = radius * sin( rad );
+			point[i].X = radius * cos( rad );
+			point[i].Z = 0;
+		}
+
+		rad = rad + radInc;		
+	}
+}
+
+#endif
 
 // clone
 // ISceneNode override implement 

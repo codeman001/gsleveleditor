@@ -600,6 +600,35 @@ void CGameColladaSceneNode::renderOxyz()
 	
 }
 
+// getHitState
+// get hit on rotate
+// return -1: none
+// return 0: y
+// return 1: x
+// return 2: z
+int CGameColladaSceneNode::getHitState( int x, int y )
+{
+	// circle point
+	core::vector3df circle[20];			
+
+	// draw rotY
+	buildRotPoint( circle, 20, 20.0f, 0 );
+	if ( isHitOnListPoint( circle, 20, x,y ) == true )
+		return 0;
+
+	// draw rotX
+	buildRotPoint( circle, 20, 30.0f, 1 );
+	if ( isHitOnListPoint( circle, 20, x,y ) == true )
+		return 1;
+
+	// draw rotZ
+	buildRotPoint( circle, 20, 40.0f, 2 );
+	if ( isHitOnListPoint( circle, 20, x,y ) == true )
+		return 2;
+
+	return -1;
+}
+
 // renderListPoint
 // draw a point to multi point
 void CGameColladaSceneNode::renderListPoint(core::vector3df *point, int nPoint, SColor color)
@@ -648,6 +677,123 @@ void CGameColladaSceneNode::buildRotPoint( core::vector3df *point, int nPoint, f
 
 		rad = rad + radInc;		
 	}
+}
+
+// isHitOnListPoint
+// check hit on list point
+bool CGameColladaSceneNode::isHitOnListPoint(core::vector3df *point, int nPoint, int x, int y)
+{
+	IView *pView = getIView();
+
+	core::vector3df p1 = point[0];
+	core::vector3df p2 = point[nPoint-1];
+
+	int x1, y1, x2, y2;
+	
+	AbsoluteTransformation.transformVect( p1 );
+	AbsoluteTransformation.transformVect( p2 );
+
+	pView->getScreenCoordinatesFrom3DPosition( p1, &x1, &y1 );
+	pView->getScreenCoordinatesFrom3DPosition( p2, &x2, &y2 );
+	if ( isLineHit( x1, y1, x2, y2, x, y ) == true )
+		return true;
+
+	for ( int i = 0; i < nPoint - 1; i++ )
+	{
+		p1 = point[i];
+		p2 = point[i+1];
+		
+		AbsoluteTransformation.transformVect( p1 );
+		AbsoluteTransformation.transformVect( p2 );
+
+		pView->getScreenCoordinatesFrom3DPosition( p1, &x1, &y1 );
+		pView->getScreenCoordinatesFrom3DPosition( p2, &x2, &y2 );
+
+		if ( isLineHit( x1, y1, x2, y2, x, y ) == true )
+			return true;
+	}
+
+	return false;
+}
+
+bool CGameColladaSceneNode::isLineHit( int X1, int Y1, int X2, int Y2, int X, int Y )
+{
+	float x1 = (float)X1;
+	float y1 = (float)Y1;
+
+	float x2 = (float)X2;
+	float y2 = (float)Y2;
+
+	float xHit = (float)X;
+	float yHit = (float)Y;
+	
+	const float constSelect = 5.0f;
+
+	if ( x1 > x2 )
+	{
+		if ( xHit < (x2 - constSelect) || xHit > (x1 + constSelect) )
+			return false;
+	}
+	else
+	{
+		if ( xHit < (x1 - constSelect) || xHit > (x2 + constSelect) )
+			return false;
+	}
+	
+	if ( y1 > y2 )
+	{
+		if ( yHit < (y2 - constSelect) || yHit > (y1 + constSelect) )
+			return false;
+	}
+	else
+	{
+		if ( yHit < (y1 - constSelect) || yHit > (y2 + constSelect) )
+			return false;
+	}
+
+
+	core::vector2df v( x2 - x1, y2 - y1 );
+	core::vector2df w( xHit - x1, yHit - y1 );
+
+	#define dot(u,v)   ((float)u.dotProduct(v))
+	#define norm(v)    sqrtf(dot(v,v))
+			
+	float c1 = dot(w,v);
+	if ( c1 <= 0 )
+	{
+		core::vector2df r( xHit - x1, yHit - y1 );
+		float distance = norm(r);
+		
+		if ( distance <= constSelect )
+			return true;
+	}
+
+	float c2 = dot(v,v);	
+	
+	if ( c2 <= c1 )
+	{
+		core::vector2df r( xHit - x2, yHit - y2 );
+		float distance = norm(r);
+		
+		if ( distance <= constSelect )
+			return true;
+	}
+
+	float b = c1 / c2;
+		
+	core::vector2df Pb( x1 + b*v.X, y1 + b*v.Y );
+
+	// Khoang cach giua point va edge
+	core::vector2df r( xHit - Pb.X, yHit - Pb.Y );
+	double distance = norm(r);				
+
+	#undef dot
+	#undef norm
+	
+	if ( distance <= constSelect )
+		return true;
+
+	return false;
 }
 
 #endif

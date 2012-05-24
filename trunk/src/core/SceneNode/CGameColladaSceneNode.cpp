@@ -121,7 +121,7 @@ void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 	}
 
 	// skin mesh
-	if ( ColladaMesh != NULL && ColladaMesh->IsStaticMesh == false )		
+	if ( ColladaMesh != NULL && ColladaMesh->IsStaticMesh == false && IsVisible == true )		
 		skin();
 	
 	// get last frame

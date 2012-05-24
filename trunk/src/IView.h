@@ -133,6 +133,12 @@ public:
 		return m_videoData;
 	}
 
+#if defined(GSEDITOR) || defined(GSANIMATION)
+	// enableFreeCamera
+	// disable or enable change camera view on editor
+	virtual void enableFreeCamera( bool b );
+#endif
+
 #ifdef GSEDITOR
 	// getDocument
 	// get current document
@@ -144,11 +150,7 @@ public:
 	// newDocument
 	// renew document
 	virtual void newDocument() = 0;
-
-	// enableFreeCamera
-	// disable or enable change camera view on editor
-	virtual void enableFreeCamera( bool b );
-
+	
 	// getCurrentObjectTemplate
 	// get current name
 	virtual wchar_t* getCurrentObjectTemplate() = 0;

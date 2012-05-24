@@ -15,7 +15,7 @@ protected:
 	int		m_mouseDownY;
 
 	CGameColladaSceneNode *m_currentSelect;
-
+	int		m_actionState;
 
 public:
 	CGameColladaSceneNode* getSelectNode()

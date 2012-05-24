@@ -13,6 +13,7 @@ protected:
 	bool	m_leftMouseDown;
 	int		m_mouseDownX;
 	int		m_mouseDownY;
+	int		m_lastMouseX;
 
 	CGameColladaSceneNode *m_currentSelect;
 	int		m_actionState;

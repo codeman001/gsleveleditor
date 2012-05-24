@@ -270,11 +270,24 @@ public:
 	}
 
 #ifdef GSANIMATION
+protected:
+	int m_renderRotate;
+	
+public:
 	void showName( bool b )
 	{
 		m_isShowName = b;
+
+		if (b == true)
+			m_renderRotate = 1|2|4;
+		else
+			m_renderRotate = 0;
 	}	
 		
+	// setRenderRotateFlag
+	// set flag
+	void setRenderRotateFlag( int flag );
+
 	// renderListPoint
 	// draw a point to multi point
 	void renderListPoint(core::vector3df *point, int nPoint, SColor color);

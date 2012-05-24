@@ -71,6 +71,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 
 #ifdef GSANIMATION
 	m_isShowName = false;
+	m_renderRotate = 0;
 #endif
 
 	Box.MinEdge = core::vector3df(-2, -2, -2);
@@ -549,16 +550,25 @@ void CGameColladaSceneNode::render()
 			core::vector3df circle[20];			
 
 			// draw rotY
-			buildRotPoint( circle, 20, 20.0f, 0 );
-			renderListPoint( circle, 20, SColor(255,255,0,0) );
+			if ( (m_renderRotate & 1) == 1 )
+			{
+				buildRotPoint( circle, 20, 20.0f, 0 );
+				renderListPoint( circle, 20, SColor(255,255,0,0) );
+			}
 
 			// draw rotX
-			buildRotPoint( circle, 20, 30.0f, 1 );
-			renderListPoint( circle, 20, SColor(255,0,255,0) );
+			if ( (m_renderRotate & 2) == 2 )
+			{
+				buildRotPoint( circle, 20, 30.0f, 1 );
+				renderListPoint( circle, 20, SColor(255,0,255,0) );
+			}
 
 			// draw rotZ
-			buildRotPoint( circle, 20, 40.0f, 2 );
-			renderListPoint( circle, 20, SColor(255,0,0,255) );
+			if ( (m_renderRotate & 4) == 4 )
+			{
+				buildRotPoint( circle, 20, 40.0f, 2 );
+				renderListPoint( circle, 20, SColor(255,0,0,255) );
+			}
 
 			renderOxyz();
 		}
@@ -627,6 +637,14 @@ int CGameColladaSceneNode::getHitState( int x, int y )
 		return 2;
 
 	return -1;
+}
+	
+
+// setRenderRotateFlag
+// set flag
+void CGameColladaSceneNode::setRenderRotateFlag( int flag )
+{
+	m_renderRotate = flag;
 }
 
 // renderListPoint

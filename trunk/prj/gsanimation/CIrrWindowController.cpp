@@ -14,6 +14,7 @@ CIrrWindowController::CIrrWindowController()
 	m_currentSelect = NULL;
 	m_mouseDownX = 0;
 	m_mouseDownY = 0;
+	m_lastMouseX = 0;
 
 	m_actionState = -1;
 }
@@ -37,7 +38,22 @@ void CIrrWindowController::onLMouseDown(int x, int y)
 
 	// disable free camera
 	if ( m_actionState != -1 )
+	{
 		getIView()->enableFreeCamera( false );
+		
+		switch( m_actionState )
+		{
+		case 0:
+			m_currentSelect->setRenderRotateFlag( 1 );
+			break;
+		case 1:
+			m_currentSelect->setRenderRotateFlag( 2 );
+			break;
+		case 2:
+			m_currentSelect->setRenderRotateFlag( 4 );
+			break;
+		}
+	}
 }
 
 void CIrrWindowController::onLMouseUp(int x, int y)
@@ -79,6 +95,9 @@ void CIrrWindowController::onLMouseUp(int x, int y)
 
 	// reset free moving camera
 	getIView()->enableFreeCamera( true );
+	if ( m_currentSelect )
+		m_currentSelect->setRenderRotateFlag( 1|2|4 );
+
 	m_actionState = -1;
 }
 
@@ -102,8 +121,22 @@ void CIrrWindowController::onMouseMove(int x, int y)
 		if ( m_actionState == 0 )
 		{
 			core::vector3df rot = m_currentSelect->AnimationMatrix.getRotationDegrees();
-			rot.Y += 1;
+						
+			int dx = x - m_lastMouseX;
+			m_lastMouseX = x;
+
+			if ( dx > 0 )
+				rot.Y += 1;
+			else if ( dx < 0 )
+				rot.Y -= 1;
+
+			if ( rot.Y > 360)
+				rot.Y -= 360;
+			else if (rot.Y < 0)
+				rot.Y += 360;
+
 			m_currentSelect->AnimationMatrix.setRotationDegrees( rot );
 		}
 	}
+	
 }

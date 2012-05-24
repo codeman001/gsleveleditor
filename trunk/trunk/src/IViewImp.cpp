@@ -2,7 +2,7 @@
 #include "IView.h"
 #include "CGameCamera.h"
 
-#ifdef GSEDITOR
+#if defined(GSEDITOR) || defined(GSANIMATION)
 #include "CGameGSCameraAnimator.h"
 #endif
 
@@ -121,7 +121,7 @@ void IView::setCameraAspectRatio(float f)
 		m_camera->getCameraNode()->setAspectRatio( f );
 }
 
-#ifdef GSEDITOR
+#if defined(GSEDITOR) || defined(GSANIMATION)
 // enableFreeCamera
 // disable or enable change camera view on editor
 void IView::enableFreeCamera( bool b )

@@ -288,7 +288,21 @@ public:
 	// type = 0: rotY, 1: rotX, 2: rotZ
 	void buildRotPoint( core::vector3df *point, int nPoint, float radius, int type );
 
+	// getHitState
+	// get hit on rotate
+	// return -1: none
+	// return 0: y
+	// return 1: x
+	// return 2: z
+	int getHitState( int x, int y );
 
+	// isHitOnListPoint
+	// check hit on list point
+	bool isHitOnListPoint(core::vector3df *point, int nPoint, int x, int y);
+
+	// isLineHit
+	// check hit on a line
+	bool isLineHit( int X1, int Y1, int X2, int Y2, int X, int Y );	
 #endif
 
 public:

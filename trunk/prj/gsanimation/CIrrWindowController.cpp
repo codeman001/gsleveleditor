@@ -36,33 +36,46 @@ void CIrrWindowController::onLMouseUp(int x, int y)
 
 	if ( dx <= 1 && dy <= 1 )
 	{
+		int state = -1;
+
 		// reset select
-		m_currentSelect = NULL;
-		m_controllerState = k_stateSelect;
-
-		core::line3df selectRay = getIView()->getSelectRay();
-
-		// check hit test
-		core::vector3df intersection;
-		core::triangle3df hitTriangle;
-
-		// check select
-		ISceneNode *selectedSceneNode = getIView()->getSceneMgr()->getSceneCollisionManager()->getSceneNodeAndCollisionPointFromRay
-			(
-				selectRay,
-				intersection,
-				hitTriangle
-			);
-
-		// check hit test
-		if ( selectedSceneNode )
+		if ( m_currentSelect )
+			state = m_currentSelect->getHitState( x,y );
+		
+		if ( state == -1 )
 		{
-			m_currentSelect = (CGameColladaSceneNode*)selectedSceneNode;
-			m_controllerState = k_stateMove;		
+			m_currentSelect = NULL;
+			m_controllerState = k_stateSelect;
+
+			core::line3df selectRay = getIView()->getSelectRay();
+
+			// check hit test
+			core::vector3df intersection;
+			core::triangle3df hitTriangle;
+
+			// check select
+			ISceneNode *selectedSceneNode = getIView()->getSceneMgr()->getSceneCollisionManager()->getSceneNodeAndCollisionPointFromRay
+				(
+					selectRay,
+					intersection,
+					hitTriangle
+				);
+
+			// check hit test
+			if ( selectedSceneNode )
+			{
+				m_currentSelect = (CGameColladaSceneNode*)selectedSceneNode;
+				m_controllerState = k_stateMove;		
+			}
+
+			// send event
+			_onSelectNode( this );
+		}
+		else
+		{
+			// check rotate state
 		}
 
-		// send event
-		_onSelectNode( this );	
 	}
 }
 

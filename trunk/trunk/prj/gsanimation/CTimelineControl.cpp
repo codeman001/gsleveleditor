@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CTimelineControl.h"
 
+#define OFFSET_X	70
+
 CTimelineControl::CTimelineControl(uiWindow* parent, int x, int y, int w, int h)
 	:uiWindow(L"timeLineControl", x, y, w, h, parent)
 {
@@ -8,15 +10,16 @@ CTimelineControl::CTimelineControl(uiWindow* parent, int x, int y, int w, int h)
 	showWindow(true);
 
 	m_timeLength	= 0.0f;
-	m_timeView		= 0.0f;
+	m_crollX		= 0;
 	m_maxValue = 0.0f;
 	m_minValue = 0.0f;
 
-	m_lengthPixel	= 10;	
+	m_lengthPixel	= 15;	
 	m_needSortValue	= true;	
 	m_changeTime = false;
 
 	m_lbuttonDown = false;
+	m_rbuttonDown = false;
 }
 
 CTimelineControl::~CTimelineControl()
@@ -30,26 +33,69 @@ void CTimelineControl::_OnPaint( uiGraphics *pG )
 
 void CTimelineControl::_OnLButtonDown( uiMouseEvent mouseEvent, int x, int y )
 {
+	this->setCapture();
+
 	m_lbuttonDown = true;
 	if ( m_changeTime )
 	{
-		m_currentTime = getTimeValue( x );
-		update();
-	}
-}
-
-void CTimelineControl::_OnMouseMove( uiMouseEvent mouseEvent, int x, int y )
-{
-	if ( m_changeTime && m_lbuttonDown )
-	{
-		m_currentTime = getTimeValue( x );
+		m_currentTime = getTimeValue( x - OFFSET_X + m_crollX );
 		update();
 	}
 }
 
 void CTimelineControl::_OnLButtonUp( uiMouseEvent mouseEvent, int x, int y )
 {
+	this->releaseCapture();
+
 	m_lbuttonDown = false;
+}
+
+void CTimelineControl::_OnRButtonDown( uiMouseEvent mouseEvent, int x, int y )
+{
+	this->setCapture();
+
+	m_rbuttonDown = true;
+	m_x = x;
+	m_y = y;
+}
+
+void CTimelineControl::_OnRButtonUp( uiMouseEvent mouseEvent, int x, int y )
+{
+	this->releaseCapture();
+
+	m_rbuttonDown = false;
+}
+
+void CTimelineControl::_OnMouseMove( uiMouseEvent mouseEvent, int x, int y )
+{
+	if ( m_changeTime && m_lbuttonDown )
+	{
+		m_currentTime = getTimeValue( x - OFFSET_X + m_crollX );
+		update();
+	}
+
+	if ( m_rbuttonDown )
+	{
+		int nWidth = getClientWidth();
+		float timeWidth = m_lengthPixel*m_timeLength;
+		int limitW = (int)timeWidth + OFFSET_X * 2;
+
+		if ( nWidth < limitW )
+		{
+			int dx = x - m_x;			
+			m_crollX -= dx;
+			
+			if ( m_crollX < 0 )
+				m_crollX = 0;
+			else if ( nWidth + m_crollX > limitW  )
+			{
+				m_crollX = limitW - nWidth;
+			}
+		}
+		update();
+	}
+	m_x = x;
+	m_y = y;
 }
 
 void CTimelineControl::sortValue( vector<STimelineValue>& value )
@@ -131,16 +177,17 @@ void CTimelineControl::paintControl( uiGraphics *pG )
 	int nHeight = getClientHeight();
 	
 	uiBrush bgGrey( uiColor(0x9f9f9f) );	
+	uiFont tahoma(14, L"tahoma");
+	tahoma.setFontNormal();
 
 	uiGraphics *graphics = pG->createBackBuffer( nWidth, nHeight );
-
+	
 	// fill background
 	graphics->drawFillRectangle(0,0, nWidth, nHeight, &bgGrey);	
 	
-	//if ( m_maxValue > 0.0f && m_minValue > 0.0f )
 	if ( m_timeLength > 0.0f )
 	{
-		float midValue = (m_maxValue - m_minValue)*0.5f;	
+		float midValue = (m_maxValue + m_minValue)*0.5f;	
 		
 		uiPen pen(1, PS_SOLID, uiColor(0x888888));
 		uiPen penX(2, PS_SOLID, uiColor(0x0000ff));
@@ -156,6 +203,24 @@ void CTimelineControl::paintControl( uiGraphics *pG )
 		graphics->drawLine(0, getY(m_minValue), nWidth, getY(m_minValue));
 		graphics->drawLine(0, getY(m_maxValue), nWidth, getY(m_maxValue));
 		
+		graphics->selectObject( &tahoma );
+		graphics->setTextBkTransparent(true);
+		
+		wchar_t text[512];
+		graphics->setTextColor( uiColor(0xffffff) );
+
+		swprintf(text,512,L"%.2f", m_minValue);
+		graphics->drawText( 5, getY(m_minValue), text );
+
+		swprintf(text,512,L"%.2f", m_maxValue);
+		graphics->drawText( 5, getY(m_maxValue), text );
+
+		swprintf(text,512,L"%.2f", midValue);
+		graphics->drawText( 5, getY(midValue), text );
+		
+		// set clipping
+		graphics->setClip(OFFSET_X, 0, nWidth - OFFSET_X, nHeight);
+
 		int len = (int)m_value.size();
 		for ( int i = 1; i < len; i++ )
 		{
@@ -164,55 +229,62 @@ void CTimelineControl::paintControl( uiGraphics *pG )
 									
 			int y0 = getY( m_value[i-1].x );
 			int y1 = getY( m_value[i].x );
+
+			// draw col
 			graphics->selectObject(&pen);
 			graphics->drawLine(x1,0, x1,nHeight);
+			
+			swprintf(text,512,L"%.2f", m_value[i].time);
+			graphics->drawText( x1, 0, text );
 
+			// draw line x
 			graphics->selectObject(&penX);
 			graphics->drawLine(x0, y0, x1, y1);
 			
+			// draw line y
 			y0 = getY( m_value[i-1].y );
 			y1 = getY( m_value[i].y );
 			graphics->selectObject(&penY);
 			graphics->drawLine(x0, y0, x1, y1);
 
+			// draw line z
 			y0 = getY( m_value[i-1].z );
 			y1 = getY( m_value[i].z );
 			graphics->selectObject(&penZ);
 			graphics->drawLine(x0, y0, x1, y1);
 		}
 		
-		for ( int i = 1; i < len; i++ )
+		for ( int i = 0; i < len; i++ )
 		{
 			int r = 4;
-			int x0 = getX( m_value[i-1].time );
 			int x1 = getX( m_value[i].time );									
-			int y0 = getY( m_value[i-1].x );
-			int y1 = getY( m_value[i].x );
-			
+			int y1 = getY( m_value[i].x );					
+
+			// draw rectX
 			graphics->selectObject(&penX);			
 			graphics->drawRectangle( x1-r,y1-r,x1+r,y1+r );
 			
-			y0 = getY( m_value[i-1].y );
+			// draw rectY
 			y1 = getY( m_value[i].y );
 			graphics->selectObject(&penY);
 			graphics->drawRectangle( x1-r,y1-r,x1+r,y1+r );
 
-			y0 = getY( m_value[i-1].z );
+			// draw rectZ
 			y1 = getY( m_value[i].z );
 			graphics->selectObject(&penZ);
 			graphics->drawRectangle( x1-r,y1-r,x1+r,y1+r );
 		}
 
 		graphics->selectObject(&penX);
-		
-	}
+	
+		// paint current time
+		uiPen penTime(1, PS_SOLID, uiColor(0x00FFFF));
+		int xTime = getX( m_currentTime );
 
-	// paint current time
-	uiPen penTime(1, PS_SOLID, uiColor(0x00FFFF));
-	int xTime = getX( m_currentTime );
+		graphics->selectObject(&penTime);	
+		graphics->drawLine( xTime, 0, xTime, nHeight );
 
-	graphics->selectObject(&penTime);	
-	graphics->drawLine( xTime, 0, xTime, nHeight );
+	}	
 
 	pG->swapBuffer(0,0,nWidth, nHeight, graphics, 0,0,nWidth,nHeight, SRCCOPY);
 	graphics->releaseGraphics();	
@@ -233,19 +305,20 @@ float CTimelineControl::getTimeValue( int v )
 
 int CTimelineControl::getX( float v )
 {
+	int offsetX = OFFSET_X;
 	if ( v <= 0 || m_timeLength == 0.0f )
-		return 0;
+		return offsetX - m_crollX;
 	
 	float timeWidth = m_lengthPixel*m_timeLength;
 	if ( v >= m_timeLength )
-		return (int)timeWidth;
+		return (int)timeWidth + offsetX - m_crollX;
 
-	return (int)(v*timeWidth/m_timeLength);
+	return (int)(v*timeWidth/m_timeLength) + offsetX - m_crollX;
 }
 
 int CTimelineControl::getY( float v )
 {
-	float paddingY = 10.0f;
+	float paddingY = 30.0f;
 	float height = (float)getClientHeight() - paddingY*2;
 	
 	if ( v <= m_minValue )

@@ -23,7 +23,7 @@ protected:
 	
 	bool					m_changeTime;
 	float					m_currentTime;
-	float					m_timeView;
+	int						m_crollX;
 	
 	float					m_maxValue;
 	float					m_minValue;
@@ -31,6 +31,9 @@ protected:
 	int						m_timerID;
 
 	bool					m_lbuttonDown;
+	bool					m_rbuttonDown;
+	int						m_x;
+	int						m_y;
 public:
 	CTimelineControl(uiWindow* parent, int x, int y, int w, int h);
 
@@ -39,8 +42,12 @@ public:
 	virtual void _OnPaint( uiGraphics *pG );
 	
 	virtual void _OnLButtonDown( uiMouseEvent mouseEvent, int x, int y );
-	virtual void _OnMouseMove( uiMouseEvent mouseEvent, int x, int y );
 	virtual void _OnLButtonUp( uiMouseEvent mouseEvent, int x, int y );
+
+	virtual void _OnMouseMove( uiMouseEvent mouseEvent, int x, int y );
+
+	virtual void _OnRButtonDown( uiMouseEvent mouseEvent, int x, int y );
+	virtual void _OnRButtonUp( uiMouseEvent mouseEvent, int x, int y );
 
 	void paintControl( uiGraphics *pG );
 

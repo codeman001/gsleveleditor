@@ -218,7 +218,7 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	m_mainSplit->updateSplit();
 	m_mainSplit->showWindow( true );
 	
-	SetTimer(getHandle(), 1, 10, 0);	
+	SetTimer(getHandle(), 1, 1, 0);	
 
 	m_lastSelectNode = NULL;
 }
@@ -434,6 +434,12 @@ void CAnimModifyFrame::updateTimeLine( CGameColladaSceneNode *node )
 			CGameColladaSceneNode::SRotationKey &key = node->RotationKeys[i];			
 			
 			core::vector3df rotVec = key.rotation.getMatrix().getRotationDegrees();
+			if ( rotVec.X > 180 )
+				rotVec.X -= 360;
+			if ( rotVec.Y > 180 )
+				rotVec.Y -= 360;
+			if ( rotVec.Z > 180 )
+				rotVec.Z -= 360;
 			m_timeControlRot->addValue( key.frame, rotVec.X, rotVec.Y, rotVec.Z );			
 		}
 

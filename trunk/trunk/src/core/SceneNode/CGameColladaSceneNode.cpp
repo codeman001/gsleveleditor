@@ -553,14 +553,14 @@ void CGameColladaSceneNode::render()
 			if ( (m_renderRotate & 1) == 1 )
 			{
 				buildRotPoint( circle, 20, 20.0f, 0 );
-				renderListPoint( circle, 20, SColor(255,255,0,0) );
+				renderListPoint( circle, 20, SColor(255,0,255,0) );
 			}
 
 			// draw rotX
 			if ( (m_renderRotate & 2) == 2 )
 			{
 				buildRotPoint( circle, 20, 30.0f, 1 );
-				renderListPoint( circle, 20, SColor(255,0,255,0) );
+				renderListPoint( circle, 20, SColor(255,255,0,0) );
 			}
 
 			// draw rotZ
@@ -604,8 +604,8 @@ void CGameColladaSceneNode::renderOxyz()
 
 	// set transform
 	driver->setTransform(video::ETS_WORLD, AbsoluteTransformation );
-	driver->draw3DLine( core::vector3df(), oy, SColor(255,255,0,0) );
-	driver->draw3DLine( core::vector3df(), ox, SColor(255,0,255,0) );
+	driver->draw3DLine( core::vector3df(), ox, SColor(255,255,0,0) );
+	driver->draw3DLine( core::vector3df(), oy, SColor(255,0,255,0) );
 	driver->draw3DLine( core::vector3df(), oz, SColor(255,0,0,255) );
 	
 }

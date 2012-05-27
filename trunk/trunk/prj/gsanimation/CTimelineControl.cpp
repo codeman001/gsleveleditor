@@ -2,9 +2,15 @@
 #include "CTimelineControl.h"
 
 #define OFFSET_X	70
+#define OFFSET_Y	30
+
+const int k_mouseActionChangeTime = 1;
 
 CTimelineControl::CTimelineControl(uiWindow* parent, int x, int y, int w, int h)
-	:uiWindow(L"timeLineControl", x, y, w, h, parent)
+	:uiWindow(L"timeLineControl", x, y, w, h, parent),
+	m_cursorResize( UICURSOR_SIZEWE, true ),
+	m_cursorArrow( UICURSOR_ARROW, true ),
+	m_cursorSelect( IDC_HAND, true )
 {
 	changeWindowStyle( UISTYLE_CHILD );
 	showWindow(true);
@@ -20,6 +26,9 @@ CTimelineControl::CTimelineControl(uiWindow* parent, int x, int y, int w, int h)
 
 	m_lbuttonDown = false;
 	m_rbuttonDown = false;
+
+	m_selectTimeID = -1;
+	m_mouseActionState = -1;
 }
 
 CTimelineControl::~CTimelineControl()
@@ -34,12 +43,22 @@ void CTimelineControl::_OnPaint( uiGraphics *pG )
 void CTimelineControl::_OnLButtonDown( uiMouseEvent mouseEvent, int x, int y )
 {
 	this->setCapture();
-
+	
 	m_lbuttonDown = true;
 	if ( m_changeTime )
 	{
 		m_currentTime = getTimeValue( x - OFFSET_X + m_crollX );
+		
+
+		// check new select time
+		int oldSelect = m_selectTimeID;
+		bool isSelectTime =  checkSelectTime( x, y );
+
+		if ( oldSelect != -1 && isSelectTime && oldSelect == m_selectTimeID )				
+			m_mouseActionState = k_mouseActionChangeTime;
+
 		update();
+		updateCursor( x, y);
 	}
 }
 
@@ -48,6 +67,19 @@ void CTimelineControl::_OnLButtonUp( uiMouseEvent mouseEvent, int x, int y )
 	this->releaseCapture();
 
 	m_lbuttonDown = false;
+		
+	// check select time
+	if ( m_mouseActionState == -1 )
+	{
+		if ( checkSelectTime( x, y ) == true )
+			_onSelectTime( this );
+	}
+
+
+	// reset action state
+	m_mouseActionState = -1;
+
+	update();
 }
 
 void CTimelineControl::_OnRButtonDown( uiMouseEvent mouseEvent, int x, int y )
@@ -68,10 +100,24 @@ void CTimelineControl::_OnRButtonUp( uiMouseEvent mouseEvent, int x, int y )
 
 void CTimelineControl::_OnMouseMove( uiMouseEvent mouseEvent, int x, int y )
 {
-	if ( m_changeTime && m_lbuttonDown )
+	if ( m_changeTime )
 	{
-		m_currentTime = getTimeValue( x - OFFSET_X + m_crollX );
-		update();
+		if ( m_lbuttonDown )
+		{
+			if ( m_mouseActionState == k_mouseActionChangeTime )
+			{
+				// drag to change time
+				updateChangeTime( x, y );
+			}
+			else
+			{
+				// drag
+				m_currentTime = getTimeValue( x - OFFSET_X + m_crollX );
+				checkSelectTime( x, y );
+			}
+
+			update();
+		}			
 	}
 
 	if ( m_rbuttonDown )
@@ -94,8 +140,12 @@ void CTimelineControl::_OnMouseMove( uiMouseEvent mouseEvent, int x, int y )
 		}
 		update();
 	}
+
 	m_x = x;
 	m_y = y;
+
+	// update cursor icon
+	updateCursor( x, y);
 }
 
 void CTimelineControl::sortValue( vector<STimelineValue>& value )
@@ -164,6 +214,47 @@ void CTimelineControl::update()
 	paintControl( &g );
 }
 
+void CTimelineControl::updateCursor(int x, int y)
+{
+	if ( m_mouseActionState == k_mouseActionChangeTime )
+	{
+		// set cursor is resize
+		this->setCursor( &m_cursorResize );		
+	}
+	else
+	{
+		// save select time
+		int oldSelect = m_selectTimeID;
+
+		bool isSelectTime = checkSelectTime( x,y );
+
+		if ( oldSelect != -1 )
+		{				
+			// check to resize
+			if ( isSelectTime && oldSelect == m_selectTimeID )
+				this->setCursor( &m_cursorResize );
+			else
+			{
+				if ( isSelectTime )
+					this->setCursor( &m_cursorSelect );
+				else
+					this->setCursor( &m_cursorArrow );
+			}
+		}
+		else
+		{
+			// check to select time
+			if ( isSelectTime )
+				this->setCursor( &m_cursorSelect );
+			else
+				this->setCursor( &m_cursorArrow );
+		}
+
+		// revert select time
+		m_selectTimeID = oldSelect;
+	}
+}
+
 void CTimelineControl::paintControl( uiGraphics *pG )
 {
 	if ( m_needSortValue == true )
@@ -176,7 +267,9 @@ void CTimelineControl::paintControl( uiGraphics *pG )
 	int nWidth = getClientWidth();
 	int nHeight = getClientHeight();
 	
-	uiBrush bgGrey( uiColor(0x9f9f9f) );	
+	uiBrush bgGrey( uiColor(0x9f9f9f) );
+	uiBrush bgGreyDark( uiColor(0x666666) );
+
 	uiFont tahoma(14, L"tahoma");
 	tahoma.setFontNormal();
 
@@ -184,9 +277,13 @@ void CTimelineControl::paintControl( uiGraphics *pG )
 	
 	// fill background
 	graphics->drawFillRectangle(0,0, nWidth, nHeight, &bgGrey);	
-	
+		
 	if ( m_timeLength > 0.0f )
 	{
+		// draw header & left
+		graphics->drawFillRectangle(0,0, OFFSET_X, nHeight, &bgGreyDark);
+		graphics->drawFillRectangle(0,0, nWidth, OFFSET_Y, &bgGreyDark);
+
 		float midValue = (m_maxValue + m_minValue)*0.5f;	
 		
 		uiPen pen(1, PS_SOLID, uiColor(0x888888));
@@ -235,6 +332,11 @@ void CTimelineControl::paintControl( uiGraphics *pG )
 			graphics->drawLine(x1,0, x1,nHeight);
 			
 			swprintf(text,512,L"%.2f", m_value[i].time);
+			if ( i == m_selectTimeID )
+				graphics->setTextColor( uiColor(0x0000ff) );
+			else
+				graphics->setTextColor( uiColor(0xffffff) );
+
 			graphics->drawText( x1, 0, text );
 
 			// draw line x
@@ -279,10 +381,19 @@ void CTimelineControl::paintControl( uiGraphics *pG )
 	
 		// paint current time
 		uiPen penTime(1, PS_SOLID, uiColor(0x00FFFF));
-		int xTime = getX( m_currentTime );
 
-		graphics->selectObject(&penTime);	
-		graphics->drawLine( xTime, 0, xTime, nHeight );
+		if ( m_selectTimeID == -1 )
+		{
+			int xTime = getX( m_currentTime );
+			graphics->selectObject(&penTime);
+			graphics->drawLine( xTime, 0, xTime, nHeight );
+		}
+		else
+		{
+			int xTime = getX( m_value[m_selectTimeID].time );
+			graphics->selectObject(&penTime);
+			graphics->drawLine( xTime, 0, xTime, nHeight );
+		}
 
 	}	
 
@@ -318,7 +429,7 @@ int CTimelineControl::getX( float v )
 
 int CTimelineControl::getY( float v )
 {
-	float paddingY = 30.0f;
+	float paddingY = (float)OFFSET_Y;
 	float height = (float)getClientHeight() - paddingY*2;
 	
 	if ( v <= m_minValue )
@@ -328,4 +439,35 @@ int CTimelineControl::getY( float v )
 
 	float posY = paddingY + (m_maxValue - v)*height/( m_maxValue - m_minValue );	
 	return (int)posY;
+}
+
+bool CTimelineControl::checkSelectTime( int x, int y )
+{
+	// reset select time
+	m_selectTimeID = -1;
+	int padding = 10;
+
+	if ( y > OFFSET_Y/2)
+	{		
+		return false;
+	}
+
+	int len = (int)m_value.size();
+	for ( int i = 0; i < len; i++ )
+	{		
+		int tx = getX( m_value[i].time );
+		
+		if ( tx - padding <= x && tx + padding >= x )
+		{
+			m_selectTimeID = i;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void CTimelineControl::updateChangeTime( int x, int y )
+{
+	
 }

@@ -196,6 +196,8 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	m_listProperty->showWindow( true );
 	m_listProperty->changeWindowStyle( UISTYLE_CHILD );	
 	m_listProperty->setDock( containerWin, UIDOCK_BOTTOM );	
+	m_listProperty->setEventOnUpdateProperty<CAnimModifyFrame, &CAnimModifyFrame::_onListPropertyChange>( this );
+	m_listProperty->setEventOnItemChange<CAnimModifyFrame, &CAnimModifyFrame::_onListPropertyChange>( this );
 
 	uiListPropertyGroup *header = m_listProperty->addGroup(L"header");
 	header->enableColText(true);
@@ -436,6 +438,12 @@ void CAnimModifyFrame::_onSelectTime( uiObject *pSender )
 	if ( m_lastSelectNode )
 		setNodeInfoToProperty( m_lastSelectNode );
 }
+
+void CAnimModifyFrame::_onListPropertyChange( uiObject *pSender )
+{
+
+}
+
 
 void CAnimModifyFrame::setColladaComponent( CColladaMeshComponent *comp )
 {

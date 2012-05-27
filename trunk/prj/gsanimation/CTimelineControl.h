@@ -28,12 +28,18 @@ protected:
 	float					m_maxValue;
 	float					m_minValue;
 
-	int						m_timerID;
+	int						m_selectTimeID;
 
 	bool					m_lbuttonDown;
 	bool					m_rbuttonDown;
 	int						m_x;
 	int						m_y;
+
+	uiCursor				m_cursorResize;
+	uiCursor				m_cursorArrow;
+	uiCursor				m_cursorSelect;
+
+	int						m_mouseActionState;
 public:
 	CTimelineControl(uiWindow* parent, int x, int y, int w, int h);
 
@@ -52,6 +58,8 @@ public:
 	void paintControl( uiGraphics *pG );
 
 	void update();
+
+	void updateCursor(int x, int y);
 
 	void setTimeLength( float f )
 	{
@@ -94,7 +102,18 @@ public:
 	{
 		m_value.clear();
 		m_timeLength = 0.0f;
+		m_selectTimeID = -1;
 		m_needSortValue = true;
+	}
+
+	int getValueCount()
+	{
+		return (int)m_value.size();
+	}
+
+	STimelineValue& getValue(int i)
+	{
+		return m_value[i];
 	}
 
 	int getX( float v );
@@ -105,7 +124,27 @@ public:
 	{
 		m_changeTime = b;
 	}
-	
+
+	int getSelectTimeID()
+	{
+		return m_selectTimeID;
+	}
+
+protected:
+	void updateChangeTime( int x, int y );
+
+	bool checkSelectTime( int x, int y );	
+
+protected:
+	uiEventCallback	_onSelectTime;
+
+public:
+	template<class T, void (T::*pTMethod)(uiObject*)>
+	void setEventOnSelectTime( T *pObj )
+	{
+		_onSelectTime.setEvent<T,pTMethod>(pObj);
+	}
+
 };
 
 #endif

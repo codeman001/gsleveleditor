@@ -192,17 +192,34 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	containerWin->changeWindowStyle( UISTYLE_CHILD );
 	containerWin->showWindow( true );	
 
+	m_listProperty = ref<uiListProperty>( new uiListProperty(L"property", 0,0, 500, 40, containerWin, 5) );
+	m_listProperty->showWindow( true );
+	m_listProperty->changeWindowStyle( UISTYLE_CHILD );	
+	m_listProperty->setDock( containerWin, UIDOCK_BOTTOM );	
+
+	uiListPropertyGroup *header = m_listProperty->addGroup(L"header");
+	header->enableColText(true);
+	header->setColText(L"node",0);
+	header->setColText(L"frame",1);
+	header->setColText(L"x",2);
+	header->setColText(L"y",3);
+	header->setColText(L"z",4);
+	
+
 	uiTabControl *tabWin = ref<uiTabControl>( new uiTabControl(L"tabWin", 0,0, 100, 100, containerWin) );
 	tabWin->setDock( containerWin, UIDOCK_FILL );
 	tabWin->setEventOnTabChanged<CAnimModifyFrame, &CAnimModifyFrame::_onTabChange> (this);
-	
+
 	m_tabTime = tabWin;
 	m_currentTab = 0;
 
 	m_timeControlRot = ref<CTimelineControl>( new CTimelineControl(tabWin, 0,0,100,100) );	
 	m_timeControlRot->enableChangeTime( true );
+	m_timeControlRot->setEventOnSelectTime<CAnimModifyFrame,&CAnimModifyFrame::_onSelectTime>( this );
+
 	m_timeControlPos = ref<CTimelineControl>( new CTimelineControl(tabWin, 0,0,100,100) );	
 	m_timeControlPos->enableChangeTime( true );
+	m_timeControlPos->setEventOnSelectTime<CAnimModifyFrame,&CAnimModifyFrame::_onSelectTime>( this );
 
 	tabWin->addTab(L"Rotation keys", m_timeControlRot);
 	tabWin->addTab(L"Position keys", m_timeControlPos);
@@ -307,6 +324,67 @@ void CAnimModifyFrame::_onTabChange( uiObject *pSender )
 	m_currentTab = (int)m_tabTime->getSelectTab();
 }
 
+void CAnimModifyFrame::setNodeInfoToProperty( CGameColladaSceneNode *node )
+{			
+	if ( m_listProperty->getItemCount() == 2 )
+		m_listProperty->deleteItem(1);	
+
+	wchar_t stringw[512];
+
+	uiString::copy<wchar_t, const c8>( stringw, node->getName() );
+	uiListPropertyRow *pRow = m_listProperty->addRowItem( stringw );
+
+	int select = -1;
+	int numValue = 0;
+	CTimelineControl *timeControl = NULL;
+
+	if ( m_currentTab == 0 )
+	{
+		// rotation
+		timeControl = m_timeControlRot;
+	}
+	else
+	{
+		// position
+		timeControl = m_timeControlPos;
+	}
+
+	select = timeControl->getSelectTimeID();
+	numValue = timeControl->getValueCount();
+
+	if ( select == -1 )
+		select = 0;
+	
+	if ( numValue > 0 && select < numValue )
+	{
+		STimelineValue value = timeControl->getValue(select);
+		
+		uiListPropertyEdit *edit = NULL;
+
+		swprintf(stringw, 512, L"%f", value.time);
+		pRow->setText( stringw, 1 );
+		edit = (uiListPropertyEdit*)pRow->setControl( UILISTPROPERTY_EDIT, 1, NULL );
+		edit->setNumberFloatValueOnly(true);
+
+		swprintf(stringw, 512, L"%f", value.x);
+		pRow->setText( stringw, 2 );
+		edit = (uiListPropertyEdit*)pRow->setControl( UILISTPROPERTY_EDIT, 2, NULL );
+		edit->setNumberFloatValueOnly(true);
+
+		swprintf(stringw, 512, L"%f", value.y);
+		pRow->setText( stringw, 3 );
+		edit = (uiListPropertyEdit*)pRow->setControl( UILISTPROPERTY_EDIT, 3, NULL );
+		edit->setNumberFloatValueOnly(true);
+
+		swprintf(stringw, 512, L"%f", value.z);
+		pRow->setText( stringw, 4 );
+		edit = (uiListPropertyEdit*)pRow->setControl( UILISTPROPERTY_EDIT, 4, NULL );
+		edit->setNumberFloatValueOnly(true);
+	}
+
+	m_listProperty->updateListProperty();
+}
+
 
 #include "CIrrWindowController.h"
 void CAnimModifyFrame::_onSelectedNode( uiObject *pSender )
@@ -322,6 +400,9 @@ void CAnimModifyFrame::_onSelectedNode( uiObject *pSender )
 	{
 		updateTimeLine( m_lastSelectNode );
 		m_lastSelectNode->showName( true );	
+
+		// update info
+		setNodeInfoToProperty( m_lastSelectNode );
 	}	
 }
 
@@ -343,8 +424,17 @@ void CAnimModifyFrame::_onTreeSelect( uiObject *pSender )
 			updateTimeLine( node );
 			node->showName( true );
 			m_lastSelectNode = node;
+
+			// update info
+			setNodeInfoToProperty( m_lastSelectNode );
 		}
 	}
+}
+
+void CAnimModifyFrame::_onSelectTime( uiObject *pSender )
+{
+	if ( m_lastSelectNode )
+		setNodeInfoToProperty( m_lastSelectNode );
 }
 
 void CAnimModifyFrame::setColladaComponent( CColladaMeshComponent *comp )

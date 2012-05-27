@@ -46,6 +46,7 @@ protected:
 	uiTabControl			*m_tabTime;
 	CTimelineControl		*m_timeControlRot;
 	CTimelineControl		*m_timeControlPos;
+	uiListProperty			*m_listProperty;
 
 	int						m_currentTab;
 
@@ -58,6 +59,7 @@ public:
 	// Phan tich su kien cho uiForm
 	virtual LRESULT	messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+	// event func
 	void _onTreeSelect( uiObject *pSender );
 
 	void _onSelectedNode( uiObject *pSender );
@@ -65,6 +67,11 @@ public:
 	void _onTabChange( uiObject *pSender );
 
 	void _onToolbarCommand( uiObject *pSender );
+
+	void _onSelectTime( uiObject *pSender );
+
+	// member func
+	void setNodeInfoToProperty( CGameColladaSceneNode *node );
 
 	void setColladaComponent( CColladaMeshComponent *comp );
 

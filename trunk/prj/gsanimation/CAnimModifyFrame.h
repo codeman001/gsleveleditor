@@ -70,6 +70,8 @@ public:
 
 	void _onSelectTime( uiObject *pSender );
 
+	void _onUpdateValue( uiObject *pSender );
+
 	void _onListPropertyChange( uiObject *pSender );
 
 	// member func

@@ -187,6 +187,7 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	m_treeNode = m_treeContainer->getTreeView();
 	m_treeNode->setEventOnSelectChange<CAnimModifyFrame, &CAnimModifyFrame::_onTreeSelect> ( this );
 
+	
 	// create info node
 	uiWindow *containerWin = ref<uiWindow>( new uiWindow(L"container", 0,0, 100, 100, m_mainSplit) );
 	containerWin->changeWindowStyle( UISTYLE_CHILD );
@@ -216,12 +217,15 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	m_currentTab = 0;
 
 	m_timeControlRot = ref<CTimelineControl>( new CTimelineControl(tabWin, 0,0,100,100) );	
-	m_timeControlRot->enableChangeTime( true );
+	m_timeControlRot->enableChangeTimeAndValue( true );
 	m_timeControlRot->setEventOnSelectTime<CAnimModifyFrame,&CAnimModifyFrame::_onSelectTime>( this );
+	m_timeControlRot->setEventOnUpdateValue<CAnimModifyFrame,&CAnimModifyFrame::_onUpdateValue>( this );
+
 
 	m_timeControlPos = ref<CTimelineControl>( new CTimelineControl(tabWin, 0,0,100,100) );	
-	m_timeControlPos->enableChangeTime( true );
+	m_timeControlPos->enableChangeTimeAndValue( true );
 	m_timeControlPos->setEventOnSelectTime<CAnimModifyFrame,&CAnimModifyFrame::_onSelectTime>( this );
+	m_timeControlPos->setEventOnUpdateValue<CAnimModifyFrame,&CAnimModifyFrame::_onUpdateValue>( this );
 
 	tabWin->addTab(L"Rotation keys", m_timeControlRot);
 	tabWin->addTab(L"Position keys", m_timeControlPos);
@@ -299,16 +303,16 @@ void CAnimModifyFrame::_onToolbarCommand( uiObject *pSender )
 	if ( pSender == m_playButton )
 	{
 		m_colladaComponent->resumeAnim();
-		m_timeControlRot->enableChangeTime( false );
-		m_timeControlPos->enableChangeTime( false );
+		m_timeControlRot->enableChangeTimeAndValue( false );
+		m_timeControlPos->enableChangeTimeAndValue( false );
 	}
 	else if ( pSender == m_stopButton )
 	{
 		m_colladaComponent->pauseAtFrame(0);
 		m_timeControlRot->setCurrentTime(0);
-		m_timeControlRot->enableChangeTime( true );
+		m_timeControlRot->enableChangeTimeAndValue( true );
 		m_timeControlPos->setCurrentTime(0);
-		m_timeControlPos->enableChangeTime( true );
+		m_timeControlPos->enableChangeTimeAndValue( true );
 
 		m_timeControlPos->update();
 		m_timeControlRot->update();
@@ -316,8 +320,8 @@ void CAnimModifyFrame::_onToolbarCommand( uiObject *pSender )
 	else
 	{
 		m_colladaComponent->pauseAtFrame( m_colladaComponent->getCurrentFrame() );
-		m_timeControlRot->enableChangeTime( true );
-		m_timeControlPos->enableChangeTime( true );
+		m_timeControlRot->enableChangeTimeAndValue( true );
+		m_timeControlPos->enableChangeTimeAndValue( true );
 	}	
 }
 
@@ -434,6 +438,12 @@ void CAnimModifyFrame::_onTreeSelect( uiObject *pSender )
 }
 
 void CAnimModifyFrame::_onSelectTime( uiObject *pSender )
+{
+	if ( m_lastSelectNode )
+		setNodeInfoToProperty( m_lastSelectNode );
+}
+
+void CAnimModifyFrame::_onUpdateValue( uiObject *pSender )
 {
 	if ( m_lastSelectNode )
 		setNodeInfoToProperty( m_lastSelectNode );

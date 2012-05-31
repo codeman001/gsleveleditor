@@ -5,12 +5,14 @@
 #define OFFSET_Y	30
 
 const int k_mouseActionChangeTime = 1;
+const int k_mouseActionChangeValue = 2;
 
 CTimelineControl::CTimelineControl(uiWindow* parent, int x, int y, int w, int h)
 	:uiWindow(L"timeLineControl", x, y, w, h, parent),
 	m_cursorResize( UICURSOR_SIZEWE, true ),
 	m_cursorArrow( UICURSOR_ARROW, true ),
-	m_cursorSelect( IDC_HAND, true )
+	m_cursorSelect( IDC_HAND, true ),
+	m_cursorMoveValue( UICURSOR_CROSS, true )
 {
 	changeWindowStyle( UISTYLE_CHILD );
 	showWindow(true);
@@ -22,7 +24,7 @@ CTimelineControl::CTimelineControl(uiWindow* parent, int x, int y, int w, int h)
 
 	m_lengthPixel	= 15;	
 	m_needSortValue	= true;	
-	m_changeTime = false;
+	m_changeTimeAndValue = false;
 
 	m_lbuttonDown = false;
 	m_rbuttonDown = false;
@@ -45,17 +47,21 @@ void CTimelineControl::_OnLButtonDown( uiMouseEvent mouseEvent, int x, int y )
 	this->setCapture();
 	
 	m_lbuttonDown = true;
-	if ( m_changeTime )
+	if ( m_changeTimeAndValue )
 	{
 		m_currentTime = getTimeValue( x - OFFSET_X + m_crollX );
 		
 
 		// check new select time
 		int oldSelect = m_selectTimeID;
-		bool isSelectTime =  checkSelectTime( x, y );
+		bool isSelectTime = checkSelectTime( x, y );
 
 		if ( oldSelect != -1 && isSelectTime && oldSelect == m_selectTimeID )				
 			m_mouseActionState = k_mouseActionChangeTime;
+		else if ( checkSelectXYZ( x, y ) == true )
+		{
+				m_mouseActionState = k_mouseActionChangeValue;
+		}
 
 		update();
 		updateCursor( x, y);
@@ -70,11 +76,17 @@ void CTimelineControl::_OnLButtonUp( uiMouseEvent mouseEvent, int x, int y )
 		
 	// check select time
 	if ( m_mouseActionState == -1 )
-	{
+	{		
 		if ( checkSelectTime( x, y ) == true )
-			_onSelectTime( this );
+			_onSelectTime( this );		
 	}
-
+	else if ( 
+		m_mouseActionState == k_mouseActionChangeTime || 
+		m_mouseActionState == k_mouseActionChangeValue 
+	)
+	{
+		_onUpdateValue( this );
+	}
 
 	// reset action state
 	m_mouseActionState = -1;
@@ -100,7 +112,7 @@ void CTimelineControl::_OnRButtonUp( uiMouseEvent mouseEvent, int x, int y )
 
 void CTimelineControl::_OnMouseMove( uiMouseEvent mouseEvent, int x, int y )
 {
-	if ( m_changeTime )
+	if ( m_changeTimeAndValue )
 	{
 		if ( m_lbuttonDown )
 		{
@@ -108,6 +120,11 @@ void CTimelineControl::_OnMouseMove( uiMouseEvent mouseEvent, int x, int y )
 			{
 				// drag to change time
 				updateChangeTime( x, y );
+			}
+			else if ( m_mouseActionState == k_mouseActionChangeValue )
+			{
+				// drag to change value
+				updateChangeValue( x,y );
 			}
 			else
 			{
@@ -225,13 +242,14 @@ void CTimelineControl::updateCursor(int x, int y)
 	{
 		// save select time
 		int oldSelect = m_selectTimeID;
+		int oldValue = m_selectValue;
 
 		bool isSelectTime = checkSelectTime( x,y );
 
 		if ( oldSelect != -1 )
 		{				
 			// check to resize
-			if ( isSelectTime && oldSelect == m_selectTimeID )
+			if ( isSelectTime && oldSelect == m_selectTimeID && oldValue == -1 )
 				this->setCursor( &m_cursorResize );
 			else
 			{
@@ -247,11 +265,19 @@ void CTimelineControl::updateCursor(int x, int y)
 			if ( isSelectTime )
 				this->setCursor( &m_cursorSelect );
 			else
-				this->setCursor( &m_cursorArrow );
+			{
+
+				if ( checkSelectXYZ( x, y ) )
+					this->setCursor( &m_cursorMoveValue );
+				else
+					this->setCursor( &m_cursorArrow );
+
+			}
 		}
 
 		// revert select time
 		m_selectTimeID = oldSelect;
+		m_selectValue = oldValue;
 	}
 }
 
@@ -445,7 +471,9 @@ bool CTimelineControl::checkSelectTime( int x, int y )
 {
 	// reset select time
 	m_selectTimeID = -1;
-	int padding = 10;
+	m_selectValue = -1;
+
+	int padding = 5;
 
 	if ( y > OFFSET_Y/2)
 	{		
@@ -467,7 +495,84 @@ bool CTimelineControl::checkSelectTime( int x, int y )
 	return false;
 }
 
+bool CTimelineControl::checkSelectXYZ( int x, int y )
+{
+	m_selectTimeID = -1;
+	m_selectValue = -1;
+
+	if ( y < OFFSET_Y)
+	{		
+		return false;
+	}
+
+	int padding = 5;
+
+	int len = (int)m_value.size();
+	for ( int i = 0; i < len; i++ )
+	{		
+		int tx = getX( m_value[i].time );
+		
+		if ( tx - padding <= x && tx + padding >= x )
+		{
+			// so need check value
+			int ty = getY( m_value[i].x );			
+			if ( ty - padding <= y && ty + padding >= y )
+			{
+				m_selectTimeID = i;
+				m_selectValue = 0;
+				return true;
+			}
+
+			ty = getY( m_value[i].y );			
+			if ( ty - padding <= y && ty + padding >= y )
+			{
+				m_selectTimeID = i;
+				m_selectValue = 1;
+				return true;
+			}
+
+			ty = getY( m_value[i].z );			
+			if ( ty - padding <= y && ty + padding >= y )
+			{
+				m_selectTimeID = i;
+				m_selectValue = 2;
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+void CTimelineControl::updateChangeValue( int x, int y )
+{
+	if ( m_selectTimeID == -1 || m_selectValue == -1 )
+		return;
+}
+
 void CTimelineControl::updateChangeTime( int x, int y )
 {
-	
+	if ( m_selectTimeID == -1 )
+		return;
+
+	float deltaFrame = 0.4f;
+
+	if ( m_selectTimeID > 0 && m_selectTimeID != m_value.size() - 1 )
+	{
+		float left	=  m_value[m_selectTimeID-1].time;
+		float right	=  m_value[m_selectTimeID+1].time;
+
+		float dragTime = getTimeValue( x - OFFSET_X + m_crollX );
+		
+		if ( dragTime < left + deltaFrame )
+			dragTime = left + deltaFrame;
+
+		if ( dragTime > right - deltaFrame )
+			dragTime = right - deltaFrame;
+
+		m_value[m_selectTimeID].time = dragTime;
+
+		update();
+	}
+
 }

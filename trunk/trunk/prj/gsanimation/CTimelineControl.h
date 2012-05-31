@@ -21,7 +21,7 @@ protected:
 	
 	vector<STimelineValue>	m_value;
 	
-	bool					m_changeTime;
+	bool					m_changeTimeAndValue;
 	float					m_currentTime;
 	int						m_crollX;
 	
@@ -29,6 +29,7 @@ protected:
 	float					m_minValue;
 
 	int						m_selectTimeID;
+	int						m_selectValue;
 
 	bool					m_lbuttonDown;
 	bool					m_rbuttonDown;
@@ -38,6 +39,7 @@ protected:
 	uiCursor				m_cursorResize;
 	uiCursor				m_cursorArrow;
 	uiCursor				m_cursorSelect;
+	uiCursor				m_cursorMoveValue;
 
 	int						m_mouseActionState;
 public:
@@ -120,9 +122,9 @@ public:
 	int getY( float v );
 	float getTimeValue( int v );
 
-	void enableChangeTime( bool b )
+	void enableChangeTimeAndValue( bool b )
 	{
-		m_changeTime = b;
+		m_changeTimeAndValue = b;
 	}
 
 	int getSelectTimeID()
@@ -132,17 +134,26 @@ public:
 
 protected:
 	void updateChangeTime( int x, int y );
+	void updateChangeValue( int x, int y );
 
 	bool checkSelectTime( int x, int y );	
+	bool checkSelectXYZ( int x, int y );
 
 protected:
 	uiEventCallback	_onSelectTime;
+	uiEventCallback	_onUpdateValue;
 
 public:
 	template<class T, void (T::*pTMethod)(uiObject*)>
 	void setEventOnSelectTime( T *pObj )
 	{
 		_onSelectTime.setEvent<T,pTMethod>(pObj);
+	}
+
+	template<class T, void (T::*pTMethod)(uiObject*)>
+	void setEventOnUpdateValue( T *pObj )
+	{
+		_onUpdateValue.setEvent<T,pTMethod>(pObj);
 	}
 
 };

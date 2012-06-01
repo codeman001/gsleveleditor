@@ -858,8 +858,8 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 
 		effect->Id = readId(xmlRead);
 		effect->Transparency = 1.f;
-		effect->Mat.Lighting=true;
-		effect->Mat.NormalizeNormals=true;
+		effect->Mat.Lighting = true;
+		effect->Mat.NormalizeNormals = true;		
 	}
 
 	const std::wstring constantNode(L"constant");
@@ -985,7 +985,7 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 											effect->Mat.setTexture(0, getTextureFromImage( m_animeshFile, tname, m_listEffectsParam ));									
 										else if ( node == ambientNode )
 										{
-											// ambient texture: todo later
+											// ambient lightmap texture: todo later
 										}
 									}								
 								}
@@ -1073,6 +1073,7 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 	effect->Mat.setFlag(video::EMF_BILINEAR_FILTER, true);
 	effect->Mat.setFlag(video::EMF_TRILINEAR_FILTER, true);
 	effect->Mat.setFlag(video::EMF_ANISOTROPIC_FILTER, true);
+	effect->Mat.Shininess = 0.0f;
 }
 
 
@@ -1233,7 +1234,8 @@ void CColladaMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
 
 	AnimationFrames& animation = m_jointAnimation[stringBuffer];
 		
-	int readState = 0;
+	int		readState = 0;
+	float	*arrayFloat = NULL;
 
 	wstring arrayID;
 	int count = 0;
@@ -1252,16 +1254,75 @@ void CColladaMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
 					count = xmlRead->getAttributeValueAsInt(L"count");
 
 					if ( (int)arrayID.find( L"-input-array" ) > 0 )
-						readState = 1;
-					else if ( (int)arrayID.find( L"-output-array" ) > 0 )
 					{
-						if ( isRotation )
-							count = count/4;
-						if ( isTranslate )
-							count = count/3;
-
-						readState = 2;
+						readState = 1;
+						animation.resize( count );
 					}
+					else if ( (int)arrayID.find( L"-output-array" ) > 0 )
+					{						
+						readState = 2;
+						arrayFloat = new float[count];
+					}
+				}
+				else if ( core::stringw(L"accessor") == nodeName && arrayFloat != NULL )
+				{
+					int stride = xmlRead->getAttributeValueAsInt(L"stride");
+					int nFrame = count/stride;
+
+					for ( int i = 0; i < nFrame; i++ )
+					{
+						SAnimFrame& frameData = animation[i];
+
+						if ( isRotation )
+						{				
+							if ( m_needFlip == true )
+							{
+								frameData.m_rotX = arrayFloat[i*4 + 0];
+								frameData.m_rotY = arrayFloat[i*4 + 2];
+								frameData.m_rotZ = arrayFloat[i*4 + 1];
+								frameData.m_rotAngle = arrayFloat[i*4 + 3];
+							}
+							else
+							{
+								frameData.m_rotX = arrayFloat[i*4 + 0];
+								frameData.m_rotY = arrayFloat[i*4 + 1];
+								frameData.m_rotZ = arrayFloat[i*4 + 2];
+								frameData.m_rotAngle = -arrayFloat[i*4 + 3];
+							}
+						}
+						else if ( isTranslate && stride == 3 )
+						{
+							frameData.m_haveTranslate = true;
+
+							if ( m_needFlip == true )
+							{
+								frameData.m_translateX = arrayFloat[0];
+								frameData.m_translateY = arrayFloat[2];
+								frameData.m_translateZ = arrayFloat[1];									
+							}
+							else
+							{
+								frameData.m_translateX = arrayFloat[0];
+								frameData.m_translateY = arrayFloat[1];
+								frameData.m_translateZ = arrayFloat[2];	
+							}
+
+							if ( frameData.m_translateX == 0.0 && 
+								frameData.m_translateY == 0.0 &&
+								frameData.m_translateZ == 0.0 )
+							{
+								frameData.m_haveTranslate = false;
+							}							
+						}
+						else
+						{
+							printf("Warning: May be not support some animation!");
+						}
+
+					}
+
+					delete arrayFloat;
+					arrayFloat = NULL;
 				}
 			}
 		case io::EXN_ELEMENT_END:
@@ -1281,8 +1342,7 @@ void CColladaMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
 					char number[512];
 					int i = 0;
 					int frame = 0;
-
-					float	arrayFloat[10];
+					
 					int		numArray = 0;
 						
 					while ( *p != NULL )
@@ -1299,64 +1359,21 @@ void CColladaMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
 
 							
 							float f;
-							sscanf(number,"%f", &f);
-
-							// add to list
-							arrayFloat[numArray++] = f;
-					
-							if ( (int)animation.size() < count )
-								animation.push_back( SAnimFrame() );
-
-							SAnimFrame& frameData = animation[frame];
-
-							// read time
+							sscanf(number,"%f", &f);																			
+														
 							if ( readState == 1 )
 							{
+								// read time				
+								SAnimFrame& frameData = animation[frame];
 								frameData.m_time = f;
 								
 								numArray = 0;
 								frame++;
 							}
-							else
+							else if ( readState == 2 )
 							{
-								if ( isRotation && numArray == 4 )
-								{				
-									if ( m_needFlip == true )
-									{
-										frameData.m_rotX = arrayFloat[0];
-										frameData.m_rotY = arrayFloat[2];
-										frameData.m_rotZ = arrayFloat[1];
-										frameData.m_rotAngle = arrayFloat[3];
-									}
-									else
-									{
-										frameData.m_rotX = arrayFloat[0];
-										frameData.m_rotY = arrayFloat[1];
-										frameData.m_rotZ = arrayFloat[2];
-										frameData.m_rotAngle = -arrayFloat[3];
-									}
-
-									numArray = 0;
-									frame++;
-								}
-								else if ( isTranslate && numArray == 3 )
-								{
-									if ( m_needFlip == true )
-									{
-										frameData.m_translateX = arrayFloat[0];
-										frameData.m_translateY = arrayFloat[2];
-										frameData.m_translateZ = arrayFloat[1];									
-									}
-									else
-									{
-										frameData.m_translateX = arrayFloat[0];
-										frameData.m_translateY = arrayFloat[1];
-										frameData.m_translateZ = arrayFloat[2];	
-									}
-
-									numArray = 0;
-									frame++;
-								}
+								// add to list
+								arrayFloat[numArray++] = f;
 							}
 
 							i = 0;
@@ -1373,7 +1390,7 @@ void CColladaMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
 			}
 			break;
 		}
-	}
+	}	
 }
 
 // updateJointToMesh
@@ -1501,8 +1518,8 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 			float time	= animClip.m_time;
 			float end	= animClip.m_time + animClip.m_duration;
 			
-			getFrameAtTime( &arrayFrame, time, &fromFrame,	&q1, &v1 );
-			getFrameAtTime( &arrayFrame, end,  &toFrame,	&q2, &v2 );
+			getFrameAtTime( mat, &arrayFrame, time, &fromFrame,	&q1, &v1 );
+			getFrameAtTime( mat, &arrayFrame, end,  &toFrame,	&q2, &v2 );
 			
 			// save frame data			
 			animClip.m_frames = (int) ((end - time) * defaultFps);
@@ -1557,13 +1574,19 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 								core::vector3df(animFrame.m_rotX, animFrame.m_rotY, animFrame.m_rotZ)
 							);
 
+						
 						pos.position.X =  animFrame.m_translateX;
 						pos.position.Y =  animFrame.m_translateY;
 						pos.position.Z =  animFrame.m_translateZ;
-					}					
 
-					mat.transformVect( pos.position );
+						if ( animFrame.m_haveTranslate == false )
+						{
+							// it mean x,z,y = {0,0,0}
+							mat.transformVect( pos.position );
+						}
+					}				
 
+					
 					rot.frame = currentTime * defaultFps;
 					pos.frame = currentTime * defaultFps;
 					
@@ -1588,7 +1611,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 
 // getFrameAtTime
 // get a frame at time
- bool CColladaMeshComponent::getFrameAtTime( AnimationFrames* frames, float time, int *frameID, core::quaternion *rotateData, core::vector3df *translateData )
+ bool CColladaMeshComponent::getFrameAtTime( const core::matrix4& mat, AnimationFrames* frames, float time, int *frameID, core::quaternion *rotateData, core::vector3df *translateData )
 {
 	int nFrames = frames->size();
 
@@ -1620,6 +1643,12 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 			core::vector3df v1(frame1.m_translateX, frame1.m_translateY, frame1.m_translateZ);
 			core::vector3df v2(frame2.m_translateX, frame2.m_translateY, frame2.m_translateZ);
 			
+			if ( frame1.m_haveTranslate == false )	// it mean x,z,y = {0,0,0}
+				mat.transformVect( v1 );
+			
+			if ( frame2.m_haveTranslate == false )	// it mean x,z,y = {0,0,0}
+				mat.transformVect( v2 );
+
 			*translateData = v1 + (v2 - v1) * f;
 
 			// set frame id

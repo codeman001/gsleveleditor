@@ -1275,16 +1275,16 @@ void CColladaMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
 
 						if ( isRotation )
 						{				
-							if ( m_needFlip == true )
+							if ( m_needFlip == true && stride == 4 )
 							{
-								frameData.m_rotX = arrayFloat[i*4 + 0];
+								frameData.m_rotX = arrayFloat[i*4];
 								frameData.m_rotY = arrayFloat[i*4 + 2];
 								frameData.m_rotZ = arrayFloat[i*4 + 1];
 								frameData.m_rotAngle = arrayFloat[i*4 + 3];
 							}
 							else
 							{
-								frameData.m_rotX = arrayFloat[i*4 + 0];
+								frameData.m_rotX = arrayFloat[i*4];
 								frameData.m_rotY = arrayFloat[i*4 + 1];
 								frameData.m_rotZ = arrayFloat[i*4 + 2];
 								frameData.m_rotAngle = -arrayFloat[i*4 + 3];
@@ -1296,15 +1296,15 @@ void CColladaMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
 
 							if ( m_needFlip == true )
 							{
-								frameData.m_translateX = arrayFloat[0];
-								frameData.m_translateY = arrayFloat[2];
-								frameData.m_translateZ = arrayFloat[1];									
+								frameData.m_translateX = arrayFloat[i*3];
+								frameData.m_translateY = arrayFloat[i*3 + 2];
+								frameData.m_translateZ = arrayFloat[i*3 + 1];									
 							}
 							else
 							{
-								frameData.m_translateX = arrayFloat[0];
-								frameData.m_translateY = arrayFloat[1];
-								frameData.m_translateZ = arrayFloat[2];	
+								frameData.m_translateX = arrayFloat[i*3];
+								frameData.m_translateY = arrayFloat[i*3 + 1];
+								frameData.m_translateZ = arrayFloat[i*3 + 2];	
 							}
 
 							if ( frameData.m_translateX == 0.0 && 
@@ -1316,7 +1316,7 @@ void CColladaMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
 						}
 						else
 						{
-							printf("Warning: May be not support some animation!");
+							printf("Warning: May be not support some animation!\n");
 						}
 
 					}

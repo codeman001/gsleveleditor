@@ -1104,6 +1104,8 @@ void CColladaMeshComponent::loadAnimFile( char *lpFileName )
 	m_animationName.clear();
 	m_jointAnimation.clear();
 
+	bool readLUpAxis = false;
+
 	while ( xmlRead->read() )
 	{
 		switch (xmlRead->getNodeType())
@@ -1119,6 +1121,10 @@ void CColladaMeshComponent::loadAnimFile( char *lpFileName )
 				{					
 					parseAnimationNode( xmlRead );				
 				}
+				else if ( nodeName == L"up_axis" )
+				{
+					readLUpAxis = true;
+				}							
 			}
 			break;
 		case io::EXN_ELEMENT_END:
@@ -1127,6 +1133,15 @@ void CColladaMeshComponent::loadAnimFile( char *lpFileName )
 			break;
 		case io::EXN_TEXT:
 			{
+				if ( readLUpAxis == true )
+				{
+					std::wstring text = xmlRead->getNodeData();
+					if ( text == L"Z_UP" )
+					{
+						m_needFlip = true;
+					}
+				}
+				readLUpAxis = false;
 			}
 			break;
 		}
@@ -1306,19 +1321,38 @@ void CColladaMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
 							{
 								if ( isRotation && numArray == 4 )
 								{				
-									frameData.m_rotX = arrayFloat[0];
-									frameData.m_rotY = arrayFloat[1];
-									frameData.m_rotZ = arrayFloat[2];
-									frameData.m_rotAngle = arrayFloat[3];
-																			
+									if ( m_needFlip == true )
+									{
+										frameData.m_rotX = arrayFloat[0];
+										frameData.m_rotY = arrayFloat[2];
+										frameData.m_rotZ = arrayFloat[1];
+										frameData.m_rotAngle = arrayFloat[3];
+									}
+									else
+									{
+										frameData.m_rotX = arrayFloat[0];
+										frameData.m_rotY = arrayFloat[1];
+										frameData.m_rotZ = arrayFloat[2];
+										frameData.m_rotAngle = -arrayFloat[3];
+									}
+
 									numArray = 0;
 									frame++;
 								}
 								else if ( isTranslate && numArray == 3 )
 								{
-									frameData.m_translateX = arrayFloat[0];
-									frameData.m_translateY = arrayFloat[1];
-									frameData.m_translateZ = arrayFloat[2];									
+									if ( m_needFlip == true )
+									{
+										frameData.m_translateX = arrayFloat[0];
+										frameData.m_translateY = arrayFloat[2];
+										frameData.m_translateZ = arrayFloat[1];									
+									}
+									else
+									{
+										frameData.m_translateX = arrayFloat[0];
+										frameData.m_translateY = arrayFloat[1];
+										frameData.m_translateZ = arrayFloat[2];	
+									}
 
 									numArray = 0;
 									frame++;
@@ -1520,12 +1554,12 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 						currentTime =  animFrame.m_time - time;
 						rot.rotation.fromAngleAxis(
 								animFrame.m_rotAngle*core::DEGTORAD, 
-								core::vector3df(animFrame.m_rotX, animFrame.m_rotZ, animFrame.m_rotY)
+								core::vector3df(animFrame.m_rotX, animFrame.m_rotY, animFrame.m_rotZ)
 							);
 
-						pos.position.X =  animFrame.m_translateY;
-						pos.position.Y =  animFrame.m_translateZ;
-						pos.position.Z =  -animFrame.m_translateX;
+						pos.position.X =  animFrame.m_translateX;
+						pos.position.Y =  animFrame.m_translateY;
+						pos.position.Z =  animFrame.m_translateZ;
 					}					
 
 					mat.transformVect( pos.position );
@@ -1575,16 +1609,16 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 			SAnimFrame &frame2 = frames->at( mid + 1 );
 
 			core::quaternion q1, q2;
-			q1.fromAngleAxis( core::DEGTORAD * frame1.m_rotAngle, core::vector3df( frame1.m_rotX, frame1.m_rotZ, frame1.m_rotY ) );
-			q2.fromAngleAxis( core::DEGTORAD * frame2.m_rotAngle, core::vector3df( frame2.m_rotX, frame2.m_rotZ, frame2.m_rotY ) );
+			q1.fromAngleAxis( core::DEGTORAD * frame1.m_rotAngle, core::vector3df( frame1.m_rotX, frame1.m_rotY, frame1.m_rotZ ) );
+			q2.fromAngleAxis( core::DEGTORAD * frame2.m_rotAngle, core::vector3df( frame2.m_rotX, frame2.m_rotY, frame2.m_rotZ ) );
 
 			float f = (time - frame1.m_time)/(frame2.m_time - frame1.m_time);
 
 			// calc rotate
 			rotateData->slerp( q1, q2, f );
 
-			core::vector3df v1(frame1.m_translateY, frame1.m_translateZ, -frame1.m_translateX);
-			core::vector3df v2(frame2.m_translateY, frame2.m_translateZ, -frame2.m_translateX);
+			core::vector3df v1(frame1.m_translateX, frame1.m_translateY, frame1.m_translateZ);
+			core::vector3df v2(frame2.m_translateX, frame2.m_translateY, frame2.m_translateZ);
 			
 			*translateData = v1 + (v2 - v1) * f;
 

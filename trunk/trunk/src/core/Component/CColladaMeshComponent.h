@@ -28,11 +28,31 @@ struct SAnimFrame
 	float		m_rotZ;
 	float		m_rotAngle;
 	
+	bool		m_haveTranslate;
+
 	float		m_translateX;
 	float		m_translateY;
 	float		m_translateZ;
 
 	int			m_interpolation;
+
+	SAnimFrame()
+	{
+		m_time = 0.0f;
+
+		m_rotX = 0.0f;
+		m_rotY = 0.0f;
+		m_rotZ = 0.0f;
+		m_rotAngle = 0.0f;
+	
+		m_haveTranslate = false;
+
+		m_translateX = 0.0f;
+		m_translateY = 0.0f;
+		m_translateZ = 0.0f;
+
+		m_interpolation =0;
+	}
 };
 
 typedef vector<SAnimFrame>	AnimationFrames;
@@ -332,7 +352,7 @@ protected:
 
 	// getFrameAtTime
 	// get a frame at time
-	bool getFrameAtTime( AnimationFrames* frames, float time, int *frameID, core::quaternion *rotateData, core::vector3df *translateData );
+	bool getFrameAtTime( const core::matrix4& mat, AnimationFrames* frames, float time, int *frameID, core::quaternion *rotateData, core::vector3df *translateData );
 
 	// updateJointToMesh
 	// update joint

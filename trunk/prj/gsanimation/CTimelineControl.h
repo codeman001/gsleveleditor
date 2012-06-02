@@ -120,6 +120,9 @@ public:
 
 	int getX( float v );
 	int getY( float v );
+	
+	float getYValue( int y );
+
 	float getTimeValue( int v );
 
 	void enableChangeTimeAndValue( bool b )

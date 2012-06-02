@@ -446,7 +446,54 @@ void CAnimModifyFrame::_onSelectTime( uiObject *pSender )
 void CAnimModifyFrame::_onUpdateValue( uiObject *pSender )
 {
 	if ( m_lastSelectNode )
+	{
 		setNodeInfoToProperty( m_lastSelectNode );
+
+		if ( pSender == m_timeControlRot )
+		{
+			m_lastSelectNode->RotationKeys.clear();
+			
+			int n = m_timeControlRot->getValueCount();
+			for ( int i = 0; i < n; i++ )
+			{
+				STimelineValue& value =	m_timeControlRot->getValue(i);
+				core::vector3df rot(value.x, value.y, value.z);
+				
+				core::matrix4 mat;
+				mat.setRotationDegrees( rot );
+
+				core::quaternion quat( mat );
+
+				CGameColladaSceneNode::SRotationKey key;
+				key.frame = value.time;
+				key.rotation = quat;
+
+				m_lastSelectNode->RotationKeys.push_back( key );
+	
+			}			
+		}
+		else if ( pSender == m_timeControlPos )
+		{
+			m_lastSelectNode->PositionKeys.clear();
+			
+			int n = m_timeControlRot->getValueCount();
+			for ( int i = 0; i < n; i++ )
+			{
+				STimelineValue& value =	m_timeControlPos->getValue(i);
+				core::vector3df pos(value.x, value.y, value.z);
+				
+				CGameColladaSceneNode::SPositionKey key;
+				key.frame = value.time;
+				key.position = pos;
+
+				m_lastSelectNode->PositionKeys.push_back( key );
+	
+			}
+		}
+
+		updateTimeLine( m_lastSelectNode );
+
+	}
 }
 
 void CAnimModifyFrame::_onListPropertyChange( uiObject *pSender )
@@ -458,7 +505,6 @@ void CAnimModifyFrame::_onListPropertyChange( uiObject *pSender )
 void CAnimModifyFrame::setColladaComponent( CColladaMeshComponent *comp )
 {
 	// delete all 
-	if ( m_colladaComponent != comp )
 	{
 		m_treeNode->deleteAllItem();
 		uiTreeViewItem *root = m_treeNode->addItem(L"colladaTreeNode");
@@ -548,7 +594,7 @@ void CAnimModifyFrame::updateTimeLine( CGameColladaSceneNode *node )
 				rotVec.Y -= 360;
 			if ( rotVec.Z > 180 )
 				rotVec.Z -= 360;
-			m_timeControlRot->addValue( key.frame, rotVec.X, rotVec.Y, rotVec.Z );			
+			m_timeControlRot->addValue( key.frame, rotVec.X, rotVec.Y, rotVec.Z );
 		}
 
 		// set time

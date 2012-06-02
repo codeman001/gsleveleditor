@@ -1564,7 +1564,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 					{
 						currentTime = end - time;
 						rot.rotation = q2;
-						pos.position = v2;						
+						pos.position = v2;
 					}
 					else
 					{
@@ -1618,7 +1618,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 	int first = 0, last = nFrames - 2;
 	int mid = 0;
 		
-	while (first <= last) 
+	while (first <= last)
 	{
 		mid = (first + last) / 2;
 
@@ -1652,7 +1652,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 			*translateData = v1 + (v2 - v1) * f;
 
 			// set frame id
-			*frameID = mid;		
+			*frameID = mid + 1;
 			return true;
 		}
 	}

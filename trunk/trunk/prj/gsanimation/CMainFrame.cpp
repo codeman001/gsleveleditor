@@ -341,7 +341,7 @@ void CMainFrame::listPropertyOnItemEdit( uiObject *pSender )
 	uiString::copy<WCHAR, char>( labelW, label );
 
 	m_editorWin->setCaption( labelW );
-	m_editorWin->setColladaComponent( m_irrWin->getAnimComponent() );
+	m_editorWin->updateTimeLine( NULL );
 	m_editorWin->showWindow(true);
 }
 

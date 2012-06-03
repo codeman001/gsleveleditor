@@ -83,7 +83,7 @@ public:
 
 	void updateTimeLine( CGameColladaSceneNode *node );
 
-	
+	void updateTimelineToSceneNode( CTimelineControl *control );
 };
 
 #endif

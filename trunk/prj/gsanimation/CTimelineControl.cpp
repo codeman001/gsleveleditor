@@ -87,14 +87,15 @@ void CTimelineControl::_OnLButtonUp( uiMouseEvent mouseEvent, int x, int y )
 		m_mouseActionState == k_mouseActionChangeValue 
 	)
 	{
+		float time = m_value[m_selectTimeID].time;
+
 		_onUpdateValue( this );
 
-		if ( m_mouseActionState == k_mouseActionChangeValue && m_selectTimeID != -1 )
+		selectFrame( time );
+
+		if ( m_selectTimeID != -1 )
 		{
 			m_currentTime = m_value[m_selectTimeID].time;
-
-			m_selectTimeID = -1;
-			m_selectValue = -1;
 		}
 	}
 
@@ -173,6 +174,24 @@ void CTimelineControl::_OnMouseMove( uiMouseEvent mouseEvent, int x, int y )
 
 	// update cursor icon
 	updateCursor( x, y);
+}
+
+void CTimelineControl::selectFrame( float frame )
+{
+	sortValue( m_value );
+	int len = (int)m_value.size();
+	
+	m_selectTimeID = -1;
+
+	for (int i = 1; i <= len - 1; i++)
+	{
+		STimelineValue s = m_value[i];
+		if ( s.time == frame )
+		{
+			m_selectTimeID = i;			
+			break;
+		}
+	}
 }
 
 void CTimelineControl::sortValue( vector<STimelineValue>& value )
@@ -267,7 +286,9 @@ void CTimelineControl::updateCursor(int x, int y)
 				this->setCursor( &m_cursorResize );
 			else
 			{
-				if ( isSelectTime )
+				if ( checkSelectXYZ( x, y ) )
+					this->setCursor( &m_cursorMoveValue );
+				else if ( isSelectTime )
 					this->setCursor( &m_cursorSelect );
 				else
 					this->setCursor( &m_cursorArrow );

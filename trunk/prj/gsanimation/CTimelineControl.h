@@ -96,6 +96,8 @@ public:
 		return m_currentTime;
 	}
 
+	void selectFrame( float frame );
+
 	void sortValue( vector<STimelineValue>& value );
 	
 	void calcMinMax( vector<STimelineValue>& value );	

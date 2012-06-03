@@ -198,7 +198,7 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	m_listProperty->changeWindowStyle( UISTYLE_CHILD );	
 	m_listProperty->setDock( containerWin, UIDOCK_BOTTOM );	
 	m_listProperty->setEventOnUpdateProperty<CAnimModifyFrame, &CAnimModifyFrame::_onListPropertyChange>( this );
-	m_listProperty->setEventOnItemChange<CAnimModifyFrame, &CAnimModifyFrame::_onListPropertyChange>( this );
+	//m_listProperty->setEventOnItemChange<CAnimModifyFrame, &CAnimModifyFrame::_onListPropertyChange>( this );
 
 	uiListPropertyGroup *header = m_listProperty->addGroup(L"header");
 	header->enableColText(true);
@@ -365,8 +365,11 @@ void CAnimModifyFrame::setNodeInfoToProperty( CGameColladaSceneNode *node )
 	{
 		STimelineValue value = timeControl->getValue(select);
 		
-		uiListPropertyEdit *edit = NULL;
+		// tag control to row
+		pRow->setData( timeControl );
 
+		uiListPropertyEdit *edit = NULL;		
+		
 		swprintf(stringw, 512, L"%f", value.time);
 		pRow->setText( stringw, 1 );
 		edit = (uiListPropertyEdit*)pRow->setControl( UILISTPROPERTY_EDIT, 1, NULL );
@@ -443,62 +446,110 @@ void CAnimModifyFrame::_onSelectTime( uiObject *pSender )
 		setNodeInfoToProperty( m_lastSelectNode );
 }
 
+void CAnimModifyFrame::updateTimelineToSceneNode( CTimelineControl *control )
+{
+	if ( control == m_timeControlRot )
+	{
+		m_lastSelectNode->RotationKeys.clear();
+		
+		int n = m_timeControlRot->getValueCount();
+		for ( int i = 0; i < n; i++ )
+		{
+			STimelineValue& value =	m_timeControlRot->getValue(i);
+			core::vector3df rot(value.x, value.y, value.z);
+			
+			core::matrix4 mat;
+			mat.setRotationDegrees( rot );
+
+			core::quaternion quat( mat );
+
+			CGameColladaSceneNode::SRotationKey key;
+			key.frame = value.time;
+			key.rotation = quat;
+
+			m_lastSelectNode->RotationKeys.push_back( key );
+
+		}			
+	}
+	else if ( control == m_timeControlPos )
+	{
+		m_lastSelectNode->PositionKeys.clear();
+		
+		int n = m_timeControlRot->getValueCount();
+		for ( int i = 0; i < n; i++ )
+		{
+			STimelineValue& value =	m_timeControlPos->getValue(i);
+			core::vector3df pos(value.x, value.y, value.z);
+			
+			CGameColladaSceneNode::SPositionKey key;
+			key.frame = value.time;
+			key.position = pos;
+
+			m_lastSelectNode->PositionKeys.push_back( key );
+
+		}
+	}
+
+	updateTimeLine( m_lastSelectNode );
+
+}
+
 void CAnimModifyFrame::_onUpdateValue( uiObject *pSender )
 {
 	if ( m_lastSelectNode )
 	{
 		setNodeInfoToProperty( m_lastSelectNode );
 
-		if ( pSender == m_timeControlRot )
-		{
-			m_lastSelectNode->RotationKeys.clear();
-			
-			int n = m_timeControlRot->getValueCount();
-			for ( int i = 0; i < n; i++ )
-			{
-				STimelineValue& value =	m_timeControlRot->getValue(i);
-				core::vector3df rot(value.x, value.y, value.z);
-				
-				core::matrix4 mat;
-				mat.setRotationDegrees( rot );
-
-				core::quaternion quat( mat );
-
-				CGameColladaSceneNode::SRotationKey key;
-				key.frame = value.time;
-				key.rotation = quat;
-
-				m_lastSelectNode->RotationKeys.push_back( key );
-	
-			}			
-		}
-		else if ( pSender == m_timeControlPos )
-		{
-			m_lastSelectNode->PositionKeys.clear();
-			
-			int n = m_timeControlRot->getValueCount();
-			for ( int i = 0; i < n; i++ )
-			{
-				STimelineValue& value =	m_timeControlPos->getValue(i);
-				core::vector3df pos(value.x, value.y, value.z);
-				
-				CGameColladaSceneNode::SPositionKey key;
-				key.frame = value.time;
-				key.position = pos;
-
-				m_lastSelectNode->PositionKeys.push_back( key );
-	
-			}
-		}
-
-		updateTimeLine( m_lastSelectNode );
-
+		updateTimelineToSceneNode( (CTimelineControl*) pSender );
 	}
 }
 
 void CAnimModifyFrame::_onListPropertyChange( uiObject *pSender )
 {
+	if ( m_listProperty->getItemCount() == 2 )
+	{
+		uiListPropertyRow *pRow = (uiListPropertyRow*) m_listProperty->getItem(1);
+		CTimelineControl *control = (CTimelineControl*)pRow->getData();
+		if ( control == NULL )
+			return;
+	
+		int timeID = control->getSelectTimeID();
+		if ( timeID == -1 )
+			return;
 
+		STimelineValue& value = control->getValue( timeID );
+
+		wchar_t stringw[512];
+		float floatValue;
+
+		pRow->getText( stringw, 1 );	// time
+		swscanf(stringw, L"%f", &floatValue );
+			
+		value.time = floatValue;
+		if ( value.time < 0 )
+			value.time = 0.0f;
+
+		pRow->getText( stringw, 2 );	// x
+		swscanf(stringw, L"%f", &floatValue );
+		value.x = floatValue;
+
+		pRow->getText( stringw, 3 );	// y
+		swscanf(stringw, L"%f", &floatValue );
+		value.y = floatValue;
+
+		pRow->getText( stringw, 4 );	// z
+		swscanf(stringw, L"%f", &floatValue );
+		value.z = floatValue;
+			
+		// update value to node
+		updateTimelineToSceneNode( control );
+		
+		control->update();
+
+		// select current time
+		control->selectFrame( value.time );
+
+	}
 }
 
 

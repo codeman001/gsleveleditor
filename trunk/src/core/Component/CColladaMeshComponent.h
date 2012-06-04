@@ -483,6 +483,16 @@ public:
 	// load data to serializable
 	void loadData( CSerializable* pObj );
 
+public:
+
+	// saveSceneToBinary
+	// save collada mesh info to binary file
+	void saveSceneToBinary( char *lpFileName );
+
+	// saveAnimToBinary
+	// save animation track to binary file
+	void saveAnimToBinary( char *lpFileName );
+
 };
 
 class CColladaCache

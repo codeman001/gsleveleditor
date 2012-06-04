@@ -160,7 +160,7 @@ class CGameColladaSceneNode: public ISceneNode
 protected:
 	core::aabbox3d<f32> Box;	
 	
-	SMaterial Material;
+	SMaterial		Material;
 
 public:
 	core::matrix4	AnimationMatrix;

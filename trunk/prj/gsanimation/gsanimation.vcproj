@@ -345,6 +345,14 @@
 				Name="Serializable"
 				>
 				<File
+					RelativePath="..\..\src\core\Serializable\CBinaryUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Serializable\CBinaryUtils.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\Serializable\CSerializable.cpp"
 					>
 				</File>

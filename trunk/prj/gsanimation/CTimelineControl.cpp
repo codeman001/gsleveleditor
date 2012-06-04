@@ -608,7 +608,7 @@ void CTimelineControl::updateChangeValue( int x, int y )
 		value = &m_value[m_selectTimeID].z;
 	
 	*value = getYValue(y);
-	
+	_onChangeValue( this );
 }
 
 void CTimelineControl::updateChangeTime( int x, int y )

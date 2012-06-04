@@ -72,6 +72,8 @@ public:
 
 	void _onUpdateValue( uiObject *pSender );
 
+	void _onChangeValue( uiObject *pSender );
+
 	void _onListPropertyChange( uiObject *pSender );
 
 	// member func

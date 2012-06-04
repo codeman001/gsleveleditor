@@ -2127,6 +2127,26 @@ void CColladaMeshComponent::cleanData()
 }
 
 
+// saveSceneToBinary
+// save collada mesh info to binary file
+void CColladaMeshComponent::saveSceneToBinary( char *lpFileName )
+{
+	FILE *pFile = fopen( lpFileName, "wb" );
+
+	
+
+	fclose( pFile );
+}
+
+// saveAnimToBinary
+// save animation track to binary file
+void CColladaMeshComponent::saveAnimToBinary( char *lpFileName )
+{
+	
+}
+
+
+
 //////////////////////////////////////////////////////////
 // c function implement
 //////////////////////////////////////////////////////////

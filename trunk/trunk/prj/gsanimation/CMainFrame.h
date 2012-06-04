@@ -18,6 +18,7 @@ public:
 protected:
 	
 	string	m_currentFile;
+	string	m_currentAnimFile;
 
 public:
 
@@ -48,7 +49,7 @@ public:
 	void listPropertyOnItemChange( uiObject *pSender );
 	void listPropertyOnItemEdit( uiObject *pSender );
 
-	void toolbarOpenAnim( uiObject *pSender );
+	void toolbarSaveScene( uiObject *pSender );
 	void toolbarSaveAnim( uiObject *pSender );
 	void toolbarLoadMesh( uiObject *pSender );
 	void toolbarLoadAnimDae( uiObject *pSender );

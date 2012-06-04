@@ -5,10 +5,15 @@
 CMainFrame::CMainFrame()
 {
 	m_currentFile = "";
+	m_currentAnimFile = "";
+
+	// init singleton
+	CBinaryUtils::createGetInstance();
 }
 
 CMainFrame::~CMainFrame()
 {
+	CBinaryUtils::releaseInstance();
 }
 	
 // create
@@ -36,8 +41,8 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 	pToolbar->setButtonWidth(120);	
 	pToolbar->setTextRight(true);
 
-	uiToolbarButton *toolbarButton = pToolbar->addButton(L"Open animation", 0);
-	toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarOpenAnim>( this );
+	uiToolbarButton *toolbarButton = pToolbar->addButton(L"Save scene", 1);
+	toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarSaveScene>( this );
 
 	toolbarButton = pToolbar->addButton(L"Save animation", 1);	
 	toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarSaveAnim>( this );
@@ -199,9 +204,34 @@ LRESULT	CMainFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam
 	return uiForm::messageMap(hWnd, uMsg, wParam, lParam);
 }
 
-void CMainFrame::toolbarOpenAnim( uiObject *pSender )
+void CMainFrame::toolbarSaveScene( uiObject *pSender )
 {
+	WCHAR lpPath[ MAX_PATH ] = {0};	
+	char lpFileName[ MAX_PATH ] = {0};
 
+	if ( m_currentFile.size() == 0 )
+	{
+		uiSaveOpenDialog dialog;	
+		dialog.clearAllFileExt();
+		dialog.addFileExt( L"Scene file (.scene)", L"*.scene");
+		dialog.addFileExt( L"All files (.*)", L"*.*" );
+		if ( dialog.doModal( uiApplication::getRoot(), true ) == false )
+			return;
+
+		dialog.getFileName( lpPath );
+		uiString::copy<char, WCHAR>( lpFileName, lpPath );
+		
+		// save binary file
+		CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
+		colladaComponent->saveSceneToBinary( lpFileName );
+
+		m_currentFile = lpFileName;
+	}
+	else
+	{
+		CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
+		colladaComponent->saveSceneToBinary( m_currentFile.c_str() );		
+	}
 }
 
 void CMainFrame::toolbarSaveAnim( uiObject *pSender )
@@ -209,7 +239,7 @@ void CMainFrame::toolbarSaveAnim( uiObject *pSender )
 	WCHAR lpPath[ MAX_PATH ] = {0};	
 	char lpFileName[ MAX_PATH ] = {0};
 
-	if ( m_currentFile.size() == 0 )
+	if ( m_currentAnimFile.size() == 0 )
 	{
 		uiSaveOpenDialog dialog;	
 		dialog.clearAllFileExt();
@@ -221,20 +251,23 @@ void CMainFrame::toolbarSaveAnim( uiObject *pSender )
 		dialog.getFileName( lpPath );
 		uiString::copy<char, WCHAR>( lpFileName, lpPath );
 		
-		//pParticleComponent->saveXML( lpFileName );
+		// save binary file
+		CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
+		colladaComponent->saveAnimToBinary( lpFileName );
 
-		m_currentFile = lpFileName;
+		m_currentAnimFile = lpFileName;
 	}
 	else
 	{
-		//pParticleComponent->saveXML( m_currentFile.c_str() );		
+		CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
+		colladaComponent->saveAnimToBinary( m_currentAnimFile.c_str() );
 	}
 
-	uiString::copy<WCHAR, const char>( lpPath, m_currentFile.c_str() );
+	//uiString::copy<WCHAR, const char>( lpPath, m_currentAnimFile.c_str() );
 
-	WCHAR title[1024];
-	swprintf(title, 1024, L"%s - %s", STR_APP_TITLE, lpPath);
-	setCaption( title );
+	//WCHAR title[1024];
+	//swprintf(title, 1024, L"%s - %s", STR_APP_TITLE, lpPath);
+	//setCaption( title );
 }
 
 void CMainFrame::toolbarLoadMesh( uiObject *pSender )
@@ -243,8 +276,7 @@ void CMainFrame::toolbarLoadMesh( uiObject *pSender )
 	char lpFileName[ MAX_PATH ] = {0};
 	
 	uiSaveOpenDialog dialog;	
-	dialog.clearAllFileExt();
-	//dialog.addFileExt( L"Mesh file (.x, *.dae)", L"*.x;*.dae" );
+	dialog.clearAllFileExt();	
 	dialog.addFileExt( L"Mesh file (*.dae)", L"*.dae" );
 	dialog.addFileExt( L"All files (.*)", L"*.*" );
 	if ( dialog.doModal( uiApplication::getRoot(), false ) == false )
@@ -269,7 +301,7 @@ void CMainFrame::toolbarLoadAnimDae( uiObject *pSender )
 	
 	uiSaveOpenDialog dialog;	
 	dialog.clearAllFileExt();
-	dialog.addFileExt( L"dae animation file (.*.dae)", L"*.dae" );
+	dialog.addFileExt( L"dae animation file (*.dae; *.anim)", L"*.dae;*.anim" );
 	dialog.addFileExt( L"All files (.*)", L"*.*" );
 	if ( dialog.doModal( uiApplication::getRoot(), false ) == false )
 		return;

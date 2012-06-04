@@ -147,6 +147,7 @@ protected:
 protected:
 	uiEventCallback	_onSelectTime;
 	uiEventCallback	_onUpdateValue;
+	uiEventCallback	_onChangeValue;
 
 public:
 	template<class T, void (T::*pTMethod)(uiObject*)>
@@ -159,6 +160,12 @@ public:
 	void setEventOnUpdateValue( T *pObj )
 	{
 		_onUpdateValue.setEvent<T,pTMethod>(pObj);
+	}
+	
+	template<class T, void (T::*pTMethod)(uiObject*)>
+	void setEventOnChangeValue( T *pObj )
+	{
+		_onChangeValue.setEvent<T,pTMethod>(pObj);
 	}
 
 };

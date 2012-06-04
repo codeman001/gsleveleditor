@@ -220,12 +220,13 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	m_timeControlRot->enableChangeTimeAndValue( true );
 	m_timeControlRot->setEventOnSelectTime<CAnimModifyFrame,&CAnimModifyFrame::_onSelectTime>( this );
 	m_timeControlRot->setEventOnUpdateValue<CAnimModifyFrame,&CAnimModifyFrame::_onUpdateValue>( this );
-
+	m_timeControlRot->setEventOnChangeValue<CAnimModifyFrame,&CAnimModifyFrame::_onChangeValue>(this);
 
 	m_timeControlPos = ref<CTimelineControl>( new CTimelineControl(tabWin, 0,0,100,100) );	
 	m_timeControlPos->enableChangeTimeAndValue( true );
 	m_timeControlPos->setEventOnSelectTime<CAnimModifyFrame,&CAnimModifyFrame::_onSelectTime>( this );
 	m_timeControlPos->setEventOnUpdateValue<CAnimModifyFrame,&CAnimModifyFrame::_onUpdateValue>( this );
+	m_timeControlPos->setEventOnChangeValue<CAnimModifyFrame,&CAnimModifyFrame::_onChangeValue>(this);
 
 	tabWin->addTab(L"Rotation keys", m_timeControlRot);
 	tabWin->addTab(L"Position keys", m_timeControlPos);
@@ -501,6 +502,52 @@ void CAnimModifyFrame::_onUpdateValue( uiObject *pSender )
 		setNodeInfoToProperty( m_lastSelectNode );
 
 		updateTimelineToSceneNode( (CTimelineControl*) pSender );
+	}
+}
+
+void CAnimModifyFrame::_onChangeValue( uiObject *pSender )
+{	
+	if ( m_lastSelectNode == NULL )
+		return;
+
+	if ( pSender == m_timeControlRot )
+	{
+		int timeID = m_timeControlRot->getSelectTimeID();
+		STimelineValue& value =	m_timeControlRot->getValue( timeID );
+
+		// get rotation from scenenode
+		CGameColladaSceneNode::SRotationKey &key = m_lastSelectNode->RotationKeys[timeID];
+		core::vector3df rotVec = key.rotation.getMatrix().getRotationDegrees();
+
+		if ( rotVec.X > 180 )
+			rotVec.X -= 360;
+		if ( rotVec.Y > 180 )
+			rotVec.Y -= 360;
+		if ( rotVec.Z > 180 )
+			rotVec.Z -= 360;
+		
+		// set rotation from timeline
+		rotVec.X = value.x;
+		rotVec.Y = value.y;
+		rotVec.Z = value.z;
+
+		core::matrix4 mat;
+		mat.setRotationDegrees( rotVec );
+
+		// update rotation
+		core::quaternion quat( mat );
+		key.rotation = quat;
+	}
+	else if ( pSender == m_timeControlPos )
+	{
+		int timeID = m_timeControlPos->getSelectTimeID();
+		STimelineValue& value =	m_timeControlPos->getValue( timeID );
+
+		//update position
+		CGameColladaSceneNode::SPositionKey &key = m_lastSelectNode->PositionKeys[timeID];
+		key.position.X = value.x;
+		key.position.Y = value.y;
+		key.position.Z = value.z;
 	}
 }
 

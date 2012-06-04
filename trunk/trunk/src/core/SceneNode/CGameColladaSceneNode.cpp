@@ -521,8 +521,10 @@ void CGameColladaSceneNode::render()
 			i++;
 		}
 
-		Box.MinEdge = core::vector3df(-0.02, -0.02, -0.02);
-		Box.MaxEdge = core::vector3df( 0.02,  0.02,  0.02);
+		float size = 2.0f;
+
+		Box.MinEdge = core::vector3df(-size, -size, -size);
+		Box.MaxEdge = core::vector3df( size,  size,  size);
 	}
 #endif
 

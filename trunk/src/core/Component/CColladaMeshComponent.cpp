@@ -2129,18 +2129,50 @@ void CColladaMeshComponent::cleanData()
 
 // saveSceneToBinary
 // save collada mesh info to binary file
-void CColladaMeshComponent::saveSceneToBinary( char *lpFileName )
+void CColladaMeshComponent::saveSceneToBinary( const char *lpFileName )
 {
-	FILE *pFile = fopen( lpFileName, "wb" );
-
+	io::IFileSystem *fileSystem = getIView()->getSceneMgr()->getFileSystem();
+	io::IWriteFile *file = fileSystem->createAndWriteFile( io::path(lpFileName) );
 	
+	std::queue<CGameColladaSceneNode*> queueNode;
 
-	fclose( pFile );
+	if ( m_colladaNode )
+	{
+		const core::list<ISceneNode*>& childs = m_colladaNode->getChildren();
+		core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
+		
+		while ( it != end )
+		{
+			queueNode.push( (CGameColladaSceneNode*) (*it) );
+			it++;
+		}	
+		
+		while ( queueNode.size() )
+		{
+			CGameColladaSceneNode* node = queueNode.front();
+			queueNode.pop();
+
+			// save collada node
+			CBinaryUtils::getInstance()->saveColladaScene( file, node );
+
+
+			const core::list<ISceneNode*>& childs = node->getChildren();
+			core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
+			
+			while ( it != end )
+			{
+				queueNode.push( (CGameColladaSceneNode*) (*it) );
+				it++;
+			}
+		}
+	}
+
+	file->drop();
 }
 
 // saveAnimToBinary
 // save animation track to binary file
-void CColladaMeshComponent::saveAnimToBinary( char *lpFileName )
+void CColladaMeshComponent::saveAnimToBinary( const char *lpFileName )
 {
 	
 }

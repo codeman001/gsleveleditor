@@ -7,6 +7,8 @@
 #include "CGameColladaSceneNode.h"
 #include "CGameContainerSceneNode.h"
 
+#include "CBinaryUtils.h"
+
 // const for animation
 const int k_linear = 0;
 
@@ -487,11 +489,11 @@ public:
 
 	// saveSceneToBinary
 	// save collada mesh info to binary file
-	void saveSceneToBinary( char *lpFileName );
+	void saveSceneToBinary( const char *lpFileName );
 
 	// saveAnimToBinary
 	// save animation track to binary file
-	void saveAnimToBinary( char *lpFileName );
+	void saveAnimToBinary( const char *lpFileName );
 
 };
 

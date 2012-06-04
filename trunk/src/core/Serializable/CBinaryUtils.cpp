@@ -17,8 +17,9 @@ void getArrayFromVector( const core::vector3df& v, float *floatArray )
 // struct declare
 //////////////////////////////////////////////
 
-#define CHUNK_SIGN		0x3214
-#define CHUNK_DATASLOT	5
+#define CHUNK_SIGN			0x3214
+#define CHUNK_DATASLOT		5
+#define STRING_BUFFER_SIZE	128
 
 const char k_binaryTypeNode		= 1;
 const char k_binaryTypeMesh		= 2;
@@ -56,11 +57,11 @@ CBinaryUtils::~CBinaryUtils()
 
 void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode* node )
 {	
-	CMemoryReadWrite	memStream( 1024*1024*4 );
+	CMemoryReadWrite	memStream( 1024*1024*1 );
 	vector<CGameColladaMesh*>	listMesh;
 
 
-	char	stringc[256];
+	char	stringc[STRING_BUFFER_SIZE];
 	float	floatArray[3];
 
 	// identity id
@@ -73,7 +74,7 @@ void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode
 
 	// name
 	strcpy( stringc, node->getName() );
-	memStream.writeData( stringc, 256 );
+	memStream.writeData( stringc, STRING_BUFFER_SIZE );
 
 	// id
 	int id = node->getID();
@@ -163,7 +164,108 @@ void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode
 
 void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh )
 {
+	CMemoryReadWrite	memStream( 1024*1024*4 );
 	
+	// write meshID
+	unsigned long meshID = (unsigned long)mesh;
+	memStream.writeData( &meshID, sizeof(int) );
+
+	// write num joint
+	int nJoint = mesh->Joints.size();
+	memStream.writeData( &nJoint, sizeof(int) );
+
+	// write joint buffer (arrayWeight in bone)
+	CGameColladaMesh::SJoint *jointBuffer =	mesh->Joints.pointer();	
+	memStream.writeData( jointBuffer, sizeof(CGameColladaMesh::SJoint)*nJoint );
+
+	// write num joint index
+	int nJointIndex = mesh->JointIndex.size();
+	memStream.writeData( &nJointIndex, sizeof(int) );
+	
+	// write joint index (boneID, weightID) buffer
+	memStream.writeData( mesh->JointIndex.pointer(), sizeof(s32) * nJointIndex );
+
+	// write num joint(bone) in vertex
+	int nJointVertexIndex =	mesh->JointVertexIndex.size();
+	memStream.writeData( &nJointVertexIndex, sizeof(int) );
+
+	memStream.writeData( mesh->JointVertexIndex.pointer(), sizeof(s32) * nJointVertexIndex );
+
+	
+	// bouding box
+	float floatArray[3];
+	getArrayFromVector( mesh->BoundingBox.MaxEdge, floatArray );
+	memStream.writeData( floatArray, sizeof(float)*3 );
+
+	getArrayFromVector( mesh->BoundingBox.MinEdge, floatArray );
+	memStream.writeData( floatArray, sizeof(float)*3 );
+
+	// write mesh buffer
+	int nMeshBuffer = mesh->getMeshBufferCount();
+	memStream.writeData( &nMeshBuffer, sizeof(int) );
+
+	vector<SMaterial*>	listMaterial;
+
+	for ( int i = 0; i < nMeshBuffer; i++ )
+	{
+		// get mesh buffer
+		IMeshBuffer *buffer = mesh->getMeshBuffer(i);
+		
+		int vertexType = buffer->getVertexType();
+		int vertexCount = buffer->getVertexCount();
+		int indexCount = buffer->getIndexCount();
+
+		memStream.writeData( &vertexType, sizeof(int) );
+		memStream.writeData( &vertexCount, sizeof(int) );
+		memStream.writeData( &indexCount, sizeof(int) );
+
+		SMaterial& mat = buffer->getMaterial();
+		unsigned long matID = (unsigned long)&mat;
+		memStream.writeData( &matID, sizeof(unsigned long) );
+
+
+		int bufferSize = 0;
+
+		if ( vertexType == video::EVT_STANDARD )
+		{
+			bufferSize = sizeof(video::S3DVertex) * vertexCount;
+		}
+		else if ( vertexType == video::EVT_2TCOORDS )
+		{
+			bufferSize = sizeof(video::S3DVertex2TCoords) * vertexCount;
+		}
+		else if ( vertexType == video::EVT_TANGENTS )
+		{
+			bufferSize = sizeof(video::S3DVertexTangents) * vertexCount;
+		}
+
+		memStream.writeData( buffer->getVertices(), bufferSize );
+
+		u16* indices = buffer->getIndices();
+		memStream.writeData( indices, sizeof(u16)*indexCount );
+
+		// save list material
+		listMaterial.push_back(  &mat );
+	}
+	
+
+	SBinaryChunk trunk;
+	trunk.size = memStream.getSize();
+	trunk.type = k_binaryTypeMesh;
+	
+	// write data to file
+	file->write( &trunk, sizeof(SBinaryChunk) );
+	file->write( memStream.getData(), memStream.getSize() );
+
+
+	// save list material
+	vector<SMaterial*>::iterator iMat = listMaterial.begin(), iMatEnd = listMaterial.end();
+	while ( iMat != iMatEnd )
+	{
+		saveMaterial( file, (*iMat) );
+		iMat++;
+	}
+
 }
 
 void CBinaryUtils::saveMaterial( io::IWriteFile *file, SMaterial* mat )
@@ -185,6 +287,7 @@ CMemoryReadWrite::CMemoryReadWrite(unsigned long initMem)
 	
 CMemoryReadWrite::~CMemoryReadWrite()
 {
+	delete m_memory;
 }
 	
 void CMemoryReadWrite::writeData( const void* data, unsigned long size )

@@ -212,6 +212,13 @@ public:
 		return Box;
 	}
 
+	// getBoundingBox
+	// ISceneNode override implement 
+	core::aabbox3d<f32>& getBoundingBox()
+	{
+		return Box;
+	}
+
 	// clone
 	// ISceneNode override implement 
 	virtual ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0);

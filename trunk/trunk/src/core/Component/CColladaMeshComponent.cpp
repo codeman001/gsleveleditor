@@ -251,7 +251,7 @@ void CColladaMeshComponent::loadDae( char *lpFilename )
 void CColladaMeshComponent::loadScene( char *lpFilename )
 {
 	// todo load file
-	io::IReadFile *file = smgr->getFileSystem()->createAndOpenFile( lpFilename );
+	io::IReadFile *file = getIView()->getSceneMgr()->getFileSystem()->createAndOpenFile( lpFilename );
 	if ( file == NULL )
 		return;
 
@@ -269,7 +269,7 @@ void CColladaMeshComponent::loadScene( char *lpFilename )
 	m_gameObject->m_node = m_colladaNode;
 	
 	// parse binary scene
-	
+	CBinaryUtils::getInstance()->loadFile( file, m_gameObject );
 
 
 

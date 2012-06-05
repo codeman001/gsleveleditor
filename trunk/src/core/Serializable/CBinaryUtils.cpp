@@ -80,10 +80,6 @@ void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode
 	int id = node->getID();
 	memStream.writeData(&id, sizeof(int));
 	
-	// transformation
-	memStream.writeData(node->getAbsoluteTransformation().pointer(), sizeof(f32)*16);
-	memStream.writeData(node->getRelativeTransformation().pointer(), sizeof(f32)*16);
-
 	// position
 	getArrayFromVector( node->getPosition(), floatArray );
 	memStream.writeData( floatArray, sizeof(float)*3 );
@@ -143,12 +139,12 @@ void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode
 	memStream.writeData( &fps, sizeof(float) );
 
 	
-	SBinaryChunk trunk;
-	trunk.size = memStream.getSize();
-	trunk.type = k_binaryTypeNode;
+	SBinaryChunk chunk;
+	chunk.size = memStream.getSize();
+	chunk.type = k_binaryTypeNode;
 	
 	// write data to file
-	file->write( &trunk, sizeof(SBinaryChunk) );
+	file->write( &chunk, sizeof(SBinaryChunk) );
 	file->write( memStream.getData(), memStream.getSize() );
 
 
@@ -249,12 +245,12 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 	}
 	
 
-	SBinaryChunk trunk;
-	trunk.size = memStream.getSize();
-	trunk.type = k_binaryTypeMesh;
+	SBinaryChunk chunk;
+	chunk.size = memStream.getSize();
+	chunk.type = k_binaryTypeMesh;
 	
 	// write data to file
-	file->write( &trunk, sizeof(SBinaryChunk) );
+	file->write( &chunk, sizeof(SBinaryChunk) );
 	file->write( memStream.getData(), memStream.getSize() );
 
 
@@ -343,13 +339,165 @@ void CBinaryUtils::saveMaterial( io::IWriteFile *file, SMaterial* mat )
 	u8 colorMaterial = mat->ColorMaterial;
 	memStream.writeData( &colorMaterial, sizeof(u8) );
 	
-	SBinaryChunk trunk;
-	trunk.size = memStream.getSize();
-	trunk.type = k_binaryTypeMaterial;
+	SBinaryChunk chunk;
+	chunk.size = memStream.getSize();
+	chunk.type = k_binaryTypeMaterial;
 	
 	// write data to file
-	file->write( &trunk, sizeof(SBinaryChunk) );
+	file->write( &chunk, sizeof(SBinaryChunk) );
 	file->write( memStream.getData(), memStream.getSize() );
+
+}
+
+
+void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
+{
+	SBinaryChunk chunk;	
+	
+	// clear old scene node
+	m_listSceneNode.clear();
+	m_listMesh.clear();
+	m_listMaterial.clear();
+	
+	// read all chunk
+	while ( file->read( &chunk, sizeof(SBinaryChunk) ) > 0 )
+	{
+		if ( chunk.sign != CHUNK_SIGN || chunk.size > 1024*1024*4 )
+			break;
+		
+
+		unsigned char *chunkData = new unsigned char[chunk.size];
+		file->read(chunkData, chunk.size);
+
+		switch( chunk.type )
+		{
+		case k_binaryTypeNode:			
+			readColladaScene( chunkData, chunk.size, obj );
+			break;
+		case k_binaryTypeMesh:
+			readColladaMesh( chunkData, chunk.size );
+			break;
+		case k_binaryTypeMaterial:
+			readMaterial( chunkData, chunk.size );
+			break;
+		}
+
+		delete chunkData;
+
+	}
+
+}
+
+void CBinaryUtils::readColladaScene( unsigned char *data, unsigned long size, CGameObject* obj )
+{
+	CMemoryReadWrite memStream( data, size );
+
+	char	stringc[STRING_BUFFER_SIZE];
+	float	floatArray[3];
+	float	matrix[16];
+
+	// identity id
+	unsigned long nodeID = 0;
+	memStream.readData( &nodeID, sizeof(unsigned long) );
+
+	// parent identity id
+	unsigned long parentID = 0;
+	memStream.readData( &parentID, sizeof(unsigned long) );
+
+	// find parent
+	ISceneNode *parent = obj->getSceneNode();
+	if ( m_listSceneNode[parentID] != NULL )
+		parent = m_listSceneNode[parentID];
+	
+	// create node
+	CGameColladaSceneNode *newNode = new CGameColladaSceneNode( parent, parent->getSceneManager(), -1 );
+	newNode->setComponent( (CColladaMeshComponent*)obj->getComponent(IObjectComponent::ColladaMesh) );
+	m_listSceneNode[nodeID] = newNode;
+
+
+	// name	
+	memStream.readData( stringc, STRING_BUFFER_SIZE );
+	newNode->setName( stringc );
+
+	// id
+	int id = 0;
+	memStream.readData(&id, sizeof(int));
+	newNode->setID( id );
+
+	// position
+	memStream.readData( floatArray, sizeof(float)*3 );
+	newNode->setPosition( core::vector3df(floatArray[0], floatArray[1], floatArray[2]) );
+
+	// rotation	
+	memStream.readData( floatArray, sizeof(float)*3 );
+	newNode->setRotation( core::vector3df(floatArray[0], floatArray[1], floatArray[2]) );
+
+	// scale	
+	memStream.readData( floatArray, sizeof(float)*3 );
+	newNode->setScale( core::vector3df(floatArray[0], floatArray[1], floatArray[2]) );
+
+	// cull
+	int cull = 0;
+	memStream.readData( &cull, sizeof(int) );
+	newNode->setAutomaticCulling( (E_CULLING_TYPE)cull);
+
+	// visible
+	int visible = 1;
+	memStream.readData( &visible, sizeof(int) );
+	newNode->setVisible( visible == 1 );
+	
+	// bouding box
+	memStream.readData( floatArray, sizeof(float)*3 );
+	newNode->getBoundingBox().MaxEdge = core::vector3df(floatArray[0], floatArray[1], floatArray[2]);
+	
+	memStream.readData( floatArray, sizeof(float)*3 );
+	newNode->getBoundingBox().MinEdge = core::vector3df(floatArray[0], floatArray[1], floatArray[2]);
+
+	// animation matrix	
+	memStream.readData( matrix, sizeof(f32)*16 );
+	newNode->AnimationMatrix.setM( matrix );
+
+	memStream.readData( matrix, sizeof(f32)*16 );
+	newNode->AbsoluteAnimationMatrix.setM( matrix );
+
+	memStream.readData( matrix, sizeof(f32)*16 );
+	newNode->LocalMatrix.setM( matrix );
+
+	// check have mesh
+	int haveMesh = 1;	
+	memStream.readData( &haveMesh, sizeof(int) );	
+
+	if ( haveMesh )
+	{		
+		// is static mesh
+		int staticMesh = 1;
+		memStream.readData( &staticMesh, sizeof(int) );
+
+		// mesh id
+		unsigned long meshID = 0;
+		memStream.readData( &meshID, sizeof(unsigned long) );		
+	}
+
+	// root node
+	int isRootNode = 0;
+	memStream.readData( &isRootNode, sizeof(int) );
+	newNode->setRootColladaNode( isRootNode == 1 );
+
+	// fps
+	float fps =	24.0f;
+	memStream.readData( &fps, sizeof(float) );	
+	newNode->setFPS( fps );
+}
+
+void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
+{
+	CMemoryReadWrite memStream( data, size );
+
+}
+
+void CBinaryUtils::readMaterial( unsigned char *data, unsigned long size )
+{
+	CMemoryReadWrite memStream( data, size );
 
 }
 
@@ -363,11 +511,21 @@ CMemoryReadWrite::CMemoryReadWrite(unsigned long initMem)
 	m_memory = new unsigned char[initMem];
 	m_size = 0;
 	m_pos = 0;
+	m_fromMemory = false;
+}
+
+CMemoryReadWrite::CMemoryReadWrite(unsigned char *fromMem, unsigned long size)
+{
+	m_memory = fromMem;
+	m_size = size;
+	m_pos = 0;
+	m_fromMemory = true;
 }
 	
 CMemoryReadWrite::~CMemoryReadWrite()
 {
-	delete m_memory;
+	if ( m_fromMemory == false )
+		delete m_memory;
 }
 	
 void CMemoryReadWrite::writeData( const void* data, unsigned long size )

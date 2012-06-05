@@ -271,6 +271,9 @@ public:
 	// load anim object from dae file
 	void loadFromFile( char *lpFilename );
 		
+	void loadDae( char *lpFileName );
+	void loadScene( char *lpFileName );
+
 	// loadAnimFile
 	// load animation bone from dae file
 	void loadAnimFile( char *lpFileName );
@@ -525,7 +528,9 @@ public:
 		map<string, CGameChildContainerSceneNode*>::iterator i = s_nodeCache.begin(), end = s_nodeCache.end();
 		while ( i != end )
 		{
-			(*i).second->drop();
+			CGameChildContainerSceneNode *node = (*i).second;
+			if ( node != NULL )
+				node->drop();
 			i++;
 		}
 		s_nodeCache.clear();

@@ -19,7 +19,7 @@ void getArrayFromVector( const core::vector3df& v, float *floatArray )
 
 #define CHUNK_SIGN			0x3214
 #define CHUNK_DATASLOT		5
-#define STRING_BUFFER_SIZE	128
+#define STRING_BUFFER_SIZE	256
 
 const char k_binaryTypeNode		= 1;
 const char k_binaryTypeMesh		= 2;
@@ -270,6 +270,86 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 
 void CBinaryUtils::saveMaterial( io::IWriteFile *file, SMaterial* mat )
 {
+	CMemoryReadWrite	memStream( 1024*1024*1 );
+
+	// write matID
+	unsigned long matID = (unsigned long)mat;
+	memStream.writeData( &matID, sizeof(int) );
+
+	int matType = mat->MaterialType;
+	memStream.writeData( &matType, sizeof(int) );
+
+	memStream.writeData( &mat->AmbientColor.color, sizeof(u32) );
+	memStream.writeData( &mat->DiffuseColor.color, sizeof(u32) );
+	memStream.writeData( &mat->EmissiveColor.color, sizeof(u32) );
+	memStream.writeData( &mat->SpecularColor.color, sizeof(u32) );
+
+	memStream.writeData( &mat->Shininess, sizeof(f32) );
+	memStream.writeData( &mat->MaterialTypeParam, sizeof(f32) );
+	memStream.writeData( &mat->MaterialTypeParam2, sizeof(f32) );
+	memStream.writeData( &mat->Thickness, sizeof(f32) );
+
+	char stringc[STRING_BUFFER_SIZE];
+
+	for (u32 i=0; i<MATERIAL_MAX_TEXTURES; ++i)
+	{
+		if ( mat->TextureLayer[i].Texture != NULL )
+		{
+			irr::core::stringc name(mat->TextureLayer[i].Texture->getName());			
+			uiString::getFileName<const irr::c8, char>(name.c_str(), stringc);
+		}
+		else
+		{
+			memset(stringc, 0, STRING_BUFFER_SIZE);		
+		}
+		memStream.writeData( stringc, STRING_BUFFER_SIZE );
+	}
+
+	int wireFrame = mat->Wireframe?1:0;
+	memStream.writeData( &wireFrame, sizeof(int) );
+
+	int pointCloud = mat->PointCloud?1:0;
+	memStream.writeData( &pointCloud, sizeof(int) );
+
+	int gouraudShading = mat->GouraudShading?1:0;
+	memStream.writeData( &gouraudShading, sizeof(int) );
+
+	int light = mat->Lighting?1:0;
+	memStream.writeData( &light, sizeof(int) );
+
+	int zWrite = mat->ZWriteEnable?1:0;
+	memStream.writeData( &zWrite, sizeof(int) );
+
+	int backCull = mat->BackfaceCulling?1:0;
+	memStream.writeData( &backCull, sizeof(int) );
+
+	int frontCull = mat->FrontfaceCulling?1:0;
+	memStream.writeData( &frontCull, sizeof(int) );
+
+	int fog = mat->FogEnable?1:0;
+	memStream.writeData( &fog, sizeof(int) );
+
+	int normalNormalize = mat->NormalizeNormals?1:0;
+	memStream.writeData( &normalNormalize, sizeof(int) );
+
+	int zBuffer = mat->ZBuffer?1:0;
+	memStream.writeData( &zBuffer, sizeof(int) );
+	
+	memStream.writeData( &mat->AntiAliasing, sizeof(u8) );
+
+	u8 colorMask = mat->ColorMask;
+	memStream.writeData( &colorMask, sizeof(u8) );
+
+	u8 colorMaterial = mat->ColorMaterial;
+	memStream.writeData( &colorMaterial, sizeof(u8) );
+	
+	SBinaryChunk trunk;
+	trunk.size = memStream.getSize();
+	trunk.type = k_binaryTypeMaterial;
+	
+	// write data to file
+	file->write( &trunk, sizeof(SBinaryChunk) );
+	file->write( memStream.getData(), memStream.getSize() );
 
 }
 

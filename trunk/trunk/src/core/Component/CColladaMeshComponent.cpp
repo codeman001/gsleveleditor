@@ -137,6 +137,19 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 		return;
 	}
 
+	char ext[10] = {0};
+	uiString::getFileNameExt<char, char>( lpFilename, ext );
+	uiString::toLower( ext );
+	
+	if ( strcmp(ext, "dae") == 0 )
+		loadDae( lpFilename );
+	else if ( strcmp(ext,"scene") == 0 )
+		loadScene( lpFilename );
+}
+
+
+void CColladaMeshComponent::loadDae( char *lpFilename )
+{
 	IrrlichtDevice	*device = getIView()->getDevice();
 	IVideoDriver	*driver = getIView()->getDriver();
 	io::IFileSystem *fs = device->getFileSystem();
@@ -233,8 +246,56 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 		selector->drop();
 	}
 #endif
-
 }
+
+void CColladaMeshComponent::loadScene( char *lpFilename )
+{
+	// todo load file
+	io::IReadFile *file = smgr->getFileSystem()->createAndOpenFile( lpFilename );
+	if ( file == NULL )
+		return;
+
+	// todo load scene
+	ISceneManager *smgr = getIView()->getSceneMgr();
+
+	m_colladaNode = new CGameChildContainerSceneNode
+		(
+			m_gameObject,
+			m_gameObject->getParentSceneNode(),
+			smgr,
+			m_gameObject->getID()
+		);
+	
+	m_gameObject->m_node = m_colladaNode;
+	
+	// parse binary scene
+	
+
+
+
+	// close file
+	file->drop();
+
+	// cache node
+	if ( m_colladaNode != NULL && CColladaCache::getNodeInCache(m_animeshFile) == NULL )
+	{
+		CColladaCache::cacheNode( m_animeshFile, m_colladaNode );
+	}
+
+#ifdef GSEDITOR
+	if ( m_gameObject->m_node )
+	{
+		ISceneManager *smgr = getIView()->getSceneMgr();
+
+		// add collision
+		ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( m_gameObject->m_node );
+		m_gameObject->m_node->setTriangleSelector(selector);
+		selector->drop();
+	}
+#endif
+}
+
+
 
 // initFromNode
 // init cache from node
@@ -2152,9 +2213,9 @@ void CColladaMeshComponent::saveSceneToBinary( const char *lpFileName )
 			CGameColladaSceneNode* node = queueNode.front();
 			queueNode.pop();
 
+
 			// save collada node
 			CBinaryUtils::getInstance()->saveColladaScene( file, node );
-
 
 			const core::list<ISceneNode*>& childs = node->getChildren();
 			core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();

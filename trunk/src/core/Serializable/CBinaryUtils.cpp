@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CBinaryUtils.h"
-
+#include "IView.h"
 
 //////////////////////////////////////////////
 // function c implement
@@ -74,6 +74,10 @@ void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode
 
 	// name
 	strcpy( stringc, node->getName() );
+	memStream.writeData( stringc, STRING_BUFFER_SIZE );
+
+	// sid name
+	strcpy( stringc, node->getSIDName().c_str() );
 	memStream.writeData( stringc, STRING_BUFFER_SIZE );
 
 	// id
@@ -411,13 +415,21 @@ void CBinaryUtils::readColladaScene( unsigned char *data, unsigned long size, CG
 	
 	// create node
 	CGameColladaSceneNode *newNode = new CGameColladaSceneNode( parent, parent->getSceneManager(), -1 );
-	newNode->setComponent( (CColladaMeshComponent*)obj->getComponent(IObjectComponent::ColladaMesh) );
-	m_listSceneNode[nodeID] = newNode;
+	CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent(IObjectComponent::ColladaMesh);
 
+	// assign component & register node ID
+	newNode->setComponent( comp );
+	m_listSceneNode[nodeID] = newNode;
 
 	// name	
 	memStream.readData( stringc, STRING_BUFFER_SIZE );
 	newNode->setName( stringc );
+	comp->registerName( std::string(stringc), newNode );
+
+	// sid name
+	memStream.readData( stringc, STRING_BUFFER_SIZE );
+	newNode->setSIDName( stringc );	
+	comp->registerSID( std::string(stringc), newNode );
 
 	// id
 	int id = 0;
@@ -487,6 +499,19 @@ void CBinaryUtils::readColladaScene( unsigned char *data, unsigned long size, CG
 	float fps =	24.0f;
 	memStream.readData( &fps, sizeof(float) );	
 	newNode->setFPS( fps );
+
+#ifdef GSANIMATION
+	if ( haveMesh == 0 )
+	{
+		// add collision
+		ITriangleSelector *selector = getIView()->getSceneMgr()->createTriangleSelectorFromBoundingBox( newNode );
+		newNode->setTriangleSelector(selector);
+		selector->drop();
+	}
+#endif
+
+	// drop ref
+	newNode->drop();
 }
 
 void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )

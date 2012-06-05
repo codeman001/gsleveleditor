@@ -5,6 +5,7 @@
 #include "CGameObject.h"
 #include "CGameColladaSceneNode.h"
 #include "CGameContainerSceneNode.h"
+#include "CColladaMeshComponent.h"
 
 class CMemoryReadWrite
 {
@@ -44,6 +45,7 @@ public:
 		m_pos = pos;
 	}
 };
+
 
 class CBinaryUtils: public uiSingleton<CBinaryUtils>
 {

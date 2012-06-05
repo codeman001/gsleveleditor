@@ -310,6 +310,21 @@ public:
 		return m_colladaNode;
 	}
 
+	// registerName
+	// register name
+	void registerName( const std::string& name, CGameColladaSceneNode *node )
+	{
+		m_mapNode[name] = node;
+	
+	}
+
+	// registerName
+	// register sid name
+	void registerSID( const std::string& name, CGameColladaSceneNode *node )
+	{
+		m_sidNode[name] = node;
+	}
+
 protected:
 	// constructScene
 	// create scene node

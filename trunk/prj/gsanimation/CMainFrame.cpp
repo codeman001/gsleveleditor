@@ -277,7 +277,7 @@ void CMainFrame::toolbarLoadMesh( uiObject *pSender )
 	
 	uiSaveOpenDialog dialog;	
 	dialog.clearAllFileExt();	
-	dialog.addFileExt( L"Mesh file (*.dae)", L"*.dae" );
+	dialog.addFileExt( L"Mesh file (*.dae; *.scene)", L"*.dae;*.scene" );
 	dialog.addFileExt( L"All files (.*)", L"*.*" );
 	if ( dialog.doModal( uiApplication::getRoot(), false ) == false )
 		return;

@@ -606,13 +606,13 @@ void CAnimModifyFrame::setColladaComponent( CColladaMeshComponent *comp )
 	{
 		m_treeNode->deleteAllItem();
 		uiTreeViewItem *root = m_treeNode->addItem(L"colladaTreeNode");
+		
+		m_colladaComponent = comp;
 
 		ISceneNode* sceneNode = comp->getColladaNode();
 		if ( sceneNode == NULL )
 			return;
-
-		m_colladaComponent = comp;
-
+		
 		core::list<ISceneNode*>::ConstIterator it = sceneNode->getChildren().begin(),
 			end = sceneNode->getChildren().end();
 		while ( it != end )

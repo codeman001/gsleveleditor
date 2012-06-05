@@ -377,6 +377,16 @@ void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
 			it++;
 		}
 
+#ifdef GSANIMATION
+		if ( newNode->getMesh() == NULL )
+		{
+			// add collision
+			ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( newNode );
+			newNode->setTriangleSelector(selector);
+			selector->drop();
+		}
+#endif
+
 		newNode->drop();	
 	}
 

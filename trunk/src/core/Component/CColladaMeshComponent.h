@@ -67,7 +67,6 @@ struct SAnimClip
 	float				m_time;
 	float				m_duration;
 	bool				m_loop;
-	bool				m_movePosition;
 
 	int					m_frames;
 
@@ -77,7 +76,6 @@ struct SAnimClip
 		m_time			= 0;
 		m_duration		= 0;
 		m_loop			= true;
-		m_movePosition	= true;
 		m_frames		= 0;
 	}
 };
@@ -376,10 +374,7 @@ protected:
 
 	// updateJointToMesh
 	// update joint
-	void updateJointToMesh( SMeshParam *mesh, vector<wstring>& arrayName, float *arrayWeight, float *arrayTransform, vector<s32>& vCountArray, vector<s32>& vArray, bool flipZ );
-
-	// setAnim
-	void setAnim(const char *lpAnimName, IAnimatedMeshSceneNode *node);
+	void updateJointToMesh( SMeshParam *mesh, vector<wstring>& arrayName, float *arrayWeight, float *arrayTransform, vector<s32>& vCountArray, vector<s32>& vArray, bool flipZ );	
 
 	// cleanData
 	// free all data from parse dae

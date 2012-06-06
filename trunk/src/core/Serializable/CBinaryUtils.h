@@ -61,6 +61,10 @@ public:
 	CBinaryUtils();
 	virtual ~CBinaryUtils();
 	
+	void saveCollada( io::IWriteFile *file, CGameObject* gameObject );
+	void saveAnimation( io::IWriteFile *file, const std::string& animName, CGameObject* m_gameObject );
+
+
 	void saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode* node );
 	void saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh );	
 	void saveMaterial( io::IWriteFile *file, SMaterial* mat );

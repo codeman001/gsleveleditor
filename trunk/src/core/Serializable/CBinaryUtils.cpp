@@ -24,6 +24,7 @@ void getArrayFromVector( const core::vector3df& v, float *floatArray )
 const char k_binaryTypeNode		= 1;
 const char k_binaryTypeMesh		= 2;
 const char k_binaryTypeMaterial = 3;
+const char k_binaryTypeAnimation = 4;
 
 struct SBinaryChunk
 {
@@ -53,6 +54,58 @@ CBinaryUtils::CBinaryUtils()
 
 CBinaryUtils::~CBinaryUtils()
 {
+}
+
+void CBinaryUtils::saveCollada( io::IWriteFile *file, CGameObject* gameObject )
+{
+	CColladaMeshComponent *comp = (CColladaMeshComponent*)gameObject->getComponent(IObjectComponent::ColladaMesh);
+	CGameChildContainerSceneNode *colladaNode = comp->getColladaNode();
+
+	std::queue<CGameColladaSceneNode*> queueNode;
+
+	if ( colladaNode )
+	{
+		const core::list<ISceneNode*>& childs = colladaNode->getChildren();
+		core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
+		
+		while ( it != end )
+		{
+			queueNode.push( (CGameColladaSceneNode*) (*it) );
+			it++;
+		}	
+		
+		while ( queueNode.size() )
+		{
+			CGameColladaSceneNode* node = queueNode.front();
+			queueNode.pop();
+
+
+			// save collada node
+			saveColladaScene( file, node );
+
+			const core::list<ISceneNode*>& childs = node->getChildren();
+			core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
+			
+			while ( it != end )
+			{
+				queueNode.push( (CGameColladaSceneNode*) (*it) );
+				it++;
+			}
+		}
+	}
+}
+
+void CBinaryUtils::saveAnimation( io::IWriteFile *file, const std::string& animName, CGameObject* m_gameObject )
+{
+	CMemoryReadWrite	memStream( 1024*1024*4 );
+
+	SBinaryChunk chunk;
+	chunk.size = memStream.getSize();
+	chunk.type = k_binaryTypeAnimation;
+	
+	// write data to file
+	file->write( &chunk, sizeof(SBinaryChunk) );
+	file->write( memStream.getData(), memStream.getSize() );
 }
 
 void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode* node )

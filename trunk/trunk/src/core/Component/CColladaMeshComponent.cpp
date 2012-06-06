@@ -1552,7 +1552,6 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 		return;
 
 	const float defaultFps = 40.0f;
-	const float defaultTpf = 1.0f/defaultFps;
 
 	SAnimClip& animClip = animIt->second;
 	m_currentAnim = &animClip;
@@ -2205,39 +2204,8 @@ void CColladaMeshComponent::saveSceneToBinary( const char *lpFileName )
 	io::IFileSystem *fileSystem = getIView()->getSceneMgr()->getFileSystem();
 	io::IWriteFile *file = fileSystem->createAndWriteFile( io::path(lpFileName) );
 	
-	std::queue<CGameColladaSceneNode*> queueNode;
-
-	if ( m_colladaNode )
-	{
-		const core::list<ISceneNode*>& childs = m_colladaNode->getChildren();
-		core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
-		
-		while ( it != end )
-		{
-			queueNode.push( (CGameColladaSceneNode*) (*it) );
-			it++;
-		}	
-		
-		while ( queueNode.size() )
-		{
-			CGameColladaSceneNode* node = queueNode.front();
-			queueNode.pop();
-
-
-			// save collada node
-			CBinaryUtils::getInstance()->saveColladaScene( file, node );
-
-			const core::list<ISceneNode*>& childs = node->getChildren();
-			core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
-			
-			while ( it != end )
-			{
-				queueNode.push( (CGameColladaSceneNode*) (*it) );
-				it++;
-			}
-		}
-	}
-
+	CBinaryUtils::getInstance()->saveCollada( file, m_gameObject );
+	
 	file->drop();
 }
 
@@ -2245,7 +2213,26 @@ void CColladaMeshComponent::saveSceneToBinary( const char *lpFileName )
 // save animation track to binary file
 void CColladaMeshComponent::saveAnimToBinary( const char *lpFileName )
 {
-	
+	io::IFileSystem *fileSystem = getIView()->getSceneMgr()->getFileSystem();
+	io::IWriteFile *file = fileSystem->createAndWriteFile( io::path(lpFileName) );
+
+	ClipAnimation::iterator iAnim = m_clipAnimation.begin(), iAnimEnd = m_clipAnimation.end();
+
+	// loop for all animation
+	while ( iAnim != iAnimEnd )
+	{				
+		const std::string &animName = (*iAnim).first;
+
+		// set anim
+		setAnimation( animName.c_str() );
+		
+		// save current anim
+		CBinaryUtils::getInstance()->saveAnimation( file, animName, m_gameObject );
+
+		iAnim++;
+	}
+
+	file->drop();
 }
 
 

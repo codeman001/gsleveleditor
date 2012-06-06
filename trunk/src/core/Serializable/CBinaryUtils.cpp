@@ -124,10 +124,6 @@ void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode
 	
 	if ( haveMesh )
 	{		
-		// is static mesh
-		int staticMesh = node->ColladaMesh->IsStaticMesh?1:0;
-		memStream.writeData( &staticMesh, sizeof(int) );
-
 		// mesh id
 		unsigned long meshID = (unsigned long) node->ColladaMesh;
 		memStream.writeData( &meshID, sizeof(unsigned long) );
@@ -166,17 +162,52 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 {
 	CMemoryReadWrite	memStream( 1024*1024*4 );
 	
+	float floatArray[3];
+	char stringc[STRING_BUFFER_SIZE];
+
 	// write meshID
 	unsigned long meshID = (unsigned long)mesh;
 	memStream.writeData( &meshID, sizeof(int) );
+
+	// static mesh
+	int staticMesh = mesh->IsStaticMesh?1:0;
+	memStream.writeData( &staticMesh, sizeof(int) );
 
 	// write num joint
 	int nJoint = mesh->Joints.size();
 	memStream.writeData( &nJoint, sizeof(int) );
 
 	// write joint buffer (arrayWeight in bone)
-	CGameColladaMesh::SJoint *jointBuffer =	mesh->Joints.pointer();	
-	memStream.writeData( jointBuffer, sizeof(CGameColladaMesh::SJoint)*nJoint );
+	for (int i = 0; i < nJoint; i++ )
+	{
+		CGameColladaMesh::SJoint& joint = mesh->Joints[i];
+
+		// joint name
+		uiString::convertUnicodeToUTF8( (unsigned short*) joint.name.c_str(), stringc ); 
+		memStream.writeData( stringc, STRING_BUFFER_SIZE );
+
+		// array weight
+		int nWeight = joint.weights.size();
+		memStream.writeData( &nWeight, sizeof(int) );
+		for (int j = 0; j < nWeight; j++ )
+		{
+			CGameColladaMesh::SWeight& weight = joint.weights[j];
+			memStream.writeData( &weight.buffer_id, sizeof(u16) );
+			memStream.writeData( &weight.vertex_id, sizeof(u32) );
+			memStream.writeData( &weight.strength, sizeof(f32) );
+
+			getArrayFromVector( weight.staticPos, floatArray );
+			memStream.writeData( floatArray, sizeof(f32)*3 );	
+
+			getArrayFromVector( weight.staticNormal, floatArray );			
+			memStream.writeData( floatArray, sizeof(f32)*3 );	
+		}
+		
+		memStream.writeData(  joint.globalInversedMatrix.pointer(), sizeof(f32)*16 );
+		memStream.writeData(  joint.skinningMatrix.pointer(), sizeof(f32)*16 );
+
+	}
+
 
 	// write num joint index
 	int nJointIndex = mesh->JointIndex.size();
@@ -192,8 +223,7 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 	memStream.writeData( mesh->JointVertexIndex.pointer(), sizeof(s32) * nJointVertexIndex );
 
 	
-	// bouding box
-	float floatArray[3];
+	// bouding box	
 	getArrayFromVector( mesh->BoundingBox.MaxEdge, floatArray );
 	memStream.writeData( floatArray, sizeof(float)*3 );
 
@@ -209,8 +239,8 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 	for ( int i = 0; i < nMeshBuffer; i++ )
 	{
 		// get mesh buffer
-		IMeshBuffer *buffer = mesh->getMeshBuffer(i);
-		
+		IMeshBuffer *buffer = mesh->getMeshBuffer(i);		
+
 		int vertexType = buffer->getVertexType();
 		int vertexCount = buffer->getVertexCount();
 		int indexCount = buffer->getIndexCount();
@@ -290,12 +320,12 @@ void CBinaryUtils::saveMaterial( io::IWriteFile *file, SMaterial* mat )
 	memStream.writeData( &mat->Thickness, sizeof(f32) );
 
 	char stringc[STRING_BUFFER_SIZE];
-
+	
 	for (u32 i=0; i<MATERIAL_MAX_TEXTURES; ++i)
 	{
 		if ( mat->TextureLayer[i].Texture != NULL )
 		{
-			irr::core::stringc name(mat->TextureLayer[i].Texture->getName());			
+			irr::core::stringc name(mat->TextureLayer[i].Texture->getName());
 			uiString::getFileName<const irr::c8, char>(name.c_str(), stringc);
 		}
 		else
@@ -363,14 +393,18 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 	m_listMesh.clear();
 	m_listMaterial.clear();
 	
+	m_constructSceneMesh.clear();
+	m_constructMeshMaterial.clear();
+
+	unsigned long maxChunkSize = 1024*1024*4;
+	unsigned char *chunkData = new unsigned char[maxChunkSize];
+
 	// read all chunk
 	while ( file->read( &chunk, sizeof(SBinaryChunk) ) > 0 )
 	{
-		if ( chunk.sign != CHUNK_SIGN || chunk.size > 1024*1024*4 )
-			break;
+		if ( chunk.sign != CHUNK_SIGN || chunk.size > maxChunkSize )
+			break;		
 		
-
-		unsigned char *chunkData = new unsigned char[chunk.size];
 		file->read(chunkData, chunk.size);
 
 		switch( chunk.type )
@@ -382,14 +416,81 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 			readColladaMesh( chunkData, chunk.size );
 			break;
 		case k_binaryTypeMaterial:
-			readMaterial( chunkData, chunk.size );
+			{
+				std::string path = file->getFileName().c_str();
+				readMaterial( chunkData, chunk.size, path );
+			}
 			break;
 		}
-
-		delete chunkData;
-
 	}
 
+	delete chunkData;
+
+	// current component
+	CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent(IObjectComponent::ColladaMesh);
+	CGameChildContainerSceneNode *pParent = comp->getColladaNode();
+
+	// update scenenode with mesh
+	vector< SPairID >::iterator it = m_constructSceneMesh.begin(), end = m_constructSceneMesh.end();
+	while ( it != end )
+	{
+		unsigned long nodeID = (*it).first;
+		unsigned long meshID = (*it).second;
+
+		CGameColladaSceneNode *node = m_listSceneNode[ nodeID ];
+		CGameColladaMesh *mesh = m_listMesh[ meshID ];
+		
+		if ( node != NULL && mesh != NULL )
+		{
+			node->setColladaMesh( mesh );
+			
+			// set child bouding box
+			pParent->addBoundingBoxOfChild( node );
+
+			// get material of mesh
+			unsigned long matID = m_constructMeshMaterial[meshID];
+			SMaterial *mat = m_listMaterial[matID];
+
+			// set material to buffer
+			if ( mat )
+			{
+				int nBufferCount = mesh->getMeshBufferCount();
+				for ( int i = 0; i < nBufferCount; i++ )
+				{
+					mesh->getMeshBuffer(i)->getMaterial() = *mat;
+				}
+			}
+
+		}
+		it++;
+	}
+	m_constructSceneMesh.clear();
+	
+	// update component to mesh & drop ref of mesh
+	map<unsigned long, CGameColladaMesh*>::iterator iMesh =	m_listMesh.begin(), iEnd = m_listMesh.end();
+	while ( iMesh != iEnd )
+	{
+		CGameColladaMesh *mesh = (*iMesh).second;
+		
+		if ( mesh->IsStaticMesh == false )
+		{
+			mesh->Component = comp;
+			mesh->updateJoint();
+		}
+
+		mesh->drop();
+		iMesh++;
+	}
+	m_listMesh.clear();
+
+	// release material
+	map<unsigned long, SMaterial*>::iterator iMat = m_listMaterial.begin(), iEndMat = m_listMaterial.end();
+	while ( iMat != iEndMat )
+	{
+		delete (*iMat).second;
+		iMat++;
+	}
+	m_listMaterial.clear();
 }
 
 void CBinaryUtils::readColladaScene( unsigned char *data, unsigned long size, CGameObject* obj )
@@ -481,13 +582,15 @@ void CBinaryUtils::readColladaScene( unsigned char *data, unsigned long size, CG
 
 	if ( haveMesh )
 	{		
-		// is static mesh
-		int staticMesh = 1;
-		memStream.readData( &staticMesh, sizeof(int) );
-
 		// mesh id
 		unsigned long meshID = 0;
-		memStream.readData( &meshID, sizeof(unsigned long) );		
+		memStream.readData( &meshID, sizeof(unsigned long) );	
+
+		// push to list scenenode need construct mesh
+		SPairID pairScene;
+		pairScene.first = nodeID;
+		pairScene.second = meshID;
+		m_constructSceneMesh.push_back( pairScene );
 	}
 
 	// root node
@@ -517,13 +620,234 @@ void CBinaryUtils::readColladaScene( unsigned char *data, unsigned long size, CG
 void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 {
 	CMemoryReadWrite memStream( data, size );
+	float floatArray[3];	
+	char	stringc[STRING_BUFFER_SIZE];
+	wchar_t stringw[STRING_BUFFER_SIZE];
+
+	CGameColladaMesh *newMesh = new CGameColladaMesh();
+
+	// read meshID
+	unsigned long meshID = 0;
+	memStream.readData( &meshID, sizeof(int) );
+	m_listMesh[ meshID ] = newMesh;
+
+	// static mesh
+	int staticMesh = 0;
+	memStream.readData( &staticMesh, sizeof(int) );
+	newMesh->IsStaticMesh = (staticMesh == 1);
+
+	// read num joint
+	int nJoint = 0;
+	memStream.readData( &nJoint, sizeof(int) );
+	newMesh->Joints.reallocate( nJoint );
+
+	// read joint buffer (arrayWeight in bone)	
+	for (int i = 0; i < nJoint; i++ )
+	{
+		newMesh->Joints.push_back( CGameColladaMesh::SJoint() );
+		CGameColladaMesh::SJoint& joint = newMesh->Joints[i];
+
+		// joint name
+		memStream.readData( stringc, STRING_BUFFER_SIZE );
+		uiString::convertUTF8ToUnicode( stringc, (unsigned short*) stringw );
+		joint.name = stringw;
+
+		// array weight
+		int nWeight = 0;
+		memStream.readData( &nWeight, sizeof(int) );
+		joint.weights.set_used( nWeight );
+
+		for (int j = 0; j < nWeight; j++ )
+		{
+			CGameColladaMesh::SWeight& weight = joint.weights[j];
+
+			memStream.readData( &weight.buffer_id, sizeof(u16) );
+			memStream.readData( &weight.vertex_id, sizeof(u32) );
+			memStream.readData( &weight.strength, sizeof(f32) );
+
+			memStream.readData( floatArray, sizeof(f32)*3 );	
+			weight.staticPos = core::vector3df( floatArray[0], floatArray[1], floatArray[2] );
+		
+			memStream.readData( floatArray, sizeof(f32)*3 );	
+			weight.staticNormal = core::vector3df( floatArray[0], floatArray[1], floatArray[2] );
+		}
+		
+		memStream.readData(  joint.globalInversedMatrix.pointer(), sizeof(f32)*16 );
+		memStream.readData(  joint.skinningMatrix.pointer(), sizeof(f32)*16 );
+
+	}
+
+	// read num joint index
+	int nJointIndex = 0;
+	memStream.readData( &nJointIndex, sizeof(int) );
+	newMesh->JointIndex.set_used( nJointIndex );
+
+	// read joint index (boneID, weightID) buffer
+	memStream.readData( newMesh->JointIndex.pointer(), sizeof(s32) * nJointIndex );
+
+	// read num joint(bone) in vertex
+	int nJointVertexIndex =	0;
+	memStream.readData( &nJointVertexIndex, sizeof(int) );
+	newMesh->JointVertexIndex.set_used( nJointVertexIndex );
+
+	memStream.readData( newMesh->JointVertexIndex.pointer(), sizeof(s32) * nJointVertexIndex );
+
+	// read bouding box	
+	memStream.readData( floatArray, sizeof(float)*3 );
+	newMesh->BoundingBox.MaxEdge = core::vector3df( floatArray[0], floatArray[1], floatArray[2] );
+	
+	memStream.readData( floatArray, sizeof(float)*3 );
+	newMesh->BoundingBox.MinEdge = core::vector3df( floatArray[0], floatArray[1], floatArray[2] );
+
+	// write mesh buffer
+	int nMeshBuffer = 0;
+	memStream.readData( &nMeshBuffer, sizeof(int) );
+
+	for ( int i = 0; i < nMeshBuffer; i++ )
+	{		
+		scene::SMeshBuffer* meshBuffer = new SMeshBuffer();
+				
+		// get mesh buffer				
+		int vertexType = 0;
+		int vertexCount = 0;
+		int indexCount = 0;
+
+		memStream.readData( &vertexType, sizeof(int) );
+		memStream.readData( &vertexCount, sizeof(int) );
+		memStream.readData( &indexCount, sizeof(int) );
+
+		unsigned long matID = 0;
+		memStream.readData( &matID, sizeof(unsigned long) );
+
+		int bufferSize = 0;
+
+		if ( vertexType == video::EVT_STANDARD )
+		{
+			bufferSize = sizeof(video::S3DVertex) * vertexCount;
+		}
+		else if ( vertexType == video::EVT_2TCOORDS )
+		{
+			bufferSize = sizeof(video::S3DVertex2TCoords) * vertexCount;
+		}
+		else if ( vertexType == video::EVT_TANGENTS )
+		{
+			bufferSize = sizeof(video::S3DVertexTangents) * vertexCount;
+		}
+
+		// read vertices
+		meshBuffer->Vertices.set_used( vertexCount );
+		memStream.readData( meshBuffer->Vertices.pointer(), bufferSize );
+		
+		// read indices
+		meshBuffer->Indices.set_used( indexCount );
+		memStream.readData( meshBuffer->Indices.pointer(), sizeof(u16)*indexCount );
+
+		// map meshID & matID		
+		m_constructMeshMaterial[meshID] = matID;
+
+		newMesh->addMeshBuffer( meshBuffer );
+		meshBuffer->drop();
+	}
+
+	// set static mesh
+	if ( newMesh->IsStaticMesh == true )
+		newMesh->setHardwareMappingHint( EHM_STATIC );
 
 }
 
-void CBinaryUtils::readMaterial( unsigned char *data, unsigned long size )
+void CBinaryUtils::readMaterial( unsigned char *data, unsigned long size, std::string currentPath )
 {
 	CMemoryReadWrite memStream( data, size );
+	
+	SMaterial *mat = new SMaterial();
+	
+	char stringc[STRING_BUFFER_SIZE];
+	
+	// write matID
+	unsigned long matID = 0;
+	memStream.readData( &matID, sizeof(int) );	
+	m_listMaterial[matID] = mat;
 
+	int matType = 0;
+	memStream.readData( &matType, sizeof(int) );
+	mat->MaterialType = (E_MATERIAL_TYPE) matType;
+
+	
+	memStream.readData( &mat->AmbientColor.color, sizeof(u32) );
+	memStream.readData( &mat->DiffuseColor.color, sizeof(u32) );
+	memStream.readData( &mat->EmissiveColor.color, sizeof(u32) );
+	memStream.readData( &mat->SpecularColor.color, sizeof(u32) );
+
+	memStream.readData( &mat->Shininess, sizeof(f32) );
+	memStream.readData( &mat->MaterialTypeParam, sizeof(f32) );
+	memStream.readData( &mat->MaterialTypeParam2, sizeof(f32) );
+	memStream.readData( &mat->Thickness, sizeof(f32) );	
+
+	for (u32 i=0; i<MATERIAL_MAX_TEXTURES; ++i)
+	{
+		// texture
+		memStream.readData( stringc, STRING_BUFFER_SIZE );
+		if ( strlen(stringc) > 0 )
+		{
+			// load texture here
+			char fullPath[512];
+			uiString::getFolderPath( currentPath.c_str(), fullPath );
+			uiString::cat( fullPath , "/" );
+			uiString::cat( fullPath , stringc );
+			mat->setTexture(i, getIView()->getDriver()->getTexture( fullPath ) );
+		}
+	}
+
+	int wireFrame = 0;
+	memStream.readData( &wireFrame, sizeof(int) );
+	mat->Wireframe = (wireFrame == 1);
+
+	int pointCloud = 0;
+	memStream.readData( &pointCloud, sizeof(int) );
+	mat->PointCloud = (pointCloud == 1);
+
+	int gouraudShading = 0;
+	memStream.readData( &gouraudShading, sizeof(int) );
+	mat->GouraudShading = (gouraudShading == 1);
+
+	int light = 0;
+	memStream.readData( &light, sizeof(int) );
+	mat->Lighting = (light == 1 );
+
+	int zWrite = 0;
+	memStream.readData( &zWrite, sizeof(int) );
+	mat->ZWriteEnable = (zWrite == 1);
+
+	int backCull = 0;
+	memStream.readData( &backCull, sizeof(int) );
+	mat->BackfaceCulling = (backCull == 1);
+
+	int frontCull = 0;
+	memStream.readData( &frontCull, sizeof(int) );
+	mat->FrontfaceCulling = (frontCull == 1);
+
+
+	int fog = 0;
+	memStream.readData( &fog, sizeof(int) );
+	mat->FogEnable = (fog == 1);
+
+	int normalNormalize = 0;
+	memStream.readData( &normalNormalize, sizeof(int) );
+	mat->NormalizeNormals = (normalNormalize == 1);
+
+	int zBuffer = 0;
+	memStream.readData( &zBuffer, sizeof(int) );
+	mat->ZBuffer = (zBuffer == 1 );
+	
+	memStream.readData( &mat->AntiAliasing, sizeof(u8) );
+
+	u8 colorMask = 0;
+	memStream.readData( &colorMask, sizeof(u8) );
+	mat->ColorMask = colorMask;
+
+	u8 colorMaterial = 0;
+	memStream.readData( &colorMaterial, sizeof(u8) );
+	mat->ColorMaterial = colorMaterial;
 }
 
 

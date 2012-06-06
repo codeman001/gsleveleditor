@@ -15,6 +15,8 @@ public:
 		#ifdef _DEBUG
 		setDebugName("CGameColladaMesh");
 		#endif
+
+		Component = NULL;
 	}
 
 	//! destructor
@@ -144,7 +146,12 @@ public:
 		core::matrix4			globalInversedMatrix;
 		core::matrix4			skinningMatrix;
 
-		CGameColladaSceneNode*	node;		
+		CGameColladaSceneNode*	node;	
+		SJoint()
+		{
+			name = L"noName";
+			node = NULL;
+		}
 	};
 	
 	core::array<SJoint>			Joints;

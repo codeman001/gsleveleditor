@@ -221,13 +221,137 @@ struct SNodeParam
 };
 typedef vector<SNodeParam*>	ArrayNodeParams;
 
+
+// SColladaNodeAnim
+// store keyframes on a scenenode
+struct SColladaNodeAnim
+{
+	std::string	sceneNodeName;
+
+	core::array<CGameColladaSceneNode::SPositionKey>	PositionKeys;
+	core::array<CGameColladaSceneNode::SScaleKey>		ScaleKeys;
+	core::array<CGameColladaSceneNode::SRotationKey>	RotationKeys;
+};
+
+// SColladaAnim
+// store animation info with array scenenode
+struct SColladaAnimClip
+{
+	std::string	animName;
+	float		time;
+	float		duration;
+
+	vector<SColladaNodeAnim*> animInfo;
+	
+	~SColladaAnimClip()
+	{
+		vector<SColladaNodeAnim*>::iterator i = animInfo.begin(), end = animInfo.end();
+		while ( i != end )
+		{
+			delete (*i);
+			i++;
+		}		
+	}
+
+	void addNodeAnim( SColladaNodeAnim* anim )
+	{
+		vector<SColladaNodeAnim*>::iterator i = animInfo.begin(), end = animInfo.end();
+		while ( i != end )
+		{
+			if ( (*i)->sceneNodeName == anim->sceneNodeName )
+			{
+				delete (*i);
+				*i = anim;
+				return;
+			}
+			i++;
+		}
+		
+		animInfo.push_back( anim );
+
+	}
+
+	// getAnimOfSceneNode
+	// get array frame of scenenode
+	SColladaNodeAnim* getAnimOfSceneNode(char *sceneNodeName)
+	{
+		vector<SColladaNodeAnim*>::iterator i = animInfo.begin(), end = animInfo.end();
+		while ( i != end )
+		{
+			if ( (*i)->sceneNodeName == sceneNodeName )
+			{
+				return *i;
+			}
+		}
+		return NULL;
+	}
+};
+
+// CColladaAnimation
+// collada anim
+class CColladaAnimation
+{
+protected:
+	vector<SColladaAnimClip*>			m_colladaAnim;
+	map<std::string, SColladaAnimClip*>	m_animWithName;
+
+	// input need for dae parse
+	bool					m_needFlip;
+	SColladaAnimClip		m_globalClip;
+	// ----------------------------------------
+
+protected:	
+
+	// getFrameAtTime
+	// get a frame at time
+	bool getFrameAtTime( const core::matrix4& mat, AnimationFrames* frames, float time, int *frameID, core::quaternion *rotateData, core::vector3df *translateData );
+
+	// parseAnimationNode
+	// parse anim node
+	void parseAnimationNode( io::IXMLReader *xmlRead );
+
+	// parseClipNode
+	// parse clip time node
+	void parseClipNode( io::IXMLReader *xmlRead );
+
+
+	void loadDae( char *lpFileName );
+	void loadDotAnim( char *lpFileName );
+
+public:	
+	CColladaAnimation();
+	virtual ~CColladaAnimation();
+
+	void loadFile( char *lpFileName );
+};
+
+// CColladaAnimationFactory
+// animation manager
+class CColladaAnimationFactory: public uiSingleton<CColladaAnimationFactory>
+{
+protected:
+	map<std::string, CColladaAnimation*>	m_animPackage;
+public:
+	CColladaAnimationFactory();
+	virtual ~CColladaAnimationFactory();
+
+	// loadAnimation
+	// load package animation
+	CColladaAnimation* loadAnimation( char *name, char *lpFileName );
+
+	// freeAllAnimationPackage
+	// release all package animation
+	void freeAllAnimationPackage();
+};
+
+
+// CColladaMeshComponent
 class CColladaMeshComponent: public IObjectComponent
 {
 protected:
 	std::string					m_animeshFile;	
 	std::string					m_animFile;
 	std::string					m_defaultNode;
-	float						m_animSpeed;
 
 	// map animation name & animation frame data 
 	ClipAnimation				m_clipAnimation;
@@ -249,6 +373,9 @@ protected:
 
 	// current node
 	CGameChildContainerSceneNode				*m_colladaNode;
+
+	// current animation clip info
+	CColladaAnimation							*m_colladaAnimation;
 
 	map<std::string, CGameColladaSceneNode*>	m_mapNode;
 	map<std::string, CGameColladaSceneNode*>	m_sidNode;
@@ -272,10 +399,6 @@ public:
 	void loadDae( char *lpFileName );
 	void loadScene( char *lpFileName );
 
-	// loadAnimFile
-	// load animation bone from dae file
-	void loadAnimFile( char *lpFileName );
-	
 	// initFromNode
 	// init cache from node
 	void initFromNode( CGameChildContainerSceneNode* node );
@@ -359,19 +482,7 @@ protected:
 	// parseNode
 	// parse <node> element
 	SNodeParam* parseNode( io::IXMLReader *xmlRead, SNodeParam* parent );
-
-	// parseAnimationNode
-	// parse anim node
-	void parseAnimationNode( io::IXMLReader *xmlRead );
-
-	// parseClipNode
-	// parse clip time node
-	void parseClipNode( io::IXMLReader *xmlRead );
-
-	// getFrameAtTime
-	// get a frame at time
-	bool getFrameAtTime( const core::matrix4& mat, AnimationFrames* frames, float time, int *frameID, core::quaternion *rotateData, core::vector3df *translateData );
-
+		
 	// updateJointToMesh
 	// update joint
 	void updateJointToMesh( SMeshParam *mesh, vector<wstring>& arrayName, float *arrayWeight, float *arrayTransform, vector<s32>& vCountArray, vector<s32>& vArray, bool flipZ );	
@@ -380,6 +491,14 @@ protected:
 	// free all data from parse dae
 	void cleanData();
 public:
+	
+	// setAnimationPackage
+	// set anim package for this mesh
+	void setAnimationPackage( CColladaAnimation *colladaAnim )
+	{
+		m_colladaAnimation = colladaAnim;
+	}
+
 	// setAnimation
 	// apply Animation to skin joint
 	void setAnimation(const char *lpAnimName);
@@ -455,30 +574,6 @@ public:
 	inline float getPauseAnim()
 	{
 		return m_pauseAnimFrame;
-	}
-
-	// getAnimClip	
-	inline SAnimClip* getAnimClip( const char *lpAnimName )
-	{
-		ClipAnimation::iterator it = m_clipAnimation.find( std::string(lpAnimName) );
-		if ( it == m_clipAnimation.end() )
-			return NULL;
-
-		return &it->second;
-	}
-
-	// getAnimClip	
-	inline SAnimClip* getAnimClip( int animID )
-	{
-		const char *aninName = getAnimName(animID);
-		if ( aninName == NULL )
-			return NULL;
-
-		ClipAnimation::iterator it = m_clipAnimation.find( std::string(aninName) );
-		if ( it == m_clipAnimation.end() )
-			return NULL;
-
-		return &it->second;
 	}
 
 public:

@@ -9,11 +9,13 @@ CMainFrame::CMainFrame()
 
 	// init singleton
 	CBinaryUtils::createGetInstance();
+	CColladaAnimationFactory::createGetInstance();
 }
 
 CMainFrame::~CMainFrame()
 {
 	CBinaryUtils::releaseInstance();
+	CColladaAnimationFactory::releaseInstance();
 }
 	
 // create
@@ -308,20 +310,21 @@ void CMainFrame::toolbarLoadAnimDae( uiObject *pSender )
 		
 	dialog.getFileName( lpPath );
 	uiString::copy<char, WCHAR>( lpFileName, lpPath );
-
+	
+	CColladaAnimation *colladaAnim = CColladaAnimationFactory::getInstance()->loadAnimation("baseAnim", lpFileName);
+	
 	// load anim from file
 	CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
-	colladaComponent->loadAnimFile( lpFileName );
-		
+	colladaComponent->setAnimationPackage( colladaAnim );
+
+
 	// update anim data
 	updateAnimDataToUI();
 }
 
 
 void CMainFrame::updateAnimDataToUI()
-{		
-	WCHAR	wstringBuff[1024];
-
+{			
 	m_listView->deleteAllRow();		
 
 	CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
@@ -329,6 +332,8 @@ void CMainFrame::updateAnimDataToUI()
 
 	for ( int i = 0; i < numAnim; i++ )
 	{
+		/*
+		WCHAR	wstringBuff[1024];
 		const char *animName = colladaComponent->getAnimName(i);
 		SAnimClip *clipInfo = colladaComponent->getAnimClip( animName );
 
@@ -355,6 +360,7 @@ void CMainFrame::updateAnimDataToUI()
 			row->addParam( wstringBuff );
 
 		row->update();
+		*/
 	}
 
 }

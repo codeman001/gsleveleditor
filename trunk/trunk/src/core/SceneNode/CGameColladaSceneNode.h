@@ -368,8 +368,8 @@ public:
 	}
 
 public:
-	// begin declare animation key frame
 
+	// begin declare animation key frame
 	struct SPositionKey
 	{
 		f32 frame;

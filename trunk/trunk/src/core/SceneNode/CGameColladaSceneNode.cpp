@@ -150,7 +150,7 @@ void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 		{
 			if ( m_component && 
 				m_component->getCurrentAnim() && 
-				m_component->getCurrentAnim()->m_loop == false )
+				m_component->getCurrentAnim()->loop == false )
 			{
 				m_currentFrame = m_totalFrame;
 			}
@@ -331,6 +331,11 @@ void CGameColladaSceneNode::getFrameData(f32 frame,
 			position = ((KeyB.position-KeyA.position)/(fd1+fd2))*fd1 + KeyA.position;				
 		}
 	}
+	else
+	{
+		position = core::vector3df(0,0,0);
+		LocalMatrix.translateVect( position );
+	}
 
 	//------------------------------------------------------------
 
@@ -372,7 +377,7 @@ void CGameColladaSceneNode::getFrameData(f32 frame,
 		}
 
 		//Do interpolation...
-		if ( foundPositionIndex == 0 )
+		if ( foundScaleIndex == 0 )
 		{
 			scale = ScaleKeys[0].scale;
 		}
@@ -427,7 +432,7 @@ void CGameColladaSceneNode::getFrameData(f32 frame,
 		}
 
 		//Do interpolation...
-		if ( foundPositionIndex == 0 )
+		if ( foundRotationIndex == 0 )
 		{
 			rotation = RotationKeys[0].rotation;
 		}

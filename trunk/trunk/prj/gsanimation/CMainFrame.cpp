@@ -328,39 +328,40 @@ void CMainFrame::updateAnimDataToUI()
 	m_listView->deleteAllRow();		
 
 	CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
-	int numAnim = colladaComponent->getAnimCount();
+	CColladaAnimation *animPackage = colladaComponent->getCurrentAnimPackage();
+
+
+	int numAnim = animPackage->getAnimCount();
 
 	for ( int i = 0; i < numAnim; i++ )
-	{
-		/*
-		WCHAR	wstringBuff[1024];
-		const char *animName = colladaComponent->getAnimName(i);
-		SAnimClip *clipInfo = colladaComponent->getAnimClip( animName );
+	{		
+		WCHAR	wstringBuff[1024];		
+
+		SColladaAnimClip *clipInfo = animPackage->getAnim(i);
 
 		if ( clipInfo == NULL )
 			continue;
 
-		uiString::copy<WCHAR, const char>( wstringBuff, animName );
+		uiString::copy<WCHAR, const char>( wstringBuff, clipInfo->animName.c_str() );
 		
 		// set name of anim		
 		uiListViewRow *row = m_listView->addRow( wstringBuff );
 		
 		// set time of anim
-		uiString::format<WCHAR>( wstringBuff, L"%f", clipInfo->m_time );		
+		uiString::format<WCHAR>( wstringBuff, L"%f", clipInfo->time );		
 		row->addParam( wstringBuff );
 
 		// set duration on anim
-		uiString::format<WCHAR>( wstringBuff, L"%f", clipInfo->m_duration );		
+		uiString::format<WCHAR>( wstringBuff, L"%f", clipInfo->duration );		
 		row->addParam( wstringBuff );
 
 		// set looping of anim
-		if ( clipInfo->m_loop )			
-			row->addParam( wstringBuff );
+		if ( clipInfo->loop )					
+			row->addParam( L"true" );		
 		else			
-			row->addParam( wstringBuff );
+			row->addParam( L"false" );
 
-		row->update();
-		*/
+		row->update();		
 	}
 
 }
@@ -375,12 +376,18 @@ void CMainFrame::listPropertyOnItemEdit( uiObject *pSender )
 
 	char label[512];
 	WCHAR labelW[512];
-	sprintf(label,"Anim editor - %s", m_irrWin->getAnimComponent()->getCurrentAnim()->m_id.c_str());
-	uiString::copy<WCHAR, char>( labelW, label );
 
-	m_editorWin->setCaption( labelW );
-	m_editorWin->updateTimeLine( NULL );
-	m_editorWin->showWindow(true);
+	const SColladaAnimClip *clip = m_irrWin->getAnimComponent()->getCurrentAnim();
+
+	if ( clip )
+	{
+		sprintf(label,"Anim editor - %s", clip->animName.c_str());
+		uiString::copy<WCHAR, char>( labelW, label );
+
+		m_editorWin->setCaption( labelW );
+		m_editorWin->updateTimeLine( NULL );
+		m_editorWin->showWindow(true);
+	}
 }
 
 void CMainFrame::listPropertyOnItemChange( uiObject *pSender )

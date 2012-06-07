@@ -11,9 +11,7 @@ treePalms
 {
 	Collada mesh component
 	{
-		meshFile: data/mesh/tree/palms.dae | filePathType;
-		animFile:  | filePathType;
-		animSpeed: 24.0000000 | floatType;
+		meshFile: data/mesh/tree/palms.dae | filePathType;		
 		defaultNode:  | stringType;
 	}
 }
@@ -22,8 +20,6 @@ treePalm
 	Collada mesh component
 	{
 		meshFile: data/mesh/tree/Palm.dae | filePathType;
-		animFile:  | filePathType;
-		animSpeed: 24.0000000 | floatType;
 		defaultNode:  | stringType;
 	}
 }
@@ -32,8 +28,6 @@ treeMimosa
 	Collada mesh component
 	{
 		meshFile: data/mesh/tree/Mimosa.dae | filePathType;
-		animFile:  | filePathType;
-		animSpeed: 24.0000000 | floatType;
 		defaultNode:  | stringType;
 	}
 }
@@ -42,8 +36,6 @@ treeBanyan
 	Collada mesh component
 	{
 		meshFile: data/mesh/tree/BanyanTree.dae | filePathType;
-		animFile:  | filePathType;
-		animSpeed: 24.0000000 | floatType;
 		defaultNode:  | stringType;
 	}
 }
@@ -52,8 +44,6 @@ treeThin
 	Collada mesh component
 	{
 		meshFile: data/mesh/tree/ThinTree.dae | filePathType;
-		animFile:  | filePathType;
-		animSpeed: 24.0000000 | floatType;
 		defaultNode:  | stringType;
 	}
 }
@@ -62,8 +52,6 @@ treeBanana
 	Collada mesh component
 	{
 		meshFile: data/mesh/tree/BananaPlant.dae | filePathType;
-		animFile:  | filePathType;
-		animSpeed: 24.0000000 | floatType;
 		defaultNode:  | stringType;
 	}
 }
@@ -72,8 +60,6 @@ terrainLevel1
 	Collada mesh component
 	{
 		meshFile: data/mesh/terrain/terrain.dae | filePathType;
-		animFile:  | filePathType;
-		animSpeed: 24.0000000 | floatType;
 		defaultNode: Plane01-node | stringType;
 	}
 	Terrain component

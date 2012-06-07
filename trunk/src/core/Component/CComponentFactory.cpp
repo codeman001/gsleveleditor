@@ -107,9 +107,7 @@ void CComponentFactory::initComponentTemplate()
 	s_compTemplate.push_back( CSerializable() );
 	p = &s_compTemplate[ IObjectComponent::ColladaMesh ];
 	p->addGroup(stringOfComponent(IObjectComponent::ColladaMesh));
-	p->addPath("meshFile", "data/mesh/marine_2_mesh.dae");
-	p->addPath("animFile", "");
-	p->addFloat("animSpeed", 24.0f);	
+	p->addPath("meshFile", "data/mesh/marine_2_mesh.dae");	
 	p->addString("defaultNode", "" );
 
 	// add terrain

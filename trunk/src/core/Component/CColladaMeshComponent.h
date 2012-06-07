@@ -240,17 +240,32 @@ struct SColladaAnimClip
 	std::string	animName;
 	float		time;
 	float		duration;
+	bool		loop;
 
 	vector<SColladaNodeAnim*> animInfo;
 	
+	SColladaAnimClip()
+	{
+		animName = "";
+		time = 0.0f;
+		duration = 0.0f;
+		loop = true;
+	}
+
 	~SColladaAnimClip()
+	{
+		freeAllNodeAnim();
+	}
+
+	void freeAllNodeAnim()
 	{
 		vector<SColladaNodeAnim*>::iterator i = animInfo.begin(), end = animInfo.end();
 		while ( i != end )
 		{
 			delete (*i);
 			i++;
-		}		
+		}
+		animInfo.clear();
 	}
 
 	void addNodeAnim( SColladaNodeAnim* anim )
@@ -273,7 +288,7 @@ struct SColladaAnimClip
 
 	// getAnimOfSceneNode
 	// get array frame of scenenode
-	SColladaNodeAnim* getAnimOfSceneNode(char *sceneNodeName)
+	SColladaNodeAnim* getAnimOfSceneNode(const char *sceneNodeName)
 	{
 		vector<SColladaNodeAnim*>::iterator i = animInfo.begin(), end = animInfo.end();
 		while ( i != end )
@@ -282,6 +297,7 @@ struct SColladaAnimClip
 			{
 				return *i;
 			}
+			i++;
 		}
 		return NULL;
 	}
@@ -302,9 +318,10 @@ protected:
 
 protected:	
 
-	// getFrameAtTime
-	// get a frame at time
-	bool getFrameAtTime( const core::matrix4& mat, AnimationFrames* frames, float time, int *frameID, core::quaternion *rotateData, core::vector3df *translateData );
+	// getRotationFrameID
+	// get a rotation frame id at time
+	bool getRotationFrameID( SColladaNodeAnim* frames, float frame, int *frameRotID, core::quaternion *rotateData );
+	bool getPositionFrameID( SColladaNodeAnim* frames, float frame, int *framePosID, core::vector3df  *positionData );
 
 	// parseAnimationNode
 	// parse anim node
@@ -314,15 +331,35 @@ protected:
 	// parse clip time node
 	void parseClipNode( io::IXMLReader *xmlRead );
 
+	// clippingDaeAnim
+	// clip a long clip to many clip
+	void clipDaeAnim();
 
 	void loadDae( char *lpFileName );
 	void loadDotAnim( char *lpFileName );
 
 public:	
 	CColladaAnimation();
+
 	virtual ~CColladaAnimation();
 
 	void loadFile( char *lpFileName );
+
+	SColladaAnimClip* getAnim( const char *lpAnimName )
+	{
+		return m_animWithName[ lpAnimName ];
+	}
+
+	SColladaAnimClip* getAnim( int animID )
+	{
+		return m_colladaAnim[ animID ];
+	}
+
+	int getAnimCount()
+	{
+		return m_colladaAnim.size();
+	}
+
 };
 
 // CColladaAnimationFactory
@@ -352,18 +389,9 @@ protected:
 	std::string					m_animeshFile;	
 	std::string					m_animFile;
 	std::string					m_defaultNode;
-
-	// map animation name & animation frame data 
-	ClipAnimation				m_clipAnimation;
-
-	// list of animation anme
-	vector<string>				m_animationName;
-
-	// map joint name & all frame data 
-	JointAnimation				m_jointAnimation;
-
+	
 	// current anim is playing
-	SAnimClip					*m_currentAnim;
+	SColladaAnimClip			*m_currentAnim;
 
 	//	list of effect in collada scene
 	ArrayEffects				m_listEffects;
@@ -499,39 +527,22 @@ public:
 		m_colladaAnimation = colladaAnim;
 	}
 
+	// getCurrentAnimPackage
+	// get anim package for this mesh
+	CColladaAnimation* getCurrentAnimPackage()
+	{
+		return m_colladaAnimation;
+	}
+
 	// setAnimation
 	// apply Animation to skin joint
 	void setAnimation(const char *lpAnimName);
 
 	// getCurrentAnim
 	// get current anim
-	inline const SAnimClip* getCurrentAnim()
+	inline const SColladaAnimClip* getCurrentAnim()
 	{
 		return m_currentAnim;
-	}
-
-	// getAnimCount
-	// return number of anim
-	inline int getAnimCount()
-	{
-		return (int)m_animationName.size();
-	}
-
-	// getAnimName
-	// return anim name id
-	inline const char* getAnimName( int id )
-	{
-		if ( id < 0 || id >= (int)m_animationName.size() )
-			return NULL;
-
-		return m_animationName[id].c_str();
-	}
-
-	// getCurrentAnimFrames
-	// get number of frames of anim
-	inline float getCurrentAnimFrames()
-	{
-		return m_animFrames;
 	}
 
 	// pauseAtFrame

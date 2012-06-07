@@ -99,87 +99,9 @@ void CBinaryUtils::saveAnimation( io::IWriteFile *file, const std::string& animN
 {
 	CMemoryReadWrite	memStream( 1024*1024*4 );
 
-	float floatArray[4];
-	char stringc[STRING_BUFFER_SIZE];
+	//float floatArray[4];
+	//char stringc[STRING_BUFFER_SIZE];
 	
-	CColladaMeshComponent *comp = (CColladaMeshComponent*) m_gameObject->getComponent(IObjectComponent::ColladaMesh);
-	CGameChildContainerSceneNode *colladaNode = comp->getColladaNode();
-
-	std::queue<CGameColladaSceneNode*> queueNode;
-
-	if ( colladaNode )
-	{
-		const core::list<ISceneNode*>& childs = colladaNode->getChildren();
-		core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
-		
-		while ( it != end )
-		{
-			queueNode.push( (CGameColladaSceneNode*) (*it) );
-			it++;
-		}	
-		
-		while ( queueNode.size() )
-		{
-			CGameColladaSceneNode* node = queueNode.front();
-			queueNode.pop();
-
-
-			int nPosKeys = node->PositionKeys.size();
-			int nRotKeys = node->RotationKeys.size();
-			int nScaleKeys = node->ScaleKeys.size();
-
-			if ( nPosKeys > 0 || nRotKeys > 0 || nScaleKeys > 0 )
-			{
-				strcpy( stringc, node->getName() );
-
-				// write name
-				memStream.writeData( stringc, STRING_BUFFER_SIZE );
-
-				memStream.writeData( &nPosKeys, sizeof(int) );
-				for ( int i = 0; i < nPosKeys; i++ )
-				{
-					memStream.writeData( &node->PositionKeys[i].frame, sizeof(float) );
-
-					// position
-					getArrayFromVector( node->PositionKeys[i].position, floatArray );
-					memStream.writeData( floatArray, sizeof(float)*3 );
-				}
-
-				memStream.writeData( &nRotKeys, sizeof(int) );
-				for ( int i = 0; i < nPosKeys; i++ )
-				{
-					memStream.writeData( &node->RotationKeys[i].frame, sizeof(float) );
-
-					// rotation
-					floatArray[0] = node->RotationKeys[i].rotation.X;
-					floatArray[1] = node->RotationKeys[i].rotation.Y;
-					floatArray[2] = node->RotationKeys[i].rotation.Z;
-					floatArray[3] = node->RotationKeys[i].rotation.W;
-					memStream.writeData( floatArray, sizeof(float)*4 );
-
-				}
-
-				memStream.writeData( &nScaleKeys, sizeof(int) );
-				for ( int i = 0; i < nScaleKeys; i++ )
-				{
-					memStream.writeData( &node->ScaleKeys[i].frame, sizeof(float) );
-
-					// scale
-					getArrayFromVector( node->ScaleKeys[i].scale, floatArray );
-					memStream.writeData( floatArray, sizeof(float)*3 );
-				}
-			}
-
-			const core::list<ISceneNode*>& childs = node->getChildren();
-			core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
-			
-			while ( it != end )
-			{
-				queueNode.push( (CGameColladaSceneNode*) (*it) );
-				it++;
-			}
-		}
-	}
 
 
 	SBinaryChunk chunk;

@@ -45,6 +45,8 @@ map<string, CGameChildContainerSceneNode*>	CColladaCache::s_nodeCache;
 // CColladaAnimation implement
 //////////////////////////////////////////////////////////
 
+const float k_defaultAnimFPS = 40.0f;
+
 CColladaAnimation::CColladaAnimation()
 {
 }
@@ -66,58 +68,82 @@ CColladaAnimation::~CColladaAnimation()
 
 // getFrameAtTime
 // get a frame at time
-bool CColladaAnimation::getFrameAtTime( const core::matrix4& mat, AnimationFrames* frames, float time, int *frameID, core::quaternion *rotateData, core::vector3df *translateData )
-{
-	/*
-	int nFrames = frames->size();
-
-	int first = 0, last = nFrames - 2;
+bool CColladaAnimation::getRotationFrameID( SColladaNodeAnim* frames, float frame, int *frameRotID, core::quaternion *rotateData )
+{	
+	int nRotFrames = frames->RotationKeys.size();
+		
+	int first = 0, last = nRotFrames - 2;
 	int mid = 0;
 		
 	while (first <= last)
 	{
 		mid = (first + last) / 2;
 
-		if ( time > frames->at(mid).m_time && time > frames->at(mid + 1).m_time )
+		if ( frame > frames->RotationKeys[mid].frame && frame > frames->RotationKeys[mid + 1].frame )
 			first = mid + 1;
-		else if ( time < frames->at(mid).m_time )
+		else if ( frame < frames->RotationKeys[mid].frame )
 			last = mid - 1;
 		else
 		{			
-			SAnimFrame &frame1 = frames->at( mid );
-			SAnimFrame &frame2 = frames->at( mid + 1 );
+			CGameColladaSceneNode::SRotationKey &frame1 = frames->RotationKeys[ mid ];
+			CGameColladaSceneNode::SRotationKey &frame2 = frames->RotationKeys[ mid + 1 ];
 
 			core::quaternion q1, q2;
-			q1.fromAngleAxis( core::DEGTORAD * frame1.m_rotAngle, core::vector3df( frame1.m_rotX, frame1.m_rotY, frame1.m_rotZ ) );
-			q2.fromAngleAxis( core::DEGTORAD * frame2.m_rotAngle, core::vector3df( frame2.m_rotX, frame2.m_rotY, frame2.m_rotZ ) );
+			q1 = frame1.rotation;
+			q2 = frame2.rotation;
 
-			float f = (time - frame1.m_time)/(frame2.m_time - frame1.m_time);
+			float f = (frame - frame1.frame)/(frame2.frame - frame1.frame);
 
 			// calc rotate
 			rotateData->slerp( q1, q2, f );
-
-			core::vector3df v1(frame1.m_translateX, frame1.m_translateY, frame1.m_translateZ);
-			core::vector3df v2(frame2.m_translateX, frame2.m_translateY, frame2.m_translateZ);
-			
-			if ( frame1.m_haveTranslate == false )	// it mean x,z,y = {0,0,0}
-				mat.transformVect( v1 );
-			
-			if ( frame2.m_haveTranslate == false )	// it mean x,z,y = {0,0,0}
-				mat.transformVect( v2 );
-
-			*translateData = v1 + (v2 - v1) * f;
-
+	
 			// set frame id
-			*frameID = mid + 1;
+			*frameRotID = mid + 1;
 			return true;
 		}
 	}
-	
-	*frameID = nFrames-1;	
-	*/
-
+	*frameRotID = nRotFrames - 1;
 	return false;
 }
+
+bool CColladaAnimation::getPositionFrameID( SColladaNodeAnim* frames, float frame, int *framePosID, core::vector3df  *positionData )
+{
+	int nPosFrames = frames->PositionKeys.size();
+		
+	int first = 0, last = nPosFrames - 2;
+	int mid = 0;
+		
+	while (first <= last)
+	{
+		mid = (first + last) / 2;
+
+		if ( frame > frames->PositionKeys[mid].frame && frame > frames->PositionKeys[mid + 1].frame )
+			first = mid + 1;
+		else if ( frame < frames->PositionKeys[mid].frame )
+			last = mid - 1;
+		else
+		{			
+			CGameColladaSceneNode::SPositionKey &frame1 = frames->PositionKeys[ mid ];
+			CGameColladaSceneNode::SPositionKey &frame2 = frames->PositionKeys[ mid + 1 ];
+
+			
+			core::vector3df v1 = frame1.position;
+			core::vector3df v2 = frame2.position;
+					
+			float f = (frame - frame1.frame)/(frame2.frame - frame1.frame);
+
+			*positionData = v1 + (v2 - v1) * f;			
+
+			// set frame id
+			*framePosID = mid + 1;
+			return true;
+		}
+	}
+
+	*framePosID = nPosFrames - 1;
+	return false;
+}
+
 
 // parseClipNode
 // parse clip time node
@@ -145,8 +171,8 @@ void CColladaAnimation::parseClipNode( io::IXMLReader *xmlRead )
 					// add clip
 					SColladaAnimClip *clip = new SColladaAnimClip();
 					clip->animName = charBuffer;
-					clip->time = start;
-					clip->duration = end - start;
+					clip->time = start*k_defaultAnimFPS;
+					clip->duration = (end - start)*k_defaultAnimFPS;
 
 					m_colladaAnim.push_back( clip );
 					m_animWithName[ charBuffer ] = m_colladaAnim.back();					
@@ -197,13 +223,15 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 	uiString::copy<char, const wchar_t>( stringBuffer, jointName.c_str() );
 	
 	// create anim node
-	SColladaNodeAnim *nodeAnim = new SColladaNodeAnim();
-	nodeAnim->sceneNodeName = stringBuffer;
+	SColladaNodeAnim *nodeAnim = m_globalClip.getAnimOfSceneNode( stringBuffer );
+	if ( nodeAnim == NULL )
+	{
+		nodeAnim = new SColladaNodeAnim();
+		nodeAnim->sceneNodeName = stringBuffer;
 	
-	// add node anim
-	m_globalClip.addNodeAnim( nodeAnim );	
-
-	const float defaultFPS = 30.0f;
+		// add node anim
+		m_globalClip.addNodeAnim( nodeAnim );	
+	}
 
 	int		readState = 0;
 	
@@ -266,8 +294,11 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 							}
 
 							CGameColladaSceneNode::SRotationKey key;
-							key.frame = arrayTime[i] * defaultFPS;
-							key.rotation = core::quaternion(fvector[0], fvector[1], fvector[2], fvector[3]);
+							key.frame = arrayTime[i]*k_defaultAnimFPS;
+							key.rotation.fromAngleAxis(
+									fvector[3] * core::DEGTORAD, 
+									core::vector3df(fvector[0], fvector[1], fvector[2])
+								);
 							nodeAnim->RotationKeys.push_back(key);
 						}
 						else if ( isTranslate && stride == 3 )
@@ -286,7 +317,7 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 							}
 
 							CGameColladaSceneNode::SPositionKey key;
-							key.frame = arrayTime[i] * defaultFPS;
+							key.frame = arrayTime[i]*k_defaultAnimFPS;
 							key.position = core::vector3df(fvector[0], fvector[1], fvector[2] );
 							nodeAnim->PositionKeys.push_back(key);
 						}
@@ -366,9 +397,161 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 		}
 	}	
 
-	// clip global animation to frame
+}
 
+// clippingDaeAnim
+// clip a long clip to many clip
+void CColladaAnimation::clipDaeAnim()
+{
+	// loop all animation clip
+	vector<SColladaAnimClip*>::iterator it = m_colladaAnim.begin(), end = m_colladaAnim.end();
+	while ( it != end )
+	{
+		SColladaAnimClip* clip = (*it);
 
+		// loop all scenenode with anim
+		vector<SColladaNodeAnim*>::iterator iNodeAnim = m_globalClip.animInfo.begin(), 
+			iNodeEnd = m_globalClip.animInfo.end();
+
+		while ( iNodeAnim != iNodeEnd )
+		{
+			SColladaNodeAnim* nodeAnim = (*iNodeAnim);			
+
+			float currentFrame	= 0;
+			float frameBegin	= clip->time;
+			float frameEnd		= clip->time + clip->duration;
+			
+			core::vector3df v1, v2;
+			core::quaternion q1, q2;
+
+			int beginID, endID;
+
+			// clip rotation
+			getRotationFrameID( nodeAnim, frameBegin,	&beginID,	&q1 );
+			getRotationFrameID( nodeAnim, frameEnd,		&endID,		&q2 );
+			
+			// add clip
+			if ( beginID >= 0 && endID >= 0 )
+			{
+				SColladaNodeAnim *newNodeAnim = new SColladaNodeAnim();
+				newNodeAnim->sceneNodeName = nodeAnim->sceneNodeName;
+
+				// add new node anim
+				clip->addNodeAnim( newNodeAnim );
+
+				if ( beginID == endID )
+				{													
+					CGameColladaSceneNode::SRotationKey rotKey;
+					
+					// frame1
+					rotKey.frame = 0;
+					rotKey.rotation = q1;
+					newNodeAnim->RotationKeys.push_back( rotKey );
+
+					// frame2
+					rotKey.frame = frameEnd - frameBegin;
+					rotKey.rotation = q2;
+					newNodeAnim->RotationKeys.push_back( rotKey );				
+				}
+				else
+				{
+					for ( int i = beginID; i <= endID; i++ )
+					{						
+						CGameColladaSceneNode::SRotationKey		rotKey;
+
+						if ( i == beginID )
+						{
+							currentFrame = 0;							
+							rotKey.rotation = q1;
+						}
+						else if ( i == endID )
+						{
+							currentFrame = frameEnd - frameBegin;
+							rotKey.rotation = q2;
+						}
+						else
+						{
+							CGameColladaSceneNode::SRotationKey&	animFrame = nodeAnim->RotationKeys[i];
+
+							currentFrame =  animFrame.frame - frameBegin;
+							rotKey.rotation = animFrame.rotation;
+						}				
+																		
+						// add key frame
+						rotKey.frame = currentFrame;
+						newNodeAnim->RotationKeys.push_back( rotKey );	
+					}
+				}
+			}
+
+			// clip position
+			getPositionFrameID( nodeAnim, frameBegin,	&beginID,	&v1 );
+			getPositionFrameID( nodeAnim, frameEnd,		&endID,		&v2 );
+
+			if ( beginID >= 0 && endID >= 0 )
+			{
+				SColladaNodeAnim *newNodeAnim = clip->getAnimOfSceneNode( nodeAnim->sceneNodeName.c_str() );
+				if ( newNodeAnim == NULL )
+				{
+					newNodeAnim = new SColladaNodeAnim();
+					newNodeAnim->sceneNodeName = nodeAnim->sceneNodeName;
+
+					// add new node anim
+					clip->addNodeAnim( newNodeAnim );
+				}
+
+				if ( beginID == endID )
+				{													
+					CGameColladaSceneNode::SPositionKey posKey;
+					
+					// frame1
+					posKey.frame = 0;
+					posKey.position = v1;
+					newNodeAnim->PositionKeys.push_back( posKey );
+
+					// frame2
+					posKey.frame = frameEnd - frameBegin;
+					posKey.position = v2;
+					newNodeAnim->PositionKeys.push_back( posKey );				
+				}
+				else
+				{
+					for ( int i = beginID; i <= endID; i++ )
+					{						
+						CGameColladaSceneNode::SPositionKey		posKey;
+
+						if ( i == beginID )
+						{
+							currentFrame = 0;							
+							posKey.position = v1;
+						}
+						else if ( i == endID )
+						{
+							currentFrame = frameEnd - frameBegin;
+							posKey.position = v2;
+						}
+						else
+						{
+							CGameColladaSceneNode::SPositionKey&	animFrame = nodeAnim->PositionKeys[i];
+
+							currentFrame	=  animFrame.frame - frameBegin;
+							posKey.position = animFrame.position;
+						}				
+																		
+						// add key frame
+						posKey.frame = currentFrame;
+						newNodeAnim->PositionKeys.push_back( posKey );	
+					}
+				}
+			}
+
+			iNodeAnim++;
+		}
+
+		clip->time = 0.0f;
+		it++;
+	}
+	m_globalClip.freeAllNodeAnim();
 }
 
 void CColladaAnimation::loadDae( char *lpFileName )
@@ -431,6 +614,10 @@ void CColladaAnimation::loadDae( char *lpFileName )
 	}
 	
 	xmlRead->drop();
+
+	// clip global animation to frame
+	clipDaeAnim();
+	
 }
 
 void CColladaAnimation::loadDotAnim( char *lpFileName )
@@ -504,6 +691,8 @@ CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 
 	m_pauseAnimFrame = 0.0f;
 	m_pauseAnim = false;
+
+	m_currentAnim = NULL;
 }
 
 CColladaMeshComponent::~CColladaMeshComponent()
@@ -1665,140 +1854,43 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 	if ( m_colladaNode == NULL )
 		return;
 	
-	/*
-
-	// get anim time data
-	ClipAnimation::iterator animIt = m_clipAnimation.find( std::string(lpAnimName) );
-	if ( animIt == m_clipAnimation.end() )
-		return;
-
-	const float defaultFps = 40.0f;
-
-	SAnimClip& animClip = animIt->second;
-	m_currentAnim = &animClip;
-
-	int fromFrame = 0, toFrame = 0;
-	core::quaternion q1, q2;
-	core::vector3df v1, v2;
+	SColladaAnimClip *animClip = m_colladaAnimation->getAnim( lpAnimName );
 
 	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 
-	m_animFrames = 0.0f;
-	m_currentFrame = 0.0f;
-
 	while ( i != end )
 	{
+		const std::string& nodeName = (*i).first;
 		CGameColladaSceneNode* j = (*i).second;
 				
 		// clear old key frame
 		j->clearAllKeyFrame();
 				
 		// get local matrix of skin joint
-		const core::matrix4& mat =	j->getLocalMatrix();	
+		const core::matrix4& mat =	j->getLocalMatrix();
 
-		// get joint node
-		JointAnimation::iterator it = m_jointAnimation.find( std::string( j->getName() ) );
-		if ( it != m_jointAnimation.end() )
+		// todo add animation key
+		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
+
+		if ( anim )
 		{
-			AnimationFrames& arrayFrame = it->second;			
-						
-			CGameColladaSceneNode::SPositionKey	pos;
-			CGameColladaSceneNode::SRotationKey	rot;
-
-			float currentTime = 0;
-			float time	= animClip.m_time;
-			float end	= animClip.m_time + animClip.m_duration;
-			
-			getFrameAtTime( mat, &arrayFrame, time, &fromFrame,	&q1, &v1 );
-			getFrameAtTime( mat, &arrayFrame, end,  &toFrame,	&q2, &v2 );
-			
-			// save frame data			
-			animClip.m_frames = (int) ((end - time) * defaultFps);
-			
-			if ( fromFrame == toFrame )
-			{			
-				// frame 1
-				rot.frame = 0;
-				rot.rotation = q1;
-
-				pos.frame = 0;
-				pos.position = v1;
-				mat.transformVect( pos.position );
-
-				j->RotationKeys.push_back( rot );
-				j->PositionKeys.push_back( pos );
-
-				// frame 2
-				rot.frame = end * defaultFps;
-				rot.rotation = q2;
-
-				pos.frame = end * defaultFps;;
-				pos.position = v2;
-				mat.transformVect( pos.position );
-
-				j->RotationKeys.push_back( rot );
-				j->PositionKeys.push_back( pos );
-			}
-			else
+			int nRotKey = anim->RotationKeys.size();
+			for ( int i = 0; i < nRotKey; i++ )
 			{
-				for ( int i = fromFrame; i <= toFrame; i++ )
-				{
-					SAnimFrame& animFrame = arrayFrame[i];										
-
-					if ( i == fromFrame )
-					{
-						currentTime = 0;
-						rot.rotation = q1;		
-						pos.position = v1;
-					}
-					else if ( i == toFrame )
-					{
-						currentTime = end - time;
-						rot.rotation = q2;
-						pos.position = v2;
-					}
-					else
-					{
-						currentTime =  animFrame.m_time - time;
-						rot.rotation.fromAngleAxis(
-								animFrame.m_rotAngle*core::DEGTORAD, 
-								core::vector3df(animFrame.m_rotX, animFrame.m_rotY, animFrame.m_rotZ)
-							);
-
-						
-						pos.position.X =  animFrame.m_translateX;
-						pos.position.Y =  animFrame.m_translateY;
-						pos.position.Z =  animFrame.m_translateZ;
-
-						if ( animFrame.m_haveTranslate == false )
-						{
-							// it mean x,z,y = {0,0,0}
-							mat.transformVect( pos.position );
-						}
-					}				
-
-					
-					rot.frame = currentTime * defaultFps;
-					pos.frame = currentTime * defaultFps;
-					
-					// add key frame
-					j->RotationKeys.push_back( rot );
-					j->PositionKeys.push_back( pos );
-
-					if ( m_animFrames < rot.frame )
-						m_animFrames = rot.frame;
-					if ( m_animFrames < pos.frame )
-						m_animFrames = pos.frame;				
-				}	
+				j->RotationKeys.push_back( anim->RotationKeys[i] );	
 			}
 
-		}	
+			int nPosKey = anim->PositionKeys.size();
+			for ( int i = 0; i < nPosKey; i++ )
+			{
+				j->PositionKeys.push_back( anim->PositionKeys[i] );
+			}
+
+		}
 
 		// next node
 		i++;
-	}
-	
-	*/
+	}	
 
 }
 void CColladaMeshComponent::constructScene()
@@ -2285,21 +2377,7 @@ void CColladaMeshComponent::saveAnimToBinary( const char *lpFileName )
 	io::IFileSystem *fileSystem = getIView()->getSceneMgr()->getFileSystem();
 	io::IWriteFile *file = fileSystem->createAndWriteFile( io::path(lpFileName) );
 
-	ClipAnimation::iterator iAnim = m_clipAnimation.begin(), iAnimEnd = m_clipAnimation.end();
 
-	// loop for all animation
-	while ( iAnim != iAnimEnd )
-	{				
-		const std::string &animName = (*iAnim).first;
-
-		// set anim
-		setAnimation( animName.c_str() );
-		
-		// save current anim
-		CBinaryUtils::getInstance()->saveAnimation( file, animName, m_gameObject );
-
-		iAnim++;
-	}
 
 	file->drop();
 }

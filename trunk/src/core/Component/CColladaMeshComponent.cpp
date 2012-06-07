@@ -42,6 +42,452 @@ map<string, CGameChildContainerSceneNode*>	CColladaCache::s_nodeCache;
 
 
 //////////////////////////////////////////////////////////
+// CColladaAnimation implement
+//////////////////////////////////////////////////////////
+
+CColladaAnimation::CColladaAnimation()
+{
+}
+
+CColladaAnimation::~CColladaAnimation()
+{
+	// release all anim clip
+	vector<SColladaAnimClip*>::iterator it = m_colladaAnim.begin(), end = m_colladaAnim.end();
+	while ( it != end )
+	{
+		delete (*it);
+		it++;
+	}
+
+	m_colladaAnim.clear();
+	m_animWithName.clear();
+}
+
+
+// getFrameAtTime
+// get a frame at time
+bool CColladaAnimation::getFrameAtTime( const core::matrix4& mat, AnimationFrames* frames, float time, int *frameID, core::quaternion *rotateData, core::vector3df *translateData )
+{
+	/*
+	int nFrames = frames->size();
+
+	int first = 0, last = nFrames - 2;
+	int mid = 0;
+		
+	while (first <= last)
+	{
+		mid = (first + last) / 2;
+
+		if ( time > frames->at(mid).m_time && time > frames->at(mid + 1).m_time )
+			first = mid + 1;
+		else if ( time < frames->at(mid).m_time )
+			last = mid - 1;
+		else
+		{			
+			SAnimFrame &frame1 = frames->at( mid );
+			SAnimFrame &frame2 = frames->at( mid + 1 );
+
+			core::quaternion q1, q2;
+			q1.fromAngleAxis( core::DEGTORAD * frame1.m_rotAngle, core::vector3df( frame1.m_rotX, frame1.m_rotY, frame1.m_rotZ ) );
+			q2.fromAngleAxis( core::DEGTORAD * frame2.m_rotAngle, core::vector3df( frame2.m_rotX, frame2.m_rotY, frame2.m_rotZ ) );
+
+			float f = (time - frame1.m_time)/(frame2.m_time - frame1.m_time);
+
+			// calc rotate
+			rotateData->slerp( q1, q2, f );
+
+			core::vector3df v1(frame1.m_translateX, frame1.m_translateY, frame1.m_translateZ);
+			core::vector3df v2(frame2.m_translateX, frame2.m_translateY, frame2.m_translateZ);
+			
+			if ( frame1.m_haveTranslate == false )	// it mean x,z,y = {0,0,0}
+				mat.transformVect( v1 );
+			
+			if ( frame2.m_haveTranslate == false )	// it mean x,z,y = {0,0,0}
+				mat.transformVect( v2 );
+
+			*translateData = v1 + (v2 - v1) * f;
+
+			// set frame id
+			*frameID = mid + 1;
+			return true;
+		}
+	}
+	
+	*frameID = nFrames-1;	
+	*/
+
+	return false;
+}
+
+// parseClipNode
+// parse clip time node
+void CColladaAnimation::parseClipNode( io::IXMLReader *xmlRead )
+{
+	char charBuffer[1024];
+
+	while ( xmlRead->read() )
+	{
+		switch (xmlRead->getNodeType())
+		{		
+		case io::EXN_ELEMENT:
+			{
+				core::stringw nodeName = xmlRead->getNodeName();
+
+				// read anamation clip
+				if ( core::stringw(L"animation_clip") == nodeName )
+				{
+					const wchar_t *idClip = xmlRead->getAttributeValue(L"id");
+					uiString::copy<char, const wchar_t>( charBuffer, idClip );
+
+					float start = xmlRead->getAttributeValueAsFloat(L"start");
+					float end	= xmlRead->getAttributeValueAsFloat(L"end");
+
+					// add clip
+					SColladaAnimClip *clip = new SColladaAnimClip();
+					clip->animName = charBuffer;
+					clip->time = start;
+					clip->duration = end - start;
+
+					m_colladaAnim.push_back( clip );
+					m_animWithName[ charBuffer ] = m_colladaAnim.back();					
+				}
+				break;
+			}
+		case io::EXN_ELEMENT_END:
+			{
+				core::stringw nodeName = xmlRead->getNodeName();
+
+				if ( core::stringw(L"library_animation_clips") == nodeName )
+					return;
+			}		
+		}
+	}
+}
+
+// parseAnimationNode
+// parse anim node
+void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
+{	
+	std::wstring idNodeName = xmlRead->getAttributeValue(L"id");
+	
+	std::wstring jointName;
+	bool isRotation = false;
+	bool isTranslate = false;
+
+	int pos = idNodeName.find( L"-rotation" );
+	if ( pos > 0 )
+	{
+		isRotation = true;
+		jointName = idNodeName.substr(0, pos);
+	}
+	else
+	{
+		pos = idNodeName.find( L"-translation" );
+		if ( pos > 0 )
+		{
+			isTranslate = true;
+			jointName = idNodeName.substr(0, pos);
+		}
+	}
+
+	if ( isRotation == false && isTranslate == false )
+		return;
+
+	char stringBuffer[1024];
+	uiString::copy<char, const wchar_t>( stringBuffer, jointName.c_str() );
+	
+	// create anim node
+	SColladaNodeAnim *nodeAnim = new SColladaNodeAnim();
+	nodeAnim->sceneNodeName = stringBuffer;
+	
+	// add node anim
+	m_globalClip.addNodeAnim( nodeAnim );	
+
+	const float defaultFPS = 30.0f;
+
+	int		readState = 0;
+	
+	float	*arrayTime = NULL;
+	int		numArrayTime = 0;
+
+	float	*arrayFloat = NULL;
+
+	wstring arrayID;
+	int count = 0;
+
+	while ( xmlRead->read() )
+	{
+		switch (xmlRead->getNodeType())
+		{		
+		case io::EXN_ELEMENT:
+			{
+				core::stringw nodeName = xmlRead->getNodeName();
+
+				if ( core::stringw(L"float_array") == nodeName )
+				{
+					arrayID = xmlRead->getAttributeValue(L"id");
+					count = xmlRead->getAttributeValueAsInt(L"count");
+
+					if ( (int)arrayID.find( L"-input-array" ) > 0 )
+					{
+						readState = 1;
+						arrayTime = new float[count];						
+					}
+					else if ( (int)arrayID.find( L"-output-array" ) > 0 )
+					{						
+						readState = 2;
+						arrayFloat = new float[count];
+					}
+				}
+				else if ( core::stringw(L"accessor") == nodeName && arrayFloat != NULL )
+				{
+					int stride = xmlRead->getAttributeValueAsInt(L"stride");
+					int nFrame = count/stride;
+
+					float fvector[4];
+
+					for ( int i = 0; i < nFrame; i++ )
+					{						
+						if ( isRotation )
+						{				
+							if ( m_needFlip == true && stride == 4 )
+							{
+								fvector[0] = arrayFloat[i*4];
+								fvector[1] = arrayFloat[i*4 + 2];
+								fvector[2] = arrayFloat[i*4 + 1];
+								fvector[3] = arrayFloat[i*4 + 3];
+							}
+							else
+							{
+								fvector[0] = arrayFloat[i*4];
+								fvector[1] = arrayFloat[i*4 + 1];
+								fvector[2] = arrayFloat[i*4 + 2];
+								fvector[3] = -arrayFloat[i*4 + 3];
+							}
+
+							CGameColladaSceneNode::SRotationKey key;
+							key.frame = arrayTime[i] * defaultFPS;
+							key.rotation = core::quaternion(fvector[0], fvector[1], fvector[2], fvector[3]);
+							nodeAnim->RotationKeys.push_back(key);
+						}
+						else if ( isTranslate && stride == 3 )
+						{							
+							if ( m_needFlip == true )
+							{
+								fvector[0] = arrayFloat[i*3];
+								fvector[1] = arrayFloat[i*3 + 2];
+								fvector[2] = arrayFloat[i*3 + 1];									
+							}
+							else
+							{
+								fvector[0] = arrayFloat[i*3];
+								fvector[1] = arrayFloat[i*3 + 1];
+								fvector[2] = arrayFloat[i*3 + 2];	
+							}
+
+							CGameColladaSceneNode::SPositionKey key;
+							key.frame = arrayTime[i] * defaultFPS;
+							key.position = core::vector3df(fvector[0], fvector[1], fvector[2] );
+							nodeAnim->PositionKeys.push_back(key);
+						}
+						else
+						{
+							printf("Warning: May be not support some animation!\n");
+						}
+
+					}
+
+					delete arrayTime;
+					arrayTime = NULL;
+
+					delete arrayFloat;
+					arrayFloat = NULL;
+				}
+			}
+		case io::EXN_ELEMENT_END:
+			{
+				core::stringw nodeName = xmlRead->getNodeName();
+				if ( core::stringw(L"animation") == nodeName )
+					return;
+			}
+			break;
+		case io::EXN_TEXT:
+			{
+				if ( readState == 1 || readState == 2 )
+				{
+					const wchar_t *data = xmlRead->getNodeData();
+					const wchar_t *p = data;
+					
+					char number[512];
+					int i = 0;
+					
+					int		numArray = 0;
+						
+					while ( *p != NULL )
+					{
+						if ( *p == L' ' || *(p+1) == NULL  )
+						{
+							if ( *p == L' '  )
+								number[i++] = NULL;
+							else
+							{
+								number[i++] = (char) *p;
+								number[i++] = NULL;
+							}
+
+							
+							float f;
+							sscanf(number,"%f", &f);																			
+														
+							if ( readState == 1 )
+							{
+								// read time
+								arrayTime[numArrayTime++] = f;								
+							}
+							else if ( readState == 2 )
+							{
+								// add to list
+								arrayFloat[numArray++] = f;
+							}
+
+							i = 0;
+							number[i] = NULL;
+						}
+						else
+							number[i++] = (char) *p;
+
+						p++;
+					
+					}
+				}
+				readState = 0;
+			}
+			break;
+		}
+	}	
+
+	// clip global animation to frame
+
+
+}
+
+void CColladaAnimation::loadDae( char *lpFileName )
+{
+	IrrlichtDevice	*device = getIView()->getDevice();
+	IVideoDriver	*driver = getIView()->getDriver();
+	io::IFileSystem *fs = device->getFileSystem();
+
+	io::IXMLReader *xmlRead = fs->createXMLReader( lpFileName );
+
+	if ( xmlRead == NULL )
+	{			
+		xmlRead = fs->createXMLReader( getIView()->getPath(lpFileName) );
+
+		if ( xmlRead == NULL )
+			return;
+	}	
+
+	bool readLUpAxis = false;
+
+	while ( xmlRead->read() )
+	{
+		switch (xmlRead->getNodeType())
+		{		
+		case io::EXN_ELEMENT:
+			{
+				core::stringw nodeName = xmlRead->getNodeName();
+				if ( core::stringw(L"library_animation_clips") == nodeName )
+				{
+					parseClipNode( xmlRead );
+				}				
+				else if ( core::stringw(L"animation")  == nodeName )
+				{					
+					parseAnimationNode( xmlRead );				
+				}
+				else if ( nodeName == L"up_axis" )
+				{
+					readLUpAxis = true;
+				}							
+			}
+			break;
+		case io::EXN_ELEMENT_END:
+			{
+			}
+			break;
+		case io::EXN_TEXT:
+			{
+				if ( readLUpAxis == true )
+				{
+					std::wstring text = xmlRead->getNodeData();
+					if ( text == L"Z_UP" )
+					{
+						m_needFlip = true;
+					}
+				}
+				readLUpAxis = false;
+			}
+			break;
+		}
+	}
+	
+	xmlRead->drop();
+}
+
+void CColladaAnimation::loadDotAnim( char *lpFileName )
+{
+}
+
+void CColladaAnimation::loadFile( char *lpFileName )
+{
+	char ext[10] = {0};
+	uiString::getFileNameExt<char, char>( lpFileName, ext );
+	uiString::toLower( ext );
+	
+	if ( strcmp(ext, "dae") == 0 )
+		loadDae( lpFileName );
+	else if ( strcmp(ext,"anim") == 0 )
+		loadDotAnim( lpFileName );	
+}
+
+
+//////////////////////////////////////////////////////////
+// CColladaAnimationFactory implement
+//////////////////////////////////////////////////////////
+
+CColladaAnimationFactory::CColladaAnimationFactory()
+{
+}
+
+CColladaAnimationFactory::~CColladaAnimationFactory()
+{
+	freeAllAnimationPackage();
+}
+
+CColladaAnimation* CColladaAnimationFactory::loadAnimation( char *name, char *lpFileName )
+{
+	CColladaAnimation *colladaAnim = new CColladaAnimation();
+
+	colladaAnim->loadFile( lpFileName );
+
+	m_animPackage[name] = colladaAnim;
+	return colladaAnim;
+}
+
+// freeAllAnimationPackage
+// release all package animation
+void CColladaAnimationFactory::freeAllAnimationPackage()
+{
+	map<std::string, CColladaAnimation*>::iterator i = m_animPackage.begin(), end = m_animPackage.end();
+	while ( i != end )
+	{
+		delete (*i).second;
+		i++;
+	}
+	m_animPackage.clear();
+}
+
+
+//////////////////////////////////////////////////////////
 // CColladaMeshComponent implement
 //////////////////////////////////////////////////////////
 
@@ -52,7 +498,6 @@ CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 
 	m_animeshFile = "";
 	m_animFile = "";
-	m_animSpeed	= 24.0f;
 
 	m_animFrames = 0.0f;	
 	m_currentFrame = 0.0f;
@@ -88,8 +533,6 @@ void CColladaMeshComponent::saveData( CSerializable* pObj )
 	pObj->addGroup( IObjectComponent::s_compType[ m_componentID ] );
 
 	pObj->addPath("meshFile", m_animeshFile.c_str(), true);
-	pObj->addPath("animFile", m_animFile.c_str(), true);
-	pObj->addFloat("animSpeed", m_animSpeed, true );
 	pObj->addString("defaultNode", m_defaultNode.c_str(), true);
 }
 
@@ -105,19 +548,12 @@ void CColladaMeshComponent::loadData( CSerializable* pObj )
 
 	// read mesh file
 	char *lpFilename = pObj->readString();
-		
-	// read anim file
-	char *lpAnimFile = pObj->readString();
 	
-	// read anim speed
-	m_animSpeed = pObj->readFloat();
-
 	// read default node
 	m_defaultNode = pObj->readString();
 
 	// begin parse file
 	loadFromFile( lpFilename );
-	loadAnimFile( lpAnimFile );
 }
 
 // loadFromFile
@@ -1147,323 +1583,6 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 	effect->Mat.Shininess = 0.0f;
 }
 
-
-
-// loadAnimFile
-// load animation bone from dae file
-void CColladaMeshComponent::loadAnimFile( char *lpFileName )
-{
-	if ( m_animFile == lpFileName )
-		return;
-
-	m_animFile = lpFileName;
-	
-	IrrlichtDevice	*device = getIView()->getDevice();
-	IVideoDriver	*driver = getIView()->getDriver();
-	io::IFileSystem *fs = device->getFileSystem();
-
-	io::IXMLReader *xmlRead = fs->createXMLReader( lpFileName );
-
-	if ( xmlRead == NULL )
-	{			
-		xmlRead = fs->createXMLReader( getIView()->getPath(lpFileName) );
-
-		if ( xmlRead == NULL )
-			return;
-	}	
-
-	m_clipAnimation.clear();
-	m_animationName.clear();
-	m_jointAnimation.clear();
-
-	bool readLUpAxis = false;
-
-	while ( xmlRead->read() )
-	{
-		switch (xmlRead->getNodeType())
-		{		
-		case io::EXN_ELEMENT:
-			{
-				core::stringw nodeName = xmlRead->getNodeName();
-				if ( core::stringw(L"library_animation_clips") == nodeName )
-				{
-					parseClipNode( xmlRead );
-				}				
-				else if ( core::stringw(L"animation")  == nodeName )
-				{					
-					parseAnimationNode( xmlRead );				
-				}
-				else if ( nodeName == L"up_axis" )
-				{
-					readLUpAxis = true;
-				}							
-			}
-			break;
-		case io::EXN_ELEMENT_END:
-			{
-			}
-			break;
-		case io::EXN_TEXT:
-			{
-				if ( readLUpAxis == true )
-				{
-					std::wstring text = xmlRead->getNodeData();
-					if ( text == L"Z_UP" )
-					{
-						m_needFlip = true;
-					}
-				}
-				readLUpAxis = false;
-			}
-			break;
-		}
-	}
-	
-	xmlRead->drop();
-	
-}
-
-// parseClipNode
-// parse clip time node
-void CColladaMeshComponent::parseClipNode( io::IXMLReader *xmlRead )
-{
-	char charBuffer[1024];
-
-	while ( xmlRead->read() )
-	{
-		switch (xmlRead->getNodeType())
-		{		
-		case io::EXN_ELEMENT:
-			{
-				core::stringw nodeName = xmlRead->getNodeName();
-
-				// read anamation clip
-				if ( core::stringw(L"animation_clip") == nodeName )
-				{
-					const wchar_t *idClip = xmlRead->getAttributeValue(L"id");
-					uiString::copy<char, const wchar_t>( charBuffer, idClip );
-
-					float start = xmlRead->getAttributeValueAsFloat(L"start");
-					float end	= xmlRead->getAttributeValueAsFloat(L"end");
-
-					SAnimClip	clip;
-
-					clip.m_id = charBuffer;
-					clip.m_time	= start;
-					clip.m_duration = end - start;
-					clip.m_loop = true;
-
-					// add animation data
-					m_clipAnimation[ clip.m_id ] = clip;
-					
-					m_animationName.push_back( clip.m_id );
-				}
-				break;
-			}
-		case io::EXN_ELEMENT_END:
-			{
-				core::stringw nodeName = xmlRead->getNodeName();
-
-				if ( core::stringw(L"library_animation_clips") == nodeName )
-					return;
-			}		
-		}
-	}
-}
-
-// parseAnimationNode
-// parse anim node
-void CColladaMeshComponent::parseAnimationNode( io::IXMLReader *xmlRead )
-{	
-	std::wstring idNodeName = xmlRead->getAttributeValue(L"id");
-	
-	std::wstring jointName;
-	bool isRotation = false;
-	bool isTranslate = false;
-
-	int pos = idNodeName.find( L"-rotation" );
-	if ( pos > 0 )
-	{
-		isRotation = true;
-		jointName = idNodeName.substr(0, pos);
-	}
-	else
-	{
-		pos = idNodeName.find( L"-translation" );
-		if ( pos > 0 )
-		{
-			isTranslate = true;
-			jointName = idNodeName.substr(0, pos);
-		}
-	}
-
-	if ( isRotation == false && isTranslate == false )
-		return;
-
-	char stringBuffer[1024];
-	uiString::copy<char, const wchar_t>( stringBuffer, jointName.c_str() );
-
-	AnimationFrames& animation = m_jointAnimation[stringBuffer];
-		
-	int		readState = 0;
-	float	*arrayFloat = NULL;
-
-	wstring arrayID;
-	int count = 0;
-
-	while ( xmlRead->read() )
-	{
-		switch (xmlRead->getNodeType())
-		{		
-		case io::EXN_ELEMENT:
-			{
-				core::stringw nodeName = xmlRead->getNodeName();
-
-				if ( core::stringw(L"float_array") == nodeName )
-				{
-					arrayID = xmlRead->getAttributeValue(L"id");
-					count = xmlRead->getAttributeValueAsInt(L"count");
-
-					if ( (int)arrayID.find( L"-input-array" ) > 0 )
-					{
-						readState = 1;
-						animation.resize( count );
-					}
-					else if ( (int)arrayID.find( L"-output-array" ) > 0 )
-					{						
-						readState = 2;
-						arrayFloat = new float[count];
-					}
-				}
-				else if ( core::stringw(L"accessor") == nodeName && arrayFloat != NULL )
-				{
-					int stride = xmlRead->getAttributeValueAsInt(L"stride");
-					int nFrame = count/stride;
-
-					for ( int i = 0; i < nFrame; i++ )
-					{
-						SAnimFrame& frameData = animation[i];
-
-						if ( isRotation )
-						{				
-							if ( m_needFlip == true && stride == 4 )
-							{
-								frameData.m_rotX = arrayFloat[i*4];
-								frameData.m_rotY = arrayFloat[i*4 + 2];
-								frameData.m_rotZ = arrayFloat[i*4 + 1];
-								frameData.m_rotAngle = arrayFloat[i*4 + 3];
-							}
-							else
-							{
-								frameData.m_rotX = arrayFloat[i*4];
-								frameData.m_rotY = arrayFloat[i*4 + 1];
-								frameData.m_rotZ = arrayFloat[i*4 + 2];
-								frameData.m_rotAngle = -arrayFloat[i*4 + 3];
-							}
-						}
-						else if ( isTranslate && stride == 3 )
-						{
-							frameData.m_haveTranslate = true;
-
-							if ( m_needFlip == true )
-							{
-								frameData.m_translateX = arrayFloat[i*3];
-								frameData.m_translateY = arrayFloat[i*3 + 2];
-								frameData.m_translateZ = arrayFloat[i*3 + 1];									
-							}
-							else
-							{
-								frameData.m_translateX = arrayFloat[i*3];
-								frameData.m_translateY = arrayFloat[i*3 + 1];
-								frameData.m_translateZ = arrayFloat[i*3 + 2];	
-							}
-
-							if ( frameData.m_translateX == 0.0 && 
-								frameData.m_translateY == 0.0 &&
-								frameData.m_translateZ == 0.0 )
-							{
-								frameData.m_haveTranslate = false;
-							}							
-						}
-						else
-						{
-							printf("Warning: May be not support some animation!\n");
-						}
-
-					}
-
-					delete arrayFloat;
-					arrayFloat = NULL;
-				}
-			}
-		case io::EXN_ELEMENT_END:
-			{
-				core::stringw nodeName = xmlRead->getNodeName();
-				if ( core::stringw(L"animation") == nodeName )
-					return;
-			}
-			break;
-		case io::EXN_TEXT:
-			{
-				if ( readState == 1 || readState == 2 )
-				{
-					const wchar_t *data = xmlRead->getNodeData();
-					const wchar_t *p = data;
-					
-					char number[512];
-					int i = 0;
-					int frame = 0;
-					
-					int		numArray = 0;
-						
-					while ( *p != NULL )
-					{
-						if ( *p == L' ' || *(p+1) == NULL  )
-						{
-							if ( *p == L' '  )
-								number[i++] = NULL;
-							else
-							{
-								number[i++] = (char) *p;
-								number[i++] = NULL;
-							}
-
-							
-							float f;
-							sscanf(number,"%f", &f);																			
-														
-							if ( readState == 1 )
-							{
-								// read time				
-								SAnimFrame& frameData = animation[frame];
-								frameData.m_time = f;
-								
-								numArray = 0;
-								frame++;
-							}
-							else if ( readState == 2 )
-							{
-								// add to list
-								arrayFloat[numArray++] = f;
-							}
-
-							i = 0;
-							number[i] = NULL;
-						}
-						else
-							number[i++] = (char) *p;
-
-						p++;
-					
-					}
-				}
-				readState = 0;
-			}
-			break;
-		}
-	}	
-}
-
 // updateJointToMesh
 // update joint
 void CColladaMeshComponent::updateJointToMesh( SMeshParam *mesh, vector<wstring>& arrayName, float *arrayWeight, float *arrayTransform, vector<s32>& vCountArray, vector<s32>& vArray, bool flipZ )
@@ -1546,6 +1665,8 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 	if ( m_colladaNode == NULL )
 		return;
 	
+	/*
+
 	// get anim time data
 	ClipAnimation::iterator animIt = m_clipAnimation.find( std::string(lpAnimName) );
 	if ( animIt == m_clipAnimation.end() )
@@ -1676,62 +1797,10 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 		// next node
 		i++;
 	}
-
-}
-
-// getFrameAtTime
-// get a frame at time
- bool CColladaMeshComponent::getFrameAtTime( const core::matrix4& mat, AnimationFrames* frames, float time, int *frameID, core::quaternion *rotateData, core::vector3df *translateData )
-{
-	int nFrames = frames->size();
-
-	int first = 0, last = nFrames - 2;
-	int mid = 0;
-		
-	while (first <= last)
-	{
-		mid = (first + last) / 2;
-
-		if ( time > frames->at(mid).m_time && time > frames->at(mid + 1).m_time )
-			first = mid + 1;
-		else if ( time < frames->at(mid).m_time )
-			last = mid - 1;
-		else
-		{			
-			SAnimFrame &frame1 = frames->at( mid );
-			SAnimFrame &frame2 = frames->at( mid + 1 );
-
-			core::quaternion q1, q2;
-			q1.fromAngleAxis( core::DEGTORAD * frame1.m_rotAngle, core::vector3df( frame1.m_rotX, frame1.m_rotY, frame1.m_rotZ ) );
-			q2.fromAngleAxis( core::DEGTORAD * frame2.m_rotAngle, core::vector3df( frame2.m_rotX, frame2.m_rotY, frame2.m_rotZ ) );
-
-			float f = (time - frame1.m_time)/(frame2.m_time - frame1.m_time);
-
-			// calc rotate
-			rotateData->slerp( q1, q2, f );
-
-			core::vector3df v1(frame1.m_translateX, frame1.m_translateY, frame1.m_translateZ);
-			core::vector3df v2(frame2.m_translateX, frame2.m_translateY, frame2.m_translateZ);
-			
-			if ( frame1.m_haveTranslate == false )	// it mean x,z,y = {0,0,0}
-				mat.transformVect( v1 );
-			
-			if ( frame2.m_haveTranslate == false )	// it mean x,z,y = {0,0,0}
-				mat.transformVect( v2 );
-
-			*translateData = v1 + (v2 - v1) * f;
-
-			// set frame id
-			*frameID = mid + 1;
-			return true;
-		}
-	}
 	
-	*frameID = nFrames-1;
-	return false;
+	*/
 
 }
-
 void CColladaMeshComponent::constructScene()
 {
 	ISceneManager *smgr = getIView()->getSceneMgr();

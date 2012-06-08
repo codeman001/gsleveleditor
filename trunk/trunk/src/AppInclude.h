@@ -8,6 +8,9 @@
 	#include "uiSingleton.h"
 	#include "uiString.h"
 	using namespace uiClass;
+
+	#include "gameswf/gameswf.h"
+
 #endif
 
 #include <irrlicht.h>

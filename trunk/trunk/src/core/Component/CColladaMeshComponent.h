@@ -7,8 +7,6 @@
 #include "CGameColladaSceneNode.h"
 #include "CGameContainerSceneNode.h"
 
-#include "CBinaryUtils.h"
-
 // const for animation
 const int k_linear = 0;
 
@@ -224,6 +222,20 @@ struct SColladaAnimClip
 
 	}
 
+	// getNodeAnimCount
+	// return number node with animation
+	int getNodeAnimCount()
+	{
+		return animInfo.size();
+	}
+
+	// getAnimOfSceneNode
+	// return array frame of scene at pos i
+	SColladaNodeAnim* getAnimOfSceneNode( int i )
+	{
+		return animInfo[i];
+	}
+
 	// getAnimOfSceneNode
 	// get array frame of scenenode
 	SColladaNodeAnim* getAnimOfSceneNode(const char *sceneNodeName)
@@ -298,6 +310,12 @@ public:
 		return m_colladaAnim.size();
 	}
 
+	void addClip( SColladaAnimClip* clip )
+	{
+		m_colladaAnim.push_back( clip );
+		m_animWithName[ clip->animName ] = clip;
+	}
+
 };
 
 // CColladaAnimationFactory
@@ -325,7 +343,6 @@ class CColladaMeshComponent: public IObjectComponent
 {
 protected:
 	std::string					m_animeshFile;	
-	std::string					m_animFile;
 	std::string					m_defaultNode;
 	
 	// current anim is playing

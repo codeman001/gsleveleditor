@@ -95,14 +95,77 @@ void CBinaryUtils::saveCollada( io::IWriteFile *file, CGameObject* gameObject )
 	}
 }
 
-void CBinaryUtils::saveAnimation( io::IWriteFile *file, const std::string& animName, CGameObject* m_gameObject )
+void CBinaryUtils::saveAnimClip( io::IWriteFile *file, SColladaAnimClip* animClip )
 {
 	CMemoryReadWrite	memStream( 1024*1024*4 );
 
-	//float floatArray[4];
-	//char stringc[STRING_BUFFER_SIZE];
-	
+	float floatArray[4];
+	char stringc[STRING_BUFFER_SIZE];
 
+	// write clip name
+	strcpy( stringc, animClip->animName.c_str() );
+	memStream.writeData( stringc, STRING_BUFFER_SIZE );
+
+	// write clip data info
+	memStream.writeData( &animClip->time, sizeof(float) );
+	memStream.writeData( &animClip->duration, sizeof(float) );	
+	int loop = animClip->loop==true?1:0;
+	memStream.writeData( &loop, sizeof(int) );
+
+	// write number of node anim
+	int nNodeAnim = animClip->getNodeAnimCount();
+	memStream.writeData( &nNodeAnim, sizeof(int) );
+	
+	for ( int i = 0; i < nNodeAnim; i++ )
+	{
+		SColladaNodeAnim* nodeFrames = animClip->getAnimOfSceneNode(i);
+
+		// write name of scenenode
+		strcpy( stringc, nodeFrames->sceneNodeName.c_str() );
+		memStream.writeData( stringc, STRING_BUFFER_SIZE );	
+
+		// write num frame
+		int nPos = nodeFrames->PositionKeys.size();
+		memStream.writeData( &nPos, sizeof(int) );
+		for ( int j = 0; j < nPos; j++ )
+		{
+			CGameColladaSceneNode::SPositionKey &key = nodeFrames->PositionKeys[j];
+
+			memStream.writeData( &key.frame, sizeof(float) );
+
+			getArrayFromVector( key.position, floatArray );
+			memStream.writeData( floatArray, sizeof(float) * 3 );
+		}
+
+		// write num frame
+		int nRot = nodeFrames->RotationKeys.size();
+		memStream.writeData( &nRot, sizeof(int) );
+		for ( int j = 0; j < nRot; j++ )
+		{
+			CGameColladaSceneNode::SRotationKey &key = nodeFrames->RotationKeys[j];
+			
+			memStream.writeData( &key.frame, sizeof(float) );
+
+			floatArray[0] = key.rotation.X;
+			floatArray[1] = key.rotation.Y;
+			floatArray[2] = key.rotation.Z;
+			floatArray[3] = key.rotation.W;
+			memStream.writeData( floatArray, sizeof(float) * 4 );
+		}
+
+		// write num frame
+		int nScale = nodeFrames->ScaleKeys.size();
+		memStream.writeData( &nScale, sizeof(int) );
+		for ( int j = 0; j < nScale; j++ )
+		{
+			CGameColladaSceneNode::SScaleKey &key = nodeFrames->ScaleKeys[j];
+			memStream.writeData( &key.frame, sizeof(float) );
+
+			getArrayFromVector( key.scale, floatArray );
+			memStream.writeData( floatArray, sizeof(float) * 3 );
+		}
+
+	}
 
 	SBinaryChunk chunk;
 	chunk.size = memStream.getSize();
@@ -111,6 +174,16 @@ void CBinaryUtils::saveAnimation( io::IWriteFile *file, const std::string& animN
 	// write data to file
 	file->write( &chunk, sizeof(SBinaryChunk) );
 	file->write( memStream.getData(), memStream.getSize() );
+}
+
+void CBinaryUtils::saveAnimation( io::IWriteFile *file, CColladaAnimation *anim )
+{		
+	int nAnim = anim->getAnimCount();
+	for ( int i = 0; i < nAnim; i++ )
+	{
+		SColladaAnimClip *animClip = anim->getAnim(i);
+		saveAnimClip( file, animClip );
+	}	
 }
 
 void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode* node )
@@ -442,6 +515,118 @@ void CBinaryUtils::saveMaterial( io::IWriteFile *file, SMaterial* mat )
 	file->write( &chunk, sizeof(SBinaryChunk) );
 	file->write( memStream.getData(), memStream.getSize() );
 
+}
+
+void CBinaryUtils::loadAnim( io::IReadFile *file, CColladaAnimation* anim )
+{
+	SBinaryChunk chunk;	
+	
+	
+	unsigned long maxChunkSize = 1024*1024*4;
+	unsigned char *chunkData = new unsigned char[maxChunkSize];
+
+	// read all chunk
+	while ( file->read( &chunk, sizeof(SBinaryChunk) ) > 0 )
+	{
+		if ( chunk.sign != CHUNK_SIGN || chunk.size > maxChunkSize )
+			break;		
+		
+		file->read(chunkData, chunk.size);
+
+		if ( chunk.type = k_binaryTypeAnimation )
+		{
+			readAnimClip( chunkData, chunk.size, anim );
+		}
+	}
+
+	delete chunkData;
+}
+
+void CBinaryUtils::readAnimClip( unsigned char *data, unsigned long size, CColladaAnimation *anim )
+{
+	CMemoryReadWrite	memStream(data, size);
+
+	float floatArray[4];
+	char stringc[STRING_BUFFER_SIZE];
+
+	SColladaAnimClip *animClip = new SColladaAnimClip();
+	
+	// read clip name	
+	memStream.readData( stringc, STRING_BUFFER_SIZE );
+	animClip->animName = stringc;
+	anim->addClip( animClip );
+
+	// read clip data info
+	memStream.readData( &animClip->time, sizeof(float) );
+	memStream.readData( &animClip->duration, sizeof(float) );		
+
+	int loop = 0;
+	memStream.readData( &loop, sizeof(int) );
+	animClip->loop = (loop == 1 );
+
+	// read number of node anim
+	int nNodeAnim = 0;
+	memStream.readData( &nNodeAnim, sizeof(int) );
+
+	for ( int i = 0; i < nNodeAnim; i++ )
+	{		
+		SColladaNodeAnim* nodeFrames = new SColladaNodeAnim();
+		
+		// read name of scenenode		
+		memStream.readData( stringc, STRING_BUFFER_SIZE );
+		nodeFrames->sceneNodeName = stringc;
+
+		animClip->addNodeAnim( nodeFrames );
+
+		// read num frame		
+		int nPos = 0;
+		memStream.readData( &nPos, sizeof(int) );
+		if ( nPos > 0 )
+			nodeFrames->PositionKeys.set_used( nPos );
+
+		for ( int j = 0; j < nPos; j++ )
+		{						
+			CGameColladaSceneNode::SPositionKey &key = nodeFrames->PositionKeys[j];
+
+			memStream.readData( &key.frame, sizeof(float) );			
+			memStream.readData( floatArray, sizeof(float) * 3 );
+			key.position = core::vector3df( floatArray[0], floatArray[1], floatArray[2] );
+		}
+		
+		// write num frame
+		int nRot = 0;
+		memStream.readData( &nRot, sizeof(int) );
+		if ( nRot > 0 )
+			nodeFrames->RotationKeys.set_used( nRot );
+
+		for ( int j = 0; j < nRot; j++ )
+		{
+			CGameColladaSceneNode::SRotationKey &key = nodeFrames->RotationKeys[j];
+			
+			memStream.readData( &key.frame, sizeof(float) );			
+			memStream.readData( floatArray, sizeof(float) * 4 );
+
+			key.rotation.X = floatArray[0];
+			key.rotation.Y = floatArray[1];
+			key.rotation.Z = floatArray[2];
+			key.rotation.W = floatArray[3];
+		}
+
+		// write num frame
+		int nScale = 0;
+		memStream.readData( &nScale, sizeof(int) );
+		if ( nScale > 0 )
+			nodeFrames->ScaleKeys.set_used( nScale );
+
+		for ( int j = 0; j < nScale; j++ )
+		{
+			CGameColladaSceneNode::SScaleKey &key = nodeFrames->ScaleKeys[j];
+			memStream.readData( &key.frame, sizeof(float) );
+			memStream.readData( floatArray, sizeof(float) * 3 );
+
+			key.scale = core::vector3df( floatArray[0], floatArray[1], floatArray[2] );
+		}		
+	}
 }
 
 

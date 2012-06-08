@@ -10,6 +10,8 @@
 #include "CGameMeshSceneNode.h"
 #include "CGameContainerSceneNode.h"
 
+#include "CBinaryUtils.h"
+
 void			uriToId(std::wstring& str);
 wstring			readId(io::IXMLReader *xmlRead);
 void			findNextNoneWhiteSpace(const c8** start);
@@ -624,6 +626,16 @@ void CColladaAnimation::loadDae( char *lpFileName )
 
 void CColladaAnimation::loadDotAnim( char *lpFileName )
 {
+	// todo load file
+	io::IReadFile *file = getIView()->getSceneMgr()->getFileSystem()->createAndOpenFile( lpFileName );
+	if ( file == NULL )
+		return;
+
+	// parse binary scene
+	CBinaryUtils::getInstance()->loadAnim( file, this );
+
+	// close file
+	file->drop();
 }
 
 void CColladaAnimation::loadFile( char *lpFileName )
@@ -686,7 +698,6 @@ CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 	m_colladaNode = NULL;
 
 	m_animeshFile = "";
-	m_animFile = "";
 
 	m_animFrames = 0.0f;	
 	m_currentFrame = 0.0f;
@@ -1860,6 +1871,9 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 
 	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 
+	// set begin frame
+	setCurrentFrame(0);
+
 	while ( i != end )
 	{
 		const std::string& nodeName = (*i).first;
@@ -2376,7 +2390,7 @@ void CColladaMeshComponent::saveAnimToBinary( const char *lpFileName )
 	io::IFileSystem *fileSystem = getIView()->getSceneMgr()->getFileSystem();
 	io::IWriteFile *file = fileSystem->createAndWriteFile( io::path(lpFileName) );
 
-
+	CBinaryUtils::getInstance()->saveAnimation( file, m_colladaAnimation );
 
 	file->drop();
 }

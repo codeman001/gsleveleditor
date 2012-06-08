@@ -62,16 +62,18 @@ public:
 	virtual ~CBinaryUtils();
 	
 	void saveCollada( io::IWriteFile *file, CGameObject* gameObject );
-	void saveAnimation( io::IWriteFile *file, const std::string& animName, CGameObject* m_gameObject );
-
+	void saveAnimation( io::IWriteFile *file, CColladaAnimation* anim );
+	void saveAnimClip( io::IWriteFile *file, SColladaAnimClip* animClip );
 
 	void saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode* node );
 	void saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh );	
 	void saveMaterial( io::IWriteFile *file, SMaterial* mat );
 
 	void loadFile( io::IReadFile *file, CGameObject* obj );
+	void loadAnim( io::IReadFile *file, CColladaAnimation* anim );
 
 protected:
+	void readAnimClip( unsigned char *data, unsigned long size, CColladaAnimation *anim );
 	void readColladaScene( unsigned char *data, unsigned long size, CGameObject* obj );
 	void readColladaMesh( unsigned char *data, unsigned long size );
 	void readMaterial( unsigned char *data, unsigned long size, std::string currentPath );

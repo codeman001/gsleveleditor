@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include "IView.h"
 
+#include "swfUI/CGameUI.h"
+
 IView* g_view = NULL;
 
 IView* getIView()
@@ -51,10 +53,14 @@ public:
 		m_device->setWindowCaption( STR_APP_TITLE );
 
 		m_font	= device->getGUIEnvironment()->getFont("data/bigfont.png");
+		
+		CGameUI::createGetInstance();
+		CGameUI::getInstance()->openFlash("selectLanguage","data/GSSelectlanguage.swf");
 	}
 
 	void destroyApplication()
 	{
+		CGameUI::releaseInstance();
 	}
 
 	void mainLoop()
@@ -67,13 +73,18 @@ public:
 
 		m_driver->beginScene(true, true, video::SColor(255,113,113,133));
 		
-		// draw all scene
+		// draw 3d scene
 		m_smgr->drawAll();
 		
 
-		int fps = m_driver->getFPS();
+		// draw game flash ui
+		core::recti viewport = m_driver->getViewPort();
+		CGameUI::getInstance()->update( frameDeltaTime );		
+		CGameUI::getInstance()->render( 0, 0, viewport.getWidth(), viewport.getHeight(), false );
 		
-		// draw fps string		
+		
+		// draw fps string
+		int fps = m_driver->getFPS();
 		core::stringw tmp(L"gsgameplay - ");
 		tmp += m_driver->getName();
 
@@ -81,14 +92,14 @@ public:
 		tmp += fps;
 		
 		tmp += L"\nPrimitive: ";
-		tmp += m_driver->getPrimitiveCountDrawn();		
+		tmp += m_driver->getPrimitiveCountDrawn();
 
 		m_font->draw( tmp.c_str(), core::rect<s32>(10,10,300,100), video::SColor(255,255,255,255));			
 
 		m_fps = fps;
-		
-		m_driver->endScene();
 
+		m_driver->endScene();
+		
 		Sleep(1);
 	}
 

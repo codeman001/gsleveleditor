@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrogles\include;..\..\..\extern\uiClass;..\..\..\extern\irrogles\source\Irrlicht;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Serializable;..\..\..\extern\spark\include;..\..\..\extern\gameswf"
+				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrogles\include;..\..\..\extern\uiClass;..\..\..\extern\irrogles\source\Irrlicht;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Serializable;..\..\..\extern\spark\include;..\..\..\extern\gameswf;..\..\..\extern\freetype\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;GSGAMEPLAY"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -530,6 +530,26 @@
 				</File>
 				<File
 					RelativePath="..\..\src\IViewImp.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="swfUI"
+				>
+				<File
+					RelativePath="..\..\src\swfUI\CFlashHandler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\swfUI\CFlashHandler.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\swfUI\CGameUI.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\swfUI\CGameUI.h"
 					>
 				</File>
 			</Filter>

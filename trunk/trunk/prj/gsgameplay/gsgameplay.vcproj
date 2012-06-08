@@ -178,14 +178,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\IView.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\IViewImp.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -207,10 +199,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\stdafx.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\uiSingleton.h"
 				>
 			</File>
 			<Filter
@@ -520,6 +508,30 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="uiClass"
+				>
+				<File
+					RelativePath="..\..\src\uiSingleton.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\extern\uiClass\uiString.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="view"
+				>
+				<File
+					RelativePath="..\..\src\IView.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\IViewImp.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<File

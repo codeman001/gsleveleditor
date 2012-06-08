@@ -513,7 +513,7 @@
 				Name="uiClass"
 				>
 				<File
-					RelativePath="..\..\src\uiSingleton.h"
+					RelativePath="..\..\..\extern\uiClass\uiSingleton.h"
 					>
 				</File>
 				<File

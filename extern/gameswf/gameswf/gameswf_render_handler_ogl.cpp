@@ -14,7 +14,7 @@
 #ifndef IPHONEOS
 #include <windows.h>
 #include "base/tu_opengl_includes.h"
-#include <gl/glext.h>
+#include "glext.h"
 #else
 #include <OpenGLES/ES1/gl.h>
 #include <OpenGLES/ES1/glext.h>
@@ -1684,10 +1684,10 @@ void	software_resample (
 	// FAST bi-linear filtering
 	// the code here is designed to be fast, not readable
 	Uint8 *rescaled = new Uint8[dst_width * dst_height * bytes_per_pixel];
-	float Uf, Vf;		// fractional parts
-	float Ui, Vi;		// integral parts
-	float w1, w2, w3, w4;	// weighting
-	Uint8 *psrc;
+	//float Uf, Vf;		// fractional parts
+	//float Ui, Vi;		// integral parts
+	//float w1, w2, w3, w4;	// weighting
+	//Uint8 *psrc;
 	Uint8 *pdst = rescaled;
 
 	// ** dm

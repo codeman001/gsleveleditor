@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="gameswf"
 	ProjectGUID="{D82FC0B1-4BC8-4C37-944C-94F6105A2992}"
 	RootNamespace="gameswf"
@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)\..\..\Lib\Lib_$(PlatformName)_$(ConfigurationName)\$(ProjectName)\"
-			IntermediateDirectory="$(SolutionDir)\..\..\Lib\Lib_$(PlatformName)_$(ConfigurationName)\$(ProjectName)\obj\"
+			OutputDirectory="..\..\..\..\..\trunk\bin"
+			IntermediateDirectory="..\..\..\..\..\trunk\bin\gameswfTemp"
 			ConfigurationType="4"
 			CharacterSet="0"
 			>
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../;../../../../freetype/include;../../../../"
+				AdditionalIncludeDirectories="../../../;../../../../freetype/include;../../../../;../../../../irrogles/include;../../../../irrogles/source/Irrlicht"
 				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

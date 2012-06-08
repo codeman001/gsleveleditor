@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="freetype"
 	ProjectGUID="{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
 	RootNamespace="freetype"
@@ -241,8 +241,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)\..\..\Lib\Lib_$(PlatformName)_$(ConfigurationName)\$(ProjectName)\"
-			IntermediateDirectory="$(SolutionDir)\..\..\Lib\Lib_$(PlatformName)_$(ConfigurationName)\$(ProjectName)\obj\"
+			OutputDirectory="..\..\..\..\..\trunk\bin"
+			IntermediateDirectory="..\..\..\..\..\trunk\bin\freetypeTemp"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"

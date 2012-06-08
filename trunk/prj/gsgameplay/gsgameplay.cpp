@@ -88,6 +88,8 @@ public:
 		m_fps = fps;
 		
 		m_driver->endScene();
+
+		Sleep(1);
 	}
 
 };
@@ -97,7 +99,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	CApplication myApp;
 	g_view = myApp.getIView();
 
-	IrrlichtDevice* device = createDevice( irr::video::EDT_OGLES2, core::dimension2d<u32>(960, 640), 16, false, false, false, &myApp );
+	IrrlichtDevice* device = createDevice( irr::video::EDT_OPENGL, core::dimension2d<u32>(960, 640), 16, false, false, false, &myApp );
 	myApp.initApplication( device );
 
 	while(device->run())

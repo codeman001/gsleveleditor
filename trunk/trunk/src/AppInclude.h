@@ -5,6 +5,7 @@
 	#include "uiClass.h"
 	using namespace uiClass;
 #else
+	#include "uiSingleton.h"
 	#include "uiString.h"
 	using namespace uiClass;
 #endif

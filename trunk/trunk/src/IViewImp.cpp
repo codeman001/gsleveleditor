@@ -209,7 +209,7 @@ wchar_t* IView::getPathW( const std::string& path )
 char* IView::getPath( const std::wstring& path )
 {
 #ifdef GSGAMEPLAY
-	uiString::copy<char,const char>( g_tempPathA, path.c_str() );
+	uiString::copy<char,const wchar_t>( g_tempPathA, path.c_str() );
 #else
 	uiApplication::getAppPath( (LPWSTR)g_tempPathW, MAX_PATH );
 	uiString::copy<char, const wchar_t>( g_tempPathA, g_tempPathW  );

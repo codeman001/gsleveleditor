@@ -21,68 +21,6 @@ const int k_texCoordBuffer = 2;
 const int k_mesh = 0;
 const int k_skinMesh = 1;
 
-struct SAnimFrame
-{
-	float		m_time;
-
-	float		m_rotX;
-	float		m_rotY;
-	float		m_rotZ;
-	float		m_rotAngle;
-	
-	bool		m_haveTranslate;
-
-	float		m_translateX;
-	float		m_translateY;
-	float		m_translateZ;
-
-	int			m_interpolation;
-
-	SAnimFrame()
-	{
-		m_time = 0.0f;
-
-		m_rotX = 0.0f;
-		m_rotY = 0.0f;
-		m_rotZ = 0.0f;
-		m_rotAngle = 0.0f;
-	
-		m_haveTranslate = false;
-
-		m_translateX = 0.0f;
-		m_translateY = 0.0f;
-		m_translateZ = 0.0f;
-
-		m_interpolation =0;
-	}
-};
-
-typedef vector<SAnimFrame>	AnimationFrames;
-
-
-
-struct SAnimClip
-{
-	std::string			m_id;
-	float				m_time;
-	float				m_duration;
-	bool				m_loop;
-
-	int					m_frames;
-
-	SAnimClip()
-	{
-		m_id			= "unAvailable";
-		m_time			= 0;
-		m_duration		= 0;
-		m_loop			= true;
-		m_frames		= 0;
-	}
-};
-
-typedef map<string, SAnimClip>				ClipAnimation;
-typedef map<string, AnimationFrames>		JointAnimation;
-
 
 struct SEffect
 {

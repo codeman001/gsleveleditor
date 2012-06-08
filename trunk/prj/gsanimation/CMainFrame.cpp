@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CMainFrame.h"
 #include "Resource.h"
+#include "CBinaryUtils.h"
 
 CMainFrame::CMainFrame()
 {

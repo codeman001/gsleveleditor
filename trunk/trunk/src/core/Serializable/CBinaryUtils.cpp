@@ -235,6 +235,9 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 	int nJoint = mesh->Joints.size();
 	memStream.writeData( &nJoint, sizeof(int) );
 
+	// write bindshapematrix
+	memStream.writeData( mesh->BindShapeMatrix.pointer(), sizeof(f32)*16 );	
+
 	// write joint buffer (arrayWeight in bone)
 	for (int i = 0; i < nJoint; i++ )
 	{
@@ -698,6 +701,11 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 	int nJoint = 0;
 	memStream.readData( &nJoint, sizeof(int) );
 	newMesh->Joints.reallocate( nJoint );
+
+	// read bindshapematrix
+	float	matrix[16];
+	memStream.readData( matrix, sizeof(f32)*16 );
+	newMesh->BindShapeMatrix.setM( matrix );
 
 	// read joint buffer (arrayWeight in bone)	
 	for (int i = 0; i < nJoint; i++ )

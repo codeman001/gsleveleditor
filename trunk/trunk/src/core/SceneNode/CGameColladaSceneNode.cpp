@@ -194,7 +194,7 @@ void CGameColladaSceneNode::skin()
 	}
 
 	// skinning in vertex
-	core::vector3df thisVertexMove, thisNormalMove;
+	core::vector3df thisVertexMove, thisNormalMove, tempVertex;
 	int nVertex = ColladaMesh->JointVertexIndex.size();
 	int id = 0;
 
@@ -214,7 +214,10 @@ void CGameColladaSceneNode::skin()
 			CGameColladaMesh::SWeight	*pWeight	= &pJoint->weights[weightId];
 			
 			// transform vertex position
-			pJoint->skinningMatrix.transformVect	(thisVertexMove, pWeight->staticPos);
+			ColladaMesh->BindShapeMatrix.transformVect( tempVertex, pWeight->staticPos );
+
+			// skin vertex
+			pJoint->skinningMatrix.transformVect	(thisVertexMove, tempVertex);
 
 			// transform normal vector
 			pJoint->skinningMatrix.rotateVect		(thisNormalMove, pWeight->staticNormal);

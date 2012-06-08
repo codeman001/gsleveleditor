@@ -1331,7 +1331,7 @@ SMeshParam* CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 				
 				core::matrix4 mat;
 				mat.setM( f );		
-				if (true)
+				if (m_needFlip)
 				{
 					core::matrix4 mat2(mat, core::matrix4::EM4CONST_TRANSPOSED);
 
@@ -2291,9 +2291,6 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 		uiString::copy<char, const wchar_t>( sidName, joint.Name.c_str() );
 		newJoint.name = joint.Name;
 		newJoint.node = m_sidNode[ std::string(sidName) ];
-
-		// mul with bindshapematrix
-		newJoint.node->LocalMatrix *= meshParam->BindShapeMatrix;
 
 		// set invert matrix
 		newJoint.globalInversedMatrix = joint.InvMatrix;

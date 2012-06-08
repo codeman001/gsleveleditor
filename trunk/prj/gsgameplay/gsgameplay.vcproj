@@ -209,6 +209,10 @@
 				RelativePath="..\..\src\stdafx.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\uiSingleton.h"
+				>
+			</File>
 			<Filter
 				Name="core"
 				>
@@ -268,6 +272,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\Component\CGrassComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CGrassComponent.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Component\CObjectCollisionComponent.cpp"
 						>
 					</File>
@@ -321,6 +333,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\core\Component\CTerrainComponent.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CWaterComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CWaterComponent.h"
 						>
 					</File>
 					<File
@@ -440,6 +460,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\SceneNode\CGameGrassSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameGrassSceneNode.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\SceneNode\CGameMeshSceneNode.cpp"
 						>
 					</File>
@@ -463,10 +491,26 @@
 						RelativePath="..\..\src\core\SceneNode\CGameParticleContainerSceneNode.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameWaterSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameWaterSceneNode.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Serializable"
 					>
+					<File
+						RelativePath="..\..\src\core\Serializable\CBinaryUtils.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Serializable\CBinaryUtils.h"
+						>
+					</File>
 					<File
 						RelativePath="..\..\src\core\Serializable\CSerializable.cpp"
 						>

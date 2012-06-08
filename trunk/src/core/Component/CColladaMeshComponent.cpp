@@ -276,9 +276,9 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 
 					for ( int i = 0; i < nFrame; i++ )
 					{						
-						if ( isRotation )
+						if ( isRotation && stride == 4 )
 						{				
-							if ( m_needFlip == true && stride == 4 )
+							if ( m_needFlip == true )
 							{
 								fvector[0] = arrayFloat[i*4];
 								fvector[1] = arrayFloat[i*4 + 2];
@@ -570,6 +570,7 @@ void CColladaAnimation::loadDae( char *lpFileName )
 			return;
 	}	
 
+	m_needFlip = false;
 	bool readLUpAxis = false;
 
 	while ( xmlRead->read() )
@@ -603,9 +604,10 @@ void CColladaAnimation::loadDae( char *lpFileName )
 				{
 					std::wstring text = xmlRead->getNodeData();
 					if ( text == L"Z_UP" )
-					{
 						m_needFlip = true;
-					}
+					else
+						m_needFlip = false;
+
 				}
 				readLUpAxis = false;
 			}
@@ -836,9 +838,9 @@ void CColladaMeshComponent::loadDae( char *lpFilename )
 				{
 					std::wstring text = xmlRead->getNodeData();
 					if ( text == L"Z_UP" )
-					{
 						m_needFlip = true;
-					}
+					else
+						m_needFlip = false;
 				}
 				readLUpAxis = false;
 			}

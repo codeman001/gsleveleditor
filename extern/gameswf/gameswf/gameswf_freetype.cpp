@@ -30,6 +30,10 @@ namespace gameswf
 	bool get_fontfile ( const char *font_name, tu_string &file_name, bool is_bold, bool is_italic )
 	// gets font file name by font name
 	{
+		file_name = "arial.ttf";
+		return true;
+
+		/*
 		if ( font_name == NULL )
 		{
 			return false;
@@ -158,6 +162,7 @@ namespace gameswf
 		file_name += ".ttf";
 		return true;
 #endif
+		*/
 	}
 
 

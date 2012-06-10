@@ -5,6 +5,7 @@
 #include "IView.h"
 
 #include "swfUI/CGameUI.h"
+#include "swfUI/CFlashHandler.h"
 
 IView* g_view = NULL;
 
@@ -43,6 +44,7 @@ public:
 
 	void initApplication( IrrlichtDevice* device )
 	{
+		// init irrlicht device
 		m_device	= device;
 		m_driver	= device->getVideoDriver();
 		m_smgr		= device->getSceneManager();
@@ -51,15 +53,20 @@ public:
 		m_fps = 0;
 
 		m_device->setWindowCaption( STR_APP_TITLE );
-
+		
+		// get debug font
 		m_font	= device->getGUIEnvironment()->getFont("data/bigfont.png");
 		
+		// init flash ui
 		CGameUI::createGetInstance();
-		CGameUI::getInstance()->openFlash("selectLanguage","data/GSSelectlanguage.swf");
+		CGameUI::getInstance()->openFlash("testflash","data/flashui/test.swf");		
+		registerEvent( "gameUIFlash", CGameUI::getInstance() );
 	}
 
 	void destroyApplication()
 	{
+		// uninit flash ui
+		unRegisterEvent( CGameUI::getInstance() );
 		CGameUI::releaseInstance();
 	}
 
@@ -80,9 +87,8 @@ public:
 		// draw game flash ui
 		core::recti viewport = m_driver->getViewPort();
 		CGameUI::getInstance()->update( frameDeltaTime );		
-		CGameUI::getInstance()->render( 0, 0, viewport.getWidth(), viewport.getHeight(), false );
-		
-		
+		CGameUI::getInstance()->render( 0, 0, viewport.getWidth(), viewport.getHeight(), false );	
+
 		// draw fps string
 		int fps = m_driver->getFPS();
 		core::stringw tmp(L"gsgameplay - ");

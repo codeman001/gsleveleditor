@@ -18,12 +18,13 @@
 
 class CFlashHander;
 
-class CGameUI: public uiSingleton<CGameUI>
+class CGameUI: 
+	public uiSingleton<CGameUI>,
+	public IEventReceiver
 {
 protected:
-	gameswf::render_handler		*m_render;
-
-	map<std::string, CFlashHander*>	m_flash;
+	gameswf::render_handler				*m_render;
+	map<std::string, CFlashHander*>		m_flash;
 public:
 	CGameUI();
 	virtual ~CGameUI();	
@@ -43,6 +44,16 @@ public:
 	// render
 	// render game flash ui
 	void render(int x, int y, int w, int h, bool hasBackground);
+
+	// getFlash
+	// get flash player
+	CFlashHander* getFlash( const char *lpName )
+	{
+		return m_flash[ lpName ];
+	}
+
+	// handle event
+	virtual bool OnEvent(const SEvent& irrEvent);
 
 public:
 	static tu_file* _fileOpen( const char *lpPath );

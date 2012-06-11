@@ -23,22 +23,6 @@ CFlashHander::~CFlashHander()
 	delete m_player;
 }
 
-void printMovieCharacter( gameswf::character *ch )
-{
-	gameswf::display_list *dl = ch->get_display_list();
-	if ( !dl )
-	{
-		return;
-	}
-
-	for ( int i = 0, n = dl->size(); i < n; i++ )
-	{
-		gameswf::character *child = dl->get_character ( i );
-		printf("name: %s\n", child->m_name.c_str() );
-		printMovieCharacter( child );
-	}
-}
-
 bool CFlashHander::loadFlash( const char *url )
 {	
 	m_root = m_player->load_file ( url );
@@ -79,11 +63,9 @@ void CFlashHander::update(float timestep)
 		// goto frame 0 if first time
 		if ( m_firstInit == true )
 		{
-			start(0);
+			start(1);
 			m_firstInit = false;			
-		}
-
-		printMovieCharacter( m_movie.get_ptr() );
+		}		
 	}
 }
 

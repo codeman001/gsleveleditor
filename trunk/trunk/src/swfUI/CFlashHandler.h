@@ -46,7 +46,7 @@ public:
 
 	// start
 	// start play
-	void start(int frame = 0);
+	void start(int frame = 1);
 	
 };
 

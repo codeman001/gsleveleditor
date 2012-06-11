@@ -204,8 +204,8 @@ namespace gameswf
 			verify_integrity(it->second);
 			
 			// ensure they exist only one time
-			region* r;
-			assert(singles.get(it->second, &r) == false);
+			//region* r;
+			//assert(singles.get(it->second, &r) == false);
 			singles[it->second] = it->second;
 		}
 	}

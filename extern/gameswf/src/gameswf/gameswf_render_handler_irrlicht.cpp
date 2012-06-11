@@ -30,7 +30,7 @@
 	#define MERGE_STRIPS
 #else
 	#include "COpenGLDriver.h"	// for opengl const
-	#include "CCommonGLMaterialRenderer.h"	// material renderer
+	#include "COpenGLMaterialRenderer.h"	// material renderer
 	#define MERGE_STRIPS
 #endif
 
@@ -85,7 +85,7 @@ static irr::video::SMaterial s_material;
 #else // OPENGL / WIN32
 
 #define PLATFORM_DRIVER					irr::video::COpenGLDriver
-#define PLATFORM_MATERIAL_RENDERER		irr::video::CCommonGLMaterialRenderer
+#define PLATFORM_MATERIAL_RENDERER		irr::video::COpenGLMaterialRenderer
 #include "gameswf_irrlicht_material_renderer_gl.hpp"
 
 #endif

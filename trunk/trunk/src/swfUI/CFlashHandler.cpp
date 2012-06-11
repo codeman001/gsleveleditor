@@ -2,8 +2,8 @@
 #include "CFlashHandler.h"
 
 CFlashHander::CFlashHander()
-{
-	m_player = new gameswf::player();
+{	
+	m_player = new gameswf::player(NULL);
 	m_root = NULL;
 	m_movie = NULL;
 	
@@ -21,22 +21,6 @@ CFlashHander::~CFlashHander()
 	m_root = NULL;
 	m_movie = NULL;
 	delete m_player;
-}
-
-void printMovieCharacter( gameswf::character *ch )
-{
-	gameswf::display_list *dl = ch->get_display_list();
-	if ( !dl )
-	{
-		return;
-	}
-
-	for ( int i = 0, n = dl->size(); i < n; i++ )
-	{
-		gameswf::character *child = dl->get_character ( i );
-		printf("name: %s\n", child->m_name.c_str() );
-		printMovieCharacter( child );
-	}
 }
 
 bool CFlashHander::loadFlash( const char *url )
@@ -71,9 +55,8 @@ void CFlashHander::start(int frame)
 
 void CFlashHander::update(float timestep)
 {
-	if ( m_visible && m_root )
-	{
-		m_player->set_force_realtime_framerate ( true );
+	if ( m_visible && m_root != NULL )
+	{		
 		m_root->advance( timestep );
 
 		// goto frame 0 if first time
@@ -81,15 +64,13 @@ void CFlashHander::update(float timestep)
 		{
 			start(0);
 			m_firstInit = false;			
-		}
-
-		printMovieCharacter( m_movie.get_ptr() );
+		}		
 	}
 }
 
 void CFlashHander::render(int x, int y, int w, int h, bool hasBackground)
 {
-	if ( m_visible && m_root )
+	if ( m_visible && m_root != NULL )
 	{
 		m_viewportx = x;
 		m_viewporty = y;
@@ -104,7 +85,7 @@ void CFlashHander::render(int x, int y, int w, int h, bool hasBackground)
 
 void CFlashHander::updateMouseState( int x, int y, bool pressed )
 {
-	if ( m_visible && m_root && m_viewportw != 0 && m_viewporth != 0 )
+	if ( m_visible && m_root != NULL && m_viewportw != 0 && m_viewporth != 0 )
 	{
 		float fx = m_root->get_movie_width()/(float)m_viewportw;
 		float fy = m_root->get_movie_height()/(float)m_viewporth;

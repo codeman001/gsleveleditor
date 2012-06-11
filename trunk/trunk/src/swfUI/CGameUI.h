@@ -23,6 +23,7 @@ class CGameUI:
 	public IEventReceiver
 {
 protected:
+	gameswf::player_context				*m_contex;
 	gameswf::render_handler				*m_render;
 	map<std::string, CFlashHander*>		m_flash;
 public:
@@ -56,7 +57,7 @@ public:
 	virtual bool OnEvent(const SEvent& irrEvent);
 
 public:
-	static tu_file* _fileOpen( const char *lpPath );
+	static gameswf::tu_file* _fileOpen( const char *lpPath );
 	static void _fsCallback( gameswf::character *movie, const char *lpCommand, const char *lpParams );
 };
 

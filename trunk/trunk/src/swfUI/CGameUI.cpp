@@ -6,9 +6,9 @@
 // CGameUI static func implement
 ////////////////////////////////////////////
 
-tu_file* CGameUI::_fileOpen( const char *lpPath )
+gameswf::tu_file* CGameUI::_fileOpen( const char *lpPath )
 {
-	return new tu_file(lpPath, "rb");
+	return new gameswf::tu_file(lpPath, "rb");
 }
 
 void CGameUI::_fsCallback( gameswf::character *movie, const char *lpCommand, const char *lpParams )
@@ -22,13 +22,13 @@ void CGameUI::_fsCallback( gameswf::character *movie, const char *lpCommand, con
 
 CGameUI::CGameUI()
 {
+	m_contex = new gameswf::player_context();
+		
 	m_render = gameswf::create_render_handler_ogl();	
+	gameswf::set_render_handler ( m_render );	
 
 	gameswf::register_file_opener_callback	( CGameUI::_fileOpen );
-	gameswf::register_fscommand_callback	( CGameUI::_fsCallback );
-
-	gameswf::set_render_handler ( m_render );
-	gameswf::set_glyph_provider ( gameswf::create_glyph_provider_freetype() );
+	gameswf::register_fscommand_callback	( CGameUI::_fsCallback );	
 
 	m_render->open();
 }
@@ -37,6 +37,7 @@ CGameUI::~CGameUI()
 {
 	releaseAllFlash();		
 	delete m_render;
+	delete m_contex;
 }
 
 // openFlash

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="irrlicht_common"
+	OutputDirectory="$(ProjectDir)$(ConfigurationName)"
+	IntermediateDirectory="$(ConfigurationName)"
+	InheritedPropertySheets=".\common.vsprops"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		AdditionalIncludeDirectories="..\..\..\irrlicht\source\Irrlicht\zlib;..\..\..\irrlicht\source\Irrlicht\libpng;..\..\..\irrlicht\source\Irrlicht\jpeglib;..\..\..\irrlicht\source\Irrlicht\freetype\include;..\..\..\irrlicht\source\Irrlicht;..\..\..\irrlicht\include;..\..\..\irrlicht\tools\wx\include"
+
+	/>
+	<Tool
+		Name="VCLibrarianTool"
+		OutputFile="$(OutDir)\$(ProjectName).lib"
+	/>
+</VisualStudioPropertySheet>

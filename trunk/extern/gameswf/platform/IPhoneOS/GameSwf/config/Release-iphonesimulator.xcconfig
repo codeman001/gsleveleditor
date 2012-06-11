@@ -1,0 +1,19 @@
+//
+//  DebugSimulator.xcconfig
+//  Dungeon Hunter 2 project - Release version for iPhone simulator
+//
+//  Created by Christian Laliberte on 02/11/09.
+//  Copyright 2009 Gameloft. All rights reserved.
+//
+
+#include "Config Common.xcconfig"
+#include "Config Release.xcconfig"
+#include "Config Simulator.xcconfig"
+
+PRODUCT_NAME = GameSwf
+
+HEADER_SEARCH_PATHS = $(SRCROOT)/../../../../glitch/include $(SRCROOT)/../../../../glitch/source/particlesystem/include $(SRCROOT)/../../../../glitch/tools/ColladaConverter/include $(SRCROOT)/../../../../glitch/tools/ResFile/include $(SRCROOT)/../../../../glitch/source/freetype/include $(SRCROOT)/../../../../glitch/source/zlib $(SRCROOT)/../../../../glitch/source/libpng $(SRCROOT)/../../../../gameswfConfig $(SRCROOT)/../../../src/config $(SRCROOT)/../../../src/**
+LIBRARY_SEARCH_PATHS = $(SRCROOT)/../../../../glitch/projects/iPhone/build/$(CONFIGURATION)
+GCC_PREPROCESSOR_DEFINITIONS = MACOSX IPHONEOS
+
+// EOF

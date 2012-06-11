@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="glitch_common"
+	OutputDirectory="$(ProjectDir)$(ConfigurationName)"
+	IntermediateDirectory="$(ConfigurationName)"
+	InheritedPropertySheets=".\common.vsprops"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		AdditionalIncludeDirectories="..\..\..\glf\include;..\..\..\glitch\source\zlib;..\..\..\glitch\source\libpng;..\..\..\glitch\source\freetype\include;..\..\..\glitch\source\glitch;..\..\..\glitch\include;..\..\..\glitch\tools\ColladaConverter\include;..\..\..\glitch\tools\ResFile\include;..\..\..\glitch\source\particlesystem\include;..\..\..\glitch\tools\wx\include"
+
+		PreprocessorDefinitions="_GLITCH"
+	/>
+	<Tool
+		Name="VCLibrarianTool"
+		OutputFile="$(OutDir)\$(ProjectName).lib"
+	/>
+</VisualStudioPropertySheet>

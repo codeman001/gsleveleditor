@@ -253,6 +253,7 @@ static GLboolean IsWindingInside( GLUtesselator *tess, int n )
   }
   /*LINTED*/
   assert( FALSE );
+  return false;
   /*NOTREACHED*/
 }
 

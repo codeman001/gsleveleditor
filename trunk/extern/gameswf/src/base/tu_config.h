@@ -14,7 +14,7 @@
 // In case you need some unusual stuff to be predefined.  For example,
 // maybe you #define swfnew/delete to be something special.
 #include "compatibility_include.h"
-#include "../../../gameswfConfig/gameswf_config.h"
+#include "gameswf_config.h"
 
 #include "base/dlmalloc.h"
 

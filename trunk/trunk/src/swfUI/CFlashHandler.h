@@ -5,10 +5,10 @@
 
 class CFlashHander
 {
-protected:		
-	gameswf::player							*m_player;	
-	gameswf::smart_ptr<gameswf::root>		m_root;
-	gameswf::smart_ptr<gameswf::character>	m_movie;
+protected:
+	gameswf::player						*m_player;	
+	gameswf::gc_ptr<gameswf::root>		m_root;
+	gameswf::gc_ptr<gameswf::character>	m_movie;
 
 	bool								m_visible;
 	bool								m_firstInit;

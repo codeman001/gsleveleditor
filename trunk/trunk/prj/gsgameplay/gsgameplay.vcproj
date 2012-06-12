@@ -537,19 +537,27 @@
 				Name="swfUI"
 				>
 				<File
-					RelativePath="..\..\src\swfUI\CFlashHandler.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\swfUI\CFlashHandler.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\swfUI\CGameUI.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\swfUI\CGameUI.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\swfUI\CMenuFx.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\swfUI\CMenuFx.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\swfUI\CMenuFxObj.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\swfUI\CMenuFxObj.h"
 					>
 				</File>
 			</Filter>

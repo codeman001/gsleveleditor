@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CGameUI.h"
-#include "CFlashHandler.h"
+#include "CMenuFx.h"
 
 ////////////////////////////////////////////
 // CGameUI static func implement
@@ -41,9 +41,9 @@ CGameUI::~CGameUI()
 
 // openFlash
 // load swf file
-CFlashHander* CGameUI::openFlash( const char *name, const char *url )
+CMenuFx* CGameUI::openFlash( const char *name, const char *url )
 {
-	CFlashHander* flash = new CFlashHander();
+	CMenuFx* flash = new CMenuFx();
 	m_flash[ name ] = flash;
 	flash->loadFlash( url );
 	return flash;
@@ -53,7 +53,7 @@ CFlashHander* CGameUI::openFlash( const char *name, const char *url )
 // unload all swf
 void CGameUI::releaseAllFlash()
 {
-	map<std::string, CFlashHander*>::iterator i = m_flash.begin(), end = m_flash.end();
+	map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 	while ( i != end )
 	{
 		delete (*i).second;
@@ -66,7 +66,7 @@ void CGameUI::releaseAllFlash()
 // update game flash ui
 void CGameUI::update(float timestep)
 {
-	map<std::string, CFlashHander*>::iterator i = m_flash.begin(), end = m_flash.end();
+	map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 	while ( i != end )
 	{
 		(*i).second->update(timestep);
@@ -78,7 +78,7 @@ void CGameUI::update(float timestep)
 // render game flash ui
 void CGameUI::render(int x, int y, int w, int h, bool hasBackground)
 {
-	map<std::string, CFlashHander*>::iterator i = m_flash.begin(), end = m_flash.end();
+	map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 	while ( i != end )
 	{
 		(*i).second->render(x, y, w, h, hasBackground);
@@ -100,7 +100,7 @@ bool CGameUI::OnEvent(const SEvent& irrEvent)
 		case irr::EMIE_MOUSE_MOVED:
 			{				
 				// drag touch
-				map<std::string, CFlashHander*>::iterator i = m_flash.begin(), end = m_flash.end();
+				map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 				while ( i != end )
 				{
 					(*i).second->updateMouseState( x,y, irrEvent.MouseInput.isLeftPressed() );
@@ -111,7 +111,7 @@ bool CGameUI::OnEvent(const SEvent& irrEvent)
 		case irr::EMIE_LMOUSE_PRESSED_DOWN:
 			{
 				// touch press
-				map<std::string, CFlashHander*>::iterator i = m_flash.begin(), end = m_flash.end();
+				map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 				while ( i != end )
 				{
 					(*i).second->updateMouseState( x,y, true );
@@ -122,7 +122,7 @@ bool CGameUI::OnEvent(const SEvent& irrEvent)
 		case irr::EMIE_LMOUSE_LEFT_UP:
 			{
 				// touch down
-				map<std::string, CFlashHander*>::iterator i = m_flash.begin(), end = m_flash.end();
+				map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 				while ( i != end )
 				{
 					(*i).second->updateMouseState( x,y, false );

@@ -1,9 +1,11 @@
-#ifndef _CFLASHHANDER_
-#define _CFLASHHANDER_
+#ifndef _CMENUFX_H_
+#define _CMENUFX_H_
 
 #include "CGameUI.h"
 
-class CFlashHander
+class CMenuFxObj;
+
+class CMenuFx
 {
 protected:
 	gameswf::player						*m_player;	
@@ -18,8 +20,8 @@ protected:
 	int		m_viewportw;
 	int		m_viewporth;
 public:
-	CFlashHander();
-	virtual ~CFlashHander();
+	CMenuFx();
+	virtual ~CMenuFx();
 
 	// loadFlash
 	// load swf file
@@ -47,7 +49,15 @@ public:
 	// start
 	// start play
 	void start(int frame = 1);
+
+	// getMenuObj
+	// get obj on flash menu
+	CMenuFxObj* getObj( const char *path );
 	
+	// findObj
+	// find obj on flash menu
+	CMenuFxObj* findObj( char *name );
+
 };
 
 #endif

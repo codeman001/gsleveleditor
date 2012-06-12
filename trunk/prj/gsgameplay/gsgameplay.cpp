@@ -5,7 +5,8 @@
 #include "IView.h"
 
 #include "swfUI/CGameUI.h"
-#include "swfUI/CFlashHandler.h"
+#include "swfUI/CMenuFx.h"
+#include "swfUI/CMenuFxObj.h"
 
 IView* g_view = NULL;
 
@@ -59,7 +60,13 @@ public:
 		
 		// init flash ui
 		CGameUI::createGetInstance();
-		CGameUI::getInstance()->openFlash("testflash","data/flashui/test.swf");		
+		CGameUI::getInstance()->openFlash("testflash","data/flashui/test.swf");	
+		
+		CMenuFx *fxMenu = CGameUI::getInstance()->getFlash("testflash");
+		if ( fxMenu )
+		{
+			CMenuFxObj* fxObj =	fxMenu->getObj("fxMenu.movieButton");
+		}
 		registerEvent( "gameUIFlash", CGameUI::getInstance() );
 	}
 

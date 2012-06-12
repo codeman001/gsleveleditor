@@ -16,7 +16,7 @@
 #include "gameswf/gameswf_text.h"
 #include "gameswf/gameswf_filters.h"
 
-class CFlashHander;
+class CMenuFx;
 
 class CGameUI: 
 	public uiSingleton<CGameUI>,
@@ -24,14 +24,14 @@ class CGameUI:
 {
 protected:
 	gameswf::render_handler				*m_render;
-	map<std::string, CFlashHander*>		m_flash;
+	map<std::string, CMenuFx*>			m_flash;
 public:
 	CGameUI();
 	virtual ~CGameUI();	
 
 	// openFlash
 	// load swf file
-	CFlashHander* openFlash( const char *name, const char *url );
+	CMenuFx* openFlash( const char *name, const char *url );
 
 	// releaseAllFlash
 	// unload all swf
@@ -47,7 +47,7 @@ public:
 
 	// getFlash
 	// get flash player
-	CFlashHander* getFlash( const char *lpName )
+	CMenuFx* getFlash( const char *lpName )
 	{
 		return m_flash[ lpName ];
 	}

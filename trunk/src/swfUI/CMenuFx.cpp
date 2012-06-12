@@ -1,0 +1,182 @@
+#include "stdafx.h"
+#include "CMenuFx.h"
+
+CMenuFx::CMenuFx()
+{
+	m_player = new gameswf::player();
+	m_root = NULL;
+	m_movie = NULL;
+	
+	m_visible = true;
+	m_firstInit = true;
+
+	m_viewportx = 0;
+	m_viewporty = 0;
+	m_viewportw = 0;
+	m_viewporth = 0;
+}
+
+CMenuFx::~CMenuFx()
+{	
+	m_root = NULL;
+	m_movie = NULL;
+	delete m_player;
+}
+
+bool CMenuFx::loadFlash( const char *url )
+{	
+	m_root = m_player->load_file ( url );
+
+	if ( m_root != NULL )
+	{
+		m_movie = m_root->get_root_movie();
+
+		// play movie
+		m_root->set_userdata ( this );
+	
+		m_viewportx = 0;
+		m_viewporty = 0;
+		m_viewportw = m_root->get_movie_width();
+		m_viewporth = m_root->get_movie_height();
+		
+		return true;
+	}
+
+	return false;
+}
+
+// start
+// start play
+void CMenuFx::start(int frame)
+{
+	m_movie->goto_frame(frame);
+	m_movie->set_play_state ( gameswf::character::PLAY );
+}
+
+void CMenuFx::update(float timestep)
+{
+	if ( m_visible && m_root )
+	{
+		m_player->set_force_realtime_framerate ( true );
+		m_root->advance( timestep );
+
+		// goto frame 0 if first time
+		if ( m_firstInit == true )
+		{
+			start(1);
+			m_firstInit = false;			
+		}		
+	}
+}
+
+void CMenuFx::render(int x, int y, int w, int h, bool hasBackground)
+{
+	if ( m_visible && m_root )
+	{
+		m_viewportx = x;
+		m_viewporty = y;
+		m_viewportw = w;
+		m_viewporth = h;
+
+		m_root->set_display_viewport ( x, y, w, h );
+		m_root->set_background_alpha ( hasBackground ? 1.0f : 0.0f );
+		m_root->display();
+	}
+}
+
+void CMenuFx::updateMouseState( int x, int y, bool pressed )
+{
+	if ( m_visible && m_root && m_viewportw != 0 && m_viewporth != 0 )
+	{
+		float fx = m_root->get_movie_width()/(float)m_viewportw;
+		float fy = m_root->get_movie_height()/(float)m_viewporth;
+
+		float mouseX = m_viewportx + x*fx;
+		float mouseY = m_viewporty + y*fy;
+
+		m_root->notify_mouse_state ( (int)mouseX, (int)mouseY, pressed ? 1 : 0 );
+	}
+}
+
+// getMenuObj
+// get obj on flash menu
+CMenuFxObj* CMenuFx::getObj( const char *path )
+{
+	if ( m_movie == NULL )
+		return NULL;
+	
+	vector<std::string>	folder;
+
+	char stringc[1024] = {0};
+	int len = uiString::length<const char>(path);	
+	int begin = 0;
+	int i = 0;
+	
+	for ( i = 0; i < len; i++ )
+	{
+		if ( path[i] == '.' || path[i] == '/' || path[i] == '\\' )
+		{
+			if ( i > begin  )
+			{
+				uiString::mid<char, const char>(stringc, path, begin, i);
+				folder.push_back( stringc );
+			}
+			begin = i+1;
+		}
+	}	
+	if ( i > begin )
+	{
+		uiString::mid<char, const char>(stringc, path, begin, i);
+		folder.push_back( stringc );
+	}
+		
+	std::queue<gameswf::character*>	queueObj;
+	queueObj.push( m_movie.get_ptr() );
+	
+	while ( queueObj.size() )
+	{
+		gameswf::character* ch = queueObj.front();
+		queueObj.pop();
+
+		int depth = ch->get_depth() - 1;
+		const char *name = ch->get_name().c_str();
+		
+		bool continueSearch = false;
+
+		if ( depth >= 0 )
+		{
+			if ( folder.size() > depth )
+			{
+				if ( folder[depth] == std::string(name) )
+				{
+					continueSearch = true;
+				}
+			}
+		}
+		else
+			continueSearch = true;
+		
+		if ( continueSearch )
+		{
+			gameswf::display_list* displayList = ch->get_display_list();
+			if ( displayList )
+			{
+				int childCount = displayList->size();
+				for ( int j = 0; j < childCount; j++ )
+				{
+					queueObj.push( displayList->get_character(j) );
+				}
+			}
+		}
+	}
+
+
+	return NULL;
+}
+	
+// findObj
+// find obj on flash menu
+CMenuFxObj* CMenuFx::findObj( char *name )
+{
+	return NULL;
+}

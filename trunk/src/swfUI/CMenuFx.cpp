@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CMenuFx.h"
+#include "CMenuFxObj.h"
 
 CMenuFx::CMenuFx()
 {
@@ -131,30 +132,39 @@ CMenuFxObj* CMenuFx::getObj( const char *path )
 	}
 		
 	std::queue<gameswf::character*>	queueObj;
-	queueObj.push( m_movie.get_ptr() );
+	
+	gameswf::display_list* displayList = m_movie.get_ptr()->get_display_list();
+	if ( displayList )
+	{
+		int childCount = displayList->size();
+		for ( int j = 0; j < childCount; j++ )
+		{
+			queueObj.push( displayList->get_character(j) );
+		}
+	}
+
+	int folderDepth = 0;
 	
 	while ( queueObj.size() )
 	{
 		gameswf::character* ch = queueObj.front();
 		queueObj.pop();
 
-		int depth = ch->get_depth() - 1;
 		const char *name = ch->get_name().c_str();
 		
-		bool continueSearch = false;
-
-		if ( depth >= 0 )
+		bool continueSearch = true;
+		
+		if ( folder[folderDepth] == name )
 		{
-			if ( folder.size() > depth )
-			{
-				if ( folder[depth] == std::string(name) )
-				{
-					continueSearch = true;
-				}
+			folderDepth++;
+			continueSearch = true;
+
+			// found the obj
+			if ( folderDepth == folder.size() )
+			{				
+				return new CMenuFxObj(ch);
 			}
 		}
-		else
-			continueSearch = true;
 		
 		if ( continueSearch )
 		{
@@ -178,5 +188,43 @@ CMenuFxObj* CMenuFx::getObj( const char *path )
 // find obj on flash menu
 CMenuFxObj* CMenuFx::findObj( char *name )
 {
+	std::queue<gameswf::character*>	queueObj;
+
+	gameswf::display_list* displayList = m_movie.get_ptr()->get_display_list();
+	if ( displayList )
+	{
+		int childCount = displayList->size();
+		for ( int j = 0; j < childCount; j++ )
+		{
+			queueObj.push( displayList->get_character(j) );
+		}
+	}
+
+	int folderDepth = 0;
+	
+	while ( queueObj.size() )
+	{
+		gameswf::character* ch = queueObj.front();
+		queueObj.pop();
+
+		const char *chName = ch->get_name().c_str();
+		
+		if ( strcmp(name, chName) == 0  )
+		{
+			return new CMenuFxObj(ch);
+		}
+		
+		
+		gameswf::display_list* displayList = ch->get_display_list();
+		if ( displayList )
+		{
+			int childCount = displayList->size();
+			for ( int j = 0; j < childCount; j++ )
+			{
+				queueObj.push( displayList->get_character(j) );
+			}
+		}
+
+	}
 	return NULL;
 }

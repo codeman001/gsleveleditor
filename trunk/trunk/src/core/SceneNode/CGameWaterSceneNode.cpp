@@ -18,8 +18,8 @@ CGameWaterSceneNode::CGameWaterSceneNode(CGameObject *owner, IMesh* mesh, IScene
 
 		s_materialWater = mgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles
 		(
-			"shader/extern/water.vert", "vertexMain",	video::EVST_VS_2_0,
-			"shader/extern/water.frag", "pixelMain",	video::EPST_PS_2_0,
+			getIView()->getPath("shader/extern/water.vert"), "vertexMain",	video::EVST_VS_1_1,
+			getIView()->getPath("shader/extern/water.frag"), "pixelMain",	video::EPST_PS_1_1,
 			waterShaderCB, 
 			video::EMT_TRANSPARENT_ALPHA_CHANNEL
 		);

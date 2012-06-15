@@ -5,8 +5,11 @@
 // by Andres J. Porfirio ... andresjesse@yahoo.com.br //
 //====================================================//
 
+attribute vec4 inVertexPosition;
+attribute vec2 inTexCoord0;
 
-//!device->getTimer()->getTime()/1000.0f;
+uniform mat4  MvpMatrix;
+
 uniform float WaterTime;
 uniform float WaveSize;
 uniform float WaveSpeed;
@@ -16,13 +19,11 @@ varying vec2 bumpCoord0;
 varying vec2 originalCoord;
 
 void main(void)
-{
-	waterpos = ftransform();
-
-	originalCoord = gl_MultiTexCoord0;
-
-	bumpCoord0.xy = gl_MultiTexCoord0.xy*WaveSize + WaterTime*vec2(-0.01,-0.01)*WaveSpeed;
+{	
+	originalCoord = inTexCoord0;
+	bumpCoord0.xy = inTexCoord0.xy*WaveSize + WaterTime*vec2(-0.01,-0.01)*WaveSpeed;
 	
-	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+	gl_Position = MvpMatrix * inVertexPosition;
+	waterpos = gl_Position;
 }
 

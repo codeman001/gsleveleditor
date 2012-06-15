@@ -21,6 +21,7 @@ public:
     virtual void OnSetConstants(video::IMaterialRendererServices* services, s32 userData)
     {
 		IrrlichtDevice *device = getIView()->getDevice();
+		IVideoDriver *driver = device->getVideoDriver();
 
 		float time = device->getTimer()->getTime()/1000.0f;
 		float size = 1.0f;
@@ -28,6 +29,14 @@ public:
 		float transparent = 0.8f;
 		float brightness = 3.0f;
 
+		core::matrix4 worldViewProj = driver->getTransform(video::ETS_PROJECTION);
+		worldViewProj *= driver->getTransform(video::ETS_VIEW);
+		worldViewProj *= driver->getTransform(ETS_WORLD);
+		
+		// set uniform mvp matrix
+		services->setPixelShaderConstant("MvpMatrix",		(float*)worldViewProj.pointer(), 16);
+
+		// set uniform
 		services->setPixelShaderConstant("WaterTime",		(float*)&time, 1);
 		services->setPixelShaderConstant("WaveSize",		(float*)&size, 1);
 		services->setPixelShaderConstant("WaveSpeed",		(float*)&speed, 1);		

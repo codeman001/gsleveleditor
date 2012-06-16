@@ -113,6 +113,7 @@ BEGIN
     ID_ONTERRAIN_LabelTitle_RESID L"On Terrain" /* LabelTitle ID_ONTERRAIN_LabelTitle_RESID: (null) */
 END
 
+ID_ONTERRAIN_LargeImages_RESID    BITMAP    "ribbonIcon\\object-onterrain-icon.bmp" /* LargeImages ID_ONTERRAIN_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
     ID_CREATEZONE_LabelTitle_RESID L"Create new zone" /* LabelTitle ID_CREATEZONE_LabelTitle_RESID: (null) */

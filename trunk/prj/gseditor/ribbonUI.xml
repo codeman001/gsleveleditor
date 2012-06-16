@@ -85,6 +85,9 @@
     </Command>
 
     <Command Name="cmdOnToTerrain" LabelTitle="On Terrain" Symbol="ID_ONTERRAIN">
+      <Command.LargeImages>
+        <Image>ribbonIcon/object-onterrain-icon.bmp</Image>
+      </Command.LargeImages>
     </Command>      
     
     <Command Name="cmdMenuCreateZone" LabelTitle="Create new zone" Symbol="ID_CREATEZONE"/>

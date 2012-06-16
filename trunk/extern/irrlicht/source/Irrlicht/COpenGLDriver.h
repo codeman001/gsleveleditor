@@ -23,6 +23,7 @@ namespace irr
 #include "IMaterialRendererServices.h"
 // also includes the OpenGL stuff
 #include "COpenGLExtensionHandler.h"
+#include "EVertexAttributes.h"
 
 namespace irr
 {

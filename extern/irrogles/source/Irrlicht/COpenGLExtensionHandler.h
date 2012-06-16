@@ -1101,6 +1101,11 @@ class COpenGLExtensionHandler
 	// the global feature array
 	bool FeatureAvailable[IRR_OpenGL_Feature_Count];
 
+	void extGlEnableVertexAttribArray(GLuint index);
+	void extGlDisableVertexAttribArray(GLuint index);
+	void extGlBindAttribLocation(GLuint program, GLuint index, const GLchar *name);	
+	void extGlVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+
 	protected:
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		PFNGLACTIVETEXTUREARBPROC pGlActiveTextureARB;
@@ -1234,6 +1239,10 @@ class COpenGLExtensionHandler
 		#if defined(GLX_MESA_swap_control)
 		PFNGLXSWAPINTERVALMESAPROC pGlxSwapIntervalMESA;
 		#endif
+		PFNGLENABLEVERTEXATTRIBARRAYPROC	pGlEnableVertexAttribArray;
+		PFNGLDISABLEVERTEXATTRIBARRAYPROC	pGlDisableVertexAttribArray;
+		PFNGLBINDATTRIBLOCATIONPROC			pGlBindAttribLocation;		
+		PFNGLVERTEXATTRIBPOINTERPROC		pGlVertexAttribPointer;
 	#endif
 };
 
@@ -2497,6 +2506,26 @@ inline void COpenGLExtensionHandler::extGlBlendEquation(GLenum mode)
 #endif
 }
 
+
+inline void COpenGLExtensionHandler::extGlBindAttribLocation(GLuint program, GLuint index, const GLchar *name)
+{
+	pGlBindAttribLocation(program, index, name);
+}
+
+inline void COpenGLExtensionHandler::extGlDisableVertexAttribArray(GLuint index)
+{
+	pGlDisableVertexAttribArray(index);
+}
+
+inline void COpenGLExtensionHandler::extGlEnableVertexAttribArray(GLuint index)
+{
+	pGlEnableVertexAttribArray(index);
+}
+
+inline void COpenGLExtensionHandler::extGlVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer)
+{
+	pGlVertexAttribPointer(index, size, type, normalized, stride, pointer);
+}
 
 }
 }

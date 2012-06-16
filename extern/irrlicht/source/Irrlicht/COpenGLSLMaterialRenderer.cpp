@@ -150,6 +150,9 @@ void COpenGLSLMaterialRenderer::init(s32& outMaterialTypeNr,
 	}
 #endif
 
+	for ( size_t i = 0; i < EVA_COUNT; ++i )
+		Driver->extGlBindAttribLocation( Program, i, sBuiltInVertexAttributeNames[i] );
+
 	if (!linkProgram())
 		return;
 

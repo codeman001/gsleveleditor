@@ -212,7 +212,11 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 	pGlBlendFunciARB= (PFNGLBLENDFUNCIPROC) wglGetProcAddress("glBlendFunciARB");
 	pGlProgramParameteriARB= (PFNGLPROGRAMPARAMETERIARBPROC) wglGetProcAddress("glProgramParameteriARB");
 	pGlProgramParameteriEXT= (PFNGLPROGRAMPARAMETERIEXTPROC) wglGetProcAddress("glProgramParameteriEXT");
-
+	
+	pGlEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC) wglGetProcAddress("glEnableVertexAttribArray");
+	pGlDisableVertexAttribArray = (PFNGLDISABLEVERTEXATTRIBARRAYPROC) wglGetProcAddress("glDisableVertexAttribArray");
+	pGlVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC) wglGetProcAddress("glVertexAttribPointer");
+	pGlBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC) wglGetProcAddress("glBindAttribLocation");
 
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined (_IRR_COMPILE_WITH_SDL_DEVICE_)
 	#ifdef _IRR_OPENGL_USE_EXTPOINTER_

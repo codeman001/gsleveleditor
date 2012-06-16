@@ -914,6 +914,10 @@ class COpenGLExtensionHandler
 	void extGlBlendFuncIndexed(GLuint buf, GLenum src, GLenum dst);
 	void extGlProgramParameteri(GLuint program, GLenum pname, GLint value);
 
+	void extGlEnableVertexAttribArray(GLuint index);
+	void extGlDisableVertexAttribArray(GLuint index);
+	void extGlBindAttribLocation(GLuint program, GLuint index, const GLchar *name);	
+	void extGlVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
 
 	protected:
 	// the global feature array
@@ -996,6 +1000,11 @@ class COpenGLExtensionHandler
 		PFNGLBLENDFUNCIPROC pGlBlendFunciARB;
 		PFNGLPROGRAMPARAMETERIARBPROC pGlProgramParameteriARB;
 		PFNGLPROGRAMPARAMETERIEXTPROC pGlProgramParameteriEXT;
+		
+		PFNGLENABLEVERTEXATTRIBARRAYPROC	pGlEnableVertexAttribArray;
+		PFNGLDISABLEVERTEXATTRIBARRAYPROC	pGlDisableVertexAttribArray;
+		PFNGLBINDATTRIBLOCATIONPROC			pGlBindAttribLocation;		
+		PFNGLVERTEXATTRIBPOINTERPROC		pGlVertexAttribPointer;
 	#endif
 };
 
@@ -1833,6 +1842,26 @@ inline void COpenGLExtensionHandler::extGlProgramParameteri(GLuint program, GLen
 #else
 	os::Printer::log("glProgramParameteri not supported", ELL_ERROR);
 #endif
+}
+
+inline void COpenGLExtensionHandler::extGlBindAttribLocation(GLuint program, GLuint index, const GLchar *name)
+{
+	pGlBindAttribLocation(program, index, name);
+}
+
+inline void COpenGLExtensionHandler::extGlDisableVertexAttribArray(GLuint index)
+{
+	pGlDisableVertexAttribArray(index);
+}
+
+inline void COpenGLExtensionHandler::extGlEnableVertexAttribArray(GLuint index)
+{
+	pGlEnableVertexAttribArray(index);
+}
+
+inline void COpenGLExtensionHandler::extGlVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer)
+{
+	pGlVertexAttribPointer(index, size, type, normalized, stride, pointer);
 }
 
 

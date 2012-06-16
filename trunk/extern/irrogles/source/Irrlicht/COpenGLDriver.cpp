@@ -1398,6 +1398,12 @@ void COpenGLDriver::drawVertexPrimitiveList(const void* vertices, u32 vertexCoun
 	if (!checkPrimitiveCount(primitiveCount))
 		return;
 
+
+	bool useHighLevelShader = false;
+	if ( (int)Material.MaterialType > (int)EMT_ONETEXTURE_BLEND )
+		useHighLevelShader = true;
+
+
 	CNullDriver::drawVertexPrimitiveList(vertices, vertexCount, indexList, primitiveCount, vType, pType, iType);
 
 	if (vertices && !FeatureAvailable[IRR_ARB_vertex_array_bgra] && !FeatureAvailable[IRR_EXT_vertex_array_bgra])
@@ -1409,12 +1415,25 @@ void COpenGLDriver::drawVertexPrimitiveList(const void* vertices, u32 vertexCoun
 	if (MultiTextureExtension)
 		extGlClientActiveTexture(GL_TEXTURE0_ARB);
 
-	glEnableClientState(GL_COLOR_ARRAY);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	if ((pType!=scene::EPT_POINTS) && (pType!=scene::EPT_POINT_SPRITES))
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	if ((pType!=scene::EPT_POINTS) && (pType!=scene::EPT_POINT_SPRITES))
-		glEnableClientState(GL_NORMAL_ARRAY);
+	if ( useHighLevelShader )
+	{
+		extGlEnableVertexAttribArray( EVA_COLOR );
+		extGlEnableVertexAttribArray( EVA_POSITION );
+
+		if ((pType!=scene::EPT_POINTS) && (pType!=scene::EPT_POINT_SPRITES))
+			extGlEnableVertexAttribArray( EVA_TCOORD0 );
+		if ((pType!=scene::EPT_POINTS) && (pType!=scene::EPT_POINT_SPRITES))
+			extGlEnableVertexAttribArray( EVA_NORMAL );
+	}
+	else
+	{
+		glEnableClientState(GL_COLOR_ARRAY);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		if ((pType!=scene::EPT_POINTS) && (pType!=scene::EPT_POINT_SPRITES))
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		if ((pType!=scene::EPT_POINTS) && (pType!=scene::EPT_POINT_SPRITES))
+			glEnableClientState(GL_NORMAL_ARRAY);
+	}
 
 //due to missing defines in OSX headers, we have to be more specific with this check
 //#if defined(GL_ARB_vertex_array_bgra) || defined(GL_EXT_vertex_array_bgra)
@@ -1427,24 +1446,49 @@ void COpenGLDriver::drawVertexPrimitiveList(const void* vertices, u32 vertexCoun
 	{
 		if (FeatureAvailable[IRR_ARB_vertex_array_bgra] || FeatureAvailable[IRR_EXT_vertex_array_bgra])
 		{
-			switch (vType)
+			if ( useHighLevelShader )
 			{
-				case EVT_STANDARD:
-					glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
-					break;
-				case EVT_2TCOORDS:
-					glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Color);
-					break;
-				case EVT_TANGENTS:
-					glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertexTangents), &(static_cast<const S3DVertexTangents*>(vertices))[0].Color);
-					break;
+				switch (vType)
+				{
+					case EVT_STANDARD:
+						extGlVertexAttribPointer(EVA_COLOR, colorSize, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color );						
+						break;
+					case EVT_2TCOORDS:
+						extGlVertexAttribPointer(EVA_COLOR, colorSize, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Color );
+						break;
+					case EVT_TANGENTS:
+						extGlVertexAttribPointer(EVA_COLOR, colorSize, GL_UNSIGNED_BYTE, true, sizeof(S3DVertexTangents), &(static_cast<const S3DVertexTangents*>(vertices))[0].Color );
+						break;
+				}
+			}
+			else
+			{
+				switch (vType)
+				{
+					case EVT_STANDARD:
+						glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
+						break;
+					case EVT_2TCOORDS:
+						glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Color);
+						break;
+					case EVT_TANGENTS:
+						glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertexTangents), &(static_cast<const S3DVertexTangents*>(vertices))[0].Color);
+						break;
+				}
 			}
 		}
 		else
 		{
-			// avoid passing broken pointer to OpenGL
-			_IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
-			glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
+			if ( useHighLevelShader )
+			{
+				extGlVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, 0, &ColorBuffer[0]);
+			}
+			else
+			{
+				// avoid passing broken pointer to OpenGL
+				_IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
+				glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
+			}
 		}
 	}
 
@@ -1453,52 +1497,119 @@ void COpenGLDriver::drawVertexPrimitiveList(const void* vertices, u32 vertexCoun
 		case EVT_STANDARD:
 			if (vertices)
 			{
-				glNormalPointer(GL_FLOAT, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Normal);
-				glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
-				glVertexPointer(3, GL_FLOAT, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
+				if ( useHighLevelShader )
+				{
+					extGlVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
+					extGlVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
+					extGlVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Normal);
+				}
+				else
+				{
+					glNormalPointer(GL_FLOAT, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Normal);
+					glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
+					glVertexPointer(3, GL_FLOAT, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
+				}
 			}
 			else
 			{
-				glNormalPointer(GL_FLOAT, sizeof(S3DVertex), buffer_offset(12));
-				glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), buffer_offset(24));
-				glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex), buffer_offset(28));
-				glVertexPointer(3, GL_FLOAT, sizeof(S3DVertex), 0);
+				if ( useHighLevelShader )
+				{
+					extGlVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex), 0);
+					extGlVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertex), buffer_offset(12));
+					extGlVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), buffer_offset(24));
+					extGlVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), buffer_offset(28));
+				}
+				else
+				{
+					glNormalPointer(GL_FLOAT, sizeof(S3DVertex), buffer_offset(12));
+					glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex), buffer_offset(24));
+					glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex), buffer_offset(28));
+					glVertexPointer(3, GL_FLOAT, sizeof(S3DVertex), 0);
+				}
 			}
 
 			if (MultiTextureExtension && CurrentTexture[1])
 			{
 				extGlClientActiveTexture(GL_TEXTURE1_ARB);
-				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-				if (vertices)
-					glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
+
+				if ( useHighLevelShader == true )
+				{
+					extGlEnableVertexAttribArray( EVA_TCOORD1 );
+
+					if (vertices)
+						extGlVertexAttribPointer(EVA_TCOORD1, 2, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
+					else
+						extGlVertexAttribPointer(EVA_TCOORD1, 2, GL_FLOAT, false, sizeof(S3DVertex), buffer_offset(28));
+				}
 				else
-					glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex), buffer_offset(28));
+				{
+					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+					if (vertices)
+						glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
+					else
+						glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex), buffer_offset(28));
+				}
 			}
 			break;
 		case EVT_2TCOORDS:
 			if (vertices)
 			{
-				glNormalPointer(GL_FLOAT, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Normal);
-				glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].TCoords);
-				glVertexPointer(3, GL_FLOAT, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Pos);
+				if ( useHighLevelShader == true )
+				{
+					extGlVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Pos);
+					extGlVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].TCoords);
+					extGlVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Normal);
+				}
+				else
+				{
+					glNormalPointer(GL_FLOAT, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Normal);
+					glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].TCoords);
+					glVertexPointer(3, GL_FLOAT, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Pos);
+				}
 			}
 			else
 			{
-				glNormalPointer(GL_FLOAT, sizeof(S3DVertex2TCoords), buffer_offset(12));
-				glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex2TCoords), buffer_offset(24));
-				glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex2TCoords), buffer_offset(28));
-				glVertexPointer(3, GL_FLOAT, sizeof(S3DVertex2TCoords), buffer_offset(0));
+				if ( useHighLevelShader == true )
+				{
+					extGlVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertex2TCoords), buffer_offset(12));
+					extGlVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex2TCoords), buffer_offset(24));
+					extGlVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex2TCoords), buffer_offset(28));
+					extGlVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertex2TCoords), buffer_offset(0));
+				}
+				else
+				{
+					glNormalPointer(GL_FLOAT, sizeof(S3DVertex2TCoords), buffer_offset(12));
+					glColorPointer(colorSize, GL_UNSIGNED_BYTE, sizeof(S3DVertex2TCoords), buffer_offset(24));
+					glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex2TCoords), buffer_offset(28));
+					glVertexPointer(3, GL_FLOAT, sizeof(S3DVertex2TCoords), buffer_offset(0));
+				}
 			}
 
 
 			if (MultiTextureExtension)
 			{
 				extGlClientActiveTexture(GL_TEXTURE1_ARB);
-				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-				if (vertices)
-					glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].TCoords2);
+
+				if ( useHighLevelShader )
+					extGlEnableVertexAttribArray(EVA_TCOORD1);
 				else
-					glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex2TCoords), buffer_offset(36));
+					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+
+				if (vertices)
+				{
+					if ( useHighLevelShader )
+						extGlVertexAttribPointer(EVA_TCOORD1, 2, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].TCoords2);
+					else
+						glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].TCoords2);
+				}
+				else
+				{
+					if ( useHighLevelShader )
+						extGlVertexAttribPointer(EVA_TCOORD1, 2, GL_FLOAT, false, sizeof(S3DVertex2TCoords), buffer_offset(36));
+					else
+						glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex2TCoords), buffer_offset(36));
+				}
 			}
 			break;
 		case EVT_TANGENTS:
@@ -1542,19 +1653,38 @@ void COpenGLDriver::drawVertexPrimitiveList(const void* vertices, u32 vertexCoun
 		if (vType==EVT_TANGENTS)
 		{
 			extGlClientActiveTexture(GL_TEXTURE2_ARB);
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+			if ( useHighLevelShader )
+				extGlDisableVertexAttribArray( EVA_TCOORD1 );
+			else
+				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
 		if ((vType!=EVT_STANDARD) || CurrentTexture[1])
 		{
 			extGlClientActiveTexture(GL_TEXTURE1_ARB);
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+			if ( useHighLevelShader )
+				extGlDisableVertexAttribArray( EVA_TCOORD1 );
+			else
+				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
 		extGlClientActiveTexture(GL_TEXTURE0_ARB);
 	}
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	if ( useHighLevelShader )
+	{
+		extGlDisableVertexAttribArray( EVA_COLOR );
+		extGlDisableVertexAttribArray( EVA_POSITION );
+		extGlDisableVertexAttribArray( EVA_TCOORD0 );
+		extGlDisableVertexAttribArray( EVA_NORMAL );
+	}
+	else
+	{
+		glDisableClientState(GL_COLOR_ARRAY);
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_NORMAL_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	}
 }
 
 

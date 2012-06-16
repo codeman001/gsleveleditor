@@ -42,20 +42,20 @@ void CComponentFactory::initComponentTemplate()
 	s_compTemplate.push_back( CSerializable() );
 	p = &s_compTemplate[ IObjectComponent::AnimMesh ];
 	p->addGroup	(stringOfComponent(IObjectComponent::AnimMesh));
-	p->addPath	("meshFile", "data/mesh/dwarf.x");
+	p->addPath	("meshFile", "data/mesh");
 	p->addFloat	("animSpeed", 24.0f );
 
 	// add build in static mesh
 	s_compTemplate.push_back( CSerializable() );
 	p = &s_compTemplate[ IObjectComponent::StaticMesh ];
 	p->addGroup	(stringOfComponent(IObjectComponent::StaticMesh));
-	p->addPath	("meshFile", "data/mesh/dwarf.x");
+	p->addPath	("meshFile", "data/mesh");
 
 	// add skybox component
 	s_compTemplate.push_back( CSerializable() );
 	p = &s_compTemplate[ IObjectComponent::Skybox ];
 	p->addGroup	(stringOfComponent(IObjectComponent::Skybox));
-	p->addPath	("skyTexture", "data/skydome2.jpg");		
+	p->addPath	("skyTexture", "data/texture");		
 
 	// add object transform
 	s_compTemplate.push_back( CSerializable() );
@@ -87,13 +87,13 @@ void CComponentFactory::initComponentTemplate()
 	p = &s_compTemplate[ IObjectComponent::BoxObject ];
 	p->addGroup	(stringOfComponent(IObjectComponent::BoxObject));	
 	p->addFloat("size", 100 );
-	p->addPath("textureFile", "data/boxTexture.jpg");
+	p->addPath("textureFile", "data/texture");
 
 	// add billboard
 	s_compTemplate.push_back( CSerializable() );
 	p = &s_compTemplate[ IObjectComponent::Billboard ];
 	p->addGroup(stringOfComponent(IObjectComponent::Billboard));
-	p->addPath("textureFile", "data/particle/particlewhite.bmp");
+	p->addPath("textureFile", "data/texture");
 	p->addFloat("billboardWidth", 50 );
 	p->addFloat("billboardHeight", 50 );
 
@@ -101,13 +101,13 @@ void CComponentFactory::initComponentTemplate()
 	s_compTemplate.push_back( CSerializable() );
 	p = &s_compTemplate[ IObjectComponent::Particle ];
 	p->addGroup(stringOfComponent(IObjectComponent::Particle));
-	p->addPath( "particleXml", "data/particle/particle.xml" );
+	p->addPath( "particleXml", "data/particle" );
 
 	// add collada mesh
 	s_compTemplate.push_back( CSerializable() );
 	p = &s_compTemplate[ IObjectComponent::ColladaMesh ];
 	p->addGroup(stringOfComponent(IObjectComponent::ColladaMesh));
-	p->addPath("meshFile", "data/mesh/marine_2_mesh.dae");	
+	p->addPath("meshFile", "data/mesh");	
 	p->addString("defaultNode", "" );
 
 	// add terrain
@@ -121,7 +121,7 @@ void CComponentFactory::initComponentTemplate()
 	p->addGroup(stringOfComponent(IObjectComponent::Grass));	
 	p->addFloat("grassWidth",		100.0f, true);
 	p->addFloat("grassHeight",		50.0f, true);
-	p->addPath("grassTexture",		"data/grass.png", true);
+	p->addPath("grassTexture",		"data/texture", true);
 
 	// add water
 	s_compTemplate.push_back( CSerializable() );
@@ -129,8 +129,8 @@ void CComponentFactory::initComponentTemplate()
 	p->addGroup(stringOfComponent(IObjectComponent::Water));
 	p->addFloat("sizeX", 800.0f, true);
 	p->addFloat("sizeY", 800.0f, true);
-	p->addString("waterTexture", "data/water.tga", true);
-	p->addString("waterNormalTexture", "data/waterNormal.tga", true);
+	p->addString("waterTexture", "data/texture", true);
+	p->addString("waterNormalTexture", "data/texture", true);
 
 	loadAllTemplate();
 }

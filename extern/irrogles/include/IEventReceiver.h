@@ -49,6 +49,9 @@ namespace irr
 		user receiver then no text will be sent to the console. */
 		EET_LOG_TEXT_EVENT,
 
+		// flash event
+		EET_FSCOMMAND_EVENT,
+
 		//! A user event with user data.
 		/** This is not used by Irrlicht and can be used to send user
 		specific data though the system. The Irrlicht 'window handle'
@@ -401,6 +404,12 @@ struct SEvent
 		ELOG_LEVEL Level;
 	};
 
+	struct SFSCommandEvent
+	{
+		char Command[512];
+		char Param[512];
+	};
+
 	//! Any kind of user event.
 	struct SUserEvent
 	{
@@ -412,6 +421,8 @@ struct SEvent
 	};
 
 	EEVENT_TYPE EventType;
+	s32			EventControlID;
+
 	union
 	{
 		struct SGUIEvent GUIEvent;
@@ -420,6 +431,7 @@ struct SEvent
 		struct SJoystickEvent JoystickEvent;
 		struct SLogEvent LogEvent;
 		struct SUserEvent UserEvent;
+		struct SFSCommandEvent FSEvent;	
 	};
 
 };

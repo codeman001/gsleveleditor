@@ -2,6 +2,10 @@
 #include "CMenuFx.h"
 #include "CMenuFxObj.h"
 
+//////////////////////////////////////////////////
+// CMenuFx Implement
+//////////////////////////////////////////////////
+
 CMenuFx::CMenuFx()
 {
 	m_player = new gameswf::player();
@@ -10,6 +14,7 @@ CMenuFx::CMenuFx()
 	
 	m_visible = true;
 	m_firstInit = true;
+	m_hasAlpha = false;
 
 	m_viewportx = 0;
 	m_viewporty = 0;
@@ -57,13 +62,12 @@ void CMenuFx::start(int frame)
 void CMenuFx::update(float timestep)
 {
 	if ( m_visible && m_root )
-	{
-		m_player->set_force_realtime_framerate ( true );
-
-		const float maxTimeStep = 1.0/20.0f;
+	{		
+		const float maxTimeStep = 1.0f/20.0f;
 		if ( timestep > maxTimeStep )
 			timestep = maxTimeStep;
 
+		//m_player->set_force_realtime_framerate ( true );
 		m_root->advance( timestep );
 
 		// goto frame 0 if first time
@@ -75,7 +79,7 @@ void CMenuFx::update(float timestep)
 	}
 }
 
-void CMenuFx::render(int x, int y, int w, int h, bool hasBackground)
+void CMenuFx::render(int x, int y, int w, int h)
 {
 	if ( m_visible && m_root )
 	{
@@ -85,7 +89,7 @@ void CMenuFx::render(int x, int y, int w, int h, bool hasBackground)
 		m_viewporth = h;
 
 		m_root->set_display_viewport ( x, y, w, h );
-		m_root->set_background_alpha ( hasBackground ? 1.0f : 0.0f );
+		m_root->set_background_alpha ( !m_hasAlpha ? 1.0f : 0.0f );
 		m_root->display();
 	}
 }

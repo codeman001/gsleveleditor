@@ -19,6 +19,8 @@ protected:
 	int		m_viewporty;
 	int		m_viewportw;
 	int		m_viewporth;
+
+	bool	m_hasAlpha;
 public:
 	CMenuFx();
 	virtual ~CMenuFx();
@@ -33,7 +35,7 @@ public:
 
 	// render
 	// render flash at viewport x,y,w,h
-	void render(int x, int y, int w, int h, bool hasBackground);
+	void render(int x, int y, int w, int h);
 	
 	// updateMouseState
 	// update mouse event to flash
@@ -45,6 +47,11 @@ public:
 	{
 		m_visible = b;
 	}	
+
+	void setBackgroundTransparent( bool b )
+	{
+		m_hasAlpha = b;
+	}
 
 	// start
 	// start play

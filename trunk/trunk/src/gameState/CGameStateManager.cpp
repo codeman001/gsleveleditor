@@ -141,5 +141,13 @@ void CGameStateMgr::destroyAllState()
 // OnEvent
 bool CGameStateMgr::OnEvent(const SEvent& irrEvent)
 {
+	if ( irrEvent.EventType == EET_FSCOMMAND_EVENT )
+	{
+		int nState = m_stackState.size();
+		if ( nState > 0 )
+		{
+			m_stackState[0]->onFsCommand( irrEvent.FSEvent.Command , irrEvent.FSEvent.Param );
+		}
+	}
 	return true;
 }

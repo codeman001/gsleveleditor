@@ -1,10 +1,3 @@
-//====================================================//
-// Ocean.vert                                         //
-// Project Tikal                                      //
-// Ocean Vertex Shader v1.0, september 2009           //
-// by Andres J. Porfirio ... andresjesse@yahoo.com.br //
-//====================================================//
-
 attribute vec4 inVertexPosition;
 attribute vec2 inTexCoord0;
 

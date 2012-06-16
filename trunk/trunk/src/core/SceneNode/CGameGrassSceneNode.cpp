@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CGameGrassSceneNode.h"
 #include "CGameObject.h"
+#include "IView.h"
 
 CGameGrassSceneNode::CGameGrassSceneNode(CGameObject *owner, IMesh* mesh, ISceneNode* parent, ISceneManager* mgr, const core::vector3df& position, s32 id)
 	:ISceneNode( parent, mgr, id, position, core::vector3df(0,0,0) )
@@ -21,8 +22,8 @@ CGameGrassSceneNode::CGameGrassSceneNode(CGameObject *owner, IMesh* mesh, IScene
 
 		s_materialGrass = mgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles
 		(
-			"shader/extern/grass.vert", "vertexMain",	video::EVST_VS_1_1,
-			"shader/extern/grass.frag", "pixelMain",	video::EPST_PS_1_1,
+			getIView()->getPath("shader/extern/grass.vert"), "vertexMain",	video::EVST_VS_1_1,
+			getIView()->getPath("shader/extern/grass.frag"), "pixelMain",	video::EPST_PS_1_1,
 			grassShaderCB, 
 			video::EMT_TRANSPARENT_ALPHA_CHANNEL
 		);

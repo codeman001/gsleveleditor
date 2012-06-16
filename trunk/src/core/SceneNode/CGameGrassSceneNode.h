@@ -20,12 +20,11 @@ public:
     virtual void OnSetConstants(video::IMaterialRendererServices* services, s32 userData)
     {
 		video::IVideoDriver* driver = services->getVideoDriver();
-
+		
 		core::matrix4 worldViewProj;
 		worldViewProj = driver->getTransform(video::ETS_PROJECTION);
 		services->setVertexShaderConstant("uPrjMatrix", worldViewProj.pointer(), 16);
 		
-
 		worldViewProj = driver->getTransform(video::ETS_VIEW);
 		worldViewProj *= driver->getTransform(video::ETS_WORLD);
 		services->setVertexShaderConstant("uMvpMatrix", worldViewProj.pointer(), 16);

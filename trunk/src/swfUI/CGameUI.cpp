@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CGameUI.h"
 #include "CMenuFx.h"
+#include "IView.h"
 
 ////////////////////////////////////////////
 // CGameUI static func implement
@@ -13,7 +14,16 @@ tu_file* CGameUI::_fileOpen( const char *lpPath )
 
 void CGameUI::_fsCallback( gameswf::character *movie, const char *lpCommand, const char *lpParams )
 {
-	printf("fsCallback: %s %s\n", lpCommand, lpParams);
+	//printf("fsCallback: %s %s\n", lpCommand, lpParams);
+	
+	SEvent	flashEvent;
+	flashEvent.EventType = EET_FSCOMMAND_EVENT;
+	strcpy(flashEvent.FSEvent.Command, lpCommand);
+	strcpy(flashEvent.FSEvent.Param, lpParams);
+
+	// post event to device
+	irr::IrrlichtDevice *device = getIView()->getDevice();
+	device->postEventFromUser( flashEvent );
 }
 
 ////////////////////////////////////////////
@@ -81,7 +91,7 @@ void CGameUI::render(int x, int y, int w, int h, bool hasBackground)
 	map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 	while ( i != end )
 	{
-		(*i).second->render(x, y, w, h, hasBackground);
+		(*i).second->render(x, y, w, h);
 		i++;
 	}
 }

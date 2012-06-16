@@ -35,6 +35,10 @@ public:
 	// paint interface to screens
 	virtual void render();
 
+	// onFsCommand
+	// flash notification
+	virtual void onFsCommand( const char *command, const char *param );
+
 	// onResume
 	// on resume
 	virtual void onResume();

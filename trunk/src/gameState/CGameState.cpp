@@ -44,6 +44,12 @@ void CGameState::onPause()
 {
 }
 
+// onFsCommand
+// flash notification
+void CGameState::onFsCommand( const char *command, const char *param )
+{
+}
+
 // updateWindow
 // Update UI
 void CGameState::update(float timeStep)

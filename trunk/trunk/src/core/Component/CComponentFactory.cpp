@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CComponentFactory.h"
 
+#include "IView.h"
+
 #if defined(GSGAMEPLAY) || defined(GSEDITOR)
 #include "CAnimMeshComponent.h"
 #include "CStaticMeshComponent.h"
@@ -121,7 +123,7 @@ void CComponentFactory::initComponentTemplate()
 	p->addGroup(stringOfComponent(IObjectComponent::Grass));	
 	p->addFloat("grassWidth",		100.0f, true);
 	p->addFloat("grassHeight",		50.0f, true);
-	p->addPath("grassTexture",		"data/texture", true);
+	p->addPath("grassTexture",		"data/texture");
 
 	// add water
 	s_compTemplate.push_back( CSerializable() );
@@ -129,8 +131,8 @@ void CComponentFactory::initComponentTemplate()
 	p->addGroup(stringOfComponent(IObjectComponent::Water));
 	p->addFloat("sizeX", 800.0f, true);
 	p->addFloat("sizeY", 800.0f, true);
-	p->addString("waterTexture", "data/texture", true);
-	p->addString("waterNormalTexture", "data/texture", true);
+	p->addString("waterTexture", "data/texture");
+	p->addString("waterNormalTexture", "data/texture");
 
 	loadAllTemplate();
 }
@@ -159,14 +161,8 @@ void CComponentFactory::freeData()
 // saveAllTemplate
 // save all template info
 void CComponentFactory::saveAllTemplate()
-{
-	wchar_t path[MAX_PATH] = {0};
-	wchar_t fileName[MAX_PATH] = {0};
-
-	uiApplication::getAppPath( (LPWSTR)path, MAX_PATH );
-	swprintf( fileName, MAX_PATH, L"%s\\componentTemplate.css", path );
-
-	std::ofstream file( fileName );
+{	
+	std::ofstream file( getIView()->getPath("componentTemplate.css") );
 	
 	int n = s_compTemplate.size();
 	for ( int i = 0; i < n; i++ )
@@ -187,13 +183,7 @@ void CComponentFactory::saveAllTemplate()
 // load all template info
 void CComponentFactory::loadAllTemplate()
 {
-	wchar_t path[MAX_PATH] = {0};
-	wchar_t fileName[MAX_PATH] = {0};
-
-	uiApplication::getAppPath( (LPWSTR)path, MAX_PATH );
-	swprintf( fileName, MAX_PATH, L"%s\\componentTemplate.css", path );
-
-	std::ifstream file( fileName );
+	std::ifstream file( getIView()->getPath("componentTemplate.css") );
 	if ( file.is_open() )
 	{
 		file.seekg (0, ios::end);

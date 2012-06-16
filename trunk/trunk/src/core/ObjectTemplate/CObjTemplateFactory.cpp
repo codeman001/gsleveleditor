@@ -1,10 +1,7 @@
 #include "stdafx.h"
 #include "CObjTemplateFactory.h"
 #include "CGameObject.h"
-
-#ifdef GSEDITOR
 #include "IView.h"
-#endif
 
 // global object template
 vector<CObjectTemplate> CObjTemplateFactory::s_objectTemplate;
@@ -83,19 +80,8 @@ void readTemplateFromData( char *lpData )
 // loadAllObjectTemplate
 // load obj template from file
 void CObjTemplateFactory::loadAllObjectTemplate()
-{
-	wchar_t path[MAX_PATH] = {0};
-	wchar_t fileName[MAX_PATH] = {0};
-
-#ifdef GSEDITOR
-	uiApplication::getAppPath( (LPWSTR)path, MAX_PATH );
-	swprintf( fileName, MAX_PATH, L"%s\\objectTemplate.css", path );
-#else
-	swprintf( fileName, MAX_PATH, L"objectTemplate.css", path );
-#endif
-	
-
-	std::ifstream file( fileName );
+{	
+	std::ifstream file( getIView()->getPath( "objectTemplate.css" ) );
 
 	if ( file.is_open() )
 	{
@@ -197,12 +183,7 @@ void CObjTemplateFactory::saveAllObjectTemplate()
 	wchar_t path[MAX_PATH] = {0};
 	wchar_t fileName[MAX_PATH] = {0};
 
-#ifdef GSEDITOR
-	uiApplication::getAppPath( (LPWSTR)path, MAX_PATH );
-#endif
-	swprintf( fileName, MAX_PATH, L"%s\\objectTemplate.css", path );
-
-	std::ofstream file( fileName );
+	std::ofstream file( getIView()->getPath("objectTemplate.css") );
 	
 	ArrayTemplateIter it = s_objectTemplate.begin(), end = s_objectTemplate.end();
 	while ( it != end )

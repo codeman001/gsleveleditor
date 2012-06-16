@@ -59,6 +59,11 @@ void CMenuFx::update(float timestep)
 	if ( m_visible && m_root )
 	{
 		m_player->set_force_realtime_framerate ( true );
+
+		const float maxTimeStep = 1.0/20.0f;
+		if ( timestep > maxTimeStep )
+			timestep = maxTimeStep;
+
 		m_root->advance( timestep );
 
 		// goto frame 0 if first time

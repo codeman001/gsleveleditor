@@ -1,0 +1,10 @@
+water
+{
+	Water component
+	{
+		sizeX: 800.0000000 | floatType;
+		sizeY: 800.0000000 | floatType;
+		waterTexture: data/texture/water.tga | stringType;
+		waterNormalTexture: data/texture/waterNormal.tga | stringType;
+	}
+}

@@ -561,6 +561,58 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="gameState"
+				>
+				<File
+					RelativePath="..\..\src\gameState\CGameState.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameState\CGameState.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameState\CGameStateManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameState\CGameStateManager.h"
+					>
+				</File>
+				<Filter
+					Name="CStateLoading"
+					>
+				</Filter>
+				<Filter
+					Name="CStateMainMenu"
+					>
+					<File
+						RelativePath="..\..\src\gameState\CStateMainMenu.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\gameState\CStateMainMenu.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="CStateGameplay"
+					>
+				</Filter>
+				<Filter
+					Name="CStateInit"
+					>
+					<File
+						RelativePath="..\..\src\gameState\CStateInit.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\gameState\CStateInit.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\gsgameplay.cpp"

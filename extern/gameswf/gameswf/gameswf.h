@@ -134,6 +134,9 @@ namespace gameswf
 	typedef void ( *fscommand_callback ) ( character *movie, const char *command, const char *arg );
 	exported_module void	register_fscommand_callback ( fscommand_callback handler );
 
+	typedef bool ( *fsgetfont_callback) ( const char *font_name, tu_string &file_name, bool is_bold, bool is_italic );
+	exported_module void	register_getfont_callback ( fsgetfont_callback handler );
+
 	// Use this to control how finely curves are subdivided.  1.0
 	// is the default; it's a pretty good value.  Larger values
 	// result in coarser, more angular curves with fewer vertices.

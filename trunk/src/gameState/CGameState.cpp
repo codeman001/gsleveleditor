@@ -3,6 +3,7 @@
 
 CGameState::CGameState()
 {
+	m_menuFx = NULL;
 }
 
 CGameState::~CGameState()
@@ -52,12 +53,12 @@ void CGameState::onFsCommand( const char *command, const char *param )
 
 // updateWindow
 // Update UI
-void CGameState::update(float timeStep)
+void CGameState::onUpdate(float timeStep)
 {
 }
 
 // paintWindow
 // paint interface to screens
-void CGameState::render()
+void CGameState::onRender()
 {
 }

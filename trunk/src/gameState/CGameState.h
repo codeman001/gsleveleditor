@@ -9,6 +9,8 @@
 
 class CGameState
 {
+protected:
+	CMenuFx	*m_menuFx;
 public:
 	CGameState();
 	virtual ~CGameState();
@@ -29,11 +31,11 @@ public:
 
 	// updateWindow
 	// Update UI
-	virtual void update(float timeStep);
+	virtual void onUpdate(float timeStep);
 
 	// paintWindow
 	// paint interface to screens
-	virtual void render();
+	virtual void onRender();
 
 	// onFsCommand
 	// flash notification

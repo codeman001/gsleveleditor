@@ -13,9 +13,7 @@ tu_file* CGameUI::_fileOpen( const char *lpPath )
 }
 
 void CGameUI::_fsCallback( gameswf::character *movie, const char *lpCommand, const char *lpParams )
-{
-	//printf("fsCallback: %s %s\n", lpCommand, lpParams);
-	
+{	
 	SEvent	flashEvent;
 	flashEvent.EventType = EET_FSCOMMAND_EVENT;
 	strcpy(flashEvent.FSEvent.Command, lpCommand);
@@ -27,8 +25,13 @@ void CGameUI::_fsCallback( gameswf::character *movie, const char *lpCommand, con
 }
 
 bool CGameUI::_getFont( const char *font_name, tu_string &file_name, bool is_bold, bool is_italic )
-{
-	file_name = getIView()->getPath("ariblk.ttf");
+{	
+	if ( strcmp("Arial Black",font_name) == 0 )
+		file_name = getIView()->getPath("data/font/killerants.ttf");
+	else if ( strcmp("Verdana",font_name) == 0 )
+		file_name = getIView()->getPath("data/font/zrnic.ttf");
+	else
+		file_name = getIView()->getPath("data/font/arial.ttf");		
 	return true;
 }
 

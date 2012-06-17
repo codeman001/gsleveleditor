@@ -16,7 +16,7 @@ void CGameStateMgr::update(float timeStep)
 	int nState = m_stackState.size();
 	if ( nState > 0 )
 	{
-		m_stackState[0]->update(timeStep);
+		m_stackState[0]->onUpdate(timeStep);
 	}
 
 	// delete change, pop state
@@ -35,7 +35,7 @@ void CGameStateMgr::render()
 	int nState = m_stackState.size();
 	if ( nState > 0 )
 	{
-		m_stackState[0]->render();
+		m_stackState[0]->onRender();
 	}
 }
 

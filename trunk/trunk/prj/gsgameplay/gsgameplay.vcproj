@@ -581,8 +581,16 @@
 					>
 				</File>
 				<Filter
-					Name="CStateLoading"
+					Name="CStateGameLoading"
 					>
+					<File
+						RelativePath="..\..\src\gameState\CStateGameLoading.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\gameState\CStateGameLoading.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="CStateMainMenu"

@@ -5,6 +5,8 @@
 
 class CStateMainMenu: public CGameState
 {
+protected:
+	int		m_menuChoice;
 public:
 	CStateMainMenu();
 	virtual ~CStateMainMenu();

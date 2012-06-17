@@ -23,6 +23,14 @@
 namespace gameswf
 {
 
+	static fsgetfont_callback	s_getfont_handler = NULL;
+
+	void	register_getfont_callback ( fsgetfont_callback handler )
+	{
+		s_getfont_handler = handler;
+	}
+	
+
 #if TU_CONFIG_LINK_TO_FREETYPE == 1
 
 	static FT_Library	m_lib;
@@ -30,10 +38,12 @@ namespace gameswf
 	bool get_fontfile ( const char *font_name, tu_string &file_name, bool is_bold, bool is_italic )
 	// gets font file name by font name
 	{
-		file_name = "arial.ttf";
-		return true;
 
-		/*
+		if ( gameswf::s_getfont_handler != NULL )
+		{		
+			return gameswf::s_getfont_handler( font_name, file_name, is_bold, is_italic );
+		}
+		
 		if ( font_name == NULL )
 		{
 			return false;
@@ -162,7 +172,7 @@ namespace gameswf
 		file_name += ".ttf";
 		return true;
 #endif
-		*/
+
 	}
 
 

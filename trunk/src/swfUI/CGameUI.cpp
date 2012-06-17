@@ -26,6 +26,12 @@ void CGameUI::_fsCallback( gameswf::character *movie, const char *lpCommand, con
 	device->postEventFromUser( flashEvent );
 }
 
+bool CGameUI::_getFont( const char *font_name, tu_string &file_name, bool is_bold, bool is_italic )
+{
+	file_name = getIView()->getPath("ariblk.ttf");
+	return true;
+}
+
 ////////////////////////////////////////////
 // CGameUI implement
 ////////////////////////////////////////////
@@ -36,6 +42,7 @@ CGameUI::CGameUI()
 
 	gameswf::register_file_opener_callback	( CGameUI::_fileOpen );
 	gameswf::register_fscommand_callback	( CGameUI::_fsCallback );
+	gameswf::register_getfont_callback		( CGameUI::_getFont );
 
 	gameswf::set_render_handler ( m_render );
 	gameswf::set_glyph_provider ( gameswf::create_glyph_provider_freetype() );

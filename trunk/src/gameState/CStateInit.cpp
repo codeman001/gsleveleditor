@@ -7,7 +7,7 @@
 CStateInit::CStateInit()
 {
 	m_loadFinish = false;
-	m_logoTime = 3.0f;
+	m_logoTime = 2.0f;
 }
 
 CStateInit::~CStateInit()

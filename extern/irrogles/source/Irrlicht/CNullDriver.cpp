@@ -84,7 +84,7 @@ IImageWriter* createImageWriterPPM();
 CNullDriver::CNullDriver(io::IFileSystem* io, const core::dimension2d<u32>& screenSize)
 : FileSystem(io), MeshManipulator(0), ViewPort(0,0,0,0), ScreenSize(screenSize),
 	PrimitivesDrawn(0), MinVertexCountForVBO(500), TextureCreationFlags(0),
-	OverrideMaterial2DEnabled(false), AllowZWriteOnTransparent(false)
+	OverrideMaterial2DEnabled(false), AllowZWriteOnTransparent(false),EnableChangeProjectionMatrixWhenSetRenderMode(true)
 {
 	#ifdef _DEBUG
 	setDebugName("CNullDriver");
@@ -2412,6 +2412,11 @@ void CNullDriver::convertColor(const void* sP, ECOLOR_FORMAT sF, s32 sN,
 		void* dP, ECOLOR_FORMAT dF) const
 {
 	video::CColorConverter::convert_viaFormat(sP, sF, sN, dP, dF);
+}
+		
+void CNullDriver::enableChangeProjectionMatrixWhenSetRenderMode( bool b )
+{
+	EnableChangeProjectionMatrixWhenSetRenderMode = b;
 }
 
 

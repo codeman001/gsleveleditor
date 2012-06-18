@@ -1865,7 +1865,10 @@ void COpenGLDriver::draw2DVertexPrimitiveList(const void* vertices, u32 vertexCo
 		setRenderStates2DMode(alphaSource&video::EAS_VERTEX_COLOR, (Material.getTexture(0) != 0), (alphaSource&video::EAS_TEXTURE) != 0);
 	}
 	else
-		setRenderStates2DMode(Material.MaterialType==EMT_TRANSPARENT_VERTEX_ALPHA, (Material.getTexture(0) != 0), Material.MaterialType==EMT_TRANSPARENT_ALPHA_CHANNEL);
+	{
+		//setRenderStates2DMode(Material.MaterialType==EMT_TRANSPARENT_VERTEX_ALPHA, (Material.getTexture(0) != 0), Material.MaterialType==EMT_TRANSPARENT_ALPHA_CHANNEL);
+		setRenderStates2DMode(true, (Material.getTexture(0) != 0), Material.MaterialType==EMT_TRANSPARENT_ALPHA_CHANNEL);
+	}
 
 	if (MultiTextureExtension)
 		extGlClientActiveTexture(GL_TEXTURE0_ARB);
@@ -3278,7 +3281,7 @@ void COpenGLDriver::setRenderStates2DMode(bool alpha, bool texture, bool alphaCh
 			if (static_cast<u32>(LastMaterial.MaterialType) < MaterialRenderers.size())
 				MaterialRenderers[LastMaterial.MaterialType].Renderer->OnUnsetMaterial();
 		}
-		if (Transformation3DChanged)
+		if (Transformation3DChanged && EnableChangeProjectionMatrixWhenSetRenderMode)
 		{
 			glMatrixMode(GL_PROJECTION);
 
@@ -3298,6 +3301,16 @@ void COpenGLDriver::setRenderStates2DMode(bool alpha, bool texture, bool alphaCh
 
 			Transformation3DChanged = false;
 		}
+		else if ( EnableChangeProjectionMatrixWhenSetRenderMode == false )
+		{
+			// switch back the matrices
+			glMatrixMode(GL_MODELVIEW);
+			glLoadMatrixf((Matrices[ETS_VIEW] * Matrices[ETS_WORLD]).pointer());
+
+			glMatrixMode(GL_PROJECTION);
+			glLoadMatrixf(Matrices[ETS_PROJECTION].pointer());
+		}
+
 		if (!OverrideMaterial2DEnabled)
 		{
 			setBasicRenderStates(InitMaterial2D, LastMaterial, true);
@@ -3343,9 +3356,11 @@ void COpenGLDriver::setRenderStates2DMode(bool alpha, bool texture, bool alphaCh
 		}
 		Material.setTexture(0, const_cast<video::ITexture*>(CurrentTexture[0]));
 		setTransform(ETS_TEXTURE_0, core::IdentityMatrix);
+		
 		// Due to the transformation change, the previous line would call a reset each frame
 		// but we can safely reset the variable as it was false before
-		Transformation3DChanged=false;
+		if ( EnableChangeProjectionMatrixWhenSetRenderMode )
+			Transformation3DChanged=false;
 
 		if (alphaChannel)
 		{
@@ -3418,7 +3433,8 @@ void COpenGLDriver::setRenderStates2DMode(bool alpha, bool texture, bool alphaCh
 		}
 	}
 
-	CurrentRenderMode = ERM_2D;
+	if ( EnableChangeProjectionMatrixWhenSetRenderMode )
+		CurrentRenderMode = ERM_2D;
 }
 
 

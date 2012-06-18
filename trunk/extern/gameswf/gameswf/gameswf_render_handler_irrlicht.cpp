@@ -48,20 +48,21 @@ ITexture *create_texture( int format, int w, int h, void *data, int level )
 		break;
 	case GL_ALPHA:
 		{
-			imageFormat = ECF_R8G8B8;
-			sizePixel = 3;
+			imageFormat = ECF_A8R8G8B8;
+			sizePixel = 4;
 
 			// we need convert 8bit to 32bit
-			imageData = new unsigned char[ w*h*3 ];
+			imageData = new unsigned char[ w*h*sizePixel ];
 			int totalSize = w*h;			
 			unsigned char *d = (unsigned char*)imageData;
 			unsigned char *s = (unsigned char*)data;
 
 			for ( int i = 0; i < totalSize; i++ )
 			{
-				*d = *s; d++; //r
-				*d = *s; d++; //g
-				*d = *s; d++; //b
+				*d = 0xff; d++; //b
+				*d = 0xff; d++; //g
+				*d = 0xff; d++; //r
+				*d = *s;   d++; //a
 				s++;
 			}
 		}
@@ -703,6 +704,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		bi->layout();
 		apply_color ( color );
 
+		video::SColor irrColor( color.m_a, color.m_r, color.m_g, color.m_b ); 
+		
 		gameswf::point a, b, c, d;
 		m.transform ( &a, gameswf::point ( coords.m_x_min, coords.m_y_min ) );
 		m.transform ( &b, gameswf::point ( coords.m_x_max, coords.m_y_min ) );
@@ -717,24 +720,28 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		vertices[0].Pos.Z = 0.0;
 		vertices[0].TCoords.X = uv_coords.m_x_min;
 		vertices[0].TCoords.Y = uv_coords.m_y_min;
+		vertices[0].Color = irrColor;
 
 		vertices[1].Pos.X = b.m_x;
 		vertices[1].Pos.Y = b.m_y;
 		vertices[1].Pos.Z = 0.0;
 		vertices[1].TCoords.X = uv_coords.m_x_max;
 		vertices[1].TCoords.Y = uv_coords.m_y_min;
+		vertices[1].Color = irrColor;
 
 		vertices[2].Pos.X = c.m_x;
 		vertices[2].Pos.Y = c.m_y;
 		vertices[2].Pos.Z = 0.0;
 		vertices[2].TCoords.X = uv_coords.m_x_min;
 		vertices[2].TCoords.Y = uv_coords.m_y_max;
+		vertices[2].Color = irrColor;
 
 		vertices[3].Pos.X = d.m_x;
 		vertices[3].Pos.Y = d.m_y;
 		vertices[3].Pos.Z = 0.0;
 		vertices[3].TCoords.X = uv_coords.m_x_max;
 		vertices[3].TCoords.Y = uv_coords.m_y_max;
+		vertices[3].Color = irrColor;
 
 		s16 index[] = {0,2,3,1};		
 
@@ -745,6 +752,9 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		// set texture
 		m_material.setTexture(0, ((bitmap_info_irrlicht*)bi)->m_texture );		
 		m_material.Lighting = false;
+		m_material.ZBuffer = false;
+		m_material.ZWriteEnable = false;
+		m_material.MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;
 
 		m_driver->setMaterial( m_material );
 		m_driver->drawVertexPrimitiveList(

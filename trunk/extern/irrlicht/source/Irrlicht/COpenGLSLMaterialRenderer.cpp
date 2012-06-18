@@ -223,7 +223,19 @@ bool COpenGLSLMaterialRenderer::createShader(GLenum shaderType, const char* shad
 {
 	GLhandleARB shaderHandle = Driver->extGlCreateShaderObject(shaderType);
 
-	Driver->extGlShaderSourceARB(shaderHandle, 1, &shader, NULL);
+	
+	const char* code[32];
+
+	int num = 0;	
+	code[num++] = 
+		"#ifndef lowp\n#define lowp\n#endif\n"
+		"#ifndef mediump\n#define mediump\n#endif\n"
+		"#ifndef highp\n#define highp\n#endif\n"
+		"#ifndef precision\n#define precision\n#endif\n";	
+	code[num++] = shader;
+
+
+	Driver->extGlShaderSourceARB(shaderHandle, num, code, NULL);
 	Driver->extGlCompileShaderARB(shaderHandle);
 
 	GLint status = 0;

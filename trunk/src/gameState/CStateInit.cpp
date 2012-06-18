@@ -4,6 +4,8 @@
 #include "CStateMainMenu.h"
 #include "CGameStateManager.h"
 
+#include "IView.h"
+
 CStateInit::CStateInit()
 {
 	m_loadFinish = false;
@@ -17,17 +19,15 @@ CStateInit::~CStateInit()
 void CStateInit::onCreate()
 {	
 	// init flash ui
-	m_menuFx =	CGameUI::getInstance()->openFlash("uiGameInit","data/flashui/uiGameInit.swf");
+	m_menuFx =	CGameUI::getInstance()->openFlash("uiGameInit", getIView()->getPath("data/flashui/uiGameInit.swf") );
 }
 
 void CStateInit::onFsCommand(const char *command, const char *param)
 {
-	printf("fsCommand: %s %s\n", command, param);
-
 	if ( strcmp( command, "animationStatus") == 0 && strcmp( param, "finish") == 0 )
 	{
 		// todo load menu state
-		CMenuFx *mainMenu =	CGameUI::getInstance()->openFlash("uiGameMenu","data/flashui/uiGameMenu.swf");
+		CMenuFx *mainMenu =	CGameUI::getInstance()->openFlash("uiGameMenu", getIView()->getPath("data/flashui/uiGameMenu.swf"));
 		mainMenu->setVisible( false );
 
 		// notify load finish
@@ -56,7 +56,10 @@ void CStateInit::onUpdate(float timeStep)
 			// play state hide
 			CMenuFxObj *obj = m_menuFx->findObj("gsGameInit");
 			if ( obj )
+			{
 				obj->gotoFrame("hide", true);
+				obj->drop();
+			}
 		}
 	}
 }

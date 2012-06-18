@@ -665,6 +665,8 @@ namespace video
 				scene::E_PRIMITIVE_TYPE pType=scene::EPT_TRIANGLES,
 				E_INDEX_TYPE iType=EIT_16BIT) =0;
 
+		virtual void enableChangeProjectionMatrixWhenSetRenderMode( bool b ) = 0;
+
 		//! Draws an indexed triangle list.
 		/** Note that there may be at maximum 65536 vertices, because
 		the index list is an array of 16 bit values each with a maximum

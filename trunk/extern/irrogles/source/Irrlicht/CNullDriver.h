@@ -128,6 +128,8 @@ namespace video
 				const void* indexList, u32 primitiveCount,
 				E_VERTEX_TYPE vType=EVT_STANDARD, scene::E_PRIMITIVE_TYPE pType=scene::EPT_TRIANGLES, E_INDEX_TYPE iType=EIT_16BIT);
 
+		virtual void enableChangeProjectionMatrixWhenSetRenderMode( bool b );
+
 		//! Draws a 3d line.
 		virtual void draw3DLine(const core::vector3df& start,
 			const core::vector3df& end, SColor color = SColor(255,255,255,255));
@@ -837,6 +839,8 @@ namespace video
 		bool AllowZWriteOnTransparent;
 
 		bool FeatureEnabled[video::EVDF_COUNT];
+
+		bool EnableChangeProjectionMatrixWhenSetRenderMode;
 	};
 
 } // end namespace video

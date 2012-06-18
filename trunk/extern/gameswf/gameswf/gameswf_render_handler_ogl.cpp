@@ -7,6 +7,8 @@
 
 #include "base/tu_config.h"
 
+#ifdef TU_USE_OGL
+
 #ifdef TU_USE_SDL
 #include <SDL.h>  // for cursor handling & the scanning for extensions.
 #include <SDL_opengl.h>	// for opengl const
@@ -1963,6 +1965,8 @@ gameswf::render_handler	*gameswf::create_render_handler_ogl()
 {
 	return new render_handler_ogl;
 }
+
+#endif
 
 //#endif //TU_USE_SDL
 

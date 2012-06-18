@@ -203,6 +203,7 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	IVideoDriver	*m_driver;
 	
 	core::matrix4	m_projectionMatrix;
+	core::matrix4	m_worldMatrix;
 	core::matrix4	m_viewMatrix;
 
 	SMaterial		m_material;
@@ -527,9 +528,27 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		core::recti rectViewport = core::recti(viewport_x0, viewport_y0, viewport_x0+viewport_width, viewport_y0+viewport_height);
 		m_driver->setViewPort( rectViewport );
 		
+		// set prj matrix
+		m_projectionMatrix = core::IdentityMatrix;
+		setOrtho( x0, x1, y0, y1, -1, 1, m_projectionMatrix );		
+
 		// set ortho matrix
-		setOrtho( x0, x1, y0, y1, -1, 1, m_projectionMatrix );
+		m_viewMatrix = core::IdentityMatrix;
 		
+		// set world matrix (flip 0y)
+		m_worldMatrix = core::IdentityMatrix;
+		core::matrix4 trans; trans.setTranslation( core::vector3df(0, m_display_height, 0) );
+		core::matrix4 scale; scale.setScale( core::vector3df(1.0, -1.0, 1.0) );
+		m_worldMatrix *= trans;
+		m_worldMatrix *= scale;		
+						
+		// set material
+		m_material.Lighting = false;
+		m_material.ZBuffer = false;
+		m_material.ZWriteEnable = false;
+		m_material.BackfaceCulling = false;
+		m_material.FrontfaceCulling = false;
+
 		// Clear the background, if background color has alpha > 0.
 		if ( background_color.m_a > 0 )
 		{
@@ -538,7 +557,7 @@ struct render_handler_irrlicht : public gameswf::render_handler
 			
 			// clear screen
 			m_driver->draw2DRectangle(
-					SColor(background_color.m_a, background_color.m_r, background_color.m_g, background_color.m_b),
+					SColor(background_color.m_a, 0, background_color.m_g, background_color.m_b),
 					rectViewport
 				);
 		}
@@ -569,7 +588,9 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	void	apply_matrix ( const gameswf::matrix &m )
 	// multiply current matrix with opengl matrix
 	{
-		float	mat[16];
+		core::matrix4 mulMatrix;
+		float	*mat = mulMatrix.pointer();
+
 		memset ( &mat[0], 0, sizeof ( mat ) );
 		mat[0] = m.m_[0][0];
 		mat[1] = m.m_[1][0];
@@ -580,7 +601,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		mat[13] = m.m_[1][2];
 		mat[15] = 1;
 		
-		m_viewMatrix.setM( mat );
+		core::vector3df v =	mulMatrix.getScale();
+
 	}
 
 	static void	apply_color ( const gameswf::rgba &c )
@@ -704,8 +726,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		bi->layout();
 		apply_color ( color );
 
-		video::SColor irrColor( color.m_a, color.m_r, color.m_g, color.m_b ); 
-		
+		video::SColor irrColor( color.m_a, color.m_r, color.m_g, color.m_b );
+
 		gameswf::point a, b, c, d;
 		m.transform ( &a, gameswf::point ( coords.m_x_min, coords.m_y_min ) );
 		m.transform ( &b, gameswf::point ( coords.m_x_max, coords.m_y_min ) );
@@ -743,26 +765,25 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		vertices[3].TCoords.Y = uv_coords.m_y_max;
 		vertices[3].Color = irrColor;
 
-		s16 index[] = {0,2,3,1};		
+		s16 index[] = {1,3,2,0};		
 
 		m_driver->setTransform( ETS_PROJECTION, m_projectionMatrix );
-		m_driver->setTransform( ETS_WORLD,		core::IdentityMatrix );
-		m_driver->setTransform( ETS_VIEW,		core::IdentityMatrix );
+		m_driver->setTransform( ETS_WORLD,		m_worldMatrix );
+		m_driver->setTransform( ETS_VIEW,		m_viewMatrix );
 
 		// set texture
-		m_material.setTexture(0, ((bitmap_info_irrlicht*)bi)->m_texture );		
-		m_material.Lighting = false;
-		m_material.ZBuffer = false;
-		m_material.ZWriteEnable = false;
-		m_material.MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;
+		m_material.setTexture(0, ((bitmap_info_irrlicht*)bi)->m_texture );
+		m_material.MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;		
 
 		m_driver->setMaterial( m_material );
-		m_driver->drawVertexPrimitiveList(
+		m_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
+		m_driver->draw2DVertexPrimitiveList(
 				vertices, 4,
 				index, 2,
 				EVT_STANDARD,
 				scene::EPT_TRIANGLE_FAN 
 			);		
+		m_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );
 	}
 
 	bool test_stencil_buffer ( const gameswf::rect &bound, Uint8 pattern )

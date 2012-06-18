@@ -249,10 +249,20 @@ bool COpenGLSLMaterialRenderer::createProgram()
 
 bool COpenGLSLMaterialRenderer::createShader(GLenum shaderType, const char* shader)
 {
+	const char* code[32];
+	int num = 0;
+	code[num++] = 
+		"#ifndef lowp\n#define lowp\n#endif\n"
+		"#ifndef mediump\n#define mediump\n#endif\n"
+		"#ifndef highp\n#define highp\n#endif\n"
+		"#ifndef precision\n#define precision\n#endif\n";
+	code[num++] = shader;
+
+
 	if (Program2)
 	{
 		GLuint shaderHandle = Driver->extGlCreateShader(shaderType);
-		Driver->extGlShaderSource(shaderHandle, 1, &shader, NULL);
+		Driver->extGlShaderSource(shaderHandle, num, code, NULL);
 		Driver->extGlCompileShader(shaderHandle);
 
 		GLint status = 0;
@@ -288,7 +298,7 @@ bool COpenGLSLMaterialRenderer::createShader(GLenum shaderType, const char* shad
 	{
 		GLhandleARB shaderHandle = Driver->extGlCreateShaderObject(shaderType);
 
-		Driver->extGlShaderSourceARB(shaderHandle, 1, &shader, NULL);
+		Driver->extGlShaderSourceARB(shaderHandle, num, code, NULL);
 		Driver->extGlCompileShaderARB(shaderHandle);
 
 		GLint status = 0;

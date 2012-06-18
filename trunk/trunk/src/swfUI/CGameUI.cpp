@@ -41,8 +41,8 @@ bool CGameUI::_getFont( const char *font_name, tu_string &file_name, bool is_bol
 
 CGameUI::CGameUI()
 {
-	m_render = gameswf::create_render_handler_ogl();	
-
+	m_render = gameswf::create_render_handler_irrlicht( getIView()->getDevice() );
+	
 	gameswf::register_file_opener_callback	( CGameUI::_fileOpen );
 	gameswf::register_fscommand_callback	( CGameUI::_fsCallback );
 	gameswf::register_getfont_callback		( CGameUI::_getFont );

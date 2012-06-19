@@ -206,9 +206,15 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	core::matrix4	m_worldMatrix;
 	core::matrix4	m_viewMatrix;
 
-	SMaterial		m_material;
+	core::matrix4	m_defaultProjectionMatrix;
+	core::matrix4	m_defaultWorldMatrix;
+	core::matrix4	m_defaultViewMatrix;
 
-	bool	m_enable_antialias;
+	SMaterial		m_material;
+	SColor			m_color;
+
+	bool			m_enable_antialias;
+	bool			m_isRenderMask;
 
 	// Output size.
 	float	m_display_width;
@@ -224,7 +230,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		m_enable_antialias ( false ),
 		m_display_width ( 0 ),
 		m_display_height ( 0 ),
-		m_mask_level ( 0 )
+		m_mask_level ( 0 ),
+		m_isRenderMask( false )
 	{
 		m_driver = m_device->getVideoDriver();
 
@@ -258,6 +265,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		    RADIAL_GRADIENT,
 		};
 
+		render_handler_irrlicht* m_render;
+
 		mode					m_mode;
 		gameswf::rgba			m_color;
 		gameswf::bitmap_info*	m_bitmap_info;
@@ -272,26 +281,51 @@ struct render_handler_irrlicht : public gameswf::render_handler
 
 		fill_style() :
 			m_mode ( INVALID ),
-			m_has_nonzero_bitmap_additive_color ( false )
+			m_has_nonzero_bitmap_additive_color ( false ),
+			m_render( NULL )
 		{
 		}
 
-		void	applyTexture ( int primitive_type, const void *coords, int vertex_count ) const		
+		void	applyTexture ( int primitive_type, video::S3DVertex *vertex, int vertex_count, s16 *index, int index_count, const void *coords ) const		
 		{
 			if ( m_mode == BITMAP_WRAP || m_mode == BITMAP_CLAMP )
 			{
 				assert ( m_bitmap_info != NULL );
-				irr::f32 *tcoord = new irr::f32[2 * vertex_count];
-				Sint16 *vcoord = ( Sint16 * ) coords;
-
-				for ( int i = 0; i < 2 * vertex_count; i = i + 2 )
-				{
-					tcoord[i]	= vcoord[i] * pS[0] + vcoord[i+1] * pS[1] + pS[3];
-					tcoord[i+1] = vcoord[i] * pT[0] + vcoord[i+1] * pT[1] + pT[3];
+				
+				Sint16 *vcoord = ( Sint16 * ) coords;				
+				for ( int i = 0, j = 0; i < 2 * vertex_count; i = i + 2, j++ )
+				{				
+					vertex[j].TCoords.X = vcoord[i] * pS[0] + vcoord[i+1] * pS[1] + pS[3];
+					vertex[j].TCoords.Y = vcoord[i] * pT[0] + vcoord[i+1] * pT[1] + pT[3];
 				}
 			
+				SMaterial mat;
+				mat.setTexture(0, ((bitmap_info_irrlicht*)m_bitmap_info)->m_texture );
+				mat.MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;		
 
-				delete tcoord;
+				g_driver->setMaterial( mat );
+				g_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
+
+				if ( primitive_type ==  GL_TRIANGLE_STRIP )		
+				{								
+					g_driver->draw2DVertexPrimitiveList(
+							vertex, vertex_count,
+							index, index_count,
+							EVT_STANDARD,
+							scene::EPT_TRIANGLE_STRIP
+						);					
+				}
+				else if ( primitive_type == GL_TRIANGLES )
+				{
+					g_driver->draw2DVertexPrimitiveList(
+							vertex, vertex_count,
+							index, index_count,
+							EVT_STANDARD,
+							scene::EPT_TRIANGLES
+						);			
+				}
+				
+				g_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );				
 			}
 		}
 
@@ -302,13 +336,16 @@ struct render_handler_irrlicht : public gameswf::render_handler
 
 			if ( m_mode == COLOR )
 			{
-				apply_color ( m_color );				
+				if ( m_render )
+					m_render->apply_color ( m_color );				
 			}
 
 			else if ( m_mode == BITMAP_WRAP || m_mode == BITMAP_CLAMP )
 			{
 				assert ( m_bitmap_info != NULL );
-				apply_color ( m_color );
+
+				if ( m_render )
+					m_render->apply_color ( m_color );
 
 				if ( m_bitmap_info == NULL )
 				{	
@@ -533,15 +570,20 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		setOrtho( x0, x1, y0, y1, -1, 1, m_projectionMatrix );		
 
 		// set ortho matrix
-		m_viewMatrix = core::IdentityMatrix;
+		m_worldMatrix = core::IdentityMatrix;
 		
 		// set world matrix (flip 0y)
-		m_worldMatrix = core::IdentityMatrix;
+		m_viewMatrix = core::IdentityMatrix;
 		core::matrix4 trans; trans.setTranslation( core::vector3df(0, m_display_height, 0) );
 		core::matrix4 scale; scale.setScale( core::vector3df(1.0, -1.0, 1.0) );
-		m_worldMatrix *= trans;
-		m_worldMatrix *= scale;		
+		m_viewMatrix *= trans;
+		m_viewMatrix *= scale;		
 						
+		// save matrix
+		m_defaultProjectionMatrix = g_driver->getTransform(ETS_PROJECTION);
+		m_defaultWorldMatrix = g_driver->getTransform(ETS_WORLD);
+		m_defaultViewMatrix = g_driver->getTransform(ETS_VIEW);
+
 		// set material
 		m_material.Lighting = false;
 		m_material.ZBuffer = false;
@@ -552,12 +594,9 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		// Clear the background, if background color has alpha > 0.
 		if ( background_color.m_a > 0 )
 		{
-			// Draw a big quad.
-			apply_color ( background_color );
-			
-			// clear screen
+			// Draw a big quad.			
 			m_driver->draw2DRectangle(
-					SColor(background_color.m_a, 0, background_color.m_g, background_color.m_b),
+					SColor(background_color.m_a, background_color.m_r, background_color.m_g, background_color.m_b),
 					rectViewport
 				);
 		}
@@ -568,7 +607,10 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	// Clean up after rendering a frame.  Client program is still
 	// responsible for calling glSwapBuffers() or whatever.
 	{
-		
+		// restore matrix
+		g_driver->setTransform(ETS_PROJECTION, m_defaultProjectionMatrix);
+		g_driver->setTransform(ETS_WORLD, m_defaultWorldMatrix);
+		g_driver->setTransform(ETS_VIEW, m_defaultViewMatrix);	
 	}
 
 
@@ -601,13 +643,13 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		mat[13] = m.m_[1][2];
 		mat[15] = 1;
 		
-		core::vector3df v =	mulMatrix.getScale();
-
+		m_worldMatrix *= mulMatrix;
 	}
 
-	static void	apply_color ( const gameswf::rgba &c )
+	void	apply_color ( const gameswf::rgba &c )
 	// Set the given color.
-	{		
+	{
+		m_color = SColor( c.m_a, c.m_r, c.m_g, c.m_b );
 	}
 
 	void	fill_style_disable ( int fill_side )
@@ -658,25 +700,85 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	void	draw_mesh_primitive ( int primitive_type, const void *coords, int vertex_count )
 	// Helper for draw_mesh_strip and draw_triangle_list.
 	{
+		if ( m_isRenderMask == true )
+			return;
+
 		// Set up current style.
+		m_current_styles[LEFT_STYLE].m_render = this;
 		m_current_styles[LEFT_STYLE].apply();
+		
+		// push matrix
+		core::matrix4 viewMat = m_worldMatrix;
 
-
+		// apply view matrix
 		apply_matrix ( m_current_matrix );
+		
+		// set transform
+		m_driver->setTransform( ETS_PROJECTION, m_projectionMatrix );
+		m_driver->setTransform( ETS_VIEW,		m_viewMatrix );
+		m_driver->setTransform( ETS_WORLD,		m_worldMatrix );		
 
+		Sint16 *f = (Sint16*) coords;
 
+		video::S3DVertex	*vertices	= new video::S3DVertex[ vertex_count ];
+		s16					*index		= new s16[ vertex_count ];
+		
+		int index_count = vertex_count;
+
+		for ( int i = 0; i < vertex_count; i++ )
+		{
+			vertices[i].Pos.X = (float)(*f);f++;
+			vertices[i].Pos.Y = (float)(*f);f++;
+			vertices[i].Color = m_color;
+
+			index[i] = i;
+		}
+			
+
+		// set texture
+		m_material.MaterialType = EMT_TRANSPARENT_VERTEX_ALPHA;
+		m_driver->setMaterial( m_material );
+							
+		// draw first pass
+		if ( primitive_type ==  GL_TRIANGLE_STRIP )		
+		{			
+			index_count = vertex_count - 2;
+
+			m_driver->drawVertexPrimitiveList(
+					vertices, vertex_count,
+					index, index_count,
+					EVT_STANDARD,
+					scene::EPT_TRIANGLE_STRIP
+				);					
+		}
+		else if ( primitive_type == GL_TRIANGLES )
+		{
+			index_count = vertex_count / 2;
+
+			m_driver->drawVertexPrimitiveList(
+					vertices, vertex_count,
+					index, index_count,
+					EVT_STANDARD,
+					scene::EPT_TRIANGLES
+				);			
+		}
+
+		// draw second pass
 		if ( m_current_styles[LEFT_STYLE].needs_second_pass() )
 		{
 			m_current_styles[LEFT_STYLE].apply_second_pass();
-			
-			// draw primitive
-			//glDrawArrays ( primitive_type, 0, vertex_count );
+									
 
 			m_current_styles[LEFT_STYLE].cleanup_second_pass();
 		}
-
 		
-		m_current_styles[LEFT_STYLE].applyTexture ( primitive_type, coords, vertex_count );		
+		m_current_styles[LEFT_STYLE].applyTexture ( primitive_type, vertices, vertex_count, index, index_count, coords );		
+		
+		// pop matrix
+		m_worldMatrix = viewMat;
+		
+		delete vertices;
+		delete index;
 	}
 
 	void draw_mesh_strip ( const void *coords, int vertex_count )
@@ -724,9 +826,7 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		assert ( bi );
 		
 		bi->layout();
-		apply_color ( color );
-
-		video::SColor irrColor( color.m_a, color.m_r, color.m_g, color.m_b );
+		apply_color ( color );		
 
 		gameswf::point a, b, c, d;
 		m.transform ( &a, gameswf::point ( coords.m_x_min, coords.m_y_min ) );
@@ -742,28 +842,28 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		vertices[0].Pos.Z = 0.0;
 		vertices[0].TCoords.X = uv_coords.m_x_min;
 		vertices[0].TCoords.Y = uv_coords.m_y_min;
-		vertices[0].Color = irrColor;
+		vertices[0].Color = m_color;
 
 		vertices[1].Pos.X = b.m_x;
 		vertices[1].Pos.Y = b.m_y;
 		vertices[1].Pos.Z = 0.0;
 		vertices[1].TCoords.X = uv_coords.m_x_max;
 		vertices[1].TCoords.Y = uv_coords.m_y_min;
-		vertices[1].Color = irrColor;
+		vertices[1].Color = m_color;
 
 		vertices[2].Pos.X = c.m_x;
 		vertices[2].Pos.Y = c.m_y;
 		vertices[2].Pos.Z = 0.0;
 		vertices[2].TCoords.X = uv_coords.m_x_min;
 		vertices[2].TCoords.Y = uv_coords.m_y_max;
-		vertices[2].Color = irrColor;
+		vertices[2].Color = m_color;
 
 		vertices[3].Pos.X = d.m_x;
 		vertices[3].Pos.Y = d.m_y;
 		vertices[3].Pos.Z = 0.0;
 		vertices[3].TCoords.X = uv_coords.m_x_max;
 		vertices[3].TCoords.Y = uv_coords.m_y_max;
-		vertices[3].Color = irrColor;
+		vertices[3].Color = m_color;
 
 		s16 index[] = {1,3,2,0};		
 
@@ -793,13 +893,13 @@ struct render_handler_irrlicht : public gameswf::render_handler
 
 	void begin_submit_mask()
 	{
-		
+		m_isRenderMask = true;
 	}
 
 	// called after begin_submit_mask and the drawing of mask polygons
 	void end_submit_mask()
 	{
-		
+		m_isRenderMask = false;
 	}
 
 	void disable_mask()

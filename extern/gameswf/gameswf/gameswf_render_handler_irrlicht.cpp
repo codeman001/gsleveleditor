@@ -736,6 +736,7 @@ struct render_handler_irrlicht : public gameswf::render_handler
 			
 
 		// set texture
+		m_material.setTexture(0, NULL);
 		m_material.MaterialType = EMT_TRANSPARENT_VERTEX_ALPHA;
 		m_driver->setMaterial( m_material );
 							
@@ -744,23 +745,27 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		{			
 			index_count = vertex_count - 2;
 
-			m_driver->drawVertexPrimitiveList(
+			m_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
+			m_driver->draw2DVertexPrimitiveList(
 					vertices, vertex_count,
 					index, index_count,
 					EVT_STANDARD,
 					scene::EPT_TRIANGLE_STRIP
 				);					
+			m_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );
 		}
 		else if ( primitive_type == GL_TRIANGLES )
 		{
 			index_count = vertex_count / 2;
 
-			m_driver->drawVertexPrimitiveList(
+			m_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
+			m_driver->draw2DVertexPrimitiveList(
 					vertices, vertex_count,
 					index, index_count,
 					EVT_STANDARD,
 					scene::EPT_TRIANGLES
-				);			
+				);
+			m_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );
 		}
 
 		// draw second pass

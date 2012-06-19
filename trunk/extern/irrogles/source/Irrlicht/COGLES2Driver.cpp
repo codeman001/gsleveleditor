@@ -723,6 +723,22 @@ namespace video
 			MaterialRenderers[Material.MaterialType].Renderer->PostRender(this, video::EVT_STANDARD);
 	}
 
+	//! draws a vertex primitive list in 2d
+	void COGLES2Driver::draw2DVertexPrimitiveList(const void* vertices, u32 vertexCount,
+				const void* indexList, u32 primitiveCount,
+				E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType)
+	{
+		testGLError();
+		if (!checkPrimitiveCount(primitiveCount))
+			return;
+
+		setRenderStates2DMode(true, (Material.getTexture(0) != 0), Material.MaterialType==EMT_TRANSPARENT_ALPHA_CHANNEL);
+
+		drawVertexPrimitiveList2d3d(vertices, vertexCount, (const u16*)indexList, primitiveCount, vType, pType, iType);
+
+		if (static_cast<u32>(Material.MaterialType) < MaterialRenderers.size())
+			MaterialRenderers[Material.MaterialType].Renderer->PostRender(this, video::EVT_STANDARD);
+	}
 
 	void COGLES2Driver::drawVertexPrimitiveList2d3d(const void* vertices, u32 vertexCount,
 			const void* indexList, u32 primitiveCount,
@@ -2008,7 +2024,7 @@ namespace video
 
 			TwoDRenderer->useProgram(); //Fixed Pipeline Shader needed to render 2D
 
-			if (Transformation3DChanged)
+			if (Transformation3DChanged && EnableChangeProjectionMatrixWhenSetRenderMode)
 			{
 				const core::dimension2d<u32>& renderTargetSize = getCurrentRenderTargetSize();
 				core::matrix4 m;
@@ -2019,6 +2035,15 @@ namespace video
 
 				Transformation3DChanged = false;
 			}
+			else if ( EnableChangeProjectionMatrixWhenSetRenderMode == false )
+			{
+				core::matrix4 m = Matrices[ETS_PROJECTION];
+				m *= Matrices[ETS_VIEW];
+				m *= Matrices[ETS_WORLD];
+
+				TwoDRenderer->setOrthoMatrix(m);
+			}
+
 		}
 		if (OverrideMaterial2DEnabled)
 		{
@@ -2060,7 +2085,9 @@ namespace video
 		}
 		TwoDRenderer->useTexture(texture);
 
-		CurrentRenderMode = ERM_2D;
+		if ( EnableChangeProjectionMatrixWhenSetRenderMode )
+			CurrentRenderMode = ERM_2D;
+
 		testGLError();
 	}
 

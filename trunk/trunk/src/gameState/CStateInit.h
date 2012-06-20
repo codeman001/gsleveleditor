@@ -14,6 +14,7 @@ public:
 	virtual ~CStateInit();
 	
 	virtual void onCreate();
+	virtual void onDestroy();
 	virtual void onFsCommand( const char *command, const char *param );
 	virtual void onUpdate(float timeStep);
 };

@@ -76,7 +76,8 @@ void CGameUI::releaseAllFlash()
 	map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 	while ( i != end )
 	{
-		delete (*i).second;
+		if ( (*i).second )
+			delete (*i).second;
 		i++;
 	}
 	m_flash.clear();
@@ -89,7 +90,8 @@ void CGameUI::update(float timestep)
 	map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 	while ( i != end )
 	{
-		(*i).second->update(timestep);
+		if ( (*i).second )
+			(*i).second->update(timestep);
 		i++;
 	}
 }
@@ -101,7 +103,8 @@ void CGameUI::render(int x, int y, int w, int h, bool hasBackground)
 	map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 	while ( i != end )
 	{
-		(*i).second->render(x, y, w, h);
+		if ( (*i).second )
+			(*i).second->render(x, y, w, h);
 		i++;
 	}
 }
@@ -123,7 +126,8 @@ bool CGameUI::OnEvent(const SEvent& irrEvent)
 				map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 				while ( i != end )
 				{
-					(*i).second->updateMouseState( x,y, irrEvent.MouseInput.isLeftPressed() );
+					if ( (*i).second )
+						(*i).second->updateMouseState( x,y, irrEvent.MouseInput.isLeftPressed() );
 					i++;
 				}			
 			}
@@ -134,7 +138,8 @@ bool CGameUI::OnEvent(const SEvent& irrEvent)
 				map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 				while ( i != end )
 				{
-					(*i).second->updateMouseState( x,y, true );
+					if ( (*i).second )
+						(*i).second->updateMouseState( x,y, true );
 					i++;
 				}
 			}
@@ -145,7 +150,8 @@ bool CGameUI::OnEvent(const SEvent& irrEvent)
 				map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 				while ( i != end )
 				{
-					(*i).second->updateMouseState( x,y, false );
+					if ( (*i).second )
+						(*i).second->updateMouseState( x,y, false );
 					i++;
 				}
 			}

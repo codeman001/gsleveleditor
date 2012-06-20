@@ -1,13 +1,31 @@
 #include "stdafx.h"
 #include "CGameState.h"
 
-CGameState::CGameState()
+CGameState::CGameState( EGameState state )
 {
 	m_menuFx = NULL;
+	m_state = state;
+
+	// get game menu flash
+	m_menuFx = CGameUI::getInstance()->getFlash("uiGameMenu");
 }
 
 CGameState::~CGameState()
 {
+}
+
+// getStateName
+// get state name
+const char* CGameState::getStateName( EGameState state )
+{
+	static const char* s_stateName[] = {
+		"stateInit",
+		"stateMainMenu",
+		"stateGameLoading",
+		"stateCount"
+	};
+
+	return s_stateName[ (int)state ];	
 }
 
 // onCreate
@@ -61,4 +79,20 @@ void CGameState::onUpdate(float timeStep)
 // paint interface to screens
 void CGameState::onRender()
 {
+}
+
+// setFxStateVisible
+// show/hide state on flash
+void CGameState::setFxStateVisible( EGameState state, bool b )
+{
+	if ( m_menuFx )
+	{
+		CMenuFxObj *menuObj = m_menuFx->getObj( getStateName(state) );
+		if ( menuObj )
+		{
+			menuObj->setVisible( b );
+			menuObj->gotoFrame(1, true);
+			menuObj->drop();
+		}
+	}
 }

@@ -10,7 +10,8 @@ public:
 	CStateGameLoading();
 	virtual ~CStateGameLoading();
 
-	virtual void onCreate();	
+	virtual void onCreate();
+	virtual void onDestroy();
 };
 
 #endif

@@ -9,10 +9,21 @@
 
 class CGameState
 {
-protected:
-	CMenuFx	*m_menuFx;
 public:
-	CGameState();
+	enum EGameState
+	{
+		GSStateInit = 0,
+		GSStateMainMenu,
+		GSStateGameLoading,
+		StateCount
+	};
+
+protected:
+	CMenuFx		*m_menuFx;
+	EGameState	m_state;
+
+public:
+	CGameState(EGameState state);
 	virtual ~CGameState();
 
 	// onCreate
@@ -48,6 +59,14 @@ public:
 	// onPause
 	// on pause
 	virtual void onPause();
+
+	// setFxStateVisible
+	// show/hide state on flash
+	virtual void setFxStateVisible( EGameState state, bool b );
+
+	// getStateName
+	// get state name
+	static const char* getStateName( EGameState state );
 };
 
 #endif

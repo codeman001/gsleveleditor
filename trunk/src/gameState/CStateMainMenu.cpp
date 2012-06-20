@@ -6,6 +6,7 @@
 const int k_btnPlayGame = 0;
 
 CStateMainMenu::CStateMainMenu()
+	:CGameState( CGameState::GSStateMainMenu )
 {
 	m_menuChoice = -1;
 }
@@ -15,9 +16,14 @@ CStateMainMenu::~CStateMainMenu()
 }
 
 void CStateMainMenu::onCreate()
-{
-	m_menuFx = CGameUI::getInstance()->getFlash("uiGameMenu");
+{	
 	m_menuFx->setVisible( true );
+	setFxStateVisible( m_state, true );
+}
+
+void CStateMainMenu::onDestroy()
+{
+	setFxStateVisible( m_state, false );
 }
 
 void CStateMainMenu::onFsCommand( const char *command, const char *param )

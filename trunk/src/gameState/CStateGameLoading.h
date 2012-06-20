@@ -5,13 +5,18 @@
 
 class CStateGameLoading: public CGameState
 {
-protected:	
+protected:
+	CMenuFxObj	*m_loadingBar;
+
+	bool		m_beginLoading;
 public:
 	CStateGameLoading();
 	virtual ~CStateGameLoading();
 
-	virtual void onCreate();
+	virtual void onCreate();	
 	virtual void onDestroy();
+	virtual void onFsCommand( const char *command, const char *param );
+	virtual void onUpdate(float timeStep);
 };
 
 #endif

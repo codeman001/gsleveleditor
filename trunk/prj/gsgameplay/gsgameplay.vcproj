@@ -166,6 +166,14 @@
 		</Configuration>
 	</Configurations>
 	<References>
+		<ProjectReference
+			ReferencedProjectIdentifier="{D82FC0B1-4BC8-4C37-944C-94F6105A2992}"
+			RelativePathToProject="..\..\extern\gameswf\projects\Win32\gameswf\gameswf.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{E08E042A-6C45-411B-92BE-3CC31331019F}"
+			RelativePathToProject="..\..\extern\irrogles\source\Irrlicht\Irrlicht9.0.vcproj"
+		/>
 	</References>
 	<Files>
 		<Filter

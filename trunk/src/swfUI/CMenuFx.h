@@ -31,7 +31,7 @@ public:
 
 	// update
 	// update timestep for flash
-	void update(float timestep);
+	void update();
 
 	// render
 	// render flash at viewport x,y,w,h

@@ -10,13 +10,13 @@ CGameStateMgr::~CGameStateMgr()
 	destroyAllState();
 }
 
-void CGameStateMgr::update(float timeStep)
+void CGameStateMgr::update()
 {		
 	// update current state
 	int nState = m_stackState.size();
 	if ( nState > 0 )
 	{
-		m_stackState[0]->onUpdate(timeStep);
+		m_stackState[0]->onUpdate();
 	}
 
 	// delete change, pop state

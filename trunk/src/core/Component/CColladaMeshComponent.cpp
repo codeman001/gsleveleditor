@@ -627,7 +627,7 @@ void CColladaAnimation::loadDae( char *lpFileName )
 void CColladaAnimation::loadDotAnim( char *lpFileName )
 {
 	// todo load file
-	io::IReadFile *file = getIView()->getSceneMgr()->getFileSystem()->createAndOpenFile( lpFileName );
+	io::IReadFile *file = getIView()->getFileSystem()->createAndOpenFile( lpFileName );
 	if ( file == NULL )
 		return;
 
@@ -889,7 +889,7 @@ void CColladaMeshComponent::loadDae( char *lpFilename )
 void CColladaMeshComponent::loadScene( char *lpFilename )
 {
 	// todo load file
-	io::IReadFile *file = getIView()->getSceneMgr()->getFileSystem()->createAndOpenFile( lpFilename );
+	io::IReadFile *file = getIView()->getFileSystem()->createAndOpenFile( lpFilename );
 	if ( file == NULL )
 		return;
 

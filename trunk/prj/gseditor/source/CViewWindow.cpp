@@ -72,7 +72,8 @@ void CViewWindow::createIrrDevice()
 	m_device	= createDeviceEx(param);
 	m_driver	= m_device->getVideoDriver();
 	m_smgr		= m_device->getSceneManager();
-	
+	m_fileSystem = m_device->getSceneManager()->getFileSystem();
+
 	// init opengl
 	HDC HDc = GetDC( getHandle() );
 	PIXELFORMATDESCRIPTOR pfd={0};

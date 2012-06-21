@@ -3,10 +3,14 @@
 #include "Resource.h"
 #include "CBinaryUtils.h"
 
-CMainFrame::CMainFrame()
+CMainFrame::CMainFrame(const wchar_t* lpCmdLine)
 {
 	m_currentFile = "";
 	m_currentAnimFile = "";
+	m_lpCmdLine = lpCmdLine;
+	
+	// action
+	m_action = CMainFrame::None;
 
 	// init singleton
 	CBinaryUtils::createGetInstance();
@@ -24,81 +28,91 @@ CMainFrame::~CMainFrame()
 int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent, LPWSTR lpName)
 {
 	int ret = uiForm::create( lpTitle, x, y, w, h, pParent, lpName );	
-
-	// add rebar
-	uiRebar *pRebar = ref<uiRebar>( new uiRebar(L"RebarTool", 0,0, 300,30, this) );	
-
-	// toolbar play
-	uiToolbar *pToolbar = ref<uiToolbar>( new uiToolbar(L"Tools", 0,0,0,0, 32,32, pRebar ) );
 	
-	uiBitmap iconOpen( MAKEINTRESOURCE(IDB_TOOLBAROPEN), true );	
-	uiBitmap iconSave( MAKEINTRESOURCE(IDB_TOOLBARSAVE), true );	
-	uiBitmap iconMesh( MAKEINTRESOURCE(IDB_TOOLBARMESH), true );
-	uiBitmap iconAnim( MAKEINTRESOURCE(IDB_TOOLBARANIM), true );
+	if ( m_action != CMainFrame::None && m_action != CMainFrame::Open )
+	{
+		// export mode
+		m_irrWin = ref<CIrrWindow>( new CIrrWindow(L"irrWindow", this) );
+		m_irrWin->setDock( this, UIDOCK_FILL );
+		m_irrWin->showWindow( true );
+	}
+	else
+	{
+		// add rebar
+		uiRebar *pRebar = ref<uiRebar>( new uiRebar(L"RebarTool", 0,0, 300,30, this) );	
 
-	pToolbar->pushImage( &iconOpen );
-	pToolbar->pushImage( &iconSave );
-	pToolbar->pushImage( &iconMesh );
-	pToolbar->pushImage( &iconAnim );
+		// toolbar play
+		uiToolbar *pToolbar = ref<uiToolbar>( new uiToolbar(L"Tools", 0,0,0,0, 32,32, pRebar ) );
+		
+		uiBitmap iconOpen( MAKEINTRESOURCE(IDB_TOOLBAROPEN), true );	
+		uiBitmap iconSave( MAKEINTRESOURCE(IDB_TOOLBARSAVE), true );	
+		uiBitmap iconMesh( MAKEINTRESOURCE(IDB_TOOLBARMESH), true );
+		uiBitmap iconAnim( MAKEINTRESOURCE(IDB_TOOLBARANIM), true );
 
-	pToolbar->setButtonWidth(120);	
-	pToolbar->setTextRight(true);
+		pToolbar->pushImage( &iconOpen );
+		pToolbar->pushImage( &iconSave );
+		pToolbar->pushImage( &iconMesh );
+		pToolbar->pushImage( &iconAnim );
 
-	uiToolbarButton *toolbarButton = pToolbar->addButton(L"Save scene", 1);
-	toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarSaveScene>( this );
+		pToolbar->setButtonWidth(120);	
+		pToolbar->setTextRight(true);
 
-	toolbarButton = pToolbar->addButton(L"Save animation", 1);	
-	toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarSaveAnim>( this );
+		uiToolbarButton *toolbarButton = pToolbar->addButton(L"Save scene", 1);
+		toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarSaveScene>( this );
 
-	toolbarButton = pToolbar->addButton(L"Load mesh", 2);
-	toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarLoadMesh>( this );
+		toolbarButton = pToolbar->addButton(L"Save animation", 1);	
+		toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarSaveAnim>( this );
 
-	toolbarButton = pToolbar->addButton(L"Load animation", 3);
-	toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarLoadAnimDae>( this );
+		toolbarButton = pToolbar->addButton(L"Load mesh", 2);
+		toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarLoadMesh>( this );
 
-	uiRebarBand bandToolbar( pToolbar,L"");
-	bandToolbar.setBreakBand( true );	
-	bandToolbar.enableGripper(false);
-	bandToolbar.setMinWidthHeight( 0, 39 );
+		toolbarButton = pToolbar->addButton(L"Load animation", 3);
+		toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarLoadAnimDae>( this );
 
-	// add band to rebar	
-	pRebar->addBand( &bandToolbar );
-	pRebar->setDock( this, UIDOCK_TOP );	
-	pRebar->showBandBorder( false );
-	pRebar->showWindow(true);
+		uiRebarBand bandToolbar( pToolbar,L"");
+		bandToolbar.setBreakBand( true );	
+		bandToolbar.enableGripper(false);
+		bandToolbar.setMinWidthHeight( 0, 39 );
 
-	uiSplitContainer *split = ref<uiSplitContainer>( new uiSplitContainer(L"mainSplit", 0, 0, 1000, 600, this, 2, 1) );
-	
-	m_irrWin = ref<CIrrWindow>( new CIrrWindow(L"irrWindow", split) );
-	
-	m_listView = ref<uiListView>( new uiListView(L"propertyWindow", 0, 0, 1000, 30, false, split) );
-	m_listView->selectedFullRow(true);
+		// add band to rebar	
+		pRebar->addBand( &bandToolbar );
+		pRebar->setDock( this, UIDOCK_TOP );	
+		pRebar->showBandBorder( false );
+		pRebar->showWindow(true);
 
-	m_listView->addColumn(L"Anim name", 300);
-	m_listView->addColumn(L"Time begin", 150);
-	m_listView->addColumn(L"Duration", 150);
-	m_listView->addColumn(L"Loop", 150);
-	
-	m_listView->setEventOnClicked<CMainFrame, &CMainFrame::listPropertyOnItemChange>( this );
-	m_listView->setEventOnDbClicked<CMainFrame, &CMainFrame::listPropertyOnItemEdit>( this );
+		uiSplitContainer *split = ref<uiSplitContainer>( new uiSplitContainer(L"mainSplit", 0, 0, 1000, 600, this, 2, 1) );
+		
+		m_irrWin = ref<CIrrWindow>( new CIrrWindow(L"irrWindow", split) );
+		
+		m_listView = ref<uiListView>( new uiListView(L"propertyWindow", 0, 0, 1000, 30, false, split) );
+		m_listView->selectedFullRow(true);
 
-	split->setWindow( m_irrWin, 0, 0 );
-	split->setWindow( m_listView, 1, 0 );
-	split->setRowSize( 0, 400 );
-	split->setRowSize( 1, 300 );
-	
-	split->changeWindowStyle( UISTYLE_CHILD );
-	split->setDock( this, UIDOCK_FILL );
-	split->updateSplit();
-	split->showWindow( true );
+		m_listView->addColumn(L"Anim name", 300);
+		m_listView->addColumn(L"Time begin", 150);
+		m_listView->addColumn(L"Duration", 150);
+		m_listView->addColumn(L"Loop", 150);
+		
+		m_listView->setEventOnClicked<CMainFrame, &CMainFrame::listPropertyOnItemChange>( this );
+		m_listView->setEventOnDbClicked<CMainFrame, &CMainFrame::listPropertyOnItemEdit>( this );
 
-	m_editorWin = ref<CAnimModifyFrame>( new CAnimModifyFrame(L"Anim editor", 50,50, 900,500,this)  );
-	m_editorWin->changeWindowStyle( UISTYLE_RESIZE );
-	m_editorWin->setParent(NULL);
-	m_editorWin->showWindow(false);
+		split->setWindow( m_irrWin, 0, 0 );
+		split->setWindow( m_listView, 1, 0 );
+		split->setRowSize( 0, 400 );
+		split->setRowSize( 1, 300 );
+		
+		split->changeWindowStyle( UISTYLE_CHILD );
+		split->setDock( this, UIDOCK_FILL );
+		split->updateSplit();
+		split->showWindow( true );
 
-	// set event selected node
-	m_irrWin->getController()->setEventOnNodeSelected<CAnimModifyFrame, &CAnimModifyFrame::_onSelectedNode>(m_editorWin);
+		m_editorWin = ref<CAnimModifyFrame>( new CAnimModifyFrame(L"Anim editor", 50,50, 900,500,this)  );
+		m_editorWin->changeWindowStyle( UISTYLE_RESIZE );
+		m_editorWin->setParent(NULL);
+		m_editorWin->showWindow(false);
+
+		// set event selected node
+		m_irrWin->getController()->setEventOnNodeSelected<CAnimModifyFrame, &CAnimModifyFrame::_onSelectedNode>(m_editorWin);		
+	}
 
 	return ret;
 }
@@ -172,6 +186,51 @@ void CMainFrame::_OnMouseWheel	( uiMouseEvent mouseEvent, int x, int y )
 
 void CMainFrame::_OnIdle()
 {
+	// need open mesh
+	if ( m_action != CMainFrame::None )
+	{
+		CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
+
+		if ( m_action == CMainFrame::Open )
+		{			
+			if ( m_file1.getLength() != 0 )
+			{			
+				colladaComponent->loadFromFile( (char*)m_file1.c() );
+				m_editorWin->setColladaComponent( m_irrWin->getAnimComponent() );
+				m_editorWin->showWindow(true);
+			}
+
+			if ( m_file2.getLength() != 0 )
+			{
+				CColladaAnimation *colladaAnim = CColladaAnimationFactory::getInstance()->loadAnimation("baseAnim", (char*) m_file2.c());
+				colladaComponent->setAnimationPackage( colladaAnim );
+				
+				updateAnimDataToUI();				
+			}			
+		}
+		else if ( m_action == CMainFrame::ExportMesh )
+		{
+			// quit app
+			colladaComponent->loadFromFile( m_file1.c() );
+			colladaComponent->saveSceneToBinary( m_file2.c() );
+
+			uiApplication::exit();
+		}
+		else if ( m_action == CMainFrame::ExportAnim )
+		{
+			CColladaAnimation *colladaAnim = CColladaAnimationFactory::getInstance()->loadAnimation("baseAnim", (char*) m_file1.c() );
+			colladaComponent->setAnimationPackage( colladaAnim );
+			colladaComponent->saveAnimToBinary( m_file2.c() );
+
+			// quit app
+			uiApplication::exit();
+		}
+		
+		m_action = CMainFrame::None;
+		m_file1 = "";
+		m_file2 = "";
+	}
+
 	m_irrWin->irrUpdate();
 }
 
@@ -271,6 +330,50 @@ void CMainFrame::toolbarSaveAnim( uiObject *pSender )
 	//WCHAR title[1024];
 	//swprintf(title, 1024, L"%s - %s", STR_APP_TITLE, lpPath);
 	//setCaption( title );
+}
+
+bool CMainFrame::doExportMode()
+{
+	if ( m_lpCmdLine == NULL )
+		return false;
+
+	uiStringW cmd		= m_lpCmdLine;
+	vector<uiStringW>	splitArray;
+
+	cmd.split(L" ", &splitArray);
+	if ( splitArray.size() < 2 )
+		return false;
+
+	cmd = splitArray[0];
+	uiStringW src = splitArray[1];
+	uiStringW dst = L"";
+	
+	if ( splitArray.size() >= 3 )
+		dst = splitArray[2];
+
+	char srcFile[MAX_PATH] = {0};
+	char dstFile[MAX_PATH] = {0};
+
+	uiString::convertUnicodeToUTF8( (unsigned short*) src.c(), srcFile );
+	uiString::convertUnicodeToUTF8( (unsigned short*) dst.c(), dstFile );
+
+	m_file1 = srcFile;
+	m_file2 = dstFile;
+
+	if ( cmd == L"-open" )
+	{		
+		m_action = CMainFrame::Open;
+		return false;
+	}	
+	else if ( cmd == L"-exportmesh" )
+	{
+		m_action = CMainFrame::ExportMesh;
+	}
+	else if ( cmd == L"-exportanim" )
+	{
+		m_action = CMainFrame::ExportAnim;
+	}
+	return true;
 }
 
 void CMainFrame::toolbarLoadMesh( uiObject *pSender )

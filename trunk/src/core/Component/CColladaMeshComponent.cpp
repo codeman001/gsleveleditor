@@ -628,8 +628,14 @@ void CColladaAnimation::loadDotAnim( char *lpFileName )
 {
 	// todo load file
 	io::IReadFile *file = getIView()->getFileSystem()->createAndOpenFile( lpFileName );
+	
 	if ( file == NULL )
-		return;
+	{
+		file = getIView()->getFileSystem()->createAndOpenFile( getIView()->getPath(lpFileName) );
+
+		if ( file == NULL )
+			return;
+	}
 
 	// parse binary scene
 	CBinaryUtils::getInstance()->loadAnim( file, this );
@@ -760,7 +766,7 @@ void CColladaMeshComponent::loadData( CSerializable* pObj )
 
 // loadFromFile
 // load anim object from dae file
-void CColladaMeshComponent::loadFromFile( char *lpFilename )
+void CColladaMeshComponent::loadFromFile( const char *lpFilename )
 {
 	if ( m_animeshFile == lpFilename )
 		return;
@@ -776,7 +782,7 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 	}
 
 	char ext[10] = {0};
-	uiString::getFileNameExt<char, char>( lpFilename, ext );
+	uiString::getFileNameExt<const char, char>( lpFilename, ext );
 	uiString::toLower( ext );
 	
 	if ( strcmp(ext, "dae") == 0 )
@@ -786,7 +792,7 @@ void CColladaMeshComponent::loadFromFile( char *lpFilename )
 }
 
 
-void CColladaMeshComponent::loadDae( char *lpFilename )
+void CColladaMeshComponent::loadDae( const char *lpFilename )
 {
 	IrrlichtDevice	*device = getIView()->getDevice();
 	IVideoDriver	*driver = getIView()->getDriver();
@@ -886,12 +892,17 @@ void CColladaMeshComponent::loadDae( char *lpFilename )
 #endif
 }
 
-void CColladaMeshComponent::loadScene( char *lpFilename )
+void CColladaMeshComponent::loadScene( const char *lpFilename )
 {
 	// todo load file
 	io::IReadFile *file = getIView()->getFileSystem()->createAndOpenFile( lpFilename );
 	if ( file == NULL )
-		return;
+	{
+		file = getIView()->getFileSystem()->createAndOpenFile( getIView()->getPath(lpFilename) );
+
+		if ( file == NULL )
+			return;
+	}
 
 	// todo load scene
 	ISceneManager *smgr = getIView()->getSceneMgr();
@@ -2378,9 +2389,14 @@ void CColladaMeshComponent::saveSceneToBinary( const char *lpFileName )
 	io::IFileSystem *fileSystem = getIView()->getSceneMgr()->getFileSystem();
 	io::IWriteFile *file = fileSystem->createAndWriteFile( io::path(lpFileName) );
 	
-	CBinaryUtils::getInstance()->saveCollada( file, m_gameObject );
-	
-	file->drop();
+	if ( file == NULL )
+		file = fileSystem->createAndWriteFile( io::path( getIView()->getPath(lpFileName) ));
+
+	if ( file )
+	{
+		CBinaryUtils::getInstance()->saveCollada( file, m_gameObject );	
+		file->drop();
+	}
 }
 
 // saveAnimToBinary
@@ -2390,9 +2406,14 @@ void CColladaMeshComponent::saveAnimToBinary( const char *lpFileName )
 	io::IFileSystem *fileSystem = getIView()->getSceneMgr()->getFileSystem();
 	io::IWriteFile *file = fileSystem->createAndWriteFile( io::path(lpFileName) );
 
-	CBinaryUtils::getInstance()->saveAnimation( file, m_colladaAnimation );
+	if ( file == NULL )
+		file = fileSystem->createAndWriteFile( io::path( getIView()->getPath(lpFileName) ));
 
-	file->drop();
+	if ( file )
+	{
+		CBinaryUtils::getInstance()->saveAnimation( file, m_colladaAnimation );
+		file->drop();
+	}
 }
 
 
@@ -2706,7 +2727,7 @@ video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& uri, 
 
 				if ( tex == NULL )
 				{
-					tex = getIView()->getDriver()->getTexture( getIView()->getPath(path) );
+					tex = getIView()->getDriver()->getTexture( getIView()->getPath(textureNameA) );
 				}
 
 				return tex;

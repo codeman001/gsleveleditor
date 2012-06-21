@@ -377,10 +377,10 @@ public:
 
 	// loadFromFile
 	// load anim object from dae file
-	void loadFromFile( char *lpFilename );
+	void loadFromFile( const char *lpFilename );
 		
-	void loadDae( char *lpFileName );
-	void loadScene( char *lpFileName );
+	void loadDae( const char *lpFileName );
+	void loadScene( const char *lpFileName );
 
 	// initFromNode
 	// init cache from node

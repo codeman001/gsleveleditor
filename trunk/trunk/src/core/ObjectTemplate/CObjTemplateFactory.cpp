@@ -81,24 +81,29 @@ void readTemplateFromData( char *lpData )
 // load obj template from file
 void CObjTemplateFactory::loadAllObjectTemplate()
 {	
-	std::ifstream file( getIView()->getPath( "objectTemplate.css" ) );
+	// todo load file
+	const char* path = getIView()->getPath( "objectTemplate.css" );
+	io::IReadFile *file = getIView()->getFileSystem()->createAndOpenFile( path );
 
-	if ( file.is_open() )
-	{
-		file.seekg (0, ios::end);
-		unsigned long length = file.tellg();
-		file.seekg (0, ios::beg);
+	if ( file )
+	{	
+		unsigned long length = file->getSize();
 		
-		char *lpBuffer = new char[length];
-		memset( lpBuffer, 0, length );
+		if ( length > 0 )
+		{
+			char *lpBuffer = new char[length];
+			memset( lpBuffer, 0, length );
 
-		file.read(lpBuffer,length);
-		file.close();
+			file->read(lpBuffer,length);			
 
-		readTemplateFromData( lpBuffer );
+			readTemplateFromData( lpBuffer );
 
-		delete lpBuffer;
-	}
+			delete lpBuffer;
+		}
+
+		file->drop();
+				
+	}	
 }
 
 // getTemplate

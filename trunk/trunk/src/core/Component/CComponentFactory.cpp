@@ -183,33 +183,34 @@ void CComponentFactory::saveAllTemplate()
 // load all template info
 void CComponentFactory::loadAllTemplate()
 {
-	std::ifstream file( getIView()->getPath("componentTemplate.css") );
-	if ( file.is_open() )
+	const char* path = getIView()->getPath( "componentTemplate.css" );
+	io::IReadFile *file = getIView()->getFileSystem()->createAndOpenFile( path );
+
+	if ( file )
 	{
-		file.seekg (0, ios::end);
-		unsigned long length = file.tellg();
-		file.seekg (0, ios::beg);
-		
-		char *lpBuffer = new char[length];
-		memset( lpBuffer, 0, length );
-
-		file.read(lpBuffer,length);
-		file.close();	
-
-		CSerializable s;
-		char *p = lpBuffer;
-		
-		while ( *p != NULL )
+		unsigned long length = file->getSize();
+		if ( length > 0 )
 		{
-			if ( s.readData(p) == true )
-				s_compTemplate.push_back( s );
-			else
-				break;
-		}
+			char *lpBuffer = new char[length];
+			memset( lpBuffer, 0, length );
 
-		delete lpBuffer;
+			file->read(lpBuffer,length);			
+
+			CSerializable s;
+			char *p = lpBuffer;
+			
+			while ( *p != NULL )
+			{
+				if ( s.readData(p) == true )
+					s_compTemplate.push_back( s );
+				else
+					break;
+			}
+
+			delete lpBuffer;
+		}
+		file->drop();
 	}
-	file.close();
 }
 
 // addComponent

@@ -16,7 +16,7 @@ public:
 	virtual ~CGameStateMgr();
 
 	// update loop
-	void update(float timeStep);
+	void update();
 
 	// render loop
 	void render();

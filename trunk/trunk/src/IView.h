@@ -18,6 +18,7 @@ protected:
 	IrrlichtDevice*			m_device;
 	IVideoDriver*			m_driver;
 	ISceneManager*			m_smgr;
+	io::IFileSystem*		m_fileSystem;
 
 	SExposedVideoData		m_videoData;
 
@@ -28,6 +29,8 @@ protected:
 
 	CGameCamera*			m_camera;
 	float					m_cameraAspect;
+
+	float					m_timeStep;
 public:
 
 	IView();
@@ -126,11 +129,23 @@ public:
 		return m_smgr;
 	}
 	
+	// getFileSystem
+	// return filesytem for read/write file
+	inline io::IFileSystem* getFileSystem()
+	{
+		return m_fileSystem;
+	}
+
 	// getVideoData
 	// get viewData
 	inline SExposedVideoData& getVideoData()
 	{
 		return m_videoData;
+	}
+
+	inline float getTimeStep()
+	{
+		return m_timeStep;
 	}
 
 #if defined(GSEDITOR) || defined(GSANIMATION)

@@ -10,7 +10,7 @@ CStateInit::CStateInit()
 	:CGameState( CGameState::GSStateInit )
 {
 	m_loadFinish = false;
-	m_logoTime = 2.0f;
+	m_logoTime = 2000.f;
 }
 
 CStateInit::~CStateInit()
@@ -59,11 +59,11 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 	}
 }
 
-void CStateInit::onUpdate(float timeStep)
+void CStateInit::onUpdate()
 {
 	if ( m_loadFinish == true )
 	{
-		m_logoTime = m_logoTime - timeStep;
+		m_logoTime = m_logoTime - getIView()->getTimeStep();
 
 		// wait logo time %d second
 		if ( m_logoTime < 0 )

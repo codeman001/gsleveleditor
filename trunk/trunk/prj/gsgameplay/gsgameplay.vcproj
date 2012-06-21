@@ -629,6 +629,18 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="gameLevel"
+				>
+				<File
+					RelativePath="..\..\src\gameLevel\CGameLevel.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLevel\CGameLevel.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\gsgameplay.cpp"

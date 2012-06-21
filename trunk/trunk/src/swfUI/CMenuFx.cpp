@@ -2,6 +2,8 @@
 #include "CMenuFx.h"
 #include "CMenuFxObj.h"
 
+#include "IView.h"
+
 //////////////////////////////////////////////////
 // CMenuFx Implement
 //////////////////////////////////////////////////
@@ -59,10 +61,11 @@ void CMenuFx::start(int frame)
 	m_movie->set_play_state ( gameswf::character::PLAY );
 }
 
-void CMenuFx::update(float timestep)
+void CMenuFx::update()
 {
 	if ( m_visible && m_root )
 	{		
+		float timestep = getIView()->getTimeStep()/1000.0f;
 		const float maxTimeStep = 1.0f/20.0f;
 		if ( timestep > maxTimeStep )
 			timestep = maxTimeStep;

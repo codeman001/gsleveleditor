@@ -42,7 +42,7 @@ public:
 
 	// updateWindow
 	// Update UI
-	virtual void onUpdate(float timeStep);
+	virtual void onUpdate();
 
 	// paintWindow
 	// paint interface to screens

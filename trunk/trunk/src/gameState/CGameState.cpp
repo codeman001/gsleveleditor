@@ -71,7 +71,7 @@ void CGameState::onFsCommand( const char *command, const char *param )
 
 // updateWindow
 // Update UI
-void CGameState::onUpdate(float timeStep)
+void CGameState::onUpdate()
 {
 }
 

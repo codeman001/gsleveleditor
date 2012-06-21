@@ -23,6 +23,7 @@ IView::IView()
 	m_camera = NULL;
 
 	m_cameraAspect = 1.0f;
+	m_timeStep = 1.0f;
 }
 
 IView::~IView()

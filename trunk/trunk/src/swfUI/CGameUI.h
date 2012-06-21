@@ -39,7 +39,7 @@ public:
 	
 	// update
 	// update game flash ui
-	void update(float timestep);
+	void update();
 
 	// render
 	// render game flash ui

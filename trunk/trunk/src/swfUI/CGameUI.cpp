@@ -85,13 +85,13 @@ void CGameUI::releaseAllFlash()
 
 // update
 // update game flash ui
-void CGameUI::update(float timestep)
+void CGameUI::update()
 {
 	map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 	while ( i != end )
 	{
 		if ( (*i).second )
-			(*i).second->update(timestep);
+			(*i).second->update();
 		i++;
 	}
 }

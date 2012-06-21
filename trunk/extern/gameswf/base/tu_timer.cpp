@@ -19,7 +19,7 @@ Uint32 tu_timer::get_ticks()
 {
 	struct timeb tv;
 	ftime ( &tv );
-	return  ( tv.time - s_start_time.time ) * 1000 + ( tv.millitm - s_start_time.millitm );
+	return  (Uint32)(( tv.time - s_start_time.time ) * 1000 + ( tv.millitm - s_start_time.millitm ));
 }
 
 tu_datetime::tu_datetime()

@@ -210,10 +210,11 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	core::matrix4	m_defaultWorldMatrix;
 	core::matrix4	m_defaultViewMatrix;
 
-	SMaterial		m_material;
+	SMaterial		*m_material;
 	SColor			m_color;
 
 	bool			m_enable_antialias;
+
 	bool			m_isRenderMask;
 
 	// Output size.
@@ -231,7 +232,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		m_display_width ( 0 ),
 		m_display_height ( 0 ),
 		m_mask_level ( 0 ),
-		m_isRenderMask( false )
+		m_isRenderMask( false ),
+		m_material(NULL)
 	{
 		m_driver = m_device->getVideoDriver();
 
@@ -299,15 +301,19 @@ struct render_handler_irrlicht : public gameswf::render_handler
 					vertex[j].TCoords.Y = vcoord[i] * pT[0] + vcoord[i+1] * pT[1] + pT[3];
 				}
 			
-				SMaterial mat;
-				mat.setTexture(0, ((bitmap_info_irrlicht*)m_bitmap_info)->m_texture );
-				mat.MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;		
+				SMaterial* mat = m_render->m_material;
+				mat->setTexture(0, ((bitmap_info_irrlicht*)m_bitmap_info)->m_texture );
 
-				g_driver->setMaterial( mat );
+				if ( m_render->m_isRenderMask )					
+					mat->MaterialType = EMT_SOLID;
+				else
+					mat->MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;		
+
+				g_driver->setMaterial( *mat );
 				g_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
 
 				if ( primitive_type ==  GL_TRIANGLE_STRIP )		
-				{								
+				{
 					g_driver->draw2DVertexPrimitiveList(
 							vertex, vertex_count,
 							index, index_count,
@@ -584,12 +590,22 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		m_defaultWorldMatrix = g_driver->getTransform(ETS_WORLD);
 		m_defaultViewMatrix = g_driver->getTransform(ETS_VIEW);
 
+		// enable material 2d
+		m_driver->enableMaterial2D();
+		m_material = &m_driver->getMaterial2D();
+
 		// set material
-		m_material.Lighting = false;
-		m_material.ZBuffer = false;
-		m_material.ZWriteEnable = false;
-		m_material.BackfaceCulling = false;
-		m_material.FrontfaceCulling = false;
+		m_material->Lighting = false;
+		m_material->ZBuffer = ECFN_ALWAYS;
+		m_material->ZWriteEnable = false;
+		m_material->BackfaceCulling = false;
+		m_material->FrontfaceCulling = false;
+
+		// turn off flag
+		m_isRenderMask = false;
+
+		// clear z buffer
+		m_driver->clearZBuffer();
 
 		// Clear the background, if background color has alpha > 0.
 		if ( background_color.m_a > 0 )
@@ -611,6 +627,9 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		g_driver->setTransform(ETS_PROJECTION, m_defaultProjectionMatrix);
 		g_driver->setTransform(ETS_WORLD, m_defaultWorldMatrix);
 		g_driver->setTransform(ETS_VIEW, m_defaultViewMatrix);	
+
+		// enable material 2d
+		m_driver->enableMaterial2D(false);
 	}
 
 
@@ -700,9 +719,6 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	void	draw_mesh_primitive ( int primitive_type, const void *coords, int vertex_count )
 	// Helper for draw_mesh_strip and draw_triangle_list.
 	{
-		if ( m_isRenderMask == true )
-			return;
-
 		// Set up current style.
 		m_current_styles[LEFT_STYLE].m_render = this;
 		m_current_styles[LEFT_STYLE].apply();
@@ -724,6 +740,10 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		s16					*index		= new s16[ vertex_count ];
 		
 		int index_count = vertex_count;
+		
+		// turn off transparent if is render mask
+		if ( m_isRenderMask )
+			m_color.setAlpha(255);
 
 		for ( int i = 0; i < vertex_count; i++ )
 		{
@@ -736,10 +756,15 @@ struct render_handler_irrlicht : public gameswf::render_handler
 			
 
 		// set texture
-		m_material.setTexture(0, NULL);
-		m_material.MaterialType = EMT_TRANSPARENT_VERTEX_ALPHA;
-		m_driver->setMaterial( m_material );
-							
+		m_material->setTexture(0, NULL);
+
+		if ( m_isRenderMask )
+			m_material->MaterialType = EMT_SOLID;
+		else
+			m_material->MaterialType = EMT_TRANSPARENT_VERTEX_ALPHA;
+		
+		m_driver->setMaterial( *m_material );
+
 		// draw first pass
 		if ( primitive_type ==  GL_TRIANGLE_STRIP )		
 		{			
@@ -772,13 +797,14 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		if ( m_current_styles[LEFT_STYLE].needs_second_pass() )
 		{
 			m_current_styles[LEFT_STYLE].apply_second_pass();
-									
+					
+			// todo later
 
 			m_current_styles[LEFT_STYLE].cleanup_second_pass();
 		}
 		
-		m_current_styles[LEFT_STYLE].applyTexture ( primitive_type, vertices, vertex_count, index, index_count, coords );		
-		
+		m_current_styles[LEFT_STYLE].applyTexture ( primitive_type, vertices, vertex_count, index, index_count, coords );							
+
 		// pop matrix
 		m_worldMatrix = viewMat;
 		
@@ -877,10 +903,10 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		m_driver->setTransform( ETS_VIEW,		m_viewMatrix );
 
 		// set texture
-		m_material.setTexture(0, ((bitmap_info_irrlicht*)bi)->m_texture );
-		m_material.MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;		
+		m_material->setTexture(0, ((bitmap_info_irrlicht*)bi)->m_texture );
+		m_material->MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;
+		m_driver->setMaterial( *m_material );
 
-		m_driver->setMaterial( m_material );
 		m_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
 		m_driver->draw2DVertexPrimitiveList(
 				vertices, 4,
@@ -897,19 +923,34 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	}
 
 	void begin_submit_mask()
-	{
+	{		
 		m_isRenderMask = true;
+
+		// write only write depth, disable color
+		m_material->ZBuffer = video::ECFN_ALWAYS;
+		m_material->ZWriteEnable = true;
+		m_material->ColorMask = ECP_NONE;
 	}
 
 	// called after begin_submit_mask and the drawing of mask polygons
 	void end_submit_mask()
 	{
 		m_isRenderMask = false;
+
+		// enable depth test, enable full color
+		m_material->ZBuffer = video::ECFN_EQUAL;
+		m_material->ZWriteEnable = false;
+		m_material->ColorMask = ECP_ALL;
 	}
 
 	void disable_mask()
-	{
-		
+	{		
+		m_isRenderMask = false;
+
+		m_material->ZBuffer = video::ECFN_NEVER;
+		m_material->ZWriteEnable = false;
+		m_material->ColorMask = ECP_ALL;
+
 	}
 
 	bool is_visible ( const gameswf::rect &bound )

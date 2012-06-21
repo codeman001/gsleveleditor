@@ -20,23 +20,44 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPTSTR    lpCmdLine,
                      int       nCmdShow)
-{
-	CMainFrame *pMainWnd = new CMainFrame();
+{		
+	// todo open mesh & anim
+	// lpCmdLine: "-open data/mesh/marine/marine_2_mesh.dae data/mesh/marine/marine_2_anims.dae"
+	// lpCmdLine: "-open data/mesh/marine/marine_2_mesh.scene data/mesh/marine/marine_2_anims.anim"
+
+	// todo export mesh
+	// lpCmdLine: "-exportmesh data/mesh/marine/marine_2_mesh.dae data/mesh/marine/marine_2_mesh.scene"
+
+	// todo export anim
+	// lpCmdLine: "-exportanim data/mesh/marine/marine_2_anims.dae data/mesh/marine/marine_2_anims.anim"
+
+	CMainFrame *pMainWnd = new CMainFrame(lpCmdLine);
 
 	pMainWnd->create( STR_APP_TITLE, 50,50,1024,700,NULL, TEXT("gsParticleEditor") );	
+			
 	pMainWnd->setPositionCenterOfScreen();
-	pMainWnd->setWindowState(SW_NORMAL);
-	pMainWnd->showWindow(true);
-	pMainWnd->updateWindow();
-	pMainWnd->setForegroundWindow();
-	pMainWnd->setFocus();
-	pMainWnd->enableOnIdle(true);
+	
+	if ( pMainWnd->doExportMode() == false )
+	{
+		pMainWnd->setWindowState(SW_NORMAL);
+		pMainWnd->showWindow(true);
+		pMainWnd->updateWindow();	
+		pMainWnd->setForegroundWindow();
+		pMainWnd->setFocus();
+	}
+	else
+	{
+		pMainWnd->setWindowState(SW_MINIMIZE);
+		pMainWnd->showWindow(true);
+		pMainWnd->updateWindow();	
+	}
 
+	pMainWnd->enableOnIdle(true);
 
 	uiApplication::enableProcessMsgOnAccel( true );
 	uiApplication::run( pMainWnd );
-	delete pMainWnd;
 
+	delete pMainWnd;
 	uiApplication::destroy();
 
 	return 1;

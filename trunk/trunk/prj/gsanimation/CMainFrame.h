@@ -11,8 +11,24 @@ protected:
 	CIrrWindow		*m_irrWin;
 	CAnimModifyFrame *m_editorWin;
 	uiListView		*m_listView;
+
+	const wchar_t	*m_lpCmdLine;
+
+	uiStringA		m_file1;
+	uiStringA		m_file2;
+
+	enum UserAction
+	{
+		None = 0,
+		ExportMesh,
+		ExportAnim,
+		Open,		
+	};
+
+	UserAction	m_action;
+
 public:
-	CMainFrame();
+	CMainFrame(const wchar_t* lpCmdLine);
 	virtual ~CMainFrame();
 
 protected:
@@ -45,7 +61,13 @@ public:
 	virtual LRESULT	messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 public:
-	
+	bool doExportMode();
+
+	CColladaMeshComponent* getMeshComponent()
+	{
+		return m_irrWin->getAnimComponent();
+	}
+
 	void listPropertyOnItemChange( uiObject *pSender );
 	void listPropertyOnItemEdit( uiObject *pSender );
 

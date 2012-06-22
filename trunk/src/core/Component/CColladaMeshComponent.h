@@ -27,11 +27,6 @@ struct SEffect
 	f32					Transparency;
 	bool				HasAlpha;
 
-	SEffect()
-	{
-		HasAlpha = false;
-	}
-
 	inline bool operator< (const SEffect & other) const
 	{
 		return Id < other.Id;

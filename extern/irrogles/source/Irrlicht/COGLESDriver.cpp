@@ -1680,6 +1680,9 @@ bool COGLES1Driver::setActiveTexture(u32 stage, const video::ITexture* texture)
 			return false;
 		}
 
+		// inc texbind count
+		BindTextureCount++;
+
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D,
 			static_cast<const COGLES1Texture*>(texture)->getOGLES1TextureName());

@@ -13,7 +13,7 @@ namespace video
 
 CFPSCounter::CFPSCounter()
 :	FPS(60), Primitive(0), StartTime(0), FramesCounted(0),
-	PrimitivesCounted(0), PrimitiveAverage(0), PrimitiveTotal(0)
+	PrimitivesCounted(0), TextureBindCounted(0), PrimitiveAverage(0), PrimitiveTotal(0)
 {
 
 }
@@ -46,14 +46,24 @@ u32 CFPSCounter::getPrimitiveTotal() const
 	return PrimitiveTotal;
 }
 
+//! return number of times bindTexture
+u32 CFPSCounter::getTextureBindCount() const
+{
+	return TextureBindCounted;
+}
+
 
 //! to be called every frame
-void CFPSCounter::registerFrame(u32 now, u32 primitivesDrawn)
+void CFPSCounter::registerFrame(u32 now, u32 primitivesDrawn, u32 textureBindCount)
 {
 	++FramesCounted;
+	
 	PrimitiveTotal += primitivesDrawn;
 	PrimitivesCounted += primitivesDrawn;
+	
 	Primitive = primitivesDrawn;
+	TextureBindCounted = textureBindCount;
+
 
 	const u32 milliseconds = now - StartTime;
 

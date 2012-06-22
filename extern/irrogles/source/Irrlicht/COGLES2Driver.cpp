@@ -1482,6 +1482,10 @@ namespace video
 				os::Printer::log("Fatal Error: Tried to set a texture not owned by this driver.", ELL_ERROR);
 				return false;
 			}
+
+			// inc texbind count
+			BindTextureCount++;
+
 			glBindTexture(GL_TEXTURE_2D,
 						static_cast<const COGLES2Texture*>(texture)->getOGLES2TextureName());
 		}

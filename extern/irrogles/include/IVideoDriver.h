@@ -1075,6 +1075,9 @@ namespace video
 		\return Amount of primitives drawn in the last frame. */
 		virtual u32 getPrimitiveCountDrawn( u32 mode =0 ) const =0;
 
+		//! Return number of times call setactivetexture
+		virtual u32 getBindTextureCount() const = 0;
+
 		//! Deletes all dynamic lights which were previously added with addDynamicLight().
 		virtual void deleteAllDynamicLights() =0;
 

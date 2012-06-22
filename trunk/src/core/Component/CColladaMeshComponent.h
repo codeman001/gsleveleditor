@@ -25,6 +25,12 @@ struct SEffect
 	video::SMaterial	Mat;
 	std::wstring		Id;
 	f32					Transparency;
+	bool				HasAlpha;
+
+	SEffect()
+	{
+		HasAlpha = false;
+	}
 
 	inline bool operator< (const SEffect & other) const
 	{

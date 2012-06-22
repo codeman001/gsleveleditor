@@ -28,10 +28,13 @@ core::matrix4	readTranslateNode(io::IXMLReader* reader, bool flip);
 core::matrix4	readRotateNode(io::IXMLReader* reader, bool flip);
 core::matrix4	readScaleNode(io::IXMLReader* reader, bool flip);
 
-ITexture*		getTextureFromImage( std::string& basePath, std::wstring& uri, ArrayEffectParams& listEffectParam);
+ITexture*		getTextureFromImage( std::string& basePath, std::wstring& uri, ArrayEffectParams& listEffectParam, ArrayImages& listImages);
+ITexture*		getTextureFromImage( std::string& basePath, std::wstring& id, const ArrayImages& listImages );
+std::wstring	getImageWithId( const std::wstring& id, const ArrayImages& listImages );
+
 int				getBufferWithUri( std::wstring& uri, SMeshParam* mesh );
 int				getVerticesWithUri( std::wstring& uri, SMeshParam* mesh );
-int				getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam );
+int				getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam, ArrayEffects& listMaterial );
 int				getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam );
 int				getMeshWithControllerName( std::wstring& controllerName, ArrayMeshParams& listMeshParam );
 
@@ -808,9 +811,11 @@ void CColladaMeshComponent::loadDae( const char *lpFilename )
 	}
 
 	const std::wstring controllerSectionName(L"controller");
+	const std::wstring imageSectionName(L"image");
+	const std::wstring materialSectionName(L"material");
 	const std::wstring effectSectionName(L"effect");
 	const std::wstring geometrySectionName(L"geometry");	
-	const std::wstring sceneSectionName(L"visual_scene");
+	const std::wstring sceneSectionName(L"visual_scene");	
 
 	bool readLUpAxis = false;
 	m_needFlip = false;
@@ -823,7 +828,15 @@ void CColladaMeshComponent::loadDae( const char *lpFilename )
 			{
 				std::wstring nodeName = xmlRead->getNodeName();
 
-				if ( nodeName == effectSectionName )
+				if ( nodeName == imageSectionName )
+				{
+					parseImageNode( xmlRead );
+				}
+				else if ( nodeName == materialSectionName )
+				{
+					parseMaterialNode( xmlRead );
+				}
+				else if ( nodeName == effectSectionName )
 				{
 					parseEffectNode( xmlRead );
 				}
@@ -1187,7 +1200,7 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 				triangle.NumPolygon = xmlRead->getAttributeValueAsInt(L"count");
 
 				std::wstring materialName = xmlRead->getAttributeValue(L"material");
-				triangle.EffectIndex = getEffectWithUri( materialName, m_listEffects );
+				triangle.EffectIndex = getEffectWithUri( materialName, m_listEffects, m_listMaterial );
 
 				while(xmlRead->read())
 				{							
@@ -1566,6 +1579,102 @@ SNodeParam* CColladaMeshComponent::parseNode( io::IXMLReader *xmlRead, SNodePara
 	return pNode;
 }
 
+// parseImageNode
+// parse image
+void CColladaMeshComponent::parseImageNode( io::IXMLReader *xmlRead, SImage* image )
+{
+	if ( image == NULL )
+	{		
+		m_listImages.push_back( SImage() );
+		image = &m_listImages.back();		
+	}
+
+	const std::wstring imageSectionName(L"image");
+
+	image->id = xmlRead->getAttributeValue(L"id");
+	image->name = xmlRead->getAttributeValue(L"name");
+	
+	bool readPath = false;
+
+	while(xmlRead->read())
+	{
+		if (xmlRead->getNodeType() == io::EXN_ELEMENT)
+		{			
+			std::wstring nodeName = xmlRead->getNodeName();
+			if ( nodeName == L"init_from" )
+				readPath = true;
+		}
+		else if ( xmlRead->getNodeType() == io::EXN_TEXT )
+		{
+			if ( readPath )
+				image->fileName = xmlRead->getNodeData();
+			readPath = false;
+		}
+		else if ( xmlRead->getNodeType() == io::EXN_ELEMENT_END )
+		{
+			std::wstring nodeName = xmlRead->getNodeName();
+			if ( nodeName == imageSectionName )
+				break;
+		}
+	}
+}
+
+
+// parseMaterialNode
+// parse material
+void CColladaMeshComponent::parseMaterialNode( io::IXMLReader *xmlRead, SEffect* effect )
+{
+	if ( effect == NULL )
+	{		
+		m_listMaterial.push_back( SEffect() );
+		effect = &m_listMaterial.back();
+
+		effect->Id = readId(xmlRead);
+		effect->Transparency = 1.f;
+		effect->Mat.Lighting = true;
+		effect->Mat.NormalizeNormals = true;
+		effect->HasAlpha = false;
+	}
+		
+	const std::wstring materialSectionName(L"material");
+	const std::wstring initFrom(L"init_from");
+	
+	bool hasTexture = false;
+	bool readInitFrom = 0;
+
+	while(xmlRead->read())
+	{
+		if (xmlRead->getNodeType() == io::EXN_ELEMENT)
+		{		
+			// read the first image init as texture
+			std::wstring nodeName = xmlRead->getNodeName();
+			if ( nodeName == initFrom && hasTexture == false )
+			{				
+				readInitFrom = 1;
+			}
+		}
+		else if (xmlRead->getNodeType() == io::EXN_TEXT)
+		{
+			// read texture
+			if ( hasTexture == false && readInitFrom == 1 )
+			{
+				std::wstring tname = xmlRead->getNodeData();
+				effect->Mat.setTexture( 0, getTextureFromImage( m_animeshFile, tname, m_listImages ) );
+				hasTexture = true;
+			}
+
+			readInitFrom = 0;
+		}
+		else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END)
+		{
+			// end parse material
+			std::wstring nodeName = xmlRead->getNodeName();
+			if ( nodeName == materialSectionName )
+				break;
+		}
+	}
+
+}
 
 // parseEffectNode
 // parse effect material node
@@ -1597,9 +1706,8 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 	const std::wstring reflectivityNode(L"reflectivity");
 	const std::wstring transparentNode(L"transparent");
 	const std::wstring transparencyNode(L"transparency");
-	const std::wstring indexOfRefractionNode(L"index_of_refraction");
-	
-	const std::wstring effectSectionName(L"effect");
+	const std::wstring indexOfRefractionNode(L"index_of_refraction");	
+	const std::wstring effectSectionName(L"effect");	
 	const std::wstring profileCOMMONSectionName(L"profile_COMMON");
 	const std::wstring techniqueNodeName(L"technique");
 	const std::wstring colorNodeName(L"color");
@@ -1628,8 +1736,10 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 				int m_readState = 0;
 					
 				SEffectParam effectParam;
-				effectParam.Name = xmlRead->getAttributeValue(L"sid");
-
+				
+				if ( xmlRead->getAttributeValue(L"sid") )
+					effectParam.Name = xmlRead->getAttributeValue(L"sid");
+				
 				while(xmlRead->read())
 				{
 					std::wstring node = xmlRead->getNodeName();
@@ -1706,7 +1816,7 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 										wstring tname = xmlRead->getAttributeValue(L"texture");
 										
 										if ( node == diffuseNode )
-											effect->Mat.setTexture(0, getTextureFromImage( m_animeshFile, tname, m_listEffectsParam ));									
+											effect->Mat.setTexture(0, getTextureFromImage( m_animeshFile, tname, m_listEffectsParam, m_listImages ));
 										else if ( node == ambientNode )
 										{
 											// ambient lightmap texture: todo later
@@ -1776,7 +1886,7 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 			std::wstring nodeName = xmlRead->getNodeName();
 
 			if (effectSectionName == nodeName)
-				break;
+				break;			
 			else if (profileCOMMONSectionName == nodeName)
 				break;
 			else if (techniqueNodeName == nodeName)
@@ -2351,9 +2461,10 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 // free all data from parse dae
 void CColladaMeshComponent::cleanData()
 {
-	m_listEffects.clear();
-	
 	m_listEffectsParam.clear();
+	m_listEffects.clear();	
+	m_listImages.clear();
+	m_listMaterial.clear();
 
 	ArrayMeshParams::iterator i = m_listMesh.begin(), end = m_listMesh.end();
 	while ( i != end )
@@ -2708,7 +2819,63 @@ core::matrix4 readRotateNode(io::IXMLReader* reader, bool flip)
 		return core::IdentityMatrix;
 }
 
-video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& uri, ArrayEffectParams& listEffectParam)
+std::wstring getImageWithId( const std::wstring& id, const ArrayImages& listImages )
+{
+	int n = listImages.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listImages[i].id == id )
+			return listImages[i].fileName;
+	}
+	return id;
+}
+
+video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& id, const ArrayImages& listImages )
+{
+	std::wstring textureName = getImageWithId( id, listImages);
+	
+	std::string path = basePath;
+
+	int i = basePath.length() - 1;
+	while ( i > 0 )
+	{
+		if ( basePath[i] == '\\' || basePath[i] == '/' )
+		{
+			path = basePath.substr(0, i + 1);
+			break;
+		}
+		i--;
+	}
+
+	// try open 1
+	wchar_t textureNameW[1024] = {0};
+	char textureNameA[1024] = {0};
+	uiString::copy<char, const char>( textureNameA, path.c_str() );
+	uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
+		
+	ITexture *tex =	getIView()->getDriver()->getTexture( textureNameA );
+
+	// try open 2
+	if ( tex == NULL )
+	{
+		uiString::getFileName<const wchar_t, wchar_t>( textureName.c_str(), textureNameW );
+		textureName = textureNameW;
+
+		uiString::copy<char, const char>( textureNameA, path.c_str() );
+		uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
+
+		tex = getIView()->getDriver()->getTexture( textureNameA );
+	}
+	
+	// try open 3
+	if ( tex == NULL )
+	{
+		tex = getIView()->getDriver()->getTexture( getIView()->getPath( textureName.c_str() ) );
+	}
+	return tex;
+}
+
+video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& uri, ArrayEffectParams& listEffectParam, ArrayImages& listImages)
 {	
 	int n = listEffectParam.size();
 	for ( int i = 0; i < n; i++ )
@@ -2717,7 +2884,7 @@ video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& uri, 
 		{
 			if ( listEffectParam[i].InitFromTexture.size() > 0 )
 			{
-				std::wstring textureName = listEffectParam[i].InitFromTexture;
+				std::wstring textureName = getImageWithId(listEffectParam[i].InitFromTexture, listImages);
 				
 				std::string path = basePath;
 
@@ -2732,21 +2899,36 @@ video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& uri, 
 					i--;
 				}
 
-				char textureNameA[1024];
+				// try open 1
+				wchar_t textureNameW[1024] = {0};
+				char textureNameA[1024] = {0};
 				uiString::copy<char, const char>( textureNameA, path.c_str() );
 				uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
 					
 				ITexture *tex =	getIView()->getDriver()->getTexture( textureNameA );
-
+				
+				// try open 2
 				if ( tex == NULL )
 				{
-					tex = getIView()->getDriver()->getTexture( getIView()->getPath(textureNameA) );
+					uiString::getFileName<const wchar_t, wchar_t>( textureName.c_str(), textureNameW );
+					textureName = textureNameW;
+
+					uiString::copy<char, const char>( textureNameA, path.c_str() );
+					uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
+
+					tex = getIView()->getDriver()->getTexture( textureNameA );
+				}
+				
+				// try open 3
+				if ( tex == NULL )
+				{
+					tex = getIView()->getDriver()->getTexture( getIView()->getPath( textureName.c_str() ) );
 				}
 
 				return tex;
 			}
 			else if ( listEffectParam[i].Source.size() > 0 )
-				return getTextureFromImage( basePath,listEffectParam[i].Source, listEffectParam );
+				return getTextureFromImage( basePath,listEffectParam[i].Source, listEffectParam, listImages );
 
 			return NULL;
 		}
@@ -2781,10 +2963,10 @@ int getVerticesWithUri( std::wstring& uri, SMeshParam* mesh )
 	return -1;
 }
 
-int getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam )
+int getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam, ArrayEffects& listMaterial )
 {
-	std::wstring fxName = uri + L"-fx";
-
+	// search in effect list
+	std::wstring fxName = uri + L"-fx";	
 	int n = listEffectParam.size();
 	for ( int i = 0; i < n; i++ )
 	{
@@ -2792,7 +2974,25 @@ int getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam )
 		{
 			return i;
 		}
-	}
+	}	
+
+	// try search in material list
+	n = listMaterial.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listMaterial[i].Id == uri )
+		{
+			// add to list effect
+			listEffectParam.push_back( listMaterial[i] );
+
+			// rename to effect style
+			SEffect &effect = listEffectParam.back();
+			effect.Id = uri + L"-fx";
+
+			return listEffectParam.size() - 1;
+		}
+	}	
+
 	return -1;
 }
 

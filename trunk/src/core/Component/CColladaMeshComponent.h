@@ -19,6 +19,13 @@ const int k_texCoordBuffer = 2;
 const int k_mesh = 0;
 const int k_skinMesh = 1;
 
+struct SImage
+{
+	std::wstring	id;
+	std::wstring	name;
+	std::wstring	fileName;
+};
+typedef vector<SImage>	ArrayImages;
 
 struct SEffect
 {
@@ -350,7 +357,9 @@ protected:
 	SColladaAnimClip			*m_currentAnim;
 
 	//	list of effect in collada scene
+	ArrayImages					m_listImages;
 	ArrayEffects				m_listEffects;
+	ArrayEffects				m_listMaterial;
 	ArrayEffectParams			m_listEffectsParam;
 	ArrayMeshParams				m_listMesh;
 	ArrayNodeParams				m_listNode;
@@ -442,6 +451,14 @@ protected:
 	// constructSkinMesh
 	// apply bone to vertex
 	void constructSkinMesh( SMeshParam *meshParam, CGameColladaMesh *mesh );
+
+	// parseImageNode
+	// parse image
+	void parseImageNode( io::IXMLReader *xmlRead, SImage* image = NULL );
+
+	// parseMaterialNode
+	// parse material
+	void parseMaterialNode( io::IXMLReader *xmlRead, SEffect* effect = NULL );
 
 	// parseEffectNode
 	// parse effect material node

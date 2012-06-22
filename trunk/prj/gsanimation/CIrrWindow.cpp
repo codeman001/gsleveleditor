@@ -100,9 +100,10 @@ void CIrrWindow::initScene()
 	ISceneNode* pNode = smgr->addEmptySceneNode();
 
 	// default light	
-	ILightSceneNode *light = smgr->addLightSceneNode( pNode, core::vector3df(0, 0, 0) );
-	light->setLightType( video::ELT_DIRECTIONAL );
-
+	ILightSceneNode *light = smgr->addLightSceneNode( pNode, core::vector3df(0, 100, 0) );
+	light->setLightType( video::ELT_POINT );
+	light->getLightData().Radius = 4000.0f;	
+	
 	// add demo mesh
 	m_animObject = new CGameObject();	
 

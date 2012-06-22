@@ -166,6 +166,14 @@
 		</Configuration>
 	</Configurations>
 	<References>
+		<ProjectReference
+			ReferencedProjectIdentifier="{E08E042A-6C45-411B-92BE-3CC31331019F}"
+			RelativePathToProject="..\..\extern\irrlicht\source\Irrlicht\Irrlicht9.0.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{F6927C75-E736-465E-8B59-FF1A716DEE6A}"
+			RelativePathToProject="..\..\extern\uiClass\uiClass.vcproj"
+		/>
 	</References>
 	<Files>
 		<Filter

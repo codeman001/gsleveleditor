@@ -1695,7 +1695,10 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 										else if (specularNode == node)
 											effect->Mat.SpecularColor = color;
 										else if (transparentNode == node)
+										{
 											effect->Transparency = colorf.getAlpha();
+											effect->HasAlpha = true;
+										}
 									}
 									else if ( textureNodeName == xmlRead->getNodeName() )
 									{
@@ -1706,6 +1709,11 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 										else if ( node == ambientNode )
 										{
 											// ambient lightmap texture: todo later
+										}
+										else if ( node == transparentNode )
+										{
+											// alpha node
+											effect->HasAlpha = true;
 										}
 									}								
 								}
@@ -1784,9 +1792,15 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 	if (effect->Mat.DiffuseColor == video::SColor(0) && effect->Mat.AmbientColor != video::SColor(0))
 		effect->Mat.DiffuseColor = effect->Mat.AmbientColor;
 
-	if ( effect->Transparency != 0.0f && effect->Transparency != 1.0f )
+	if ( effect->HasAlpha == true )
 	{
-		effect->Mat.MaterialType = irr::video::EMT_TRANSPARENT_VERTEX_ALPHA;
+		if ( effect->Transparency != 1.0f )
+			effect->Mat.MaterialType = irr::video::EMT_TRANSPARENT_VERTEX_ALPHA;
+		else
+			effect->Mat.MaterialType = irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
+
+		effect->Mat.BackfaceCulling = false;
+		effect->Mat.FrontfaceCulling = false;
 		effect->Mat.ZWriteEnable = false;
 	}	
 
@@ -2261,12 +2275,7 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 	// set material
 	if ( effect )
 	{
-		mbuffer->getMaterial() = effect->Mat;
-		if ( effect->Mat.TextureLayer[0].Texture )
-		{
-			if ( effect->Mat.TextureLayer[0].Texture->hasAlpha() == true )
-				mbuffer->getMaterial().MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
-		}
+		mbuffer->getMaterial() = effect->Mat;		
 	}
 
 	// calc normal vector

@@ -30,19 +30,24 @@ public:
 	//! returns accumulated primitive count since start
 	u32 getPrimitiveTotal() const;
 
+	//! return number of times bindTexture
+	u32 getTextureBindCount() const;
+
 	//! to be called every frame
-	void registerFrame(u32 now, u32 primitive);
+	void registerFrame(u32 now, u32 primitive, u32 textureBindCounted);
 
 private:
 
 	s32 FPS;
-	u32 Primitive;
+	u32 Primitive;	
 	u32 StartTime;
 
 	u32 FramesCounted;
 	u32 PrimitivesCounted;
 	u32 PrimitiveAverage;
 	u32 PrimitiveTotal;
+
+	u32 TextureBindCounted;
 };
 
 

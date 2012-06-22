@@ -252,6 +252,9 @@ namespace video
 		//! very useful method for statistics.
 		virtual u32 getPrimitiveCountDrawn( u32 param = 0 ) const;
 
+		//! Return number of times call setactivetexture
+		virtual u32 getBindTextureCount() const;
+
 		//! deletes all dynamic lights there are
 		virtual void deleteAllDynamicLights();
 
@@ -816,6 +819,7 @@ namespace video
 		CFPSCounter FPSCounter;
 
 		u32 PrimitivesDrawn;
+		u32 BindTextureCount;
 		u32 MinVertexCountForVBO;
 
 		u32 TextureCreationFlags;

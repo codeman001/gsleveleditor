@@ -83,7 +83,7 @@ IImageWriter* createImageWriterPPM();
 //! constructor
 CNullDriver::CNullDriver(io::IFileSystem* io, const core::dimension2d<u32>& screenSize)
 : FileSystem(io), MeshManipulator(0), ViewPort(0,0,0,0), ScreenSize(screenSize),
-	PrimitivesDrawn(0), MinVertexCountForVBO(500), TextureCreationFlags(0),
+	PrimitivesDrawn(0), BindTextureCount(0), MinVertexCountForVBO(500), TextureCreationFlags(0),
 	OverrideMaterial2DEnabled(false), AllowZWriteOnTransparent(false),EnableChangeProjectionMatrixWhenSetRenderMode(true)
 {
 	#ifdef _DEBUG
@@ -305,6 +305,7 @@ bool CNullDriver::beginScene(bool backBuffer, bool zBuffer, SColor color,
 {
 	core::clearFPUException();
 	PrimitivesDrawn = 0;
+	BindTextureCount = 0;
 	return true;
 }
 
@@ -312,7 +313,7 @@ bool CNullDriver::beginScene(bool backBuffer, bool zBuffer, SColor color,
 //! applications must call this method after performing any rendering. returns false if failed.
 bool CNullDriver::endScene()
 {
-	FPSCounter.registerFrame(os::Timer::getRealTime(), PrimitivesDrawn);
+	FPSCounter.registerFrame(os::Timer::getRealTime(), PrimitivesDrawn, BindTextureCount);
 	updateAllHardwareBuffers();
 	updateAllOcclusionQueries();
 	return true;
@@ -891,6 +892,11 @@ u32 CNullDriver::getPrimitiveCountDrawn( u32 param ) const
 	return (0 == param) ? FPSCounter.getPrimitive() : (1 == param) ? FPSCounter.getPrimitiveAverage() : FPSCounter.getPrimitiveTotal();
 }
 
+//! Return number of times call setactivetexture
+u32 CNullDriver::getBindTextureCount() const
+{
+	return FPSCounter.getTextureBindCount();
+}
 
 
 //! Sets the dynamic ambient light color. The default color is

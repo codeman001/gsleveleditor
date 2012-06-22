@@ -1579,7 +1579,8 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 		effect->Id = readId(xmlRead);
 		effect->Transparency = 1.f;
 		effect->Mat.Lighting = true;
-		effect->Mat.NormalizeNormals = true;		
+		effect->Mat.NormalizeNormals = true;
+		effect->HasAlpha = false;
 	}
 
 	const std::wstring constantNode(L"constant");
@@ -1795,13 +1796,16 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 	if ( effect->HasAlpha == true )
 	{
 		if ( effect->Transparency != 1.0f )
+		{
 			effect->Mat.MaterialType = irr::video::EMT_TRANSPARENT_VERTEX_ALPHA;
+			effect->Mat.ZWriteEnable = false;
+		}
 		else
+		{
 			effect->Mat.MaterialType = irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
-
+		}
 		effect->Mat.BackfaceCulling = false;
 		effect->Mat.FrontfaceCulling = false;
-		effect->Mat.ZWriteEnable = false;
 	}	
 
 	effect->Mat.setFlag(video::EMF_BILINEAR_FILTER, true);

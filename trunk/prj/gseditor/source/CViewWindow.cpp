@@ -5,6 +5,7 @@
 
 #include "CGlobalInstance.h"
 #include "CHistoryManager.h"
+#include "CBinaryUtils.h"
 
 #include "IController.h"
 #include "CDocument.h"
@@ -30,6 +31,7 @@ CViewWindow::CViewWindow( WCHAR* lpString, uiWindow *p )
 	// init controller
 	CControllerManager::createGetInstance();
 	CHistoryManager::createGetInstance();	
+	CBinaryUtils::createGetInstance();
 
 	// init document
 	m_document = new CDocument();
@@ -44,19 +46,20 @@ CViewWindow::CViewWindow( WCHAR* lpString, uiWindow *p )
 	
 CViewWindow::~CViewWindow()
 {
+	// destroy controller
+	CControllerManager::releaseInstance();
+	CHistoryManager::releaseInstance();
+	CBinaryUtils::releaseInstance();
+
+	CComponentFactory::freeData();
+	CObjTemplateFactory::freeData();
+	CColladaCache::freeData();
+
 	if ( m_document )
 	{
 		delete m_document;
 		m_document = NULL;
 	}
-
-	// destroy controller
-	CControllerManager::releaseInstance();
-	CHistoryManager::releaseInstance();
-
-	CComponentFactory::freeData();
-	CObjTemplateFactory::freeData();
-	CColladaCache::freeData();
 
 	m_device->drop();
 }

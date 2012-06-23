@@ -2,6 +2,7 @@
 #define _GAMESTATE_
 
 #include "stdafx.h"
+#include "gameLevel/CGameLevel.h"
 
 #include "swfUI/CGameUI.h"
 #include "swfUI/CMenuFx.h"

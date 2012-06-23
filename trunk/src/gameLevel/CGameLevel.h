@@ -2,12 +2,13 @@
 #define _CGAMEL_LEVEL_
 
 #include "CGameObject.h"
+#include "CGameCamera.h"
 #include "CZone.h"
 
 #include "CComponentFactory.h"
 #include "CObjTemplateFactory.h"
 
-class CGameLevel: public uiSingleton<CGameLevel>
+class CGameLevel
 {
 protected:
 	ArrayZone		m_zones;
@@ -55,6 +56,10 @@ public:
 	// render
 	// render level per frame
 	virtual void render();
+
+	// setCamera
+	// set current camera
+	void setCamera( CGameCamera* cam );
 
 };
 

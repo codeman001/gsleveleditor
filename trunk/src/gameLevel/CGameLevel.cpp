@@ -250,3 +250,10 @@ void CGameLevel::render()
 	// draw all 3d scene
 	getIView()->getSceneMgr()->drawAll();
 }
+
+// setCamera
+// set current camera
+void CGameLevel::setCamera( CGameCamera* cam )
+{
+	getIView()->setActiveCamera( cam );
+}

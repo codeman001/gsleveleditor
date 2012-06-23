@@ -37,7 +37,7 @@ void CStateGameLoading::onFsCommand( const char *command, const char *param )
 	}
 }
 
-void CStateGameLoading::onUpdate(float timeStep)
+void CStateGameLoading::onUpdate()
 {
 	if ( m_loadingBar && m_beginLoading )
 	{

@@ -15,7 +15,7 @@ static bool s_isFirstDocument = true;
 
 CDocument::CDocument()
 {
-	s_isFirstDocument = false;
+	
 }
 
 CDocument::~CDocument()
@@ -89,8 +89,11 @@ void CDocument::newDocument()
 	m_treeViewRoot->expandChild( true );
 
 	// register draw all template obj
-	if ( s_isFirstDocument == false )
-		CObjTemplateFactory::registerDrawAllTemplateObject();	
+	if ( s_isFirstDocument == true )
+	{
+		CObjTemplateFactory::registerDrawAllTemplateObject();
+		s_isFirstDocument = false;
+	}
 }
 	
 // saveDocument

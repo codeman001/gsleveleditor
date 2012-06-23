@@ -25,12 +25,14 @@ CTerrainComponent::~CTerrainComponent()
 // init
 // run when init object
 void CTerrainComponent::initComponent()
-{
+{	
 	IMesh *pMesh = NULL;
 	ISceneNode		*node	= m_gameObject->getSceneNode();
 	ISceneManager	*smgr	= getIView()->getSceneMgr();
 
-	if ( node == NULL )
+	CZone *pZone = (CZone*)	m_gameObject->getParent();
+
+	if ( node == NULL || pZone == NULL )
 		return;
 
 	m_listCollisionNode.clear();
@@ -122,10 +124,11 @@ void CTerrainComponent::initComponent()
 		}		
 	}
 
-	// register terrain	
-	CZone *pZone = (CZone*)	m_gameObject->getParent();
-	if ( pZone )
-		pZone->registerTerrainObj( m_gameObject );
+	// register terrain			
+#ifdef GSEDITOR
+	m_gameObject->getSceneNode()->setTriangleSelector(NULL);
+#endif
+	pZone->registerTerrainObj( m_gameObject );	
 }
 
 // updateComponent

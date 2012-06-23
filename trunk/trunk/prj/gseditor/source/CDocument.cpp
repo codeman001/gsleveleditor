@@ -23,6 +23,9 @@ CDocument::~CDocument()
 	// delete camera
 	delete m_designCamera;
 
+	// set null camera
+	getIView()->getSceneMgr()->setActiveCamera(NULL);
+
 	// delete grid
 	m_gridNode->drop();
 
@@ -32,8 +35,10 @@ CDocument::~CDocument()
 	// delete all item
 	getIView()->getDocumentTreeView()->deleteAllItem();
 
+	// it will make game crash (drop all node on controller)
+	// so i am remove it!
 	// remove all child
-	getIView()->getSceneMgr()->getRootSceneNode()->removeAll();
+	// getIView()->getSceneMgr()->getRootSceneNode()->removeAll();
 	
 }
 

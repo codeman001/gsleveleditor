@@ -9,21 +9,40 @@ CStateMainMenu::CStateMainMenu()
 	:CGameState( CGameState::GSStateMainMenu )
 {
 	m_menuChoice = -1;
+	m_level = new CGameLevel();	
 }
 
 CStateMainMenu::~CStateMainMenu()
 {
+	delete m_level;
 }
 
 void CStateMainMenu::onCreate()
-{	
-	m_menuFx->setVisible( true );
+{		
+	m_menuFx->setVisible( true );	
+	m_menuFx->setBackgroundTransparent(true);
+
+	// show mainmenu state
 	setFxStateVisible( m_state, true );
+
+	CGameCamera* cam = (CGameCamera*)m_level->searchObject(3);
+	if ( cam )
+		m_level->setCamera( cam );
 }
 
 void CStateMainMenu::onDestroy()
 {
 	setFxStateVisible( m_state, false );
+}
+
+void CStateMainMenu::onUpdate()
+{
+	m_level->update();
+}
+
+void CStateMainMenu::onRender()
+{
+	m_level->render();
 }
 
 void CStateMainMenu::onFsCommand( const char *command, const char *param )

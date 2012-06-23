@@ -6,7 +6,9 @@
 class CStateMainMenu: public CGameState
 {
 protected:
-	int		m_menuChoice;
+	int				m_menuChoice;
+
+	CGameLevel		*m_level;
 public:
 	CStateMainMenu();
 	virtual ~CStateMainMenu();
@@ -14,6 +16,16 @@ public:
 	virtual void onCreate();
 	virtual void onDestroy();
 	virtual void onFsCommand( const char *command, const char *param );	
+	
+	virtual void onRender();
+	virtual void onUpdate();
+
+	// getLevel
+	// get 3d level
+	CGameLevel* getLevel()
+	{
+		return m_level;
+	}
 };
 
 #endif

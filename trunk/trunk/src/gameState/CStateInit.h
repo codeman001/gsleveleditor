@@ -9,6 +9,7 @@ protected:
 	bool	m_loadFinish;	
 	float	m_logoTime;
 
+	CGameState	*m_mainMenuState;
 public:
 	CStateInit();
 	virtual ~CStateInit();

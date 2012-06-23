@@ -37,6 +37,7 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 		// invisible all state
 		for ( int state = (int)CGameState::GSStateMainMenu; state < (int)CGameState::StateCount; state++ )
 		{
+			// create flash mainmenu ui			
 			CMenuFxObj *menuObj = menu->getObj( CGameState::getStateName( (CGameState::EGameState)state ) );
 			if ( menuObj )
 			{
@@ -48,6 +49,22 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 		// hide the menu
 		menu->setVisible( false );
 		
+		// create main menu level
+		CStateMainMenu* mainMenuState = new CStateMainMenu();
+
+		// load all template
+		CObjTemplateFactory::loadAllObjectTemplate();
+
+		// load 3d level
+		CGameLevel *level = mainMenuState->getLevel();
+		level->loadLevel( getIView()->getPath( "data/level/levelMainMenu.lv" ) );			
+		while ( level->loadStep() == false )
+		{
+		}
+
+		// set gamestate
+		m_mainMenuState = mainMenuState;
+
 		// notify load finish
 		m_loadFinish = true;
 	}
@@ -55,7 +72,7 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 	{
 		// change state main menu
 		m_menuFx->setVisible( false );
-		CGameStateMgr::getInstance()->changeState( new CStateMainMenu() );
+		CGameStateMgr::getInstance()->changeState( m_mainMenuState );
 	}
 }
 

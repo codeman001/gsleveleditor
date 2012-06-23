@@ -87,7 +87,7 @@ void CObjectCollisionComponent::initComponent()
 		}		
 	}
 
-	for ( int i = 0; i < listMesh.size(); i++ )
+	for ( int i = 0; i < (int)listMesh.size(); i++ )
 	{
 		node = listMesh[i].node;
 		pMesh = listMesh[i].mesh;

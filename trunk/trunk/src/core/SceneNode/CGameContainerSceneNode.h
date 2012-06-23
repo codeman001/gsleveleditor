@@ -38,6 +38,13 @@ public:
 		return NULL;
 	}
 
+	// setOwner
+	// change owner object
+	void setOwner( CGameObject *obj )
+	{
+		m_owner = obj;
+	}
+
 protected:
 
 	core::aabbox3d<f32> Box;

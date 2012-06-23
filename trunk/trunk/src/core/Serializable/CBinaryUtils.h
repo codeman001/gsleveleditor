@@ -55,12 +55,20 @@ protected:
 	map<unsigned long, CGameColladaMesh*>			m_listMesh;
 	map<unsigned long, SMaterial*>					m_listMaterial;
 
-	vector< SPairID >	m_constructSceneMesh;
-	map<unsigned long, unsigned long>	m_constructMeshMaterial;
+	vector< SPairID >								m_constructSceneMesh;
+	map<unsigned long, unsigned long>				m_constructMeshMaterial;
+	map<IMeshBuffer*, unsigned long>				m_constructMeshBufferID;
+
+	CColladaMeshComponent*							m_component;
 public:
 	CBinaryUtils();
 	virtual ~CBinaryUtils();
 	
+	inline void setCurrentComponent( CColladaMeshComponent *comp )
+	{
+		m_component = comp;
+	}
+
 	void saveCollada( io::IWriteFile *file, CGameObject* gameObject );
 	void saveAnimation( io::IWriteFile *file, CColladaAnimation* anim );
 	void saveAnimClip( io::IWriteFile *file, SColladaAnimClip* animClip );

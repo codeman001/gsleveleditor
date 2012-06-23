@@ -641,6 +641,7 @@ void CColladaAnimation::loadDotAnim( char *lpFileName )
 	}
 
 	// parse binary scene
+	CBinaryUtils::getInstance()->setCurrentComponent(NULL);
 	CBinaryUtils::getInstance()->loadAnim( file, this );
 
 	// close file
@@ -719,7 +720,8 @@ CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 
 CColladaMeshComponent::~CColladaMeshComponent()
 {
-
+	if ( m_colladaNode )
+		m_colladaNode->setOwner( NULL );
 }
 
 
@@ -744,7 +746,7 @@ void CColladaMeshComponent::saveData( CSerializable* pObj )
 	pObj->addGroup( IObjectComponent::s_compType[ m_componentID ] );
 
 	pObj->addPath("meshFile", m_animeshFile.c_str(), true);
-	pObj->addString("defaultNode", m_defaultNode.c_str(), true);
+	pObj->addString("defaultNode", m_defaultNodeString.c_str(), true);
 }
 
 // loadData
@@ -756,15 +758,24 @@ void CColladaMeshComponent::loadData( CSerializable* pObj )
 	// release if mesh is loaded
 	if ( m_gameObject->m_node )
 		m_gameObject->destroyNode();
+	
+	// clear array node list
+	m_defaultNode.clear();
 
 	// read mesh file
 	char *lpFilename = pObj->readString();
 	
 	// read default node
-	m_defaultNode = pObj->readString();
+	m_defaultNodeString = pObj->readString();
 
 	// begin parse file
 	loadFromFile( lpFilename );
+
+	// init default node
+	CGameColladaSceneNode* defaultNode = m_mapNode[m_defaultNodeString];
+	if ( defaultNode )
+		m_defaultNode.push_back( defaultNode );
+
 }
 
 // loadFromFile
@@ -931,6 +942,7 @@ void CColladaMeshComponent::loadScene( const char *lpFilename )
 	m_gameObject->m_node = m_colladaNode;
 	
 	// parse binary scene
+	CBinaryUtils::getInstance()->setCurrentComponent(this);
 	CBinaryUtils::getInstance()->loadFile( file, m_gameObject );
 
 
@@ -2173,12 +2185,8 @@ void CColladaMeshComponent::constructScene()
 
 				// set mesh for scene node
 				colladaSceneNode->setColladaMesh( pColladaMesh );
-				
-				if ( m_defaultNode == "" )
-					m_defaultNode = colladaSceneNode->getName();
-
+								
 				pColladaMesh->drop();
-
 			}
 
 			// add update bounding box with this child
@@ -2518,6 +2526,7 @@ void CColladaMeshComponent::saveSceneToBinary( const char *lpFileName )
 
 	if ( file )
 	{
+		CBinaryUtils::getInstance()->setCurrentComponent(this);
 		CBinaryUtils::getInstance()->saveCollada( file, m_gameObject );	
 		file->drop();
 	}
@@ -2535,6 +2544,7 @@ void CColladaMeshComponent::saveAnimToBinary( const char *lpFileName )
 
 	if ( file )
 	{
+		CBinaryUtils::getInstance()->setCurrentComponent(this);
 		CBinaryUtils::getInstance()->saveAnimation( file, m_colladaAnimation );
 		file->drop();
 	}

@@ -284,7 +284,6 @@ void CZone::removeObject( CGameObject *pObj )
 #endif
 
 			// delete gameObject
-			pObj->destroyNode();
 			delete pObj;
 
 			m_childs.erase( iObj );

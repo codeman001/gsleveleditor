@@ -6,6 +6,16 @@
 
 class CTerrainComponent: public IObjectComponent
 {
+protected:
+	struct SMeshCollisionType
+	{
+		IMesh		*mesh;
+		int			type;
+		ISceneNode	*node;		
+	};
+
+	vector<SMeshCollisionType>	m_listCollisionNode;
+
 public:
 	CTerrainComponent( CGameObject *pObj );
 
@@ -29,7 +39,12 @@ public:
 
 	// getCollisionFromRay
 	// get collision from the ray
-	bool getCollisionFromRay( core::line3df & ray, f32 &outBestDistanceSquared, core::vector3df &outBestCollisionPoint, core::triangle3df &outBestTriangle);
+	bool getCollisionFromRay( core::line3df &ray, f32 &outBestDistanceSquared, core::vector3df &outBestCollisionPoint, core::triangle3df &outBestTriangle);
+
+protected:
+	// checkCollisionFromNode
+	// check collision from ray in node
+	bool checkCollisionFromNode( ISceneNode* node, core::line3df &ray, f32 &outBestDistanceSquared, core::vector3df &outBestCollisionPoint, core::triangle3df &outBestTriangle);
 };
 
 #endif

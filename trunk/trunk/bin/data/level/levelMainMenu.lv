@@ -1,0 +1,78 @@
+Game
+{
+	Game level
+	{
+		gridGame: false | boolType;
+		gridSize: 20 | intType;
+		cameraX: 115.1152420 | floatType;
+		cameraY: 5475.1625977 | floatType;
+		cameraZ: 1610.9072266 | floatType;
+		cameraTargetX: 4444.0454102 | floatType;
+		cameraTargetY: 4399.3920898 | floatType;
+		cameraTargetZ: -1951.2221680 | floatType;
+	}
+}
+zone_1
+{
+	Zone Object
+	{
+		objectID: 1 | longType;
+		objectType: Zone Object | stringType;
+		objectName: zone1 | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+	}
+}
+object_2
+{
+	Game object
+	{
+		objectID: 2 | longType;
+		parentID: 1 | longType;
+		objectType: Game Object | stringType;
+		objectName: levelMainMenu_2 | stringType;
+		objectTemplate: levelMainMenu | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		positionX: 385.6447754 | floatType;
+		positionY: 0.0000000 | floatType;
+		positionZ: 536.2061157 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_3
+{
+	Camera Object
+	{
+		targetX: -1092.1088867 | floatType;
+		targetY: 4035.6743164 | floatType;
+		targetZ: -2944.8549805 | floatType;
+		targetID: -1 | longType;
+	}
+	Game object
+	{
+		objectID: 3 | longType;
+		parentID: 1 | longType;
+		objectType: Camera Object | stringType;
+		objectName: camera_3 | stringType;
+		objectTemplate:  | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		positionX: 3712.7944336 | floatType;
+		positionY: 5251.2446289 | floatType;
+		positionZ: 1379.2768555 | floatType;
+		rotationX: 190.6499786 | floatType;
+		rotationY: 311.9853516 | floatType;
+		rotationZ: 180.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}

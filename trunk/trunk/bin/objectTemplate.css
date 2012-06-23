@@ -8,3 +8,14 @@ water
 		waterNormalTexture: data/texture/waterNormal.tga | stringType;
 	}
 }
+levelMainMenu
+{
+	Collada mesh component
+	{
+		meshFile: data/mesh/environment/levelMainMenu/levelMainMenu.scene | filePathType;
+		defaultNode: objobjxxx02-node | stringType;
+	}
+	Terrain component
+	{
+	}
+}

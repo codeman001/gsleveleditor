@@ -23,7 +23,6 @@ CGameBoxSceneNode::~CGameBoxSceneNode()
 // override render state
 void CGameBoxSceneNode::render()
 {
-
 #ifdef GSEDITOR
 	CGameObject::ObjectState state = m_owner->getObjectState();
 	

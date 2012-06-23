@@ -65,11 +65,9 @@ void CGameObject::initNull()
 }
 
 CGameObject::~CGameObject()
-{
-	if ( m_node )
-		m_node->drop();
-
+{	
 	releaseAllComponent();
+	destroyNode();
 }
 
 // setRotation

@@ -34,7 +34,7 @@ const core::aabbox3d<f32>& CGameContainerSceneNode::getBoundingBox() const
 //! This method is called just before the rendering process of the whole scene.
 void CGameContainerSceneNode::OnRegisterSceneNode()
 {
-	if (IsVisible)
+	if (IsVisible && m_owner)
 	{
 		SceneManager->registerNodeForRendering(this);
 
@@ -63,6 +63,9 @@ void CGameContainerSceneNode::OnRegisterSceneNode()
 //! does nothing.
 void CGameContainerSceneNode::render()
 {
+	if ( m_owner == NULL )
+		return;
+
 	IVideoDriver *driver = getIView()->getDriver();
 
 	if ( DebugDataVisible & scene::EDS_BBOX )
@@ -111,7 +114,7 @@ CGameChildContainerSceneNode::~CGameChildContainerSceneNode()
 //! This method is called just before the rendering process of the whole scene.
 void CGameChildContainerSceneNode::OnRegisterSceneNode()
 {
-	if (IsVisible)
+	if (IsVisible && m_owner)
 	{
 		SceneManager->registerNodeForRendering(this);
 
@@ -134,6 +137,9 @@ void CGameChildContainerSceneNode::OnRegisterSceneNode()
 
 void CGameChildContainerSceneNode::render()
 {
+	if (m_owner == NULL)
+		return;
+
 #ifdef GSEDITOR
 	CGameObject::ObjectState state = m_owner->getObjectState();
 	

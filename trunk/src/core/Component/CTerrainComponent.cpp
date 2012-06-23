@@ -33,31 +33,99 @@ void CTerrainComponent::initComponent()
 	if ( node == NULL )
 		return;
 
-	if ( m_gameObject->getComponent( IObjectComponent::StaticMesh ) != NULL )	
+	m_listCollisionNode.clear();
+	SMeshCollisionType temp;
+
+	if ( m_gameObject->getComponent( IObjectComponent::StaticMesh ) != NULL )
+	{
 		pMesh = ((IMeshSceneNode*) node)->getMesh();
+		
+		temp.mesh = pMesh;
+		temp.type = 0;
+		temp.node = node;
+
+		m_listCollisionNode.push_back( temp );
+
+	}
 	else if ( m_gameObject->getComponent( IObjectComponent::AnimMesh ) != NULL )
+	{
 		pMesh = ((IAnimatedMeshSceneNode*) node)->getMesh();
+
+		temp.mesh = pMesh;
+		temp.type = 0;
+		temp.node = node;
+
+		m_listCollisionNode.push_back( temp );
+	}
 	else if ( m_gameObject->getComponent( IObjectComponent::ColladaMesh ) != NULL )
 	{
 		CColladaMeshComponent *comp = (CColladaMeshComponent*)m_gameObject->getComponent( IObjectComponent::ColladaMesh );
-		CGameColladaSceneNode *node = comp->getDefaultNode();
-		if ( node )
-			pMesh = node->getMesh();
+		CGameChildContainerSceneNode* colladaNode = comp->getColladaNode();
+
+		std::queue<ISceneNode*>	listSceneNode;
+		const core::list<ISceneNode*>* listChild = &colladaNode->getChildren();
+		core::list<ISceneNode*>::ConstIterator it = listChild->begin(), end = listChild->end();
+		while ( it != end )
+		{
+			listSceneNode.push( (*it) );
+			it++;
+		}
+
+		while ( listSceneNode.size() )
+		{
+			CGameColladaSceneNode* sceneNode = (CGameColladaSceneNode*)listSceneNode.front();
+			listSceneNode.pop();
+
+			if ( sceneNode->getMesh() )
+			{
+				temp.mesh = sceneNode->getMesh();				
+				temp.node = sceneNode;
+
+				if ( comp->isDefaultNode( sceneNode ) )
+					temp.type = 0;
+				else
+					temp.type = 1;
+				
+				m_listCollisionNode.push_back( temp );
+			}
+
+			const core::list<ISceneNode*>* listChild = &sceneNode->getChildren();
+			it = listChild->begin();
+			end = listChild->end();
+			while ( it != end )
+			{
+				listSceneNode.push( (*it) );
+				it++;
+			}
+		}
+
+	}
+	
+	int nColNode = m_listCollisionNode.size();
+
+	for ( int i = 0; i < nColNode; i++ )
+	{
+		if ( m_listCollisionNode[i].type == 0 )
+		{
+			
+			// add octree triangle
+			ITriangleSelector* selector = smgr->createOctreeTriangleSelector( m_listCollisionNode[i].mesh, m_listCollisionNode[i].node );
+			m_listCollisionNode[i].node->setTriangleSelector(selector);
+			selector->drop();
+		}
+		else
+		{
+			// add 
+			ITriangleSelector* selector = smgr->createTriangleSelectorFromBoundingBox( m_listCollisionNode[i].node );
+			m_listCollisionNode[i].node->setTriangleSelector(selector);
+			selector->drop();
+		}		
 	}
 
-	if ( pMesh == NULL )
-		return;
-			
-	// add octree triangle
-	ITriangleSelector* selector = smgr->createOctreeTriangleSelector( pMesh, node );
-	node->setTriangleSelector(selector);
-	selector->drop();
-	
-	// register terrain
+	// register terrain	
 	CZone *pZone = (CZone*)	m_gameObject->getParent();
 	if ( pZone )
 		pZone->registerTerrainObj( m_gameObject );
-
 }
 
 // updateComponent
@@ -83,9 +151,25 @@ void CTerrainComponent::loadData( CSerializable* pObj )
 
 // getCollisionFromRay
 // get collision from the ray
-bool CTerrainComponent::getCollisionFromRay( core::line3df & ray, f32 &outBestDistanceSquared, core::vector3df &outBestCollisionPoint, core::triangle3df &outBestTriangle)
+bool CTerrainComponent::getCollisionFromRay( core::line3df &ray, f32 &outBestDistanceSquared, core::vector3df &outBestCollisionPoint, core::triangle3df &outBestTriangle)
 {
-	ISceneNode *pNode = m_gameObject->getSceneNode();
+	int nColNode = m_listCollisionNode.size();
+
+	for ( int i = 0; i < nColNode; i++ )
+	{
+		if ( checkCollisionFromNode( m_listCollisionNode[i].node, ray, outBestDistanceSquared, outBestCollisionPoint, outBestTriangle ) == true )
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+// checkCollisionFromNode
+// check collision from ray in node
+bool CTerrainComponent::checkCollisionFromNode( ISceneNode* pNode, core::line3df &ray, f32 &outBestDistanceSquared, core::vector3df &outBestCollisionPoint, core::triangle3df &outBestTriangle)
+{
 	if ( pNode == NULL )
 		return false;
 

@@ -351,8 +351,10 @@ class CColladaMeshComponent: public IObjectComponent
 {
 protected:
 	std::string					m_animeshFile;	
-	std::string					m_defaultNode;
+	std::string					m_defaultNodeString;
 	
+	vector<CGameColladaSceneNode*>	m_defaultNode;
+
 	// current anim is playing
 	SColladaAnimClip			*m_currentAnim;
 
@@ -409,14 +411,38 @@ public:
 	{
 		return m_sidNode[ std::string(name) ];
 	}
-	
+		
 	// getDefaultNode
 	// get default node
-	CGameColladaSceneNode* getDefaultNode()
+	CGameColladaSceneNode* getDefaultNode(int i)
 	{
-		return m_mapNode[ m_defaultNode ];
+		int numDefaultNode = m_defaultNode.size();
+
+		if ( numDefaultNode == 0 || numDefaultNode >= i || i < 0 )
+			return NULL;
+		return m_defaultNode[i];
+	}
+
+	// getNumDefaultNode
+	// return number of default node
+	int getNumDefaultNode()
+	{
+		return (int)m_defaultNode.size();
 	}
 	
+	// isDefaultNode
+	// check the node is default node or not
+	bool isDefaultNode( ISceneNode* node )
+	{
+		int numDefaultNode = m_defaultNode.size();
+		for ( int i = 0; i < numDefaultNode; i++ )
+		{
+			if ( m_defaultNode[i] == node )
+				return true;
+		}
+		return false;
+	}
+
 	// getColladaNode
 	// get root of collada node
 	CGameChildContainerSceneNode* getColladaNode()

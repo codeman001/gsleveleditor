@@ -58,7 +58,7 @@ CBinaryUtils::~CBinaryUtils()
 
 void CBinaryUtils::saveCollada( io::IWriteFile *file, CGameObject* gameObject )
 {
-	CColladaMeshComponent *comp = (CColladaMeshComponent*)gameObject->getComponent(IObjectComponent::ColladaMesh);
+	CColladaMeshComponent *comp = m_component;
 	CGameChildContainerSceneNode *colladaNode = comp->getColladaNode();
 
 	std::queue<CGameColladaSceneNode*> queueNode;
@@ -379,10 +379,16 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 		int vertexCount = buffer->getVertexCount();
 		int indexCount = buffer->getIndexCount();
 
+		// write meshbuffer ID
+		unsigned long bufferID = (unsigned long) buffer;		
+		memStream.writeData( &bufferID, sizeof(unsigned long) );
+
+		// write buffer type
 		memStream.writeData( &vertexType, sizeof(int) );
 		memStream.writeData( &vertexCount, sizeof(int) );
 		memStream.writeData( &indexCount, sizeof(int) );
 
+		// write material id
 		SMaterial& mat = buffer->getMaterial();
 		unsigned long matID = (unsigned long)&mat;
 		memStream.writeData( &matID, sizeof(unsigned long) );
@@ -673,7 +679,7 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 	delete chunkData;
 
 	// current component
-	CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent(IObjectComponent::ColladaMesh);
+	CColladaMeshComponent *comp = m_component;
 	CGameChildContainerSceneNode *pParent = comp->getColladaNode();
 
 	// update scenenode with mesh
@@ -684,6 +690,11 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 		unsigned long meshID = (*it).second;
 
 		CGameColladaSceneNode *node = m_listSceneNode[ nodeID ];
+		
+		// register node to scene
+		if ( m_component )
+			m_component->registerName( std::string( node->getName() ), node );
+
 		CGameColladaMesh *mesh = m_listMesh[ meshID ];
 		
 		if ( node != NULL && mesh != NULL )
@@ -692,24 +703,29 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 			
 			// set child bouding box
 			pParent->addBoundingBoxOfChild( node );
-
-			// get material of mesh
-			unsigned long matID = m_constructMeshMaterial[meshID];
-			SMaterial *mat = m_listMaterial[matID];
-
+			
 			// set material to buffer
-			if ( mat )
+			int nBufferCount = mesh->getMeshBufferCount();
+			for ( int i = 0; i < nBufferCount; i++ )
 			{
-				int nBufferCount = mesh->getMeshBufferCount();
-				for ( int i = 0; i < nBufferCount; i++ )
+				IMeshBuffer* buffer = mesh->getMeshBuffer(i);
+				unsigned long meshbufferID = m_constructMeshBufferID[buffer];
+
+				if ( meshbufferID != 0 )
 				{
-					mesh->getMeshBuffer(i)->getMaterial() = *mat;
+					// get material of mesh
+					unsigned long matID = m_constructMeshMaterial[meshbufferID];
+					
+					SMaterial *mat = m_listMaterial[matID];
+					if ( mat )
+						buffer->getMaterial() = *mat;
 				}
 			}
-
 		}
 		it++;
 	}
+
+	m_constructMeshBufferID.clear();
 	m_constructSceneMesh.clear();
 	
 	// update component to mesh & drop ref of mesh
@@ -762,7 +778,7 @@ void CBinaryUtils::readColladaScene( unsigned char *data, unsigned long size, CG
 	
 	// create node
 	CGameColladaSceneNode *newNode = new CGameColladaSceneNode( parent, parent->getSceneManager(), -1 );
-	CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent(IObjectComponent::ColladaMesh);
+	CColladaMeshComponent *comp = m_component;
 
 	// assign component & register node ID
 	newNode->setComponent( comp );
@@ -957,7 +973,14 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 	for ( int i = 0; i < nMeshBuffer; i++ )
 	{		
 		scene::SMeshBuffer* meshBuffer = new SMeshBuffer();
-				
+
+		// write meshbuffer ID
+		unsigned long bufferID = 0;
+		memStream.readData( &bufferID, sizeof(unsigned long) );
+
+		// save mesh buffer id
+		m_constructMeshBufferID[meshBuffer] = bufferID;
+
 		// get mesh buffer				
 		int vertexType = 0;
 		int vertexCount = 0;
@@ -994,7 +1017,7 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 		memStream.readData( meshBuffer->Indices.pointer(), sizeof(u16)*indexCount );
 
 		// map meshID & matID		
-		m_constructMeshMaterial[meshID] = matID;
+		m_constructMeshMaterial[bufferID] = matID;
 
 		newMesh->addMeshBuffer( meshBuffer );
 		meshBuffer->drop();

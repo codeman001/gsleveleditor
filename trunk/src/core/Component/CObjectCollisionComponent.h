@@ -6,6 +6,12 @@
 
 class CObjectCollisionComponent: public IObjectComponent
 {
+protected:
+	struct SObjectCollisionParam
+	{
+		IMesh		*mesh;
+		ISceneNode	*node;
+	};
 public:
 	enum CollisionType
 	{

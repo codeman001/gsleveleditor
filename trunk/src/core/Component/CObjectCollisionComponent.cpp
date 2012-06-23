@@ -28,47 +28,95 @@ void CObjectCollisionComponent::initComponent()
 	ISceneManager	*smgr	= getIView()->getSceneMgr();
 
 	if ( node == NULL )
-		return;
+		return;	
 
-	if ( m_gameObject->getComponent( IObjectComponent::StaticMesh ) != NULL )	
+	vector<SObjectCollisionParam>	listMesh;
+	SObjectCollisionParam temp;
+
+	if ( m_gameObject->getComponent( IObjectComponent::StaticMesh ) != NULL )
+	{
 		pMesh = ((IMeshSceneNode*) node)->getMesh();
+		
+		temp.mesh = pMesh;
+		temp.node = node;
+		listMesh.push_back( temp );
+	}
 	else if ( m_gameObject->getComponent( IObjectComponent::AnimMesh ) != NULL )
+	{
 		pMesh = ((IAnimatedMeshSceneNode*) node)->getMesh();
+		
+		temp.mesh = pMesh;
+		temp.node = node;
+		listMesh.push_back( temp );
+	}
 	else if ( m_gameObject->getComponent( IObjectComponent::ColladaMesh ) != NULL )
 	{
-		CColladaMeshComponent *comp = (CColladaMeshComponent*)m_gameObject->getComponent( IObjectComponent::ColladaMesh );
-		CGameColladaSceneNode *node = comp->getDefaultNode();
-		if ( node )
-			pMesh = node->getMesh();
+		CColladaMeshComponent *comp = (CColladaMeshComponent*)m_gameObject->getComponent( IObjectComponent::ColladaMesh );		
+		ISceneNode* colladaNode = comp->getColladaNode();
+
+		std::queue<ISceneNode*>	listSceneNode;
+		const core::list<ISceneNode*>* listChild = &colladaNode->getChildren();
+		core::list<ISceneNode*>::ConstIterator it = listChild->begin(), end = listChild->end();
+		while ( it != end )
+		{
+			listSceneNode.push( (*it) );
+			it++;
+		}
+
+		while ( listSceneNode.size() )
+		{
+			CGameColladaSceneNode* sceneNode = (CGameColladaSceneNode*)listSceneNode.front();
+			listSceneNode.pop();
+
+			if ( sceneNode->getMesh() )
+			{
+				temp.mesh = sceneNode->getMesh();				
+				temp.node = sceneNode;
+
+				listMesh.push_back( temp );
+			}
+
+			const core::list<ISceneNode*>* listChild = &sceneNode->getChildren();
+			it = listChild->begin();
+			end = listChild->end();
+			while ( it != end )
+			{
+				listSceneNode.push( (*it) );
+				it++;
+			}
+		}		
 	}
 
-	if ( pMesh == NULL )
-		return;
-			
-	switch ( m_collisionType )
+	for ( int i = 0; i < listMesh.size(); i++ )
 	{
-	case CObjectCollisionComponent::BoudingBox:
+		node = listMesh[i].node;
+		pMesh = listMesh[i].mesh;
+
+		switch ( m_collisionType )
 		{
-			ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox(node);
-			node->setTriangleSelector( selector );
-			selector->drop();
+		case CObjectCollisionComponent::BoudingBox:
+			{
+				ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox(node);
+				node->setTriangleSelector( selector );
+				selector->drop();
+			}
+			break;
+		case CObjectCollisionComponent::Triangle:
+			{
+				ITriangleSelector* selector = smgr->createTriangleSelector( pMesh, node );
+				node->setTriangleSelector(selector);
+				selector->drop();
+			}
+			break;
+		case CObjectCollisionComponent::OctreeTriange:
+			{
+				ITriangleSelector* selector = smgr->createOctreeTriangleSelector( pMesh, node );
+				node->setTriangleSelector(selector);
+				selector->drop();
+			}
+			break;
 		}
-		break;
-	case CObjectCollisionComponent::Triangle:
-		{
-			ITriangleSelector* selector = smgr->createTriangleSelector( pMesh, node );
-			node->setTriangleSelector(selector);
-			selector->drop();
-		}
-		break;
-	case CObjectCollisionComponent::OctreeTriange:
-		{
-			ITriangleSelector* selector = smgr->createOctreeTriangleSelector( pMesh, node );
-			node->setTriangleSelector(selector);
-			selector->drop();
-		}
-		break;
-	}	
+	}
 
 #endif
 }

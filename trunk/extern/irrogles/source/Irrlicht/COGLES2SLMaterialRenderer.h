@@ -85,7 +85,7 @@ namespace video
 
 		void useProgram();
 
-	protected:
+	public:
 
 		//! constructor only for use by derived classes who want to
 		//! create a fall back material for example.
@@ -96,17 +96,17 @@ namespace video
 				const char* const* uniformStringTable,
 				const u32& uniformCount,
 				s32 userData = 0);
-
-		bool init(s32& outMaterialTypeNr,
-			const c8* vertexShaderProgram,
-			const c8* pixelShaderProgram,
-			bool registerMaterial = true);
-
+		
 		bool initFromFiles(s32& outMaterialTypeNr,
 				const c8* vertexShaderFile,
 				const c8* pixelShaderFile,
 				bool registerMaterial = true);
-
+	protected:
+		bool init(s32& outMaterialTypeNr,
+			const c8* vertexShaderProgram,
+			const c8* pixelShaderProgram,
+			bool registerMaterial = true);
+	
 		bool reloadFromFiles(const c8* vertexShaderFile,
 				const c8* pixelShaderFile);
 

@@ -1,4 +1,5 @@
 // Copyright (C) 2009-2010 Amundis
+// Edit & modify Pham Hong Duc (hongduc.pr@gmail.com)
 // Heavily based on the OpenGL driver implemented by Nikolaus Gebhardt
 // and OpenGL ES driver implemented by Christian Stehno
 // This file is part of the "Irrlicht Engine".
@@ -25,21 +26,24 @@ namespace video
 	{
 		ALPHA_GREATER = 0
 	};
+	
+	class COGLES2Driver;
 
-	class COGLES2FixedPipelineShader : public COGLES2SLMaterialRenderer
+	class COGLES2FixedPipelineShader
 	{
-
+	protected:
+		COGLES2SLMaterialRenderer	*MaterialType[20];
+		COGLES2Driver				*Driver;		
 	public:
 
 		COGLES2FixedPipelineShader(video::COGLES2Driver* driver, io::IFileSystem* fs);
+		~COGLES2FixedPipelineShader();
 
 		void updateMatrices();
 		void bindTexture();
 		virtual bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype);
 
-	public:
-		/*void enableNormalize() {Normalize = true;}
-		void disableNormalize() {Normalize = false;}*/
+	public:		
 
 		void enableAlphaTest()
 		{
@@ -54,9 +58,6 @@ namespace video
 			AlphaValue = value;
 		}
 
-		/*void enableLighting()	{Lighting = true;}
-		void disableLighting() {Lighting = false;}
-		bool isLightingEnabled() {return (Lighting == 1);}*/
 		void setAmbientLight(const SColorf& color);
 
 		void enableFog()
@@ -79,8 +80,6 @@ namespace video
 		{
 			RenderMode = mode;
 		}
-
-		void reload();
 
 	private:
 
@@ -147,8 +146,7 @@ namespace video
 	private :
 		enum SHADER_UNIFORM
 		{
-			RENDER_MODE = 0,
-			MVP_MATRIX,
+			MVP_MATRIX = 0,
 			WORLD_MATRIX,
 			NORMALIZE,
 			EYE_POSITION,
@@ -162,21 +160,16 @@ namespace video
 			LIGHT_EXPONENT,
 			LIGHT_CUTOFF,
 			AMBIENT_COLOR,
-			LIGHTING,
 			MATERIAL_AMBIENT,
 			MATERIAL_EMISSION,
 			MATERIAL_DIFFUSE,
 			MATERIAL_SPECULAR,
 			MATERIAL_SHININESS,
 			COLOR_MATERIAL,
-			USE_TEXTURE,
 			TEXTURE_MATRIX,
-			USE_TEXTURE_MATRIX,
-			CLIP,
 			CLIP_PLANE,
 			ALPHA_TEST,
 			ALPHA_VALUE,
-			FOG,
 			FOG_TYPE,
 			FOG_COLOR,
 			FOG_START,

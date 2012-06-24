@@ -53,16 +53,13 @@ namespace video
 
 		virtual void OnSetMaterial(const SMaterial& material, const SMaterial& lastMaterial,
 				bool resetAllRenderstates, IMaterialRendererServices* services)
-		{
-			if (resetAllRenderstates || (material.MaterialType != lastMaterial.MaterialType))
-			{
-				FixedPipeline->useProgram();
-				FixedPipeline->setRenderMode(EMT_SOLID);
-			}
+		{			
+			FixedPipeline->setRenderMode(EMT_SOLID);
 			FixedPipeline->setMaterial(material);
+
 			Driver->disableTextures(1);
 			Driver->setActiveTexture(0, material.getTexture(0));
-			Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+			Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);			
 		}
 	};
 
@@ -81,55 +78,30 @@ namespace video
 			Driver->disableTextures( 1 );
 			Driver->setActiveTexture( 0, material.getTexture( 0 ) );
 			Driver->setBasicRenderStates( material, lastMaterial, resetAllRenderstates );
-			FixedPipeline->setMaterial( material );
-			FixedPipeline->useProgram();
+			
+			FixedPipeline->setMaterial( material );			
 
-//			if (material.MaterialType != lastMaterial.MaterialType ||
-//				material.MaterialTypeParam != lastMaterial.MaterialTypeParam ||
-//				resetAllRenderstates)
 			{
 				E_BLEND_FACTOR srcFact, dstFact;
 				E_MODULATE_FUNC modulate;
 				u32 alphaSource;
 				unpack_texureBlendFunc( srcFact, dstFact, modulate, alphaSource, material.MaterialTypeParam );
-
-				//TODO : OpenGL ES 2.0 Port glTexEnvf
-				//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-				//glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-				//glTexEnvf(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
-				//glTexEnvf(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PREVIOUS);
-				//rgbModulatePreviousTexture
-
-				//glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, (f32) modulate );
-
-				//glBlendFunc( getGLBlend(srcFact), getGLBlend(dstFact) );
+				
 				FixedPipeline->enableAlphaTest();
 				FixedPipeline->setAlphaValue( 0.f );
+
 				Driver->enableBlend();
 				Driver->blendFunc( srcFact, dstFact );
+
 				if (alphaSource&EAS_TEXTURE)
 					FixedPipeline->setRenderMode( EMT_TRANSPARENT_ALPHA_CHANNEL );
 				else
-					FixedPipeline->setRenderMode( EMT_TRANSPARENT_VERTEX_ALPHA );
-
-				if ( textureBlendFunc_hasAlpha( srcFact ) || textureBlendFunc_hasAlpha( dstFact ) )
-				{
-					//TODO : OpenGL ES 2.0 Port glTexEnvf
-					//glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
-					//glTexEnvf(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_TEXTURE);
-
-					//glTexEnvf(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PRIMARY_COLOR);
-				}
+					FixedPipeline->setRenderMode( EMT_TRANSPARENT_VERTEX_ALPHA );	
 			}
 		}
 
 		virtual void OnUnsetMaterial()
-		{
-			//TODO : OpenGL ES 2.0 Port glTexEnv
-			//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-			//glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 1.f );
-			//glTexEnvf(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PREVIOUS);
-
+		{		
 			Driver->disableBlend();
 			FixedPipeline->disableAlphaTest();
 		}
@@ -159,34 +131,11 @@ namespace video
 			Driver->setActiveTexture( 0, material.getTexture( 0 ) );
 			Driver->setBasicRenderStates( material, lastMaterial, resetAllRenderstates );
 
-			if ( material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates )
-			{
-				if ( Driver->queryFeature( EVDF_MULTITEXTURE ) )
-				{
-					//Driver->extGlActiveTexture(GL_TEXTURE1);
-					//TODO : OpenGL ES 2.0 Port glTexEnv
-					//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-					//glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
-					//glTexEnvf(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PRIMARY_COLOR);
-					//glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_INTERPOLATE);
-					//glTexEnvf(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
-					//glTexEnvf(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
-					//glTexEnvf(GL_TEXTURE_ENV, GL_SRC2_RGB, GL_PRIMARY_COLOR);
-					//glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND2_RGB, GL_SRC_ALPHA);
-				}
-			}
 		}
 
 		virtual void OnUnsetMaterial()
 		{
-			if ( Driver->queryFeature( EVDF_MULTITEXTURE ) )
-			{
-				//Driver->extGlActiveTexture(GL_TEXTURE1);
-				//TODO : OpenGL ES 2.0 Port glTexEnv
-				//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-				//glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND2_RGB, GL_SRC_COLOR);
-				//Driver->extGlActiveTexture(GL_TEXTURE0);
-			}
+
 		}
 	};
 
@@ -206,7 +155,6 @@ namespace video
 			{
 				Driver->blendFunc( EBF_ONE, EBF_ONE_MINUS_SRC_COLOR );
 				Driver->enableBlend();
-				FixedPipeline->useProgram();
 				FixedPipeline->setRenderMode( EMT_SOLID );
 			}
 			FixedPipeline->setMaterial( material );
@@ -243,7 +191,6 @@ namespace video
 			{
 				Driver->blendFunc( EBF_ONE, EBF_ONE_MINUS_SRC_ALPHA );
 				Driver->enableBlend();
-				FixedPipeline->useProgram();
 				FixedPipeline->setRenderMode( EMT_TRANSPARENT_VERTEX_ALPHA );
 			}
 			FixedPipeline->setMaterial( material );
@@ -285,7 +232,6 @@ namespace video
 			{
 				Driver->blendFunc( EBF_SRC_ALPHA, EBF_ONE_MINUS_SRC_ALPHA );
 				Driver->enableBlend();
-				FixedPipeline->useProgram();
 				FixedPipeline->setMaterial( material );
 				FixedPipeline->enableAlphaTest();
 
@@ -355,13 +301,10 @@ namespace video
 
 		virtual void OnSetMaterial( const SMaterial& material, const SMaterial& lastMaterial,
 				bool resetAllRenderstates, IMaterialRendererServices* services )
-		{
-			if ( material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates )
-			{
-				FixedPipeline->useProgram();
-				FixedPipeline->setRenderMode( EMT_LIGHTMAP );
-			}
+		{			
+			FixedPipeline->setRenderMode( EMT_LIGHTMAP );			
 			FixedPipeline->setMaterial( material );
+
 			Driver->disableTextures( 2 );
 			Driver->setActiveTexture( 1, material.getTexture( 1 ) );
 			Driver->setActiveTexture( 0, material.getTexture( 0 ) );
@@ -438,17 +381,7 @@ namespace video
 		}
 
 		virtual void OnUnsetMaterial()
-		{
-			if ( Driver->queryFeature( EVDF_MULTITEXTURE ) )
-			{
-				//Driver->extGlActiveTexture(GL_TEXTURE1);
-				//TODO : OpenGL ES 2.0 Port glTexEnv
-				//glTexEnvf(GL_TEXTURE_ENV, GL_RGB_SCALE, 1.f );
-				//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-				//Driver->extGlActiveTexture(GL_TEXTURE0);
-				//TODO : OpenGL ES 2.0 Port glTexEnv
-				//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-			}
+		{			
 		}
 	};
 
@@ -465,8 +398,7 @@ namespace video
 									bool resetAllRenderstates, IMaterialRendererServices* services )
 		{
 			if ( material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates )
-			{
-				FixedPipeline->useProgram();
+			{				
 				FixedPipeline->setRenderMode( EMT_DETAIL_MAP );
 			}
 			FixedPipeline->setMaterial( material );
@@ -491,7 +423,6 @@ namespace video
 		{
 			if ( material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates )
 			{
-				FixedPipeline->useProgram();
 				FixedPipeline->setRenderMode( EMT_SPHERE_MAP );
 			}
 			FixedPipeline->setMaterial( material );
@@ -519,7 +450,6 @@ namespace video
 		{
 			if ( material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates )
 			{
-				FixedPipeline->useProgram();
 				FixedPipeline->setRenderMode( EMT_REFLECTION_2_LAYER );
 			}
 			FixedPipeline->setMaterial( material );
@@ -549,39 +479,13 @@ namespace video
 
 			if ( material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates )
 			{
-				if ( Driver->queryFeature( EVDF_MULTITEXTURE ) )
-				{
-					//Driver->extGlActiveTexture(GL_TEXTURE1);
-					//TODO : OpenGL ES 2.0 Port glTexEnv
-					//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-					//glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-					//glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
-					//glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
-				}
-//				glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-//				glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-//				glEnable(GL_TEXTURE_GEN_S);
-//				glEnable(GL_TEXTURE_GEN_T);
-
 				Driver->blendFunc( EBF_ONE, EBF_ONE_MINUS_SRC_ALPHA );
 				Driver->enableBlend();
 			}
 		}
 
 		virtual void OnUnsetMaterial()
-		{
-			if ( Driver->queryFeature( EVDF_MULTITEXTURE ) )
-			{
-				//Driver->extGlActiveTexture(GL_TEXTURE1);
-				//TODO : OpenGL ES 2.0 Port glTexEnv
-				//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-			}
-//			glDisable(GL_TEXTURE_GEN_S);
-//			glDisable(GL_TEXTURE_GEN_T);
-			if ( Driver->queryFeature( EVDF_MULTITEXTURE ) )
-			{
-				//Driver->extGlActiveTexture(GL_TEXTURE0);
-			}
+		{			
 			Driver->disableBlend();
 		}
 

@@ -256,11 +256,11 @@ namespace video
 			if ( CallBack )
 				CallBack->OnSetMaterial( material );
 		}
+
+		// base set material
 		//if (BaseMaterial)
 		//	BaseMaterial->OnSetMaterial(material, material, true, this);
-
-		//for (u32 i=0; i<MATERIAL_MAX_TEXTURES; ++i)
-		//	Driver->setActiveTexture(i, material.getTexture(i));
+		
 		Driver->setBasicRenderStates( material, lastMaterial, resetAllRenderstates );
 	}
 
@@ -397,6 +397,7 @@ namespace video
 				wchar_t buf[512];
 				swprintf( buf, 512, L"Unable to find uniform : %S", UniformStringTable[i] );
 				os::Printer::log( buf, ELL_WARNING );
+
 				SUniformInfo blank;
 				blank.location = -1;
 				blank.type = GL_INVALID_ENUM;

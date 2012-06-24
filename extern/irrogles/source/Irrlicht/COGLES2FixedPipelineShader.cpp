@@ -18,7 +18,6 @@ namespace video
 
 	const char* const COGLES2FixedPipelineShader::sBuiltInShaderUniformNames[] =
 	{
-		"uRenderMode",
 		"uMvpMatrix",
 		"uWorldMatrix",
 		"uNormalize",
@@ -33,21 +32,16 @@ namespace video
 		"uLightExponent",
 		"uLightCutoff",
 		"uAmbientColor",
-		"uLighting",
 		"uMaterialAmbient",
 		"uMaterialEmission",
 		"uMaterialDiffuse",
 		"uMaterialSpecular",
 		"uMaterialShininess",
 		"uColorMaterial",
-		"uUseTexture",
 		"uTextureMatrix",
-		"uUseTexMatrix",
-		"uClip",
 		"uClipPlane",
 		"uAlphaTest",
 		"uAlphaValue",
-		"uFog",
 		"uFogType",
 		"uFogColor",
 		"uFogStart",
@@ -58,23 +52,38 @@ namespace video
 		0
 	};
 
-	const c8 VertexShaderFile[] = IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline.vsh";
-	const c8 FragmentShaderFile[] = IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline.fsh";
+	const c8 Solid_VertexShaderFile[]		= IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline_solid.vsh";
+	const c8 Solid_FragmentShaderFile[]		= IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline_solid.fsh";
 
 	COGLES2FixedPipelineShader::COGLES2FixedPipelineShader(video::COGLES2Driver *driver, io::IFileSystem* fs)
-			: COGLES2SLMaterialRenderer(driver, fs, 0, 0, sBuiltInShaderUniformNames, UNIFORM_COUNT), Normalize(0), AlphaTest(0), AlphaValue(0.f),
-			AlphaFunction(ALPHA_GREATER), Lighting(0), Fog(0), FogType(0), FogStart(0.f), FogEnd(0.f), FogDensity(0.f),
-			ColorMaterial(0), MaterialShininess(0.f), RenderMode(EMT_SOLID)
+		:Driver(driver), Normalize(0), AlphaTest(0), AlphaValue(0.f), AlphaFunction(ALPHA_GREATER),
+		Lighting(0), Fog(0), FogType(0), FogStart(0.f), FogEnd(0.f), FogDensity(0.f),
+		ColorMaterial(0), MaterialShininess(0.f), RenderMode(EMT_SOLID)
 	{
-		s32 dummy;
-		initFromFiles(dummy, VertexShaderFile, FragmentShaderFile, false);
-		initData();
-	};
+		s32 dummy = -1;
+		for ( int i = 0; i < 20; i++ )
+			MaterialType[i] = NULL;
 
-	void COGLES2FixedPipelineShader::reload()
+		MaterialType[ EMT_SOLID ] = new COGLES2SLMaterialRenderer( Driver,
+					fs,
+					NULL,
+					NULL,
+					sBuiltInShaderUniformNames,
+					UNIFORM_COUNT
+				);
+		MaterialType[ EMT_SOLID ]->initFromFiles( dummy, Solid_VertexShaderFile, Solid_FragmentShaderFile, false );
+
+		initData();
+		
+	};
+	
+	COGLES2FixedPipelineShader::~COGLES2FixedPipelineShader()
 	{
-		reloadFromFiles(VertexShaderFile, FragmentShaderFile);
-		//initData();
+		for ( int i = 0; i < 20; i++ )
+		{
+			if ( MaterialType[i] != NULL )
+				delete MaterialType[i];
+		}
 	}
 
 	void COGLES2FixedPipelineShader::initData()
@@ -103,23 +112,31 @@ namespace video
 
 	bool COGLES2FixedPipelineShader::OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype)
 	{
-		Driver->testGLError();
 		bool statusOk = true;
 
-		/* Matrices Upload */
-		core::matrix4 world = Driver->getTransform(ETS_WORLD);
-		setUniform(WORLD_MATRIX, world.pointer());
+		COGLES2SLMaterialRenderer *mat = MaterialType[ RenderMode ];		
 
+		if ( mat == NULL )
+			return false;
+		
+		// use program
+		mat->useProgram();
+
+		/* Matrices Upload */		
 		core::matrix4 worldViewProj = Driver->getTransform(video::ETS_PROJECTION);
 		worldViewProj *= Driver->getTransform(video::ETS_VIEW);
 		worldViewProj *= Driver->getTransform(ETS_WORLD);
-		setUniform(MVP_MATRIX, worldViewProj.pointer());
+		mat->setUniform(MVP_MATRIX, worldViewProj.pointer());
 
-		/* Textures Upload */
-		//statusOk &= setVertexShaderConstant("uTextureUnit", (f32*)TextureUnits, MAX_TEXTURE_UNITS);
-		setUniform(TEXTURE_UNIT0, &TextureUnits[0]);
-		setUniform(TEXTURE_UNIT1, &TextureUnits[1]);
+		//core::matrix4 world = Driver->getTransform(ETS_WORLD);
+		//mat->setUniform(WORLD_MATRIX, world.pointer());
 
+		/* Textures Upload */		
+		mat->setUniform(TEXTURE_UNIT0, &TextureUnits[0]);		
+		//mat->setUniform(TEXTURE_UNIT1, &TextureUnits[1]);
+
+
+#if 0	
 		setUniform(USE_TEXTURE, UseTexture, MATERIAL_MAX_TEXTURES);
 		setUniform(USE_TEXTURE_MATRIX, UseTexMatrix, MATERIAL_MAX_TEXTURES);
 		setUniform(TEXTURE_MATRIX, TextureMatrix, MATERIAL_MAX_TEXTURES);
@@ -222,12 +239,13 @@ namespace video
 		setUniform(CLIP, &Clip);
 		setUniform(CLIP_PLANE, &ClipPlane);
 		setUniform(RENDER_MODE, &RenderMode);
-
+#endif
 		return statusOk ;
 	};
 
 	void COGLES2FixedPipelineShader::setMaterial(const SMaterial &material)
 	{
+#if 0
 		if (Fog != static_cast<int>(material.FogEnable))
 		{
 			Fog = material.FogEnable;
@@ -291,6 +309,7 @@ namespace video
 			MaterialShininess = material.Shininess;
 			setUniform(MATERIAL_SHININESS, &MaterialShininess);
 		}
+#endif
 	}
 
 }

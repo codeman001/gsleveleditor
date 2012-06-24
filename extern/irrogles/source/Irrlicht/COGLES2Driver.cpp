@@ -294,8 +294,6 @@ namespace video
 		DriverAttributes->setAttribute("AntiAlias", AntiAlias);
 
 		FixedPipeline = new COGLES2FixedPipelineShader(this, FileSystem);
-		FixedPipeline->useProgram(); //For setting the default uniforms (Alpha)
-
 		TwoDRenderer = new COGLES2Renderer2d(this, FileSystem);
 
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -2725,7 +2723,6 @@ namespace video
 
 	void COGLES2Driver::reloadShaders()
 	{
-		FixedPipeline->reload();
 	}
 
 	void COGLES2Driver::deleteFramebuffers(s32 n, const u32 *framebuffers)

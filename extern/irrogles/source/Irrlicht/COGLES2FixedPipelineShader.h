@@ -32,7 +32,14 @@ namespace video
 	class COGLES2FixedPipelineShader
 	{
 	protected:
-		COGLES2SLMaterialRenderer	*MaterialType[20];
+		enum E_SHADER
+		{
+			ES_SOLID = 0,
+			ES_SOLID_LIGHT,
+			ES_COUNT
+		};
+
+		COGLES2SLMaterialRenderer	*MaterialType[ ES_COUNT ];
 		COGLES2Driver				*Driver;		
 	public:
 

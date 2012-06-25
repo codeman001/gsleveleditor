@@ -61,17 +61,18 @@ namespace video
 		ColorMaterial(0), MaterialShininess(0.f), RenderMode(EMT_SOLID)
 	{
 		s32 dummy = -1;
-		for ( int i = 0; i < 20; i++ )
+		for ( int i = 0; i < ES_COUNT; i++ )
 			MaterialType[i] = NULL;
 
-		MaterialType[ EMT_SOLID ] = new COGLES2SLMaterialRenderer( Driver,
+		// init solid shader
+		MaterialType[ ES_SOLID ] = new COGLES2SLMaterialRenderer( Driver,
 					fs,
 					NULL,
 					NULL,
 					sBuiltInShaderUniformNames,
 					UNIFORM_COUNT
 				);
-		MaterialType[ EMT_SOLID ]->initFromFiles( dummy, Solid_VertexShaderFile, Solid_FragmentShaderFile, false );
+		MaterialType[ ES_SOLID ]->initFromFiles( dummy, Solid_VertexShaderFile, Solid_FragmentShaderFile, false );
 
 		initData();
 		
@@ -79,7 +80,7 @@ namespace video
 	
 	COGLES2FixedPipelineShader::~COGLES2FixedPipelineShader()
 	{
-		for ( int i = 0; i < 20; i++ )
+		for ( int i = 0; i < ES_COUNT; i++ )			
 		{
 			if ( MaterialType[i] != NULL )
 				delete MaterialType[i];
@@ -112,9 +113,15 @@ namespace video
 
 	bool COGLES2FixedPipelineShader::OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype)
 	{
-		bool statusOk = true;
+		bool statusOk = true;		
 
-		COGLES2SLMaterialRenderer *mat = MaterialType[ RenderMode ];		
+		COGLES2SLMaterialRenderer *mat = NULL;
+		
+		if ( RenderMode == EMT_SOLID )
+		{
+			if ( Lighting == false )
+				mat = MaterialType[ ES_SOLID ];
+		}
 
 		if ( mat == NULL )
 			return false;

@@ -21,7 +21,7 @@ CObjectCollisionComponent::~CObjectCollisionComponent()
 // run when init object
 void CObjectCollisionComponent::initComponent()
 {
-#ifndef GSEDITOR
+#ifdef GSGAMEPLAY
 
 	IMesh *pMesh = NULL;
 	ISceneNode		*node	= m_gameObject->getSceneNode();

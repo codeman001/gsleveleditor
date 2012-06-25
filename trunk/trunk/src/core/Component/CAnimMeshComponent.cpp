@@ -29,7 +29,7 @@ void CAnimMeshComponent::loadFromFile( char *lpFilename )
 	ISceneManager *smgr = getIView()->getSceneMgr();
 	
 	// load mesh
-	IAnimatedMesh *animMesh = smgr->getMesh( lpFilename );
+	IAnimatedMesh *animMesh = smgr->getMesh( getIView()->getPath(lpFilename) );
 	if ( animMesh == NULL )
 		return;
 

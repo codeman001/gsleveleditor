@@ -211,7 +211,9 @@ inline int	frnd ( float f )
 
 
 // Handy macro to quiet compiler warnings about unused parameters/variables.
-#define UNUSED(x) (void) (x)
+#ifndef UNUSED
+	#define UNUSED(x) (void) (x)
+#endif
 
 
 // Compile-time constant size of array.

@@ -91,10 +91,18 @@ static void resetstack (lua_State *L, int status) {
 }
 
 
-void luaD_throw (lua_State *L, int errcode) {
+void luaD_throw (lua_State *L, int errcode) {  
   if (L->errorJmp) {
-    L->errorJmp->status = errcode;
-    LUAI_THROW(L, L->errorJmp);
+    L->errorJmp->status = errcode;    
+
+	/*pham hong duc add*/
+	L->status = cast_byte(errcode);
+	if (G(L)->panic)
+	{
+		G(L)->panic(L);
+	}
+
+	LUAI_THROW(L, L->errorJmp);
   }
   else {
     L->status = cast_byte(errcode);

@@ -1,0 +1,155 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"><title>syntax in Lua </title></head><body>
+
+<p>
+The "Unknown:"s below indicate that an entry is incomplete.
+</p><ul>
+<li>either the entry exist in the language, and <a href="mailto:pixel@rigaux.org">please tell</a>.
+</li><li>either the entry doesn't exist in the language, and <a href="mailto:pixel@rigaux.org">please tell so</a>.
+The entry will be marked as such and won't appear as missing anymore.
+</li></ul>
+
+<hr><ul>
+<li><a href="http://rigaux.org/language-study/syntax-across-languages-per-language/categories.html">Category</a>: Dynamically typed<p>
+</p></li><li><a href="http://rigaux.org/language-study/syntax-across-languages/Vrs.html">Various</a><p>
+<table border="1" cellpadding="6">
+<tbody><tr><td><tt>do ... end<a href="#1">(1)</a></tt></td><td>block (grouping statements, especially when statements are not expressions)</td></tr>
+<tr><td><tt>--[[ ... ]]</tt></td><td>commenting (nestable)</td></tr>
+<tr><td><tt>--</tt></td><td>commenting (until end of line)</td></tr>
+<tr><td><tt>&lt; &gt; &lt;= &gt;=</tt></td><td>comparison</td></tr>
+<tr><td><tt>min / max</tt></td><td>comparison (min / max (binary or more))</td></tr>
+<tr><td><tt>== ~=</tt></td><td>equality / inequality (shallow)</td></tr>
+<tr><td><tt>collectgarbage</tt></td><td>force garbage collection</td></tr>
+<tr><td><tt>( ... )</tt></td><td>grouping expressions</td></tr>
+<tr><td><tt>dostring</tt></td><td>runtime evaluation</td></tr>
+<tr><td><tt>case-sensitive</tt></td><td>tokens (case-sensitivity (keywords, variable identifiers...))</td></tr>
+<tr><td><tt>=</tt></td><td>variable assignment or declaration (assignment)</td></tr>
+</tbody></table></p><p>
+Unknown: </p><blockquote>documentation comment<br>information about the current line and file<br>tokens (what is the standard way for <a href="http://c2.com/cgi/wiki?CapitalizationRules">scrunching together multiple words</a>)<br>tokens (variable identifier regexp)<br>breaking lines (useful when end-of-line and/or indentation has a special meaning)
+</blockquote>
+</li><li><a href="http://rigaux.org/language-study/syntax-across-languages/Fnctn.html">Functions</a><p>
+<table border="1" cellpadding="6">
+<tbody><tr><td><tt>function(a, b) ... end</tt></td><td>anonymous function</td></tr>
+<tr><td><tt>f(a,b,...)</tt></td><td>function call</td></tr>
+<tr><td><tt>f()</tt></td><td>function call (with no parameter)</td></tr>
+<tr><td><tt>function f(para1, para2) ... code ... end</tt></td><td>function definition</td></tr>
+<tr><td><tt>return<a href="#2">(2)</a></tt></td><td>function return value (breaks the control flow)</td></tr>
+</tbody></table></p><p>
+Unknown: </p><blockquote>function called when a function is not defined (in dynamic languages)<br>runtime inspecting the caller information
+</blockquote>
+</li><li><a href="http://rigaux.org/language-study/syntax-across-languages/CntrFlow.html">Control Flow</a><p>
+<table border="1" cellpadding="6">
+<tbody><tr><td><tt>/ break</tt></td><td>breaking control flow (continue / break)</td></tr>
+<tr><td><tt>return<a href="#2">(2)</a></tt></td><td>breaking control flow (returning a value)</td></tr>
+<tr><td><tt>pcall</tt></td><td>exception (catching)</td></tr>
+<tr><td><tt>error</tt></td><td>exception (throwing)</td></tr>
+<tr><td><tt>error</tt></td><td>exception (throwing)</td></tr>
+<tr><td><tt>if c then ... end</tt></td><td>if_then</td></tr>
+<tr><td><tt>if c then b1 else b2 end</tt></td><td>if_then_else</td></tr>
+<tr><td><tt>repeat ... until c</tt></td><td>loop (do something until condition)</td></tr>
+<tr><td><tt>for i = 10, 1, -1 do ... end</tt></td><td>loop (for each value in a numeric range, 1 decrement)</td></tr>
+<tr><td><tt>for i = 1, 10 do ... end</tt></td><td>loop (for each value in a numeric range, 1 increment (see also the entries about ranges))</td></tr>
+<tr><td><tt>for i = 1, 10, 2 do ... end</tt></td><td>loop (for each value in a numeric range, free increment)</td></tr>
+<tr><td><tt>while c do ... end</tt></td><td>loop (while condition do something)</td></tr>
+<tr><td><tt>nothing, optionally ;</tt></td><td>sequence</td></tr>
+<tr><td><tt>end-of-line</tt></td><td>sequence</td></tr>
+</tbody></table></p><p>
+Unknown: </p><blockquote>loop (for "a la C" (while + initialisation))
+</blockquote>
+</li><li><a href="http://rigaux.org/language-study/syntax-across-languages/bjcrntRfl.html">Object Oriented &amp; Reflexivity</a><p>
+<table border="1" cellpadding="6">
+<tbody><tr><td><tt>object:method(para)</tt></td><td>method invocation</td></tr>
+</tbody></table></p><p>
+</p></li><li><a href="http://rigaux.org/language-study/syntax-across-languages/PckgMdl.html">Package, Module</a><p>
+Unknown: </p><blockquote>package scope<br>declare<br>import
+</blockquote>
+</li><li><a href="http://rigaux.org/language-study/syntax-across-languages/Strng.html">Strings</a><p>
+<table border="1" cellpadding="6">
+<tbody><tr><td><tt>strchar</tt></td><td>ascii to character</td></tr>
+<tr><td><tt>strbyte</tt></td><td>character to ascii</td></tr>
+<tr><td><tt>tostring</tt></td><td>convert something to a string (see also string interpolation)</td></tr>
+<tr><td><tt>strrep</tt></td><td>duplicate n times</td></tr>
+<tr><td><tt>sub</tt></td><td>extract a substring</td></tr>
+<tr><td><tt>find</tt></td><td>locate a substring</td></tr>
+<tr><td><tt>[[ ... ]]</tt></td><td>multi-line</td></tr>
+<tr><td><tt>print</tt></td><td>simple print (on any objects)</td></tr>
+<tr><td><tt>format</tt></td><td>sprintf-like</td></tr>
+<tr><td><tt>..</tt></td><td>string concatenation</td></tr>
+<tr><td><tt>== ~=</tt></td><td>string equality &amp; inequality</td></tr>
+<tr><td><tt>#</tt></td><td>string size</td></tr>
+<tr><td><tt>"\n"</tt></td><td>strings (end-of-line (without writing the real CR or LF character))</td></tr>
+<tr><td><tt>'...'</tt></td><td>strings (with no interpolation of variables)</td></tr>
+<tr><td><tt>"..."</tt></td><td>strings (with no interpolation of variables)</td></tr>
+<tr><td><tt>[[ ... ]]</tt></td><td>strings (with no interpolation of variables)</td></tr>
+<tr><td><tt>upper / lower<a href="#3">(3)</a></tt></td><td>upper / lower case character</td></tr>
+<tr><td><tt>strupper / strlower</tt></td><td>upper / lower case character</td></tr>
+<tr><td><tt>strupper / strlower</tt></td><td>uppercase / lowercase / capitalized string</td></tr>
+</tbody></table></p><p>
+Unknown: </p><blockquote>strings (with interpolation of variables)<br>serialize (marshalling)<br>unserialize (un-marshalling)<br>accessing n-th character<br>locate a substring (starting at the end)
+</blockquote>
+</li><li><a href="http://rigaux.org/language-study/syntax-across-languages/Blns.html">Booleans</a><p>
+<table border="1" cellpadding="6">
+<tbody><tr><td><tt>false</tt></td><td>false value</td></tr>
+<tr><td><tt>nil</tt></td><td>false value</td></tr>
+<tr><td><tt>not<a href="#4">(4)</a></tt></td><td>logical not</td></tr>
+<tr><td><tt>or / and</tt></td><td>logical or / and (short circuit)</td></tr>
+<tr><td><tt>Boolean</tt></td><td>type name</td></tr>
+</tbody></table></p><p>
+Unknown: </p><blockquote>true value
+</blockquote>
+</li><li><a href="http://rigaux.org/language-study/syntax-across-languages/BagAndLst.html">Bags and Lists</a><p>
+<table border="1" cellpadding="6">
+<tbody><tr><td><tt>foreach</tt></td><td>for each element do something</td></tr>
+<tr><td><tt>foreachi</tt></td><td>iterate with index</td></tr>
+<tr><td><tt>{ a, b, c }<a href="#5">(5)</a></tt></td><td>list constructor</td></tr>
+<tr><td><tt>getn</tt></td><td>list size</td></tr>
+<tr><td><tt>#</tt></td><td>list size</td></tr>
+<tr><td><tt>a[i]</tt></td><td>list/array indexing</td></tr>
+<tr><td><tt>sort<a href="#6">(6)</a></tt></td><td>sort</td></tr>
+</tbody></table></p><p>
+Unknown: </p><blockquote>list concatenation<br>list flattening<br>adding an element at the beginning (list cons)<br>adding an element at index<br>adding an element at the end<br>first element<br>all but the first element<br>last element<br>get the first element and remove it<br>get the last element and remove it<br>is an element in the list<br>smallest / biggest element<br>join a list of strings in a string using a glue string<br>remove duplicates<br>reverse
+</blockquote>
+</li><li><a href="http://rigaux.org/language-study/syntax-across-languages/VrsDatTps.html">Various Data Types</a><p>
+<table border="1" cellpadding="6">
+<tbody><tr><td><tt>h[k]</tt></td><td>dictionary (access: read/write)</td></tr>
+<tr><td><tt>h.k</tt></td><td>dictionary (access: read/write)</td></tr>
+<tr><td><tt>{ a = b, c = d }</tt></td><td>dictionary (constructor)</td></tr>
+<tr><td><tt>nil</tt></td><td>optional value (null value)</td></tr>
+<tr><td><tt>v</tt></td><td>optional value (value)</td></tr>
+<tr><td><tt>.</tt></td><td>record (selector)</td></tr>
+<tr><td><tt>a, b, c</tt></td><td>tuple constructor</td></tr>
+</tbody></table></p><p>
+Unknown: </p><blockquote>computable tuple (these are a kind of immutable lists playing a special role in parameter passing) (empty tuple)<br>computable tuple (these are a kind of immutable lists playing a special role in parameter passing) (1-uple)<br>computable
+ tuple (these are a kind of immutable lists playing a special role in 
+parameter passing) (using a tuple for a function call)<br>reference (pointer) (creation)<br>reference (pointer) (dereference)<br>dictionary (has the key ?)<br>dictionary (remove by key)<br>dictionary (list of keys)<br>dictionary (list of values)<br>dictionary (merge)<br>range
+</blockquote>
+</li><li><a href="http://rigaux.org/language-study/syntax-across-languages/Mthmt.html">Mathematics</a><p>
+<table border="1" cellpadding="6">
+<tbody><tr><td><tt>^</tt></td><td>exponentiation (power)</td></tr>
+<tr><td><tt>log10</tt></td><td>logarithm (base 10)</td></tr>
+<tr><td><tt>log</tt></td><td>logarithm (base e)</td></tr>
+<tr><td><tt>mod</tt></td><td>modulo (modulo of -3 / 2 is -1)</td></tr>
+<tr><td><tt>sqrt / exp / abs</tt></td><td>square root / e-exponential / absolute value</td></tr>
+<tr><td><tt>sin / cos / tan</tt></td><td>trigonometry (basic)</td></tr>
+<tr><td><tt>/ round / floor / ceil</tt></td><td>truncate / round / floor / ceil</td></tr>
+<tr><td><tt> / / floor / ceil</tt></td><td>truncate / round / floor / ceil</td></tr>
+</tbody></table></p><p>
+Unknown: </p><blockquote>numbers syntax (integers)<br>numbers syntax (integers in base 2, octal and hexadecimal)<br>numbers syntax (floating point)<br>addition / subtraction / multiplication / division<br>negation<br>random (random number)<br>random (seed the pseudo random generator)<br>operator priorities and associativities<br>trigonometry (inverse)<br>bitwise operators
+</blockquote>
+</li></ul>
+<h2>Remarks</h2>
+<ul>
+<li><a name="1">(1)</a> introduce scope
+</li><li><a name="2">(2)</a> in Lua, "return xxx" can only appear before a block end. in Matlab, only in inline('...')
+</li><li><a name="3">(3)</a> in Lua &gt;= 5.0
+</li><li><a name="4">(4)</a> Smalltalk: postfix operator
+</li><li><a name="5">(5)</a> restricted to initialisation of a local variable in C and C++
+</li><li><a name="6">(6)</a> in Scheme, not standard, but nearly standard
+</li></ul>
+<hr><address><a href="mailto:pixel@rigaux.org">Pixel</a></address>
+This document is licensed under <a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a> (GNU Free Documentation License).
+<br>Generated from <a href="http://rigaux.org/language-study/syntax-across-languages.html.pl">syntax-across-languages.html.pl</a>
+<br> $Id: syntax-across-languages.html.pl 408 2008-08-29 08:32:23Z pixel $
+
+
+</body></html>

@@ -9,11 +9,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "..\..\extern\fr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gameswf", "..\..\extern\gameswf\projects\Win32\gameswf\gameswf.vcproj", "{D82FC0B1-4BC8-4C37-944C-94F6105A2992}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua", "..\..\extern\lua\lua.vcproj", "{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Multithreaded|Win32 = Debug Multithreaded|Win32
 		Debug Singlethreaded|Win32 = Debug Singlethreaded|Win32
 		Debug|Win32 = Debug|Win32
+		Dll Debug|Win32 = Dll Debug|Win32
 		Release - Fast FPU|Win32 = Release - Fast FPU|Win32
 		Release Multithreaded|Win32 = Release Multithreaded|Win32
 		Release Singlethreaded|Win32 = Release Singlethreaded|Win32
@@ -30,6 +33,8 @@ Global
 		{1BF4C078-E3DB-4E0D-AD33-884B4E6D944F}.Debug Singlethreaded|Win32.Build.0 = Debug|Win32
 		{1BF4C078-E3DB-4E0D-AD33-884B4E6D944F}.Debug|Win32.ActiveCfg = Debug|Win32
 		{1BF4C078-E3DB-4E0D-AD33-884B4E6D944F}.Debug|Win32.Build.0 = Debug|Win32
+		{1BF4C078-E3DB-4E0D-AD33-884B4E6D944F}.Dll Debug|Win32.ActiveCfg = Debug|Win32
+		{1BF4C078-E3DB-4E0D-AD33-884B4E6D944F}.Dll Debug|Win32.Build.0 = Debug|Win32
 		{1BF4C078-E3DB-4E0D-AD33-884B4E6D944F}.Release - Fast FPU|Win32.ActiveCfg = Release|Win32
 		{1BF4C078-E3DB-4E0D-AD33-884B4E6D944F}.Release - Fast FPU|Win32.Build.0 = Release|Win32
 		{1BF4C078-E3DB-4E0D-AD33-884B4E6D944F}.Release Multithreaded|Win32.ActiveCfg = Release|Win32
@@ -52,6 +57,8 @@ Global
 		{E08E042A-6C45-411B-92BE-3CC31331019F}.Debug Singlethreaded|Win32.Build.0 = Debug|Win32
 		{E08E042A-6C45-411B-92BE-3CC31331019F}.Debug|Win32.ActiveCfg = Static lib - Debug|Win32
 		{E08E042A-6C45-411B-92BE-3CC31331019F}.Debug|Win32.Build.0 = Static lib - Debug|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Dll Debug|Win32.ActiveCfg = Debug|Win32
+		{E08E042A-6C45-411B-92BE-3CC31331019F}.Dll Debug|Win32.Build.0 = Debug|Win32
 		{E08E042A-6C45-411B-92BE-3CC31331019F}.Release - Fast FPU|Win32.ActiveCfg = Release - Fast FPU|Win32
 		{E08E042A-6C45-411B-92BE-3CC31331019F}.Release - Fast FPU|Win32.Build.0 = Release - Fast FPU|Win32
 		{E08E042A-6C45-411B-92BE-3CC31331019F}.Release Multithreaded|Win32.ActiveCfg = Release - Fast FPU|Win32
@@ -74,6 +81,8 @@ Global
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug Singlethreaded|Win32.Build.0 = Debug Singlethreaded|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug|Win32.Build.0 = Debug|Win32
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Dll Debug|Win32.ActiveCfg = Debug|Win32
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Dll Debug|Win32.Build.0 = Debug|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release - Fast FPU|Win32.ActiveCfg = Release Singlethreaded|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release - Fast FPU|Win32.Build.0 = Release Singlethreaded|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release Multithreaded|Win32.ActiveCfg = Release Multithreaded|Win32
@@ -96,6 +105,8 @@ Global
 		{D82FC0B1-4BC8-4C37-944C-94F6105A2992}.Debug Singlethreaded|Win32.Build.0 = Debug|Win32
 		{D82FC0B1-4BC8-4C37-944C-94F6105A2992}.Debug|Win32.ActiveCfg = Debug|Win32
 		{D82FC0B1-4BC8-4C37-944C-94F6105A2992}.Debug|Win32.Build.0 = Debug|Win32
+		{D82FC0B1-4BC8-4C37-944C-94F6105A2992}.Dll Debug|Win32.ActiveCfg = Debug|Win32
+		{D82FC0B1-4BC8-4C37-944C-94F6105A2992}.Dll Debug|Win32.Build.0 = Debug|Win32
 		{D82FC0B1-4BC8-4C37-944C-94F6105A2992}.Release - Fast FPU|Win32.ActiveCfg = Release|Win32
 		{D82FC0B1-4BC8-4C37-944C-94F6105A2992}.Release - Fast FPU|Win32.Build.0 = Release|Win32
 		{D82FC0B1-4BC8-4C37-944C-94F6105A2992}.Release Multithreaded|Win32.ActiveCfg = Release|Win32
@@ -112,6 +123,30 @@ Global
 		{D82FC0B1-4BC8-4C37-944C-94F6105A2992}.Static lib - Release - Fast FPU|Win32.Build.0 = Release|Win32
 		{D82FC0B1-4BC8-4C37-944C-94F6105A2992}.Static lib - Release|Win32.ActiveCfg = Release|Win32
 		{D82FC0B1-4BC8-4C37-944C-94F6105A2992}.Static lib - Release|Win32.Build.0 = Release|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Debug Multithreaded|Win32.ActiveCfg = Debug|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Debug Multithreaded|Win32.Build.0 = Debug|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Debug Singlethreaded|Win32.ActiveCfg = Debug|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Debug Singlethreaded|Win32.Build.0 = Debug|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Debug|Win32.Build.0 = Debug|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Dll Debug|Win32.ActiveCfg = Dll Debug|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Dll Debug|Win32.Build.0 = Dll Debug|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Release - Fast FPU|Win32.ActiveCfg = Release|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Release - Fast FPU|Win32.Build.0 = Release|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Release Multithreaded|Win32.ActiveCfg = Release|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Release Multithreaded|Win32.Build.0 = Release|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Release Singlethreaded|Win32.ActiveCfg = Release|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Release Singlethreaded|Win32.Build.0 = Release|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Release|Win32.ActiveCfg = Release|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Release|Win32.Build.0 = Release|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.SDL-Debug|Win32.ActiveCfg = Debug|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.SDL-Debug|Win32.Build.0 = Debug|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Static lib - Debug|Win32.ActiveCfg = Debug|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Static lib - Debug|Win32.Build.0 = Debug|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Static lib - Release - Fast FPU|Win32.ActiveCfg = Release|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Static lib - Release - Fast FPU|Win32.Build.0 = Release|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Static lib - Release|Win32.ActiveCfg = Release|Win32
+		{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}.Static lib - Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

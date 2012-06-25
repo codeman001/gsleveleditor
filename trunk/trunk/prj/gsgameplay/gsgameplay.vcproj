@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrogles\include;..\..\..\extern\uiClass;..\..\..\extern\irrogles\source\Irrlicht;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Serializable;..\..\..\extern\spark\include;..\..\..\extern\gameswf;..\..\..\extern\freetype\include"
+				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrogles\include;..\..\..\extern\uiClass;..\..\..\extern\irrogles\source\Irrlicht;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Serializable;..\..\..\extern\spark\include;..\..\..\extern\gameswf;..\..\..\extern\freetype\include;..\..\..\extern\lua\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;GSGAMEPLAY"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -173,6 +173,14 @@
 		<ProjectReference
 			ReferencedProjectIdentifier="{E08E042A-6C45-411B-92BE-3CC31331019F}"
 			RelativePathToProject="..\..\extern\irrogles\source\Irrlicht\Irrlicht9.0.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
+			RelativePathToProject="..\..\extern\freetype\builds\win32\vc2008\freetype.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{4D488AF5-A41D-43B3-8F70-F8BC9C5D5AF9}"
+			RelativePathToProject="..\..\extern\lua\lua.vcproj"
 		/>
 	</References>
 	<Files>
@@ -638,6 +646,18 @@
 				</File>
 				<File
 					RelativePath="..\..\src\gameLevel\CGameLevel.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="script"
+				>
+				<File
+					RelativePath="..\..\src\script\CScriptManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\script\CScriptManager.h"
 					>
 				</File>
 			</Filter>

@@ -40,7 +40,7 @@ void CStaticMeshComponent::loadFromFile( char *lpFilename )
 	ISceneManager *smgr = getIView()->getSceneMgr();
 	
 	// load mesh
-	IAnimatedMesh *animMesh = smgr->getMesh( lpFilename );	
+	IAnimatedMesh *animMesh = smgr->getMesh( getIView()->getPath(lpFilename) );	
 
 #ifdef CLONE_MESH
 	// copy mesh

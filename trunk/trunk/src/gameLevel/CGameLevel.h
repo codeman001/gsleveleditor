@@ -8,6 +8,9 @@
 #include "CComponentFactory.h"
 #include "CObjTemplateFactory.h"
 
+#include "script/CScriptManager.h"
+using namespace NSScriptManager;
+
 class CGameLevel
 {
 protected:

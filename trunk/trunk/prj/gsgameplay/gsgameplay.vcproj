@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="IrrlichtES.lib freetype.lib gameswf.lib"
+				AdditionalDependencies="IrrlichtES.lib freetype.lib gameswf.lib luad.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\bin"
 				GenerateDebugInformation="true"

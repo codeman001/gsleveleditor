@@ -34,17 +34,29 @@ void CStateMainMenu::onCreate()
 
 	
 	const char* luaSource = "\
+function resumeCApplicaton()\n\
+	wait(500);\n\
+end\n\
 function testFunc()\n\
-	i = 0\n\
+	local i = 0\n\
 	while 1 do\n\
 		i = i+1\n\
 		debug(string.format('line %d', i))\n\
-		wait(500);\n\
+		resumeCApplicaton()\n\
 	end\n\
-end";
+end\n\
+function testFunc1(a,b,c)\n\
+	local i = a\n\
+	while 1 do\n\
+		i = i+1\n\
+		debug(string.format('line %d %f %s', i,b,c))\n\
+		resumeCApplicaton()\n\
+	end\n\
+end\n";
 	int len = strlen(luaSource);
 	CScriptManager::getInstance()->compileLuaSource(luaSource, len);
 	CScriptManager::getInstance()->startFunc("testFunc");
+	CScriptManager::getInstance()->startFunc("testFunc1","ids",10, 10.0f,"hello from cpp");
 	// --------------------------------------
 }
 

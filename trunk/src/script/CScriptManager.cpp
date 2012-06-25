@@ -54,15 +54,43 @@ void CLuaThread::start(lua_State* state, int funcRef)
 	m_state		= state;
 	m_thread	= lua_newthread(state);
 	m_funcRef	= funcRef;
+	m_nParams	= 0;
 
-	// get function
+	// add function to new thread
 	lua_getref(m_thread, m_funcRef);
+		
+	// call lua
+	// lua_atpanic(m_thread, CScriptManager::luaPanic);
 
 	if(!lua_isnil(m_thread, -1))
 	{
+		// run func when call lua_resume function
 		setStatus(FuncRunning);
 	}
 }
+
+// add parameter for func
+void CLuaThread::pushDouble( double d )
+{
+	luaL_checkstack(m_thread, 1, "too many arguments");
+	lua_pushnumber(m_thread, d);
+	m_nParams++;
+}
+
+void CLuaThread::pushInteger( int i )
+{
+	luaL_checkstack(m_thread, 1, "too many arguments");
+	lua_pushinteger(m_thread, i);
+	m_nParams++;
+}
+
+void CLuaThread::pushString( const char *s )
+{
+	luaL_checkstack(m_thread, 1, "too many arguments");
+	lua_pushstring(m_thread, s);
+	m_nParams++;
+}
+
 
 void CLuaThread::stop()
 {
@@ -93,15 +121,32 @@ void CLuaThread::update()
 	{
 		case FuncRunning:
 		{
-			int status = lua_resume(m_thread, 0);
+			int status = lua_resume(m_thread, m_nParams);
 
-			if(status != LUA_YIELD)
+			if(status == LUA_YIELD)
 			{
-				setStatus(FuncStopped);
+				handleYield();
 			}
 			else
 			{
-				handleYield();
+				/*
+				switch( status )
+				{
+				case LUA_ERRRUN:
+					printf("lua error run\n");
+					break;
+				case LUA_ERRSYNTAX:
+					printf("lua error syntax\n");
+					break;
+				case LUA_ERRMEM:
+					printf("lua error memory\n");
+					break;
+				case LUA_ERRERR:
+					printf("lua error\n");
+					break;
+				}
+				*/
+				setStatus(FuncStopped);	
 			}
 			break;
 		}
@@ -163,13 +208,12 @@ CScriptManager::~CScriptManager()
 // this function is called when LUA got error
 int CScriptManager::luaPanic(lua_State* L)
 {
-	const char* str = lua_tostring(L, -1);
-	printf("------------------------\n%s\n------------------------\n", str);
-	lua_pop(L, 1);
+	SEvent errorEvent;
+	errorEvent.EventType = EET_LOG_TEXT_EVENT;
+	errorEvent.LogEvent.Level = ELL_ERROR;
+	errorEvent.LogEvent.Text = lua_tostring(L, -1);
 
-	lua_getglobal(L, "ERROR");
-	int err = (int)lua_tonumber(L, -1);
-	printf("------------------------\nsriptErr: %d\n------------------------\n", err);
+	getIView()->getDevice()->postEventFromUser( errorEvent );	
 	return 0;
 }
 
@@ -231,6 +275,62 @@ int CScriptManager::startFunc( const char *funcName )
 
 	return idx;
 }
+
+// startFunc
+// calc function with paramater
+// argType is list param type: 
+//	+ i: integer
+//	+ d: double
+//  + s: string
+// example:
+// startFunc("function","is",10,"helloWorld")
+int CScriptManager::startFunc( const char *func, char *sig, ... )
+{
+	// call function
+	int idx = startFunc(func);
+	if ( idx < 0 )
+		return idx;
+
+	va_list vl;
+	int narg, nres;
+	va_start(vl, sig);
+
+	nres = strlen(sig);
+	
+	double d = 0.0f;
+	int i = 0;
+	char *s = NULL;
+	
+	// also push parameter
+	for (narg = 0; *sig; narg++) 
+	{		
+		switch (*sig++) 
+		{
+		case 'd':
+			//double argument
+			d = va_arg(vl, double);
+			m_threads[idx]->pushDouble(d);
+			break;
+		case 'i':
+			//integer argument
+			i = va_arg(vl, int);
+			m_threads[idx]->pushInteger(i);
+			break;
+		case 's':
+			//string argument
+			s = va_arg(vl, char *);
+			m_threads[idx]->pushString(s);
+			break;
+		case '>':
+		default:
+			break;
+		}
+	}
+
+	va_end(vl);
+	return idx;
+}
+
 
 // stopFunc
 // stop lua func

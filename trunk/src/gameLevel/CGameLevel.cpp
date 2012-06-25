@@ -57,6 +57,10 @@ void CGameLevel::removeZone(CGameObject* zone)
 // remove all zone on level
 void CGameLevel::releaseLevel()
 {
+	// stop all lua script func
+	CScriptManager::getInstance()->stopAllFunc();
+
+	// release all zone
 	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
 	while ( iZone != iEnd )
 	{
@@ -64,7 +68,7 @@ void CGameLevel::releaseLevel()
 		delete p;
 		iZone++;
 	}
-	m_zones.clear();
+	m_zones.clear();	
 }
 
 // searchObjByID
@@ -234,6 +238,9 @@ bool CGameLevel::loadStep( int nStep )
 // update per frame
 void CGameLevel::update()
 {		
+	// update script
+	CScriptManager::getInstance()->update();
+
 	// update all zone
 	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
 	while ( iZone != iEnd )

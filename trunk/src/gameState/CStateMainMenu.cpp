@@ -25,13 +25,31 @@ void CStateMainMenu::onCreate()
 	// show mainmenu state
 	setFxStateVisible( m_state, true );
 
+	
+	// cheat for level camera
+	// --------------------------------------
 	CGameCamera* cam = (CGameCamera*)m_level->searchObject(3);
 	if ( cam )
 		m_level->setCamera( cam );
+
+	
+	const char* luaSource = "\
+function testFunc()\n\
+	i = 0\n\
+	while 1 do\n\
+		i = i+1\n\
+		debug(string.format('line %d', i))\n\
+		wait(500);\n\
+	end\n\
+end";
+	int len = strlen(luaSource);
+	CScriptManager::getInstance()->compileLuaSource(luaSource, len);
+	CScriptManager::getInstance()->startFunc("testFunc");
+	// --------------------------------------
 }
 
 void CStateMainMenu::onDestroy()
-{
+{	
 	setFxStateVisible( m_state, false );
 }
 

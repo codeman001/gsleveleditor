@@ -110,7 +110,9 @@ void IView::setActiveCamera( CGameCamera* cam )
 	m_smgr->setActiveCamera( m_camera->getCameraNode() );	
 
 	// adjust aspect
-	// m_camera->getCameraNode()->setAspectRatio( m_cameraAspect );
+#ifdef GSGAMEPLAY
+	m_camera->getCameraNode()->setAspectRatio( m_cameraAspect );
+#endif
 }
 
 // setCameraAspectRatio

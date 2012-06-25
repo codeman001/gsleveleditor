@@ -30,6 +30,7 @@ namespace NSScriptManager
 
 			EFuncStatus	m_status;
 			int			m_funcRef;
+			int			m_nParams;
 			int			m_delay;
 
 		public:
@@ -39,6 +40,11 @@ namespace NSScriptManager
 			// run, stop
 			void start(lua_State* state, int funcRef);
 			void stop();
+
+			// add parameter for func
+			void pushDouble( double d );
+			void pushInteger( int i );
+			void pushString( const char *s );
 
 			// isRunning
 			// check thread is stop!
@@ -95,6 +101,16 @@ namespace NSScriptManager
 		// startFunc
 		// run a lua func
 		int startFunc( const char *funcName );
+
+		// startFunc
+		// calc function with paramater
+		// argType is list param type: 
+		//	+ i: integer
+		//	+ d: double
+		//  + s: string
+		// example:
+		// startFunc("function","is",10,"helloWorld")
+		int startFunc( const char *func, char *argType, ... );
 
 		// stopFunc
 		// stop lua func

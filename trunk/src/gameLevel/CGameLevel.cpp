@@ -1,7 +1,23 @@
 #include "stdafx.h"
 #include "CGameLevel.h"
-
+#include "LevelScript.h"
 #include "IView.h"
+
+CGameLevel* g_currentLevel = NULL;
+
+// getCurrentLevel
+// get current level
+CGameLevel* CGameLevel::getCurrentLevel()
+{
+	return g_currentLevel;
+}
+
+// setCurrentLevel
+// set current level
+void CGameLevel::setCurrentLevel(CGameLevel* lv)
+{
+	g_currentLevel = lv;
+}
 
 CGameLevel::CGameLevel()
 {
@@ -94,10 +110,39 @@ CGameObject* CGameLevel::searchObject( long id )
 	return NULL;
 }
 
+// searchObject
+// search object with name
+CGameObject* CGameLevel::searchObject( const char* name )
+{
+	wchar_t buffer[1024] = {0};
+	uiString::convertUTF8ToUnicode( name, (unsigned short*) buffer );
+
+	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
+	while ( iZone != iEnd )
+	{		
+		CZone *pZone = (*iZone);
+		
+		if ( uiString::comp<const wchar_t>(pZone->getName(), buffer) == 0 )
+			return pZone;
+
+		CGameObject* p = pZone->searchObject( buffer );
+		
+		if ( p )
+			return p;
+
+		iZone++;
+	}
+
+	return NULL;
+}
+
+
 // loadLevel
 // load all object from file .lv
 void CGameLevel::loadLevel( const char *lpLevel )
 {
+	m_levelFile = lpLevel;
+
 	const char* path = getIView()->getPath( lpLevel );
 	io::IReadFile *file = getIView()->getFileSystem()->createAndOpenFile( path );
 
@@ -107,13 +152,15 @@ void CGameLevel::loadLevel( const char *lpLevel )
 		
 		if ( length > 0 )
 		{
-			m_loadLevelBuffer = new char[length];
+			// init level buffer
+			m_loadLevelBuffer = new char[length+1];
 			m_loadPos = m_loadLevelBuffer;
-
-			memset( m_loadLevelBuffer, 0, length );
 
 			// read level data
 			file->read(m_loadLevelBuffer, length);
+
+			// end buffer
+			m_loadLevelBuffer[length] = NULL;
 		}
 
 		file->drop();
@@ -162,7 +209,10 @@ bool CGameLevel::loadStep( int nStep )
 				// create game object
 				CGameObject *pGameObj = m_loadZone->createObject( lpString );
 				if ( pGameObj )				
-					pGameObj->updateData( &objData );				
+					pGameObj->updateData( &objData );
+
+				// register name for search object by name
+				m_loadZone->registerObjectName( pGameObj );
 			}
 			else
 			{
@@ -174,6 +224,9 @@ bool CGameLevel::loadStep( int nStep )
 					// create zone
 					m_loadZone = (CZone*)createZone();
 					m_loadZone->updateData( &objData );
+
+					// register name for search object by name
+					m_loadZone->registerObjectName( m_loadZone );
 				}
 				else if ( strcmp( objType, strOfType( CGameObject::WaypointObject ) ) == 0 )
 				{
@@ -181,6 +234,9 @@ bool CGameLevel::loadStep( int nStep )
 					{
 						CWayPoint *obj = m_loadZone->createWaypoint();
 						obj->updateData( &objData );
+						
+						// register name for search object by name
+						m_loadZone->registerObjectName( obj );
 					}
 				}
 				else if ( strcmp( objType, strOfType( CGameObject::CameraObject ) ) == 0 )
@@ -189,6 +245,9 @@ bool CGameLevel::loadStep( int nStep )
 					{
 						CGameCamera *obj = m_loadZone->createCamera();
 						obj->updateData( &objData );
+
+						// register name for search object by name
+						m_loadZone->registerObjectName( obj );
 					}
 				}
 				else if ( strcmp( objType, strOfType( CGameObject::TriggerObject ) ) == 0 )
@@ -197,6 +256,12 @@ bool CGameLevel::loadStep( int nStep )
 					{
 						CTrigger *obj = m_loadZone->createTrigger();
 						obj->updateData( &objData );
+						
+						if ( obj->getScripFile().size() > 0 )
+							m_listScriptFile.push_back( obj->getScripFile() );
+
+						// register name for search object by name
+						m_loadZone->registerObjectName( obj );
 					}
 				}
 				else if ( strcmp( objType, "Game level" ) == 0 )
@@ -229,8 +294,60 @@ bool CGameLevel::loadStep( int nStep )
 	m_loadPos = NULL;
 	m_loadZone = NULL;
 
+	// load lua script
+	compileGameScript();
+
 	return true;
 
+}
+
+// compileGameScript
+// compile lua script
+void CGameLevel::compileGameScript()
+{
+	// cache 2mb script
+	m_loadLevelBuffer = new char[2*1024*1024];
+	m_loadPos = m_loadLevelBuffer;
+
+	char folderPath[1024];
+	char fullPath[1024];
+	uiString::getFolderPath<const char, char>( m_levelFile.c_str(), folderPath );
+	uiString::cat<char,char>(folderPath,"/");
+	
+	int numScriptFile = m_listScriptFile.size();
+	for ( int i = 0; i < numScriptFile; i++ )
+	{
+		uiString::copy<char,char>(fullPath,folderPath);
+		uiString::cat<char,const char>(fullPath, m_listScriptFile[i].c_str());
+
+		io::IReadFile *file = getIView()->getFileSystem()->createAndOpenFile( getIView()->getPath(fullPath) );
+		if ( file )
+		{	
+			unsigned long length = file->getSize();
+			
+			if ( length > 0 )
+			{				
+				// read level data
+				file->read(m_loadPos, length);
+			}
+
+			m_loadPos[length] = NULL;
+			m_loadPos += length;
+			file->drop();
+		}	
+
+	}
+
+	// compile lua source
+	CScriptManager::getInstance()->compileLuaSource( m_loadLevelBuffer, m_loadPos - m_loadLevelBuffer );
+
+	// implement function
+	registerCFunction();
+	
+
+	delete m_loadLevelBuffer;
+	m_loadLevelBuffer = NULL;
+	m_loadPos = NULL;
 }
 
 

@@ -9,10 +9,14 @@
 class CZone: public CGameObject
 {
 protected:
-	ArrayGameObject		m_childs;
-	ArrayGameObject		m_terrains;
+	ArrayGameObject						m_childs;
+	ArrayGameObject						m_terrains;
 
-	bool				m_needSortObject;
+	bool								m_needSortObject;
+
+#ifdef GSGAMEPLAY
+	core::map<wstring, CGameObject*>	m_objectByName;
+#endif
 
 protected:
 	// addChild
@@ -42,6 +46,14 @@ public:
 	// searchObject
 	// search object by id
 	CGameObject* searchObject( long objectID );
+
+#ifdef GSGAMEPLAY
+	CGameObject* searchObject( const wchar_t *objectName );
+
+	// registerObjectName
+	// register object name for search object by name
+	void registerObjectName( CGameObject* obj );
+#endif
 
 	// createObject
 	// create a template object

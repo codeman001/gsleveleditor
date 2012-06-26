@@ -17,6 +17,7 @@ protected:
 	std::string m_onEnable;
 	std::string m_onDisable;
 
+	bool m_enableState;	
 public:
 	CTrigger();
 
@@ -40,6 +41,56 @@ public:
 	// update data
 	virtual void updateData( CSerializable* pObj );
 
+	// updateObject
+	// update object by frame...
+	virtual void updateObject();	
+
+	// property declare
+	const std::string& getScripFile()
+	{
+		return m_scriptFile;
+	}
+
+	const std::string& getAllwayFunc()
+	{
+		return m_onAlways;
+	}
+
+	const std::string& getWhileInFunc()
+	{	
+		return m_onWhileIn;
+	}
+
+	const std::string& getWhileOutFunc()
+	{
+		return m_onWhileOut;
+	}
+
+	const std::string& getOnEnterFunc()
+	{
+		return m_onEnter;
+	}
+
+	const std::string& getOnExitFunc()
+	{
+		return m_onExit;
+	}
+
+	const std::string& getOnEnableFunc()
+	{
+		return m_onEnable;
+	}
+
+	const std::string& getOnDisableFunc()
+	{
+		return m_onDisable;
+	}
+	// end property
+protected:
+
+	// runFunction
+	// run script func
+	void runFunction(const string& funcName, int id1, int id2, bool useID2);
 };
 
 #endif

@@ -38,6 +38,7 @@ CZone::~CZone()
 		it++;
 	}
 	m_childs.clear();
+	m_objectByName.clear();
 }
 
 // updateObject
@@ -49,7 +50,7 @@ void CZone::updateObject()
 	{
 		CGameObject *pObject = (CGameObject*) (*it);
 
-		if ( pObject->isEnable() )
+		if ( pObject->isEnable() || pObject->getObjectType() == CGameObject::TriggerObject )
 			pObject->updateObject();
 
 		it++;
@@ -114,6 +115,24 @@ CGameObject* CZone::searchObject( long objectID )
 
 	return NULL;
 }
+
+#ifdef GSGAMEPLAY
+CGameObject* CZone::searchObject( const wchar_t *objectName )
+{
+	core::map<wstring, CGameObject*>::Node *node = m_objectByName.find( wstring(objectName) );
+	if ( node == NULL )
+		return NULL;
+
+	return node->getValue();
+}
+
+// registerObjectName
+// register object name for search object by name
+void CZone::registerObjectName( CGameObject* obj )
+{
+	m_objectByName[ obj->getName() ] = obj;
+}
+#endif
 
 // createObject
 // create a template object
@@ -270,7 +289,7 @@ void CZone::addChild( CGameObject *p )
 // removeObject
 // remove object
 void CZone::removeObject( CGameObject *pObj )
-{			
+{	
 	ArrayGameObjectIter iObj = m_childs.begin(), end = m_childs.end();
 	while ( iObj != end )
 	{
@@ -283,6 +302,10 @@ void CZone::removeObject( CGameObject *pObj )
 				m_treeItem->destroyChild( pTreeItem );			
 #endif
 
+#ifdef GSGAMEPLAY
+			// remove name first
+			m_objectByName.remove( pObj->getName() );
+#endif
 			// delete gameObject
 			delete pObj;
 

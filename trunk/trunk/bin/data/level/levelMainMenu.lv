@@ -4,12 +4,12 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: 115.1152420 | floatType;
-		cameraY: 5475.1625977 | floatType;
-		cameraZ: 1610.9072266 | floatType;
-		cameraTargetX: 4444.0454102 | floatType;
-		cameraTargetY: 4399.3920898 | floatType;
-		cameraTargetZ: -1951.2221680 | floatType;
+		cameraX: 1613.7983398 | floatType;
+		cameraY: 5739.9501953 | floatType;
+		cameraZ: 2469.7026367 | floatType;
+		cameraTargetX: 4762.0332031 | floatType;
+		cameraTargetY: 3123.9760742 | floatType;
+		cameraTargetZ: -2519.8969727 | floatType;
 	}
 }
 zone_1
@@ -30,7 +30,7 @@ object_2
 		objectID: 2 | longType;
 		parentID: 1 | longType;
 		objectType: Game Object | stringType;
-		objectName: levelMainMenu_2 | stringType;
+		objectName: levelMainMenu | stringType;
 		objectTemplate: levelMainMenu | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -60,7 +60,7 @@ object_3
 		objectID: 3 | longType;
 		parentID: 1 | longType;
 		objectType: Camera Object | stringType;
-		objectName: camera_3 | stringType;
+		objectName: camMain | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -74,5 +74,39 @@ object_3
 		scaleX: 1.0000000 | floatType;
 		scaleY: 1.0000000 | floatType;
 		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_5
+{
+	Trigger Object
+	{
+		scriptFile: levelMainMenu.lua | filePathType;
+		onAlways: triggerInitLevel_always | stringType;
+		onWhileIn:  | stringType;
+		onWhileOut:  | stringType;
+		onEnder:  | stringType;
+		onExit:  | stringType;
+		onEnable:  | stringType;
+		onDisable:  | stringType;
+	}
+	Game object
+	{
+		objectID: 5 | longType;
+		parentID: 1 | longType;
+		objectType: Trigger Object | stringType;
+		objectName: triggerInitLevel | stringType;
+		objectTemplate:  | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: true | boolType;
+		positionX: 1983.1564941 | floatType;
+		positionY: 5268.6040039 | floatType;
+		positionZ: 1325.9982910 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 3.5994039 | floatType;
+		scaleY: 3.5994039 | floatType;
+		scaleZ: 3.5994039 | floatType;
 	}
 }

@@ -3,6 +3,8 @@
 
 #include "CGameObject.h"
 #include "CGameCamera.h"
+#include "CWayPoint.h"
+#include "CTrigger.h"
 #include "CZone.h"
 
 #include "CComponentFactory.h"
@@ -24,9 +26,24 @@ protected:
 	char*			m_loadPos;
 	CZone*			m_loadZone;
 
+	string			m_levelFile;
+	vector<string>	m_listScriptFile;
+
+protected:
+	// compileGameScript
+	// compile lua script
+	void compileGameScript();
 public:
 	CGameLevel();
 	virtual ~CGameLevel();
+
+	// getCurrentLevel
+	// get current level
+	static CGameLevel* getCurrentLevel();
+
+	// setCurrentLevel
+	// set current level
+	static void setCurrentLevel(CGameLevel* lv);
 
 	// createZone
 	// create a zone
@@ -43,6 +60,10 @@ public:
 	// searchObjByID
 	// search object with id
 	virtual CGameObject* searchObject( long id );
+
+	// searchObject
+	// search object with name
+	virtual CGameObject* searchObject( const char* name );
 
 	// loadLevel
 	// load all object from file .lv

@@ -2,6 +2,9 @@
 #include "CTrigger.h"
 #include "IView.h"
 #include "CGameBoxSceneNode.h"
+#include "script/CScriptManager.h"
+
+using namespace NSScriptManager;
 
 CTrigger::CTrigger()
 {
@@ -77,8 +80,10 @@ CTrigger::CTrigger(CGameObject *parent)
 #ifdef GSEDITOR
 	setVisible ( true );	
 #else
-	setVisible ( false );
+	setVisible ( false );	
 #endif
+
+	m_enableState = false;
 }
 
 CTrigger::~CTrigger()
@@ -155,4 +160,59 @@ void CTrigger::updateData( CSerializable* pObj )
 	m_onDisable		= pObj->readString();
 
 	CGameObject::updateData( pObj );
+}
+
+// updateObject
+// update object by frame...
+void CTrigger::updateObject()
+{
+	CGameObject::updateObject();
+
+	bool runOnEnable	= false;
+	bool runOnDisable	= false;
+	bool runOnAlways	= false;
+
+	if ( isEnable() )
+	{
+		if ( m_enableState == false )
+		{
+			// need run on enable script
+			runOnEnable = true;
+		}
+		
+		// need run always script
+		runOnAlways = true;
+	}
+	else
+	{
+		if ( m_enableState == true )
+		{
+			// need run on disable script
+			runOnDisable = true;
+		}
+	}
+
+	int myID = (int)getID();
+
+	if ( runOnAlways )
+		runFunction( m_onAlways, myID, -1, false );
+	if ( runOnEnable )
+		runFunction( m_onEnable, myID, -1, false );
+	if ( runOnDisable )
+		runFunction( m_onDisable, myID, -1, false );
+
+	m_enableState = isEnable();
+}
+
+// runFunction
+// run script func
+void CTrigger::runFunction(const string& funcName, int id1, int id2, bool useID2)
+{
+	if ( funcName.length() == 0 )
+		return;
+	
+	if ( useID2 == false )
+		CScriptManager::getInstance()->startFunc( funcName.c_str(), "i", id1 );
+	else
+		CScriptManager::getInstance()->startFunc( funcName.c_str(), "ii", id1, id2 );
 }

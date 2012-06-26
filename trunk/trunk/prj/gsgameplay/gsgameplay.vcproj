@@ -648,6 +648,14 @@
 					RelativePath="..\..\src\gameLevel\CGameLevel.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\gameLevel\LevelScript.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLevel\LevelScript.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="script"

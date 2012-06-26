@@ -14,7 +14,8 @@ CStateMainMenu::CStateMainMenu()
 
 CStateMainMenu::~CStateMainMenu()
 {
-	delete m_level;
+	delete m_level;	
+	CGameLevel::setCurrentLevel( NULL );
 }
 
 void CStateMainMenu::onCreate()
@@ -25,14 +26,10 @@ void CStateMainMenu::onCreate()
 	// show mainmenu state
 	setFxStateVisible( m_state, true );
 
+	// register current level
+	CGameLevel::setCurrentLevel( m_level );
 	
-	// cheat for level camera
-	// --------------------------------------
-	CGameCamera* cam = (CGameCamera*)m_level->searchObject(3);
-	if ( cam )
-		m_level->setCamera( cam );
-
-	
+#if 0
 	const char* luaSource = "\
 function resumeCApplicaton()\n\
 	wait(500);\n\
@@ -58,6 +55,8 @@ end\n";
 	CScriptManager::getInstance()->startFunc("testFunc");
 	CScriptManager::getInstance()->startFunc("testFunc1","ids",10, 10.0f,"hello from cpp");
 	// --------------------------------------
+#endif
+
 }
 
 void CStateMainMenu::onDestroy()

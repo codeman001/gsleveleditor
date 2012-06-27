@@ -112,15 +112,17 @@ unsigned _VLD_configflags = VLD_FLAG_AGGREGATE_DUPLICATES | VLD_FLAG_SELF_TEST |
 // Link with the appropriate Visual Leak Detector library. One of: multithreaded
 // DLL, multithreaded static, or single threaded. All three link with debug
 // versions of the CRT.
-#ifdef _DLL
-#pragma comment (lib, "vldmtdll.lib")
-#else
-#ifdef _MT
-#pragma comment (lib, "vldmt.lib")
-#else
+//#ifdef _DLL
+//#pragma comment (lib, "vldmtdll.lib")
+//#else
+//#ifdef _MT
+//#pragma comment (lib, "vldmt.lib")
+//#else
+//#pragma comment (lib, "vld.lib")
+//#endif // _MT 
+//#endif // _DLL
+
 #pragma comment (lib, "vld.lib")
-#endif // _MT 
-#endif // _DLL
 
 // Force a symbolic reference to the global VisualLeakDetector class object from
 // the library. This enusres that the object is linked with the program, even

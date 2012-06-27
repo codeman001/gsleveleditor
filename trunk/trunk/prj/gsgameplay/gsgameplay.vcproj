@@ -669,6 +669,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="gameComponent"
+				>
+				<File
+					RelativePath="..\..\src\gameComponent\CGameComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameComponent\CGameComponent.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\gsgameplay.cpp"

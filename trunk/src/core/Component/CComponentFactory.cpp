@@ -17,6 +17,10 @@
 #include "CWaterComponent.h"
 #endif 
 
+#ifdef GSGAMEPLAY
+#include "gameComponent/CGameComponent.h"
+#endif
+
 #if defined(GSANIMATION) || defined(GSGAMEPLAY) || defined(GSEDITOR)
 #include "CColladaMeshComponent.h"
 #endif
@@ -281,44 +285,55 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 	char *lpComponentName = data->readString();
 	data->setCursorRecord(cursor);
 	
+	// unknown name component
 	if ( lpComponentName == NULL )
 		return NULL;
 
+#ifdef GSGAMEPLAY
+	// we init game component first
+	IObjectComponent* pComp = CGameComponent::loadComponent( pObj, lpComponentName, data );
+#else
 	IObjectComponent* pComp = NULL;
+#endif
 
+	// and also init built in component
+	if ( pComp == NULL )
+	{
 #if defined(GSGAMEPLAY) || defined(GSEDITOR)
-	if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::AnimMesh) ) == 0 )	
-		pComp = new CAnimMeshComponent( pObj );
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::StaticMesh ) ) == 0 )	
-		pComp = new CStaticMeshComponent( pObj );	
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Skybox ) ) == 0 )	
-		pComp = new CSkyboxComponent( pObj );	
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ObjectTransform ) ) == 0 )
-		pComp = new CObjectTransformComponent( pObj );
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ObjectCollision ) ) == 0 )
-		pComp = new CObjectCollisionComponent( pObj );
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Shadow ) ) == 0 )
-		pComp = new CShadowComponent( pObj );
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::BoxObject ) ) == 0 )
-		pComp = new CBoxObjectComponent( pObj );
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Billboard ) ) == 0 )
-		pComp = new CBillboardComponent( pObj );
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Terrain ) ) == 0 )
-		pComp = new CTerrainComponent( pObj );
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Grass ) ) == 0 )
-		pComp = new CGrassComponent( pObj );
-	else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Water ) ) == 0 )
-		pComp = new CWaterComponent( pObj );	
+		if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::AnimMesh) ) == 0 )	
+			pComp = new CAnimMeshComponent( pObj );
+		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::StaticMesh ) ) == 0 )	
+			pComp = new CStaticMeshComponent( pObj );	
+		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Skybox ) ) == 0 )	
+			pComp = new CSkyboxComponent( pObj );	
+		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ObjectTransform ) ) == 0 )
+			pComp = new CObjectTransformComponent( pObj );
+		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ObjectCollision ) ) == 0 )
+			pComp = new CObjectCollisionComponent( pObj );
+		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Shadow ) ) == 0 )
+			pComp = new CShadowComponent( pObj );
+		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::BoxObject ) ) == 0 )
+			pComp = new CBoxObjectComponent( pObj );
+		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Billboard ) ) == 0 )
+			pComp = new CBillboardComponent( pObj );
+		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Terrain ) ) == 0 )
+			pComp = new CTerrainComponent( pObj );
+		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Grass ) ) == 0 )
+			pComp = new CGrassComponent( pObj );
+		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Water ) ) == 0 )
+			pComp = new CWaterComponent( pObj );	
 #endif
 #if defined(GSANIMATION) || defined(GSGAMEPLAY) || defined(GSEDITOR)
-	if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ColladaMesh ) ) == 0 )
-		pComp = new CColladaMeshComponent( pObj );	
+		if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ColladaMesh ) ) == 0 )
+			pComp = new CColladaMeshComponent( pObj );	
 #endif
 #if defined(GSPARTICLE) || defined(GSGAMEPLAY) || defined(GSEDITOR)
-	if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Particle ) ) == 0 )
-		pComp = new CParticleComponent( pObj );	
+		if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Particle ) ) == 0 )
+			pComp = new CParticleComponent( pObj );	
 #endif
+	}
 
+	// load component data
 	if ( pComp )
 		pComp->loadData( data );
 

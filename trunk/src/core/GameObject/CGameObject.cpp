@@ -465,6 +465,10 @@ void CGameObject::updateData( CSerializable* pObj )
 	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
 	setName( lpText );
 
+#ifdef GSGAMEPLAY
+	m_defaultName = lpText;
+#endif
+
 	// read template	
 	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
 	m_objectTemplate = lpText;

@@ -304,7 +304,7 @@ void CZone::removeObject( CGameObject *pObj )
 
 #ifdef GSGAMEPLAY
 			// remove name first
-			m_objectByName.remove( pObj->getName() );
+			m_objectByName.remove( pObj->getDefaultName() );
 #endif
 			// delete gameObject
 			delete pObj;

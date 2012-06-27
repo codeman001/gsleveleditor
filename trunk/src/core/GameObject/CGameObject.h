@@ -53,6 +53,9 @@ public:
 protected:	
 	long				m_objectID;
 	std::wstring		m_name;
+#ifdef GSGAMEPLAY
+	std::wstring		m_defaultName;
+#endif
 	std::wstring		m_objectTemplate;
 
 	ObjectType			m_objectType;
@@ -127,11 +130,24 @@ public:
 		return m_name.c_str();
 	}
 
+#ifdef GSGAMEPLAY
+	inline const wchar_t* getDefaultName()
+	{
+		return m_defaultName.c_str();
+	}
+#endif
+
 	// setName
 	// set name for zone
 	inline void setName( const wchar_t *lpName )
 	{
 		m_name = lpName;
+
+#ifdef GSGAMEPLAY
+		if ( m_defaultName == L"" )
+			m_defaultName = lpName;
+#endif
+
 #ifdef GSEDITOR
 		if ( m_treeItem )
 		{

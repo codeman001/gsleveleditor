@@ -12,7 +12,6 @@
 
 #ifdef VISUALLEAKDETECTOR
 	#include "vld.h"
-	#include "vldapi.h"
 #endif
 
 IView::IView()

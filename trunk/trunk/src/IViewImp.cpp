@@ -6,6 +6,15 @@
 #include "CGameGSCameraAnimator.h"
 #endif
 
+#ifdef GSGAMEPLAY
+	#define VISUALLEAKDETECTOR
+#endif
+
+#ifdef VISUALLEAKDETECTOR
+	#include "vld.h"
+	#include "vldapi.h"
+#endif
+
 IView::IView()
 {
 	m_device	= NULL;
@@ -24,17 +33,26 @@ IView::IView()
 
 	m_cameraAspect = 1.0f;
 	m_timeStep = 1.0f;
+
+#ifdef VISUALLEAKDETECTOR
+	VLDEnable();
+#endif
 }
 
 IView::~IView()
 {	
 	m_eventReceivers.clear();
 
-#if !defined(GSEDITOR) && !defined(PARTICLE_EDITOR) && !defined(GSANIMATION)
+#ifdef VISUALLEAKDETECTOR
+	VLDDisable();
+#else
+
+#ifdef GSGAMEPLAY
 	UIDEBUG_TRACE("Debug leak memory: \n");
 	UIDEBUG_DUMPLEAK();
 #endif
 
+#endif
 }
 
 // getSelectRay

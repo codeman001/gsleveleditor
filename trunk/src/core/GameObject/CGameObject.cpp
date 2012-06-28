@@ -3,6 +3,8 @@
 #include "CComponentFactory.h"
 #include "IView.h"
 
+#include "CWayPoint.h"
+
 long CGameObject::s_objectID = 1;
 
 core::vector3df CGameObject::s_ox	= core::vector3df(1.0f, 0.0f, 0.0f);
@@ -656,6 +658,31 @@ void CGameObject::loadTransform()
 	m_position		= m_oldPosition;
 	m_rotation		= m_oldRotation;
 	m_scale			= m_oldScale;		
+}
+
+// setPositionMoveToWayPoint
+// set position
+void CGameObject::setAnimatorMoveToWayPoint( CWayPoint *wayPoint, float speed, bool loop )
+{
+	if ( m_node == NULL )
+		return;
+	
+	// get waypoint as spline
+	vector<core::vector3df> listPoint;
+	wayPoint->getSpline( listPoint, loop );
+
+	// convert to irrlich array
+	core::array<core::vector3df>	spline;
+	int nPoint = listPoint.size();
+	for ( int i = 0; i < nPoint; i++ )
+		spline.push_back( listPoint[i] );
+	
+	// add animator
+	ISceneNodeAnimator* animator = getIView()->getSceneMgr()->createFollowSplineAnimator(0, spline, speed);
+	m_node->removeAnimators();
+	m_node->addAnimator( animator );
+	animator->drop();
+
 }
 
 #ifdef GSEDITOR

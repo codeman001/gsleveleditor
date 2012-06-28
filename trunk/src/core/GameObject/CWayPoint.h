@@ -31,6 +31,20 @@ public:
 		m_back = p;
 	}
 
+	// getNext
+	// get next waypoint
+	inline CWayPoint * getNext()
+	{
+		return m_next;
+	}
+
+	// getBack
+	// get prev waypoint
+	inline CWayPoint * getBack()
+	{
+		return m_back;
+	}
+
 	// setTimeWay
 	// way milisecond time
 	inline void setTimeWay(long timeWait)
@@ -53,6 +67,10 @@ public:
 	// updateData
 	// update data
 	virtual void updateData( CSerializable* pObj );
+
+	// getSpline
+	// getspline
+	void getSpline( vector<core::vector3df>& points, bool loop);
 
 #ifdef GSEDITOR
 	// drawObject	

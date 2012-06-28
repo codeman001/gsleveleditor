@@ -4,12 +4,12 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: 1613.7983398 | floatType;
-		cameraY: 5739.9501953 | floatType;
-		cameraZ: 2469.7026367 | floatType;
-		cameraTargetX: 4762.0332031 | floatType;
-		cameraTargetY: 3123.9760742 | floatType;
-		cameraTargetZ: -2519.8969727 | floatType;
+		cameraX: 5552.6220703 | floatType;
+		cameraY: 6055.3637695 | floatType;
+		cameraZ: 2201.2409668 | floatType;
+		cameraTargetX: 4134.5000000 | floatType;
+		cameraTargetY: 320.0532227 | floatType;
+		cameraTargetZ: -3917.5539551 | floatType;
 	}
 }
 zone_1
@@ -50,9 +50,9 @@ object_3
 {
 	Camera Object
 	{
-		targetX: -1092.1088867 | floatType;
-		targetY: 4035.6743164 | floatType;
-		targetZ: -2944.8549805 | floatType;
+		targetX: -1605.0205078 | floatType;
+		targetY: 3138.3090820 | floatType;
+		targetZ: -1167.8112793 | floatType;
 		targetID: -1 | longType;
 	}
 	Game object
@@ -65,11 +65,11 @@ object_3
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: false | boolType;
-		positionX: 3712.7944336 | floatType;
-		positionY: 5251.2446289 | floatType;
-		positionZ: 1379.2768555 | floatType;
-		rotationX: 190.6499786 | floatType;
-		rotationY: 311.9853516 | floatType;
+		positionX: 5570.5151367 | floatType;
+		positionY: 5635.4086914 | floatType;
+		positionZ: 1584.5329590 | floatType;
+		rotationX: 197.9999847 | floatType;
+		rotationY: 290.9854736 | floatType;
 		rotationZ: 180.0000000 | floatType;
 		scaleX: 1.0000000 | floatType;
 		scaleY: 1.0000000 | floatType;
@@ -108,5 +108,121 @@ object_5
 		scaleX: 3.5994039 | floatType;
 		scaleY: 3.5994039 | floatType;
 		scaleZ: 3.5994039 | floatType;
+	}
+}
+object_6
+{
+	Waypoint Object
+	{
+		nextWayPoint: 7 | longType;
+		prevWayPoint: -1 | longType;
+		waitTime: 0 | longType;
+	}
+	Game object
+	{
+		objectID: 6 | longType;
+		parentID: 1 | longType;
+		objectType: Waypoint Object | stringType;
+		objectName: cameraInitWayPoint | stringType;
+		objectTemplate:  | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: true | boolType;
+		positionX: 5314.9306641 | floatType;
+		positionY: 5553.2187500 | floatType;
+		positionZ: 1556.8594971 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_7
+{
+	Waypoint Object
+	{
+		nextWayPoint: 8 | longType;
+		prevWayPoint: 6 | longType;
+		waitTime: 0 | longType;
+	}
+	Game object
+	{
+		objectID: 7 | longType;
+		parentID: 1 | longType;
+		objectType: Waypoint Object | stringType;
+		objectName: waypoint_7 | stringType;
+		objectTemplate:  | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: true | boolType;
+		positionX: 4313.8896484 | floatType;
+		positionY: 5348.0234375 | floatType;
+		positionZ: 1623.7927246 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_8
+{
+	Waypoint Object
+	{
+		nextWayPoint: 9 | longType;
+		prevWayPoint: 7 | longType;
+		waitTime: 0 | longType;
+	}
+	Game object
+	{
+		objectID: 8 | longType;
+		parentID: 1 | longType;
+		objectType: Waypoint Object | stringType;
+		objectName: waypoint_8 | stringType;
+		objectTemplate:  | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: true | boolType;
+		positionX: 3405.2526855 | floatType;
+		positionY: 5244.8261719 | floatType;
+		positionZ: 1517.6518555 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_9
+{
+	Waypoint Object
+	{
+		nextWayPoint: -1 | longType;
+		prevWayPoint: 8 | longType;
+		waitTime: 0 | longType;
+	}
+	Game object
+	{
+		objectID: 9 | longType;
+		parentID: 1 | longType;
+		objectType: Waypoint Object | stringType;
+		objectName: waypoint_9 | stringType;
+		objectTemplate:  | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: true | boolType;
+		positionX: 2570.4099121 | floatType;
+		positionY: 5143.6528320 | floatType;
+		positionZ: 1179.6293945 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
 	}
 }

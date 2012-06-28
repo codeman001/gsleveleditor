@@ -56,6 +56,24 @@ int enableObject(lua_State* state)
 	return 0;
 }
 
+// setAnimatorMoveToWayPoint
+// set anim move on waypoint
+// param: objectID, waypointID, loop
+int setAnimatorMoveToWayPoint(lua_State* state)
+{
+	int objID = lua_tointeger(state,1);
+	int wayID = lua_tointeger(state,2);	
+	float speed = (float)lua_tonumber(state,3);
+	int loop = lua_toboolean(state,4);
+
+	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* way = getLevel()->searchObject( wayID );
+	if ( obj == NULL || way == NULL || way->getObjectType() != CGameObject::WaypointObject )
+		return 0;
+
+	obj->setAnimatorMoveToWayPoint( (CWayPoint*)way, speed, loop == 1 );
+	return 0;
+}
 
 /////////////////////////////////////////////////////////////
 // registerCFunction
@@ -66,6 +84,7 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(setLevelCamera);
 	REGISTER_C_FUNCTION(disableObject);
 	REGISTER_C_FUNCTION(enableObject);
+	REGISTER_C_FUNCTION(setAnimatorMoveToWayPoint);	
 }
 // end register
 /////////////////////////////////////////////////////////////

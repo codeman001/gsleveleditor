@@ -234,6 +234,7 @@ bool CGameLevel::loadStep( int nStep )
 					{
 						CWayPoint *obj = m_loadZone->createWaypoint();
 						obj->updateData( &objData );
+						obj->setVisible( false );
 						
 						// register name for search object by name
 						m_loadZone->registerObjectName( obj );
@@ -256,6 +257,7 @@ bool CGameLevel::loadStep( int nStep )
 					{
 						CTrigger *obj = m_loadZone->createTrigger();
 						obj->updateData( &objData );
+						obj->setVisible( false );
 						
 						if ( obj->getScripFile().size() > 0 )
 						{

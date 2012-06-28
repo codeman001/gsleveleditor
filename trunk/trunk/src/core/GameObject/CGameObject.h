@@ -6,6 +6,9 @@
 #include "IObjectComponent.h"
 #include "CObjectTemplate.h"
 
+// prototype class declare
+class CWayPoint;
+
 // CGameObject
 // Base class for object3d
 //  y
@@ -15,6 +18,7 @@
 //  | /
 //  |/
 //  *---------* x
+
 
 class CGameObject
 #ifdef GSEDITOR
@@ -433,6 +437,10 @@ public:
 	// loadTransform
 	// load all transform
 	void loadTransform();
+
+	// setPositionMoveToWayPoint
+	// set position
+	void setAnimatorMoveToWayPoint( CWayPoint *wayPoint, float speed, bool loop );
 
 public:
 

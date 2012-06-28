@@ -22,6 +22,7 @@ CWayPoint::CWayPoint()
 	//addComponenet( comp );
 	//setLighting( false );
 	
+
 	m_node = new CGameBoxSceneNode(this, 5, smgr->getRootSceneNode(), smgr, m_objectID);
 	m_node->getMaterial(0).Lighting = true;
 
@@ -228,6 +229,44 @@ void CWayPoint::updateData( CSerializable* pObj )
 
 	CGameObject::updateData( pObj );
 }
+
+// getSpline
+// getspline
+void CWayPoint::getSpline( vector<core::vector3df>& points, bool loop)
+{
+	CWayPoint *pWay = this;
+	CWayPoint *lastWay = NULL;
+
+	while ( pWay )
+	{
+		points.push_back( pWay->getPosition() );
+
+		lastWay = pWay;
+		pWay = pWay->getNext();
+
+		// loop way
+		if ( pWay == this )
+			return;
+	}
+
+	// back way
+	if (loop)
+	{
+		pWay = lastWay->getBack();
+
+		while ( pWay )
+		{
+			points.push_back( pWay->getPosition() );
+			pWay = pWay->getBack();
+
+			// end way
+			if ( pWay == this )
+				return;
+		}
+	}
+
+}
+
 
 #ifdef GSEDITOR
 // drawObject	

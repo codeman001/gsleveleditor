@@ -72,6 +72,8 @@ CGameCamera::~CGameCamera()
 // update object by frame...
 void CGameCamera::updateObject()
 {
+	CGameObject::updateObject();
+
 	if ( m_enable && m_targetObject )
 	{
 		// look target
@@ -101,6 +103,16 @@ void CGameCamera::updateObject()
 		m_node = m_camera;
 	}
 #endif
+
+#ifdef GSGAMEPLAY
+	if ( m_camera->getAnimators().size() > 0 )
+	{
+		m_position = m_camera->getPosition();
+		if ( m_targetObject == NULL )
+			m_targetPos = m_camera->getTarget();
+	}
+#endif
+
 }
 
 // saveData

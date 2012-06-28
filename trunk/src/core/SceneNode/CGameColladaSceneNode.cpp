@@ -96,17 +96,19 @@ void CGameColladaSceneNode::OnRegisterSceneNode()
 
 void CGameColladaSceneNode::updateAbsolutePosition()
 {
+	core::matrix4 RelativeMatrix = getRelativeTransformation() * AnimationMatrix;
+	
 	// calc absolute transform
 	if ( Parent )
-		AbsoluteTransformation = Parent->getAbsoluteTransformation() * AnimationMatrix;
+		AbsoluteTransformation = Parent->getAbsoluteTransformation() * RelativeMatrix;
 	else
-		AbsoluteTransformation = AnimationMatrix;
+		AbsoluteTransformation = RelativeMatrix;
 
 	// calc absolute animation
 	if ( m_isRootColladaNode == true )
-		AbsoluteAnimationMatrix = AnimationMatrix;
+		AbsoluteAnimationMatrix = RelativeMatrix;
 	else
-		AbsoluteAnimationMatrix = ((CGameColladaSceneNode*)Parent)->AbsoluteAnimationMatrix * AnimationMatrix;
+		AbsoluteAnimationMatrix = ((CGameColladaSceneNode*)Parent)->AbsoluteAnimationMatrix * RelativeMatrix;
 
 }
 

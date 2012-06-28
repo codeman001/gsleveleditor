@@ -10,6 +10,8 @@
 #include "CComponentFactory.h"
 #include "CObjTemplateFactory.h"
 
+#include "CColladaMeshComponent.h"
+
 #include "script/CScriptManager.h"
 using namespace NSScriptManager;
 

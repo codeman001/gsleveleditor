@@ -16,9 +16,12 @@ function triggerInitLevel_enable(triggerID)
 end
 
 function triggerInitLevel_always(triggerID)
-	-- local cameraID = getObjectByName("camMain")
-	-- x,y,z = getObjectPosition(csameraID)
-	-- debug("Camera pos: "..x..","..y..","..z)
+	
+	local cameraID = getObjectByName("camMain")
+	x,y,z = getObjectPosition(cameraID)
+	
+	-- local levelObjectID = getObjectByName("levelMainMenu")
+	-- setSceneNodePosition(levelObjectID,"Object01-node",x,y-300,z)
 end
 
 debug("-----------------------------------------------------------------\n\n")

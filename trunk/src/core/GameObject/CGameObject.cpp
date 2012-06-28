@@ -3,7 +3,9 @@
 #include "CComponentFactory.h"
 #include "IView.h"
 
+#ifdef GSGAMEPLAY
 #include "CWayPoint.h"
+#endif
 
 long CGameObject::s_objectID = 1;
 
@@ -660,6 +662,8 @@ void CGameObject::loadTransform()
 	m_scale			= m_oldScale;		
 }
 
+
+#ifdef GSGAMEPLAY
 // setPositionMoveToWayPoint
 // set position
 void CGameObject::setAnimatorMoveToWayPoint( CWayPoint *wayPoint, float speed, bool loop )
@@ -682,8 +686,8 @@ void CGameObject::setAnimatorMoveToWayPoint( CWayPoint *wayPoint, float speed, b
 	m_node->removeAnimators();
 	m_node->addAnimator( animator );
 	animator->drop();
-
 }
+#endif
 
 #ifdef GSEDITOR
 

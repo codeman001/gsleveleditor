@@ -44,7 +44,7 @@ void CScaleObjectController::onLMouseDown(int x, int y)
 					m_scaleState = 3;
 			}
 
-			if ( m_scaleState != 0 )
+			if ( m_scaleState == 0 )
 			{
 				checkHitVector = false;
 
@@ -66,7 +66,11 @@ void CScaleObjectController::onLMouseDown(int x, int y)
 				// check hit test
 				if ( selectedSceneNode )
 				{
-					m_scaleState = 0;
+					CGameObject *hitObject = getIView()->getDocument()->searchObject( selectedSceneNode->getID() );
+					if ( hitObject && hitObject == pObj )
+					{
+						m_scaleState = 0;
+					}
 				}
 			}
 		}

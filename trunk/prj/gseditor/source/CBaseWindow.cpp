@@ -4,7 +4,6 @@
 CBaseWindow::CBaseWindow( WCHAR* lpString, uiWindow *pParent ):
 	uiWindow(lpString, 0, 0, 100, 100, pParent)	
 {
-	this->setDock( pParent, UIDOCK_FILL );
 	this->changeWindowStyle( UISTYLE_CHILD );
 	this->showWindow(true);
 

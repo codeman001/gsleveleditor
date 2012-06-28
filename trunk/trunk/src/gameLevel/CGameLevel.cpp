@@ -258,7 +258,9 @@ bool CGameLevel::loadStep( int nStep )
 						obj->updateData( &objData );
 						
 						if ( obj->getScripFile().size() > 0 )
-							m_listScriptFile.push_back( obj->getScripFile() );
+						{
+							addScriptFile( obj->getScripFile() );
+						}
 
 						// register name for search object by name
 						m_loadZone->registerObjectName( obj );
@@ -301,6 +303,20 @@ bool CGameLevel::loadStep( int nStep )
 
 }
 
+// addScriptFile
+// add file script to compile
+void CGameLevel::addScriptFile(const std::string& path)
+{
+	int numScriptFile = m_listScriptFile.size();
+	for ( int i = 0; i < numScriptFile; i++ )
+	{
+		if ( path == m_listScriptFile[i] )
+			return;
+	}
+
+	m_listScriptFile.push_back( path );
+}
+
 // compileGameScript
 // compile lua script
 void CGameLevel::compileGameScript()
@@ -331,7 +347,8 @@ void CGameLevel::compileGameScript()
 				file->read(m_loadPos, length);
 			}
 
-			m_loadPos[length] = NULL;
+			m_loadPos[length++] = '\n';
+			m_loadPos[length]	= NULL;
 			m_loadPos += length;
 			file->drop();
 		}	

@@ -88,9 +88,13 @@ public:
 	// end property
 protected:
 
+#ifdef GSGAMEPLAY
 	// runFunction
 	// run script func
-	void runFunction(const string& funcName, int id1, int id2, bool useID2);
+	void runFunction(const string& funcName, int id1);
+	void runFunction(const string& funcName, int id1, int id2);
+#endif
+
 };
 
 #endif

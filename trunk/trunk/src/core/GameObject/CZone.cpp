@@ -38,7 +38,11 @@ CZone::~CZone()
 		it++;
 	}
 	m_childs.clear();
+
+#ifdef GSGAMEPLAY
 	m_objectByName.clear();
+#endif
+
 }
 
 // updateObject

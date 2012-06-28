@@ -2,6 +2,8 @@
 #include "LevelScript.h"
 #include "CGameLevel.h"
 
+#define getLevel()	CGameLevel::getCurrentLevel()
+
 // getObjectByName
 // get object id by name
 // param: objName
@@ -9,7 +11,7 @@ int getObjectByName(lua_State* state)
 {
 	const char* objName = lua_tostring(state,1);
 	
-	CGameObject* p = CGameLevel::getCurrentLevel()->searchObject( objName );
+	CGameObject* p = getLevel()->searchObject( objName );
 	if ( p )
 		lua_pushinteger( state, p->getID() );
 	else
@@ -23,9 +25,9 @@ int getObjectByName(lua_State* state)
 int setLevelCamera(lua_State* state)
 {
 	int camID = lua_tointeger(state,1);
-	CGameObject* cam = CGameLevel::getCurrentLevel()->searchObject( camID );
+	CGameObject* cam = getLevel()->searchObject( camID );
 	if ( cam->getObjectType() == CGameObject::CameraObject )
-		CGameLevel::getCurrentLevel()->setCamera((CGameCamera*)cam);
+		getLevel()->setCamera((CGameCamera*)cam);
 
 	return 0;
 }
@@ -36,7 +38,7 @@ int setLevelCamera(lua_State* state)
 int disableObject(lua_State* state)
 {
 	int objID = lua_tointeger(state,1);
-	CGameObject* obj = CGameLevel::getCurrentLevel()->searchObject( objID );
+	CGameObject* obj = getLevel()->searchObject( objID );
 	if ( obj )
 		obj->setEnable(false);
 	return 0;
@@ -48,7 +50,7 @@ int disableObject(lua_State* state)
 int enableObject(lua_State* state)
 {
 	int objID = lua_tointeger(state,1);
-	CGameObject* obj = CGameLevel::getCurrentLevel()->searchObject( objID );
+	CGameObject* obj = getLevel()->searchObject( objID );
 	if ( obj )
 		obj->setEnable(true);
 	return 0;

@@ -2,9 +2,12 @@
 #include "CTrigger.h"
 #include "IView.h"
 #include "CGameBoxSceneNode.h"
+
+#ifdef GSGAMEPLAY
 #include "script/CScriptManager.h"
 
 using namespace NSScriptManager;
+#endif
 
 CTrigger::CTrigger()
 {
@@ -168,6 +171,7 @@ void CTrigger::updateObject()
 {
 	CGameObject::updateObject();
 
+#ifdef GSGAMEPLAY
 	bool runOnEnable	= false;
 	bool runOnDisable	= false;
 	bool runOnAlways	= false;
@@ -195,24 +199,34 @@ void CTrigger::updateObject()
 	int myID = (int)getID();
 
 	if ( runOnAlways )
-		runFunction( m_onAlways, myID, -1, false );
+		runFunction( m_onAlways,	myID);
 	if ( runOnEnable )
-		runFunction( m_onEnable, myID, -1, false );
+		runFunction( m_onEnable,	myID);
 	if ( runOnDisable )
-		runFunction( m_onDisable, myID, -1, false );
+		runFunction( m_onDisable,	myID);
 
 	m_enableState = isEnable();
+#endif
 }
 
+#ifdef GSGAMEPLAY
+
 // runFunction
-// run script func
-void CTrigger::runFunction(const string& funcName, int id1, int id2, bool useID2)
+// run script func with 1 param int
+void CTrigger::runFunction(const string& funcName, int id1)
 {
 	if ( funcName.length() == 0 )
 		return;
-	
-	if ( useID2 == false )
-		CScriptManager::getInstance()->startFunc( funcName.c_str(), "i", id1 );
-	else
-		CScriptManager::getInstance()->startFunc( funcName.c_str(), "ii", id1, id2 );
+	CScriptManager::getInstance()->startFunc( funcName.c_str(), "i", id1 );
 }
+
+// runFunction
+// run script func with 2 param int
+void CTrigger::runFunction(const string& funcName, int id1, int id2)
+{
+	if ( funcName.length() == 0 )
+		return;
+	CScriptManager::getInstance()->startFunc( funcName.c_str(), "ii", id1, id2 );
+}
+
+#endif

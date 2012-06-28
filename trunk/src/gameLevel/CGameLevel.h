@@ -30,6 +30,10 @@ protected:
 	vector<string>	m_listScriptFile;
 
 protected:
+	// addScriptFile
+	// add file script to compile
+	void addScriptFile(const std::string& path);
+
 	// compileGameScript
 	// compile lua script
 	void compileGameScript();

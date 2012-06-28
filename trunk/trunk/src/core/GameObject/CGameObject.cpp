@@ -780,7 +780,7 @@ bool CGameObject::isHittestObjectVector( int x, int y, int typeVector )
 
 	IVideoDriver* driver = pView->getDriver();	
 	
-	core::aabbox3df box = m_node->getBoundingBox();
+	core::aabbox3df box = m_node->getTransformedBoundingBox();
 	
 	float lx = box.MaxEdge.X - box.MinEdge.X + 100;
 	float ly = box.MaxEdge.Y - box.MinEdge.Y + 100;
@@ -816,7 +816,7 @@ void CGameObject::drawFrontUpLeftVector()
 
 	IVideoDriver* driver = getIView()->getDriver();
 	
-	core::aabbox3df box  = m_node->getBoundingBox();
+	core::aabbox3df box  = m_node->getTransformedBoundingBox();
 	
 	float lx = box.MaxEdge.X - box.MinEdge.X + 100;
 	float ly = box.MaxEdge.Y - box.MinEdge.Y + 100;
@@ -853,14 +853,16 @@ void CGameObject::drawCircleAroundObject()
 
 	IVideoDriver* driver = getIView()->getDriver();
 	
-	core::aabbox3df box  = m_node->getTransformedBoundingBox();
-	core::vector3df bBoxLength = box.MaxEdge - box.MinEdge;
-	
+	core::aabbox3df box  = m_node->getBoundingBox();		
+	float height =	box.getCenter().Y;
+
+	box  = m_node->getTransformedBoundingBox();
 	float radius = -1.0f;
 	if ( radius <= 0 )
+	{
+		core::vector3df bBoxLength = box.MaxEdge - box.MinEdge;
 		radius = bBoxLength.getLength()/2;
-
-	float height =	m_position.Y + box.getCenter().Y;
+	}
 
 	// set material
 	SMaterial debug_mat;	

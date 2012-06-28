@@ -4,12 +4,12 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: 5552.6220703 | floatType;
-		cameraY: 6055.3637695 | floatType;
-		cameraZ: 2201.2409668 | floatType;
-		cameraTargetX: 4134.5000000 | floatType;
-		cameraTargetY: 320.0532227 | floatType;
-		cameraTargetZ: -3917.5539551 | floatType;
+		cameraX: 4492.3222656 | floatType;
+		cameraY: 6143.7011719 | floatType;
+		cameraZ: 2141.5742188 | floatType;
+		cameraTargetX: -1595.1728516 | floatType;
+		cameraTargetY: 3904.8093262 | floatType;
+		cameraTargetZ: -2379.7236328 | floatType;
 	}
 }
 zone_1
@@ -50,9 +50,9 @@ object_3
 {
 	Camera Object
 	{
-		targetX: -1605.0205078 | floatType;
-		targetY: 3138.3090820 | floatType;
-		targetZ: -1167.8112793 | floatType;
+		targetX: -1693.6835938 | floatType;
+		targetY: 3530.9072266 | floatType;
+		targetZ: -1276.0364990 | floatType;
 		targetID: -1 | longType;
 	}
 	Game object
@@ -65,11 +65,11 @@ object_3
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: false | boolType;
-		positionX: 5570.5151367 | floatType;
-		positionY: 5635.4086914 | floatType;
-		positionZ: 1584.5329590 | floatType;
-		rotationX: 197.9999847 | floatType;
-		rotationY: 290.9854736 | floatType;
+		positionX: 5570.7817383 | floatType;
+		positionY: 5643.9692383 | floatType;
+		positionZ: 1576.0672607 | floatType;
+		rotationX: 195.1499634 | floatType;
+		rotationY: 291.4354858 | floatType;
 		rotationZ: 180.0000000 | floatType;
 		scaleX: 1.0000000 | floatType;
 		scaleY: 1.0000000 | floatType;
@@ -86,7 +86,7 @@ object_5
 		onWhileOut:  | stringType;
 		onEnder:  | stringType;
 		onExit:  | stringType;
-		onEnable:  | stringType;
+		onEnable: triggerInitLevel_enable | stringType;
 		onDisable:  | stringType;
 	}
 	Game object
@@ -99,15 +99,15 @@ object_5
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
-		positionX: 1983.1564941 | floatType;
-		positionY: 5268.6040039 | floatType;
-		positionZ: 1325.9982910 | floatType;
+		positionX: 1812.3046875 | floatType;
+		positionY: 5459.6308594 | floatType;
+		positionZ: 1256.8692627 | floatType;
 		rotationX: 0.0000000 | floatType;
-		rotationY: 0.0000000 | floatType;
+		rotationY: 5.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;
-		scaleX: 3.5994039 | floatType;
-		scaleY: 3.5994039 | floatType;
-		scaleZ: 3.5994039 | floatType;
+		scaleX: 6.7318168 | floatType;
+		scaleY: 6.7318168 | floatType;
+		scaleZ: 6.7318168 | floatType;
 	}
 }
 object_6
@@ -157,9 +157,9 @@ object_7
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
-		positionX: 4313.8896484 | floatType;
+		positionX: 4426.8398438 | floatType;
 		positionY: 5348.0234375 | floatType;
-		positionZ: 1623.7927246 | floatType;
+		positionZ: 1363.0126953 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;
@@ -186,9 +186,9 @@ object_8
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
-		positionX: 3405.2526855 | floatType;
+		positionX: 3546.3381348 | floatType;
 		positionY: 5244.8261719 | floatType;
-		positionZ: 1517.6518555 | floatType;
+		positionZ: 1216.9587402 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;
@@ -215,9 +215,9 @@ object_9
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
-		positionX: 2570.4099121 | floatType;
+		positionX: 2770.6289063 | floatType;
 		positionY: 5143.6528320 | floatType;
-		positionZ: 1179.6293945 | floatType;
+		positionZ: 1017.7448730 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;

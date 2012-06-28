@@ -82,6 +82,13 @@ public:
 		return m_targetObject;
 	}
 	
+	// setFarValue
+	// set far value clip
+	inline void setFarValue( float f )
+	{
+		m_camera->setFarValue(f);
+	}
+
 	// updateObject
 	// update object by frame...
 	virtual void updateObject();

@@ -913,6 +913,27 @@ void CGameObject::updateObject()
 		(*iComp)->updateComponent();
 		iComp++;
 	}
+
+#ifdef GSGAMEPLAY
+	if ( m_node && m_node->getAnimators().size() > 0 )
+	{
+		m_position	= m_node->getPosition();
+		m_rotation	= m_node->getRotation();
+		m_scale		= m_node->getScale();
+
+		// recalc right, front, up
+		m_right			= CGameObject::s_ox;
+		m_front			= CGameObject::s_oz;
+		m_up			= CGameObject::s_oy;
+
+		core::matrix4 rotationMatrix;
+		rotationMatrix.setRotationDegrees(m_rotation);
+
+		rotationMatrix.rotateVect(m_front);
+		rotationMatrix.rotateVect(m_right);
+		rotationMatrix.rotateVect(m_up);
+	}
+#endif
 }
 
 // getParentSceneNode

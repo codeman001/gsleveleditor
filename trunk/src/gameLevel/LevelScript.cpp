@@ -229,6 +229,27 @@ int setCameraLookAtObj(lua_State* state)
 	return 0;
 }
 
+// getCurrentCameraPosition
+// get current camera pos
+int getCurrentCameraPosition(lua_State* state)
+{
+	CGameCamera *cam = getLevel()->getCamera();
+
+	if ( cam )
+	{
+		core::vector3df pos = cam->getPosition();
+		lua_pushnumber( state, pos.X );
+		lua_pushnumber( state, pos.Y );
+		lua_pushnumber( state, pos.Z );
+		return 3;
+	}
+
+	lua_pushnumber( state, 0 );
+	lua_pushnumber( state, 0 );
+	lua_pushnumber( state, 0 );
+	return 3;
+	return 3;
+}
 
 //////////////////////////////////////////////////////////
 // SCENENODE FUNCTION IMPLEMENT
@@ -264,6 +285,35 @@ int setSceneNodePosition(lua_State* state)
 }
 
 
+// setSceneNodeAsSkydome
+// set sky box
+int setSceneNodeAsSkydome(lua_State* state)
+{
+	int objID	= lua_tointeger(state,1);
+	const char* sceneNodeName = lua_tostring(state,2);
+	float x		= (float)lua_tonumber(state,3);
+	float y		= (float)lua_tonumber(state,4);
+	float z		= (float)lua_tonumber(state,5);
+
+	CGameObject* obj = getLevel()->searchObject( objID );
+	if ( obj )
+	{
+		CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
+		if ( comp )
+		{
+			CGameColladaSceneNode* node = comp->getSceneNode(sceneNodeName);
+			if ( node )
+			{
+				// set position
+				node->setSkydome( true );
+			}
+		}
+	}
+
+	return 0;
+}
+
+
 /////////////////////////////////////////////////////////////
 // registerCFunction
 // implement lua func by c++ language
@@ -285,9 +335,11 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(setLevelCamera);
 	REGISTER_C_FUNCTION(setCameraFarValue);
 	REGISTER_C_FUNCTION(setCameraLookAtObj);
+	REGISTER_C_FUNCTION(getCurrentCameraPosition);
 
 	// scenenode function
 	REGISTER_C_FUNCTION(setSceneNodePosition);
+	REGISTER_C_FUNCTION(setSceneNodeAsSkydome);
 	
 }
 // end register

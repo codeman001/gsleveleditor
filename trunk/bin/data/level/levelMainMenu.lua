@@ -11,17 +11,18 @@ function triggerInitLevel_enable(triggerID)
 	local wayPointID =  getObjectByName("cameraInitWayPoint")
 	setAnimatorMoveToWayPoint(cameraID, wayPointID, 0.03, true)
 	
-	-- disable trigger
-	-- disableObject(triggerID)
+	-- set skybox
+	local levelObjectID = getObjectByName("levelMainMenu")
+	setSceneNodeAsSkydome(levelObjectID,"Object01-node")
 end
 
-function triggerInitLevel_always(triggerID)
+function triggerSkybox_always(triggerID)
+	-- get current camera pos
+	x,y,z = getCurrentCameraPosition()
 	
-	local cameraID = getObjectByName("camMain")
-	x,y,z = getObjectPosition(cameraID)
-	
-	-- local levelObjectID = getObjectByName("levelMainMenu")
-	-- setSceneNodePosition(levelObjectID,"Object01-node",x,y-300,z)
+	-- set skybox position
+	local levelObjectID = getObjectByName("levelMainMenu")
+	setSceneNodePosition(levelObjectID,"Object01-node",x,y,z)
 end
 
 debug("-----------------------------------------------------------------\n\n")

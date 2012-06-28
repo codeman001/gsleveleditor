@@ -4,12 +4,12 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: 4492.3222656 | floatType;
-		cameraY: 6143.7011719 | floatType;
-		cameraZ: 2141.5742188 | floatType;
-		cameraTargetX: -1595.1728516 | floatType;
-		cameraTargetY: 3904.8093262 | floatType;
-		cameraTargetZ: -2379.7236328 | floatType;
+		cameraX: 3456.1840820 | floatType;
+		cameraY: 6194.8623047 | floatType;
+		cameraZ: 2910.6611328 | floatType;
+		cameraTargetX: -784.2285156 | floatType;
+		cameraTargetY: 1359.1538086 | floatType;
+		cameraTargetZ: -1264.0600586 | floatType;
 	}
 }
 zone_1
@@ -50,9 +50,9 @@ object_3
 {
 	Camera Object
 	{
-		targetX: -1693.6835938 | floatType;
-		targetY: 3530.9072266 | floatType;
-		targetZ: -1276.0364990 | floatType;
+		targetX: 323.0434570 | floatType;
+		targetY: 3218.3105469 | floatType;
+		targetZ: -3088.0151367 | floatType;
 		targetID: -1 | longType;
 	}
 	Game object
@@ -65,11 +65,11 @@ object_3
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: false | boolType;
-		positionX: 5570.7817383 | floatType;
-		positionY: 5643.9692383 | floatType;
-		positionZ: 1576.0672607 | floatType;
-		rotationX: 195.1499634 | floatType;
-		rotationY: 291.4354858 | floatType;
+		positionX: 3121.0830078 | floatType;
+		positionY: 5380.7182617 | floatType;
+		positionZ: 2696.2993164 | floatType;
+		rotationX: 198.5998535 | floatType;
+		rotationY: 334.1856079 | floatType;
 		rotationZ: 180.0000000 | floatType;
 		scaleX: 1.0000000 | floatType;
 		scaleY: 1.0000000 | floatType;
@@ -81,7 +81,7 @@ object_5
 	Trigger Object
 	{
 		scriptFile: levelMainMenu.lua | filePathType;
-		onAlways: triggerInitLevel_always | stringType;
+		onAlways:  | stringType;
 		onWhileIn:  | stringType;
 		onWhileOut:  | stringType;
 		onEnder:  | stringType;
@@ -99,9 +99,9 @@ object_5
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
-		positionX: 1812.3046875 | floatType;
-		positionY: 5459.6308594 | floatType;
-		positionZ: 1256.8692627 | floatType;
+		positionX: 3178.7556152 | floatType;
+		positionY: 5313.0273438 | floatType;
+		positionZ: 2352.8977051 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 5.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;
@@ -128,9 +128,9 @@ object_6
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
-		positionX: 5314.9306641 | floatType;
-		positionY: 5553.2187500 | floatType;
-		positionZ: 1556.8594971 | floatType;
+		positionX: 3069.3732910 | floatType;
+		positionY: 5368.9497070 | floatType;
+		positionZ: 2615.5583496 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;
@@ -157,9 +157,9 @@ object_7
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
-		positionX: 4426.8398438 | floatType;
-		positionY: 5348.0234375 | floatType;
-		positionZ: 1363.0126953 | floatType;
+		positionX: 2701.0002441 | floatType;
+		positionY: 5269.5834961 | floatType;
+		positionZ: 2187.9826660 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;
@@ -186,9 +186,9 @@ object_8
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
-		positionX: 3546.3381348 | floatType;
-		positionY: 5244.8261719 | floatType;
-		positionZ: 1216.9587402 | floatType;
+		positionX: 2478.6735840 | floatType;
+		positionY: 5207.6708984 | floatType;
+		positionZ: 1845.6282959 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;
@@ -215,14 +215,48 @@ object_9
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
-		positionX: 2770.6289063 | floatType;
-		positionY: 5143.6528320 | floatType;
-		positionZ: 1017.7448730 | floatType;
+		positionX: 2301.4689941 | floatType;
+		positionY: 5140.1640625 | floatType;
+		positionZ: 1434.8450928 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;
 		scaleX: 1.0000000 | floatType;
 		scaleY: 1.0000000 | floatType;
 		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_10
+{
+	Trigger Object
+	{
+		scriptFile: levelMainMenu.lua | filePathType;
+		onAlways: triggerSkybox_always | stringType;
+		onWhileIn:  | stringType;
+		onWhileOut:  | stringType;
+		onEnder:  | stringType;
+		onExit:  | stringType;
+		onEnable:  | stringType;
+		onDisable:  | stringType;
+	}
+	Game object
+	{
+		objectID: 10 | longType;
+		parentID: 1 | longType;
+		objectType: Trigger Object | stringType;
+		objectName: triggerSkybox | stringType;
+		objectTemplate:  | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: true | boolType;
+		positionX: 1987.6129150 | floatType;
+		positionY: 6289.1250000 | floatType;
+		positionZ: 1943.7012939 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 46.5023918 | floatType;
+		scaleY: 1.7904527 | floatType;
+		scaleZ: 36.4985962 | floatType;
 	}
 }

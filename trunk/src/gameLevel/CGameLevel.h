@@ -91,6 +91,10 @@ public:
 	// set current camera
 	void setCamera( CGameCamera* cam );
 
+	// getCamera
+	// get current camera
+	CGameCamera* getCamera();
+
 };
 
 #endif

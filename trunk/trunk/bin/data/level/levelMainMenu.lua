@@ -16,9 +16,9 @@ function triggerInitLevel_enable(triggerID)
 end
 
 function triggerInitLevel_always(triggerID)
-	--local cameraID = getObjectByName("camMain")
-	--x,y,z = getObjectPosition(csameraID)
-	--debug("Camera pos: "..x..","..y..","..z)
+	-- local cameraID = getObjectByName("camMain")
+	-- x,y,z = getObjectPosition(csameraID)
+	-- debug("Camera pos: "..x..","..y..","..z)
 end
 
 debug("-----------------------------------------------------------------\n\n")

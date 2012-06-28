@@ -400,3 +400,10 @@ void CGameLevel::setCamera( CGameCamera* cam )
 {
 	getIView()->setActiveCamera( cam );
 }
+
+// getCamera
+// get current camera
+CGameCamera* CGameLevel::getCamera()
+{
+	return getIView()->getActiveCamera();
+}

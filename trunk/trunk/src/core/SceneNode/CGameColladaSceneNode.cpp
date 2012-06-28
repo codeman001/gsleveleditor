@@ -61,6 +61,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	m_isRootColladaNode = true;
 	m_enableAnim = true;
 	m_timer = 0;
+	m_isSkydome = false;
 
 	m_posHint = 0;
 	m_scaleHint = 0;
@@ -84,11 +85,41 @@ CGameColladaSceneNode::~CGameColladaSceneNode()
 		ColladaMesh->drop();
 }
 
+// setSkydome
+// set scenenode is skydome
+void CGameColladaSceneNode::setSkydome( bool b )
+{
+	m_isSkydome = b;
+
+	for (u32 i=0; i<ColladaMesh->getMeshBufferCount(); ++i)
+	{
+		scene::IMeshBuffer* mb = ColladaMesh->getMeshBuffer(i);
+		if (mb)
+		{
+			video::SMaterial& material = mb->getMaterial();
+			
+			if ( m_isSkydome )
+			{
+				material.ZBuffer = false;
+				material.ZWriteEnable = false;
+			}
+			else
+			{
+				material.ZBuffer = true;
+				material.ZWriteEnable = true;
+			}
+		}
+	}
+}
+
 void CGameColladaSceneNode::OnRegisterSceneNode()
 {
 	if (IsVisible)
 	{
-		SceneManager->registerNodeForRendering(this);		
+		if ( m_isSkydome == true )
+			SceneManager->registerNodeForRendering(this, ESNRP_SKY_BOX);
+		else
+			SceneManager->registerNodeForRendering(this);
 	}
 	ISceneNode::OnRegisterSceneNode();
 	

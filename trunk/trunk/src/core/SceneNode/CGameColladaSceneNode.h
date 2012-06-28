@@ -168,7 +168,7 @@ protected:
 	core::aabbox3d<f32> Box;	
 	
 	SMaterial		Material;
-
+	
 public:
 	core::matrix4	AnimationMatrix;
 	core::matrix4	AbsoluteAnimationMatrix;
@@ -282,6 +282,10 @@ public:
 	{
 		m_component = comp;
 	}
+
+	// setSkydome
+	// set scenenode is skydome
+	void setSkydome( bool b );	
 
 #ifdef GSANIMATION
 protected:
@@ -419,6 +423,7 @@ protected:
 	s32		m_scaleHint;
 	s32		m_rotHint;
 	
+	bool	m_isSkydome;
 protected:
 	
 	// updateAnimation

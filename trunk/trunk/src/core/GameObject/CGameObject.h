@@ -438,9 +438,11 @@ public:
 	// load all transform
 	void loadTransform();
 
+#ifdef GSGAMEPLAY
 	// setPositionMoveToWayPoint
 	// set position
 	void setAnimatorMoveToWayPoint( CWayPoint *wayPoint, float speed, bool loop );
+#endif
 
 public:
 

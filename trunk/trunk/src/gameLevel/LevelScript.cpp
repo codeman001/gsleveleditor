@@ -230,6 +230,39 @@ int setCameraLookAtObj(lua_State* state)
 }
 
 
+//////////////////////////////////////////////////////////
+// SCENENODE FUNCTION IMPLEMENT
+//////////////////////////////////////////////////////////
+
+// setSceneNodePosition
+// set a scenenode to position
+// params: objectID, sceneNodeName, x,y,z
+int setSceneNodePosition(lua_State* state)
+{
+	int objID	= lua_tointeger(state,1);
+	const char* sceneNodeName = lua_tostring(state,2);
+	float x		= (float)lua_tonumber(state,3);
+	float y		= (float)lua_tonumber(state,4);
+	float z		= (float)lua_tonumber(state,5);
+
+	CGameObject* obj = getLevel()->searchObject( objID );
+	if ( obj )
+	{
+		CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
+		if ( comp )
+		{
+			CGameColladaSceneNode* node = comp->getSceneNode(sceneNodeName);
+			if ( node )
+			{
+				// set position
+				node->setPosition( core::vector3df(x,y,z) );
+			}
+		}
+	}
+
+	return 0;
+}
+
 
 /////////////////////////////////////////////////////////////
 // registerCFunction
@@ -251,8 +284,10 @@ void registerCFunction()
 	// camera function
 	REGISTER_C_FUNCTION(setLevelCamera);
 	REGISTER_C_FUNCTION(setCameraFarValue);
-	REGISTER_C_FUNCTION(setCameraLookAtObj);	
+	REGISTER_C_FUNCTION(setCameraLookAtObj);
 
+	// scenenode function
+	REGISTER_C_FUNCTION(setSceneNodePosition);
 	
 }
 // end register

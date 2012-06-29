@@ -238,11 +238,13 @@ void CMainFrame::_OnIdle()
 
 	if ( m_needSetCamera )
 	{
-		core::aabbox3df box = getMeshComponent()->getColladaNode()->getTransformedBoundingBox();
-		CGameCamera* cam = m_irrWin->getActiveCamera();
-		cam->setPosition(box.MaxEdge);
-		cam->setTarget(box.getCenter());
-		cam->setFarValue(box.MaxEdge.getDistanceFrom(box.MinEdge));
+		if ( getMeshComponent()->getColladaNode() )
+		{
+			core::aabbox3df box = getMeshComponent()->getColladaNode()->getTransformedBoundingBox();
+			CGameCamera* cam = m_irrWin->getActiveCamera();
+			cam->setPosition(box.MaxEdge);
+			cam->setTarget(box.getCenter());
+		}
 		m_needSetCamera = false;
 	}
 }

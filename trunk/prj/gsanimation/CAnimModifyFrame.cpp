@@ -626,7 +626,7 @@ void CAnimModifyFrame::setColladaComponent( CColladaMeshComponent *comp )
 
 	}
 
-	updateTimeLine( NULL );
+	updateTimeLine( NULL );		
 }
 
 void CAnimModifyFrame::addNodeToTreeView( uiTreeViewItem *parent, ISceneNode* node )

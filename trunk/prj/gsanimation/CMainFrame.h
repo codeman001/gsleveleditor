@@ -12,6 +12,7 @@ protected:
 	CAnimModifyFrame *m_editorWin;
 	uiListView		*m_listView;
 
+	bool			m_needSetCamera;
 	const wchar_t	*m_lpCmdLine;
 
 	uiStringA		m_file1;

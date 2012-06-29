@@ -8,7 +8,8 @@ CMainFrame::CMainFrame(const wchar_t* lpCmdLine)
 	m_currentFile = "";
 	m_currentAnimFile = "";
 	m_lpCmdLine = lpCmdLine;
-	
+	m_needSetCamera = false;
+
 	// action
 	m_action = CMainFrame::None;
 
@@ -198,6 +199,7 @@ void CMainFrame::_OnIdle()
 				colladaComponent->loadFromFile( (char*)m_file1.c() );
 				m_editorWin->setColladaComponent( m_irrWin->getAnimComponent() );
 				m_editorWin->showWindow(true);
+				m_needSetCamera = true;
 			}
 
 			if ( m_file2.getLength() != 0 )
@@ -205,7 +207,8 @@ void CMainFrame::_OnIdle()
 				CColladaAnimation *colladaAnim = CColladaAnimationFactory::getInstance()->loadAnimation("baseAnim", (char*) m_file2.c());
 				colladaComponent->setAnimationPackage( colladaAnim );
 				
-				updateAnimDataToUI();				
+				updateAnimDataToUI();
+				m_needSetCamera = true;
 			}			
 		}
 		else if ( m_action == CMainFrame::ExportMesh )
@@ -232,6 +235,16 @@ void CMainFrame::_OnIdle()
 	}
 
 	m_irrWin->irrUpdate();
+
+	if ( m_needSetCamera )
+	{
+		core::aabbox3df box = getMeshComponent()->getColladaNode()->getTransformedBoundingBox();
+		CGameCamera* cam = m_irrWin->getActiveCamera();
+		cam->setPosition(box.MaxEdge);
+		cam->setTarget(box.getCenter());
+		cam->setFarValue(box.MaxEdge.getDistanceFrom(box.MinEdge));
+		m_needSetCamera = false;
+	}
 }
 
 // registerWindow
@@ -398,6 +411,10 @@ void CMainFrame::toolbarLoadMesh( uiObject *pSender )
 	// show editor win
 	m_editorWin->setColladaComponent( m_irrWin->getAnimComponent() );
 	m_editorWin->showWindow(true);
+
+	// setup camera	
+	m_needSetCamera = true;
+	
 }
 
 void CMainFrame::toolbarLoadAnimDae( uiObject *pSender )

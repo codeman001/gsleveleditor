@@ -1399,7 +1399,9 @@ SMeshParam* CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 					mesh->BindShapeMatrix = mat2;
 				}
 				else
-					mesh->BindShapeMatrix = mat.getTransposed();				
+				{					
+					mesh->BindShapeMatrix = mat.getTransposed();
+				}
 			}
 			// <source>
 			else if ( node == sourceNode )
@@ -1820,7 +1822,8 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 										else if (transparentNode == node)
 										{
 											effect->Transparency = colorf.getAlpha();
-											effect->HasAlpha = true;
+											if ( effect->Transparency != 1.0f )
+												effect->HasAlpha = true;
 										}
 									}
 									else if ( textureNodeName == xmlRead->getNodeName() )
@@ -1973,8 +1976,9 @@ void CColladaMeshComponent::updateJointToMesh( SMeshParam *mesh, vector<wstring>
 			newJoint.InvMatrix = mat2;
 		}
 		else
+		{
 			newJoint.InvMatrix = mat.getTransposed();
-
+		}
 		
 		// add joint to controller
 		mesh->Joints.push_back( newJoint );

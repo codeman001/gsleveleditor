@@ -238,6 +238,7 @@ public:
 			ColladaMesh->drop();
 
 		ColladaMesh = mesh;
+		Box = ColladaMesh->getBoundingBox();
 
 		if ( ColladaMesh )
 			ColladaMesh->grab();

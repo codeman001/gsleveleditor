@@ -923,6 +923,7 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 	newNode->m_framePerSecond	= m_framePerSecond;
 
 	newNode->m_timer			= m_timer;
+	newNode->m_isSkydome		= m_isSkydome;
 
 	newNode->m_posHint			= m_posHint;
 	newNode->m_scaleHint		= m_scaleHint;

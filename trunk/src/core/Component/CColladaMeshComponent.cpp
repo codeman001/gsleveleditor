@@ -2164,13 +2164,14 @@ void CColladaMeshComponent::constructScene()
 				// add mesh buffer to skin mesh
 				int nBuffer = pMesh->Triangles.size();
 
+
 				for ( int i = 0; i < nBuffer; i++ )
 				{
 					STrianglesParam& tri = pMesh->Triangles[i];
 					
 					// create mesh buffer
-					scene::SMeshBuffer* meshBuffer = new SMeshBuffer();
-					constructMeshBuffer( pMesh, &tri, meshBuffer, m_needFlip );
+					SColladaMeshBuffer* meshBuffer = new SColladaMeshBuffer();
+					constructMeshBuffer( pMesh, &tri, meshBuffer, &meshBuffer->beginVertex, &meshBuffer->endVertex, m_needFlip );
 					
 					// add mesh buffer								
 					pColladaMesh->addMeshBuffer( meshBuffer );
@@ -2248,7 +2249,7 @@ void CColladaMeshComponent::constructScene()
 
 // constructMeshBuffer
 // create mesh buffer
-void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMeshBuffer *buffer, bool flip )
+void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMeshBuffer *buffer, int *beginVertex, int *endVertex, bool flip )
 {
 	scene::SMeshBuffer *mbuffer = (scene::SMeshBuffer*) buffer;
 					
@@ -2341,11 +2342,19 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 		
 	indices.set_used( tri->NumPolygon * 3 );
 
+	*beginVertex	= 9999999;
+	*endVertex		= 0;
+
 	int totalElement = tri->NumPolygon * tri->NumElementPerVertex * 3;	
 	int index = 0;
 	for ( int i = 0; i < totalElement; i+= tri->NumElementPerVertex)
 	{
 		indices[index] = tri->IndexBuffer[i];
+
+		if ( *beginVertex > indices[index] )
+			*beginVertex = indices[index];
+		if ( *endVertex < indices[index] )
+			*endVertex = indices[index];
 
 		if ( tri->NumElementPerVertex != 1 )
 		{

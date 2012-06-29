@@ -472,7 +472,7 @@ protected:
 
 	// constructMeshBuffer
 	// create mesh buffer
-	void constructMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri, IMeshBuffer *buffer, bool flip );
+	void constructMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri, IMeshBuffer *buffer, int *beginVertex, int *endVertex ,bool flip );
 
 	// constructSkinMesh
 	// apply bone to vertex

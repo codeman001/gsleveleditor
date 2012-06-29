@@ -127,10 +127,18 @@ void CGameChildContainerSceneNode::OnRegisterSceneNode()
 		// box is equal first child
 		Box.reset(core::vector3df(0,0,0));
 
+		// box is equal first child
+		Box.reset(core::vector3df(0,0,0));
+		if ( it != end )
+		{
+			Box = (*it)->getTransformedBoundingBox();
+			it++;
+		}
+
 		// update another child
 		for (; it != end; ++it)
 		{			
-			Box.addInternalBox( (*it)->getBoundingBox() );
+			Box.addInternalBox( (*it)->getTransformedBoundingBox() );
 		}
 	}
 }

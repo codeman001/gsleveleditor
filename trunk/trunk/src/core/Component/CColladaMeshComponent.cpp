@@ -1924,7 +1924,7 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 		}
 		else
 		{
-			effect->Mat.MaterialType = irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
+			effect->Mat.MaterialType = irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL;
 		}
 		effect->Mat.BackfaceCulling = false;
 		effect->Mat.FrontfaceCulling = false;

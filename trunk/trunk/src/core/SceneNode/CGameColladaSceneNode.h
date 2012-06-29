@@ -6,6 +6,18 @@
 class CGameColladaSceneNode;
 class CColladaMeshComponent;
 
+struct SColladaMeshBuffer: public SMeshBuffer
+{
+	int	beginVertex;
+	int endVertex;
+
+	SColladaMeshBuffer()
+	{
+		beginVertex = -1;
+		endVertex	= -1;
+	}
+};
+
 class CGameColladaMesh: public IMesh
 {
 public:

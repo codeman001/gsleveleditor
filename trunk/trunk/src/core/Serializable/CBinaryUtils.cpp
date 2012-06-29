@@ -373,8 +373,8 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 	for ( int i = 0; i < nMeshBuffer; i++ )
 	{
 		// get mesh buffer
-		IMeshBuffer *buffer = mesh->getMeshBuffer(i);		
-
+		SColladaMeshBuffer *buffer = (SColladaMeshBuffer*)mesh->getMeshBuffer(i);		
+		
 		int vertexType = buffer->getVertexType();
 		int vertexCount = buffer->getVertexCount();
 		int indexCount = buffer->getIndexCount();
@@ -382,6 +382,10 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 		// write meshbuffer ID
 		unsigned long bufferID = (unsigned long) buffer;		
 		memStream.writeData( &bufferID, sizeof(unsigned long) );
+
+		// write begin & end vertex
+		memStream.writeData( &buffer->beginVertex, sizeof(unsigned long) );
+		memStream.writeData( &buffer->endVertex, sizeof(unsigned long) );
 
 		// write buffer type
 		memStream.writeData( &vertexType, sizeof(int) );
@@ -972,7 +976,7 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 
 	for ( int i = 0; i < nMeshBuffer; i++ )
 	{		
-		scene::SMeshBuffer* meshBuffer = new SMeshBuffer();
+		SColladaMeshBuffer* meshBuffer = new SColladaMeshBuffer();
 
 		// write meshbuffer ID
 		unsigned long bufferID = 0;
@@ -985,6 +989,10 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 		int vertexType = 0;
 		int vertexCount = 0;
 		int indexCount = 0;
+
+		// read begin & end vertex
+		memStream.readData( &meshBuffer->beginVertex, sizeof(int) );
+		memStream.readData( &meshBuffer->endVertex, sizeof(int) );
 
 		memStream.readData( &vertexType, sizeof(int) );
 		memStream.readData( &vertexCount, sizeof(int) );

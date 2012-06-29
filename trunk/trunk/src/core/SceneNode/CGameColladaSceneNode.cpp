@@ -209,65 +209,86 @@ void CGameColladaSceneNode::skin()
 {	
 	if ( ColladaMesh == NULL || ColladaMesh->IsStaticMesh == true )
 		return;
-
-	IMeshBuffer *meshBuffer		= ColladaMesh->getMeshBuffer(0);	
-	S3DVertex	*vertexBuffer	= (S3DVertex*)meshBuffer->getVertices();
-	S3DVertex	*vertex			= vertexBuffer;
+	
+	// get joint buffer
 	s32			*jointInVertex	= (s32*)ColladaMesh->JointVertexIndex.pointer();
 	s32			*jointIndex		= (s32*)ColladaMesh->JointIndex.pointer();
-
+	
+	// array joint
 	int nJoint = ColladaMesh->Joints.size();
 	CGameColladaMesh::SJoint *arrayJoint = ColladaMesh->Joints.pointer();
 	CGameColladaMesh::SJoint *pJoint = arrayJoint;
-
+	
 	// calc joint matrix
 	for ( int i = 0; i < nJoint; i++, pJoint++ )
-	{
 		pJoint->skinningMatrix.setbyproduct( pJoint->node->AbsoluteAnimationMatrix, pJoint->globalInversedMatrix );
-	}
 
-	// skinning in vertex
-	core::vector3df thisVertexMove, thisNormalMove, tempVertex;
-	int nVertex = ColladaMesh->JointVertexIndex.size();
-	int id = 0;
-
-	for ( int i = 0; i < nVertex; i++, vertex++ )
+	// skinning all mesh buffer
+	int nMeshBuffer = ColladaMesh->getMeshBufferCount();
+	for ( int mesh = 0; mesh < nMeshBuffer; mesh++ )
 	{
-		core::vector3df positionCumulator(0.0, 0.0, 0.0);
-		core::vector3df normalCumulator(0.0, 0.0, 0.0);
+		SColladaMeshBuffer *meshBuffer	= (SColladaMeshBuffer*)ColladaMesh->getMeshBuffer(mesh);			
 		
-		s32 nJointCount = jointInVertex[i];
+		// get vertex buffer
+		S3DVertex	*vertex	= (S3DVertex*)meshBuffer->getVertices();		
+		
+		// skinning in vertex
+		core::vector3df thisVertexMove, thisNormalMove, tempVertex;
+			
+		// get vertex position
+		int begin	= meshBuffer->beginVertex;
+		int end		= meshBuffer->endVertex;
+		if ( begin < 0 )
+			begin = 0;
+		if ( end < 0 || end > (int)meshBuffer->getVertexCount() )
+			end = meshBuffer->getVertexCount() - 1;
 
-		for ( int iJoint = 0; iJoint < nJointCount; iJoint++, jointIndex++ )
+		// seek to vertex buffer
+		vertex += begin;
+
+		// skinning
+		for ( int i = begin; i <= end; i++, vertex++ )
 		{
-			u32 boneId		= *jointIndex;
-			u32 weightId	= *(++jointIndex);
+			core::vector3df positionCumulator(0.0, 0.0, 0.0);
+			core::vector3df normalCumulator(0.0, 0.0, 0.0);
 			
-			CGameColladaMesh::SJoint	*pJoint		= &arrayJoint[boneId];
-			CGameColladaMesh::SWeight	*pWeight	= &pJoint->weights[weightId];
-			
-			// transform vertex position
-			ColladaMesh->BindShapeMatrix.transformVect( tempVertex, pWeight->staticPos );
+			s32 nJointCount = jointInVertex[i];
 
-			// skin vertex
-			pJoint->skinningMatrix.transformVect	(thisVertexMove, tempVertex);
+			for ( int iJoint = 0; iJoint < nJointCount; iJoint++, jointIndex++ )
+			{
+				u32 boneId		= *jointIndex;
+				u32 weightId	= *(++jointIndex);
+				
+				CGameColladaMesh::SJoint	*pJoint		= &arrayJoint[boneId];
+				CGameColladaMesh::SWeight	*pWeight	= &pJoint->weights[weightId];
+				
+				// transform vertex position
+				ColladaMesh->BindShapeMatrix.transformVect( tempVertex, pWeight->staticPos );
 
-			// transform normal vector
-			pJoint->skinningMatrix.rotateVect		(thisNormalMove, pWeight->staticNormal);
+				// skin vertex
+				pJoint->skinningMatrix.transformVect	(thisVertexMove, tempVertex);
+
+				// transform normal vector
+				pJoint->skinningMatrix.rotateVect		(thisNormalMove, pWeight->staticNormal);
+				
+				positionCumulator	+= thisVertexMove * pWeight->strength;
+				normalCumulator		+= thisNormalMove * pWeight->strength;
+			}
 			
-			positionCumulator	+= thisVertexMove * pWeight->strength;
-			normalCumulator		+= thisNormalMove * pWeight->strength;
+			// apply skin pos & normal
+			vertex->Pos = positionCumulator;
+			vertex->Normal = normalCumulator;
 		}
 		
-		// apply skin pos & normal
-		vertex->Pos = positionCumulator;
-		vertex->Normal = normalCumulator;
+		meshBuffer->recalculateBoundingBox();
+		meshBuffer->setDirty( EBT_VERTEX );	
+
+		if ( mesh == 0 )
+			ColladaMesh->BoundingBox = meshBuffer->getBoundingBox();
+		else
+			ColladaMesh->BoundingBox.addInternalBox(meshBuffer->getBoundingBox());
+
 	}
-	
-	meshBuffer->recalculateBoundingBox();
-	meshBuffer->setDirty( EBT_VERTEX );
-	
-	ColladaMesh->BoundingBox = meshBuffer->getBoundingBox();
 }
 
 // updateAnimation

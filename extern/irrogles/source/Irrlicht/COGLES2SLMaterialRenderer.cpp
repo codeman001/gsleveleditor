@@ -258,8 +258,8 @@ namespace video
 		}
 
 		// base set material
-		//if (BaseMaterial)
-		//	BaseMaterial->OnSetMaterial(material, material, true, this);
+		if (BaseMaterial)
+			BaseMaterial->OnSetMaterial(material, material, true, this);
 		
 		Driver->setBasicRenderStates( material, lastMaterial, resetAllRenderstates );
 	}

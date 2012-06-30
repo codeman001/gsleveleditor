@@ -91,9 +91,7 @@ namespace video
 	{
 		for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
 			TextureUnits[i] = i;
-		memset(UseTexture, 0, sizeof(UseTexture));
-		memset(UseTexMatrix, 0, sizeof(UseTexMatrix));
-		memset(UseLight, 0, sizeof(UseLight));
+				
 		memset(LightPosition, 0, sizeof(LightPosition));
 		memset(LightAmbient, 0, sizeof(LightAmbient));
 		memset(LightDiffuse, 0, sizeof(LightDiffuse));
@@ -122,9 +120,11 @@ namespace video
 			if ( Lighting == false )
 				mat = MaterialType[ ES_SOLID ];
 		}
-
-		if ( mat == NULL )
-			return false;
+		else
+		{
+			mat = MaterialType[ ES_SOLID ];
+		}
+		
 		
 		// use program
 		mat->useProgram();
@@ -144,8 +144,6 @@ namespace video
 
 
 #if 0	
-		setUniform(USE_TEXTURE, UseTexture, MATERIAL_MAX_TEXTURES);
-		setUniform(USE_TEXTURE_MATRIX, UseTexMatrix, MATERIAL_MAX_TEXTURES);
 		setUniform(TEXTURE_MATRIX, TextureMatrix, MATERIAL_MAX_TEXTURES);
 		core::matrix4 invWorld;
 
@@ -196,7 +194,6 @@ namespace video
 				}
 			}
 			//statusOk &= setVertexShaderConstant( "uLighting", ( f32* ) & Lighting, 1 );
-			setUniform( USE_LIGHT, UseLight, MAX_LIGHTS );
 			setUniform( LIGHT_POSITION, LightPosition, MAX_LIGHTS );
 			setUniform( LIGHT_DIRECTION, LightDirection, MAX_LIGHTS );
 			setUniform( LIGHT_AMBIENT, LightAmbient, MAX_LIGHTS );

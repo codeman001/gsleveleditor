@@ -110,18 +110,14 @@ namespace video
 		float Normalize;
 
 
-		int TextureUnits[MATERIAL_MAX_TEXTURES];
-		int UseTexture[MATERIAL_MAX_TEXTURES];
-		mat4 TextureMatrix[MATERIAL_MAX_TEXTURES];
-		int UseTexMatrix[MATERIAL_MAX_TEXTURES];
-
+		int		TextureUnits[MATERIAL_MAX_TEXTURES];
+		mat4	TextureMatrix[MATERIAL_MAX_TEXTURES];
 
 		float AlphaTest;
 		float AlphaValue;
 		AlphaFunc AlphaFunction;
 
 		int Lighting;
-		int UseLight[MAX_LIGHTS];
 		vec4 LightPosition[MAX_LIGHTS];
 		SColorf LightAmbient[MAX_LIGHTS];
 		SColorf LightDiffuse[MAX_LIGHTS];

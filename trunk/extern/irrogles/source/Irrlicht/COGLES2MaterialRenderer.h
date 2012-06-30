@@ -31,7 +31,7 @@ namespace video
 
 		virtual bool OnRender( IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype )
 		{
-			return FixedPipeline->OnRender( service, vtxtype );
+			return false;
 		}
 
 	protected:
@@ -60,6 +60,11 @@ namespace video
 			Driver->disableTextures(1);
 			Driver->setActiveTexture(0, material.getTexture(0));
 			Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);			
+		}
+
+		virtual bool OnRender( IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype )
+		{
+			return FixedPipeline->OnRender( service, vtxtype );
 		}
 	};
 
@@ -112,6 +117,11 @@ namespace video
 		{
 			return true;
 		}
+
+		virtual bool OnRender( IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype )
+		{
+			return FixedPipeline->OnRender( service, vtxtype );
+		}
 	};
 
 
@@ -136,6 +146,11 @@ namespace video
 		virtual void OnUnsetMaterial()
 		{
 
+		}
+
+		virtual bool OnRender( IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype )
+		{
+			return FixedPipeline->OnRender( service, vtxtype );
 		}
 	};
 
@@ -173,6 +188,11 @@ namespace video
 		{
 			return true;
 		}
+
+		virtual bool OnRender( IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype )
+		{
+			return FixedPipeline->OnRender( service, vtxtype );
+		}
 	};
 
 
@@ -208,6 +228,11 @@ namespace video
 		virtual bool isTransparent() const
 		{
 			return true;
+		}
+
+		virtual bool OnRender( IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype )
+		{
+			return FixedPipeline->OnRender( service, vtxtype );
 		}
 	};
 
@@ -251,6 +276,11 @@ namespace video
 		{
 			return true;
 		}
+
+		virtual bool OnRender( IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype )
+		{
+			return FixedPipeline->OnRender( service, vtxtype );
+		}
 	};
 
 
@@ -287,6 +317,11 @@ namespace video
 		virtual bool isTransparent() const
 		{
 			return false; // this material is not really transparent because it does no blending.
+		}
+
+		virtual bool OnRender( IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype )
+		{
+			return FixedPipeline->OnRender( service, vtxtype );
 		}
 	};
 
@@ -383,6 +418,11 @@ namespace video
 		virtual void OnUnsetMaterial()
 		{			
 		}
+
+		virtual bool OnRender( IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype )
+		{
+			return FixedPipeline->OnRender( service, vtxtype );
+		}
 	};
 
 
@@ -406,6 +446,11 @@ namespace video
 			Driver->setActiveTexture( 1, material.getTexture( 1 ) );
 			Driver->setActiveTexture( 0, material.getTexture( 0 ) );
 			Driver->setBasicRenderStates( material, lastMaterial, resetAllRenderstates );
+		}
+
+		virtual bool OnRender( IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype )
+		{
+			return FixedPipeline->OnRender( service, vtxtype );
 		}
 	};
 
@@ -434,6 +479,11 @@ namespace video
 		virtual void OnUnsetMaterial()
 		{
 		}
+
+		virtual bool OnRender( IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype )
+		{
+			return FixedPipeline->OnRender( service, vtxtype );
+		}
 	};
 
 
@@ -457,6 +507,11 @@ namespace video
 			Driver->setActiveTexture( 0, material.getTexture( 1 ) );
 			Driver->setActiveTexture( 1, material.getTexture( 0 ) );
 			Driver->setBasicRenderStates( material, lastMaterial, resetAllRenderstates );
+		}
+
+		virtual bool OnRender( IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype )
+		{
+			return FixedPipeline->OnRender( service, vtxtype );
 		}
 	};
 
@@ -493,6 +548,11 @@ namespace video
 		virtual bool isTransparent() const
 		{
 			return true;
+		}
+
+		virtual bool OnRender( IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype )
+		{
+			return FixedPipeline->OnRender( service, vtxtype );
 		}
 	};
 

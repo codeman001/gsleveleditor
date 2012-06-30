@@ -1703,6 +1703,7 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 		effect->Mat.Lighting = true;
 		effect->Mat.NormalizeNormals = true;
 		effect->HasAlpha = false;
+		effect->TransparentAddColor = false;
 	}
 
 	const std::wstring constantNode(L"constant");
@@ -1800,6 +1801,19 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 						if ( emissionNode == node || ambientNode == node || diffuseNode == node || 
 							 specularNode == node || reflectiveNode == node || transparentNode == node )
 						{
+
+							// read transparent type
+							if ( node == transparentNode )
+							{
+								if ( xmlRead->getAttributeValue(L"opaque") )
+								{
+									if ( std::wstring(L"RGB_ZERO") == xmlRead->getAttributeValue(L"opaque") )
+									{
+										effect->TransparentAddColor = true;
+									}
+								}
+							}
+
 							// read color
 							while(xmlRead->read())
 							{
@@ -1926,7 +1940,10 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 		}
 		else
 		{
-			effect->Mat.MaterialType = irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL;
+			if ( effect->TransparentAddColor )
+				effect->Mat.MaterialType = irr::video::EMT_TRANSPARENT_ADD_COLOR;
+			else
+				effect->Mat.MaterialType = irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL;
 		}
 		effect->Mat.BackfaceCulling = false;
 		effect->Mat.FrontfaceCulling = false;

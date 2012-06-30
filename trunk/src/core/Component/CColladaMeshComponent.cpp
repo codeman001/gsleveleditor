@@ -775,7 +775,6 @@ void CColladaMeshComponent::loadData( CSerializable* pObj )
 	CGameColladaSceneNode* defaultNode = m_mapNode[m_defaultNodeString];
 	if ( defaultNode )
 		m_defaultNode.push_back( defaultNode );
-
 }
 
 // loadFromFile

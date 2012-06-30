@@ -47,17 +47,20 @@ void CRotateObjectController::onLMouseUp(int x, int y)
 		{
 			CGameObject *pObj = (*iObj);				
 
-			// restore transform
-			core::vector3df v =	pObj->getRotation();
+			if ( pObj->isLock() == false )
+			{
+				// restore transform
+				core::vector3df v =	pObj->getRotation();
 
-			pObj->loadTransform();			
-			pHistory->addHistoryBeginModifyObj( pObj );
+				pObj->loadTransform();			
+				pHistory->addHistoryBeginModifyObj( pObj );
 
-			pObj->setRotation(v);
-			pObj->updateNodeRotation();
-			pObj->updateNodePosition();
-			
-			pHistory->addHistoryEndModifyObj( pObj );
+				pObj->setRotation(v);
+				pObj->updateNodeRotation();
+				pObj->updateNodePosition();
+				
+				pHistory->addHistoryEndModifyObj( pObj );
+			}
 
 			iObj++;
 		}
@@ -84,9 +87,12 @@ void CRotateObjectController::onMouseMove(int x, int y)
 		while ( i != end )
 		{
 			CGameObject *pObj = (*i);
-
-			// rotate object
-			pObj->setYaw( pObj->getYaw() - delta );
+			
+			if ( pObj->isLock() == false )
+			{
+				// rotate object
+				pObj->setYaw( pObj->getYaw() - delta );
+			}
 
 			i++;
 		}		

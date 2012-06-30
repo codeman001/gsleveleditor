@@ -16,6 +16,7 @@ public:
 		GSStateInit = 0,
 		GSStateMainMenu,
 		GSStateGameLoading,
+		GSStateGameplay,
 		StateCount
 	};
 

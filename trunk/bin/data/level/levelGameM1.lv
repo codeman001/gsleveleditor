@@ -1,0 +1,133 @@
+Game
+{
+	Game level
+	{
+		gridGame: false | boolType;
+		gridSize: 20 | intType;
+		cameraX: 2581.7082520 | floatType;
+		cameraY: 43.7789383 | floatType;
+		cameraZ: 2145.7753906 | floatType;
+		cameraTargetX: -27.8488770 | floatType;
+		cameraTargetY: -1436.5046387 | floatType;
+		cameraTargetZ: 638.9713135 | floatType;
+		numberObjects: 5 | intType;
+	}
+}
+zone_1
+{
+	Zone Object
+	{
+		objectID: 1 | longType;
+		objectType: Zone Object | stringType;
+		objectName: zone1 | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+	}
+}
+object_2
+{
+	Game object
+	{
+		objectID: 2 | longType;
+		parentID: 1 | longType;
+		objectType: Game Object | stringType;
+		objectName: levelGameM1 | stringType;
+		objectTemplate: levelGameM1 | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: true | boolType;
+		positionX: 0.0000000 | floatType;
+		positionY: 0.0000000 | floatType;
+		positionZ: 0.0000000 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_4
+{
+	Game object
+	{
+		objectID: 4 | longType;
+		parentID: 1 | longType;
+		objectType: Game Object | stringType;
+		objectName: levelGameM1Col | stringType;
+		objectTemplate: levelGameM1Col | stringType;
+		enable: true | boolType;
+		visible: false | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: 0.0000000 | floatType;
+		positionY: 0.0000000 | floatType;
+		positionZ: 0.0000000 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_5
+{
+	Trigger Object
+	{
+		scriptFile: levelGameM1.lua | filePathType;
+		onAlways:  | stringType;
+		onWhileIn:  | stringType;
+		onWhileOut:  | stringType;
+		onEnder:  | stringType;
+		onExit:  | stringType;
+		onEnable: triggerInitLevel_enable | stringType;
+		onDisable:  | stringType;
+	}
+	Game object
+	{
+		objectID: 5 | longType;
+		parentID: 1 | longType;
+		objectType: Trigger Object | stringType;
+		objectName: triggerInitLevel | stringType;
+		objectTemplate:  | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: true | boolType;
+		lock: true | boolType;
+		positionX: 1779.1599121 | floatType;
+		positionY: -839.6339722 | floatType;
+		positionZ: 1560.0458984 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 20.3645535 | floatType;
+		scaleY: 20.3645535 | floatType;
+		scaleZ: 20.3645535 | floatType;
+	}
+}
+object_6
+{
+	Game object
+	{
+		objectID: 6 | longType;
+		parentID: 1 | longType;
+		objectType: Game Object | stringType;
+		objectName: player | stringType;
+		objectTemplate: player | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: true | boolType;
+		positionX: 1787.7031250 | floatType;
+		positionY: -806.6190186 | floatType;
+		positionZ: 1536.9841309 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: -186.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}

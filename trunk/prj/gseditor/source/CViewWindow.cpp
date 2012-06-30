@@ -404,6 +404,8 @@ void CViewWindow::setCurrentZone(CZone *pZone)
 // renew document
 void CViewWindow::newDocument()
 {
+	setObjectProperty(NULL);
+
 	if ( m_document )
 	{
 		delete m_document;

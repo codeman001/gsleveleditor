@@ -6,9 +6,11 @@
 class CStateGameLoading: public CGameState
 {
 protected:
-	CMenuFxObj	*m_loadingBar;
+	CMenuFxObj		*m_loadingBar;
+	CGameState		*m_nextState;
+	CGameLevel		*m_levelLoad;
 
-	bool		m_beginLoading;
+	bool			m_beginLoading;
 public:
 	CStateGameLoading();
 	virtual ~CStateGameLoading();

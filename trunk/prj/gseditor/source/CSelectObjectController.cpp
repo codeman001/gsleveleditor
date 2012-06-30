@@ -192,18 +192,20 @@ void CSelectObjectController::onLMouseUp(int x, int y)
 		while ( iObj != iEnd )
 		{
 			CGameObject *pObj = (*iObj);				
+			if ( pObj->isLock() == false )
+			{
+				// restore transform
+				core::vector3df v =	pObj->getPosition();
 
-			// restore transform
-			core::vector3df v =	pObj->getPosition();
+				pObj->loadTransform();			
+				pHistory->addHistoryBeginModifyObj( pObj );
 
-			pObj->loadTransform();			
-			pHistory->addHistoryBeginModifyObj( pObj );
-
-			pObj->setPosition(v);
-			pObj->updateNodeRotation();
-			pObj->updateNodePosition();
-			
-			pHistory->addHistoryEndModifyObj( pObj );
+				pObj->setPosition(v);
+				pObj->updateNodeRotation();
+				pObj->updateNodePosition();
+				
+				pHistory->addHistoryEndModifyObj( pObj );
+			}
 
 			iObj++;
 		}
@@ -284,12 +286,15 @@ void CSelectObjectController::onMouseMove(int x, int y)
 			{
 				CGameObject *pObj = (*iObj);				
 
-				// restore transform
-				pObj->loadTransform();
-				pObj->setPosition( pObj->getPosition() + offset );
+				if ( pObj->isLock() == false )
+				{
+					// restore transform
+					pObj->loadTransform();
+					pObj->setPosition( pObj->getPosition() + offset );
 
-				pObj->updateNodeRotation();
-				pObj->updateNodePosition();
+					pObj->updateNodeRotation();
+					pObj->updateNodePosition();
+				}
 
 				iObj++;
 			}

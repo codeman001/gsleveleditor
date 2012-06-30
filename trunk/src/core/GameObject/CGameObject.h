@@ -80,6 +80,7 @@ protected:
 	bool				m_enable;
 	bool				m_visible;
 	bool				m_lighting;
+	bool				m_lockObject;
 
 	bool				m_needSortComponent;
 
@@ -365,7 +366,7 @@ public:
 	}
 
 	// setVisible
-	// set vidible of object ( false -> hidden )
+	// set visible of object ( false -> hidden )
 	virtual void setVisible( bool b )
 	{
 		m_visible = b;
@@ -377,6 +378,20 @@ public:
 			m_node->setVisible( b );
 #endif
 		}
+	}
+
+	// setLockObject
+	// set lock object
+	void setLockObject( bool b )
+	{
+		m_lockObject = b;
+	}
+
+	// isLock
+	// check object is lock
+	inline bool isLock()
+	{
+		return m_lockObject;
 	}
 
 	virtual void setLighting( bool b );

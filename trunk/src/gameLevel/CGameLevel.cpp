@@ -4,12 +4,27 @@
 #include "IView.h"
 
 CGameLevel* g_currentLevel = NULL;
+std::string	g_levelLoadFile;
 
 // getCurrentLevel
 // get current level
 CGameLevel* CGameLevel::getCurrentLevel()
 {
 	return g_currentLevel;
+}
+
+// setLevelLoad
+// set level will load
+void CGameLevel::setLevelLoad(const char *lvFile )
+{
+	g_levelLoadFile = lvFile;
+}
+
+// getLevelLoadFile
+// get level load file
+const char* CGameLevel::getLevelFileToLoad()
+{
+	return g_levelLoadFile.c_str();
 }
 
 // setCurrentLevel
@@ -165,6 +180,9 @@ void CGameLevel::loadLevel( const char *lpLevel )
 
 		file->drop();
 	}	
+	
+	m_numObjects = 0;
+	m_numObjectsLoaded = 0;
 
 }
 
@@ -208,11 +226,19 @@ bool CGameLevel::loadStep( int nStep )
 
 				// create game object
 				CGameObject *pGameObj = m_loadZone->createObject( lpString );
-				if ( pGameObj )				
+				if ( pGameObj )
+				{
+					// update obj visible, position, rotation
 					pGameObj->updateData( &objData );
+
+					// visible object collision
+					if ( pGameObj->getComponent( IObjectComponent::Terrain ) )
+						pGameObj->setVisible( true );
+				}
 
 				// register name for search object by name
 				m_loadZone->registerObjectName( pGameObj );
+				m_numObjectsLoaded++;
 			}
 			else
 			{
@@ -227,6 +253,7 @@ bool CGameLevel::loadStep( int nStep )
 
 					// register name for search object by name
 					m_loadZone->registerObjectName( m_loadZone );
+					m_numObjectsLoaded++;
 				}
 				else if ( strcmp( objType, strOfType( CGameObject::WaypointObject ) ) == 0 )
 				{
@@ -238,6 +265,7 @@ bool CGameLevel::loadStep( int nStep )
 						
 						// register name for search object by name
 						m_loadZone->registerObjectName( obj );
+						m_numObjectsLoaded++;
 					}
 				}
 				else if ( strcmp( objType, strOfType( CGameObject::CameraObject ) ) == 0 )
@@ -249,6 +277,7 @@ bool CGameLevel::loadStep( int nStep )
 
 						// register name for search object by name
 						m_loadZone->registerObjectName( obj );
+						m_numObjectsLoaded++;
 					}
 				}
 				else if ( strcmp( objType, strOfType( CGameObject::TriggerObject ) ) == 0 )
@@ -266,10 +295,14 @@ bool CGameLevel::loadStep( int nStep )
 
 						// register name for search object by name
 						m_loadZone->registerObjectName( obj );
+						m_numObjectsLoaded++;
 					}
 				}
 				else if ( strcmp( objType, "Game level" ) == 0 )
-				{					
+				{
+					SSerializableRec* r = objData.getProperty("numberObjects");
+					if ( r )
+						sscanf( r->data, "%d", &m_numObjects );
 				}
 			}
 
@@ -317,6 +350,16 @@ void CGameLevel::addScriptFile(const std::string& path)
 	}
 
 	m_listScriptFile.push_back( path );
+}
+
+// getLoadingPercent
+// get percent of load level
+int CGameLevel::getLoadingPercent()
+{
+	if ( m_numObjects == 0 )
+		return 0;
+	float f = m_numObjectsLoaded/(float)m_numObjects;
+	return (int)(f*100);
 }
 
 // compileGameScript
@@ -373,10 +416,7 @@ void CGameLevel::compileGameScript()
 // update
 // update per frame
 void CGameLevel::update()
-{		
-	// update script
-	CScriptManager::getInstance()->update();
-
+{	
 	// update all zone
 	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
 	while ( iZone != iEnd )
@@ -384,6 +424,8 @@ void CGameLevel::update()
 		(*iZone)->updateObject();
 		iZone++;
 	}
+	// update script
+	CScriptManager::getInstance()->update();
 }
 
 // render

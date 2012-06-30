@@ -22,6 +22,7 @@ const char* CGameState::getStateName( EGameState state )
 		"stateInit",
 		"stateMainMenu",
 		"stateGameLoading",
+		"stateGameplay",
 		"stateCount"
 	};
 

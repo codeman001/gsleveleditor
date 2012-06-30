@@ -30,7 +30,8 @@ protected:
 
 	string			m_levelFile;
 	vector<string>	m_listScriptFile;
-
+	int				m_numObjects;
+	int				m_numObjectsLoaded;
 protected:
 	// addScriptFile
 	// add file script to compile
@@ -39,6 +40,7 @@ protected:
 	// compileGameScript
 	// compile lua script
 	void compileGameScript();
+		
 public:
 	CGameLevel();
 	virtual ~CGameLevel();
@@ -46,6 +48,14 @@ public:
 	// getCurrentLevel
 	// get current level
 	static CGameLevel* getCurrentLevel();
+
+	// setLevelLoad
+	// set level will load
+	static void setLevelLoad(const char *lvFile );
+
+	// getLevelLoadFile
+	// get level load file
+	static const char* getLevelFileToLoad();
 
 	// setCurrentLevel
 	// set current level
@@ -78,6 +88,10 @@ public:
 	// loadStep
 	// load level step
 	bool loadStep(int nStep = 1);
+	
+	// getLoadingPercent
+	// get percent of load level
+	int getLoadingPercent();
 
 	// update
 	// update per frame

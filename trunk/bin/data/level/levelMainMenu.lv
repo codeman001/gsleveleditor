@@ -4,12 +4,13 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: 3456.1840820 | floatType;
-		cameraY: 6194.8623047 | floatType;
-		cameraZ: 2910.6611328 | floatType;
-		cameraTargetX: -784.2285156 | floatType;
-		cameraTargetY: 1359.1538086 | floatType;
-		cameraTargetZ: -1264.0600586 | floatType;
+		cameraX: 3811.8371582 | floatType;
+		cameraY: 5866.3168945 | floatType;
+		cameraZ: 2807.1464844 | floatType;
+		cameraTargetX: -1479.7346191 | floatType;
+		cameraTargetY: 2860.6267090 | floatType;
+		cameraTargetZ: -1641.3300781 | floatType;
+		numberObjects: 9 | intType;
 	}
 }
 zone_1
@@ -35,6 +36,7 @@ object_2
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: false | boolType;
+		lock: false | boolType;
 		positionX: 385.6447754 | floatType;
 		positionY: 0.0000000 | floatType;
 		positionZ: 536.2061157 | floatType;
@@ -65,6 +67,7 @@ object_3
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: false | boolType;
+		lock: false | boolType;
 		positionX: 3121.0830078 | floatType;
 		positionY: 5380.7182617 | floatType;
 		positionZ: 2696.2993164 | floatType;
@@ -99,6 +102,7 @@ object_5
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
+		lock: false | boolType;
 		positionX: 3178.7556152 | floatType;
 		positionY: 5313.0273438 | floatType;
 		positionZ: 2352.8977051 | floatType;
@@ -128,6 +132,7 @@ object_6
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
+		lock: false | boolType;
 		positionX: 3069.3732910 | floatType;
 		positionY: 5368.9497070 | floatType;
 		positionZ: 2615.5583496 | floatType;
@@ -157,6 +162,7 @@ object_7
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
+		lock: false | boolType;
 		positionX: 2701.0002441 | floatType;
 		positionY: 5269.5834961 | floatType;
 		positionZ: 2187.9826660 | floatType;
@@ -186,6 +192,7 @@ object_8
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
+		lock: false | boolType;
 		positionX: 2478.6735840 | floatType;
 		positionY: 5207.6708984 | floatType;
 		positionZ: 1845.6282959 | floatType;
@@ -215,6 +222,7 @@ object_9
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
+		lock: false | boolType;
 		positionX: 2301.4689941 | floatType;
 		positionY: 5140.1640625 | floatType;
 		positionZ: 1434.8450928 | floatType;
@@ -249,6 +257,7 @@ object_10
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
+		lock: false | boolType;
 		positionX: 1987.6129150 | floatType;
 		positionY: 6289.1250000 | floatType;
 		positionZ: 1943.7012939 | floatType;

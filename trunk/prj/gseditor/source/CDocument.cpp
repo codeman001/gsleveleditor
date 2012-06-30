@@ -85,6 +85,7 @@ void CDocument::newDocument()
 	// create a zone
 	CZone *pZone = (CZone*)createZone();
 	getIView()->setCurrentZone( pZone );
+	getIView()->setObjectProperty( pZone );
 
 	m_treeViewRoot->expandChild( true );
 
@@ -94,8 +95,31 @@ void CDocument::newDocument()
 		CObjTemplateFactory::registerDrawAllTemplateObject();
 		s_isFirstDocument = false;
 	}
+
+	// have 1 zone
+	m_totalObjects = 1;
 }
-	
+
+// initBeginSaveLevel
+// sort & count object when save level
+void CDocument::initBeginSaveLevel()
+{
+	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
+	m_totalObjects = 0;
+
+	while ( iZone != iEnd )
+	{		
+		// write to file zone info
+		CZone *pZone = (*iZone);
+		
+		m_totalObjects++;
+		pZone->sortObjectByID();		
+		m_totalObjects += pZone->getNumberObjects();
+
+		iZone++;
+	}
+}
+
 // saveDocument
 // save the document
 bool CDocument::saveDocument(wchar_t* lpPath)
@@ -105,6 +129,8 @@ bool CDocument::saveDocument(wchar_t* lpPath)
 	if ( file.is_open() == false )
 		return false;
 	
+	initBeginSaveLevel();
+
 	CSerializable serializable;
 
 	char lpString[1024];
@@ -620,7 +646,7 @@ void CDocument::getData( CSerializable *pObj )
 	pObj->addGroup( "Game level" );
 
 	pObj->addBool(	"gridGame",	m_isGirdDocument );
-	pObj->addInt(	"gridSize",	m_gridSize );
+	pObj->addInt(	"gridSize",	m_gridSize );	
 
 	core::vector3df& camPos		= m_designCamera->getPosition();
 	core::vector3df& camTarget	= m_designCamera->getTarget(); 
@@ -632,6 +658,8 @@ void CDocument::getData( CSerializable *pObj )
 	pObj->addFloat( "cameraTargetX", camTarget.X, true );
 	pObj->addFloat( "cameraTargetY", camTarget.Y, true );
 	pObj->addFloat( "cameraTargetZ", camTarget.Z, true );
+
+	pObj->addInt(	"numberObjects",	m_totalObjects );
 }
 
 // updateData
@@ -656,6 +684,8 @@ void CDocument::updateData( CSerializable *pObj )
 	
 	m_designCamera->setPosition( camPos );
 	m_designCamera->setTarget( camTarget );
+
+	m_totalObjects = pObj->readInt();
 }
 
 // setShadowMode

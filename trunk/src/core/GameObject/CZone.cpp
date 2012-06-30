@@ -120,6 +120,13 @@ CGameObject* CZone::searchObject( long objectID )
 	return NULL;
 }
 
+// getNumberObjects
+// get num object
+int CZone::getNumberObjects()
+{
+	return m_childs.size();
+}
+
 #ifdef GSGAMEPLAY
 CGameObject* CZone::searchObject( const wchar_t *objectName )
 {

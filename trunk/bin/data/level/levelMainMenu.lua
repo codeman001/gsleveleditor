@@ -13,7 +13,8 @@ function triggerInitLevel_enable(triggerID)
 	
 	-- set skybox
 	local levelObjectID = getObjectByName("levelMainMenu")
-	setSceneNodeAsSkydome(levelObjectID,"Object01-node")
+	setSceneNodeIsSkydome(levelObjectID,"Object01-node")
+	setSceneNodeIsTerrain(levelObjectID,"objobjxxx02-node", false)
 end
 
 function triggerSkybox_always(triggerID)

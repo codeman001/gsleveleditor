@@ -20,6 +20,7 @@ protected:
 	CGameObject *m_animObject;
 
 	CIrrWindowController *m_controller;
+	ISceneNode	*m_light;
 public:
 
 	CIrrWindow( WCHAR* lpString, uiWindow *pParent );

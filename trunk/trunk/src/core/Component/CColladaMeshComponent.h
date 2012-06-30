@@ -33,6 +33,7 @@ struct SEffect
 	std::wstring		Id;
 	f32					Transparency;
 	bool				HasAlpha;
+	bool				TransparentAddColor;
 
 	inline bool operator< (const SEffect & other) const
 	{

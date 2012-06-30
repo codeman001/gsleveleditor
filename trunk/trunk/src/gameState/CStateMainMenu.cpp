@@ -20,7 +20,7 @@ CStateMainMenu::~CStateMainMenu()
 
 void CStateMainMenu::onCreate()
 {		
-	m_menuFx->setVisible( true );	
+	m_menuFx->setVisible( true );
 	m_menuFx->setBackgroundTransparent(true);
 
 	// show mainmenu state
@@ -52,6 +52,7 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 		switch ( m_menuChoice )
 		{
 		case k_btnPlayGame:
+			CGameLevel::setLevelLoad("data/level/levelGameM1.lv");
 			CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );			
 			break;
 		default:

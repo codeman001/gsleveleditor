@@ -97,12 +97,12 @@ void CIrrWindow::initScene()
 	oxyPlane->drop();
 
 	// add light
-	ISceneNode* pNode = smgr->addEmptySceneNode();
+	m_light = smgr->addEmptySceneNode();
 
 	// default light	
-	ILightSceneNode *light = smgr->addLightSceneNode( pNode, core::vector3df(0, 100, 0) );
+	ILightSceneNode *light = smgr->addLightSceneNode( m_light, core::vector3df(0, 0, 0) );
 	light->setLightType( video::ELT_POINT );
-	light->getLightData().Radius = 4000.0f;	
+	light->getLightData().Radius = 10000.0f;
 	
 	// add demo mesh
 	m_animObject = new CGameObject();	
@@ -129,8 +129,12 @@ void CIrrWindow::irrUpdate()
 	// tick device
 	m_device->getTimer()->tick();
 
-	// update particle
+	// update object
 	m_animObject->updateObject();
+	m_camera->updateObject();
+
+	// update light
+	m_light->setPosition( m_camera->getPosition() );
 
 	// draw 3d scene
 	driver->beginScene( true, true, SColor(255,200,200,200), getIView()->getVideoData() );

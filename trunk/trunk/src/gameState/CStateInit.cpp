@@ -11,10 +11,13 @@ CStateInit::CStateInit()
 {
 	m_loadFinish = false;
 	m_logoTime = 2000.f;
+	m_mainMenuState = NULL;
 }
 
 CStateInit::~CStateInit()
 {
+	if ( m_mainMenuState )
+		delete m_mainMenuState;
 }
 
 void CStateInit::onCreate()
@@ -73,6 +76,7 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 		// change state main menu
 		m_menuFx->setVisible( false );
 		CGameStateMgr::getInstance()->changeState( m_mainMenuState );
+		m_mainMenuState = NULL;
 	}
 }
 

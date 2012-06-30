@@ -29,7 +29,7 @@ void CTerrainComponent::initComponent()
 	IMesh *pMesh = NULL;
 	ISceneNode		*node	= m_gameObject->getSceneNode();
 	ISceneManager	*smgr	= getIView()->getSceneMgr();
-
+	
 	CZone *pZone = (CZone*)	m_gameObject->getParent();
 
 	if ( node == NULL || pZone == NULL )
@@ -63,7 +63,7 @@ void CTerrainComponent::initComponent()
 	{
 		CColladaMeshComponent *comp = (CColladaMeshComponent*)m_gameObject->getComponent( IObjectComponent::ColladaMesh );
 		CGameChildContainerSceneNode* colladaNode = comp->getColladaNode();
-
+		
 		std::queue<ISceneNode*>	listSceneNode;
 		const core::list<ISceneNode*>* listChild = &colladaNode->getChildren();
 		core::list<ISceneNode*>::ConstIterator it = listChild->begin(), end = listChild->end();
@@ -81,10 +81,13 @@ void CTerrainComponent::initComponent()
 			if ( sceneNode->getMesh() )
 			{
 				temp.mesh = sceneNode->getMesh();				
-				temp.node = sceneNode;
+				temp.node = sceneNode;								
 
 				if ( comp->isDefaultNode( sceneNode ) )
+				{
 					temp.type = 0;
+					sceneNode->setTerrainNode( true );
+				}
 				else
 					temp.type = 1;
 				
@@ -108,8 +111,7 @@ void CTerrainComponent::initComponent()
 	for ( int i = 0; i < nColNode; i++ )
 	{
 		if ( m_listCollisionNode[i].type == 0 )
-		{
-			
+		{			
 			// add octree triangle
 			ITriangleSelector* selector = smgr->createOctreeTriangleSelector( m_listCollisionNode[i].mesh, m_listCollisionNode[i].node );
 			m_listCollisionNode[i].node->setTriangleSelector(selector);

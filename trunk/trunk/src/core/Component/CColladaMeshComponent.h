@@ -418,7 +418,7 @@ public:
 	{
 		int numDefaultNode = m_defaultNode.size();
 
-		if ( numDefaultNode == 0 || numDefaultNode >= i || i < 0 )
+		if ( numDefaultNode == 0 || i >= numDefaultNode || i < 0 )
 			return NULL;
 		return m_defaultNode[i];
 	}

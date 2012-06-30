@@ -624,6 +624,14 @@
 				<Filter
 					Name="CStateGameplay"
 					>
+					<File
+						RelativePath="..\..\src\gameState\CStateGameplay.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\gameState\CStateGameplay.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="CStateInit"

@@ -98,16 +98,19 @@ void CScaleObjectController::onLMouseUp(int x, int y)
 		{
 			CGameObject *pObj = (*iObj);				
 
-			// restore transform
-			core::vector3df v =	pObj->getScale();
+			if ( pObj->isLock() == false )
+			{
+				// restore transform
+				core::vector3df v =	pObj->getScale();
 
-			pObj->loadTransform();			
-			pHistory->addHistoryBeginModifyObj( pObj );
+				pObj->loadTransform();			
+				pHistory->addHistoryBeginModifyObj( pObj );
 
-			pObj->setScale(v);
-			pObj->updateNodeScale();
-			
-			pHistory->addHistoryEndModifyObj( pObj );
+				pObj->setScale(v);
+				pObj->updateNodeScale();
+				
+				pHistory->addHistoryEndModifyObj( pObj );
+			}
 
 			iObj++;
 		}
@@ -141,22 +144,25 @@ void CScaleObjectController::onMouseMove(int x, int y)
 		{
 			CGameObject *pObj = (*i);
 
-			// rotate object
-			core::vector3df scaleVector = pObj->getScale();
-			
-			if ( m_scaleState == 0 )
-				scaleVector = scaleVector * speed;
-			else if ( m_scaleState == 1 )
-				scaleVector.X = scaleVector.X * speed;
-			else if ( m_scaleState == 2 )
-				scaleVector.Y = scaleVector.Y * speed;
-			else
-				scaleVector.Z = scaleVector.Z * speed;
+			if ( pObj->isLock() == false )
+			{
+				// rotate object
+				core::vector3df scaleVector = pObj->getScale();
+				
+				if ( m_scaleState == 0 )
+					scaleVector = scaleVector * speed;
+				else if ( m_scaleState == 1 )
+					scaleVector.X = scaleVector.X * speed;
+				else if ( m_scaleState == 2 )
+					scaleVector.Y = scaleVector.Y * speed;
+				else
+					scaleVector.Z = scaleVector.Z * speed;
 
-			float len = scaleVector.getLength();
+				float len = scaleVector.getLength();
 
-			if ( len >= 0.5f )
-				pObj->setScale( scaleVector );
+				if ( len >= 0.5f )
+					pObj->setScale( scaleVector );
+			}
 
 			i++;
 		}		

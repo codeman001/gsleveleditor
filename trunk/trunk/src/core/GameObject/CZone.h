@@ -36,6 +36,10 @@ public:
 	// sort object by id in list child
 	void sortObjectByID();
 	
+	// getNumberObjects
+	// get num object
+	int getNumberObjects();
+
 	// setSortObject
 	// tell the zone need sort object
 	inline void setSortObject( bool b )

@@ -57,6 +57,7 @@ void CGameObject::initNull()
 	m_enable		= true;
 	m_visible		= true;
 	m_lighting		= true;
+	m_lockObject	= false;
 
 	m_parent		= NULL;
 
@@ -303,6 +304,7 @@ void CGameObject::saveData( CSerializable* pObj )
 	pObj->addBool	("enable",		m_enable );
 	pObj->addBool	("visible",		m_visible );
 	pObj->addBool	("lighting",	m_lighting );
+	pObj->addBool	("lock",		m_lockObject );
 
 	pObj->addFloat	("positionX",	m_position.X );
 	pObj->addFloat	("positionY",	m_position.Y );
@@ -368,6 +370,7 @@ void CGameObject::loadData( CSerializable* pObj )
 	m_enable		= pObj->readBool();
 	m_visible		= pObj->readBool();
 	m_lighting		= pObj->readBool();
+	m_lockObject	= pObj->readBool();
 
 	m_position.X	= pObj->readFloat();
 	m_position.Y	= pObj->readFloat();
@@ -420,6 +423,7 @@ void CGameObject::getData( CSerializable* pObj )
 	pObj->addBool	("enable",		m_enable );
 	pObj->addBool	("visible",		m_visible );
 	pObj->addBool	("lighting",	m_lighting);
+	pObj->addBool	("lock",		m_lockObject );
 
 	pObj->addFloat	("positionX",	m_position.X );
 	pObj->addFloat	("positionY",	m_position.Y );
@@ -480,6 +484,7 @@ void CGameObject::updateData( CSerializable* pObj )
 	m_enable		= pObj->readBool();
 	m_visible		= pObj->readBool();
 	m_lighting		= pObj->readBool();
+	m_lockObject	= pObj->readBool();
 
 	m_position.X	= pObj->readFloat();
 	m_position.Y	= pObj->readFloat();
@@ -920,7 +925,6 @@ void CGameObject::updateObject()
 		iComp++;
 	}
 
-#ifdef GSGAMEPLAY
 	if ( m_node && m_node->getAnimators().size() > 0 )
 	{
 		m_position	= m_node->getPosition();
@@ -939,7 +943,6 @@ void CGameObject::updateObject()
 		rotationMatrix.rotateVect(m_right);
 		rotationMatrix.rotateVect(m_up);
 	}
-#endif
 }
 
 // getParentSceneNode

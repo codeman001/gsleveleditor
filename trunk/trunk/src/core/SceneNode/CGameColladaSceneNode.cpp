@@ -61,7 +61,9 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	m_isRootColladaNode = true;
 	m_enableAnim = true;
 	m_timer = 0;
+	
 	m_isSkydome = false;
+	m_terrainNode = false;
 
 	m_posHint = 0;
 	m_scaleHint = 0;
@@ -127,6 +129,12 @@ void CGameColladaSceneNode::OnRegisterSceneNode()
 
 void CGameColladaSceneNode::updateAbsolutePosition()
 {
+	if ( strstr(this->getName(), "lum") > 0 )
+	{
+		int t = 0;
+		t++;
+	}
+
 	core::matrix4 RelativeMatrix = getRelativeTransformation() * AnimationMatrix;
 	
 	// calc absolute transform
@@ -515,29 +523,39 @@ void CGameColladaSceneNode::render()
 
 	if ( ColladaMesh )
 	{		
-		bool isTransparentPass = SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
-		
-		// set transform
-		driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
 
-		for (u32 i=0; i<ColladaMesh->getMeshBufferCount(); ++i)
+#ifdef GSGAMEPLAY
+		// do not render terrain node, 
+		// but we still setvisible for active OnAnimate(update position)
+		if ( m_terrainNode == false )
+#endif
 		{
-			scene::IMeshBuffer* mb = ColladaMesh->getMeshBuffer(i);
-			if (mb)
+
+			bool isTransparentPass = SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
+
+			// set transform
+			driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
+
+			for (u32 i=0; i<ColladaMesh->getMeshBufferCount(); ++i)
 			{
-				const video::SMaterial& material = mb->getMaterial();
-
-				video::IMaterialRenderer* rnd = driver->getMaterialRenderer(material.MaterialType);
-				bool transparent = (rnd && rnd->isTransparent());
-
-				// only render transparent buffer if this is the transparent render pass
-				// and solid only in solid pass
-				if (transparent == isTransparentPass)
+				scene::IMeshBuffer* mb = ColladaMesh->getMeshBuffer(i);
+				if (mb)
 				{
-					driver->setMaterial(material);
-					driver->drawMeshBuffer(mb);
+					const video::SMaterial& material = mb->getMaterial();
+
+					video::IMaterialRenderer* rnd = driver->getMaterialRenderer(material.MaterialType);
+					bool transparent = (rnd && rnd->isTransparent());
+
+					// only render transparent buffer if this is the transparent render pass
+					// and solid only in solid pass
+					if (transparent == isTransparentPass)
+					{
+						driver->setMaterial(material);
+						driver->drawMeshBuffer(mb);
+					}
 				}
 			}
+
 		}
 
 		Box = ColladaMesh->getBoundingBox();
@@ -945,6 +963,7 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 
 	newNode->m_timer			= m_timer;
 	newNode->m_isSkydome		= m_isSkydome;
+	newNode->m_terrainNode		= m_terrainNode;
 
 	newNode->m_posHint			= m_posHint;
 	newNode->m_scaleHint		= m_scaleHint;

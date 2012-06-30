@@ -25,6 +25,7 @@ protected:
 
 	CGameCamera		*m_designCamera;
 
+	int				m_totalObjects;
 public:
 	CDocument();
 
@@ -171,6 +172,10 @@ protected:
 	// readDocumentFromData
 	// parse document from data
 	bool readDocumentFromData( char *lpData );
+
+	// initBeginSaveLevel
+	// sort & count object when save level
+	void initBeginSaveLevel();
 
 };
 

@@ -80,6 +80,10 @@ public:
 	}
 
 	virtual void render();
+protected:
+	// compute bb
+	core::aabbox3df	computeChildBoudingBox( ISceneNode *node );
+
 };
 
 #endif

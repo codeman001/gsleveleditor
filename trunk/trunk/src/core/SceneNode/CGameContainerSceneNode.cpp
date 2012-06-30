@@ -131,16 +131,32 @@ void CGameChildContainerSceneNode::OnRegisterSceneNode()
 		Box.reset(core::vector3df(0,0,0));
 		if ( it != end )
 		{
-			Box = (*it)->getTransformedBoundingBox();
+			Box = computeChildBoudingBox( (*it) );
 			it++;
 		}
 
 		// update another child
 		for (; it != end; ++it)
 		{			
-			Box.addInternalBox( (*it)->getTransformedBoundingBox() );
+			Box.addInternalBox( computeChildBoudingBox( (*it) ) );
 		}
 	}
+}
+
+// compute bb
+core::aabbox3df	CGameChildContainerSceneNode::computeChildBoudingBox( ISceneNode *node )
+{
+	core::aabbox3d<f32> box = node->getBoundingBox();
+	core::matrix4	mat;
+		
+	while ( node != this && node != NULL )
+	{
+		mat = node->getRelativeTransformation() * mat;
+		node = node->getParent();
+	}
+
+	mat.transformBoxEx(box);
+	return box;
 }
 
 void CGameChildContainerSceneNode::render()
@@ -154,7 +170,7 @@ void CGameChildContainerSceneNode::render()
 	// draw bbox on select
 	if ( 
 			state == CGameObject::Move ||
-			state == CGameObject::Review		
+			state == CGameObject::Review
 		)
 		setDebugDataVisible( EDS_BBOX );
 	else

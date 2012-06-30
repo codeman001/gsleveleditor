@@ -300,6 +300,18 @@ public:
 	// set scenenode is skydome
 	void setSkydome( bool b );	
 
+	// setTerrainNode
+	// set node is terrain collision
+	inline void setTerrainNode( bool b )
+	{
+		m_terrainNode = b;
+	}
+
+	bool isTerrainNode()
+	{
+		return m_terrainNode;
+	}
+		
 #ifdef GSANIMATION
 protected:
 	int m_renderRotate;
@@ -437,6 +449,7 @@ protected:
 	s32		m_rotHint;
 	
 	bool	m_isSkydome;
+	bool	m_terrainNode;
 protected:
 	
 	// updateAnimation

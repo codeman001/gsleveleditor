@@ -19,3 +19,30 @@ levelMainMenu
 	{
 	}
 }
+levelGameM1
+{
+	Collada mesh component
+	{
+		meshFile: data/mesh/environment/levelGameM1/levelGameM1.scene | filePathType;
+		defaultNode:  | stringType;
+	}
+}
+levelGameM1Col
+{
+	Collada mesh component
+	{
+		meshFile: data/mesh/environment/levelGameM1/levelGameM1_col.scene | filePathType;
+		defaultNode: col-node | stringType;
+	}
+	Terrain component
+	{
+	}
+}
+player
+{
+	Collada mesh component
+	{
+		meshFile: data/mesh/character/marine/marine_2_mesh.scene | filePathType;
+		defaultNode:  | stringType;
+	}
+}

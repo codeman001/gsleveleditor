@@ -23,6 +23,7 @@ public:
 		Terrain,
 		Grass,
 		Water,
+		EllipsoidCollision,
 		NumBuildInComponent = Water
 	};
 

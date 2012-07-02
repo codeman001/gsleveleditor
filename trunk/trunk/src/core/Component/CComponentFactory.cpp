@@ -15,6 +15,7 @@
 #include "CTerrainComponent.h"
 #include "CGrassComponent.h"
 #include "CWaterComponent.h"
+#include "CEllipsoidCollisionComponent.h"
 #endif 
 
 #ifdef GSGAMEPLAY
@@ -138,6 +139,11 @@ void CComponentFactory::initComponentTemplate()
 	p->addFloat("sizeY", 800.0f, true);
 	p->addString("waterTexture", "data/texture");
 	p->addString("waterNormalTexture", "data/texture");
+
+	// add ellipsoid
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::EllipsoidCollision ];
+	p->addGroup(stringOfComponent(IObjectComponent::EllipsoidCollision));
 
 	loadAllTemplate();
 }

@@ -277,6 +277,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\Component\CEllipsoidCollisionComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CEllipsoidCollisionComponent.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Component\CGrassComponent.cpp"
 						>
 					</File>

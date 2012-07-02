@@ -47,4 +47,7 @@ player
 		meshFile: data/mesh/character/marine/marine_2_mesh.scene | filePathType;
 		defaultNode:  | stringType;
 	}
+	Ellipsoid collision component
+	{
+	}
 }

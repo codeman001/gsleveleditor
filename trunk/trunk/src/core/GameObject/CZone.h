@@ -128,6 +128,13 @@ public:
 	// getHeigthFromTerraint
 	// get height of terrain at position
 	bool getHeigthFromTerrain( core::vector3df &position, float *h, core::triangle3df *outTri = NULL );
+
+	// getTerrainList
+	// get all terrain object
+	inline ArrayGameObject& getTerrainList()
+	{
+		return m_terrains;
+	}
 #endif
 
 };

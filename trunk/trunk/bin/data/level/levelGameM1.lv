@@ -4,12 +4,12 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: 2581.7082520 | floatType;
-		cameraY: 43.7789383 | floatType;
-		cameraZ: 2145.7753906 | floatType;
-		cameraTargetX: -27.8488770 | floatType;
-		cameraTargetY: -1436.5046387 | floatType;
-		cameraTargetZ: 638.9713135 | floatType;
+		cameraX: 2822.0422363 | floatType;
+		cameraY: 38.9773636 | floatType;
+		cameraZ: 1155.6407471 | floatType;
+		cameraTargetX: 249.3227539 | floatType;
+		cameraTargetY: -1474.9178467 | floatType;
+		cameraTargetZ: 1780.2863770 | floatType;
 		numberObjects: 5 | intType;
 	}
 }
@@ -121,7 +121,7 @@ object_6
 		lighting: false | boolType;
 		lock: true | boolType;
 		positionX: 1787.7031250 | floatType;
-		positionY: -806.6190186 | floatType;
+		positionY: -365.8277283 | floatType;
 		positionZ: 1536.9841309 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: -186.0000000 | floatType;

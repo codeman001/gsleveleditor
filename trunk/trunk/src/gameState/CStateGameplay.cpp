@@ -10,12 +10,14 @@ CStateGameplay::CStateGameplay()
 
 CStateGameplay::~CStateGameplay()
 {
-	delete m_level;
+	delete m_level;	
+	CGameLevel::setCurrentLevel( NULL );
 }
 
 void CStateGameplay::onCreate()
 {
 	ISceneManager *smgr = getIView()->getSceneMgr();
+	CGameLevel::setCurrentLevel( m_level );
 
 	CGameObject *col = getLevel()->searchObject("levelGameM1Col");
 
@@ -27,7 +29,7 @@ void CStateGameplay::onCreate()
 	scene::ISceneNodeAnimator* anim = smgr->createCollisionResponseAnimator( world, camera );
 	camera->addAnimator(anim);
 	camera->setFarValue(10000);
-	anim->drop();
+	anim->drop();	
 }
 
 void CStateGameplay::onDestroy()

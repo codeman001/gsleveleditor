@@ -328,7 +328,9 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Grass ) ) == 0 )
 			pComp = new CGrassComponent( pObj );
 		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Water ) ) == 0 )
-			pComp = new CWaterComponent( pObj );	
+			pComp = new CWaterComponent( pObj );
+		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::EllipsoidCollision ) ) == 0 )
+			pComp = new CEllipsoidCollisionComponent( pObj );
 #endif
 #if defined(GSANIMATION) || defined(GSGAMEPLAY) || defined(GSEDITOR)
 		if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ColladaMesh ) ) == 0 )

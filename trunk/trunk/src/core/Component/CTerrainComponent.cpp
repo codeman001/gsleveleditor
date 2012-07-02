@@ -36,7 +36,7 @@ void CTerrainComponent::initComponent()
 		return;
 
 	m_listCollisionNode.clear();
-	SMeshCollisionType temp;
+	SMeshCollisionNode temp;
 
 	if ( m_gameObject->getComponent( IObjectComponent::StaticMesh ) != NULL )
 	{

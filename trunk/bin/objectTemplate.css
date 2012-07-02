@@ -17,6 +17,7 @@ levelMainMenu
 	}
 	Terrain component
 	{
+		hideTerrain: false | boolType;
 	}
 }
 levelGameM1
@@ -36,6 +37,7 @@ levelGameM1Col
 	}
 	Terrain component
 	{
+		hideTerrain: true | boolType;
 	}
 }
 player

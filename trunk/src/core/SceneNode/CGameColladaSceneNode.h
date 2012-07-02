@@ -311,7 +311,19 @@ public:
 	{
 		return m_terrainNode;
 	}
-		
+	
+	// setHideTerrain
+	// hide terrain collision node
+	inline void setHideTerrain( bool b )
+	{
+		m_hideTerrainNode = b;
+	}
+
+	bool isHideTerrain()
+	{
+		return m_hideTerrainNode;
+	}
+
 #ifdef GSANIMATION
 protected:
 	int m_renderRotate;
@@ -450,6 +462,7 @@ protected:
 	
 	bool	m_isSkydome;
 	bool	m_terrainNode;
+	bool	m_hideTerrainNode;
 protected:
 	
 	// updateAnimation

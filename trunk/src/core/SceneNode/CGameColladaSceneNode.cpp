@@ -64,6 +64,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	
 	m_isSkydome = false;
 	m_terrainNode = false;
+	m_hideTerrainNode = false;
 
 	m_posHint = 0;
 	m_scaleHint = 0;
@@ -527,7 +528,7 @@ void CGameColladaSceneNode::render()
 #ifdef GSGAMEPLAY
 		// do not render terrain node, 
 		// but we still setvisible for active OnAnimate(update position)
-		if ( m_terrainNode == false )
+		if ( m_hideTerrainNode == false )
 #endif
 		{
 
@@ -964,6 +965,7 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 	newNode->m_timer			= m_timer;
 	newNode->m_isSkydome		= m_isSkydome;
 	newNode->m_terrainNode		= m_terrainNode;
+	newNode->m_hideTerrainNode	= m_hideTerrainNode;
 
 	newNode->m_posHint			= m_posHint;
 	newNode->m_scaleHint		= m_scaleHint;

@@ -313,33 +313,6 @@ int setSceneNodeIsSkydome(lua_State* state)
 	return 0;
 }
 
-
-// setTerrainSceneNode
-// set sky box
-int setSceneNodeIsTerrain(lua_State* state)
-{
-	int objID	= lua_tointeger(state,1);
-	const char* sceneNodeName = lua_tostring(state,2);
-	bool b		= lua_toboolean(state,3) == 1;
-
-	CGameObject* obj = getLevel()->searchObject( objID );
-	if ( obj )
-	{
-		CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
-		if ( comp )
-		{
-			CGameColladaSceneNode* node = comp->getSceneNode(sceneNodeName);
-			if ( node )
-			{
-				// set position
-				node->setTerrainNode(b);
-			}
-		}
-	}
-
-	return 0;
-}
-
 // setSceneNodeVisible
 // set sky box
 int setSceneNodeVisible(lua_State* state)
@@ -392,8 +365,7 @@ void registerCFunction()
 
 	// scenenode function
 	REGISTER_C_FUNCTION(setSceneNodePosition);
-	REGISTER_C_FUNCTION(setSceneNodeIsSkydome);
-	REGISTER_C_FUNCTION(setSceneNodeIsTerrain);
+	REGISTER_C_FUNCTION(setSceneNodeIsSkydome);	
 	REGISTER_C_FUNCTION(setSceneNodeVisible);		
 	
 }

@@ -14,6 +14,7 @@ protected:
 		ISceneNode	*node;		
 	};
 
+	bool	m_hideTerrain;
 	vector<SMeshCollisionType>	m_listCollisionNode;
 
 public:

@@ -87,6 +87,7 @@ void CTerrainComponent::initComponent()
 				{
 					temp.type = 0;
 					sceneNode->setTerrainNode( true );
+					sceneNode->setHideTerrain( m_hideTerrain );
 				}
 				else
 					temp.type = 1;
@@ -145,6 +146,7 @@ void CTerrainComponent::saveData( CSerializable* pObj )
 {
 	// save mesh file
 	pObj->addGroup( IObjectComponent::s_compType[ m_componentID ] );
+	pObj->addBool("hideTerrain", m_hideTerrain, true);
 }
 
 // loadData
@@ -152,6 +154,7 @@ void CTerrainComponent::saveData( CSerializable* pObj )
 void CTerrainComponent::loadData( CSerializable* pObj )
 {
 	pObj->nextRecord();
+	m_hideTerrain = pObj->readBool();
 }
 
 // getCollisionFromRay

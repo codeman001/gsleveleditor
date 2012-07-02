@@ -120,6 +120,7 @@ void CComponentFactory::initComponentTemplate()
 	s_compTemplate.push_back( CSerializable() );
 	p = &s_compTemplate[ IObjectComponent::Terrain ];
 	p->addGroup(stringOfComponent(IObjectComponent::Terrain));
+	p->addBool("hideTerrain", true);
 
 	// add grass
 	s_compTemplate.push_back( CSerializable() );

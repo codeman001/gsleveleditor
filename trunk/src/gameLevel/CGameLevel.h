@@ -69,6 +69,20 @@ public:
 	// remove zone
 	virtual void removeZone(CGameObject* zone);
 
+	// getZoneCount
+	// return number of zone
+	int getZoneCount()
+	{
+		return m_zones.size();
+	}
+
+	// getZone
+	// get zone
+	CZone* getZone(int i)
+	{
+		return m_zones[i];
+	}
+
 	// removeAllZone
 	// remove all zone on level
 	virtual void releaseLevel();

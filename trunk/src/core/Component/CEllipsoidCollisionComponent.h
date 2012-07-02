@@ -6,6 +6,9 @@
 
 class CEllipsoidCollisionComponent: public IObjectComponent
 {
+protected:
+	bool				m_isFirstUpdate;
+	core::vector3df		m_lastPosition;
 public:
 	CEllipsoidCollisionComponent( CGameObject *pObj );
 
@@ -26,6 +29,13 @@ public:
 	// loadData
 	// load data to serializable
 	void loadData( CSerializable* pObj );
+
+protected:
+	
+	// collideTest
+	// test collide on world
+	void collideTest( ITriangleSelector *world );
+
 };
 
 #endif

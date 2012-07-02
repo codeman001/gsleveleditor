@@ -4,18 +4,21 @@
 #include "CGameObject.h"
 #include "IObjectComponent.h"
 
+struct SMeshCollisionNode
+{
+	IMesh		*mesh;
+	int			type;
+	ISceneNode	*node;		
+};
+
+typedef vector<SMeshCollisionNode>	ArrayMeshCollision;
+
 class CTerrainComponent: public IObjectComponent
 {
 protected:
-	struct SMeshCollisionType
-	{
-		IMesh		*mesh;
-		int			type;
-		ISceneNode	*node;		
-	};
 
-	bool	m_hideTerrain;
-	vector<SMeshCollisionType>	m_listCollisionNode;
+	bool				m_hideTerrain;
+	ArrayMeshCollision	m_listCollisionNode;
 
 public:
 	CTerrainComponent( CGameObject *pObj );
@@ -41,6 +44,19 @@ public:
 	// getCollisionFromRay
 	// get collision from the ray
 	bool getCollisionFromRay( core::line3df &ray, f32 &outBestDistanceSquared, core::vector3df &outBestCollisionPoint, core::triangle3df &outBestTriangle);
+
+	// getNumTerrainNode
+	// get number node has collision data
+	inline int getNumTerrainNode()
+	{
+		return m_listCollisionNode.size();
+	}
+
+	// getMeshCollisionNode	
+	inline SMeshCollisionNode& getMeshCollisionNode( int i )		
+	{
+		return m_listCollisionNode[i];
+	}
 
 protected:
 	// checkCollisionFromNode

@@ -225,6 +225,14 @@
 					Name="Animators"
 					>
 					<File
+						RelativePath="..\..\src\core\Animators\CGameCameraFollowAnimator.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Animators\CGameCameraFollowAnimator.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Animators\CGameGSCameraAnimator.cpp"
 						>
 					</File>

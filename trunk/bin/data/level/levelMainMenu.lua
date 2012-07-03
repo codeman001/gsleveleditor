@@ -7,14 +7,13 @@ function triggerInitLevel_enable(triggerID)
 	setLevelCamera(cameraID)
 	setCameraFarValue(cameraID, 10000)
 	
-	-- move to waypoint
+	-- camera move to waypoint
 	local wayPointID =  getObjectByName("cameraInitWayPoint")
 	setAnimatorMoveToWayPoint(cameraID, wayPointID, 0.03, true)
 	
 	-- set skybox
 	local levelObjectID = getObjectByName("levelMainMenu")
-	setSceneNodeIsSkydome(levelObjectID,"Object01-node")
-	setSceneNodeIsTerrain(levelObjectID,"objobjxxx02-node", false)
+	setSceneNodeIsSkydome(levelObjectID,"Object01-node")	
 end
 
 function triggerSkybox_always(triggerID)

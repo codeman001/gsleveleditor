@@ -8,7 +8,16 @@ class CEllipsoidCollisionComponent: public IObjectComponent
 {
 protected:
 	bool				m_isFirstUpdate;
+
 	core::vector3df		m_lastPosition;
+	core::vector3df		m_testPosition;
+	core::vector3df		m_fallingVelocity;
+	core::vector3df		m_translation;
+
+	bool				m_isFalling;
+	core::vector3df		m_gravity;
+	core::vector3df		m_ellipsoidRadius;
+
 public:
 	CEllipsoidCollisionComponent( CGameObject *pObj );
 
@@ -29,6 +38,15 @@ public:
 	// loadData
 	// load data to serializable
 	void loadData( CSerializable* pObj );
+
+public:
+
+	// isFalling
+	// chek objet is falling
+	bool isFalling()
+	{
+		return m_isFalling;
+	}
 
 protected:
 	

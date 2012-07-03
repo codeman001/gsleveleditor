@@ -105,8 +105,7 @@ void CGameGSCameraAnimators::animateNode(ISceneNode* node, u32 timeMs)
 		return;
 
 	// get time	
-	//f32 timeDiff = (f32) ( timeMs - m_lastAnimationTime );
-	f32 timeDiff = 2.0f;
+	f32 timeDiff = (f32) ( timeMs - m_lastAnimationTime );
 	m_lastAnimationTime = timeMs;
 
 	// update position
@@ -131,10 +130,10 @@ void CGameGSCameraAnimators::animateNode(ISceneNode* node, u32 timeMs)
 		)
 	{
 		// rotate X
-		relativeRotation.Y -= (m_centerCursor.X - m_cursorPos.X) * m_rotateSpeed * MouseYDirection;
+		relativeRotation.Y -= (m_centerCursor.X - m_cursorPos.X) * m_rotateSpeed * MouseYDirection * timeDiff;
 
 		// rotate Y
-		relativeRotation.X -= (m_centerCursor.Y - m_cursorPos.Y) * m_rotateSpeed;
+		relativeRotation.X -= (m_centerCursor.Y - m_cursorPos.Y) * m_rotateSpeed * timeDiff;
 
 		if (relativeRotation.X > MaxVerticalAngle*2 && relativeRotation.X < 360.0f-MaxVerticalAngle)
 		{

@@ -2,6 +2,7 @@
 #define _GAME_COMPONENT_
 
 #include "IObjectComponent.h"
+#include "CPlayerComponent.h"
 
 class CGameComponent
 {

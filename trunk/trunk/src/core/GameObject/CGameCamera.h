@@ -5,6 +5,14 @@
 
 class CGameCamera: public CGameObject
 {
+public:
+	enum ECameraType
+	{
+		FreeCamera,
+		EditorCamera,
+		FollowObjectCamera
+	};
+
 protected:
 	ICameraSceneNode	*m_camera;
 
@@ -15,6 +23,7 @@ protected:
 	core::vector3df		m_targetPos;
 	CGameObject			*m_targetObject;
 
+	ECameraType			m_cameraType;
 public:
 	CGameCamera();
 
@@ -114,6 +123,18 @@ public:
 	// draw lookat vector
 	virtual void drawObject();
 #endif
+
+	// setEditorCamera
+	// set camera editor
+	void setEditorCamera();
+
+	// setFollowObjectCamera
+	// set camera follow a object
+	void setFollowObjectCamera( CGameObject* obj, float radius );
+
+	// setFreeCamera
+	// set camera free with custom pos & target
+	void setFreeCamera();
 
 };
 

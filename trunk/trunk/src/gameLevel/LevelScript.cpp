@@ -178,6 +178,40 @@ int setAnimatorMoveToWayPoint(lua_State* state)
 	return 0;
 }
 
+// addObjectLod
+// add lod data
+// param: objectID, distance, node
+int addObjectLod(lua_State* state)
+{
+	int objID = lua_tointeger(state,1);
+	float dis = (float)lua_tonumber(state,2);
+	const char* node = lua_tostring(state,3);
+
+	CGameObject* obj = getLevel()->searchObject( objID );
+	
+	// add on player comp
+	CColladaMeshComponent* colladaComp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
+	if ( colladaComp )
+		colladaComp->addLodData( dis, node );
+
+	return 0;
+}
+
+// clearObjectLod
+// clear lod data, return default collada node
+int clearObjectLod(lua_State* state)
+{
+	int objID = lua_tointeger(state,1);
+	CGameObject* obj = getLevel()->searchObject( objID );
+	
+	// clear all lod data
+	CColladaMeshComponent* colladaComp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
+	if ( colladaComp )
+		colladaComp->clearLodData();
+
+	return 0;
+}
+
 
 //////////////////////////////////////////////////////////
 // CAMERA FUNCTION IMPLEMENT
@@ -228,6 +262,25 @@ int setCameraLookAtObj(lua_State* state)
 	((CGameCamera*)cam)->setTargetObject( obj );
 	return 0;
 }
+
+// setCameraFollowObject
+// set camera allway follow obj
+int setCameraFollowObject(lua_State* state)
+{
+	int camID = lua_tointeger(state,1);
+	int objID = lua_tointeger(state,2);
+	float radius  = (float)lua_tonumber(state,3);
+
+	CGameObject* cam = getLevel()->searchObject( camID );
+	CGameObject* obj = getLevel()->searchObject( objID );
+
+	if ( cam == NULL || obj == NULL || cam->getObjectType() != CGameObject::CameraObject )
+		return 0;
+	
+	((CGameCamera*)cam)->setFollowObjectCamera( obj, radius );
+	return 0;
+}
+
 
 // getCurrentCameraPosition
 // get current camera pos
@@ -356,17 +409,20 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(setObjectLookAtObject);
 	REGISTER_C_FUNCTION(setObjectOrientation);
 	REGISTER_C_FUNCTION(setAnimatorMoveToWayPoint);
+	REGISTER_C_FUNCTION(addObjectLod);
+	REGISTER_C_FUNCTION(clearObjectLod);
 
 	// camera function
 	REGISTER_C_FUNCTION(setLevelCamera);
 	REGISTER_C_FUNCTION(setCameraFarValue);
 	REGISTER_C_FUNCTION(setCameraLookAtObj);
 	REGISTER_C_FUNCTION(getCurrentCameraPosition);
+	REGISTER_C_FUNCTION(setCameraFollowObject);
 
 	// scenenode function
 	REGISTER_C_FUNCTION(setSceneNodePosition);
 	REGISTER_C_FUNCTION(setSceneNodeIsSkydome);	
-	REGISTER_C_FUNCTION(setSceneNodeVisible);		
+	REGISTER_C_FUNCTION(setSceneNodeVisible);
 	
 }
 // end register

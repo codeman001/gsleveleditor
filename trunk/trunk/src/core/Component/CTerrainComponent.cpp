@@ -206,7 +206,7 @@ bool CTerrainComponent::checkCollisionFromNode( ISceneNode* pNode, core::line3df
 		{			
 			const f32 distanceSquared = (candidateCollisionPoint - ray.start).getLengthSQ();
 
-			//if(distanceSquared < outBestDistanceSquared)
+			if(distanceSquared < outBestDistanceSquared)
 			{
 				outBestDistanceSquared = distanceSquared;
 				

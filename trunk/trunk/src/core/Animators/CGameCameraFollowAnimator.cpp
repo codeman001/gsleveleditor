@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CGameCameraFollowAnimator.h"
 
+#include "CTerrainComponent.h"
+#include "gameLevel/CGameLevel.h"
 
 //! Constructor
 CGameCameraFollowAnimator::CGameCameraFollowAnimator(	gui::ICursorControl* cursorControl, float radius, f32 rotateSpeed )
@@ -81,7 +83,7 @@ void CGameCameraFollowAnimator::animateNode(ISceneNode* node, u32 timeMs)
 	m_lastAnimationTime = timeMs;
 	
 	const float MaxVerticalAngle = 60;
-
+	
 	if ( m_cursorPos != m_centerCursor && m_leftMousePress )
 	{
 		// rotate X
@@ -109,9 +111,15 @@ void CGameCameraFollowAnimator::animateNode(ISceneNode* node, u32 timeMs)
 
 	pos = target + pos;
 
+	// need check camera collision with another object
+	core::vector3df	colPos;
+	if ( checkCollide(target, pos, colPos ) == true )
+	{
+		pos = colPos;
+	}
+
 	camera->setPosition( pos );
 	camera->setTarget( target );
-
 }
 
 //! Creates a clone of this animator.
@@ -120,4 +128,65 @@ void CGameCameraFollowAnimator::animateNode(ISceneNode* node, u32 timeMs)
 ISceneNodeAnimator* CGameCameraFollowAnimator::createClone(ISceneNode* node, ISceneManager* newManager)
 {
 	return NULL;
+}
+
+// checkCollide
+// check camera ray is collide with terrain
+bool CGameCameraFollowAnimator::checkCollide( const core::vector3df& target, const core::vector3df& pos, core::vector3df& outPos )
+{	
+	CGameLevel *level =	CGameLevel::getCurrentLevel();
+	if ( level == NULL )
+		return false;
+
+
+	core::aabbox3df myBox(target, pos);	
+	myBox.repair();
+
+	core::line3df		ray( target, pos );
+	core::triangle3df	colTri;
+	core::vector3df		colPos;
+
+	float	maxLength = ray.getLengthSQ();	
+	bool	hasCol = false;
+	float	minDistance = ray.getLength();
+
+	// loop for all zone
+	int nZone = level->getZoneCount();
+	for ( int iZone = 0; iZone < nZone; iZone++ )
+	{
+		CZone *z = level->getZone( iZone );
+		core::aabbox3df zoneBox = z->getSceneNode()->getTransformedBoundingBox();		
+		
+		if ( zoneBox.intersectsWithBox( myBox ) == true )
+		{
+			// loop all terrain object in zone
+			ArrayGameObject& terrains = z->getTerrainList();
+			ArrayGameObject::iterator itTerrain = terrains.begin(), itTerrainEnd = terrains.end();
+			while ( itTerrain != itTerrainEnd )
+			{
+				CGameObject *objTerrain = ((CGameObject*) *itTerrain);
+
+				// loop all scene node in a terrain object
+				CTerrainComponent* com  = (CTerrainComponent*)objTerrain->getComponent( IObjectComponent::Terrain );
+				if ( com )
+				{
+					if ( com->getCollisionFromRay( ray, maxLength, colPos, colTri ) == true )
+					{
+						float distance = colPos.getDistanceFrom(target);
+						if ( distance < minDistance ) 
+						{							
+							minDistance = distance;
+							hasCol = true;
+							outPos = colPos;
+						}
+					}
+				}
+				
+				itTerrain++;
+			}
+		}
+
+	}
+
+	return hasCol;
 }

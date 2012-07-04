@@ -4,8 +4,13 @@
 #include "CGameBoxSceneNode.h"
 #include "CZone.h"
 
-#ifdef GSEDITOR
 #include "CGameGSCameraAnimator.h"
+
+#ifdef GSGAMEPLAY
+#include "CGameCameraFollowAnimator.h"
+#endif
+
+#ifdef GSEDITOR
 #include "CColladaMeshComponent.h"
 #include "CGameContainerSceneNode.h"
 #endif
@@ -19,7 +24,6 @@ CGameCamera::CGameCamera()
 	m_cameraMesh = NULL;
 #endif
 
-	// add camera
 	ISceneManager *smgr = getIView()->getSceneMgr();
 
 	// save old camera
@@ -46,12 +50,6 @@ CGameCamera::CGameCamera()
 	ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( m_cameraMesh );
 	m_cameraMesh->setTriangleSelector(selector);
 	selector->drop();
-
-
-	IrrlichtDevice *device = getIView()->getDevice();
-	CGameGSCameraAnimators* camAnimator = new CGameGSCameraAnimators( device->getCursorControl() );
-	m_camera->addAnimator( camAnimator );	
-	camAnimator->drop();	
 #endif
 
 	// set camera node
@@ -59,6 +57,12 @@ CGameCamera::CGameCamera()
 
 	// restore camera
 	smgr->setActiveCamera( oldCam );
+
+#ifndef GSGAMEPLAY
+	setEditorCamera();
+#else
+	setFreeCamera();
+#endif
 }
 
 CGameCamera::~CGameCamera()
@@ -66,6 +70,12 @@ CGameCamera::~CGameCamera()
 #ifdef GSEDITOR
 	m_cameraMesh->drop();
 #endif
+	
+	ISceneManager *smgr = getIView()->getSceneMgr();
+
+	// set null camera on scenenode
+	if ( smgr->getActiveCamera() == m_node )
+		smgr->setActiveCamera( NULL );
 }
 
 // updateObject
@@ -232,3 +242,41 @@ void CGameCamera::drawObject()
 	}
 }
 #endif
+
+// setEditorCamera
+// set camera editor
+void CGameCamera::setEditorCamera()
+{
+	m_camera->removeAnimators();
+	m_cameraType = CGameCamera::EditorCamera;
+
+#ifndef GSGAMEPLAY
+	// add gseditor animator
+	CGameGSCameraAnimators* camAnimator = new CGameGSCameraAnimators( getIView()->getDevice()->getCursorControl() );
+	m_camera->addAnimator( camAnimator );	
+	camAnimator->drop();
+#endif
+}
+
+// setFollowObjectCamera
+// set camera follow a object
+void CGameCamera::setFollowObjectCamera( CGameObject* obj, float radius )
+{
+	m_camera->removeAnimators();
+	m_cameraType = CGameCamera::FollowObjectCamera;
+
+#ifdef GSGAMEPLAY
+	CGameCameraFollowAnimator *anim = new CGameCameraFollowAnimator( getIView()->getDevice()->getCursorControl(), radius );
+	anim->setFollowNode( obj->getSceneNode() );
+	m_camera->addAnimator( anim );
+	anim->drop();
+#endif
+}
+
+// setFreeCamera
+// set camera free with custom pos & target
+void CGameCamera::setFreeCamera()
+{
+	m_camera->removeAnimators();
+	m_cameraType = CGameCamera::FreeCamera;
+}

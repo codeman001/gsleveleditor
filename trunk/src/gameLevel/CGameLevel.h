@@ -8,6 +8,7 @@
 #include "CZone.h"
 
 #include "CComponentFactory.h"
+#include "gameComponent/CGameComponent.h"
 #include "CObjTemplateFactory.h"
 
 #include "CColladaMeshComponent.h"

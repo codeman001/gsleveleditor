@@ -345,7 +345,12 @@ public:
 	// release all package animation
 	void freeAllAnimationPackage();
 };
-
+	
+struct SColladaLodNode
+{
+	float			distance;
+	std::string		node;
+};
 
 // CColladaMeshComponent
 class CColladaMeshComponent: public IObjectComponent
@@ -355,6 +360,7 @@ protected:
 	std::string					m_defaultNodeString;
 	
 	vector<CGameColladaSceneNode*>	m_defaultNode;
+	vector<SColladaLodNode>			m_colladaLodNode;
 
 	// current anim is playing
 	SColladaAnimClip			*m_currentAnim;
@@ -613,6 +619,29 @@ public:
 	// saveAnimToBinary
 	// save animation track to binary file
 	void saveAnimToBinary( const char *lpFileName );
+
+public:
+
+	//////////////////////////////////////////////
+	// gameplay func
+	//////////////////////////////////////////////
+
+	// sortLodData
+	// sort lod data by distance
+	void sortLodData();
+
+	// clearLodData
+	// clear all lod data
+	void clearLodData();	
+
+	// addLodData
+	// set lod data
+	void addLodData( float distanceCam, const char* node );
+
+	// updateLod
+	// update lod mesh
+	void updateLod();
+
 
 };
 

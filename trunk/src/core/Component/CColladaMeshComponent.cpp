@@ -12,6 +12,11 @@
 
 #include "CBinaryUtils.h"
 
+#include "CGameCamera.h"
+#ifdef GSGAMEPLAY
+#include "gameLevel/CGameLevel.h"
+#endif
+
 void			uriToId(std::wstring& str);
 wstring			readId(io::IXMLReader *xmlRead);
 void			findNextNoneWhiteSpace(const c8** start);
@@ -735,6 +740,8 @@ void CColladaMeshComponent::initComponent()
 // update object by frame
 void CColladaMeshComponent::updateComponent()
 {
+	// update gameplay lod geometry 
+	updateLod();
 }
 
  
@@ -2579,6 +2586,121 @@ void CColladaMeshComponent::saveAnimToBinary( const char *lpFileName )
 	}
 }
 
+//////////////////////////////////////////////////////////
+// CColladaMeshComponent gameplay function implement
+//////////////////////////////////////////////////////////
+
+
+// sortLodData
+// sort lod data by distance
+void CColladaMeshComponent::sortLodData()
+{
+	int len = (int)m_colladaLodNode.size();
+	
+	SColladaLodNode obj;
+		
+	for (int i = 1; i <= len - 1; i++)
+	{
+		obj = m_colladaLodNode[i];
+		
+		int j = i - 1;
+		int done = 0;
+
+		do
+		{
+			if ( m_colladaLodNode[j].distance > obj.distance )
+			{
+				m_colladaLodNode[j + 1] = m_colladaLodNode[j];
+
+				j = j - 1;
+				if ( j < 0 )
+					done = 1;
+			}
+			else
+				done = 1;
+		}
+		while (done == 0);
+		
+		m_colladaLodNode[j + 1] = obj;		
+	}
+}
+
+// clearLodData
+// clear all lod data
+void CColladaMeshComponent::clearLodData()
+{
+	CColladaMeshComponent* collada = (CColladaMeshComponent*) m_gameObject->getComponent( IObjectComponent::ColladaMesh );
+	
+	if ( collada != NULL )
+	{
+		for ( int i = 0, nLod = m_colladaLodNode.size(); i < nLod; i++ )
+		{
+			SColladaLodNode& lod = m_colladaLodNode[i];
+			CGameColladaSceneNode* node = collada->getSceneNode( lod.node.c_str() );
+			node->setVisible( true );
+		}
+	}
+
+	m_colladaLodNode.clear();
+}
+
+// addLodData
+// set lod data
+void CColladaMeshComponent::addLodData( float distanceCam, const char* node )
+{
+	SColladaLodNode lod;
+	lod.distance = distanceCam;
+	lod.node = node;
+
+	m_colladaLodNode.push_back( lod );
+	sortLodData();
+}
+
+// updateLod
+// update lod mesh
+void CColladaMeshComponent::updateLod()
+{
+	if ( m_colladaLodNode.size() == 0 )
+		return;
+
+#ifdef GSGAMEPLAY
+	CGameCamera* cam = CGameLevel::getCurrentLevel()->getCamera();
+#else
+	CGameCamera* cam = getIView()->getActiveCamera();
+#endif
+
+	if ( cam == NULL )
+		return;
+
+	float distance = m_gameObject->getPosition().getDistanceFrom( cam->getPosition() );
+	bool hasLod = false;
+
+	for ( int nLod = m_colladaLodNode.size(), i = 0; i < nLod; i++ )
+	{
+		SColladaLodNode& lod = m_colladaLodNode[i];
+		CGameColladaSceneNode* node = getSceneNode( lod.node.c_str() );
+		
+		if ( node )
+		{
+			if ( distance < lod.distance )				
+			{
+				if ( hasLod == false )
+				{
+					// we find the current lod
+					node->setVisible( true );
+					hasLod = true;
+				}
+				else
+				{
+					node->setVisible( false );
+				}
+			}
+			else
+				node->setVisible( false );
+		}
+
+	}
+}
 
 
 //////////////////////////////////////////////////////////

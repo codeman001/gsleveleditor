@@ -1,9 +1,18 @@
 #include "stdafx.h"
+#include "IView.h"
 #include "CPlayerComponent.h"
+#include "gameLevel/CGameLevel.h"
+
+
+///////////////////////////////////////////////////////////////////////
+// IObjectComponent overide implement
+///////////////////////////////////////////////////////////////////////
 
 CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	:IObjectComponent(obj, CGameComponent::PlayerComponent)
 {
+	// default state
+	m_state = CPlayerComponent::PlayerIdle;
 }
 
 CPlayerComponent::~CPlayerComponent()
@@ -21,6 +30,9 @@ void CPlayerComponent::initComponent()
 void CPlayerComponent::updateComponent()
 {
 	// update gameplay
+	CColladaMeshComponent* collada = (CColladaMeshComponent*) m_gameObject->getComponent( IObjectComponent::ColladaMesh );
+	if ( collada == NULL )
+		return;
 
 }
 
@@ -38,3 +50,12 @@ void CPlayerComponent::loadData( CSerializable* pObj )
 {
 	pObj->nextRecord();
 }
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////
+// Player component implement
+///////////////////////////////////////////////////////////////////////
+

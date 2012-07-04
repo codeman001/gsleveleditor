@@ -79,12 +79,7 @@ void CIrrWindow::initScene()
 	m_designCamera = new CGameCamera();
 	m_designCamera->setName( L"Design camera" );
 	m_designCamera->setTarget(core::vector3df(0,0,0));
-	m_designCamera->setPosition( core::vector3df(-400, 200, -400) );	
-	
-	// add animator
-	CGameGSCameraAnimators* camAnimator = new CGameGSCameraAnimators( device->getCursorControl() );
-	m_designCamera->getCameraNode()->addAnimator( camAnimator );	
-	camAnimator->drop();
+	m_designCamera->setPosition( core::vector3df(-400, 200, -400) );
 
 	// set active camera
 	m_designCamera->getCameraNode()->setFOV( core::degToRad(40.0f) );

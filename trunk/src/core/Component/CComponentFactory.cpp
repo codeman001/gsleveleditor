@@ -153,7 +153,7 @@ void CComponentFactory::initComponentTemplate()
 bool CComponentFactory::isBuildInComponent( CSerializable* p )
 {
 	const char *lpName = p->getAllRecord()->front().name;
-	for ( int i = 0; i <= IObjectComponent::NumBuildInComponent; i++ )
+	for ( int i = 0; i < IObjectComponent::NumBuildInComponent; i++ )
 	{
 		if ( strcmp( lpName, stringOfComponent(i) ) == 0 )
 			return true;

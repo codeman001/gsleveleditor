@@ -24,7 +24,7 @@ public:
 		Grass,
 		Water,
 		EllipsoidCollision,
-		NumBuildInComponent = Water
+		NumBuildInComponent
 	};
 
 	static const char *s_compType[];

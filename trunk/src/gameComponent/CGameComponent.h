@@ -5,10 +5,16 @@
 
 class CGameComponent
 {
-protected:
+public:
+	static const char *s_compType[];
 
 public:
-	
+	enum ComponentType
+	{
+		PlayerComponent = IObjectComponent::NumBuildInComponent,
+		AIPlayerComponent
+	};
+
 	// loadComponent
 	// create component
 	static IObjectComponent*	loadComponent( CGameObject *pObj, char *componentName, CSerializable *data );

@@ -20,7 +20,7 @@ bool CBaseAddController::getPickPosition( core::vector3df *pos )
 	{
 		core::vector3df		colPoint;
 		core::triangle3df	colTri;
-		float maxDistance = 10000.0f;
+		float maxDistance = ray.getLengthSQ();
 
 		if ( (*i)->getTerrainCollision( ray, maxDistance, colPoint, colTri ) == true )
 		{

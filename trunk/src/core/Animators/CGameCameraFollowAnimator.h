@@ -62,6 +62,12 @@ public:
 		{
 			m_radius = r;
 		}
+protected:
+	
+	// checkCollide
+	// check camera ray is collide with terrain
+	bool checkCollide( const core::vector3df& target, const core::vector3df& pos, core::vector3df& outPos );
+
 };
 
 #endif

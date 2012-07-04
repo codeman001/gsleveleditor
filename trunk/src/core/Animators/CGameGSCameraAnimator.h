@@ -8,7 +8,7 @@ class CGameGSCameraAnimators : public ISceneNodeAnimatorCameraFPS
 {
 public:
 		//! Constructor
-		CGameGSCameraAnimators(	gui::ICursorControl* cursorControl,	f32 rotateSpeed = 10.0f,	f32 moveSpeed = 0.5f );
+		CGameGSCameraAnimators(	gui::ICursorControl* cursorControl,	f32 rotateSpeed = 2.0f,	f32 moveSpeed = 0.5f );
 
 		//! Destructor
 		virtual ~CGameGSCameraAnimators();

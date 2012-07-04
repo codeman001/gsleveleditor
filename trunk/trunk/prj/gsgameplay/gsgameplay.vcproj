@@ -705,6 +705,14 @@
 					RelativePath="..\..\src\gameComponent\CGameComponent.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\gameComponent\CPlayerComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameComponent\CPlayerComponent.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<File

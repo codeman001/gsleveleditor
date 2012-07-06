@@ -310,6 +310,9 @@ bool CDocument::openDocument(wchar_t* lpPath)
 	// expand child
 	m_treeViewRoot->expandChild(true);
 
+	// select level
+	getIView()->setObjectProperty(NULL);
+
 	delete lpBuffer;		
 	return ret;
 }

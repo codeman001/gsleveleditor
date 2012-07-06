@@ -721,6 +721,7 @@ CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 	m_pauseAnim = false;
 
 	m_currentAnim = NULL;
+	m_colladaAnimation = NULL;
 }
 
 CColladaMeshComponent::~CColladaMeshComponent()
@@ -2046,6 +2047,8 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 		return;
 	
 	SColladaAnimClip *animClip = m_colladaAnimation->getAnim( lpAnimName );
+	if ( animClip == NULL )
+		return;
 
 	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 
@@ -2057,6 +2060,12 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 		const std::string& nodeName = (*i).first;
 		CGameColladaSceneNode* j = (*i).second;
 				
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+
 		// clear old key frame
 		j->clearAllKeyFrame();
 				

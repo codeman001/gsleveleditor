@@ -202,10 +202,9 @@ void CComponentFactory::loadAllTemplate()
 		unsigned long length = file->getSize();
 		if ( length > 0 )
 		{
-			char *lpBuffer = new char[length];
-			memset( lpBuffer, 0, length );
-
+			char *lpBuffer = new char[length+1];
 			file->read(lpBuffer,length);			
+			lpBuffer[length] = NULL;	
 
 			CSerializable s;
 			char *p = lpBuffer;
@@ -213,7 +212,10 @@ void CComponentFactory::loadAllTemplate()
 			while ( *p != NULL )
 			{
 				if ( s.readData(p) == true )
+				{
 					s_compTemplate.push_back( s );
+					s.clear();
+				}
 				else
 					break;
 			}

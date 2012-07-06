@@ -341,6 +341,13 @@ public:
 	// load package animation
 	CColladaAnimation* loadAnimation( char *name, char *lpFileName );
 
+	// getAnimation
+	// get package animation
+	inline CColladaAnimation* getAnimation( char *name )
+	{
+		return m_animPackage[ name ];
+	}
+
 	// freeAllAnimationPackage
 	// release all package animation
 	void freeAllAnimationPackage();

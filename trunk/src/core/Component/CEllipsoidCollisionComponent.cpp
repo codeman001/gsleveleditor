@@ -13,10 +13,10 @@ CEllipsoidCollisionComponent::CEllipsoidCollisionComponent( CGameObject *pObj )
 	m_isFirstUpdate		= true;
 	m_isFalling			= true;
 	
-	m_gravity			= core::vector3df(0,-10,0);
+	m_gravity			= core::vector3df(0,-100,0);
 	
-	m_ellipsoidRadius	= core::vector3df(50,140,80);	// right, up, front
-	m_translation		= core::vector3df(0,-140,0);
+	m_ellipsoidRadius	= core::vector3df(50,90,80);	// right, up, front
+	m_translation		= core::vector3df(0,-90,0);
 }
 
 CEllipsoidCollisionComponent::~CEllipsoidCollisionComponent()

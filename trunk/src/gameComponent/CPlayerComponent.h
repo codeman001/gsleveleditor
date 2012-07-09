@@ -5,6 +5,7 @@
 #include "CColladaMeshComponent.h"
 #include "CGameComponent.h"
 
+#define SHIFTBIT(x)	(1<<x)
 
 class CPlayerComponent: 
 	public IObjectComponent,
@@ -27,12 +28,13 @@ public:
 		SubStateEnd,
 	};
 
-	enum EPlayerStateRun
+	enum EKeyActionBit
 	{
-		Run = 0,
-		RunBack,
-		RunLeft,
-		RunRight
+		KeyNone		= 0,
+		KeyUp		= SHIFTBIT(1),
+		KeyLeft		= SHIFTBIT(2),
+		KeyRight	= SHIFTBIT(3),
+		KeyBack		= SHIFTBIT(4),
 	};
 
 protected:
@@ -40,17 +42,20 @@ protected:
 	EPlayerState			m_state;
 	EPlayerState			m_nextState;
 
-	EPlayerStateRun			m_runState;
-	EPlayerStateRun			m_lastRunState;
-
 	float					m_runSpeed;
 	float					m_runBackSpeed;
-	float					m_runLeftSpeed;
-	float					m_runRightSpeed;
+	float					m_runLeftRightSpeed;
 
 	CColladaAnimation*		m_animationPackage;
 	CColladaMeshComponent*	m_collada;
+	
+	CGameColladaSceneNode*	m_bipSpineNode;
+	CGameColladaSceneNode*	m_bipSpine1Node;
 
+	// m_targetRotation
+	// the target rotation
+	core::vector3df			m_targetRotation;
+	int						m_keyActionBit;
 public:
 	CPlayerComponent(CGameObject* obj);
 	virtual ~CPlayerComponent();
@@ -75,13 +80,6 @@ public:
 	// cache event
 	virtual bool OnEvent(const SEvent& irrEvent);
 public:
-
-	// setRunState
-	// set run back, left, right...
-	void setRunState( EPlayerStateRun state )
-	{
-		m_runState = state;
-	}
 
 	// setState
 	// set state for player

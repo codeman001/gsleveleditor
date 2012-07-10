@@ -22,6 +22,8 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 
 	m_bipSpineNode	= NULL;
 	m_bipSpine1Node	= NULL;
+
+	m_runRotation	= 0.0f;
 }
 
 CPlayerComponent::~CPlayerComponent()
@@ -121,26 +123,26 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 		}
 
 		// update move
-		m_targetRotation = core::vector3df(0, 0, 0);
+		m_runRotation = 0.0f;		
 		bool run = false;
 
 		// calc rotation
 		if ( (m_keyActionBit & CPlayerComponent::KeyLeft) != 0 )
 		{
-			m_targetRotation.Y += 90.0f;
+			m_runRotation -= 90.0f;
 			if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
-				m_targetRotation.Y += 135.0f;
+				m_runRotation -= 135.0f;
 			else if ( (m_keyActionBit & CPlayerComponent::KeyUp) != 0 )
-				m_targetRotation.Y -= 45.0f;
+				m_runRotation += 45.0f;
 			run = true;
 		}
 		else if ( (m_keyActionBit & CPlayerComponent::KeyRight) != 0 )
 		{
-			m_targetRotation.Y -= 90.0f;
+			m_runRotation += 90.0f;
 			if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
-				m_targetRotation.Y -= 135.0f;
+				m_runRotation += 135.0f;
 			else if ( (m_keyActionBit & CPlayerComponent::KeyUp) != 0 )
-				m_targetRotation.Y += 45.0f;
+				m_runRotation -= 45.0f;
 			run = true;
 		}
 		else if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
@@ -200,6 +202,7 @@ void CPlayerComponent::updateStateIdle()
 	}
 	else
 	{
+		m_currentRunRot = 0.0f;
 	}
 }
 
@@ -216,22 +219,58 @@ void CPlayerComponent::updateStateRun()
 
 		s_lastActionKey = m_keyActionBit;
 		m_subState = SubStateActive;
+
+		// read default matrix
+		m_bipSpineNode->setEnableAnim( true );
+		m_bipSpine1Node->setEnableAnim( true );
 	}
 	else if ( m_subState == SubStateEnd )
 	{			
 		doNextState();
 	}
 	else
-	{				
+	{		
 		// update run
 		float diff = getIView()->getTimeStep() * 0.1f;
+
+		// disable anim
+		m_bipSpineNode->setEnableAnim( false );
+		m_bipSpine1Node->setEnableAnim( false );
+
+		// and update animation by manual
+		m_bipSpineNode->updateAnimation();
+		m_bipSpine1Node->updateAnimation();
+
+		// -------------------------
+		// begin rotate the bip
+		
+		// linear calc current rotateion
+		float rotSpeed = 3.0f  * diff;
+		if ( m_currentRunRot < m_runRotation )
+			m_currentRunRot = m_currentRunRot + rotSpeed;			
+		else if ( m_currentRunRot > m_runRotation )
+			m_currentRunRot = m_currentRunRot - rotSpeed;
+		
+		if ( fabs( m_currentRunRot - m_runRotation ) < rotSpeed )
+			m_currentRunRot = m_runRotation;
+
+		// rotate the legs to run vector
+		core::vector3df rotateSpine = m_bipSpineNode->AnimationMatrix.getRotationDegrees();
+		rotateSpine.X += m_currentRunRot;
+		m_bipSpineNode->AnimationMatrix.setRotationDegrees( rotateSpine );
+
+		// rotate the body to front vector
+		rotateSpine = m_bipSpine1Node->AnimationMatrix.getRotationDegrees();
+		rotateSpine.X -= m_currentRunRot;
+		m_bipSpine1Node->AnimationMatrix.setRotationDegrees( rotateSpine );
+		// end rotate the bip
+		// -------------------------		
 		
 		// get front vector
 		CGameCamera* cam = CGameLevel::getCurrentLevel()->getCamera();
 		core::vector3df front = cam->getPosition() - cam->getTarget();
 		front.Y = 0;
 		front.normalize();
-
 
 		// current object position
 		core::vector3df pos = m_gameObject->getPosition();			

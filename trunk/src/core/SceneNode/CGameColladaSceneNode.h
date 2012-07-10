@@ -408,6 +408,10 @@ public:
 		return LocalMatrix;
 	}
 
+	// updateAnimation
+	// calc relative matrix of animation
+	void	updateAnimation();
+
 public:
 
 	// begin declare animation key frame
@@ -463,11 +467,7 @@ protected:
 	bool	m_isSkydome;
 	bool	m_terrainNode;
 	bool	m_hideTerrainNode;
-protected:
-	
-	// updateAnimation
-	// calc relative matrix of animation
-	void	updateAnimation();
+protected:	
 	
 	// getFrameData
 	// get position, scale, rotation data

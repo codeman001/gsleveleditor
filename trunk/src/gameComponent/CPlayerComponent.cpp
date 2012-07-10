@@ -131,7 +131,7 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 		{
 			m_runRotation -= 90.0f;
 			if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
-				m_runRotation -= 135.0f;
+				m_runRotation += 135.0f;
 			else if ( (m_keyActionBit & CPlayerComponent::KeyUp) != 0 )
 				m_runRotation += 45.0f;
 			run = true;
@@ -140,7 +140,7 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 		{
 			m_runRotation += 90.0f;
 			if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
-				m_runRotation += 135.0f;
+				m_runRotation -= 135.0f;
 			else if ( (m_keyActionBit & CPlayerComponent::KeyUp) != 0 )
 				m_runRotation -= 45.0f;
 			run = true;
@@ -271,20 +271,28 @@ void CPlayerComponent::updateStateRun()
 		core::vector3df front = cam->getPosition() - cam->getTarget();
 		front.Y = 0;
 		front.normalize();
-
+				
 		// current object position
 		core::vector3df pos = m_gameObject->getPosition();			
 
-		//if ( m_runState == CPlayerComponent::RunBack )
-		//{
-		//	m_gameObject->setPosition( pos - front * m_runBackSpeed * diff );
-		//}
-		//else
-		//{
-		//	m_gameObject->setPosition( pos + front * m_runSpeed * diff );
-		//	m_gameObject->lookAt( pos + front );
-		//}
+		// set rotation by camera
+		m_gameObject->lookAt( pos - front );
 
+		// rotation run vector
+		core::matrix4 mat;
+		mat.setRotationDegrees( core::vector3df(0, m_currentRunRot,0) );
+		mat.rotateVect( front );
+
+		if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
+		{
+			// run back
+			m_gameObject->setPosition( pos - front * m_runSpeed * diff );
+		}
+		else
+		{
+			// run forward
+			m_gameObject->setPosition( pos + front * m_runSpeed * diff );
+		}				
 
 		// check if change action
 		if ( s_lastActionKey != m_keyActionBit )

@@ -130,12 +130,6 @@ void CGameColladaSceneNode::OnRegisterSceneNode()
 
 void CGameColladaSceneNode::updateAbsolutePosition()
 {
-	if ( strstr(this->getName(), "lum") > 0 )
-	{
-		int t = 0;
-		t++;
-	}
-
 	core::matrix4 RelativeMatrix = getRelativeTransformation() * AnimationMatrix;
 	
 	// calc absolute transform

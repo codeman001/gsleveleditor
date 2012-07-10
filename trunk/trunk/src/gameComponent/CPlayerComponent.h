@@ -54,6 +54,8 @@ protected:
 
 	// m_targetRotation
 	// the target rotation
+	float					m_runRotation;
+	float					m_currentRunRot;
 	core::vector3df			m_targetRotation;
 	int						m_keyActionBit;
 public:

@@ -17,6 +17,12 @@
 #include "gameLevel/CGameLevel.h"
 #endif
 
+#pragma region DAE_PARSE_C_FUNCTION_SUPPORT
+//////////////////////////////////////////////////////////
+// c function declare
+//////////////////////////////////////////////////////////
+
+
 void			uriToId(std::wstring& str);
 wstring			readId(io::IXMLReader *xmlRead);
 void			findNextNoneWhiteSpace(const c8** start);
@@ -43,6 +49,490 @@ int				getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam, Array
 int				getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam );
 int				getMeshWithControllerName( std::wstring& controllerName, ArrayMeshParams& listMeshParam );
 
+//////////////////////////////////////////////////////////
+// c function implement
+//////////////////////////////////////////////////////////
+
+//! changes the XML URI into an internal id
+void uriToId(std::wstring& str)
+{	
+	if (!str.size())
+		return;
+
+	if (str[0] == L'#')
+		str.erase( str.begin() );
+}
+
+
+std::wstring readId(io::IXMLReader *xmlRead)
+{
+	std::wstring str = xmlRead->getAttributeValue(L"id");
+	if (str.size()==0)
+		str = xmlRead->getAttributeValue(L"name");
+	
+	return str;
+}
+
+void findNextNoneWhiteSpace(const c8** start)
+{
+	const c8* p = *start;
+
+	while(*p && (*p==' ' || *p=='\n' || *p=='\r' || *p=='\t'))
+		++p;
+
+	*start = p;
+}
+
+inline f32 readFloat(const c8** p)
+{
+	f32 ftmp;
+	*p = core::fast_atof_move(*p, ftmp);
+	return ftmp;
+}
+
+void readFloatsInsideElement(io::IXMLReader* reader, f32* floats, u32 count)
+{
+	if (reader->isEmptyElement())
+		return;
+
+	while(reader->read())
+	{
+		if (reader->getNodeType() == io::EXN_TEXT)
+		{
+			// parse float data
+			core::stringc data = reader->getNodeData();
+			data.trim();
+			const c8* p = &data[0];
+
+			for (u32 i=0; i<count; ++i)
+			{
+				findNextNoneWhiteSpace(&p);
+				if (*p)
+					floats[i] = readFloat(&p);
+				else
+					floats[i] = 0.0f;
+			}
+		}
+		else if (reader->getNodeType() == io::EXN_ELEMENT_END)
+			break; // end parsing text
+	}
+}
+
+
+//! reads ints from inside of xml element until end of xml element
+void readIntsInsideElement(io::IXMLReader* reader, s32* ints, u32 count)
+{
+	if (reader->isEmptyElement())
+		return;
+
+	while(reader->read())
+	{
+		// TODO: check for comments inside the element
+		// and ignore them.
+
+		if (reader->getNodeType() == io::EXN_TEXT)
+		{
+			// parse float data
+			core::stringc data = reader->getNodeData();
+			data.trim();
+			const c8* p = &data[0];
+
+			for (u32 i=0; i<count; ++i)
+			{
+				findNextNoneWhiteSpace(&p);
+				if (*p)
+					ints[i] = (s32)readFloat(&p);
+				else
+					ints[i] = 0;
+			}
+		}
+		else
+		if (reader->getNodeType() == io::EXN_ELEMENT_END)
+			break; // end parsing text
+	}
+}
+
+//! reads ints from inside of xml element until end of xml element
+void readIntsInsideElement(io::IXMLReader* reader, vector<s32>& arrayInt)
+{
+	if (reader->isEmptyElement())
+		return;
+
+	while(reader->read())
+	{
+		// TODO: check for comments inside the element
+		// and ignore them.
+
+		if (reader->getNodeType() == io::EXN_TEXT)
+		{
+			core::stringw data = reader->getNodeData();
+			data.trim();
+			
+			wchar_t* p = &data[0];
+			wchar_t* begin = &data[0];
+
+			int value = 0;
+					
+
+			while ( *p )
+			{
+				while(*p && !(*p==L' ' || *p==L'\n' || *p==L'\r' || *p==L'\t'))
+					++p;
+
+				*p = NULL;
+
+				if (*begin)
+				{
+					swscanf(begin,L"%d", &value);
+					arrayInt.push_back( value );
+				}				
+
+				p++;
+				begin = p;
+			}
+
+		}
+		else
+		if (reader->getNodeType() == io::EXN_ELEMENT_END)
+			break; // end parsing text
+	}
+}				
+
+void readStringInsideElement(io::IXMLReader* reader, vector<std::wstring>& arrayString)
+{
+	if (reader->isEmptyElement())
+		return;
+
+	while(reader->read())
+	{
+		// TODO: check for comments inside the element
+		// and ignore them.
+
+		if (reader->getNodeType() == io::EXN_TEXT)
+		{
+			core::stringw data = reader->getNodeData();
+			data.trim();
+			
+			wchar_t* p = &data[0];
+			wchar_t* begin = &data[0];
+
+			for (u32 i=0; i< arrayString.size(); ++i)
+			{
+				while(*p && !(*p==L' ' || *p==L'\n' || *p==L'\r' || *p==L'\t'))
+					++p;
+
+				*p = NULL;
+
+				if (*begin)
+					arrayString[i] = std::wstring(begin);
+				else
+					arrayString[i] = std::wstring(L"");
+
+				p++;
+				begin = p;
+			}
+		}
+		else
+		if (reader->getNodeType() == io::EXN_ELEMENT_END)
+			break; // end parsing text
+	}
+}
+
+video::SColorf readColorNode(io::IXMLReader* reader)
+{
+	const core::stringc colorNodeName = "color";
+
+	if (reader->getNodeType() == io::EXN_ELEMENT && colorNodeName == reader->getNodeName())
+	{
+		f32 color[4];
+		readFloatsInsideElement(reader,color,4);
+		return video::SColorf(color[0], color[1], color[2], color[3]);
+	}
+
+	return video::SColorf();
+}
+
+f32 readFloatNode(io::IXMLReader* reader)
+{
+	const core::stringc floatNodeName =        "float";
+	
+	f32 result = 0.0f;
+	if (reader->getNodeType() == io::EXN_ELEMENT && floatNodeName == reader->getNodeName())
+	{
+		readFloatsInsideElement(reader,&result,1);
+	}
+
+	return result;
+}
+
+//! reads a <scale> element and its content and creates a matrix from it
+core::matrix4 readScaleNode(io::IXMLReader* reader, bool flip)
+{
+	core::matrix4 mat;
+	if (reader->isEmptyElement())
+		return mat;
+
+	f32 floats[3];
+	readFloatsInsideElement(reader, floats, 3);
+
+	if (flip)
+		mat.setScale(core::vector3df(floats[0], floats[2], floats[1]));
+	else
+		mat.setScale(core::vector3df(floats[0], floats[1], floats[2]));
+
+	return mat;
+}
+
+//! reads a <translate> element and its content and creates a matrix from it
+core::matrix4 readTranslateNode(io::IXMLReader* reader, bool flip)
+{
+	core::matrix4 mat;
+	if (reader->isEmptyElement())
+		return mat;
+
+	f32 floats[3];
+	readFloatsInsideElement(reader, floats, 3);
+
+	if (flip)
+		mat.setTranslation(core::vector3df(floats[0], floats[2], floats[1]));
+	else
+		mat.setTranslation(core::vector3df(floats[0], floats[1], floats[2]));
+
+	return mat;
+}
+
+//! reads a <rotate> element and its content and creates a matrix from it
+core::matrix4 readRotateNode(io::IXMLReader* reader, bool flip)
+{
+	core::matrix4 mat;
+	if (reader->isEmptyElement())
+		return mat;
+
+	f32 floats[4];
+	readFloatsInsideElement(reader, floats, 4);
+
+	if (!core::iszero(floats[3]))
+	{
+		core::quaternion q;
+		if (flip)
+			q.fromAngleAxis(floats[3]*core::DEGTORAD, core::vector3df(floats[0], floats[2], floats[1]));
+		else
+			q.fromAngleAxis(floats[3]*-core::DEGTORAD, core::vector3df(floats[0], floats[1], floats[2]));
+		
+		q.normalize();
+		return q.getMatrix();
+	}
+	else
+		return core::IdentityMatrix;
+}
+
+std::wstring getImageWithId( const std::wstring& id, const ArrayImages& listImages )
+{
+	int n = listImages.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listImages[i].id == id )
+			return listImages[i].fileName;
+	}
+	return id;
+}
+
+video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& id, const ArrayImages& listImages )
+{
+	std::wstring textureName = getImageWithId( id, listImages);
+	
+	std::string path = basePath;
+
+	int i = basePath.length() - 1;
+	while ( i > 0 )
+	{
+		if ( basePath[i] == '\\' || basePath[i] == '/' )
+		{
+			path = basePath.substr(0, i + 1);
+			break;
+		}
+		i--;
+	}
+
+	// try open 1
+	wchar_t textureNameW[1024] = {0};
+	char textureNameA[1024] = {0};
+	uiString::copy<char, const char>( textureNameA, path.c_str() );
+	uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
+		
+	ITexture *tex =	getIView()->getDriver()->getTexture( textureNameA );
+
+	// try open 2
+	if ( tex == NULL )
+	{
+		uiString::getFileName<const wchar_t, wchar_t>( textureName.c_str(), textureNameW );
+		textureName = textureNameW;
+
+		uiString::copy<char, const char>( textureNameA, path.c_str() );
+		uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
+
+		tex = getIView()->getDriver()->getTexture( textureNameA );
+	}
+	
+	// try open 3
+	if ( tex == NULL )
+	{
+		tex = getIView()->getDriver()->getTexture( getIView()->getPath( textureName.c_str() ) );
+	}
+	return tex;
+}
+
+video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& uri, ArrayEffectParams& listEffectParam, ArrayImages& listImages)
+{	
+	int n = listEffectParam.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listEffectParam[i].Name == uri )
+		{
+			if ( listEffectParam[i].InitFromTexture.size() > 0 )
+			{
+				std::wstring textureName = getImageWithId(listEffectParam[i].InitFromTexture, listImages);
+				
+				std::string path = basePath;
+
+				int i = basePath.length() - 1;
+				while ( i > 0 )
+				{
+					if ( basePath[i] == '\\' || basePath[i] == '/' )
+					{
+						path = basePath.substr(0, i + 1);
+						break;
+					}
+					i--;
+				}
+
+				// try open 1
+				wchar_t textureNameW[1024] = {0};
+				char textureNameA[1024] = {0};
+				uiString::copy<char, const char>( textureNameA, path.c_str() );
+				uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
+					
+				ITexture *tex =	getIView()->getDriver()->getTexture( textureNameA );
+				
+				// try open 2
+				if ( tex == NULL )
+				{
+					uiString::getFileName<const wchar_t, wchar_t>( textureName.c_str(), textureNameW );
+					textureName = textureNameW;
+
+					uiString::copy<char, const char>( textureNameA, path.c_str() );
+					uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
+
+					tex = getIView()->getDriver()->getTexture( textureNameA );
+				}
+				
+				// try open 3
+				if ( tex == NULL )
+				{
+					tex = getIView()->getDriver()->getTexture( getIView()->getPath( textureName.c_str() ) );
+				}
+
+				return tex;
+			}
+			else if ( listEffectParam[i].Source.size() > 0 )
+				return getTextureFromImage( basePath,listEffectParam[i].Source, listEffectParam, listImages );
+
+			return NULL;
+		}
+	}
+	return NULL;
+}
+
+int getBufferWithUri( std::wstring& uri, SMeshParam* mesh )
+{
+	int n = mesh->Buffers.size();
+	for ( int i =0; i < n; i++ )
+	{
+		if ( mesh->Buffers[i].Name == uri )
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+int getVerticesWithUri( std::wstring& uri, SMeshParam* mesh )
+{
+	int n = mesh->Vertices.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( mesh->Vertices[i].Name == uri )
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+int getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam, ArrayEffects& listMaterial )
+{
+	// search in effect list
+	std::wstring fxName = uri + L"-fx";	
+	int n = listEffectParam.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listEffectParam[i].Id == fxName )
+		{
+			return i;
+		}
+	}	
+
+	// try search in material list
+	n = listMaterial.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listMaterial[i].Id == uri )
+		{
+			// add to list effect
+			listEffectParam.push_back( listMaterial[i] );
+
+			// rename to effect style
+			SEffect &effect = listEffectParam.back();
+			effect.Id = uri + L"-fx";
+
+			return listEffectParam.size() - 1;
+		}
+	}	
+
+	return -1;
+}
+
+int	getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam )
+{
+	int n = listMeshParam.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listMeshParam[i].Name == uri )
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+int getMeshWithControllerName( std::wstring& controllerName, ArrayMeshParams& listMeshParam )
+{
+	int n = listMeshParam.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		if ( listMeshParam[i].ControllerName == controllerName )
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+#pragma endregion
+
 
 //////////////////////////////////////////////////////////
 // CColladaCache implement
@@ -50,6 +540,8 @@ int				getMeshWithControllerName( std::wstring& controllerName, ArrayMeshParams&
 
 map<string, CGameChildContainerSceneNode*>	CColladaCache::s_nodeCache;
 
+
+#pragma region DAE_COLLADA_ANIMATION_IMPLEMENT
 
 //////////////////////////////////////////////////////////
 // CColladaAnimation implement
@@ -154,6 +646,161 @@ bool CColladaAnimation::getPositionFrameID( SColladaNodeAnim* frames, float fram
 	return false;
 }
 
+
+// clippingDaeAnim
+// clip a long clip to many clip
+void CColladaAnimation::clipDaeAnim()
+{
+	// loop all animation clip
+	vector<SColladaAnimClip*>::iterator it = m_colladaAnim.begin(), end = m_colladaAnim.end();
+	while ( it != end )
+	{
+		SColladaAnimClip* clip = (*it);
+
+		// loop all scenenode with anim
+		vector<SColladaNodeAnim*>::iterator iNodeAnim = m_globalClip.animInfo.begin(), 
+			iNodeEnd = m_globalClip.animInfo.end();
+
+		while ( iNodeAnim != iNodeEnd )
+		{
+			SColladaNodeAnim* nodeAnim = (*iNodeAnim);			
+
+			float currentFrame	= 0;
+			float frameBegin	= clip->time;
+			float frameEnd		= clip->time + clip->duration;
+			
+			core::vector3df v1, v2;
+			core::quaternion q1, q2;
+
+			int beginID, endID;
+
+			// clip rotation
+			getRotationFrameID( nodeAnim, frameBegin,	&beginID,	&q1 );
+			getRotationFrameID( nodeAnim, frameEnd,		&endID,		&q2 );
+			
+			// add clip
+			if ( beginID >= 0 && endID >= 0 )
+			{
+				SColladaNodeAnim *newNodeAnim = new SColladaNodeAnim();
+				newNodeAnim->sceneNodeName = nodeAnim->sceneNodeName;
+
+				// add new node anim
+				clip->addNodeAnim( newNodeAnim );
+
+				if ( beginID == endID )
+				{													
+					CGameColladaSceneNode::SRotationKey rotKey;
+					
+					// frame1
+					rotKey.frame = 0;
+					rotKey.rotation = q1;
+					newNodeAnim->RotationKeys.push_back( rotKey );
+
+					// frame2
+					rotKey.frame = frameEnd - frameBegin;
+					rotKey.rotation = q2;
+					newNodeAnim->RotationKeys.push_back( rotKey );				
+				}
+				else
+				{
+					for ( int i = beginID; i <= endID; i++ )
+					{						
+						CGameColladaSceneNode::SRotationKey		rotKey;
+
+						if ( i == beginID )
+						{
+							currentFrame = 0;							
+							rotKey.rotation = q1;
+						}
+						else if ( i == endID )
+						{
+							currentFrame = frameEnd - frameBegin;
+							rotKey.rotation = q2;
+						}
+						else
+						{
+							CGameColladaSceneNode::SRotationKey&	animFrame = nodeAnim->RotationKeys[i];
+
+							currentFrame =  animFrame.frame - frameBegin;
+							rotKey.rotation = animFrame.rotation;
+						}				
+																		
+						// add key frame
+						rotKey.frame = currentFrame;
+						newNodeAnim->RotationKeys.push_back( rotKey );	
+					}
+				}
+			}
+
+			// clip position
+			getPositionFrameID( nodeAnim, frameBegin,	&beginID,	&v1 );
+			getPositionFrameID( nodeAnim, frameEnd,		&endID,		&v2 );
+
+			if ( beginID >= 0 && endID >= 0 )
+			{
+				SColladaNodeAnim *newNodeAnim = clip->getAnimOfSceneNode( nodeAnim->sceneNodeName.c_str() );
+				if ( newNodeAnim == NULL )
+				{
+					newNodeAnim = new SColladaNodeAnim();
+					newNodeAnim->sceneNodeName = nodeAnim->sceneNodeName;
+
+					// add new node anim
+					clip->addNodeAnim( newNodeAnim );
+				}
+
+				if ( beginID == endID )
+				{													
+					CGameColladaSceneNode::SPositionKey posKey;
+					
+					// frame1
+					posKey.frame = 0;
+					posKey.position = v1;
+					newNodeAnim->PositionKeys.push_back( posKey );
+
+					// frame2
+					posKey.frame = frameEnd - frameBegin;
+					posKey.position = v2;
+					newNodeAnim->PositionKeys.push_back( posKey );				
+				}
+				else
+				{
+					for ( int i = beginID; i <= endID; i++ )
+					{						
+						CGameColladaSceneNode::SPositionKey		posKey;
+
+						if ( i == beginID )
+						{
+							currentFrame = 0;							
+							posKey.position = v1;
+						}
+						else if ( i == endID )
+						{
+							currentFrame = frameEnd - frameBegin;
+							posKey.position = v2;
+						}
+						else
+						{
+							CGameColladaSceneNode::SPositionKey&	animFrame = nodeAnim->PositionKeys[i];
+
+							currentFrame	=  animFrame.frame - frameBegin;
+							posKey.position = animFrame.position;
+						}				
+																		
+						// add key frame
+						posKey.frame = currentFrame;
+						newNodeAnim->PositionKeys.push_back( posKey );	
+					}
+				}
+			}
+
+			iNodeAnim++;
+		}
+
+		clip->time = 0.0f;
+		it++;
+	}
+	m_globalClip.freeAllNodeAnim();
+}
 
 // parseClipNode
 // parse clip time node
@@ -409,161 +1056,6 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 
 }
 
-// clippingDaeAnim
-// clip a long clip to many clip
-void CColladaAnimation::clipDaeAnim()
-{
-	// loop all animation clip
-	vector<SColladaAnimClip*>::iterator it = m_colladaAnim.begin(), end = m_colladaAnim.end();
-	while ( it != end )
-	{
-		SColladaAnimClip* clip = (*it);
-
-		// loop all scenenode with anim
-		vector<SColladaNodeAnim*>::iterator iNodeAnim = m_globalClip.animInfo.begin(), 
-			iNodeEnd = m_globalClip.animInfo.end();
-
-		while ( iNodeAnim != iNodeEnd )
-		{
-			SColladaNodeAnim* nodeAnim = (*iNodeAnim);			
-
-			float currentFrame	= 0;
-			float frameBegin	= clip->time;
-			float frameEnd		= clip->time + clip->duration;
-			
-			core::vector3df v1, v2;
-			core::quaternion q1, q2;
-
-			int beginID, endID;
-
-			// clip rotation
-			getRotationFrameID( nodeAnim, frameBegin,	&beginID,	&q1 );
-			getRotationFrameID( nodeAnim, frameEnd,		&endID,		&q2 );
-			
-			// add clip
-			if ( beginID >= 0 && endID >= 0 )
-			{
-				SColladaNodeAnim *newNodeAnim = new SColladaNodeAnim();
-				newNodeAnim->sceneNodeName = nodeAnim->sceneNodeName;
-
-				// add new node anim
-				clip->addNodeAnim( newNodeAnim );
-
-				if ( beginID == endID )
-				{													
-					CGameColladaSceneNode::SRotationKey rotKey;
-					
-					// frame1
-					rotKey.frame = 0;
-					rotKey.rotation = q1;
-					newNodeAnim->RotationKeys.push_back( rotKey );
-
-					// frame2
-					rotKey.frame = frameEnd - frameBegin;
-					rotKey.rotation = q2;
-					newNodeAnim->RotationKeys.push_back( rotKey );				
-				}
-				else
-				{
-					for ( int i = beginID; i <= endID; i++ )
-					{						
-						CGameColladaSceneNode::SRotationKey		rotKey;
-
-						if ( i == beginID )
-						{
-							currentFrame = 0;							
-							rotKey.rotation = q1;
-						}
-						else if ( i == endID )
-						{
-							currentFrame = frameEnd - frameBegin;
-							rotKey.rotation = q2;
-						}
-						else
-						{
-							CGameColladaSceneNode::SRotationKey&	animFrame = nodeAnim->RotationKeys[i];
-
-							currentFrame =  animFrame.frame - frameBegin;
-							rotKey.rotation = animFrame.rotation;
-						}				
-																		
-						// add key frame
-						rotKey.frame = currentFrame;
-						newNodeAnim->RotationKeys.push_back( rotKey );	
-					}
-				}
-			}
-
-			// clip position
-			getPositionFrameID( nodeAnim, frameBegin,	&beginID,	&v1 );
-			getPositionFrameID( nodeAnim, frameEnd,		&endID,		&v2 );
-
-			if ( beginID >= 0 && endID >= 0 )
-			{
-				SColladaNodeAnim *newNodeAnim = clip->getAnimOfSceneNode( nodeAnim->sceneNodeName.c_str() );
-				if ( newNodeAnim == NULL )
-				{
-					newNodeAnim = new SColladaNodeAnim();
-					newNodeAnim->sceneNodeName = nodeAnim->sceneNodeName;
-
-					// add new node anim
-					clip->addNodeAnim( newNodeAnim );
-				}
-
-				if ( beginID == endID )
-				{													
-					CGameColladaSceneNode::SPositionKey posKey;
-					
-					// frame1
-					posKey.frame = 0;
-					posKey.position = v1;
-					newNodeAnim->PositionKeys.push_back( posKey );
-
-					// frame2
-					posKey.frame = frameEnd - frameBegin;
-					posKey.position = v2;
-					newNodeAnim->PositionKeys.push_back( posKey );				
-				}
-				else
-				{
-					for ( int i = beginID; i <= endID; i++ )
-					{						
-						CGameColladaSceneNode::SPositionKey		posKey;
-
-						if ( i == beginID )
-						{
-							currentFrame = 0;							
-							posKey.position = v1;
-						}
-						else if ( i == endID )
-						{
-							currentFrame = frameEnd - frameBegin;
-							posKey.position = v2;
-						}
-						else
-						{
-							CGameColladaSceneNode::SPositionKey&	animFrame = nodeAnim->PositionKeys[i];
-
-							currentFrame	=  animFrame.frame - frameBegin;
-							posKey.position = animFrame.position;
-						}				
-																		
-						// add key frame
-						posKey.frame = currentFrame;
-						newNodeAnim->PositionKeys.push_back( posKey );	
-					}
-				}
-			}
-
-			iNodeAnim++;
-		}
-
-		clip->time = 0.0f;
-		it++;
-	}
-	m_globalClip.freeAllNodeAnim();
-}
-
 void CColladaAnimation::loadDae( char *lpFileName )
 {
 	IrrlichtDevice	*device = getIView()->getDevice();
@@ -666,6 +1158,10 @@ void CColladaAnimation::loadFile( char *lpFileName )
 }
 
 
+#pragma endregion
+
+
+#pragma region DAE_COLLADA_ANIMATION_FACTORY_IMPLEMENT
 //////////////////////////////////////////////////////////
 // CColladaAnimationFactory implement
 //////////////////////////////////////////////////////////
@@ -702,6 +1198,7 @@ void CColladaAnimationFactory::freeAllAnimationPackage()
 	m_animPackage.clear();
 }
 
+#pragma endregion
 
 //////////////////////////////////////////////////////////
 // CColladaMeshComponent implement
@@ -784,6 +1281,9 @@ void CColladaMeshComponent::loadData( CSerializable* pObj )
 	if ( defaultNode )
 		m_defaultNode.push_back( defaultNode );
 }
+
+
+#pragma region PARSE_DAE_DATA
 
 // loadFromFile
 // load anim object from dae file
@@ -923,175 +1423,7 @@ void CColladaMeshComponent::loadDae( const char *lpFilename )
 #endif
 }
 
-void CColladaMeshComponent::loadScene( const char *lpFilename )
-{
-	// todo load file
-	io::IReadFile *file = getIView()->getFileSystem()->createAndOpenFile( lpFilename );
-	if ( file == NULL )
-	{
-		file = getIView()->getFileSystem()->createAndOpenFile( getIView()->getPath(lpFilename) );
 
-		if ( file == NULL )
-			return;
-	}
-
-	// todo load scene
-	ISceneManager *smgr = getIView()->getSceneMgr();
-
-	m_colladaNode = new CGameChildContainerSceneNode
-		(
-			m_gameObject,
-			m_gameObject->getParentSceneNode(),
-			smgr,
-			m_gameObject->getID()
-		);
-	
-	m_gameObject->m_node = m_colladaNode;
-	
-	// parse binary scene
-	CBinaryUtils::getInstance()->setCurrentComponent(this);
-	CBinaryUtils::getInstance()->loadFile( file, m_gameObject );
-
-
-
-	// close file
-	file->drop();
-
-	// cache node
-	if ( m_colladaNode != NULL && CColladaCache::getNodeInCache(m_animeshFile) == NULL )
-	{
-		CColladaCache::cacheNode( m_animeshFile, m_colladaNode );
-	}
-
-#ifdef GSEDITOR
-	if ( m_gameObject->m_node )
-	{
-		ISceneManager *smgr = getIView()->getSceneMgr();
-
-		// add collision
-		ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( m_gameObject->m_node );
-		m_gameObject->m_node->setTriangleSelector(selector);
-		selector->drop();
-	}
-#endif
-}
-
-
-
-// initFromNode
-// init cache from node
-struct SGroupNode
-{
-	ISceneNode *colladaParent;
-	ISceneNode *initChild;
-
-	SGroupNode( ISceneNode* p, ISceneNode* child )
-	{
-		colladaParent = p;
-		initChild = child;
-	}
-};
-
-void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
-{
-	ISceneManager *smgr = getIView()->getSceneMgr();
-
-	m_colladaNode = new CGameChildContainerSceneNode
-		(
-			m_gameObject,
-			m_gameObject->getParentSceneNode(),
-			smgr,
-			m_gameObject->getID()
-		);
-	
-	m_gameObject->m_node = m_colladaNode;
-
-	std::queue< SGroupNode > queueNode;
-	std::vector< CGameColladaMesh* > listSkinMesh;
-
-	const core::list<ISceneNode*>& childs = node->getChildren();
-	core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
-	while ( it != end )
-	{
-		queueNode.push( SGroupNode(m_colladaNode, (*it) ) );
-		it++;
-	}	
-	
-	while ( queueNode.size() )
-	{
-		SGroupNode& groupNode = queueNode.front();
-		queueNode.pop();
-
-		// clone new node
-		CGameColladaSceneNode *newNode = (CGameColladaSceneNode*)groupNode.initChild->clone( groupNode.colladaParent, smgr );
-		newNode->setComponent( this );
-
-		m_colladaNode->addBoundingBoxOfChild( newNode );
-				
-		// store name this node
-		std::string name = groupNode.initChild->getName();
-		if ( name.length() > 0 )
-			m_mapNode[ name ] = newNode;
-
-		// store sid this node
-		name = ((CGameColladaSceneNode*)groupNode.initChild)->getSIDName();
-		if ( name.length() > 0 )
-		{
-			m_sidNode[name] = newNode;
-			newNode->setSIDName( name );
-		}
-
-		// push skin mesh need update
-		CGameColladaMesh* mesh = newNode->getMesh();
-		if ( mesh && mesh->IsStaticMesh == false )
-		{	
-			mesh->Component = this;
-			listSkinMesh.push_back( mesh );
-		}
-	
-
-		const core::list<ISceneNode*>& childs = groupNode.initChild->getChildren();
-		core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
-		while ( it != end )
-		{
-			queueNode.push( SGroupNode(newNode,(*it)) );
-			it++;
-		}
-
-#ifdef GSANIMATION
-		if ( newNode->getMesh() == NULL )
-		{
-			// add collision
-			ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( newNode );
-			newNode->setTriangleSelector(selector);
-			selector->drop();
-		}
-#endif
-
-		newNode->drop();	
-	}
-
-	// need map scenenode to joint
-	vector<CGameColladaMesh*>::iterator iMesh = listSkinMesh.begin(), iMeshEnd = listSkinMesh.end();
-	while ( iMesh != iMeshEnd )
-	{
-		(*iMesh)->updateJoint();
-		iMesh++;
-	}
-
-#ifdef GSEDITOR
-	if ( m_gameObject->m_node )
-	{
-		ISceneManager *smgr = getIView()->getSceneMgr();
-
-		// add collision
-		ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( m_gameObject->m_node );
-		m_gameObject->m_node->setTriangleSelector(selector);
-		selector->drop();
-	}
-#endif
-
-}
 
 // parseGeometryNode
 // parse mesh data
@@ -1963,321 +2295,10 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 	effect->Mat.Shininess = 0.0f;
 }
 
-// updateJointToMesh
-// update joint
-void CColladaMeshComponent::updateJointToMesh( SMeshParam *mesh, vector<wstring>& arrayName, float *arrayWeight, float *arrayTransform, vector<s32>& vCountArray, vector<s32>& vArray, bool flipZ )
-{
-	int numJoint = (int)arrayName.size();
 
-	// get array float
-	f32* f = (f32*)arrayTransform;
+#pragma endregion
 
-	for ( int i = 0; i < numJoint; i++ )
-	{
-		SJointParam newJoint;
-
-		newJoint.Name = arrayName[i];
-
-		core::matrix4 mat;
-		mat.setM( f + i*16 );
-		
-		if (flipZ)
-		{
-			core::matrix4 mat2(mat, core::matrix4::EM4CONST_TRANSPOSED);
-
-			mat2[1]=mat[8];
-			mat2[2]=mat[4];
-			mat2[4]=mat[2];
-			mat2[5]=mat[10];
-			mat2[6]=mat[6];
-			mat2[8]=mat[1];
-			mat2[9]=mat[9];
-			mat2[10]=mat[5];
-			mat2[12]=mat[3];
-			mat2[13]=mat[11];
-			mat2[14]=mat[7];
-
-			newJoint.InvMatrix = mat2;
-		}
-		else
-		{
-			newJoint.InvMatrix = mat.getTransposed();
-		}
-		
-		// add joint to controller
-		mesh->Joints.push_back( newJoint );
-	}
-	
-	// set vertex weight
-	int nVertex = (int)vCountArray.size();
-	int id = 0;
-	
-	for ( int i = 0; i < nVertex; i++ )
-	{
-		// num of bone in vertex
-		int nBone = vCountArray[i];
-
-		// loop on bone in vertex		
-		for ( int iBone = 0; iBone < nBone; iBone++, id+=2 )
-		{
-			u32 boneId		= vArray[id];
-			u32 weightId	= vArray[id + 1];
-			f32 f			= arrayWeight[weightId];
-			
-			SWeightParam weightParam;
-
-			weightParam.VertexID = i;
-			weightParam.Strength = f;
-
-			// add weight on bone
-			mesh->Joints[boneId].Weights.push_back( weightParam );
-			
-			mesh->JointIndex.push_back( boneId );
-			mesh->JointIndex.push_back( mesh->Joints[boneId].Weights.size() - 1 );
-		}
-
-	}
-}
-
-// setAnimation
-// apply Animation to skin joint
-void CColladaMeshComponent::setAnimation(const char *lpAnimName)
-{
-	if ( m_colladaNode == NULL )
-		return;
-	
-	SColladaAnimClip *animClip = m_colladaAnimation->getAnim( lpAnimName );
-	if ( animClip == NULL )
-		return;
-
-	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
-
-	// set begin frame
-	setCurrentFrame(0);
-
-	while ( i != end )
-	{
-		const std::string& nodeName = (*i).first;
-		CGameColladaSceneNode* j = (*i).second;
-				
-		if ( j == NULL )
-		{
-			i++;
-			continue;
-		}
-
-		// clear old key frame
-		j->clearAllKeyFrame();
-				
-		// get local matrix of skin joint
-		const core::matrix4& mat =	j->getLocalMatrix();
-
-		// todo add animation key
-		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
-
-		if ( anim )
-		{
-			int nRotKey = anim->RotationKeys.size();
-			for ( int i = 0; i < nRotKey; i++ )
-			{
-				j->RotationKeys.push_back( anim->RotationKeys[i] );	
-			}
-
-			int nPosKey = anim->PositionKeys.size();
-			for ( int i = 0; i < nPosKey; i++ )
-			{
-				j->PositionKeys.push_back( anim->PositionKeys[i] );
-			}
-
-		}
-
-		// next node
-		i++;
-	}	
-
-}
-void CColladaMeshComponent::constructScene()
-{
-	ISceneManager *smgr = getIView()->getSceneMgr();
-
-	// release if mesh is loaded
-	if ( m_gameObject->m_node )
-		m_gameObject->destroyNode();
-
-	// clear all map
-	m_mapNode.clear();
-
-	// create new scene node
-	m_colladaNode = new CGameChildContainerSceneNode( 
-			m_gameObject, 
-			m_gameObject->getParentSceneNode(),
-			smgr,
-			m_gameObject->getID() 
-		);
-	
-
-	// collada node
-	m_gameObject->m_node = m_colladaNode;
-
-
-	std::list<SNodeParam*>	stackScene;
-	std::list<SNodeParam*>	listScene;
-
-	int nNode = m_listNode.size();
-	for ( int i = 0; i < nNode; i++ )
-	{
-		SNodeParam* root = m_listNode[i];
-		stackScene.push_back( root );
-	}
-
-	while ( stackScene.size() )
-	{
-		SNodeParam *node = stackScene.back();
-		
-		// save to list bone prefab
-		listScene.push_back( node );
-		
-		// to do create node
-		char name[1024];
-		uiString::copy<char, const wchar_t>( name, node->Name.c_str() );
-
-		
-		// create new scene node
-		ISceneNode *parent = m_colladaNode;
-		if ( node->Parent && node->Parent->SceneNode )
-			parent = node->Parent->SceneNode;
-
-		// crate new scene node
-		CGameColladaSceneNode *colladaSceneNode = new CGameColladaSceneNode( parent, smgr, -1 );
-		colladaSceneNode->setComponent( this );
-
-		colladaSceneNode->setName( name );
-		
-		if ( node->Parent == NULL )
-			colladaSceneNode->setRootColladaNode( true );
-		else
-			colladaSceneNode->setRootColladaNode( false );
-
-		// get position from transform		
-		node->SceneNode = colladaSceneNode;
-		
-		// store this node
-		m_mapNode[name] = colladaSceneNode;
-
-		// store joint sid node
-		if ( node->SID.size() > 0 )
-		{
-			uiString::copy<char, const wchar_t>( name, node->SID.c_str() );
-			m_sidNode[name] = colladaSceneNode;
-			colladaSceneNode->setSIDName( name );
-		}
-
-		// set relative position		
-		colladaSceneNode->setLocalMatrix( node->Transform );
-		
-		
-		// construct geometry & controller in node
-		if ( node->Instance.size() > 0 )
-		{
-			int meshID = getMeshWithUri( node->Instance, m_listMesh );
-			if ( meshID == -1 )			
-				meshID = getMeshWithControllerName( node->Instance, m_listMesh );
-
-			if ( meshID != -1 )
-			{
-				SMeshParam *pMesh = &m_listMesh[meshID];
-
-				CGameColladaMesh *pColladaMesh = new CGameColladaMesh();
-
-				// need store component
-				pColladaMesh->Component = this;
-				pColladaMesh->BindShapeMatrix = pMesh->BindShapeMatrix;
-
-				// add mesh buffer to skin mesh
-				int nBuffer = pMesh->Triangles.size();
-
-
-				for ( int i = 0; i < nBuffer; i++ )
-				{
-					STrianglesParam& tri = pMesh->Triangles[i];
-					
-					// create mesh buffer
-					SColladaMeshBuffer* meshBuffer = new SColladaMeshBuffer();
-					constructMeshBuffer( pMesh, &tri, meshBuffer, &meshBuffer->beginVertex, &meshBuffer->endVertex, m_needFlip );
-					
-					// add mesh buffer								
-					pColladaMesh->addMeshBuffer( meshBuffer );
-					pColladaMesh->recalculateBoundingBox();
-
-					meshBuffer->drop();
-				}
-				
-				if ( pMesh->Type == k_skinMesh )
-					pColladaMesh->IsStaticMesh = false;
-				else
-				{
-					pColladaMesh->IsStaticMesh = true;
-					pColladaMesh->setHardwareMappingHint( EHM_STATIC );
-				}
-
-				// set mesh for scene node
-				colladaSceneNode->setColladaMesh( pColladaMesh );
-								
-				pColladaMesh->drop();
-			}
-
-			// add update bounding box with this child
-			((CGameChildContainerSceneNode*)m_gameObject->m_node)->addBoundingBoxOfChild( colladaSceneNode );
-
-		}
-#ifdef GSANIMATION
-		else
-		{
-			// add collision
-			ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( colladaSceneNode );
-			colladaSceneNode->setTriangleSelector(selector);
-			selector->drop();
-		}
-#endif
-
-		// pop stack
-		stackScene.erase( --stackScene.end() );
-		
-		// add child to continue loop
-		int nChild = (int)node->Childs.size();
-		for ( int i = 0; i < nChild; i++ )
-		{			
-			SNodeParam *childNode = node->Childs[i];
-
-			// set parent
-			childNode->Parent = node;
-			stackScene.push_back( childNode );		
-		}
-	}
-
-	// clear node data
-	std::list<SNodeParam*>::iterator i = listScene.begin(), end = listScene.end();
-	while ( i != end )
-	{
-		SNodeParam *pNode = (*i);
-		
-		// apply skin
-		CGameColladaMesh* pMesh = pNode->SceneNode->getMesh();
-		if ( pMesh != NULL && pMesh->IsStaticMesh == false )
-		{
-			int meshID = getMeshWithControllerName( pNode->Instance, m_listMesh );
-			constructSkinMesh( &m_listMesh[meshID], pMesh);			
-		}
-
-		// clear node
-		pNode->Joint = NULL;		
-		pNode->SceneNode->drop();
-		pNode->SceneNode = NULL;
-		i++;
-	}
-	listScene.clear();
-}
-
+#pragma region CONSTRUCT_DAE_DATA
 
 // constructMeshBuffer
 // create mesh buffer
@@ -2510,6 +2531,190 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 		mesh->JointVertexIndex[i] = meshParam->JointVertexIndex[i];
 }
 
+
+void CColladaMeshComponent::constructScene()
+{
+	ISceneManager *smgr = getIView()->getSceneMgr();
+
+	// release if mesh is loaded
+	if ( m_gameObject->m_node )
+		m_gameObject->destroyNode();
+
+	// clear all map
+	m_mapNode.clear();
+
+	// create new scene node
+	m_colladaNode = new CGameChildContainerSceneNode( 
+			m_gameObject, 
+			m_gameObject->getParentSceneNode(),
+			smgr,
+			m_gameObject->getID() 
+		);
+	
+
+	// collada node
+	m_gameObject->m_node = m_colladaNode;
+
+
+	std::list<SNodeParam*>	stackScene;
+	std::list<SNodeParam*>	listScene;
+
+	int nNode = m_listNode.size();
+	for ( int i = 0; i < nNode; i++ )
+	{
+		SNodeParam* root = m_listNode[i];
+		stackScene.push_back( root );
+	}
+
+	while ( stackScene.size() )
+	{
+		SNodeParam *node = stackScene.back();
+		
+		// save to list bone prefab
+		listScene.push_back( node );
+		
+		// to do create node
+		char name[1024];
+		uiString::copy<char, const wchar_t>( name, node->Name.c_str() );
+
+		
+		// create new scene node
+		ISceneNode *parent = m_colladaNode;
+		if ( node->Parent && node->Parent->SceneNode )
+			parent = node->Parent->SceneNode;
+
+		// crate new scene node
+		CGameColladaSceneNode *colladaSceneNode = new CGameColladaSceneNode( parent, smgr, -1 );
+		colladaSceneNode->setComponent( this );
+
+		colladaSceneNode->setName( name );
+		
+		if ( node->Parent == NULL )
+			colladaSceneNode->setRootColladaNode( true );
+		else
+			colladaSceneNode->setRootColladaNode( false );
+
+		// get position from transform		
+		node->SceneNode = colladaSceneNode;
+		
+		// store this node
+		m_mapNode[name] = colladaSceneNode;
+
+		// store joint sid node
+		if ( node->SID.size() > 0 )
+		{
+			uiString::copy<char, const wchar_t>( name, node->SID.c_str() );
+			m_sidNode[name] = colladaSceneNode;
+			colladaSceneNode->setSIDName( name );
+		}
+
+		// set relative position		
+		colladaSceneNode->setLocalMatrix( node->Transform );
+		
+		
+		// construct geometry & controller in node
+		if ( node->Instance.size() > 0 )
+		{
+			int meshID = getMeshWithUri( node->Instance, m_listMesh );
+			if ( meshID == -1 )			
+				meshID = getMeshWithControllerName( node->Instance, m_listMesh );
+
+			if ( meshID != -1 )
+			{
+				SMeshParam *pMesh = &m_listMesh[meshID];
+
+				CGameColladaMesh *pColladaMesh = new CGameColladaMesh();
+
+				// need store component
+				pColladaMesh->Component = this;
+				pColladaMesh->BindShapeMatrix = pMesh->BindShapeMatrix;
+
+				// add mesh buffer to skin mesh
+				int nBuffer = pMesh->Triangles.size();
+
+
+				for ( int i = 0; i < nBuffer; i++ )
+				{
+					STrianglesParam& tri = pMesh->Triangles[i];
+					
+					// create mesh buffer
+					SColladaMeshBuffer* meshBuffer = new SColladaMeshBuffer();
+					constructMeshBuffer( pMesh, &tri, meshBuffer, &meshBuffer->beginVertex, &meshBuffer->endVertex, m_needFlip );
+					
+					// add mesh buffer								
+					pColladaMesh->addMeshBuffer( meshBuffer );
+					pColladaMesh->recalculateBoundingBox();
+
+					meshBuffer->drop();
+				}
+				
+				if ( pMesh->Type == k_skinMesh )
+					pColladaMesh->IsStaticMesh = false;
+				else
+				{
+					pColladaMesh->IsStaticMesh = true;
+					pColladaMesh->setHardwareMappingHint( EHM_STATIC );
+				}
+
+				// set mesh for scene node
+				colladaSceneNode->setColladaMesh( pColladaMesh );
+								
+				pColladaMesh->drop();
+			}
+
+			// add update bounding box with this child
+			((CGameChildContainerSceneNode*)m_gameObject->m_node)->addBoundingBoxOfChild( colladaSceneNode );
+
+		}
+#ifdef GSANIMATION
+		else
+		{
+			// add collision
+			ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( colladaSceneNode );
+			colladaSceneNode->setTriangleSelector(selector);
+			selector->drop();
+		}
+#endif
+
+		// pop stack
+		stackScene.erase( --stackScene.end() );
+		
+		// add child to continue loop
+		int nChild = (int)node->Childs.size();
+		for ( int i = 0; i < nChild; i++ )
+		{			
+			SNodeParam *childNode = node->Childs[i];
+
+			// set parent
+			childNode->Parent = node;
+			stackScene.push_back( childNode );		
+		}
+	}
+
+	// clear node data
+	std::list<SNodeParam*>::iterator i = listScene.begin(), end = listScene.end();
+	while ( i != end )
+	{
+		SNodeParam *pNode = (*i);
+		
+		// apply skin
+		CGameColladaMesh* pMesh = pNode->SceneNode->getMesh();
+		if ( pMesh != NULL && pMesh->IsStaticMesh == false )
+		{
+			int meshID = getMeshWithControllerName( pNode->Instance, m_listMesh );
+			constructSkinMesh( &m_listMesh[meshID], pMesh);			
+		}
+
+		// clear node
+		pNode->Joint = NULL;		
+		pNode->SceneNode->drop();
+		pNode->SceneNode = NULL;
+		i++;
+	}
+	listScene.clear();
+}
+
+
 // cleanData
 // free all data from parse dae
 void CColladaMeshComponent::cleanData()
@@ -2558,6 +2763,311 @@ void CColladaMeshComponent::cleanData()
 	m_listNode.clear();
 }
 
+
+#pragma endregion
+
+
+void CColladaMeshComponent::loadScene( const char *lpFilename )
+{
+	// todo load file
+	io::IReadFile *file = getIView()->getFileSystem()->createAndOpenFile( lpFilename );
+	if ( file == NULL )
+	{
+		file = getIView()->getFileSystem()->createAndOpenFile( getIView()->getPath(lpFilename) );
+
+		if ( file == NULL )
+			return;
+	}
+
+	// todo load scene
+	ISceneManager *smgr = getIView()->getSceneMgr();
+
+	m_colladaNode = new CGameChildContainerSceneNode
+		(
+			m_gameObject,
+			m_gameObject->getParentSceneNode(),
+			smgr,
+			m_gameObject->getID()
+		);
+	
+	m_gameObject->m_node = m_colladaNode;
+	
+	// parse binary scene
+	CBinaryUtils::getInstance()->setCurrentComponent(this);
+	CBinaryUtils::getInstance()->loadFile( file, m_gameObject );
+
+
+
+	// close file
+	file->drop();
+
+	// cache node
+	if ( m_colladaNode != NULL && CColladaCache::getNodeInCache(m_animeshFile) == NULL )
+	{
+		CColladaCache::cacheNode( m_animeshFile, m_colladaNode );
+	}
+
+#ifdef GSEDITOR
+	if ( m_gameObject->m_node )
+	{
+		ISceneManager *smgr = getIView()->getSceneMgr();
+
+		// add collision
+		ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( m_gameObject->m_node );
+		m_gameObject->m_node->setTriangleSelector(selector);
+		selector->drop();
+	}
+#endif
+}
+
+
+// initFromNode
+// init cache from node
+struct SGroupNode
+{
+	ISceneNode *colladaParent;
+	ISceneNode *initChild;
+
+	SGroupNode( ISceneNode* p, ISceneNode* child )
+	{
+		colladaParent = p;
+		initChild = child;
+	}
+};
+
+void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
+{
+	ISceneManager *smgr = getIView()->getSceneMgr();
+
+	m_colladaNode = new CGameChildContainerSceneNode
+		(
+			m_gameObject,
+			m_gameObject->getParentSceneNode(),
+			smgr,
+			m_gameObject->getID()
+		);
+	
+	m_gameObject->m_node = m_colladaNode;
+
+	std::queue< SGroupNode > queueNode;
+	std::vector< CGameColladaMesh* > listSkinMesh;
+
+	const core::list<ISceneNode*>& childs = node->getChildren();
+	core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
+	while ( it != end )
+	{
+		queueNode.push( SGroupNode(m_colladaNode, (*it) ) );
+		it++;
+	}	
+	
+	while ( queueNode.size() )
+	{
+		SGroupNode& groupNode = queueNode.front();
+		queueNode.pop();
+
+		// clone new node
+		CGameColladaSceneNode *newNode = (CGameColladaSceneNode*)groupNode.initChild->clone( groupNode.colladaParent, smgr );
+		newNode->setComponent( this );
+
+		m_colladaNode->addBoundingBoxOfChild( newNode );
+				
+		// store name this node
+		std::string name = groupNode.initChild->getName();
+		if ( name.length() > 0 )
+			m_mapNode[ name ] = newNode;
+
+		// store sid this node
+		name = ((CGameColladaSceneNode*)groupNode.initChild)->getSIDName();
+		if ( name.length() > 0 )
+		{
+			m_sidNode[name] = newNode;
+			newNode->setSIDName( name );
+		}
+
+		// push skin mesh need update
+		CGameColladaMesh* mesh = newNode->getMesh();
+		if ( mesh && mesh->IsStaticMesh == false )
+		{	
+			mesh->Component = this;
+			listSkinMesh.push_back( mesh );
+		}
+	
+
+		const core::list<ISceneNode*>& childs = groupNode.initChild->getChildren();
+		core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
+		while ( it != end )
+		{
+			queueNode.push( SGroupNode(newNode,(*it)) );
+			it++;
+		}
+
+#ifdef GSANIMATION
+		if ( newNode->getMesh() == NULL )
+		{
+			// add collision
+			ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( newNode );
+			newNode->setTriangleSelector(selector);
+			selector->drop();
+		}
+#endif
+
+		newNode->drop();	
+	}
+
+	// need map scenenode to joint
+	vector<CGameColladaMesh*>::iterator iMesh = listSkinMesh.begin(), iMeshEnd = listSkinMesh.end();
+	while ( iMesh != iMeshEnd )
+	{
+		(*iMesh)->updateJoint();
+		iMesh++;
+	}
+
+#ifdef GSEDITOR
+	if ( m_gameObject->m_node )
+	{
+		ISceneManager *smgr = getIView()->getSceneMgr();
+
+		// add collision
+		ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox( m_gameObject->m_node );
+		m_gameObject->m_node->setTriangleSelector(selector);
+		selector->drop();
+	}
+#endif
+
+}
+
+// updateJointToMesh
+// update joint
+void CColladaMeshComponent::updateJointToMesh( SMeshParam *mesh, vector<wstring>& arrayName, float *arrayWeight, float *arrayTransform, vector<s32>& vCountArray, vector<s32>& vArray, bool flipZ )
+{
+	int numJoint = (int)arrayName.size();
+
+	// get array float
+	f32* f = (f32*)arrayTransform;
+
+	for ( int i = 0; i < numJoint; i++ )
+	{
+		SJointParam newJoint;
+
+		newJoint.Name = arrayName[i];
+
+		core::matrix4 mat;
+		mat.setM( f + i*16 );
+		
+		if (flipZ)
+		{
+			core::matrix4 mat2(mat, core::matrix4::EM4CONST_TRANSPOSED);
+
+			mat2[1]=mat[8];
+			mat2[2]=mat[4];
+			mat2[4]=mat[2];
+			mat2[5]=mat[10];
+			mat2[6]=mat[6];
+			mat2[8]=mat[1];
+			mat2[9]=mat[9];
+			mat2[10]=mat[5];
+			mat2[12]=mat[3];
+			mat2[13]=mat[11];
+			mat2[14]=mat[7];
+
+			newJoint.InvMatrix = mat2;
+		}
+		else
+		{
+			newJoint.InvMatrix = mat.getTransposed();
+		}
+		
+		// add joint to controller
+		mesh->Joints.push_back( newJoint );
+	}
+	
+	// set vertex weight
+	int nVertex = (int)vCountArray.size();
+	int id = 0;
+	
+	for ( int i = 0; i < nVertex; i++ )
+	{
+		// num of bone in vertex
+		int nBone = vCountArray[i];
+
+		// loop on bone in vertex		
+		for ( int iBone = 0; iBone < nBone; iBone++, id+=2 )
+		{
+			u32 boneId		= vArray[id];
+			u32 weightId	= vArray[id + 1];
+			f32 f			= arrayWeight[weightId];
+			
+			SWeightParam weightParam;
+
+			weightParam.VertexID = i;
+			weightParam.Strength = f;
+
+			// add weight on bone
+			mesh->Joints[boneId].Weights.push_back( weightParam );
+			
+			mesh->JointIndex.push_back( boneId );
+			mesh->JointIndex.push_back( mesh->Joints[boneId].Weights.size() - 1 );
+		}
+
+	}
+}
+
+// setAnimation
+// apply Animation to skin joint
+void CColladaMeshComponent::setAnimation(const char *lpAnimName)
+{
+	if ( m_colladaNode == NULL )
+		return;
+	
+	SColladaAnimClip *animClip = m_colladaAnimation->getAnim( lpAnimName );
+	if ( animClip == NULL )
+		return;
+
+	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+
+	// set begin frame
+	setCurrentFrame(0);
+
+	while ( i != end )
+	{
+		const std::string& nodeName = (*i).first;
+		CGameColladaSceneNode* j = (*i).second;
+				
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+
+		// clear old key frame
+		j->clearAllKeyFrame();
+				
+		// get local matrix of skin joint
+		const core::matrix4& mat =	j->getLocalMatrix();
+
+		// todo add animation key
+		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
+
+		if ( anim )
+		{
+			int nRotKey = anim->RotationKeys.size();
+			for ( int i = 0; i < nRotKey; i++ )
+			{
+				j->RotationKeys.push_back( anim->RotationKeys[i] );	
+			}
+
+			int nPosKey = anim->PositionKeys.size();
+			for ( int i = 0; i < nPosKey; i++ )
+			{
+				j->PositionKeys.push_back( anim->PositionKeys[i] );
+			}
+
+		}
+
+		// next node
+		i++;
+	}	
+}
 
 // saveSceneToBinary
 // save collada mesh info to binary file
@@ -2709,487 +3219,4 @@ void CColladaMeshComponent::updateLod()
 		}
 
 	}
-}
-
-
-//////////////////////////////////////////////////////////
-// c function implement
-//////////////////////////////////////////////////////////
-
-//! changes the XML URI into an internal id
-void uriToId(std::wstring& str)
-{	
-	if (!str.size())
-		return;
-
-	if (str[0] == L'#')
-		str.erase( str.begin() );
-}
-
-
-std::wstring readId(io::IXMLReader *xmlRead)
-{
-	std::wstring str = xmlRead->getAttributeValue(L"id");
-	if (str.size()==0)
-		str = xmlRead->getAttributeValue(L"name");
-	
-	return str;
-}
-
-void findNextNoneWhiteSpace(const c8** start)
-{
-	const c8* p = *start;
-
-	while(*p && (*p==' ' || *p=='\n' || *p=='\r' || *p=='\t'))
-		++p;
-
-	*start = p;
-}
-
-inline f32 readFloat(const c8** p)
-{
-	f32 ftmp;
-	*p = core::fast_atof_move(*p, ftmp);
-	return ftmp;
-}
-
-void readFloatsInsideElement(io::IXMLReader* reader, f32* floats, u32 count)
-{
-	if (reader->isEmptyElement())
-		return;
-
-	while(reader->read())
-	{
-		if (reader->getNodeType() == io::EXN_TEXT)
-		{
-			// parse float data
-			core::stringc data = reader->getNodeData();
-			data.trim();
-			const c8* p = &data[0];
-
-			for (u32 i=0; i<count; ++i)
-			{
-				findNextNoneWhiteSpace(&p);
-				if (*p)
-					floats[i] = readFloat(&p);
-				else
-					floats[i] = 0.0f;
-			}
-		}
-		else if (reader->getNodeType() == io::EXN_ELEMENT_END)
-			break; // end parsing text
-	}
-}
-
-
-//! reads ints from inside of xml element until end of xml element
-void readIntsInsideElement(io::IXMLReader* reader, s32* ints, u32 count)
-{
-	if (reader->isEmptyElement())
-		return;
-
-	while(reader->read())
-	{
-		// TODO: check for comments inside the element
-		// and ignore them.
-
-		if (reader->getNodeType() == io::EXN_TEXT)
-		{
-			// parse float data
-			core::stringc data = reader->getNodeData();
-			data.trim();
-			const c8* p = &data[0];
-
-			for (u32 i=0; i<count; ++i)
-			{
-				findNextNoneWhiteSpace(&p);
-				if (*p)
-					ints[i] = (s32)readFloat(&p);
-				else
-					ints[i] = 0;
-			}
-		}
-		else
-		if (reader->getNodeType() == io::EXN_ELEMENT_END)
-			break; // end parsing text
-	}
-}
-
-//! reads ints from inside of xml element until end of xml element
-void readIntsInsideElement(io::IXMLReader* reader, vector<s32>& arrayInt)
-{
-	if (reader->isEmptyElement())
-		return;
-
-	while(reader->read())
-	{
-		// TODO: check for comments inside the element
-		// and ignore them.
-
-		if (reader->getNodeType() == io::EXN_TEXT)
-		{
-			core::stringw data = reader->getNodeData();
-			data.trim();
-			
-			wchar_t* p = &data[0];
-			wchar_t* begin = &data[0];
-
-			int value = 0;
-					
-
-			while ( *p )
-			{
-				while(*p && !(*p==L' ' || *p==L'\n' || *p==L'\r' || *p==L'\t'))
-					++p;
-
-				*p = NULL;
-
-				if (*begin)
-				{
-					swscanf(begin,L"%d", &value);
-					arrayInt.push_back( value );
-				}				
-
-				p++;
-				begin = p;
-			}
-
-		}
-		else
-		if (reader->getNodeType() == io::EXN_ELEMENT_END)
-			break; // end parsing text
-	}
-}				
-
-void readStringInsideElement(io::IXMLReader* reader, vector<std::wstring>& arrayString)
-{
-	if (reader->isEmptyElement())
-		return;
-
-	while(reader->read())
-	{
-		// TODO: check for comments inside the element
-		// and ignore them.
-
-		if (reader->getNodeType() == io::EXN_TEXT)
-		{
-			core::stringw data = reader->getNodeData();
-			data.trim();
-			
-			wchar_t* p = &data[0];
-			wchar_t* begin = &data[0];
-
-			for (u32 i=0; i< arrayString.size(); ++i)
-			{
-				while(*p && !(*p==L' ' || *p==L'\n' || *p==L'\r' || *p==L'\t'))
-					++p;
-
-				*p = NULL;
-
-				if (*begin)
-					arrayString[i] = std::wstring(begin);
-				else
-					arrayString[i] = std::wstring(L"");
-
-				p++;
-				begin = p;
-			}
-		}
-		else
-		if (reader->getNodeType() == io::EXN_ELEMENT_END)
-			break; // end parsing text
-	}
-}
-
-video::SColorf readColorNode(io::IXMLReader* reader)
-{
-	const core::stringc colorNodeName = "color";
-
-	if (reader->getNodeType() == io::EXN_ELEMENT && colorNodeName == reader->getNodeName())
-	{
-		f32 color[4];
-		readFloatsInsideElement(reader,color,4);
-		return video::SColorf(color[0], color[1], color[2], color[3]);
-	}
-
-	return video::SColorf();
-}
-
-f32 readFloatNode(io::IXMLReader* reader)
-{
-	const core::stringc floatNodeName =        "float";
-	
-	f32 result = 0.0f;
-	if (reader->getNodeType() == io::EXN_ELEMENT && floatNodeName == reader->getNodeName())
-	{
-		readFloatsInsideElement(reader,&result,1);
-	}
-
-	return result;
-}
-
-//! reads a <scale> element and its content and creates a matrix from it
-core::matrix4 readScaleNode(io::IXMLReader* reader, bool flip)
-{
-	core::matrix4 mat;
-	if (reader->isEmptyElement())
-		return mat;
-
-	f32 floats[3];
-	readFloatsInsideElement(reader, floats, 3);
-
-	if (flip)
-		mat.setScale(core::vector3df(floats[0], floats[2], floats[1]));
-	else
-		mat.setScale(core::vector3df(floats[0], floats[1], floats[2]));
-
-	return mat;
-}
-
-//! reads a <translate> element and its content and creates a matrix from it
-core::matrix4 readTranslateNode(io::IXMLReader* reader, bool flip)
-{
-	core::matrix4 mat;
-	if (reader->isEmptyElement())
-		return mat;
-
-	f32 floats[3];
-	readFloatsInsideElement(reader, floats, 3);
-
-	if (flip)
-		mat.setTranslation(core::vector3df(floats[0], floats[2], floats[1]));
-	else
-		mat.setTranslation(core::vector3df(floats[0], floats[1], floats[2]));
-
-	return mat;
-}
-
-//! reads a <rotate> element and its content and creates a matrix from it
-core::matrix4 readRotateNode(io::IXMLReader* reader, bool flip)
-{
-	core::matrix4 mat;
-	if (reader->isEmptyElement())
-		return mat;
-
-	f32 floats[4];
-	readFloatsInsideElement(reader, floats, 4);
-
-	if (!core::iszero(floats[3]))
-	{
-		core::quaternion q;
-		if (flip)
-			q.fromAngleAxis(floats[3]*core::DEGTORAD, core::vector3df(floats[0], floats[2], floats[1]));
-		else
-			q.fromAngleAxis(floats[3]*-core::DEGTORAD, core::vector3df(floats[0], floats[1], floats[2]));
-		
-		q.normalize();
-		return q.getMatrix();
-	}
-	else
-		return core::IdentityMatrix;
-}
-
-std::wstring getImageWithId( const std::wstring& id, const ArrayImages& listImages )
-{
-	int n = listImages.size();
-	for ( int i = 0; i < n; i++ )
-	{
-		if ( listImages[i].id == id )
-			return listImages[i].fileName;
-	}
-	return id;
-}
-
-video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& id, const ArrayImages& listImages )
-{
-	std::wstring textureName = getImageWithId( id, listImages);
-	
-	std::string path = basePath;
-
-	int i = basePath.length() - 1;
-	while ( i > 0 )
-	{
-		if ( basePath[i] == '\\' || basePath[i] == '/' )
-		{
-			path = basePath.substr(0, i + 1);
-			break;
-		}
-		i--;
-	}
-
-	// try open 1
-	wchar_t textureNameW[1024] = {0};
-	char textureNameA[1024] = {0};
-	uiString::copy<char, const char>( textureNameA, path.c_str() );
-	uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
-		
-	ITexture *tex =	getIView()->getDriver()->getTexture( textureNameA );
-
-	// try open 2
-	if ( tex == NULL )
-	{
-		uiString::getFileName<const wchar_t, wchar_t>( textureName.c_str(), textureNameW );
-		textureName = textureNameW;
-
-		uiString::copy<char, const char>( textureNameA, path.c_str() );
-		uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
-
-		tex = getIView()->getDriver()->getTexture( textureNameA );
-	}
-	
-	// try open 3
-	if ( tex == NULL )
-	{
-		tex = getIView()->getDriver()->getTexture( getIView()->getPath( textureName.c_str() ) );
-	}
-	return tex;
-}
-
-video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& uri, ArrayEffectParams& listEffectParam, ArrayImages& listImages)
-{	
-	int n = listEffectParam.size();
-	for ( int i = 0; i < n; i++ )
-	{
-		if ( listEffectParam[i].Name == uri )
-		{
-			if ( listEffectParam[i].InitFromTexture.size() > 0 )
-			{
-				std::wstring textureName = getImageWithId(listEffectParam[i].InitFromTexture, listImages);
-				
-				std::string path = basePath;
-
-				int i = basePath.length() - 1;
-				while ( i > 0 )
-				{
-					if ( basePath[i] == '\\' || basePath[i] == '/' )
-					{
-						path = basePath.substr(0, i + 1);
-						break;
-					}
-					i--;
-				}
-
-				// try open 1
-				wchar_t textureNameW[1024] = {0};
-				char textureNameA[1024] = {0};
-				uiString::copy<char, const char>( textureNameA, path.c_str() );
-				uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
-					
-				ITexture *tex =	getIView()->getDriver()->getTexture( textureNameA );
-				
-				// try open 2
-				if ( tex == NULL )
-				{
-					uiString::getFileName<const wchar_t, wchar_t>( textureName.c_str(), textureNameW );
-					textureName = textureNameW;
-
-					uiString::copy<char, const char>( textureNameA, path.c_str() );
-					uiString::cat<char, const wchar_t>( textureNameA, textureName.c_str() );
-
-					tex = getIView()->getDriver()->getTexture( textureNameA );
-				}
-				
-				// try open 3
-				if ( tex == NULL )
-				{
-					tex = getIView()->getDriver()->getTexture( getIView()->getPath( textureName.c_str() ) );
-				}
-
-				return tex;
-			}
-			else if ( listEffectParam[i].Source.size() > 0 )
-				return getTextureFromImage( basePath,listEffectParam[i].Source, listEffectParam, listImages );
-
-			return NULL;
-		}
-	}
-	return NULL;
-}
-
-int getBufferWithUri( std::wstring& uri, SMeshParam* mesh )
-{
-	int n = mesh->Buffers.size();
-	for ( int i =0; i < n; i++ )
-	{
-		if ( mesh->Buffers[i].Name == uri )
-		{
-			return i;
-		}
-	}
-	return -1;
-}
-
-int getVerticesWithUri( std::wstring& uri, SMeshParam* mesh )
-{
-	int n = mesh->Vertices.size();
-	for ( int i = 0; i < n; i++ )
-	{
-		if ( mesh->Vertices[i].Name == uri )
-		{
-			return i;
-		}
-	}
-
-	return -1;
-}
-
-int getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam, ArrayEffects& listMaterial )
-{
-	// search in effect list
-	std::wstring fxName = uri + L"-fx";	
-	int n = listEffectParam.size();
-	for ( int i = 0; i < n; i++ )
-	{
-		if ( listEffectParam[i].Id == fxName )
-		{
-			return i;
-		}
-	}	
-
-	// try search in material list
-	n = listMaterial.size();
-	for ( int i = 0; i < n; i++ )
-	{
-		if ( listMaterial[i].Id == uri )
-		{
-			// add to list effect
-			listEffectParam.push_back( listMaterial[i] );
-
-			// rename to effect style
-			SEffect &effect = listEffectParam.back();
-			effect.Id = uri + L"-fx";
-
-			return listEffectParam.size() - 1;
-		}
-	}	
-
-	return -1;
-}
-
-int	getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam )
-{
-	int n = listMeshParam.size();
-	for ( int i = 0; i < n; i++ )
-	{
-		if ( listMeshParam[i].Name == uri )
-		{
-			return i;
-		}
-	}
-
-	return -1;
-}
-
-int getMeshWithControllerName( std::wstring& controllerName, ArrayMeshParams& listMeshParam )
-{
-	int n = listMeshParam.size();
-	for ( int i = 0; i < n; i++ )
-	{
-		if ( listMeshParam[i].ControllerName == controllerName )
-		{
-			return i;
-		}
-	}
-
-	return -1;
 }

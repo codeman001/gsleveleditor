@@ -7,8 +7,7 @@
 #include "CGameColladaSceneNode.h"
 #include "CGameContainerSceneNode.h"
 
-// const for animation
-const int k_linear = 0;
+#pragma region DAE_ENTITY_PARSE_DECLARE
 
 // const for buffer
 const int k_positionBuffer = 0;
@@ -166,6 +165,10 @@ struct SNodeParam
 };
 typedef vector<SNodeParam*>	ArrayNodeParams;
 
+#pragma endregion
+
+
+#pragma region DAE_ANIMATION_ENTITY_DECLARE
 
 // SColladaNodeAnim
 // store keyframes on a scenenode
@@ -262,6 +265,11 @@ struct SColladaAnimClip
 	}
 };
 
+#pragma endregion
+
+
+#pragma region DAE_ANIMATION_CLASS_DECLARE
+
 // CColladaAnimation
 // collada anim
 class CColladaAnimation
@@ -352,12 +360,8 @@ public:
 	// release all package animation
 	void freeAllAnimationPackage();
 };
-	
-struct SColladaLodNode
-{
-	float			distance;
-	std::string		node;
-};
+
+#pragma endregion
 
 // CColladaMeshComponent
 class CColladaMeshComponent: public IObjectComponent
@@ -367,8 +371,7 @@ protected:
 	std::string					m_defaultNodeString;
 	
 	vector<CGameColladaSceneNode*>	m_defaultNode;
-	vector<SColladaLodNode>			m_colladaLodNode;
-
+	
 	// current anim is playing
 	SColladaAnimClip			*m_currentAnim;
 
@@ -632,6 +635,14 @@ public:
 	//////////////////////////////////////////////
 	// gameplay func
 	//////////////////////////////////////////////
+
+	struct SColladaLodNode
+	{
+		float			distance;
+		std::string		node;
+	};
+
+	vector<SColladaLodNode>			m_colladaLodNode;
 
 	// sortLodData
 	// sort lod data by distance

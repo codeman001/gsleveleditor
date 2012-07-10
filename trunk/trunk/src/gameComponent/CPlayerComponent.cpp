@@ -18,7 +18,6 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	// init run const
 	m_runSpeed				= 6.0f;
 	m_runBackSpeed			= 5.0f;
-	m_runLeftRightSpeed		= 5.0f;
 
 	m_bipSpineNode	= NULL;
 	m_bipSpine1Node	= NULL;
@@ -220,12 +219,17 @@ void CPlayerComponent::updateStateRun()
 		s_lastActionKey = m_keyActionBit;
 		m_subState = SubStateActive;
 
-		// read default matrix
+		// disable anim on bip spine
 		m_bipSpineNode->setEnableAnim( true );
 		m_bipSpine1Node->setEnableAnim( true );
 	}
 	else if ( m_subState == SubStateEnd )
-	{			
+	{	
+		// enable anim on bip spine
+		m_bipSpineNode->setEnableAnim( true );
+		m_bipSpine1Node->setEnableAnim( true );
+
+		// change state
 		doNextState();
 	}
 	else
@@ -244,7 +248,7 @@ void CPlayerComponent::updateStateRun()
 		// -------------------------
 		// begin rotate the bip
 		
-		// linear calc current rotateion
+		// linear calc current rotation
 		float rotSpeed = 3.0f  * diff;
 		if ( m_currentRunRot < m_runRotation )
 			m_currentRunRot = m_currentRunRot + rotSpeed;			
@@ -266,17 +270,46 @@ void CPlayerComponent::updateStateRun()
 		// end rotate the bip
 		// -------------------------		
 		
-		// get front vector
+		// get camera front vector
 		CGameCamera* cam = CGameLevel::getCurrentLevel()->getCamera();
 		core::vector3df front = cam->getPosition() - cam->getTarget();
 		front.Y = 0;
 		front.normalize();
 				
+		core::vector3df objFront = m_gameObject->getFront();
+		objFront.normalize();
+
 		// current object position
 		core::vector3df pos = m_gameObject->getPosition();			
+		core::vector3df	moveFront = -front;
 
 		// set rotation by camera
-		m_gameObject->lookAt( pos - front );
+		float angle1 = (float)(core::vector2df( moveFront.X, moveFront.Z ).getAngleTrig());
+		float angle2 = (float)(core::vector2df(  objFront.X,  objFront.Z ).getAngleTrig());
+		
+		// adjust to fix rotate too large
+		if ( fabs(angle2 - angle1) > 180 )
+		{
+			if ( angle2 > angle1 )
+				angle2 = angle2 - 360.0f;
+			else
+				angle1 = angle1 - 360.0f;
+		}
+
+		// linear calc current rotation
+		rotSpeed = 5.0f  * diff;
+		if ( angle2 < angle1 )
+			angle2 = angle2 + rotSpeed;
+		else if ( angle2 > angle1 )
+			angle2 = angle2 - rotSpeed;		
+		if ( fabs( angle2 - angle1 ) < rotSpeed )
+			angle2 = angle1;
+		
+		// rotate object & front vector
+		m_gameObject->setRotation(core::vector3df(0.0f, 90 - angle2, 0.0f));
+
+		// get front
+		front = m_gameObject->getFront();
 
 		// rotation run vector
 		core::matrix4 mat;
@@ -286,12 +319,12 @@ void CPlayerComponent::updateStateRun()
 		if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
 		{
 			// run back
-			m_gameObject->setPosition( pos - front * m_runSpeed * diff );
+			m_gameObject->setPosition( pos + front * m_runSpeed * diff );
 		}
 		else
 		{
 			// run forward
-			m_gameObject->setPosition( pos + front * m_runSpeed * diff );
+			m_gameObject->setPosition( pos - front * m_runBackSpeed * diff );
 		}				
 
 		// check if change action

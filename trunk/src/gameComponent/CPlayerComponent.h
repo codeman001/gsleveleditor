@@ -44,7 +44,6 @@ protected:
 
 	float					m_runSpeed;
 	float					m_runBackSpeed;
-	float					m_runLeftRightSpeed;
 
 	CColladaAnimation*		m_animationPackage;
 	CColladaMeshComponent*	m_collada;

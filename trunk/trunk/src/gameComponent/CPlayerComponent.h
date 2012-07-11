@@ -87,7 +87,10 @@ public:
 	void setState( EPlayerState state )
 	{
 		if ( m_state == state )
+		{
+			m_nextState = state;
 			return;
+		}
 
 		if ( m_state == PlayerNone )
 		{
@@ -108,6 +111,14 @@ protected:
 
 	void updateStateIdle();
 	void updateStateRun();
+
+	// updateRotateBip
+	// rotate the foot to move vector
+	void updateRotateBip();
+
+	// updateRotateObject
+	// rotate the object to camera front
+	void updateRotateObject();
 
 	// doNextState
 	// change to next state

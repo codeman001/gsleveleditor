@@ -392,6 +392,49 @@ int setSceneNodeVisible(lua_State* state)
 	return 0;
 }
 
+//////////////////////////////////////////////////////////
+// INVETORY FUNCTION IMPLEMENT
+//////////////////////////////////////////////////////////
+
+// addItemToInventory
+// add item to inventory
+// param1: obj
+// param2: itemTemplate
+int addItemToInventory(lua_State* state)
+{
+	int objID = lua_tointeger(state,1);
+	const char* itemTemplate = lua_tostring(state,2);
+
+	CGameObject* obj = getLevel()->searchObject( objID );
+	if ( obj )
+	{
+		CInventoryComponent* inventory = (CInventoryComponent*) obj->getComponent( CGameComponent::InventoryComponent );
+		if ( inventory )
+			inventory->addItemToInventory( itemTemplate );
+	}
+
+	return 0;
+}
+
+// setActiveItemOnInventory
+// set active item on inventory
+// param1: obj
+// param2: itemTemplate
+int setActiveItemOnInventory(lua_State* state)
+{
+	int objID = lua_tointeger(state,1);
+	const char* itemTemplate = lua_tostring(state,2);
+
+	CGameObject* obj = getLevel()->searchObject( objID );
+	if ( obj )
+	{
+		CInventoryComponent* inventory = (CInventoryComponent*) obj->getComponent( CGameComponent::InventoryComponent );
+		if ( inventory )
+			inventory->setActiveItem( itemTemplate );
+	}
+
+	return 0;
+}
 
 /////////////////////////////////////////////////////////////
 // registerCFunction
@@ -423,6 +466,10 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(setSceneNodePosition);
 	REGISTER_C_FUNCTION(setSceneNodeIsSkydome);	
 	REGISTER_C_FUNCTION(setSceneNodeVisible);
+
+	// inventory function
+	REGISTER_C_FUNCTION(addItemToInventory);
+	REGISTER_C_FUNCTION(setActiveItemOnInventory);
 	
 }
 // end register

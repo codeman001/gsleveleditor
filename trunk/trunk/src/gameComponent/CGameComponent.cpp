@@ -4,7 +4,9 @@
 const char *CGameComponent::s_compType[] = 
 {
 	"Player component",
-	"AI player component"
+	"AI player component",
+	"Inventory component",
+	"Weapon component"
 };
 
 #define	stringOfComponent( type )	CGameComponent::s_compType[ (int)type - (int)CGameComponent::PlayerComponent  ]
@@ -17,6 +19,10 @@ IObjectComponent* CGameComponent::loadComponent( CGameObject *pObj, char *compon
 	
 	if ( strcmp( componentName, stringOfComponent(CGameComponent::PlayerComponent) ) == 0 )	
 		pComp = new CPlayerComponent( pObj );
+	if ( strcmp( componentName, stringOfComponent(CGameComponent::InventoryComponent) ) == 0 )	
+		pComp = new CInventoryComponent( pObj );
+	if ( strcmp( componentName, stringOfComponent(CGameComponent::WeaponComponent) ) == 0 )	
+		pComp = new CWeaponComponent( pObj );
 
 	return pComp;
 }

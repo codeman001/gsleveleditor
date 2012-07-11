@@ -453,6 +453,10 @@ public:
 	// load all transform
 	void loadTransform();
 
+	// setTransform
+	// set transform by a matrix
+	void setTransform( const core::matrix4& mat );
+
 #ifdef GSGAMEPLAY
 	// setPositionMoveToWayPoint
 	// set position

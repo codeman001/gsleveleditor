@@ -8,10 +8,13 @@
 #include "CZone.h"
 
 #include "CComponentFactory.h"
-#include "gameComponent/CGameComponent.h"
-#include "CObjTemplateFactory.h"
 
 #include "CColladaMeshComponent.h"
+#include "gameComponent/CGameComponent.h"
+#include "gameComponent/CInventoryComponent.h"
+#include "gameComponent/CWeaponComponent.h"
+
+#include "CObjTemplateFactory.h"
 
 #include "script/CScriptManager.h"
 using namespace NSScriptManager;

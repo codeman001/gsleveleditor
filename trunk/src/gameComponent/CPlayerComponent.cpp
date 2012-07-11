@@ -224,13 +224,27 @@ void CPlayerComponent::updateStateRun()
 		m_bipSpine1Node->setEnableAnim( true );
 	}
 	else if ( m_subState == SubStateEnd )
-	{	
-		// enable anim on bip spine
-		m_bipSpineNode->setEnableAnim( true );
-		m_bipSpine1Node->setEnableAnim( true );
+	{			
+		// if continue run
+		if ( m_nextState == CPlayerComponent::PlayerRun )
+		{
+			m_subState = SubStateInit;
+			return;
+		}
 
-		// change state
-		doNextState();
+		// rotate foot bip to front
+		updateRotateBip();
+
+		// wait to finish rotate bip
+		if ( m_currentRunRot == m_runRotation )
+		{
+			// enable anim on bip spine
+			m_bipSpineNode->setEnableAnim( true );
+			m_bipSpine1Node->setEnableAnim( true );
+
+			// change state
+			doNextState();
+		}
 	}
 	else
 	{		
@@ -241,77 +255,17 @@ void CPlayerComponent::updateStateRun()
 		m_bipSpineNode->setEnableAnim( false );
 		m_bipSpine1Node->setEnableAnim( false );
 
-		// and update animation by manual
-		m_bipSpineNode->updateAnimation();
-		m_bipSpine1Node->updateAnimation();
-
-		// -------------------------
-		// begin rotate the bip
+		// rotate bip
+		updateRotateBip();
 		
-		// linear calc current rotation
-		float rotSpeed = 3.0f  * diff;
-		if ( m_currentRunRot < m_runRotation )
-			m_currentRunRot = m_currentRunRot + rotSpeed;			
-		else if ( m_currentRunRot > m_runRotation )
-			m_currentRunRot = m_currentRunRot - rotSpeed;
-		
-		if ( fabs( m_currentRunRot - m_runRotation ) < rotSpeed )
-			m_currentRunRot = m_runRotation;
-
-		// rotate the legs to run vector
-		core::vector3df rotateSpine = m_bipSpineNode->AnimationMatrix.getRotationDegrees();
-		rotateSpine.X += m_currentRunRot;
-		m_bipSpineNode->AnimationMatrix.setRotationDegrees( rotateSpine );
-
-		// rotate the body to front vector
-		rotateSpine = m_bipSpine1Node->AnimationMatrix.getRotationDegrees();
-		rotateSpine.X -= m_currentRunRot;
-		m_bipSpine1Node->AnimationMatrix.setRotationDegrees( rotateSpine );
-		// end rotate the bip
-		// -------------------------		
-		
-		// get camera front vector
-		CGameCamera* cam = CGameLevel::getCurrentLevel()->getCamera();
-		core::vector3df front = cam->getPosition() - cam->getTarget();
-		front.Y = 0;
-		front.normalize();
-				
-		core::vector3df objFront = m_gameObject->getFront();
-		objFront.normalize();
-
-		// current object position
-		core::vector3df pos = m_gameObject->getPosition();			
-		core::vector3df	moveFront = -front;
-
-		// set rotation by camera
-		float angle1 = (float)(core::vector2df( moveFront.X, moveFront.Z ).getAngleTrig());
-		float angle2 = (float)(core::vector2df(  objFront.X,  objFront.Z ).getAngleTrig());
-		
-		// adjust to fix rotate too large
-		if ( fabs(angle2 - angle1) > 180 )
-		{
-			if ( angle2 > angle1 )
-				angle2 = angle2 - 360.0f;
-			else
-				angle1 = angle1 - 360.0f;
-		}
-
-		// linear calc current rotation
-		rotSpeed = 5.0f  * diff;
-		if ( angle2 < angle1 )
-			angle2 = angle2 + rotSpeed;
-		else if ( angle2 > angle1 )
-			angle2 = angle2 - rotSpeed;		
-		if ( fabs( angle2 - angle1 ) < rotSpeed )
-			angle2 = angle1;
-		
-		// rotate object & front vector
-		m_gameObject->setRotation(core::vector3df(0.0f, 90 - angle2, 0.0f));
+		// rotate object
+		updateRotateObject();
 
 		// get front
-		front = m_gameObject->getFront();
+		core::vector3df pos		= m_gameObject->getPosition();
+		core::vector3df front	= m_gameObject->getFront();
 
-		// rotation run vector
+		// calc run vector
 		core::matrix4 mat;
 		mat.setRotationDegrees( core::vector3df(0, m_currentRunRot,0) );
 		mat.rotateVect( front );
@@ -327,10 +281,85 @@ void CPlayerComponent::updateStateRun()
 			m_gameObject->setPosition( pos - front * m_runBackSpeed * diff );
 		}				
 
-		// check if change action
+		// check to init run state if change action
 		if ( s_lastActionKey != m_keyActionBit )
 			m_subState = SubStateInit;
 
 		s_lastActionKey = m_keyActionBit;
 	}
+}
+
+// updateRotateBip
+// rotate the foot to move vector
+void CPlayerComponent::updateRotateBip()
+{
+	// and update animation by manual
+	m_bipSpineNode->updateAnimation();
+	m_bipSpine1Node->updateAnimation();
+
+	// linear calc current rotation
+	float diff = getIView()->getTimeStep() * 0.1f;
+	float rotSpeed = 3.0f  * diff;
+
+	if ( m_currentRunRot < m_runRotation )
+		m_currentRunRot = m_currentRunRot + rotSpeed;			
+	else if ( m_currentRunRot > m_runRotation )
+		m_currentRunRot = m_currentRunRot - rotSpeed;
+	
+	if ( fabs( m_currentRunRot - m_runRotation ) < rotSpeed )
+		m_currentRunRot = m_runRotation;
+
+	// rotate the legs to run vector
+	core::vector3df rotateSpine = m_bipSpineNode->AnimationMatrix.getRotationDegrees();
+	rotateSpine.X += m_currentRunRot;
+	m_bipSpineNode->AnimationMatrix.setRotationDegrees( rotateSpine );
+
+	// rotate the body to front vector
+	rotateSpine = m_bipSpine1Node->AnimationMatrix.getRotationDegrees();
+	rotateSpine.X -= m_currentRunRot;
+	m_bipSpine1Node->AnimationMatrix.setRotationDegrees( rotateSpine );
+}
+
+// updateRotateObject
+// rotate the object to camera front
+void CPlayerComponent::updateRotateObject()
+{
+	// get camera front vector
+	CGameCamera* cam = CGameLevel::getCurrentLevel()->getCamera();
+	core::vector3df front = cam->getPosition() - cam->getTarget();
+	front.Y = 0;
+	front.normalize();
+			
+	core::vector3df objFront = m_gameObject->getFront();
+	objFront.normalize();
+
+	// current object position	
+	core::vector3df	moveFront = -front;
+
+	// set rotation by camera
+	float angle1 = (float)(core::vector2df( moveFront.X, moveFront.Z ).getAngleTrig());
+	float angle2 = (float)(core::vector2df(  objFront.X,  objFront.Z ).getAngleTrig());
+	
+	// adjust to fix rotate too large
+	if ( fabs(angle2 - angle1) > 180 )
+	{
+		if ( angle2 > angle1 )
+			angle2 = angle2 - 360.0f;
+		else
+			angle1 = angle1 - 360.0f;
+	}
+
+	// linear calc current rotation
+	float diff = getIView()->getTimeStep() * 0.1f;
+	float rotSpeed = 5.0f  * diff;
+
+	if ( angle2 < angle1 )
+		angle2 = angle2 + rotSpeed;
+	else if ( angle2 > angle1 )
+		angle2 = angle2 - rotSpeed;		
+	if ( fabs( angle2 - angle1 ) < rotSpeed )
+		angle2 = angle1;
+	
+	// rotate object & front vector
+	m_gameObject->setRotation(core::vector3df(0.0f, 90 - angle2, 0.0f));
 }

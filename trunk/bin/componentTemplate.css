@@ -4,3 +4,14 @@ Player component
 AI player component
 {
 }
+Inventory component
+{
+}
+Weapon component
+{
+	weaponType: 0 | intType;
+	damage: 0.0 | floatType;
+	rate: 0.0 | floatType;
+	range: 0.0 | floatType;
+	mobility: 0.0 | floatType;
+}

@@ -85,6 +85,13 @@ public:
 	{
 		return m_onDisable;
 	}
+
+	virtual void setEnable( bool b )
+	{
+		CGameObject::setEnable( b );
+		m_enableState = false;
+	}
+
 	// end property
 protected:
 

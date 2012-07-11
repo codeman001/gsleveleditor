@@ -375,6 +375,7 @@ protected:
 	// current anim is playing
 	SColladaAnimClip			*m_currentAnim;
 
+#pragma region DAE_PARSE_OBJECTS
 	//	list of effect in collada scene
 	ArrayImages					m_listImages;
 	ArrayEffects				m_listEffects;
@@ -382,6 +383,7 @@ protected:
 	ArrayEffectParams			m_listEffectsParam;
 	ArrayMeshParams				m_listMesh;
 	ArrayNodeParams				m_listNode;
+#pragma endregion
 
 	// current node
 	CGameChildContainerSceneNode				*m_colladaNode;
@@ -421,6 +423,10 @@ public:
 	{
 		return m_mapNode[ std::string(name) ];
 	}
+
+	// getChildsOfSceneNode
+	// find all childs of scene node
+	void getChildsOfSceneNode( const char *name, vector<CGameColladaSceneNode*>& listChilds );
 
 	// getSceneNodeBySID
 	// find child node with name
@@ -482,6 +488,7 @@ public:
 		m_sidNode[name] = node;
 	}
 
+#pragma region DAE_PARSE_FUNCTION
 protected:
 	// constructScene
 	// create scene node
@@ -534,6 +541,8 @@ protected:
 	// cleanData
 	// free all data from parse dae
 	void cleanData();
+#pragma endregion
+
 public:
 	
 	// setAnimationPackage
@@ -553,6 +562,10 @@ public:
 	// setAnimation
 	// apply Animation to skin joint
 	void setAnimation(const char *lpAnimName);
+
+	// setAnimation
+	// apply Animation to array of skin joint
+	void setAnimation(const char *lpAnimName, vector<CGameColladaSceneNode*>& listNodes );
 
 	// getCurrentAnim
 	// get current anim

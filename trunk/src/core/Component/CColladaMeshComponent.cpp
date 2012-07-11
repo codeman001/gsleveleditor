@@ -534,13 +534,6 @@ int getMeshWithControllerName( std::wstring& controllerName, ArrayMeshParams& li
 #pragma endregion
 
 
-//////////////////////////////////////////////////////////
-// CColladaCache implement
-//////////////////////////////////////////////////////////
-
-map<string, CGameChildContainerSceneNode*>	CColladaCache::s_nodeCache;
-
-
 #pragma region DAE_COLLADA_ANIMATION_IMPLEMENT
 
 //////////////////////////////////////////////////////////
@@ -1199,6 +1192,15 @@ void CColladaAnimationFactory::freeAllAnimationPackage()
 }
 
 #pragma endregion
+
+
+
+//////////////////////////////////////////////////////////
+// CColladaCache implement
+//////////////////////////////////////////////////////////
+
+map<string, CGameChildContainerSceneNode*>	CColladaCache::s_nodeCache;
+
 
 //////////////////////////////////////////////////////////
 // CColladaMeshComponent implement
@@ -3012,6 +3014,42 @@ void CColladaMeshComponent::updateJointToMesh( SMeshParam *mesh, vector<wstring>
 	}
 }
 
+
+// getChildsOfSceneNode
+// find all childs of scene node
+void CColladaMeshComponent::getChildsOfSceneNode( const char *name, vector<CGameColladaSceneNode*>& listChilds )
+{
+	CGameColladaSceneNode *rootNode = getSceneNode( name );
+	if ( rootNode == NULL )
+		return;
+	
+	stack<ISceneNode*>	stackNodes;
+	stackNodes.push( rootNode );
+
+	while ( stackNodes.size() )
+	{
+		// get current node
+		ISceneNode* node = stackNodes.top();
+		stackNodes.pop();
+
+		// add childs to list
+		if ( node != rootNode )
+			listChilds.push_back( (CGameColladaSceneNode*)node );
+
+		// continue get all childs node
+		const core::list<ISceneNode*> childs = node->getChildren();
+		core::list<ISceneNode*>::ConstIterator i = childs.begin(), end = childs.end();
+		while ( i != end )
+		{
+			stackNodes.push( (*i) );
+			i++;
+		}
+
+	}
+
+}
+
+
 // setAnimation
 // apply Animation to skin joint
 void CColladaMeshComponent::setAnimation(const char *lpAnimName)
@@ -3066,8 +3104,65 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 
 		// next node
 		i++;
-	}	
+	}
 }
+
+// setAnimation
+// apply Animation to array of skin joint
+void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameColladaSceneNode*>& listNodes )
+{
+	if ( m_colladaNode == NULL )
+		return;
+	
+	SColladaAnimClip *animClip = m_colladaAnimation->getAnim( lpAnimName );
+	if ( animClip == NULL )
+		return;
+
+	vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
+
+	// set begin frame
+	setCurrentFrame(0);
+
+	while ( i != end )
+	{		
+		CGameColladaSceneNode* j = (*i);
+				
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+
+		// clear old key frame
+		j->clearAllKeyFrame();
+				
+		// get local matrix of skin joint
+		const core::matrix4& mat =	j->getLocalMatrix();
+
+		// todo add animation key
+		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( j->getName() );
+
+		if ( anim )
+		{
+			int nRotKey = anim->RotationKeys.size();
+			for ( int i = 0; i < nRotKey; i++ )
+			{
+				j->RotationKeys.push_back( anim->RotationKeys[i] );	
+			}
+
+			int nPosKey = anim->PositionKeys.size();
+			for ( int i = 0; i < nPosKey; i++ )
+			{
+				j->PositionKeys.push_back( anim->PositionKeys[i] );
+			}
+
+		}
+
+		// next node
+		i++;
+	}
+}
+
 
 // saveSceneToBinary
 // save collada mesh info to binary file

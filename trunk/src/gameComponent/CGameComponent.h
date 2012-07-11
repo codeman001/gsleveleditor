@@ -3,6 +3,8 @@
 
 #include "IObjectComponent.h"
 #include "CPlayerComponent.h"
+#include "CInventoryComponent.h"
+#include "CWeaponComponent.h"
 
 class CGameComponent
 {
@@ -13,7 +15,9 @@ public:
 	enum ComponentType
 	{
 		PlayerComponent = IObjectComponent::NumBuildInComponent,
-		AIPlayerComponent
+		AIPlayerComponent,
+		InventoryComponent,
+		WeaponComponent
 	};
 
 	// loadComponent

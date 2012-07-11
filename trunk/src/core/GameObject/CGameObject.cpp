@@ -667,6 +667,18 @@ void CGameObject::loadTransform()
 	m_scale			= m_oldScale;		
 }
 
+// setTransform
+// set transform by a matrix
+void CGameObject::setTransform( const core::matrix4& mat )
+{
+	m_position		= mat.getTranslation();
+	m_rotation		= mat.getRotationDegrees();
+	m_scale			= mat.getScale();
+
+	updateNodePosition();
+	updateNodeRotation();
+	updateNodeScale();
+}
 
 #ifdef GSGAMEPLAY
 // setPositionMoveToWayPoint

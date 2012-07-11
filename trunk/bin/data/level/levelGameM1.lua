@@ -16,6 +16,9 @@ function triggerInitLevel_enable(triggerID)
 	setCameraFarValue(cameraID, 10000)
 	setCameraFollowObject(cameraID, playerID, 400)
 	
+	-- add shotgun to inventory
+	addItemToInventory( playerID, "weaponShotGun" )
+	setActiveItemOnInventory( playerID, "weaponShotGun" )
 	
 end
 

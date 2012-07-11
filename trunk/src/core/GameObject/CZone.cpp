@@ -54,7 +54,7 @@ void CZone::updateObject()
 	{
 		CGameObject *pObject = (CGameObject*) (*it);
 
-		if ( pObject->isEnable() || pObject->getObjectType() == CGameObject::TriggerObject )
+		if ( pObject->isEnable() )
 			pObject->updateObject();
 
 		it++;

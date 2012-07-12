@@ -70,10 +70,7 @@ void CGameCameraFollowAnimator::animateNode(ISceneNode* node, u32 timeMs)
 	ICameraSceneNode *camera = (ICameraSceneNode*)node;
 	
 	if (m_firstUpdate)
-	{
-		m_lastAnimationTime = timeMs;
-		m_firstUpdate = false;
-	}
+		m_lastAnimationTime = timeMs;		
 
 	if(!camera->isInputReceiverEnabled())
 		return;
@@ -118,8 +115,39 @@ void CGameCameraFollowAnimator::animateNode(ISceneNode* node, u32 timeMs)
 		pos = colPos;
 	}
 
-	camera->setPosition( pos );
-	camera->setTarget( target );
+	if ( m_firstUpdate )
+	{
+		m_currentPos	= pos;
+		m_currentTarget	= target;
+		m_toPos			= pos;
+		m_toTarget		= target;
+
+		camera->setPosition( pos );
+		camera->setTarget( target );
+
+		m_firstUpdate = false;
+	}
+	else
+	{
+		m_toPos			= pos;
+		m_toTarget		= target;
+
+		core::vector3df deltaPos	= m_toPos - m_currentPos;
+		core::vector3df deltaTarget	= m_toTarget - m_currentTarget;
+
+		if ( deltaPos.getLengthSQ() <= 50 )
+			m_currentPos	= m_toPos;
+		else
+			m_currentPos	= m_currentPos		+ deltaPos * timeDiff * 0.01f;
+
+		if ( deltaTarget.getLengthSQ() <= 50 )
+			m_currentTarget	= m_toTarget;
+		else
+			m_currentTarget	= m_currentTarget	+ deltaTarget * timeDiff * 0.01f;
+
+		camera->setPosition( m_currentPos );
+		camera->setTarget( m_currentTarget );
+	}
 }
 
 //! Creates a clone of this animator.

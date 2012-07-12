@@ -19,6 +19,11 @@ protected:
 
 		bool				m_leftMousePress;
 		core::position2d<f32> m_centerCursor, m_cursorPos;
+
+		core::vector3df		m_currentPos;
+		core::vector3df		m_currentTarget;
+		core::vector3df		m_toPos;
+		core::vector3df		m_toTarget;
 public:
 		//! Constructor
 		CGameCameraFollowAnimator(	gui::ICursorControl* cursorControl, float radius, f32 rotateSpeed = 20.0f );

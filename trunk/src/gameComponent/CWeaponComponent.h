@@ -40,6 +40,36 @@ public:
 	// loadData
 	// load data to serializable
 	virtual void loadData( CSerializable* pObj );
+
+public:
+	// begin component property
+	// ----------------------
+	inline EWeaponType getWeaponType()
+	{
+		return m_type;
+	}
+
+	inline float getDamage()
+	{
+		return m_damage;
+	}
+
+	inline float getRate()
+	{
+		return m_rate;
+	}
+
+	inline float getRange()
+	{
+		return m_range;
+	}
+
+	inline float getMobility()
+	{
+		return m_mobility;
+	}
+	// end component property
+	// ----------------------
 };
 
 #endif

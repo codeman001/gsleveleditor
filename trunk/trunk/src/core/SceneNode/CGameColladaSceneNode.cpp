@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "CGameObject.h"
 #include "CGameColladaSceneNode.h"
 #include "CColladaMeshComponent.h"
 #include "IView.h"
@@ -72,6 +73,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 
 	ColladaMesh = NULL;	
 	m_component = NULL;
+	m_hookTransformObject = NULL;
 
 #ifdef GSANIMATION
 	m_isShowName = false;
@@ -84,6 +86,12 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 
 CGameColladaSceneNode::~CGameColladaSceneNode()
 {
+	if ( m_hookTransformObject )
+	{
+		m_hookTransformObject->setHookTransformNode( NULL );
+		m_hookTransformObject = NULL;
+	}
+
 	if ( ColladaMesh )
 		ColladaMesh->drop();
 }
@@ -144,6 +152,9 @@ void CGameColladaSceneNode::updateAbsolutePosition()
 	else
 		AbsoluteAnimationMatrix = ((CGameColladaSceneNode*)Parent)->AbsoluteAnimationMatrix * RelativeMatrix;
 
+	// set hook transfrom object
+	if ( m_hookTransformObject )
+		m_hookTransformObject->setTransform( AbsoluteTransformation );
 }
 
 void CGameColladaSceneNode::OnAnimate(u32 timeMs)

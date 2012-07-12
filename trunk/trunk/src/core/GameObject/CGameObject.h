@@ -77,6 +77,8 @@ protected:
 	core::vector3df		m_up;
 	core::vector3df		m_right;
 
+	ISceneNode			*m_hookTransformNode;
+
 	bool				m_enable;
 	bool				m_visible;
 	bool				m_lighting;
@@ -306,6 +308,19 @@ public:
 	// getRight
 	// get right vector of object
 	inline core::vector3df&		getRight()	{	return m_right;			}
+	
+	// getHookTransformNode
+	// get hook node
+	inline ISceneNode* getHookTransformNode()
+	{
+		return m_hookTransformNode;
+	}
+
+	// tag a scenenode, the object is allway set tranform by this node transform
+	inline void setHookTransformNode( ISceneNode* node )
+	{
+		m_hookTransformNode = node;
+	}
 
 	// updateRotation
 	void updateRotation();

@@ -3060,12 +3060,15 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 	SColladaAnimClip *animClip = m_colladaAnimation->getAnim( lpAnimName );
 	if ( animClip == NULL )
 		return;
-
-	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
-
+	
 	// set begin frame
 	setCurrentFrame(0);
+	
+	// set current anim clip
+	m_currentAnim = animClip;
 
+	// loop all node
+	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
 		const std::string& nodeName = (*i).first;
@@ -3117,12 +3120,14 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameCol
 	SColladaAnimClip *animClip = m_colladaAnimation->getAnim( lpAnimName );
 	if ( animClip == NULL )
 		return;
-
-	vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
-
+	
 	// set begin frame
 	setCurrentFrame(0);
 
+	// set current anim clip
+	m_currentAnim = animClip;
+
+	vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
 	while ( i != end )
 	{		
 		CGameColladaSceneNode* j = (*i);

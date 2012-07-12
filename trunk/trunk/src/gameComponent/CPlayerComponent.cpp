@@ -33,6 +33,9 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 
 	m_collada	= NULL;
 	m_inventory = NULL;
+
+	m_animTotalTime	= 0.0f;
+	m_animCurrentTime = 0.0f;
 }
 
 CPlayerComponent::~CPlayerComponent()
@@ -122,6 +125,8 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 				m_keyActionBit |= CPlayerComponent::KeyLeft;
 			else if (  key == irr::KEY_RIGHT || key == irr::KEY_KEY_D )
 				m_keyActionBit |= CPlayerComponent::KeyRight;
+			else if (  key == irr::KEY_SPACE )
+				m_keyActionBit |= CPlayerComponent::KeyFire;
 		}		
 		else
 		{
@@ -133,6 +138,8 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 				m_keyActionBit &= ~CPlayerComponent::KeyLeft;
 			else if (  key == irr::KEY_RIGHT || key == irr::KEY_KEY_D )
 				m_keyActionBit &= ~CPlayerComponent::KeyRight;
+			else if (  key == irr::KEY_SPACE )
+				m_keyActionBit &= ~CPlayerComponent::KeyFire;
 		}
 
 		// update move
@@ -168,12 +175,18 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 		}
 
 		if ( m_keyActionBit == CPlayerComponent::KeyNone )
+		{
 			setState( CPlayerComponent::PlayerIdle );
+		}
 		else
 		{	
 			if ( run )
 			{
 				setState( CPlayerComponent::PlayerRun );
+			}
+			else if ( (m_keyActionBit & CPlayerComponent::KeyFire) != 0 )
+			{
+  				setState( CPlayerComponent::PlayerFire );
 			}
 		}
 	}
@@ -197,16 +210,23 @@ void CPlayerComponent::updateState()
 	case CPlayerComponent::PlayerRun:
 		updateStateRun();
 		break;
+	case CPlayerComponent::PlayerFire:
+		updateStateFire();
+		break;
 	default:
 		break;
 	}
 }
 
+///////////////////////////////////////////////////////////////////////
+// Player component update state
+///////////////////////////////////////////////////////////////////////
+
 void CPlayerComponent::updateStateIdle()
 {
 	if ( m_subState == SubStateInit )
 	{
-		m_collada->setAnimation("mp_idle");
+		m_collada->setAnimation("idle_attack_shotgun");
 		m_subState = SubStateActive;
 	}
 	else if ( m_subState == SubStateEnd )
@@ -305,6 +325,77 @@ void CPlayerComponent::updateStateRun()
 		s_lastActionKey = m_keyActionBit;
 	}
 }
+
+// updateFire
+void CPlayerComponent::updateStateFire()
+{
+	if ( m_subState == SubStateInit )
+	{		
+		if ( m_inventory && m_collada && m_gunDummyNode )
+		{
+			CInventoryComponent::SInventoryItem* item = m_inventory->getActiveItem();
+
+			if ( item && item->m_item )
+			{
+				CWeaponComponent* weapon = (CWeaponComponent*)item->m_item->getComponent( CGameComponent::WeaponComponent );
+				if ( weapon )
+				{
+					if ( weapon->getWeaponType() == CWeaponComponent::ShotGun )
+					{
+						vector<CGameColladaSceneNode*>	listChild;
+						m_collada->getChildsOfSceneNode( m_bipSpine1Node->getName(), listChild );
+						m_collada->setAnimation("idle_attack_shotgun_fire", listChild);
+
+						m_collada->getCurrentAnim()->loop = false;
+
+						m_animTotalTime		= m_collada->getCurrentAnim()->duration * ( 1000.0f/m_gunDummyNode->getFPS());
+						m_animCurrentTime	= 0.0f;
+
+						m_subState = SubStateActive;
+						return;
+					}		
+				}				
+			}
+
+		}
+		
+		// if no weapon!!!
+		setState( CPlayerComponent::PlayerIdle );
+	}
+	else if ( m_subState == SubStateEnd )
+	{			
+		m_animCurrentTime += getIView()->getTimeStep();
+
+   		if ( m_animCurrentTime >= m_animTotalTime )
+		{
+			if ( (m_keyActionBit & CPlayerComponent::KeyFire) != 0 )
+				m_subState = SubStateInit;
+			else
+				doNextState();
+		}		
+	}
+	else
+	{
+		m_animCurrentTime += getIView()->getTimeStep();
+
+		// rotate object
+		updateRotateObject();
+
+   		if ( m_animCurrentTime >= m_animTotalTime )
+		{
+			if ( (m_keyActionBit & CPlayerComponent::KeyFire) != 0 )
+   				m_subState = SubStateInit;
+			else
+				setState( CPlayerComponent::PlayerIdle );
+		}
+	}
+}
+
+
+///////////////////////////////////////////////////////////////////////
+// Player component end update state function
+///////////////////////////////////////////////////////////////////////
+
 
 // updateRotateBip
 // rotate the foot to move vector

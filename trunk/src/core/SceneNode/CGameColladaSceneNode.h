@@ -5,6 +5,7 @@
 
 class CGameColladaSceneNode;
 class CColladaMeshComponent;
+class CGameObject;
 
 struct SColladaMeshBuffer: public SMeshBuffer
 {
@@ -201,6 +202,7 @@ protected:
 	std::string		m_sid;
 
 	CColladaMeshComponent		*m_component;
+	CGameObject					*m_hookTransformObject;
 
 public:
 	CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id);
@@ -294,6 +296,26 @@ public:
 	void setComponent( CColladaMeshComponent *comp )
 	{
 		m_component = comp;
+	}
+
+	// setHookTransformObject
+	// hook transform obj to absolute position
+	void setHookTransformObject( CGameObject *obj )
+	{
+		// unhook old object
+		if ( m_hookTransformObject )
+			m_hookTransformObject->setHookTransformNode( NULL );
+
+		m_hookTransformObject = obj;
+
+		// hook new object
+		if ( m_hookTransformObject )
+			m_hookTransformObject->setHookTransformNode( this );
+	}
+
+	inline CGameObject* getHookTransformObject()
+	{
+		return m_hookTransformObject;
 	}
 
 	// setSkydome

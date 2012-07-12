@@ -395,8 +395,8 @@ void CPlayerComponent::updateWeaponPosition()
 					// set gun position
 					item->m_item->setVisible( true );
 					item->m_item->setEnable( true );
-					item->m_item->setTransform( m_gunDummyNode->getAbsoluteTransformation() );
-				}
+					m_gunDummyNode->setHookTransformObject( item->m_item );
+				}		
 			}
 		}	// if has active item
 	}	// if has inventory

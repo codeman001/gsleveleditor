@@ -3,6 +3,8 @@
 #include "CComponentFactory.h"
 #include "IView.h"
 
+#include "CGameColladaSceneNode.h"
+
 #ifdef GSGAMEPLAY
 #include "CWayPoint.h"
 #endif
@@ -34,6 +36,7 @@ CGameObject::CGameObject(CGameObject *parent)
 
 	// set parent
 	m_parent = parent;
+	
 }
 
 void CGameObject::initNull()
@@ -59,6 +62,8 @@ void CGameObject::initNull()
 	m_lighting		= true;
 	m_lockObject	= false;
 
+	m_hookTransformNode = NULL;
+
 	m_parent		= NULL;
 
 	m_needSortComponent	= true;
@@ -71,6 +76,11 @@ void CGameObject::initNull()
 
 CGameObject::~CGameObject()
 {	
+	if ( m_hookTransformNode )
+	{
+		((CGameColladaSceneNode*)m_hookTransformNode)->setHookTransformObject(NULL);
+	}
+
 	releaseAllComponent();
 	destroyNode();
 }

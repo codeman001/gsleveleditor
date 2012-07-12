@@ -59,6 +59,15 @@ public:
 	// setActiveItem
 	// active item
 	void setActiveItem( const char *objectTemplate );
+
+	// getActiveItem
+	// get active item
+	SInventoryItem* getActiveItem()
+	{
+		if ( m_activeItemSlot < 0 )
+			return NULL;
+		return &m_inventory[m_activeItemSlot];
+	}
 };
 
 #endif

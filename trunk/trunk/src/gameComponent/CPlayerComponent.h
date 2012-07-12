@@ -7,6 +7,9 @@
 
 #define SHIFTBIT(x)	(1<<x)
 
+class CInventoryComponent;
+class CColladaMeshComponent;
+
 class CPlayerComponent: 
 	public IObjectComponent,
 	public IEventReceiver
@@ -47,9 +50,11 @@ protected:
 
 	CColladaAnimation*		m_animationPackage;
 	CColladaMeshComponent*	m_collada;
-	
+	CInventoryComponent*	m_inventory;
+
 	CGameColladaSceneNode*	m_bipSpineNode;
 	CGameColladaSceneNode*	m_bipSpine1Node;
+	CGameColladaSceneNode*	m_gunDummyNode;
 
 	// m_targetRotation
 	// the target rotation
@@ -119,6 +124,10 @@ protected:
 	// updateRotateObject
 	// rotate the object to camera front
 	void updateRotateObject();
+
+	// updateWeaponPosition
+	// update weapon
+	void updateWeaponPosition();
 
 	// doNextState
 	// change to next state

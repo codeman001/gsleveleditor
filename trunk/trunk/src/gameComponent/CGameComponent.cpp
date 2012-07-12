@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "CGameComponent.h"
 
+#include "CPlayerComponent.h"
+#include "CInventoryComponent.h"
+#include "CWeaponComponent.h"
+
 const char *CGameComponent::s_compType[] = 
 {
 	"Player component",

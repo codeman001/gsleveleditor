@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "IView.h"
+
 #include "CPlayerComponent.h"
+
+#include "CColladaMeshComponent.h"
+#include "CInventoryComponent.h"
+#include "CWeaponComponent.h"
+
 #include "gameLevel/CGameLevel.h"
 
 
@@ -21,8 +27,12 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 
 	m_bipSpineNode	= NULL;
 	m_bipSpine1Node	= NULL;
+	m_gunDummyNode	= NULL;
 
 	m_runRotation	= 0.0f;
+
+	m_collada	= NULL;
+	m_inventory = NULL;
 }
 
 CPlayerComponent::~CPlayerComponent()
@@ -42,9 +52,12 @@ void CPlayerComponent::initComponent()
 	
 		m_bipSpineNode	= m_collada->getSceneNode("Bip01_Spine-node");
 		m_bipSpine1Node = m_collada->getSceneNode("Bip01_Spine1-node");
+		m_gunDummyNode	= m_collada->getSceneNode("Dummy_GUNS_MP-node");
 	}
 	// set basic state idle
 	setState( CPlayerComponent::PlayerIdle );
+
+	m_inventory	= (CInventoryComponent*)m_gameObject->getComponent( CGameComponent::InventoryComponent );
 
 	// register event
 	getIView()->registerEvent("CPlayerComponent", this);
@@ -59,6 +72,7 @@ void CPlayerComponent::updateComponent()
 		return;	
 
 	updateState();
+	updateWeaponPosition();
 }
 
 // saveData
@@ -340,7 +354,7 @@ void CPlayerComponent::updateRotateObject()
 	float angle1 = (float)(core::vector2df( moveFront.X, moveFront.Z ).getAngleTrig());
 	float angle2 = (float)(core::vector2df(  objFront.X,  objFront.Z ).getAngleTrig());
 	
-	// adjust to fix rotate too large
+	// find shortest arc
 	if ( fabs(angle2 - angle1) > 180 )
 	{
 		if ( angle2 > angle1 )
@@ -362,4 +376,28 @@ void CPlayerComponent::updateRotateObject()
 	
 	// rotate object & front vector
 	m_gameObject->setRotation(core::vector3df(0.0f, 90 - angle2, 0.0f));
+}
+
+// updateWeaponPosition
+// update weapon
+void CPlayerComponent::updateWeaponPosition()
+{	
+	if ( m_inventory && m_collada && m_gunDummyNode )
+	{
+		CInventoryComponent::SInventoryItem* item = m_inventory->getActiveItem();
+		if ( item && item->m_item )
+		{
+			CWeaponComponent* weapon = (CWeaponComponent*)item->m_item->getComponent( CGameComponent::WeaponComponent );
+			if ( weapon )
+			{
+				if ( weapon->getWeaponType() == CWeaponComponent::ShotGun )
+				{
+					// set gun position
+					item->m_item->setVisible( true );
+					item->m_item->setEnable( true );
+					item->m_item->setTransform( m_gunDummyNode->getAbsoluteTransformation() );
+				}
+			}
+		}	// if has active item
+	}	// if has inventory
 }

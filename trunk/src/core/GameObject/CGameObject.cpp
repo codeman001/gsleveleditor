@@ -939,14 +939,7 @@ void CGameObject::drawCircleAroundObject()
 // updateObject
 // update object by frame...
 void CGameObject::updateObject()
-{
-	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
-	while ( iComp != iEnd )
-	{
-		(*iComp)->updateComponent();
-		iComp++;
-	}
-
+{	
 	if ( m_node && m_node->getAnimators().size() > 0 )
 	{
 		m_position	= m_node->getPosition();
@@ -964,6 +957,31 @@ void CGameObject::updateObject()
 		rotationMatrix.rotateVect(m_front);
 		rotationMatrix.rotateVect(m_right);
 		rotationMatrix.rotateVect(m_up);
+	}
+
+	vector<IObjectComponent*> physicComponents;
+
+	// update all component
+	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
+	while ( iComp != iEnd )
+	{
+		IObjectComponent *comp = (*iComp);
+
+		if ( comp->isPhysicComponent() )
+			physicComponents.push_back( comp );
+		else
+			comp->updateComponent();
+
+		iComp++;
+	}
+	
+	// update physic component
+	iComp = physicComponents.begin();
+	iEnd = physicComponents.end();
+	while ( iComp != iEnd )
+	{		
+		(*iComp)->updateComponent();
+		iComp++;
 	}
 }
 

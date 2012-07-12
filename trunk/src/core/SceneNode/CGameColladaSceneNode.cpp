@@ -157,6 +157,22 @@ void CGameColladaSceneNode::updateAbsolutePosition()
 		m_hookTransformObject->setTransform( AbsoluteTransformation );
 }
 
+// setHookTransformObject
+// hook transform obj to absolute position
+void CGameColladaSceneNode::setHookTransformObject( CGameObject *obj )
+{
+	// unhook old object
+	if ( m_hookTransformObject )
+		m_hookTransformObject->setHookTransformNode( NULL );
+
+	m_hookTransformObject = obj;
+
+	// hook new object
+	if ( m_hookTransformObject )
+		m_hookTransformObject->setHookTransformNode( this );
+}
+
+
 void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 {
 	ISceneNode::OnAnimate( timeMs );

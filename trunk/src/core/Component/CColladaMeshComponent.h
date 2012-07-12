@@ -569,7 +569,7 @@ public:
 
 	// getCurrentAnim
 	// get current anim
-	inline const SColladaAnimClip* getCurrentAnim()
+	inline SColladaAnimClip* getCurrentAnim()
 	{
 		return m_currentAnim;
 	}

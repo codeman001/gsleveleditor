@@ -19,8 +19,8 @@ public:
 	{
 		PlayerNone = 0,
 		PlayerIdle,		
-		PlayerWalk,
 		PlayerRun,
+		PlayerFire,
 		NumStateCount
 	};
 
@@ -38,6 +38,7 @@ public:
 		KeyLeft		= SHIFTBIT(2),
 		KeyRight	= SHIFTBIT(3),
 		KeyBack		= SHIFTBIT(4),
+		KeyFire		= SHIFTBIT(5)
 	};
 
 protected:
@@ -47,6 +48,9 @@ protected:
 
 	float					m_runSpeed;
 	float					m_runBackSpeed;
+
+	float					m_animTotalTime;
+	float					m_animCurrentTime;
 
 	CColladaAnimation*		m_animationPackage;
 	CColladaMeshComponent*	m_collada;
@@ -116,6 +120,7 @@ protected:
 
 	void updateStateIdle();
 	void updateStateRun();
+	void updateStateFire();
 
 	// updateRotateBip
 	// rotate the foot to move vector
@@ -127,7 +132,7 @@ protected:
 
 	// updateWeaponPosition
 	// update weapon
-	void updateWeaponPosition();
+	void updateWeaponPosition();	
 
 	// doNextState
 	// change to next state

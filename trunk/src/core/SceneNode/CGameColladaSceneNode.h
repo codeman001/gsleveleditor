@@ -300,18 +300,7 @@ public:
 
 	// setHookTransformObject
 	// hook transform obj to absolute position
-	void setHookTransformObject( CGameObject *obj )
-	{
-		// unhook old object
-		if ( m_hookTransformObject )
-			m_hookTransformObject->setHookTransformNode( NULL );
-
-		m_hookTransformObject = obj;
-
-		// hook new object
-		if ( m_hookTransformObject )
-			m_hookTransformObject->setHookTransformNode( this );
-	}
+	void setHookTransformObject( CGameObject *obj );	
 
 	inline CGameObject* getHookTransformObject()
 	{
@@ -472,6 +461,7 @@ public:
 		m_posHint = 0;
 		m_scaleHint = 0;
 		m_rotHint = 0;
+		m_currentFrame = 0;
 	}
 
 protected:
@@ -506,6 +496,10 @@ public:
 	// getCurrentFrame
 	// get time of current animation
 	inline float getCurrentFrame()			{ return m_currentFrame; }	
+
+	// setCurrentFrame
+	// set current frame
+	inline float setCurrentFrame(float f)	{ m_currentFrame = f; }
 
 	// getTotalFrame
 	// return animation total time

@@ -58,6 +58,14 @@ public:
 	// load data to serializable
 	virtual void loadData( CSerializable* pObj ) = 0;
 
+	// isPhysicComponent
+	// check is physic component
+	virtual bool isPhysicComponent()
+	{
+		return false;
+	}
+
+
 };
 
 #endif

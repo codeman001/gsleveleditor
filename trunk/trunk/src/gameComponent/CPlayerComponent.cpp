@@ -22,8 +22,8 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_keyActionBit	= CPlayerComponent::KeyNone;
 
 	// init run const
-	m_runSpeed				= 6.0f;
-	m_runBackSpeed			= 5.0f;
+	m_runSpeed				= 5.0f;
+	m_runBackSpeed			= 3.0f;
 
 	m_bipSpineNode	= NULL;
 	m_bipSpine1Node	= NULL;
@@ -280,19 +280,22 @@ void CPlayerComponent::updateStateRun()
 		core::vector3df front	= m_gameObject->getFront();
 
 		// calc run vector
-		core::matrix4 mat;
-		mat.setRotationDegrees( core::vector3df(0, m_currentRunRot,0) );
-		mat.rotateVect( front );
+		if ( m_currentRunRot != 0.0f )
+		{
+			core::matrix4 mat;
+			mat.setRotationDegrees( core::vector3df(0, m_currentRunRot,0) );
+			mat.rotateVect( front );
+		}
 
 		if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
 		{
 			// run back
-			m_gameObject->setPosition( pos + front * m_runSpeed * diff );
+			m_gameObject->setPosition( pos - front * m_runBackSpeed * diff );			
 		}
 		else
 		{
 			// run forward
-			m_gameObject->setPosition( pos - front * m_runBackSpeed * diff );
+			m_gameObject->setPosition( pos + front * m_runSpeed * diff );
 		}				
 
 		// check to init run state if change action

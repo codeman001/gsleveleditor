@@ -119,7 +119,7 @@ void CEllipsoidCollisionComponent::updateComponent()
 void CEllipsoidCollisionComponent::collideTest( ITriangleSelector *world )
 {
 #ifdef GSGAMEPLAY
-	core::vector3df vel = m_lastPosition - m_testPosition;
+	core::vector3df vel = m_testPosition - m_lastPosition;
 
 	core::triangle3df	collisionTriangle;
 	core::vector3df		collisionPoint;

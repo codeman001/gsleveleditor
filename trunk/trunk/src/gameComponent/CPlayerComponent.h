@@ -7,6 +7,7 @@
 
 #define SHIFTBIT(x)	(1<<x)
 
+class CWeaponComponent;
 class CInventoryComponent;
 class CColladaMeshComponent;
 
@@ -20,7 +21,6 @@ public:
 		PlayerNone = 0,
 		PlayerIdle,		
 		PlayerRun,
-		PlayerFire,
 		NumStateCount
 	};
 
@@ -49,16 +49,21 @@ protected:
 	float					m_runSpeed;
 	float					m_runBackSpeed;
 
-	float					m_animTotalTime;
-	float					m_animCurrentTime;
+	float					m_animShotTotalTime;
+	float					m_animShotCurrentTime;
 
 	CColladaAnimation*		m_animationPackage;
 	CColladaMeshComponent*	m_collada;
 	CInventoryComponent*	m_inventory;
 
+	CGameColladaSceneNode*	m_bipRootNode;
 	CGameColladaSceneNode*	m_bipSpineNode;
 	CGameColladaSceneNode*	m_bipSpine1Node;
 	CGameColladaSceneNode*	m_gunDummyNode;
+
+
+	vector<CGameColladaSceneNode*>	m_handAndHeadNodes;
+	vector<CGameColladaSceneNode*>	m_footNodes;
 
 	// m_targetRotation
 	// the target rotation
@@ -114,17 +119,25 @@ public:
 	}
 
 protected:
-	
+	// _onUpdateAnim
+	// event when update anim
+	void _onUpdateAnim( CGameColladaSceneNode *node );
+
+protected:
 	// updateState	
 	void updateState();
 
 	void updateStateIdle();
 	void updateStateRun();
-	void updateStateFire();
 
-	// updateRotateBip
+
+	// updateActionShotWeapon
+	// shoot weapon action
+	void updateActionShotWeapon();
+
+	// updateRotateFoot
 	// rotate the foot to move vector
-	void updateRotateBip();
+	void updateRotateFoot();
 
 	// updateRotateObject
 	// rotate the object to camera front
@@ -143,6 +156,18 @@ protected:
 		m_subState = SubStateInit;				
 		m_nextState = CPlayerComponent::PlayerNone;
 	}
+
+	// enableBoneAnim
+	// enable bone anim
+	void enableBoneAnim( vector<CGameColladaSceneNode*>& nodes,bool b );
+
+	// updateBoneAnim
+	// update bone anim
+	void updateBoneAnim( vector<CGameColladaSceneNode*>& nodes );
+
+	// getCurrentWeapon
+	// get weapon
+	CWeaponComponent* getCurrentWeapon();
 };
 
 #endif

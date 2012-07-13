@@ -34,8 +34,8 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_collada	= NULL;
 	m_inventory = NULL;
 
-	m_animTotalTime	= 0.0f;
-	m_animCurrentTime = 0.0f;
+	m_animShotTotalTime		= 0.0f;
+	m_animShotCurrentTime	= 0.0f;
 }
 
 CPlayerComponent::~CPlayerComponent()
@@ -56,6 +56,19 @@ void CPlayerComponent::initComponent()
 		m_bipSpineNode	= m_collada->getSceneNode("Bip01_Spine-node");
 		m_bipSpine1Node = m_collada->getSceneNode("Bip01_Spine1-node");
 		m_gunDummyNode	= m_collada->getSceneNode("Dummy_GUNS_MP-node");
+
+		// get hand & head nodes		
+		m_collada->getChildsOfSceneNode( "Bip01_Spine1-node", m_handAndHeadNodes);
+
+		// get foots nodes		
+		m_footNodes.push_back( m_collada->getSceneNode("Bip01-node") );
+		m_footNodes.push_back( m_collada->getSceneNode("Bip01_Pelvis-node") );
+		m_footNodes.push_back( m_bipSpineNode );
+		m_footNodes.push_back( m_bipSpine1Node );
+		m_footNodes.push_back( m_collada->getSceneNode("Bip01_L_Thigh-node") );
+		m_footNodes.push_back( m_collada->getSceneNode("Bip01_R_Thigh-node") );
+		m_collada->getChildsOfSceneNode( "Bip01_L_Thigh-node", m_footNodes);
+		m_collada->getChildsOfSceneNode( "Bip01_R_Thigh-node", m_footNodes);		
 	}
 	// set basic state idle
 	setState( CPlayerComponent::PlayerIdle );
@@ -184,10 +197,6 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 			{
 				setState( CPlayerComponent::PlayerRun );
 			}
-			else if ( (m_keyActionBit & CPlayerComponent::KeyFire) != 0 )
-			{
-  				setState( CPlayerComponent::PlayerFire );
-			}
 		}
 	}
 
@@ -210,11 +219,33 @@ void CPlayerComponent::updateState()
 	case CPlayerComponent::PlayerRun:
 		updateStateRun();
 		break;
-	case CPlayerComponent::PlayerFire:
-		updateStateFire();
-		break;
 	default:
 		break;
+	}
+}
+
+///////////////////////////////////////////////////////////////////////
+// Player component update state
+///////////////////////////////////////////////////////////////////////
+
+// _onUpdateAnim
+// event when update anim
+void CPlayerComponent::_onUpdateAnim( CGameColladaSceneNode *node )
+{
+	if ( m_state == CPlayerComponent::PlayerRun )
+	{		
+		if ( node == m_bipSpineNode )
+		{
+			core::vector3df rotateSpine = m_bipSpineNode->AnimationMatrix.getRotationDegrees();
+			rotateSpine.X += m_currentRunRot;
+			m_bipSpineNode->AnimationMatrix.setRotationDegrees( rotateSpine );
+		}
+		else if ( node == m_bipSpine1Node )
+		{
+			core::vector3df rotateSpine = m_bipSpine1Node->AnimationMatrix.getRotationDegrees();
+			rotateSpine.X -= m_currentRunRot;
+			m_bipSpine1Node->AnimationMatrix.setRotationDegrees( rotateSpine );
+		}
 	}
 }
 
@@ -225,8 +256,12 @@ void CPlayerComponent::updateState()
 void CPlayerComponent::updateStateIdle()
 {
 	if ( m_subState == SubStateInit )
-	{
-		m_collada->setAnimation("idle_attack_shotgun");
+	{		
+		if ( m_animShotCurrentTime == m_animShotTotalTime ||  m_animShotTotalTime == 0  )
+			m_collada->setAnimation("idle_attack_shotgun");
+		else
+			m_collada->setAnimation("idle_attack_shotgun", m_footNodes);
+
 		m_subState = SubStateActive;
 	}
 	else if ( m_subState == SubStateEnd )
@@ -235,6 +270,7 @@ void CPlayerComponent::updateStateIdle()
 	}
 	else
 	{
+		updateActionShotWeapon();
 		m_currentRunRot = 0.0f;
 	}
 }
@@ -245,17 +281,16 @@ void CPlayerComponent::updateStateRun()
 
 	if ( m_subState == SubStateInit )
 	{
-		if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )		
-			m_collada->setAnimation("mp_run_back");
+		if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
+			m_collada->setAnimation("mp_run_back",	m_footNodes);
 		else
-			m_collada->setAnimation("mp_run");
+			m_collada->setAnimation("mp_run",		m_footNodes);
 
 		s_lastActionKey = m_keyActionBit;
 		m_subState = SubStateActive;
 
 		// disable anim on bip spine
-		m_bipSpineNode->setEnableAnim( true );
-		m_bipSpine1Node->setEnableAnim( true );
+		enableBoneAnim( m_footNodes, false );
 	}
 	else if ( m_subState == SubStateEnd )
 	{			
@@ -267,14 +302,16 @@ void CPlayerComponent::updateStateRun()
 		}
 
 		// rotate foot bip to front
-		updateRotateBip();
+		updateRotateFoot();
+
+		// update shot weapon
+		updateActionShotWeapon();
 
 		// wait to finish rotate bip
 		if ( m_currentRunRot == m_runRotation )
 		{
 			// enable anim on bip spine
-			m_bipSpineNode->setEnableAnim( true );
-			m_bipSpine1Node->setEnableAnim( true );
+			enableBoneAnim( m_footNodes, true );
 
 			// change state
 			doNextState();
@@ -284,16 +321,15 @@ void CPlayerComponent::updateStateRun()
 	{		
 		// update run
 		float diff = getIView()->getTimeStep() * 0.1f;
-
-		// disable anim
-		m_bipSpineNode->setEnableAnim( false );
-		m_bipSpine1Node->setEnableAnim( false );
-
+		
 		// rotate bip
-		updateRotateBip();
+		updateRotateFoot();
 		
 		// rotate object
 		updateRotateObject();
+
+		// update shot weapon
+		updateActionShotWeapon();
 
 		// get front
 		core::vector3df pos		= m_gameObject->getPosition();
@@ -326,85 +362,58 @@ void CPlayerComponent::updateStateRun()
 	}
 }
 
-// updateFire
-void CPlayerComponent::updateStateFire()
-{
-	if ( m_subState == SubStateInit )
-	{		
-		if ( m_inventory && m_collada && m_gunDummyNode )
-		{
-			CInventoryComponent::SInventoryItem* item = m_inventory->getActiveItem();
+///////////////////////////////////////////////////////////////////////
+// Player component end update state function
+///////////////////////////////////////////////////////////////////////
 
-			if ( item && item->m_item )
-			{
-				CWeaponComponent* weapon = (CWeaponComponent*)item->m_item->getComponent( CGameComponent::WeaponComponent );
-				if ( weapon )
-				{
-					if ( weapon->getWeaponType() == CWeaponComponent::ShotGun )
-					{
-						vector<CGameColladaSceneNode*>	listChild;
-						m_collada->getChildsOfSceneNode( m_bipSpine1Node->getName(), listChild );
-						m_collada->setAnimation("idle_attack_shotgun_fire", listChild);
-
-						m_collada->getCurrentAnim()->loop = false;
-
-						m_animTotalTime		= m_collada->getCurrentAnim()->duration * ( 1000.0f/m_gunDummyNode->getFPS());
-						m_animCurrentTime	= 0.0f;
-
-						m_subState = SubStateActive;
-						return;
-					}		
-				}				
-			}
-
-		}
-		
-		// if no weapon!!!
-		setState( CPlayerComponent::PlayerIdle );
-	}
-	else if ( m_subState == SubStateEnd )
-	{			
-		m_animCurrentTime += getIView()->getTimeStep();
-
-   		if ( m_animCurrentTime >= m_animTotalTime )
-		{
-			if ( (m_keyActionBit & CPlayerComponent::KeyFire) != 0 )
-				m_subState = SubStateInit;
-			else
-				doNextState();
-		}		
-	}
-	else
+// updateActiveFire
+// update shot weapon action
+void CPlayerComponent::updateActionShotWeapon()
+{	
+	CWeaponComponent *weapon = getCurrentWeapon();
+	if ( weapon )
 	{
-		m_animCurrentTime += getIView()->getTimeStep();
-
-		// rotate object
-		updateRotateObject();
-
-   		if ( m_animCurrentTime >= m_animTotalTime )
+		if ( weapon->getWeaponType() == CWeaponComponent::ShotGun )
 		{
-			if ( (m_keyActionBit & CPlayerComponent::KeyFire) != 0 )
-   				m_subState = SubStateInit;
+			// update shoot gun
+			if (	(m_keyActionBit & CPlayerComponent::KeyFire ) != 0 &&
+					( 
+						m_animShotCurrentTime == m_animShotTotalTime || 
+						m_animShotTotalTime == 0 
+					)
+				)
+			{
+				// begin state
+				m_collada->setAnimation("idle_attack_shotgun_fire", m_handAndHeadNodes);
+				m_collada->getCurrentAnim()->loop = false;
+				m_animShotTotalTime		= m_collada->getCurrentAnim()->duration * ( 1000.0f/m_gunDummyNode->getFPS());
+				m_animShotCurrentTime	= 0.0f;
+			}
 			else
-				setState( CPlayerComponent::PlayerIdle );
+			{				
+   				if ( m_animShotCurrentTime >= m_animShotTotalTime )
+				{
+					m_animShotCurrentTime = m_animShotTotalTime;
+
+					if ( (m_keyActionBit & CPlayerComponent::KeyFire) == 0 )
+					{
+						m_collada->setAnimation("idle_attack_shotgun", m_handAndHeadNodes);
+					}
+				}
+				else
+				{
+					m_animShotCurrentTime += getIView()->getTimeStep();
+				}
+			}
 		}
 	}
 }
 
 
-///////////////////////////////////////////////////////////////////////
-// Player component end update state function
-///////////////////////////////////////////////////////////////////////
-
-
 // updateRotateBip
 // rotate the foot to move vector
-void CPlayerComponent::updateRotateBip()
-{
-	// and update animation by manual
-	m_bipSpineNode->updateAnimation();
-	m_bipSpine1Node->updateAnimation();
-
+void CPlayerComponent::updateRotateFoot()
+{	
 	// linear calc current rotation
 	float diff = getIView()->getTimeStep() * 0.1f;
 	float rotSpeed = 3.0f  * diff;
@@ -417,15 +426,9 @@ void CPlayerComponent::updateRotateBip()
 	if ( fabs( m_currentRunRot - m_runRotation ) < rotSpeed )
 		m_currentRunRot = m_runRotation;
 
-	// rotate the legs to run vector
-	core::vector3df rotateSpine = m_bipSpineNode->AnimationMatrix.getRotationDegrees();
-	rotateSpine.X += m_currentRunRot;
-	m_bipSpineNode->AnimationMatrix.setRotationDegrees( rotateSpine );
+	// update foot anim
+	updateBoneAnim( m_footNodes );	
 
-	// rotate the body to front vector
-	rotateSpine = m_bipSpine1Node->AnimationMatrix.getRotationDegrees();
-	rotateSpine.X -= m_currentRunRot;
-	m_bipSpine1Node->AnimationMatrix.setRotationDegrees( rotateSpine );
 }
 
 // updateRotateObject
@@ -494,4 +497,41 @@ void CPlayerComponent::updateWeaponPosition()
 			}
 		}	// if has active item
 	}	// if has inventory
+}
+
+// getCurrentWeapon
+// get weapon
+CWeaponComponent* CPlayerComponent::getCurrentWeapon()
+{
+	if ( m_inventory && m_collada && m_gunDummyNode )
+	{
+		CInventoryComponent::SInventoryItem* item = m_inventory->getActiveItem();
+		if ( item && item->m_item )
+		{
+			CWeaponComponent* weapon = (CWeaponComponent*)item->m_item->getComponent( CGameComponent::WeaponComponent );
+			return weapon;			
+		}
+	}
+	return NULL;
+}
+
+// enableBoneAnim
+// enable bone anim
+void CPlayerComponent::enableBoneAnim( vector<CGameColladaSceneNode*>& nodes,bool b )
+{
+	for ( int i = 0, n = nodes.size(); i < n; i++ )
+	{
+		nodes[i]->setEnableAnim( b );
+	}
+}
+
+// updateBoneAnim
+// update bone anim
+void CPlayerComponent::updateBoneAnim( vector<CGameColladaSceneNode*>& nodes )
+{
+	for ( int i = 0, n = nodes.size(); i < n; i++ )
+	{
+		nodes[i]->updateAnimation();
+		_onUpdateAnim( nodes[i] );
+	}
 }

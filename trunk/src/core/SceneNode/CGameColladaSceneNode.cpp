@@ -254,7 +254,7 @@ void CGameColladaSceneNode::skin()
 		pJoint->skinningMatrix.setbyproduct( pJoint->node->AbsoluteAnimationMatrix, pJoint->globalInversedMatrix );
 
 	// skinning all mesh buffer
-	int nMeshBuffer = ColladaMesh->getMeshBufferCount();
+	int nMeshBuffer = 1;//ColladaMesh->getMeshBufferCount();
 	for ( int mesh = 0; mesh < nMeshBuffer; mesh++ )
 	{
 		SColladaMeshBuffer *meshBuffer	= (SColladaMeshBuffer*)ColladaMesh->getMeshBuffer(mesh);			

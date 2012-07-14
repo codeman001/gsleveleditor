@@ -2234,6 +2234,8 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 
 	bool hasBumpMapping = false;
 
+	bool hasLoadedDiffuseTex = false;
+
 	while(xmlRead->read())
 	{
 		if (xmlRead->getNodeType() == io::EXN_ELEMENT)
@@ -2343,7 +2345,17 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 										wstring tname = xmlRead->getAttributeValue(L"texture");
 										
 										if ( node == diffuseNode )
-											effect->Mat.setTexture(0, getTextureFromImage( m_animeshFile, tname, m_listEffectsParam, m_listImages ));
+										{
+											if ( hasLoadedDiffuseTex == false )
+											{
+												ITexture *tex = getTextureFromImage( m_animeshFile, tname, m_listEffectsParam, m_listImages );
+												if ( tex == NULL )
+													tex = getTextureFromImage( m_animeshFile, tname, m_listImages );
+												if ( tex )
+													effect->Mat.setTexture(0, tex);
+												hasLoadedDiffuseTex = true;
+											}
+										}
 										else if ( node == ambientNode )
 										{
 											// ambient lightmap texture: todo later
@@ -2523,7 +2535,7 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 			// set normal
 			if ( normal != NULL )
 			{		
-				int idx = vIndex * position->Strike;
+				int idx = vIndex * normal->Strike;
 
 				vtx.Normal.X = normal->FloatArray[idx+0];
 				if (flip)
@@ -2574,6 +2586,7 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 			if ( normal != NULL )
 			{
 				int idx = tri->IndexBuffer[i + tri->OffsetNormal] * normal->Strike;
+				vtx.Normal.X = normal->FloatArray[idx];
 				if (flip)
 				{
 					vtx.Normal.Z = normal->FloatArray[idx+1];
@@ -2586,10 +2599,10 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 				}
 			}
 
-			if ( texCoord1 ) 
+			if ( texCoord1 != NULL ) 
 			{
 				int idx = tri->IndexBuffer[i + tri->OffsetTexcoord1] * texCoord1->Strike;
-				vtx.TCoords.X = texCoord1->FloatArray[idx+0];
+				vtx.TCoords.X = texCoord1->FloatArray[idx];
 				vtx.TCoords.Y = texCoord1->FloatArray[idx+1];
 			}
 		}
@@ -2650,9 +2663,7 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 
 		// get last joint
 		CGameColladaMesh::SJoint& newJoint = mesh->Joints.getLast();
-
-		video::S3DVertex *vertex = (video::S3DVertex*)mesh->getMeshBuffer(0)->getVertices();
-
+		
 		// set weight data
 		int nWeight = joint.Weights.size();
 		for ( int j = 0; j < nWeight; j++ )
@@ -2663,11 +2674,24 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 			CGameColladaMesh::SWeight &newWeight = newJoint.weights.getLast();
 
 			newWeight.buffer_id = 0;
-			newWeight.strength = weight.Strength;
+			newWeight.strength	= weight.Strength;
 			newWeight.vertex_id = weight.VertexID;
 			
-			newWeight.staticPos = vertex[ weight.VertexID ].Pos;
-			newWeight.staticNormal = vertex[ weight.VertexID ].Normal;
+			// find buffer			
+			video::S3DVertex *vertex = NULL;			
+			for (int i = 0, n = mesh->getMeshBufferCount(); i < n; i++ )
+			{
+				SColladaMeshBuffer *buffer = (SColladaMeshBuffer*)mesh->getMeshBuffer(i);
+				if ( buffer->beginVertex <= (int)weight.VertexID && buffer->endVertex >= (int)weight.VertexID )
+				{
+					vertex = (video::S3DVertex*)buffer->getVertices();
+					break;
+				}
+			}
+
+			// store static position & normal for skinning
+			newWeight.staticPos		= vertex[ weight.VertexID ].Pos;
+			newWeight.staticNormal	= vertex[ weight.VertexID ].Normal;
 		}
 		
 		// set node data
@@ -2682,11 +2706,11 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 	
 	// set joint index
 	mesh->JointIndex.set_used( meshParam->JointIndex.size() );
-	for ( int i = 0; i < (int)meshParam->JointIndex.size(); i++ )
+	for ( int i = 0, n = (int)meshParam->JointIndex.size(); i < n; i++ )
 		mesh->JointIndex[i] = meshParam->JointIndex[i];
 
 	mesh->JointVertexIndex.set_used( meshParam->JointVertexIndex.size() );
-	for ( int i = 0; i < (int)meshParam->JointVertexIndex.size(); i++ )
+	for ( int i = 0, n = (int)meshParam->JointVertexIndex.size(); i < n; i++ )
 		mesh->JointVertexIndex[i] = meshParam->JointVertexIndex[i];
 }
 

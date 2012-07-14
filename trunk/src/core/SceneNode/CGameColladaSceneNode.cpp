@@ -130,7 +130,34 @@ void CGameColladaSceneNode::OnRegisterSceneNode()
 		if ( m_isSkydome == true )
 			SceneManager->registerNodeForRendering(this, ESNRP_SKY_BOX);
 		else
-			SceneManager->registerNodeForRendering(this);
+		{	
+			if ( ColladaMesh )
+			{
+				bool addToTransparent = false;
+				bool addToSolid = false;
+
+				for (u32 i=0; i<ColladaMesh->getMeshBufferCount(); ++i)
+				{
+					scene::IMeshBuffer* mb = ColladaMesh->getMeshBuffer(i);
+					if (mb)
+					{
+						const video::SMaterial& material = mb->getMaterial();
+						if ( material.isTransparent() && addToTransparent == false )
+						{
+							SceneManager->registerNodeForRendering(this, ESNRP_TRANSPARENT );
+							addToTransparent = true;
+						}
+						else if ( addToSolid == false )
+						{
+							SceneManager->registerNodeForRendering(this, ESNRP_SOLID );
+							addToSolid = true;
+						}
+					}
+				}
+			}
+			else
+				SceneManager->registerNodeForRendering(this);
+		}
 	}
 	ISceneNode::OnRegisterSceneNode();
 	
@@ -253,8 +280,10 @@ void CGameColladaSceneNode::skin()
 	for ( int i = 0; i < nJoint; i++, pJoint++ )
 		pJoint->skinningMatrix.setbyproduct( pJoint->node->AbsoluteAnimationMatrix, pJoint->globalInversedMatrix );
 
+	int lastVertexTransform = 0;
+
 	// skinning all mesh buffer
-	int nMeshBuffer = 1;//ColladaMesh->getMeshBufferCount();
+	int nMeshBuffer = ColladaMesh->getMeshBufferCount();
 	for ( int mesh = 0; mesh < nMeshBuffer; mesh++ )
 	{
 		SColladaMeshBuffer *meshBuffer	= (SColladaMeshBuffer*)ColladaMesh->getMeshBuffer(mesh);			
@@ -273,6 +302,9 @@ void CGameColladaSceneNode::skin()
 		if ( end < 0 || end > (int)meshBuffer->getVertexCount() )
 			end = meshBuffer->getVertexCount() - 1;
 
+		if ( begin < lastVertexTransform )
+			begin = lastVertexTransform;
+
 		// seek to vertex buffer
 		vertex += begin;
 
@@ -284,10 +316,10 @@ void CGameColladaSceneNode::skin()
 			
 			s32 nJointCount = jointInVertex[i];
 
-			for ( int iJoint = 0; iJoint < nJointCount; iJoint++, jointIndex++ )
+			for ( int iJoint = 0; iJoint < nJointCount; iJoint++ )
 			{
-				u32 boneId		= *jointIndex;
-				u32 weightId	= *(++jointIndex);
+				u32 boneId		= *jointIndex; jointIndex++;
+				u32 weightId	= *jointIndex; jointIndex++;
 				
 				CGameColladaMesh::SJoint	*pJoint		= &arrayJoint[boneId];
 				CGameColladaMesh::SWeight	*pWeight	= &pJoint->weights[weightId];
@@ -310,6 +342,8 @@ void CGameColladaSceneNode::skin()
 			vertex->Normal = normalCumulator;
 		}
 		
+		lastVertexTransform = end + 1;
+
 		meshBuffer->recalculateBoundingBox();
 		meshBuffer->setDirty( EBT_VERTEX );	
 
@@ -581,6 +615,38 @@ void CGameColladaSceneNode::render()
 		}
 
 		Box = ColladaMesh->getBoundingBox();
+
+		// draw normals
+		/*
+		video::SMaterial m;
+		m.Lighting = false;
+		m.AntiAliasing=0;
+		driver->setMaterial(m);
+
+		core::vector3df normalizedNormal;
+		const f32 DebugNormalLength = SceneManager->getParameters()->getAttributeAsFloat(DEBUG_NORMAL_LENGTH);
+		const video::SColor DebugNormalColor = SColor(255,255,0,0);
+
+		for (u32 g=0; g< ColladaMesh->getMeshBufferCount(); ++g)
+		{
+			const scene::IMeshBuffer* mb = ColladaMesh->getMeshBuffer(g);
+			const u32 vSize = video::getVertexPitchFromType(mb->getVertexType());
+			const video::S3DVertex* v = ( const video::S3DVertex*)mb->getVertices();
+			const bool normalize = mb->getMaterial().NormalizeNormals;
+
+			for (u32 i=0; i != mb->getVertexCount(); ++i)
+			{
+				normalizedNormal = v->Normal;
+				if (normalize)
+					normalizedNormal.normalize();
+
+				driver->draw3DLine(v->Pos, v->Pos + (normalizedNormal * DebugNormalLength), DebugNormalColor);
+
+				v = (const video::S3DVertex*) ( (u8*) v+vSize );
+			}
+		}
+		driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
+		*/
 	}
 #ifdef GSANIMATION
 	else
@@ -627,6 +693,7 @@ void CGameColladaSceneNode::render()
 
 		Box.MinEdge = core::vector3df(-size, -size, -size);
 		Box.MaxEdge = core::vector3df( size,  size,  size);
+
 	}
 #endif
 

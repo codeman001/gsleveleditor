@@ -1729,6 +1729,13 @@ void CColladaMeshComponent::parseGeometryNode( io::IXMLReader *xmlRead )
 										verticesParam.TexCoord2Index = bufferID;
 										triangle.OffsetTexcoord2 = offset;
 									}
+
+									// hard code to fix many triangle on a mesh
+									if ( triangle.OffsetTexcoord1 == 0 )
+										triangle.OffsetTexcoord1 = offset;
+									else if ( triangle.OffsetTexcoord2 == 0 )
+										triangle.OffsetTexcoord2 = offset;
+
 								}
 
 								triangle.NumElementPerVertex++;
@@ -2603,7 +2610,7 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 			{
 				int idx = tri->IndexBuffer[i + tri->OffsetTexcoord1] * texCoord1->Strike;
 				vtx.TCoords.X = texCoord1->FloatArray[idx];
-				vtx.TCoords.Y = texCoord1->FloatArray[idx+1];
+				vtx.TCoords.Y = 1.0f - texCoord1->FloatArray[idx+1];
 			}
 		}
 

@@ -147,8 +147,7 @@ void readIntsInsideElement(io::IXMLReader* reader, s32* ints, u32 count)
 					ints[i] = 0;
 			}
 		}
-		else
-		if (reader->getNodeType() == io::EXN_ELEMENT_END)
+		else if (reader->getNodeType() == io::EXN_ELEMENT_END)
 			break; // end parsing text
 	}
 }
@@ -190,7 +189,7 @@ void readIntsInsideElement(io::IXMLReader* reader, vector<s32>& arrayInt)
 				{
 					swscanf(begin,L"%d", &value);
 					arrayInt.push_back( value );					
-				}		
+				}
 
 				p++;
 				len--;
@@ -683,7 +682,10 @@ void CColladaAnimation::clipDaeAnim()
 	{
 		// add clip
 		SColladaAnimClip *clip = new SColladaAnimClip();
-		clip->animName	= "fullAnimation";
+
+		char name[512];
+		uiString::getFileNameNoExt<const char, char>( m_animFileName.c_str(), name );
+		clip->animName	= name;
 		clip->time		= 0;
 		
 		float frames = 0.0f;
@@ -714,8 +716,9 @@ void CColladaAnimation::clipDaeAnim()
 
 		// n frames
 		clip->duration = frames;
+
+		// add clip
 		m_colladaAnim.push_back( clip );
-		m_animWithName[ clip->animName ] = clip;
 	}
 	else
 	{
@@ -868,7 +871,7 @@ void CColladaAnimation::clipDaeAnim()
 			it++;
 		}
 	}
-	m_globalClip.freeAllNodeAnim();
+	m_globalClip.freeAllNodeAnim();	
 }
 
 // parseClipNode
@@ -901,7 +904,6 @@ void CColladaAnimation::parseClipNode( io::IXMLReader *xmlRead )
 					clip->duration = (end - start)*k_defaultAnimFPS;
 
 					m_colladaAnim.push_back( clip );
-					m_animWithName[ charBuffer ] = m_colladaAnim.back();					
 				}
 				break;
 			}
@@ -1185,6 +1187,8 @@ void CColladaAnimation::loadDae( char *lpFileName )
 	IVideoDriver	*driver = getIView()->getDriver();
 	io::IFileSystem *fs = device->getFileSystem();
 
+	m_animFileName = lpFileName;
+
 	io::IXMLReader *xmlRead = fs->createXMLReader( lpFileName );
 
 	if ( xmlRead == NULL )
@@ -1197,6 +1201,10 @@ void CColladaAnimation::loadDae( char *lpFileName )
 
 	m_needFlip = false;
 	bool readLUpAxis = false;
+
+	vector<SColladaAnimClip*> oldAnim = m_colladaAnim;
+
+	m_colladaAnim.clear();	
 
 	while ( xmlRead->read() )
 	{
@@ -1245,6 +1253,16 @@ void CColladaAnimation::loadDae( char *lpFileName )
 	// clip global animation to frame
 	clipDaeAnim();
 	
+
+	// need index name & anim
+	m_animWithName.clear();
+	
+	m_colladaAnim.insert( m_colladaAnim.begin(), oldAnim.begin(), oldAnim.end() );
+	for ( int i = 0, n = m_colladaAnim.size(); i < n; i++ )
+	{
+		SColladaAnimClip *clip = m_colladaAnim[i];
+		m_animWithName[ clip->animName ] = clip;
+	}
 }
 
 void CColladaAnimation::loadDotAnim( char *lpFileName )
@@ -1300,7 +1318,10 @@ CColladaAnimationFactory::~CColladaAnimationFactory()
 
 CColladaAnimation* CColladaAnimationFactory::loadAnimation( char *name, char *lpFileName )
 {
-	CColladaAnimation *colladaAnim = new CColladaAnimation();
+	CColladaAnimation *colladaAnim = m_animPackage[name];
+	
+	if ( colladaAnim == NULL )
+		colladaAnim = new CColladaAnimation();
 
 	colladaAnim->loadFile( lpFileName );
 

@@ -275,6 +275,7 @@ struct SColladaAnimClip
 class CColladaAnimation
 {
 protected:
+	std::string							m_animFileName;
 	vector<SColladaAnimClip*>			m_colladaAnim;
 	map<std::string, SColladaAnimClip*>	m_animWithName;
 

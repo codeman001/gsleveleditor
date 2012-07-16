@@ -44,7 +44,7 @@ player
 {
 	Collada mesh component
 	{
-		meshFile: data/mesh/character/marine/marine_2_mesh.scene | filePathType;
+		meshFile: data/mesh/character/hero/hero.scene | filePathType;
 		defaultNode:  | stringType;
 	}
 	Ellipsoid collision component

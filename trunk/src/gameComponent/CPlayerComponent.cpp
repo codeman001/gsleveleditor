@@ -48,6 +48,9 @@ CPlayerComponent::~CPlayerComponent()
 // run when init object
 void CPlayerComponent::initComponent()
 {
+	m_gameObject->setLighting( false );
+
+/*
 	m_collada = (CColladaMeshComponent*) m_gameObject->getComponent( IObjectComponent::ColladaMesh );	
 	if ( m_collada )
 	{
@@ -70,6 +73,7 @@ void CPlayerComponent::initComponent()
 		m_collada->getChildsOfSceneNode( "Bip01_L_Thigh-node", m_footNodes);
 		m_collada->getChildsOfSceneNode( "Bip01_R_Thigh-node", m_footNodes);		
 	}
+*/
 	// set basic state idle
 	setState( CPlayerComponent::PlayerIdle );
 
@@ -110,7 +114,7 @@ void CPlayerComponent::loadData( CSerializable* pObj )
 	CColladaAnimationFactory* animFactory = CColladaAnimationFactory::getInstance();
 	m_animationPackage = animFactory->getAnimation("playerAnim");
 	if ( m_animationPackage == NULL )
-		m_animationPackage = animFactory->loadAnimation("playerAnim", getIView()->getPath("data/mesh/character/marine/marine_2_anims.anim"));	
+		m_animationPackage = animFactory->loadAnimation("playerAnim", getIView()->getPath("data/mesh/character/hero/hero.anim"));	
 }
 
 
@@ -232,6 +236,7 @@ void CPlayerComponent::updateState()
 // event when update anim
 void CPlayerComponent::_onUpdateAnim( CGameColladaSceneNode *node )
 {
+/*
 	if ( m_state == CPlayerComponent::PlayerRun )
 	{		
 		if ( node == m_bipSpineNode )
@@ -247,6 +252,7 @@ void CPlayerComponent::_onUpdateAnim( CGameColladaSceneNode *node )
 			m_bipSpine1Node->AnimationMatrix.setRotationDegrees( rotateSpine );
 		}
 	}
+*/
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -255,6 +261,7 @@ void CPlayerComponent::_onUpdateAnim( CGameColladaSceneNode *node )
 
 void CPlayerComponent::updateStateIdle()
 {
+/*
 	if ( m_subState == SubStateInit )
 	{		
 		if ( m_animShotCurrentTime == m_animShotTotalTime ||  m_animShotTotalTime == 0  )
@@ -273,10 +280,12 @@ void CPlayerComponent::updateStateIdle()
 		updateActionShotWeapon();
 		m_currentRunRot = 0.0f;
 	}
+*/
 }
 
 void CPlayerComponent::updateStateRun()
 {
+/*
 	static int s_lastActionKey = 0;
 
 	if ( m_subState == SubStateInit )
@@ -360,6 +369,7 @@ void CPlayerComponent::updateStateRun()
 
 		s_lastActionKey = m_keyActionBit;
 	}
+*/
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -370,6 +380,7 @@ void CPlayerComponent::updateStateRun()
 // update shot weapon action
 void CPlayerComponent::updateActionShotWeapon()
 {	
+/*
 	CWeaponComponent *weapon = getCurrentWeapon();
 	if ( weapon )
 	{
@@ -407,6 +418,7 @@ void CPlayerComponent::updateActionShotWeapon()
 			}
 		}
 	}
+*/
 }
 
 
@@ -414,6 +426,7 @@ void CPlayerComponent::updateActionShotWeapon()
 // rotate the foot to move vector
 void CPlayerComponent::updateRotateFoot()
 {	
+/*
 	// linear calc current rotation
 	float diff = getIView()->getTimeStep() * 0.1f;
 	float rotSpeed = 3.0f  * diff;
@@ -428,13 +441,14 @@ void CPlayerComponent::updateRotateFoot()
 
 	// update foot anim
 	updateBoneAnim( m_footNodes );	
-
+*/
 }
 
 // updateRotateObject
 // rotate the object to camera front
 void CPlayerComponent::updateRotateObject()
 {
+/*
 	// get camera front vector
 	CGameCamera* cam = CGameLevel::getCurrentLevel()->getCamera();
 	core::vector3df front = cam->getPosition() - cam->getTarget();
@@ -473,12 +487,14 @@ void CPlayerComponent::updateRotateObject()
 	
 	// rotate object & front vector
 	m_gameObject->setRotation(core::vector3df(0.0f, 90 - angle2, 0.0f));
+*/
 }
 
 // updateWeaponPosition
 // update weapon
 void CPlayerComponent::updateWeaponPosition()
 {	
+/*
 	if ( m_inventory && m_collada && m_gunDummyNode )
 	{
 		CInventoryComponent::SInventoryItem* item = m_inventory->getActiveItem();
@@ -497,6 +513,7 @@ void CPlayerComponent::updateWeaponPosition()
 			}
 		}	// if has active item
 	}	// if has inventory
+*/
 }
 
 // getCurrentWeapon

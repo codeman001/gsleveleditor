@@ -1905,10 +1905,10 @@ namespace video
 		if (resetAllRenderStates|| lastmaterial.BlendOperation != material.BlendOperation)
 		{
 			if (EBO_NONE)
-				glDisable(GL_BLEND);
+				enableBlend();
 			else
 			{
-				glEnable(GL_BLEND);
+				disableBlend();				
 				switch (material.BlendOperation)
 				{
 				case EBO_SUBTRACT:

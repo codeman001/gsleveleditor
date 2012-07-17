@@ -569,11 +569,19 @@ public:
 
 	// setAnimation
 	// apply Animation to skin joint
-	void setAnimation(const char *lpAnimName);
+	void setAnimation(const char *lpAnimName, bool loop = true);
+	void setAnimation(const std::string& animName, bool loop = true)
+	{
+		setAnimation( animName.c_str(), loop );
+	}
 
 	// setAnimation
 	// apply Animation to array of skin joint
-	void setAnimation(const char *lpAnimName, vector<CGameColladaSceneNode*>& listNodes );
+	void setAnimation(const char *lpAnimName, vector<CGameColladaSceneNode*>& listNodes, bool loop = true );
+	void setAnimation(const std::string& animName, vector<CGameColladaSceneNode*>& listNodes, bool loop = true )
+	{
+		setAnimation( animName.c_str(), listNodes, loop );
+	}
 
 	// getCurrentAnim
 	// get current anim

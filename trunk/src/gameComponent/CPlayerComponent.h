@@ -49,8 +49,8 @@ protected:
 	float					m_runSpeed;
 	float					m_runBackSpeed;
 
-	float					m_animShotTotalTime;
 	float					m_animShotCurrentTime;
+	float					m_animCurrentTime;
 
 	CColladaAnimation*		m_animationPackage;
 	CColladaMeshComponent*	m_collada;
@@ -62,8 +62,11 @@ protected:
 	CGameColladaSceneNode*	m_gunDummyNode;
 
 
-	vector<CGameColladaSceneNode*>	m_handAndHeadNodes;
-	vector<CGameColladaSceneNode*>	m_footNodes;
+	vector<CGameColladaSceneNode*>	m_nodesHandsAndHead;
+	vector<CGameColladaSceneNode*>	m_nodesChest;
+	vector<CGameColladaSceneNode*>	m_nodesFoot;
+
+	vector<std::string>				m_animIdle;
 
 	// m_targetRotation
 	// the target rotation
@@ -71,6 +74,8 @@ protected:
 	float					m_currentRunRot;
 	core::vector3df			m_targetRotation;
 	int						m_keyActionBit;
+
+	bool					m_noGun;
 public:
 	CPlayerComponent(CGameObject* obj);
 	virtual ~CPlayerComponent();
@@ -130,14 +135,9 @@ protected:
 	void updateStateIdle();
 	void updateStateRun();
 
-
 	// updateActionShotWeapon
 	// shoot weapon action
 	void updateActionShotWeapon();
-
-	// updateRotateFoot
-	// rotate the foot to move vector
-	void updateRotateFoot();
 
 	// updateRotateObject
 	// rotate the object to camera front
@@ -155,15 +155,7 @@ protected:
 		m_state = m_nextState;
 		m_subState = SubStateInit;				
 		m_nextState = CPlayerComponent::PlayerNone;
-	}
-
-	// enableBoneAnim
-	// enable bone anim
-	void enableBoneAnim( vector<CGameColladaSceneNode*>& nodes,bool b );
-
-	// updateBoneAnim
-	// update bone anim
-	void updateBoneAnim( vector<CGameColladaSceneNode*>& nodes );
+	}	
 
 	// getCurrentWeapon
 	// get weapon

@@ -58,7 +58,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 {
 	m_currentFrame = 0;
 	m_totalFrame = 0;
-	m_framePerSecond = 24.0f;
+	m_framePerSecond = 40.0f;
 	m_isRootColladaNode = true;
 	m_enableAnim = true;
 	m_timer = 0;

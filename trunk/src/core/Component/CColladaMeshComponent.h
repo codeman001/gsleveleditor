@@ -263,6 +263,13 @@ struct SColladaAnimClip
 		}
 		return NULL;
 	}
+
+	// getRealTimeLength
+	// get time by milisecond
+	float getRealTimeLength( float baseFps = 40.0f )
+	{
+		return duration * baseFps;
+	}
 };
 
 #pragma endregion

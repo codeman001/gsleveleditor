@@ -19,8 +19,11 @@ public:
 	enum EPlayerState
 	{
 		PlayerNone = 0,
-		PlayerIdle,		
+		PlayerIdle,
+		PlayerIdleRun,
 		PlayerRun,
+		PlayerRunIdle,
+
 		NumStateCount
 	};
 
@@ -48,6 +51,7 @@ protected:
 
 	float					m_runSpeed;
 	float					m_runBackSpeed;
+	bool					m_runCommand;
 
 	float					m_animShotCurrentTime;
 	float					m_animCurrentTime;
@@ -67,6 +71,10 @@ protected:
 	vector<CGameColladaSceneNode*>	m_nodesFoot;
 
 	vector<std::string>				m_animIdle;
+	std::string						m_animIdleRun;
+	std::string						m_animIdleRunForward;
+	std::string						m_animIdleRunBackward;
+	std::string						m_animRunIdle;
 
 	// m_targetRotation
 	// the target rotation
@@ -133,7 +141,12 @@ protected:
 	void updateState();
 
 	void updateStateIdle();
+	void updateStateIdleRun();
 	void updateStateRun();
+	void updateStateRunIdle();
+
+	// stepAnimationTime	
+	void stepAnimationTime();
 
 	// updateActionShotWeapon
 	// shoot weapon action

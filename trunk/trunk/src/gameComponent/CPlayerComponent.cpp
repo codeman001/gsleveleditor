@@ -24,14 +24,15 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_keyActionBit	= CPlayerComponent::KeyNone;
 
 	// init run const
-	m_runSpeed				= 5.0f;
-	m_runBackSpeed			= 3.0f;
+	m_runSpeed				= 3.0f;
+	m_runBackSpeed			= 2.0f;
 
 	m_bipSpineNode	= NULL;
 	m_bipSpine1Node	= NULL;
 	m_gunDummyNode	= NULL;
 
 	m_runRotation	= 0.0f;
+	m_runCommand	= false;
 	m_currentRunRot	= 0.0f;
 
 	m_collada	= NULL;
@@ -40,7 +41,7 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_animShotCurrentTime	= 0.0f;
 	m_animCurrentTime		= 0.0f;
 
-	m_noGun = true;
+	m_noGun = true;	
 }
 
 CPlayerComponent::~CPlayerComponent()
@@ -81,8 +82,11 @@ void CPlayerComponent::initComponent()
 
 	// idle anim list
 	m_animIdle.push_back( "Hero@Idle" );
-	m_animIdle.push_back( "Hero@Idle1" );
-	m_animIdle.push_back( "Hero@Idle2" );
+	m_animIdle.push_back( "Hero@Idle1" );	
+	m_animIdleRun			= "Hero@IdleRun";
+	m_animIdleRunForward	= "Hero@RunForward";
+	m_animIdleRunBackward	= "Hero@RunBackward";
+	m_animRunIdle			= "Hero@RunIdle";
 
 	// set basic state idle
 	setState( CPlayerComponent::PlayerIdle );
@@ -171,7 +175,7 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 
 		// update move
 		m_runRotation = 0.0f;		
-		bool run = false;
+		m_runCommand = false;
 
 		// calc rotation
 		if ( (m_keyActionBit & CPlayerComponent::KeyLeft) != 0 )
@@ -181,7 +185,7 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 				m_runRotation += 135.0f;
 			else if ( (m_keyActionBit & CPlayerComponent::KeyUp) != 0 )
 				m_runRotation += 45.0f;
-			run = true;
+			m_runCommand = true;
 		}
 		else if ( (m_keyActionBit & CPlayerComponent::KeyRight) != 0 )
 		{
@@ -190,27 +194,15 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 				m_runRotation -= 135.0f;
 			else if ( (m_keyActionBit & CPlayerComponent::KeyUp) != 0 )
 				m_runRotation -= 45.0f;
-			run = true;
+			m_runCommand = true;
 		}
 		else if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
 		{
-			run = true;
+			m_runCommand = true;
 		}
 		else if ( (m_keyActionBit & CPlayerComponent::KeyUp) != 0 )
 		{
-			run = true;
-		}
-
-		if ( m_keyActionBit == CPlayerComponent::KeyNone )
-		{
-			setState( CPlayerComponent::PlayerIdle );
-		}
-		else
-		{	
-			if ( run )
-			{
-				setState( CPlayerComponent::PlayerRun );
-			}
+			m_runCommand = true;
 		}
 	}
 
@@ -230,8 +222,14 @@ void CPlayerComponent::updateState()
 	case CPlayerComponent::PlayerIdle:
 		updateStateIdle();			
 		break;
+	case CPlayerComponent::PlayerIdleRun:
+		updateStateIdleRun();
+		break;
 	case CPlayerComponent::PlayerRun:
 		updateStateRun();
+		break;
+	case CPlayerComponent::PlayerRunIdle:
+		updateStateRunIdle();
 		break;
 	default:
 		break;
@@ -244,15 +242,10 @@ void CPlayerComponent::updateState()
 
 void CPlayerComponent::updateStateIdle()
 {
-	float timeStep = getIView()->getTimeStep();
-	m_animCurrentTime = m_animCurrentTime - timeStep;
-
-#ifdef LOG_ANIM_TIME
-	printf("Idle anim time = %f\n", m_animCurrentTime);
-#endif
+	stepAnimationTime();
 
 	if ( m_subState == SubStateInit )
-	{		
+	{
 		IrrlichtDevice* device = getIView()->getDevice();
 		int r = device->getRandomizer()->rand() % m_animIdle.size();		
 		const char *anim = m_animIdle[r].c_str();
@@ -263,15 +256,64 @@ void CPlayerComponent::updateStateIdle()
 		m_subState = SubStateActive;
 	}
 	else if ( m_subState == SubStateEnd )
+	{
+		doNextState();		
+	}
+	else
+	{
+		m_currentRunRot = 0.0f;
+	
+		if ( m_runCommand )
+			setState( CPlayerComponent::PlayerIdleRun );
+
+		if ( m_animCurrentTime <= 0 )
+			m_subState = SubStateInit;
+	}
+}
+
+void CPlayerComponent::updateStateIdleRun()
+{
+	stepAnimationTime();
+
+	if ( m_subState == SubStateInit )
 	{		
-		doNextState();
+		m_collada->setAnimation( m_animIdleRun, false );		
+		m_animCurrentTime = m_collada->getCurrentAnim()->getRealTimeLength();
+
+		m_subState = SubStateActive;
+	}
+	else if ( m_subState == SubStateEnd )
+	{		
+		setState( CPlayerComponent::PlayerRun );
+		doNextState();	
 	}
 	else
 	{
 		m_currentRunRot = 0.0f;
 
+		// update run
+		float diff = getIView()->getTimeStep() * 0.1f;
+
+		// get front
+		core::vector3df pos		= m_gameObject->getPosition();
+		core::vector3df front	= m_gameObject->getFront();
+
+		float animLength = m_collada->getCurrentAnim()->getRealTimeLength();
+		float ratio = 1.0f - m_animCurrentTime/animLength;
+
+		if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
+		{
+			// run back
+			m_gameObject->setPosition( pos - front * m_runBackSpeed * ratio * diff );
+		}
+		else
+		{
+			// run forward
+			m_gameObject->setPosition( pos + front * m_runSpeed * ratio * diff );
+		}
+
 		if ( m_animCurrentTime <= 0 )
-			m_subState = SubStateInit;
+			m_subState = SubStateEnd;
 	}
 }
 
@@ -282,9 +324,9 @@ void CPlayerComponent::updateStateRun()
 	if ( m_subState == SubStateInit )
 	{
 		if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
-			m_collada->setAnimation("Hero@RunBackward");
+			m_collada->setAnimation( m_animIdleRunBackward );
 		else
-			m_collada->setAnimation("Hero@RunForward");
+			m_collada->setAnimation( m_animIdleRunForward );
 
 		s_lastActionKey = m_keyActionBit;
 		m_subState = SubStateActive;	
@@ -317,7 +359,10 @@ void CPlayerComponent::updateStateRun()
 		{
 			// run forward
 			m_gameObject->setPosition( pos + front * m_runSpeed * diff );
-		}				
+		}
+
+		if ( m_runCommand == false )
+			setState( CPlayerComponent::PlayerRunIdle );
 
 		// check to init run state if change action
 		if ( s_lastActionKey != m_keyActionBit )
@@ -327,9 +372,65 @@ void CPlayerComponent::updateStateRun()
 	}
 }
 
+void CPlayerComponent::updateStateRunIdle()
+{
+	stepAnimationTime();
+
+	if ( m_subState == SubStateInit )
+	{		
+		m_collada->setAnimation( m_animRunIdle, false );		
+		m_animCurrentTime = m_collada->getCurrentAnim()->getRealTimeLength();
+
+		m_subState = SubStateActive;
+	}
+	else if ( m_subState == SubStateEnd )
+	{		
+		setState( CPlayerComponent::PlayerIdle );
+		doNextState();	
+	}
+	else
+	{
+		m_currentRunRot = 0.0f;
+
+		// update run
+		float diff = getIView()->getTimeStep() * 0.1f;
+
+		// get front
+		core::vector3df pos		= m_gameObject->getPosition();
+		core::vector3df front	= m_gameObject->getFront();
+
+		float animLength = m_collada->getCurrentAnim()->getRealTimeLength();
+		float ratio = m_animCurrentTime/animLength;
+
+		if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
+		{
+			// run back
+			m_gameObject->setPosition( pos - front * m_runBackSpeed * ratio * diff );
+		}
+		else
+		{
+			// run forward
+			m_gameObject->setPosition( pos + front * m_runSpeed * ratio * diff );
+		}
+
+		if ( m_animCurrentTime <= 0 )
+			m_subState = SubStateEnd;
+	}
+}
+
+
 ///////////////////////////////////////////////////////////////////////
 // Player component end update state function
 ///////////////////////////////////////////////////////////////////////
+
+// stepAnimationTime	
+void CPlayerComponent::stepAnimationTime()
+{
+	float timeStep = getIView()->getTimeStep();
+	m_animCurrentTime = m_animCurrentTime - timeStep;
+	if ( m_animCurrentTime < 0 )
+		m_animCurrentTime = 0;
+}
 
 // updateActiveFire
 // update shot weapon action
@@ -423,7 +524,6 @@ void CPlayerComponent::updateRotateObject()
 // update weapon
 void CPlayerComponent::updateWeaponPosition()
 {	
-/*
 	if ( m_inventory && m_collada && m_gunDummyNode )
 	{
 		CInventoryComponent::SInventoryItem* item = m_inventory->getActiveItem();
@@ -433,16 +533,11 @@ void CPlayerComponent::updateWeaponPosition()
 			if ( weapon )
 			{
 				if ( weapon->getWeaponType() == CWeaponComponent::ShotGun )
-				{
-					// set gun position
-					item->m_item->setVisible( true );
-					item->m_item->setEnable( true );
-					m_gunDummyNode->setHookTransformObject( item->m_item );
+				{					
 				}		
 			}
 		}	// if has active item
 	}	// if has inventory
-*/
 }
 
 // getCurrentWeapon

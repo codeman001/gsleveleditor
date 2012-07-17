@@ -3261,7 +3261,7 @@ void CColladaMeshComponent::getChildsOfSceneNode( const char *name, vector<CGame
 
 // setAnimation
 // apply Animation to skin joint
-void CColladaMeshComponent::setAnimation(const char *lpAnimName)
+void CColladaMeshComponent::setAnimation(const char *lpAnimName, bool loop)
 {
 	if ( m_colladaNode == NULL )
 		return;
@@ -3270,6 +3270,8 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 	if ( animClip == NULL )
 		return;
 	
+	animClip->loop = loop;
+
 	// set begin frame
 	setCurrentFrame(0);
 	
@@ -3321,7 +3323,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName)
 
 // setAnimation
 // apply Animation to array of skin joint
-void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameColladaSceneNode*>& listNodes )
+void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameColladaSceneNode*>& listNodes, bool loop )
 {
 	if ( m_colladaNode == NULL )
 		return;
@@ -3330,6 +3332,8 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameCol
 	if ( animClip == NULL )
 		return;
 	
+	animClip->loop = loop;
+
 	// set begin frame
 	setCurrentFrame(0);
 

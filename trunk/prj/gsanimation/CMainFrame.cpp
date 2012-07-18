@@ -531,7 +531,10 @@ void CMainFrame::listPropertyOnItemChange( uiObject *pSender )
 
 	// set animation for anim mesh
 	CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
-	colladaComponent->setAnimation( animName );
-	colladaComponent->pauseAtFrame( 0 );
+	
+	//colladaComponent->setAnimation( animName );
+	//colladaComponent->pauseAtFrame( 0 );
 
+	colladaComponent->setCrossFadeAnimation( animName, 24.0f );
+	colladaComponent->resumeAnim();
 }

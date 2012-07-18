@@ -421,7 +421,11 @@ public:
 
 	// updateAnimation
 	// calc relative matrix of animation
-	void	updateAnimation();
+	void updateAnimation();
+
+	// getCurrentFrameData
+	// get current frame
+	void getCurrentFrameData( core::vector3df& position, core::quaternion& rotation, core::vector3df& scale );
 
 public:
 

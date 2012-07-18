@@ -1372,6 +1372,14 @@ CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 
 	m_currentAnim = NULL;
 	m_colladaAnimation = NULL;
+
+	m_crossFadeAnimTime = 0;
+	m_isCrossFadeAnim	= false;
+	
+	m_crossFadeAnimClip.animName	= "crossFadeAnim";
+	m_crossFadeAnimClip.time		= 0.0f;
+	m_crossFadeAnimClip.duration	= 0.0f;
+	m_crossFadeAnimClip.loop		= false;
 }
 
 CColladaMeshComponent::~CColladaMeshComponent()
@@ -1393,6 +1401,7 @@ void CColladaMeshComponent::updateComponent()
 {
 	// update gameplay lod geometry 
 	updateLod();
+	updateCrossFadeAnim();
 }
 
  
@@ -3258,6 +3267,97 @@ void CColladaMeshComponent::getChildsOfSceneNode( const char *name, vector<CGame
 
 }
 
+// setCrossFadeAnimation
+// crossfade current animation to new animation
+void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, float nFrames, bool loop)
+{
+	if ( m_colladaNode == NULL )
+		return;
+
+	SColladaAnimClip *animClip = m_colladaAnimation->getAnim( lpAnimName );
+	if ( animClip == NULL )
+		return;
+	
+	float minFps = 999999.0f;
+
+	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		const std::string& nodeName = (*i).first;
+		CGameColladaSceneNode* j = (*i).second;
+				
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+
+		// get current frame data
+		core::vector3df		currentPos;
+		core::vector3df		currentScale;
+		core::quaternion	currentRotate;
+		j->getCurrentFrameData( currentPos, currentRotate, currentScale );
+
+		CGameColladaSceneNode::SRotationKey rot;
+		rot.frame		= 0;
+		rot.rotation	= currentRotate;
+
+		CGameColladaSceneNode::SPositionKey pos;
+		pos.frame		= 0;
+		pos.position	= currentPos;
+
+		// clear old key frame
+		j->clearAllKeyFrame();
+		
+		// todo add animation key
+		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
+
+		if ( anim )
+		{
+			if ( minFps > j->getFPS() )
+				minFps = j->getFPS();
+
+			int nRotKey = anim->RotationKeys.size();
+			if ( nRotKey > 0 )
+			{
+				j->RotationKeys.push_back( rot );
+
+				rot.frame		= nFrames;
+				rot.rotation	= anim->RotationKeys[0].rotation;
+				j->RotationKeys.push_back( rot );
+			}
+
+			int nPosKey = anim->PositionKeys.size();
+			if ( nPosKey > 0 )
+			{
+				j->PositionKeys.push_back( pos );
+
+				pos.frame		= nFrames;
+				pos.position	= anim->PositionKeys[0].position;
+				j->PositionKeys.push_back( pos );
+			}
+		}		
+
+		i++;
+	}
+	
+	// create crossfade anim
+	m_crossFadeAnimClip.duration = nFrames;
+	m_crossFadeAnimClip.loop = false;	
+
+	// init variable
+	m_crossFadeAnimTime = (nFrames/minFps) * 1000.0f;
+	m_crossFadeToAnim = lpAnimName;
+	m_crossFadeToAnimLoop = loop;
+	m_isCrossFadeAnim = true;
+
+	// current anim crossfade clip
+	m_currentAnim = &m_crossFadeAnimClip;
+
+
+	// set begin frame
+	setCurrentFrame(0);
+}
 
 // setAnimation
 // apply Animation to skin joint
@@ -3293,10 +3393,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, bool loop)
 
 		// clear old key frame
 		j->clearAllKeyFrame();
-				
-		// get local matrix of skin joint
-		const core::matrix4& mat =	j->getLocalMatrix();
-
+						
 		// todo add animation key
 		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
 
@@ -3352,10 +3449,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameCol
 		}
 
 		// clear old key frame
-		j->clearAllKeyFrame();
-				
-		// get local matrix of skin joint
-		const core::matrix4& mat =	j->getLocalMatrix();
+		j->clearAllKeyFrame();					
 
 		// todo add animation key
 		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( j->getName() );
@@ -3531,5 +3625,24 @@ void CColladaMeshComponent::updateLod()
 				node->setVisible( false );
 		}
 
+	}
+}
+
+// updateCrossFadeAnim
+// blend 2 animation
+void CColladaMeshComponent::updateCrossFadeAnim()
+{
+	if ( m_isCrossFadeAnim == false )
+		return;
+
+	float timeStep = getIView()->getTimeStep();
+	m_crossFadeAnimTime = m_crossFadeAnimTime - timeStep;
+	if ( m_crossFadeAnimTime < 0 )
+		m_crossFadeAnimTime = 0;
+
+	if ( m_crossFadeAnimTime <= 0 )
+	{
+		setAnimation(m_crossFadeToAnim, m_crossFadeToAnimLoop);
+		m_isCrossFadeAnim = false;
 	}
 }

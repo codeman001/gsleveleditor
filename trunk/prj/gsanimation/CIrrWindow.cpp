@@ -124,6 +124,14 @@ void CIrrWindow::irrUpdate()
 	// tick device
 	m_device->getTimer()->tick();
 
+	static long s_lastUpdateTime = 0;
+
+	long now = m_device->getTimer()->getTime();
+	m_timeStep = (f32)(now - s_lastUpdateTime);
+	if ( m_timeStep == 0.0f )
+		m_timeStep = 1.0f;
+	s_lastUpdateTime = now;
+
 	// update object
 	m_animObject->updateObject();
 	m_camera->updateObject();

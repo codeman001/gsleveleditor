@@ -355,6 +355,13 @@ void CGameColladaSceneNode::skin()
 	}
 }
 
+// getCurrentFrameData
+// get current frame
+void CGameColladaSceneNode::getCurrentFrameData( core::vector3df& position, core::quaternion& rotation, core::vector3df& scale )
+{
+	getFrameData( m_currentFrame, position, m_posHint, scale, m_scaleHint, rotation, m_rotHint );
+}
+
 // updateAnimation
 // calc relative matrix of animation
 void CGameColladaSceneNode::updateAnimation()

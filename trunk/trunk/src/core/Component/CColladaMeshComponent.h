@@ -399,6 +399,13 @@ protected:
 	// current animation clip info
 	CColladaAnimation							*m_colladaAnimation;
 
+	// m_crossFadeAnimClip
+	SColladaAnimClip							m_crossFadeAnimClip;
+	float										m_crossFadeAnimTime;
+	std::string									m_crossFadeToAnim;
+	bool										m_crossFadeToAnimLoop;
+	bool										m_isCrossFadeAnim;
+
 	map<std::string, CGameColladaSceneNode*>	m_mapNode;
 	map<std::string, CGameColladaSceneNode*>	m_sidNode;
 
@@ -567,6 +574,14 @@ public:
 		return m_colladaAnimation;
 	}
 
+	// setCrossFadeAnimation
+	// crossfade current animation to new animation
+	void setCrossFadeAnimation(const char *lpAnimName, float nFrames = 40.0f, bool loop = true);
+	void setCrossFadeAnimation(const std::string& animName, float nFrames = 40.0f, bool loop = true)
+	{
+		setCrossFadeAnimation( animName.c_str(), nFrames, loop );
+	}
+
 	// setAnimation
 	// apply Animation to skin joint
 	void setAnimation(const char *lpAnimName, bool loop = true);
@@ -689,6 +704,9 @@ public:
 	// update lod mesh
 	void updateLod();
 
+	// updateCrossFadeAnim
+	// blend 2 animation
+	void updateCrossFadeAnim();
 
 };
 

@@ -402,6 +402,7 @@ protected:
 	// m_crossFadeAnimClip
 	SColladaAnimClip							m_crossFadeAnimClip;
 	float										m_crossFadeAnimTime;
+	float										m_crossFadeAnimFps;
 	std::string									m_crossFadeToAnim;
 	bool										m_crossFadeToAnimLoop;
 	bool										m_isCrossFadeAnim;
@@ -603,6 +604,36 @@ public:
 	inline SColladaAnimClip* getCurrentAnim()
 	{
 		return m_currentAnim;
+	}
+
+	// getCrossfadeAnim
+	// get current crossfade anim
+	inline SColladaAnimClip* getCrossfadeAnim()
+	{
+		return &m_crossFadeAnimClip;
+	}
+
+	// getCurrentAnimTimeLength
+	// get current anim length
+	float getCurrentAnimTimeLength()
+	{
+		float time = 0;
+		if ( m_currentAnim )
+			time = time + m_currentAnim->getRealTimeLength();
+		if ( m_isCrossFadeAnim )
+			time = time + m_crossFadeAnimClip.getRealTimeLength( m_crossFadeAnimFps );
+
+		return time;
+	}
+
+	// getCurrentCrossfadeAnimTimeLength
+	// get crossfade anim time
+	float getCurrentCrossfadeAnimTimeLength()
+	{
+		float time = 0;
+		if ( m_isCrossFadeAnim )
+			time = time + m_crossFadeAnimClip.getRealTimeLength( m_crossFadeAnimFps );
+		return time;
 	}
 
 	// pauseAtFrame

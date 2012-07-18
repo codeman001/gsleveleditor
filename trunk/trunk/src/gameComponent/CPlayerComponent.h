@@ -20,9 +20,7 @@ public:
 	{
 		PlayerNone = 0,
 		PlayerIdle,
-		PlayerIdleRun,
 		PlayerRun,
-		PlayerRunIdle,
 
 		NumStateCount
 	};
@@ -55,6 +53,7 @@ protected:
 
 	float					m_animShotCurrentTime;
 	float					m_animCurrentTime;
+	float					m_animCrossfadeTime;
 
 	CColladaAnimation*		m_animationPackage;
 	CColladaMeshComponent*	m_collada;
@@ -71,10 +70,11 @@ protected:
 	vector<CGameColladaSceneNode*>	m_nodesFoot;
 
 	vector<std::string>				m_animIdle;
-	std::string						m_animIdleRun;
-	std::string						m_animIdleRunForward;
-	std::string						m_animIdleRunBackward;
-	std::string						m_animRunIdle;
+	std::string						m_animRun;
+	std::string						m_animRunForward;
+	std::string						m_animRunBackward;
+	std::string						m_animRunStrafeLeft;
+	std::string						m_animRunStrafeRight;
 
 	// m_targetRotation
 	// the target rotation
@@ -141,9 +141,7 @@ protected:
 	void updateState();
 
 	void updateStateIdle();
-	void updateStateIdleRun();
 	void updateStateRun();
-	void updateStateRunIdle();
 
 	// stepAnimationTime	
 	void stepAnimationTime();

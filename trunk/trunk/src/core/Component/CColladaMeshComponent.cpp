@@ -1165,7 +1165,6 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 								// add to list
 								arrayFloat[numArray++] = value;
 							}
-
 						}		
 
 						p++;
@@ -3342,18 +3341,19 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, float 
 	}
 	
 	// create crossfade anim
-	m_crossFadeAnimClip.duration = nFrames;
+	m_crossFadeAnimClip.duration = nFrames;	
 	m_crossFadeAnimClip.loop = false;	
-
+	
 	// init variable
 	m_crossFadeAnimTime = (nFrames/minFps) * 1000.0f;
+	m_crossFadeAnimFps = minFps;
 	m_crossFadeToAnim = lpAnimName;
 	m_crossFadeToAnimLoop = loop;
 	m_isCrossFadeAnim = true;
 
 	// current anim crossfade clip
-	m_currentAnim = &m_crossFadeAnimClip;
-
+	m_currentAnim = animClip;
+	m_currentAnim->loop = false;	// hardcode to turn of loop on current anim!
 
 	// set begin frame
 	setCurrentFrame(0);

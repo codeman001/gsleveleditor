@@ -46,6 +46,7 @@ protected:
 	EPlayerSubState			m_subState;
 	EPlayerState			m_state;
 	EPlayerState			m_nextState;
+	EPlayerState			m_lastState;
 
 	float					m_runSpeed;
 	float					m_runBackSpeed;
@@ -99,6 +100,7 @@ protected:
 	// the target rotation
 	float					m_runRotation;
 	float					m_currentRunRot;
+	bool					m_rotateFinish;
 	core::vector3df			m_targetRotation;
 	int						m_keyActionBit;
 
@@ -171,7 +173,7 @@ protected:
 
 	// updateRotateObject
 	// rotate the object to camera front
-	void updateRotateObject();
+	float updateRotateObject(float rotSpeed = 3.0f);
 
 	// rotateObject	
 	void rotateObject();
@@ -185,8 +187,9 @@ protected:
 	void doNextState()
 	{		
 		// change next state
-		m_state = m_nextState;
-		m_subState = SubStateInit;				
+		m_lastState	= m_state;
+		m_state		= m_nextState;
+		m_subState	= SubStateInit;
 		m_nextState = CPlayerComponent::PlayerNone;
 	}	
 

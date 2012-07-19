@@ -20,7 +20,10 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	:IObjectComponent(obj, CGameComponent::PlayerComponent)
 {
 	// default state
-	m_state			= CPlayerComponent::PlayerNone;
+	m_state			= CPlayerComponent::PlayerNone;	
+	m_lastState		= CPlayerComponent::PlayerNone;
+	m_nextState		= CPlayerComponent::PlayerNone;
+
 	m_keyActionBit	= CPlayerComponent::KeyNone;
 
 	// init run const
@@ -283,8 +286,10 @@ void CPlayerComponent::updateStateIdle()
 
 void CPlayerComponent::updateStateRun()
 {
-	static int	s_lastActionKey = 0;
-	static bool	s_alowModifyPosOnCrossfade = false;
+	static int		s_lastActionKey = 0;
+	static bool		s_alowModifyPosOnCrossfade = false;	
+	static bool		s_alowModifyPosOnRotate = false;
+	static float	s_rotateSpeed = 2.0f;
 
 	bool back	= (m_keyActionBit & CPlayerComponent::KeyBack) > 0;
 	bool up		= (m_keyActionBit & CPlayerComponent::KeyUp) > 0;
@@ -321,26 +326,47 @@ void CPlayerComponent::updateStateRun()
 
 			s_alowModifyPosOnCrossfade = true;
 		}
-
-		s_lastActionKey = m_keyActionBit;
-		m_subState = SubStateActive;	
+				
+		if ( s_lastActionKey == 0 )
+		{
+			s_alowModifyPosOnRotate = false;
+			s_rotateSpeed = 5.0f;
+		}
+		else
+		{
+			s_alowModifyPosOnRotate = true;
+			s_rotateSpeed = 3.0f;
+		}
 		
+		// change to active state
+		s_lastActionKey = m_keyActionBit;
+		m_subState = SubStateActive;
+		
+		// get anim time
 		m_animCurrentTime	= m_collada->getCurrentAnimTimeLength();
 		m_animCrossfadeTime = m_collada->getCurrentCrossfadeAnimTimeLength();
 	}
 	else if ( m_subState == SubStateEnd )
-	{
+	{	
+		// clear last action key
+		s_lastActionKey = 0;
+
 		doNextState();
 	}
 	else
 	{						
 		// rotate object by camera
-		updateRotateObject();
+		if ( updateRotateObject(s_rotateSpeed) == 0 )
+		{
+			s_alowModifyPosOnRotate = true;
+			s_rotateSpeed = 3.0f;
+		}
 
-		// update shot weapon
-		// updateActionShotWeapon();
-		
-		if ( m_animCrossfadeTime <= 0.0f || s_alowModifyPosOnCrossfade == true )
+		// update position
+		if ( 
+				(m_animCrossfadeTime <= 0.0f || s_alowModifyPosOnCrossfade == true) && 
+				s_alowModifyPosOnRotate == true 
+			)
 		{
 			s_alowModifyPosOnCrossfade = true;
 
@@ -371,6 +397,7 @@ void CPlayerComponent::updateStateRun()
 			}
 		}
 		
+		// change to idle if no command run
 		if ( m_runCommand == false )
 		{
 			setState( CPlayerComponent::PlayerIdle );
@@ -465,7 +492,7 @@ void CPlayerComponent::updateActionShotWeapon()
 
 // updateRotateObject
 // rotate the object to camera front
-void CPlayerComponent::updateRotateObject()
+float CPlayerComponent::updateRotateObject(float rotSpeed)
 {
 	// get camera front vector
 	CGameCamera* cam = CGameLevel::getCurrentLevel()->getCamera();
@@ -493,17 +520,26 @@ void CPlayerComponent::updateRotateObject()
 
 	// linear calc current rotation
 	float diff = getIView()->getTimeStep() * 0.1f;
-	float rotSpeed = 2.0f  * diff;
+	float r = rotSpeed  * diff;
+
+	// set flag
+	m_rotateFinish = false;	
 
 	if ( angle2 < angle1 )
-		angle2 = angle2 + rotSpeed;
+		angle2 = angle2 + r;
 	else if ( angle2 > angle1 )
-		angle2 = angle2 - rotSpeed;		
-	if ( fabs( angle2 - angle1 ) < rotSpeed )
+		angle2 = angle2 - r;		
+	if ( fabs( angle2 - angle1 ) < r )
+	{
 		angle2 = angle1;
-	
+		m_rotateFinish = true;
+	}
+		
 	// rotate object & front vector
 	m_gameObject->setRotation(core::vector3df(0.0f, 90 - angle2, 0.0f));
+
+	// return delta rotation
+	return fabs( angle2 - angle1 );
 }
 
 // rotateObject	

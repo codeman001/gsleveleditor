@@ -69,12 +69,31 @@ protected:
 	vector<CGameColladaSceneNode*>	m_nodesChest;
 	vector<CGameColladaSceneNode*>	m_nodesFoot;
 
+	// begin anim name declare
 	vector<std::string>				m_animIdle;
+
 	std::string						m_animRun;
 	std::string						m_animRunForward;
 	std::string						m_animRunBackward;
 	std::string						m_animRunStrafeLeft;
 	std::string						m_animRunStrafeRight;
+	std::string						m_animRunNoGun;
+
+	std::string						m_animGunOn;
+	std::string						m_animGunOff;
+	std::string						m_animGunReload;
+
+	std::string						m_animAimDown;
+	std::string						m_animAimUp;
+	std::string						m_animAimLeft;
+	std::string						m_animAimRight;
+	std::string						m_animAimStraight;
+
+	std::string						m_animShootLeft;
+	std::string						m_animShootRight;
+	std::string						m_animShootUp;
+	std::string						m_animShootStraight;
+	// end anim name declare
 
 	// m_targetRotation
 	// the target rotation
@@ -153,6 +172,9 @@ protected:
 	// updateRotateObject
 	// rotate the object to camera front
 	void updateRotateObject();
+
+	// rotateObject	
+	void rotateObject();
 
 	// updateWeaponPosition
 	// update weapon

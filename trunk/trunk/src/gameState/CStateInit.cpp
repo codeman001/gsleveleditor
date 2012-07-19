@@ -2,15 +2,24 @@
 
 #include "CStateInit.h"
 #include "CStateMainMenu.h"
+#include "CStateGameLoading.h"
 #include "CGameStateManager.h"
 
 #include "IView.h"
+
+#define OPEN_GAMEPLAY	"data/level/levelGameM1.lv"
 
 CStateInit::CStateInit()
 	:CGameState( CGameState::GSStateInit )
 {
 	m_loadFinish = false;
+
+#ifdef OPEN_GAMEPLAY
+	m_logoTime = 0.f;
+#else
 	m_logoTime = 2000.f;
+#endif
+
 	m_mainMenuState = NULL;
 }
 
@@ -50,15 +59,15 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 		}
 
 		// hide the menu
-		menu->setVisible( false );
-		
-		// create main menu level
-		CStateMainMenu* mainMenuState = new CStateMainMenu();
+		menu->setVisible( false );	
 
 		// load all template
 		CObjTemplateFactory::loadAllObjectTemplate();
 
+#ifndef OPEN_GAMEPLAY
 		// load 3d level
+		CStateMainMenu *mainMenuState = new CStateMainMenu();
+
 		CGameLevel *level = mainMenuState->getLevel();
 		level->loadLevel( getIView()->getPath( "data/level/levelMainMenu.lv" ) );			
 		while ( level->loadStep() == false )
@@ -66,7 +75,9 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 		}
 
 		// set gamestate
+		// create main menu level		
 		m_mainMenuState = mainMenuState;
+#endif
 
 		// notify load finish
 		m_loadFinish = true;
@@ -75,8 +86,18 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 	{
 		// change state main menu
 		m_menuFx->setVisible( false );
+
+#ifdef OPEN_GAMEPLAY
+		m_menuFx = CGameUI::getInstance()->getFlash("uiGameMenu");	
+		m_menuFx->setVisible( true );
+		m_menuFx->setBackgroundTransparent( true );
+
+		CGameLevel::setLevelLoad( OPEN_GAMEPLAY );
+		CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );
+#else
 		CGameStateMgr::getInstance()->changeState( m_mainMenuState );
 		m_mainMenuState = NULL;
+#endif
 	}
 }
 

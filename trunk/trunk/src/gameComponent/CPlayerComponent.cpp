@@ -77,14 +77,32 @@ void CPlayerComponent::initComponent()
 	m_nodesHandsAndHead.push_back( m_collada->getSceneNode("RightGun") );		
 	m_collada->getChildsOfSceneNode("Spine3",m_nodesHandsAndHead);
 
-	// idle anim list
+	// decalre anim list
 	m_animIdle.push_back( "Hero@Idle" );
 	m_animIdle.push_back( "Hero@Idle1" );
 	m_animIdle.push_back( "Hero@Idle2" );
+
 	m_animRunForward	= "Hero@RunForward";
 	m_animRunBackward	= "Hero@RunBackward";
 	m_animRunStrafeLeft	= "Hero@RunStrafeLeft";
 	m_animRunStrafeRight= "Hero@RunStrafeRight";
+	m_animRunNoGun		= "Hero@RunForwardNoGun";
+
+	m_animGunOn			= "Hero@GunOn";
+	m_animGunOff		= "Hero@GunOff";	
+	m_animGunReload		= "Hero@GunReload";
+
+	m_animAimDown		= "Hero@AimDown";
+	m_animAimUp			= "Hero@AimUp";
+	m_animAimLeft		= "Hero@AimLeft";
+	m_animAimRight		= "Hero@AimRight";
+	m_animAimStraight	= "Hero@AimStraight";
+
+	m_animShootLeft		= "Hero@ShootLeft";
+	m_animShootRight	= "Hero@ShootRight";
+	m_animShootUp		= "Hero@ShootUp";
+	m_animShootStraight	= "Hero@ShootStraight";
+
 
 	// set basic state idle
 	m_collada->setAnimation( m_animIdle[0] );
@@ -265,12 +283,18 @@ void CPlayerComponent::updateStateIdle()
 
 void CPlayerComponent::updateStateRun()
 {
-	static int s_lastActionKey = 0;
+	static int	s_lastActionKey = 0;
+	static bool	s_alowModifyPosOnCrossfade = false;
 
 	bool back	= (m_keyActionBit & CPlayerComponent::KeyBack) > 0;
 	bool up		= (m_keyActionBit & CPlayerComponent::KeyUp) > 0;
 	bool left	= (m_keyActionBit & CPlayerComponent::KeyLeft) > 0;
 	bool right	= (m_keyActionBit & CPlayerComponent::KeyRight) > 0;
+	
+	bool oldBack	= (s_lastActionKey & CPlayerComponent::KeyBack) > 0;
+	bool oldUp		= (s_lastActionKey & CPlayerComponent::KeyUp) > 0;
+	bool oldLeft	= (s_lastActionKey & CPlayerComponent::KeyLeft) > 0;
+	bool oldRight	= (s_lastActionKey & CPlayerComponent::KeyRight) > 0;
 
 	stepAnimationTime();
 
@@ -283,13 +307,19 @@ void CPlayerComponent::updateStateRun()
 			else
 				m_collada->setCrossFadeAnimation( m_animRunStrafeRight, 5.0f );
 				
+			s_alowModifyPosOnCrossfade = false;
 		}
 		else
 		{
 			if ( back != 0 )
-				m_collada->setCrossFadeAnimation( m_animRunBackward, 5.0f );
+			{
+				m_collada->setCrossFadeAnimation( m_animRunBackward,	5.0f );
+				s_alowModifyPosOnCrossfade = false;
+			}
 			else
-				m_collada->setCrossFadeAnimation( m_animRunForward, 5.0f );
+				m_collada->setCrossFadeAnimation( m_animRunForward,		5.0f );
+
+			s_alowModifyPosOnCrossfade = true;
 		}
 
 		s_lastActionKey = m_keyActionBit;
@@ -303,19 +333,20 @@ void CPlayerComponent::updateStateRun()
 		doNextState();
 	}
 	else
-	{
-		// update run
-		float diff = getIView()->getTimeStep() * 0.1f;		
-
-		// rotate object by camera if run forward & backward
-		//if ( (back != false || up != false) && left == false && right == false )
+	{						
+		// rotate object by camera
 		updateRotateObject();
-		
+
 		// update shot weapon
 		// updateActionShotWeapon();
 		
-		if ( m_animCrossfadeTime <= 0.0f )
+		if ( m_animCrossfadeTime <= 0.0f || s_alowModifyPosOnCrossfade == true )
 		{
+			s_alowModifyPosOnCrossfade = true;
+
+			// update run
+			float diff = getIView()->getTimeStep() * 0.1f;	
+			
 			core::vector3df pos		= m_gameObject->getPosition();
 			core::vector3df front	= m_gameObject->getFront();
 			
@@ -326,7 +357,7 @@ void CPlayerComponent::updateStateRun()
 				if ( left )
 					mat.setRotationDegrees( core::vector3df(0,-90,0) );
 				else
-					mat.setRotationDegrees( core::vector3df(0,90,0) );
+					mat.setRotationDegrees( core::vector3df(0, 90,0) );
 				
 				mat.rotateVect(front);
 				m_gameObject->setPosition( pos + front * m_runBackSpeed * diff );
@@ -334,43 +365,36 @@ void CPlayerComponent::updateStateRun()
 			else
 			{
 				if ( back == true )
-				{
-					if ( left )
-					{
-					}
-					else if ( right )
-					{
-					}
-					else
-					{
-						// only run back
-						m_gameObject->setPosition( pos - front * m_runBackSpeed * diff );
-					}
-				}
+					m_gameObject->setPosition( pos - front * m_runBackSpeed * diff );				
 				else
-				{
-					if ( left )
-					{
-					}
-					else if ( right )
-					{
-					}
-					else
-					{
-						// only run forward
-						m_gameObject->setPosition( pos + front * m_runSpeed * diff );
-					}
-				}
+					m_gameObject->setPosition( pos + front * m_runSpeed * diff );					
 			}
 		}
-
-
+		
 		if ( m_runCommand == false )
+		{
 			setState( CPlayerComponent::PlayerIdle );
+		}
 
 		// check to init run state if change action
 		if ( s_lastActionKey != m_keyActionBit )
-			m_subState = SubStateInit;
+		{
+			if ( (back == false && up == false) || (oldBack == false && oldUp == false) )
+			{
+				// direct change if run to left, right or 
+				// from run left, run right
+				m_subState = SubStateInit;
+			}
+			else if ( m_animCurrentTime <= 0 )
+			{
+				// need wait to end anim time to change animation
+				m_subState = SubStateInit;
+			}
+		}
+
+		// reset timer
+		if ( m_animCurrentTime <= 0 )
+			m_animCurrentTime = m_collada->getCurrentAnimTimeLength();
 
 		s_lastActionKey = m_keyActionBit;
 	}
@@ -481,6 +505,28 @@ void CPlayerComponent::updateRotateObject()
 	// rotate object & front vector
 	m_gameObject->setRotation(core::vector3df(0.0f, 90 - angle2, 0.0f));
 }
+
+// rotateObject	
+void CPlayerComponent::rotateObject()
+{
+	// get camera front vector
+	CGameCamera* cam = CGameLevel::getCurrentLevel()->getCamera();
+	core::vector3df front = cam->getPosition() - cam->getTarget();
+	front.Y = 0;
+	front.normalize();
+
+	core::vector3df objFront = m_gameObject->getFront();
+
+	// current object position	
+	core::vector3df	moveFront = -front;
+
+	// set rotation by camera
+	float angle1 = (float)(core::vector2df( moveFront.X, moveFront.Z ).getAngleTrig() - m_runRotation);
+		
+	// rotate object & front vector
+	m_gameObject->setRotation(core::vector3df(0.0f, 90 - angle1, 0.0f));
+}
+
 
 // updateWeaponPosition
 // update weapon

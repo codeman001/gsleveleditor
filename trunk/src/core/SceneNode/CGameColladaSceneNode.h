@@ -291,6 +291,11 @@ public:
 		m_enableAnim = b;
 	}
 
+
+	// enableAnimOnAllChild
+	// enable/disable anim on all child
+	void enableAnimOnAllChild( bool b );
+
 	// setComponent
 	// set component
 	void setComponent( CColladaMeshComponent *comp )
@@ -447,10 +452,17 @@ public:
 		f32 frame;
 		core::quaternion rotation;
 	};
-		
+	
+	struct SEventKey
+	{
+		f32 frame;
+		core::stringc	event;
+	};
+
 	core::array<SPositionKey>	PositionKeys;
 	core::array<SScaleKey>		ScaleKeys;
 	core::array<SRotationKey>	RotationKeys;
+	core::array<SEventKey>		EventKeys;
 
 	// end animation
 

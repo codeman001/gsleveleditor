@@ -123,12 +123,32 @@ void CTreeContainer::_onMenuCommand( uiObject *pSender )
 	}
 	else if ( pos == k_menuEnableNode )
 	{
+		if ( m_clickTreeItem )
+		{			
+			CGameColladaSceneNode *node = (CGameColladaSceneNode*) m_clickTreeItem->getData();
+			if ( node )
+			{
+				node->setEnableAnim( !node->isEnableAnim() );
+			}
+		}
 	}
 	else if ( pos == k_menuEnableAllChildNode )
 	{
+		if ( m_clickTreeItem )
+		{			
+			CGameColladaSceneNode *node = (CGameColladaSceneNode*) m_clickTreeItem->getData();
+			if ( node )
+				node->enableAnimOnAllChild( true );
+		}
 	}
 	else if ( pos == k_menuDisableAllChildNode )
 	{
+		if ( m_clickTreeItem )
+		{			
+			CGameColladaSceneNode *node = (CGameColladaSceneNode*) m_clickTreeItem->getData();
+			if ( node )
+				node->enableAnimOnAllChild( false );
+		}	
 	}
 
 }
@@ -207,7 +227,7 @@ CAnimModifyFrame::CAnimModifyFrame( LPWSTR lpTitle, int x, int y, int w, int h, 
 	header->setColText(L"x",2);
 	header->setColText(L"y",3);
 	header->setColText(L"z",4);
-	
+	m_listProperty->updateListProperty();
 
 	uiTabControl *tabWin = ref<uiTabControl>( new uiTabControl(L"tabWin", 0,0, 100, 100, containerWin) );
 	tabWin->setDock( containerWin, UIDOCK_FILL );

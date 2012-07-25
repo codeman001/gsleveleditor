@@ -179,6 +179,7 @@ struct SColladaNodeAnim
 	core::array<CGameColladaSceneNode::SPositionKey>	PositionKeys;
 	core::array<CGameColladaSceneNode::SScaleKey>		ScaleKeys;
 	core::array<CGameColladaSceneNode::SRotationKey>	RotationKeys;
+	core::array<CGameColladaSceneNode::SEventKey>		EventKeys;
 };
 
 // SColladaAnim

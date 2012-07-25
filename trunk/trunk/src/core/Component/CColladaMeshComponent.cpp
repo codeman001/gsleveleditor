@@ -1297,6 +1297,27 @@ void CColladaAnimation::loadFile( char *lpFileName )
 		loadDotAnim( lpFileName );	
 }
 
+void CColladaAnimation::cloneAnim( const char *lpAnimName, const char *lpNewAnimName )
+{
+	SColladaAnimClip *clip = m_animWithName[ lpAnimName ];
+	if ( clip == NULL )
+		return;
+
+	SColladaAnimClip *newClip = new SColladaAnimClip();
+	newClip->animName	= lpNewAnimName;
+	newClip->time		= clip->time;
+	newClip->duration	= clip->duration;
+	newClip->loop		= clip->loop;
+
+	for ( int i = 0, nNodeAnims = clip->animInfo.size(); i < nNodeAnims; i++ )
+	{
+		SColladaNodeAnim* nodeAnim = new SColladaNodeAnim();
+		*nodeAnim = *clip->animInfo[i];
+		newClip->animInfo.push_back( nodeAnim );
+
+	}
+	addClip( newClip );	
+}
 
 #pragma endregion
 

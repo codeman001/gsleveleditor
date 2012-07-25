@@ -29,13 +29,20 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	// init run const
 	m_runSpeed				= 3.0f;
 	m_runBackSpeed			= 2.0f;
+	m_runNoGunSpeed			= 5.0f;
 
 	m_bipSpineNode	= NULL;
 	m_bipSpine1Node	= NULL;
 	m_gunDummyNode	= NULL;
 
 	m_runRotation	= 0.0f;
+	m_runUp			= false;
+	m_runBack		= false;
+	m_runLeft		= false;
+	m_runRight		= false;
+	m_runNoGun		= true;
 	m_runCommand	= false;
+
 	m_currentRunRot	= 0.0f;
 
 	m_collada	= NULL;
@@ -156,7 +163,6 @@ void CPlayerComponent::loadData( CSerializable* pObj )
 // cache event
 bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 {
-
 	// if key press
 	if ( irrEvent.EventType == EET_KEY_INPUT_EVENT )
 	{
@@ -194,36 +200,37 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 		}
 
 		// update move
-		m_runRotation = 0.0f;		
-		m_runCommand = false;
+		m_runUp			= false;
+		m_runBack		= false;
+		m_runLeft		= false;
+		m_runRight		= false;
 
 		// calc rotation
 		if ( (m_keyActionBit & CPlayerComponent::KeyLeft) != 0 )
 		{
-			m_runRotation = 0.0f;
 			if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
-				m_runRotation += 45.0f;
+				m_runBack = true;
 			else if ( (m_keyActionBit & CPlayerComponent::KeyUp) != 0 )
-				m_runRotation -= 45.0f;
-			m_runCommand = true;
+				m_runUp = true;
+			
+			m_runLeft = true;
 		}
 		else if ( (m_keyActionBit & CPlayerComponent::KeyRight) != 0 )
 		{
-			m_runRotation = 0.0f;
 			if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
-				m_runRotation -= 45.0f;
+				m_runBack = true;
 			else if ( (m_keyActionBit & CPlayerComponent::KeyUp) != 0 )
-				m_runRotation += 45.0f;
-			m_runCommand = true;
+				m_runUp = true;
+			m_runRight = true;
 		}
 		else if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
 		{
-			m_runCommand = true;
+			m_runBack = true;
 		}
 		else if ( (m_keyActionBit & CPlayerComponent::KeyUp) != 0 )
-		{
-			m_runCommand = true;
-		}
+			m_runUp = true;
+
+		m_runCommand = m_runUp || m_runBack || m_runLeft || m_runRight;
 	}
 
 	return true;
@@ -276,7 +283,9 @@ void CPlayerComponent::updateStateIdle()
 		m_currentRunRot = 0.0f;
 	
 		if ( m_runCommand )
+		{			
 			setState( CPlayerComponent::PlayerRun );
+		}
 
 		if ( m_animCurrentTime <= 0 )
 			m_subState = SubStateInit;
@@ -287,57 +296,59 @@ void CPlayerComponent::updateStateIdle()
 void CPlayerComponent::updateStateRun()
 {
 	static int		s_lastActionKey = 0;
-	static bool		s_alowModifyPosOnCrossfade = false;	
 	static bool		s_alowModifyPosOnRotate = false;
-	static float	s_rotateSpeed = 2.0f;
+	static float	s_rotateSpeed = 1.0f;
 
-	bool back	= (m_keyActionBit & CPlayerComponent::KeyBack) > 0;
-	bool up		= (m_keyActionBit & CPlayerComponent::KeyUp) > 0;
-	bool left	= (m_keyActionBit & CPlayerComponent::KeyLeft) > 0;
-	bool right	= (m_keyActionBit & CPlayerComponent::KeyRight) > 0;
-	
-	bool oldBack	= (s_lastActionKey & CPlayerComponent::KeyBack) > 0;
-	bool oldUp		= (s_lastActionKey & CPlayerComponent::KeyUp) > 0;
-	bool oldLeft	= (s_lastActionKey & CPlayerComponent::KeyLeft) > 0;
-	bool oldRight	= (s_lastActionKey & CPlayerComponent::KeyRight) > 0;
-
+	// update animation time
 	stepAnimationTime();
 
 	if ( m_subState == SubStateInit )
-	{
-		if ( back == false && up == false )
+	{		
+		float rot = 0.0f;
+		if ( m_runBack )
 		{
-			if ( right )
-				m_collada->setCrossFadeAnimation( m_animRunStrafeLeft, 5.0f );
-			else
-				m_collada->setCrossFadeAnimation( m_animRunStrafeRight, 5.0f );
-				
-			s_alowModifyPosOnCrossfade = false;
-		}
-		else
-		{
-			if ( back != 0 )
-			{
-				m_collada->setCrossFadeAnimation( m_animRunBackward,	5.0f );
-				s_alowModifyPosOnCrossfade = false;
-			}
-			else
-				m_collada->setCrossFadeAnimation( m_animRunForward,		5.0f );
+			rot += 180.0f;
 
-			s_alowModifyPosOnCrossfade = true;
+			if ( m_runLeft )
+				rot += 45.0f;
+			else if ( m_runRight )
+				rot -= 45.0f;
 		}
-				
-		if ( s_lastActionKey == 0 )
+		else if ( m_runUp )
 		{
+			rot = 0;
+
+			if ( m_runLeft )
+				rot -= 45.0f;
+			else if ( m_runRight )
+				rot += 45.0f;
+		}
+		else if ( m_runUp == false && m_runBack == false )
+		{
+			if ( m_runLeft )
+				rot -= 90.0f;
+			else if ( m_runRight )
+				rot += 90.0f;
+		}
+
+		bool needRotate = fabs( rot - m_runRotation ) >= 100.0f;
+		m_runRotation = m_runRotation + rot;
+		
+		if ( s_lastActionKey == 0 || needRotate == true )
+		{
+			// change from idle state
 			s_alowModifyPosOnRotate = false;
-			s_rotateSpeed = 5.0f;
+			s_rotateSpeed = 4.0f;
+
+			m_collada->setCrossFadeAnimation( m_animRunNoGun, 5.0f );
 		}
 		else
 		{
+			// repeat animation
 			s_alowModifyPosOnRotate = true;
-			s_rotateSpeed = 3.0f;
+			s_rotateSpeed = 1.0f;
 		}
-		
+
 		// change to active state
 		s_lastActionKey = m_keyActionBit;
 		m_subState = SubStateActive;
@@ -347,83 +358,46 @@ void CPlayerComponent::updateStateRun()
 		m_animCrossfadeTime = m_collada->getCurrentCrossfadeAnimTimeLength();
 	}
 	else if ( m_subState == SubStateEnd )
-	{	
-		// clear last action key
+	{
 		s_lastActionKey = 0;
-
-		doNextState();
+		doNextState();		
 	}
 	else
-	{						
-		// rotate object by camera
+	{	
+		// rotate object with front camera
 		if ( updateRotateObject(s_rotateSpeed) == 0 )
 		{
 			s_alowModifyPosOnRotate = true;
 			s_rotateSpeed = 3.0f;
 		}
-
+		
 		// update position
-		if ( 
-				(m_animCrossfadeTime <= 0.0f || s_alowModifyPosOnCrossfade == true) && 
-				s_alowModifyPosOnRotate == true 
-			)
+		if ( s_alowModifyPosOnRotate == true )
 		{
-			s_alowModifyPosOnCrossfade = true;
-
 			// update run
 			float diff = getIView()->getTimeStep() * 0.1f;	
 			
 			core::vector3df pos		= m_gameObject->getPosition();
 			core::vector3df front	= m_gameObject->getFront();
 			
-			if ( back == false && up == false )
-			{
-				// only run left or right
-				core::matrix4 mat;
-				if ( left )
-					mat.setRotationDegrees( core::vector3df(0,-90,0) );
-				else
-					mat.setRotationDegrees( core::vector3df(0, 90,0) );
-				
-				mat.rotateVect(front);
-				m_gameObject->setPosition( pos + front * m_runBackSpeed * diff );
-			}
-			else
-			{
-				if ( back == true )
-					m_gameObject->setPosition( pos - front * m_runBackSpeed * diff );				
-				else
-					m_gameObject->setPosition( pos + front * m_runSpeed * diff );					
-			}
+			m_gameObject->setPosition( pos + front * m_runNoGunSpeed * diff );			
 		}
-		
+
 		// change to idle if no command run
 		if ( m_runCommand == false )
 		{
 			setState( CPlayerComponent::PlayerIdle );
 		}
 
-		// check to init run state if change action
+		// reinit state
 		if ( s_lastActionKey != m_keyActionBit )
-		{
-			if ( (back == false && up == false) || (oldBack == false && oldUp == false) )
-			{
-				// direct change if run to left, right or 
-				// from run left, run right
-				m_subState = SubStateInit;
-			}
-			else if ( m_animCurrentTime <= 0 )
-			{
-				// need wait to end anim time to change animation
-				m_subState = SubStateInit;
-			}
-		}
+			m_subState = SubStateInit;
 
-		// reset timer
+		// end anim loop
 		if ( m_animCurrentTime <= 0 )
+		{						
 			m_animCurrentTime = m_collada->getCurrentAnimTimeLength();
-
-		s_lastActionKey = m_keyActionBit;
+		}
 	}
 }
 

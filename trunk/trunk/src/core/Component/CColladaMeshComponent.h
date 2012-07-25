@@ -341,6 +341,8 @@ public:
 		m_animWithName[ clip->animName ] = clip;
 	}
 
+	void cloneAnim( const char *lpAnimName, const char *lpNewAnimName );
+
 };
 
 // CColladaAnimationFactory

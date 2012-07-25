@@ -199,6 +199,28 @@ void CGameColladaSceneNode::setHookTransformObject( CGameObject *obj )
 		m_hookTransformObject->setHookTransformNode( this );
 }
 
+// enableAnimOnAllChild
+// enable/disable anim on all child
+void CGameColladaSceneNode::enableAnimOnAllChild( bool b )
+{
+	std::stack<CGameColladaSceneNode*>	myStack;
+	myStack.push( this );
+	while ( myStack.size() > 0 )
+	{
+		CGameColladaSceneNode *n = myStack.top();
+		myStack.pop();
+
+		n->setEnableAnim( true );
+
+		core::list<ISceneNode*>& childs = (core::list<ISceneNode*>)n->getChildren();
+		core::list<ISceneNode*>::Iterator i = childs.begin(), end = childs.end();
+		while ( i != end )
+		{
+			myStack.push( (CGameColladaSceneNode*)(*i) );
+			i++;
+		}
+	}
+}
 
 void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 {

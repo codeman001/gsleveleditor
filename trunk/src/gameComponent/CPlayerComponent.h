@@ -21,6 +21,9 @@ public:
 		PlayerNone = 0,
 		PlayerIdle,
 		PlayerRun,
+		PlayerRunBackward,
+		PlayerRunLeft,
+		PlayerRunRight,
 
 		NumStateCount
 	};
@@ -49,8 +52,16 @@ protected:
 	EPlayerState			m_lastState;
 
 	float					m_runSpeed;
+	float					m_runNoGunSpeed;
 	float					m_runBackSpeed;
+	
+	bool					m_runUp;
+	bool					m_runBack;
+	bool					m_runLeft;
+	bool					m_runRight;
 	bool					m_runCommand;
+
+	bool					m_runNoGun;
 
 	float					m_animShotCurrentTime;
 	float					m_animCurrentTime;
@@ -163,6 +174,9 @@ protected:
 
 	void updateStateIdle();
 	void updateStateRun();
+	void updateStateRunBackward();
+	void updateStateRunLeft();
+	void updateStateRunRight();
 
 	// stepAnimationTime	
 	void stepAnimationTime();

@@ -50,26 +50,378 @@ void CGameColladaMesh::updateJoint()
 }
 
 //////////////////////////////////////////////////////////
+// CGameAnimationTrack implement
+//////////////////////////////////////////////////////////
+
+CGameAnimationTrack::CGameAnimationTrack()
+{
+	m_currentFrame = 0;
+	m_totalFrame = 0;
+	m_framePerSecond = 30.0f;
+	
+	m_posHint = 0;
+	m_scaleHint = 0;
+	m_rotHint = 0;
+
+	m_animWeight = 1.0f;
+
+	m_isEnable = false;
+	m_isPause = false;
+	m_isLoop = true;
+}
+
+CGameAnimationTrack::~CGameAnimationTrack()
+{
+
+}
+
+void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix)
+{	
+	s32 foundPositionIndex	= -1;
+	s32 foundScaleIndex		= -1;
+	s32 foundRotationIndex	= -1;
+	
+	// get last hint
+	s32 positionHint	= m_posHint;
+	s32 scaleHint		= m_scaleHint;
+	s32 rotationHint	= m_rotHint;
+
+	if (PositionKeys.size())
+	{
+		foundPositionIndex = -1;
+
+		//Test the Hints...
+		if (positionHint>=0 && (u32)positionHint < PositionKeys.size())
+		{
+			//check this hint
+			if (positionHint>0 && PositionKeys[positionHint].frame>=frame && PositionKeys[positionHint-1].frame<frame )
+				foundPositionIndex=positionHint;
+			else if (positionHint+1 < (s32)PositionKeys.size())
+			{
+				//check the next index
+				if ( PositionKeys[positionHint+1].frame>=frame &&
+						PositionKeys[positionHint+0].frame<frame)
+				{
+					positionHint++;
+					foundPositionIndex=positionHint;
+				}
+			}
+		}
+
+		//The hint test failed, do a full scan...
+		if (foundPositionIndex==-1)
+		{
+			for (u32 i=0; i<PositionKeys.size(); ++i)
+			{
+				if (PositionKeys[i].frame >= frame) //Keys should to be sorted by frame
+				{
+					foundPositionIndex=i;
+					positionHint=i;
+					break;
+				}
+			}
+		}
+
+		//Do interpolation...
+		if ( foundPositionIndex == 0 )
+		{
+			position = PositionKeys[0].position;
+		}
+		else if (foundPositionIndex!=-1)
+		{
+			const SPositionKey& KeyA = PositionKeys[foundPositionIndex];
+			const SPositionKey& KeyB = PositionKeys[foundPositionIndex-1];
+
+			const f32 fd1 = frame - KeyA.frame;
+			const f32 fd2 = KeyB.frame - frame;
+			position = ((KeyB.position-KeyA.position)/(fd1+fd2))*fd1 + KeyA.position;				
+		}
+	}
+	else
+	{
+		// default position
+		position = core::vector3df(0,0,0);
+		localMatrix.translateVect( position );
+	}
+
+	//------------------------------------------------------------
+
+	if (ScaleKeys.size())
+	{
+		foundScaleIndex = -1;
+
+		//Test the Hints...
+		if (scaleHint>=0 && (u32)scaleHint < ScaleKeys.size())
+		{
+			//check this hint
+			if (scaleHint>0 && ScaleKeys[scaleHint].frame>=frame && ScaleKeys[scaleHint-1].frame<frame )
+				foundScaleIndex=scaleHint;
+			else if (scaleHint+1 < (s32)ScaleKeys.size())
+			{
+				//check the next index
+				if ( ScaleKeys[scaleHint+1].frame>=frame &&
+						ScaleKeys[scaleHint+0].frame<frame)
+				{
+					scaleHint++;
+					foundScaleIndex=scaleHint;
+				}
+			}
+		}
+
+
+		//The hint test failed, do a full scan...
+		if (foundScaleIndex==-1)
+		{
+			for (u32 i=0; i<ScaleKeys.size(); ++i)
+			{
+				if (ScaleKeys[i].frame >= frame) //Keys should to be sorted by frame
+				{
+					foundScaleIndex=i;
+					scaleHint=i;
+					break;
+				}
+			}
+		}
+
+		//Do interpolation...
+		if ( foundScaleIndex == 0 )
+		{
+			scale = ScaleKeys[0].scale;
+		}
+		else if (foundScaleIndex!=-1)
+		{
+			const SScaleKey& KeyA = ScaleKeys[foundScaleIndex];
+			const SScaleKey& KeyB = ScaleKeys[foundScaleIndex-1];
+
+			const f32 fd1 = frame - KeyA.frame;
+			const f32 fd2 = KeyB.frame - frame;
+			scale = ((KeyB.scale-KeyA.scale)/(fd1+fd2))*fd1 + KeyA.scale;				
+		}
+	}
+	else
+	{
+		scale = core::vector3df(1,1,1);
+	}
+
+	//-------------------------------------------------------------
+
+	if (RotationKeys.size())
+	{
+		foundRotationIndex = -1;
+
+		//Test the Hints...
+		if (rotationHint>=0 && (u32)rotationHint < RotationKeys.size())
+		{
+			//check this hint
+			if (rotationHint>0 && RotationKeys[rotationHint].frame>=frame && RotationKeys[rotationHint-1].frame<frame )
+				foundRotationIndex=rotationHint;
+			else if (rotationHint+1 < (s32)RotationKeys.size())
+			{
+				//check the next index
+				if ( RotationKeys[rotationHint+1].frame>=frame &&
+						RotationKeys[rotationHint+0].frame<frame)
+				{
+					rotationHint++;
+					foundRotationIndex=rotationHint;
+				}
+			}
+		}
+
+
+		//The hint test failed, do a full scan...
+		if (foundRotationIndex==-1)
+		{
+			for (u32 i=0; i<RotationKeys.size(); ++i)
+			{
+				if (RotationKeys[i].frame >= frame) //Keys should be sorted by frame
+				{
+					foundRotationIndex=i;
+					rotationHint=i;
+					break;
+				}
+			}
+		}
+
+		//Do interpolation...
+		if ( foundRotationIndex == 0 )
+		{
+			rotation = RotationKeys[0].rotation;
+		}
+		else if (foundRotationIndex!=-1)
+		{
+			const SRotationKey& KeyA = RotationKeys[foundRotationIndex];
+			const SRotationKey& KeyB = RotationKeys[foundRotationIndex-1];
+
+			const f32 fd1 = frame - KeyA.frame;
+			const f32 fd2 = KeyB.frame - frame;
+			const f32 t = fd1/(fd1+fd2);
+
+			rotation.slerp(KeyA.rotation, KeyB.rotation, t);
+		}
+	}
+	else
+	{
+		// default rotation
+		rotation = core::quaternion(localMatrix);
+	}
+
+	// save hint
+	m_posHint	= positionHint;
+	m_scaleHint = scaleHint;
+	m_rotHint	= rotationHint;
+}
+
+// update
+// update per frame
+void CGameAnimationTrack::update(float timeStep)
+{
+	m_totalFrame  = 0;
+	if ( RotationKeys.size() > 0 )
+		m_totalFrame = RotationKeys.getLast().frame;
+	else if ( PositionKeys.size() > 0 )
+		m_totalFrame = PositionKeys.getLast().frame;
+
+	if ( m_totalFrame == 0 )
+		return;
+		
+	if ( m_isPause == false )
+	{
+		// calc current frame	
+		m_currentFrame += timeStep * m_framePerSecond/1000.0f;
+		
+		if ( m_currentFrame > m_totalFrame )
+		{
+			if ( m_isLoop == false )
+				m_currentFrame = m_totalFrame;
+			else
+				m_currentFrame = 0;
+		}
+	}	
+}
+
+//////////////////////////////////////////////////////////
+// CGameAnimation implement
+//////////////////////////////////////////////////////////
+
+CGameAnimation::CGameAnimation()
+{
+	onlyEnableTrack(0);
+}
+
+CGameAnimation::~CGameAnimation()
+{
+}
+
+// getFrameData
+// get anim at frame
+void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix)
+{
+	position	= core::vector3df();
+	scale		= core::vector3df();
+	rotation	= core::quaternion();	
+
+	// blend animation
+	if ( m_animTrack[0].isEnable() && m_animTrack[1].isEnable() )
+	{
+		core::vector3df		posTrack1, posTrack2;
+		core::vector3df		scaleTrack1, scaleTrack2;
+		core::quaternion	rotTrack1, rotTrack2;
+		
+		m_animTrack[0].getFrameData
+			(
+				m_animTrack[0].getCurrentFrame(), 
+				posTrack1, 
+				scaleTrack1, 
+				rotTrack1, 
+				localMatrix 
+			);
+		m_animTrack[1].getFrameData
+			(
+				m_animTrack[1].getCurrentFrame(), 
+				posTrack2, 
+				scaleTrack2, 
+				rotTrack2, 
+				localMatrix 
+			);
+		float w = m_animTrack[0].getAnimWeight();
+		core::clamp<float>( w, 0.0f, 1.0f );
+		
+		// calc result
+		position.interpolate( posTrack1, posTrack2, w );
+		scale.interpolate( scaleTrack1, scaleTrack2, w );
+		rotation.slerp( rotTrack1, rotTrack2, w);
+	}
+	else
+	{
+		CGameAnimationTrack *track = NULL;
+		if ( m_animTrack[0].isEnable() )
+			track = &m_animTrack[0];
+		else if ( m_animTrack[1].isEnable() )
+			track = &m_animTrack[1];
+
+		if ( track )
+		{
+			// track
+			core::vector3df		posTrack;
+			core::vector3df		scaleTrack;
+			core::quaternion	rotTrack;
+
+			// get frame data
+			track->getFrameData
+				( 
+					track->getCurrentFrame(), 
+					posTrack, 
+					scaleTrack, 
+					rotTrack, 
+					localMatrix 
+				);
+
+			// compute animation
+			float w = track->getAnimWeight();
+						
+			position	= posTrack		* w;
+			scale		= scaleTrack	* w;
+			rotation	= rotTrack		* w;			
+		}
+		else
+		{
+			// no enable animation
+			position	= core::vector3df();
+			localMatrix.transformVect( position );
+			scale		= core::vector3df(1,1,1);
+			rotation	= core::quaternion( localMatrix );
+		}
+
+	}
+}
+
+// update
+// update per frame
+void CGameAnimation::update(float timeStep)
+{
+	for ( int i = 0; i < 2; i++ )
+	{
+		if ( m_animTrack[i].isEnable() )
+		{
+			m_animTrack[i].update( timeStep );
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////
 // CGameColladaSceneNode implement
 //////////////////////////////////////////////////////////
 
 CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id)
 	:ISceneNode( parent, mgr, id )
-{
-	m_currentFrame = 0;
-	m_totalFrame = 0;
-	m_framePerSecond = 40.0f;
+{	
 	m_isRootColladaNode = true;
 	m_enableAnim = true;
 	m_timer = 0;
 	
 	m_isSkydome = false;
 	m_terrainNode = false;
-	m_hideTerrainNode = false;
-
-	m_posHint = 0;
-	m_scaleHint = 0;
-	m_rotHint = 0;
+	m_hideTerrainNode = false;	
 
 	ColladaMesh = NULL;	
 	m_component = NULL;
@@ -232,53 +584,23 @@ void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 		m_timer = timeMs;
 		return;
 	}
+			
+	// update animation translate
+	if ( m_enableAnim == true )
+	{	
+		// update anim track
+		float timeStep = (float)(timeMs - m_timer);
+		m_gameAnimation.update( timeStep );	
+
+		// update anim animation
+		updateAnimation();	
+	}
 
 	// skin mesh
 	if ( ColladaMesh != NULL && ColladaMesh->IsStaticMesh == false && IsVisible == true )		
 		skin();
-	
-	// get last frame
-	m_totalFrame  = 0;
-	if ( RotationKeys.size() > 0 )
-		m_totalFrame = RotationKeys.getLast().frame;
-	else if ( PositionKeys.size() > 0 )
-		m_totalFrame = PositionKeys.getLast().frame;
 
-	if ( m_totalFrame == 0 )
-		return;
-
-	if ( m_component && m_component->isPauseAnim() )
-	{
-		m_currentFrame = m_component->getPauseAnim();
-		if ( m_currentFrame > m_totalFrame )
-			m_currentFrame = m_totalFrame;
-	}
-	else
-	{
-		// calc current frame	
-		m_currentFrame += (timeMs - m_timer) * m_framePerSecond/1000.0f;
-		
-		if ( m_currentFrame > m_totalFrame )
-		{
-			if ( m_component && 
-				m_component->getCurrentAnim() && 
-				m_component->getCurrentAnim()->loop == false )
-			{
-				m_currentFrame = m_totalFrame;
-			}
-			else		
-				m_currentFrame = 0;
-		}
-	}
-		
-	// update animation translate
-	if ( m_enableAnim == true )
-	{
-		updateAnimation();
-		if ( m_component )
-			m_component->setCurrentFrame(m_currentFrame);
-	}
-
+	// save current time
 	m_timer = timeMs;
 }
 
@@ -381,7 +703,7 @@ void CGameColladaSceneNode::skin()
 // get current frame
 void CGameColladaSceneNode::getCurrentFrameData( core::vector3df& position, core::quaternion& rotation, core::vector3df& scale )
 {
-	getFrameData( m_currentFrame, position, m_posHint, scale, m_scaleHint, rotation, m_rotHint );
+	m_gameAnimation.getFrameData( position, scale, rotation, LocalMatrix );
 }
 
 // updateAnimation
@@ -392,7 +714,7 @@ void CGameColladaSceneNode::updateAnimation()
 	core::vector3df scale;
 	core::quaternion rotation;
 	
-	getFrameData( m_currentFrame, position, m_posHint, scale, m_scaleHint, rotation, m_rotHint );
+	m_gameAnimation.getFrameData( position, scale, rotation, LocalMatrix );
 
 	// rotation
 	core::matrix4 mat = rotation.getMatrix();
@@ -419,185 +741,6 @@ void CGameColladaSceneNode::updateAnimation()
 	// update current relative matrix
 	AnimationMatrix = mat;
 
-}
-
-void CGameColladaSceneNode::getFrameData(f32 frame,
-				core::vector3df &position,	s32 &positionHint,
-				core::vector3df &scale,		s32 &scaleHint,
-				core::quaternion &rotation, s32 &rotationHint)
-{
-	s32 foundPositionIndex = -1;
-	s32 foundScaleIndex = -1;
-	s32 foundRotationIndex = -1;
-	
-	if (PositionKeys.size())
-	{
-		foundPositionIndex = -1;
-
-		//Test the Hints...
-		if (positionHint>=0 && (u32)positionHint < PositionKeys.size())
-		{
-			//check this hint
-			if (positionHint>0 && PositionKeys[positionHint].frame>=frame && PositionKeys[positionHint-1].frame<frame )
-				foundPositionIndex=positionHint;
-			else if (positionHint+1 < (s32)PositionKeys.size())
-			{
-				//check the next index
-				if ( PositionKeys[positionHint+1].frame>=frame &&
-						PositionKeys[positionHint+0].frame<frame)
-				{
-					positionHint++;
-					foundPositionIndex=positionHint;
-				}
-			}
-		}
-
-		//The hint test failed, do a full scan...
-		if (foundPositionIndex==-1)
-		{
-			for (u32 i=0; i<PositionKeys.size(); ++i)
-			{
-				if (PositionKeys[i].frame >= frame) //Keys should to be sorted by frame
-				{
-					foundPositionIndex=i;
-					positionHint=i;
-					break;
-				}
-			}
-		}
-
-		//Do interpolation...
-		if ( foundPositionIndex == 0 )
-		{
-			position = PositionKeys[0].position;
-		}
-		else if (foundPositionIndex!=-1)
-		{
-			const SPositionKey& KeyA = PositionKeys[foundPositionIndex];
-			const SPositionKey& KeyB = PositionKeys[foundPositionIndex-1];
-
-			const f32 fd1 = frame - KeyA.frame;
-			const f32 fd2 = KeyB.frame - frame;
-			position = ((KeyB.position-KeyA.position)/(fd1+fd2))*fd1 + KeyA.position;				
-		}
-	}
-	else
-	{
-		position = core::vector3df(0,0,0);
-		LocalMatrix.translateVect( position );
-	}
-
-	//------------------------------------------------------------
-
-	if (ScaleKeys.size())
-	{
-		foundScaleIndex = -1;
-
-		//Test the Hints...
-		if (scaleHint>=0 && (u32)scaleHint < ScaleKeys.size())
-		{
-			//check this hint
-			if (scaleHint>0 && ScaleKeys[scaleHint].frame>=frame && ScaleKeys[scaleHint-1].frame<frame )
-				foundScaleIndex=scaleHint;
-			else if (scaleHint+1 < (s32)ScaleKeys.size())
-			{
-				//check the next index
-				if ( ScaleKeys[scaleHint+1].frame>=frame &&
-						ScaleKeys[scaleHint+0].frame<frame)
-				{
-					scaleHint++;
-					foundScaleIndex=scaleHint;
-				}
-			}
-		}
-
-
-		//The hint test failed, do a full scan...
-		if (foundScaleIndex==-1)
-		{
-			for (u32 i=0; i<ScaleKeys.size(); ++i)
-			{
-				if (ScaleKeys[i].frame >= frame) //Keys should to be sorted by frame
-				{
-					foundScaleIndex=i;
-					scaleHint=i;
-					break;
-				}
-			}
-		}
-
-		//Do interpolation...
-		if ( foundScaleIndex == 0 )
-		{
-			scale = ScaleKeys[0].scale;
-		}
-		else if (foundScaleIndex!=-1)
-		{
-			const SScaleKey& KeyA = ScaleKeys[foundScaleIndex];
-			const SScaleKey& KeyB = ScaleKeys[foundScaleIndex-1];
-
-			const f32 fd1 = frame - KeyA.frame;
-			const f32 fd2 = KeyB.frame - frame;
-			scale = ((KeyB.scale-KeyA.scale)/(fd1+fd2))*fd1 + KeyA.scale;				
-		}
-	}
-
-	//-------------------------------------------------------------
-
-	if (RotationKeys.size())
-	{
-		foundRotationIndex = -1;
-
-		//Test the Hints...
-		if (rotationHint>=0 && (u32)rotationHint < RotationKeys.size())
-		{
-			//check this hint
-			if (rotationHint>0 && RotationKeys[rotationHint].frame>=frame && RotationKeys[rotationHint-1].frame<frame )
-				foundRotationIndex=rotationHint;
-			else if (rotationHint+1 < (s32)RotationKeys.size())
-			{
-				//check the next index
-				if ( RotationKeys[rotationHint+1].frame>=frame &&
-						RotationKeys[rotationHint+0].frame<frame)
-				{
-					rotationHint++;
-					foundRotationIndex=rotationHint;
-				}
-			}
-		}
-
-
-		//The hint test failed, do a full scan...
-		if (foundRotationIndex==-1)
-		{
-			for (u32 i=0; i<RotationKeys.size(); ++i)
-			{
-				if (RotationKeys[i].frame >= frame) //Keys should be sorted by frame
-				{
-					foundRotationIndex=i;
-					rotationHint=i;
-					break;
-				}
-			}
-		}
-
-		//Do interpolation...
-		if ( foundRotationIndex == 0 )
-		{
-			rotation = RotationKeys[0].rotation;
-		}
-		else if (foundRotationIndex!=-1)
-		{
-			const SRotationKey& KeyA = RotationKeys[foundRotationIndex];
-			const SRotationKey& KeyB = RotationKeys[foundRotationIndex-1];
-
-			const f32 fd1 = frame - KeyA.frame;
-			const f32 fd2 = KeyB.frame - frame;
-			const f32 t = fd1/(fd1+fd2);
-
-			rotation.slerp(KeyA.rotation, KeyB.rotation, t);				
-		}
-	}	
 }
 
 void CGameColladaSceneNode::render()
@@ -1068,26 +1211,12 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 		}
 	}
 
-	newNode->m_isRootColladaNode = m_isRootColladaNode;
-	
-	newNode->PositionKeys		= PositionKeys;
-	newNode->ScaleKeys			= ScaleKeys;
-	newNode->RotationKeys		= RotationKeys;
-
-	newNode->m_currentFrame		= m_currentFrame;
-	newNode->m_totalFrame		= m_totalFrame;
-
-	newNode->m_framePerSecond	= m_framePerSecond;
+	newNode->m_isRootColladaNode = m_isRootColladaNode;	
 
 	newNode->m_timer			= m_timer;
 	newNode->m_isSkydome		= m_isSkydome;
 	newNode->m_terrainNode		= m_terrainNode;
-	newNode->m_hideTerrainNode	= m_hideTerrainNode;
-
-	newNode->m_posHint			= m_posHint;
-	newNode->m_scaleHint		= m_scaleHint;
-	newNode->m_rotHint			= m_rotHint;
-
+	newNode->m_hideTerrainNode	= m_hideTerrainNode;	
 
 	int ref = newNode->getReferenceCount();
 

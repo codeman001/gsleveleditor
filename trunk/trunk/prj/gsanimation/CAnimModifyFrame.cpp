@@ -360,6 +360,7 @@ void CAnimModifyFrame::setNodeInfoToProperty( CGameColladaSceneNode *node )
 
 	uiString::copy<wchar_t, const c8>( stringw, node->getName() );
 	uiListPropertyRow *pRow = m_listProperty->addRowItem( stringw );
+	pRow->setControl( UILISTPROPERTY_EDIT, 0, NULL );
 
 	int select = -1;
 	int numValue = 0;

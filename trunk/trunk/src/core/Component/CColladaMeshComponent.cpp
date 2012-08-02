@@ -1415,6 +1415,11 @@ CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 	m_crossFadeAnimClip.time		= 0.0f;
 	m_crossFadeAnimClip.duration	= 0.0f;
 	m_crossFadeAnimClip.loop		= false;
+
+	m_isPauseAnim[0]	= false;
+	m_isPauseAnim[1]	= false;
+	m_pauseAtFrame[0]	= 0.0f;
+	m_pauseAtFrame[1]	= 0.0f;
 }
 
 CColladaMeshComponent::~CColladaMeshComponent()
@@ -3513,6 +3518,110 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameCol
 		}
 
 		// next node
+		i++;
+	}
+}
+
+// pauseAtFrame
+// pause anim at frame id
+void CColladaMeshComponent::pauseAtFrame( float frame, int trackChannel)
+{
+	m_isPauseAnim[trackChannel]		= true;
+	m_pauseAtFrame[trackChannel]	= frame;
+
+	// loop all node
+	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		const std::string& nodeName = (*i).first;
+		CGameColladaSceneNode* j = (*i).second;
+				
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+		
+		CGameAnimationTrack *track = j->getAnimation()->getTrack( trackChannel );
+
+		track->setCurrentFrame( frame );
+		track->setPause( true );
+
+		i++;
+	}
+}
+	
+// getCurrentFrame
+// get current frame of anim
+float CColladaMeshComponent::getCurrentFrame(int trackChannel)
+{
+	// loop all node
+	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		const std::string& nodeName = (*i).first;
+		CGameColladaSceneNode* j = (*i).second;
+				
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+		
+		CGameAnimationTrack *track = j->getAnimation()->getTrack( trackChannel );
+
+		if ( track->getTotalFrame() > 0 )
+			return track->getCurrentFrame();
+
+		i++;
+	}
+
+	return 0.0f;
+}
+
+// setCurrentFrame	
+void CColladaMeshComponent::setCurrentFrame(float f, int trackChannel)
+{
+	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		const std::string& nodeName = (*i).first;
+		CGameColladaSceneNode* j = (*i).second;
+				
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+		
+		CGameAnimationTrack *track = j->getAnimation()->getTrack( trackChannel );
+
+		track->setCurrentFrame(f);
+		i++;
+	}
+}
+
+// resumeAnim
+// resume animation
+void CColladaMeshComponent::resumeAnim(int trackChannel)
+{
+	m_isPauseAnim[trackChannel]		= false;
+
+	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		const std::string& nodeName = (*i).first;
+		CGameColladaSceneNode* j = (*i).second;
+				
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+		
+		CGameAnimationTrack *track = j->getAnimation()->getTrack( trackChannel );
+
+		track->setPause( false );
 		i++;
 	}
 }

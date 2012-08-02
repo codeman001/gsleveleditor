@@ -418,6 +418,9 @@ protected:
 
 	bool						m_needFlip;
 
+	bool						m_isPauseAnim[2];
+	float						m_pauseAtFrame[2];
+
 public:
 	CColladaMeshComponent( CGameObject *pObj );
 
@@ -639,46 +642,31 @@ public:
 
 	// pauseAtFrame
 	// pause anim at frame id
-	inline void pauseAtFrame( float frame, int trackChannel = 0 )
-	{
-		// todo later	
-	}
-
+	void pauseAtFrame( float frame, int trackChannel = 0 );
+	
 	// getCurrentFrame
 	// get current frame of anim
-	float getCurrentFrame(int trackChannel = 0)
-	{
-		// todo later
-		return 0.0f;
-	}
+	float getCurrentFrame(int trackChannel = 0);	
 
 	// setCurrentFrame	
-	void setCurrentFrame(float f, int trackChannel = 0)
-	{
-		// todo later
-	}
+	void setCurrentFrame(float f, int trackChannel = 0);
 
 	// resumeAnim
 	// resume animation
-	inline void resumeAnim(int trackChannel = 0)
-	{
-		// todo later
-	}
+	void resumeAnim(int trackChannel = 0);
 
 	// isPauseAnim
 	// check anim is pause??
-	inline bool isPauseAnim()
+	inline bool isPauseAnim(int trackChanel = 0)
 	{
-		// todo later
-		return false;
+		return m_isPauseAnim[trackChanel];
 	}
 
 	// getPauseAnim
 	// get frame is pause
-	inline float getPauseAnim()
+	inline float getPauseAnim(int trackChanel = 0)
 	{
-		// todo later
-		return 0.0f;
+		return m_pauseAtFrame[trackChanel];
 	}
 
 public:

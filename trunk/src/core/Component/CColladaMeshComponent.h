@@ -128,6 +128,7 @@ struct SMeshParam
 {
 	std::wstring			Name;
 	std::wstring			ControllerName;
+
 	vector<SBufferParam>	Buffers;
 	vector<SVerticesParam>	Vertices;
 	vector<STrianglesParam>	Triangles;
@@ -176,10 +177,10 @@ struct SColladaNodeAnim
 {
 	std::string	sceneNodeName;
 
-	core::array<CGameColladaSceneNode::SPositionKey>	PositionKeys;
-	core::array<CGameColladaSceneNode::SScaleKey>		ScaleKeys;
-	core::array<CGameColladaSceneNode::SRotationKey>	RotationKeys;
-	core::array<CGameColladaSceneNode::SEventKey>		EventKeys;
+	core::array<CGameAnimationTrack::SPositionKey>	PositionKeys;
+	core::array<CGameAnimationTrack::SScaleKey>		ScaleKeys;
+	core::array<CGameAnimationTrack::SRotationKey>	RotationKeys;
+	core::array<CGameAnimationTrack::SEventKey>		EventKeys;
 };
 
 // SColladaAnim
@@ -314,7 +315,7 @@ protected:
 	void loadDae( char *lpFileName );
 	void loadDotAnim( char *lpFileName );
 
-public:	
+public:
 	CColladaAnimation();
 
 	virtual ~CColladaAnimation();
@@ -342,8 +343,10 @@ public:
 		m_animWithName[ clip->animName ] = clip;
 	}
 
-	void cloneAnim( const char *lpAnimName, const char *lpNewAnimName );
+	void removeClip( const std::string& clipName );
 
+	void cloneAnim( const char *lpAnimName, const char *lpNewAnimName );
+	
 };
 
 // CColladaAnimationFactory
@@ -414,11 +417,6 @@ protected:
 	map<std::string, CGameColladaSceneNode*>	m_sidNode;
 
 	bool						m_needFlip;
-
-	float						m_currentFrame;
-	float						m_animFrames;	
-	float						m_pauseAnimFrame;
-	bool						m_pauseAnim;
 
 public:
 	CColladaMeshComponent( CGameObject *pObj );
@@ -588,18 +586,18 @@ public:
 
 	// setAnimation
 	// apply Animation to skin joint
-	void setAnimation(const char *lpAnimName, bool loop = true);
-	void setAnimation(const std::string& animName, bool loop = true)
+	void setAnimation(const char *lpAnimName,		int track = 0, bool loop = true);
+	void setAnimation(const std::string& animName,	int track = 0, bool loop = true)
 	{
-		setAnimation( animName.c_str(), loop );
+		setAnimation( animName.c_str(), track, loop );
 	}
 
 	// setAnimation
 	// apply Animation to array of skin joint
-	void setAnimation(const char *lpAnimName, vector<CGameColladaSceneNode*>& listNodes, bool loop = true );
-	void setAnimation(const std::string& animName, vector<CGameColladaSceneNode*>& listNodes, bool loop = true )
+	void setAnimation(const char *lpAnimName,		vector<CGameColladaSceneNode*>& listNodes, int track = 0, bool loop = true );
+	void setAnimation(const std::string& animName,	vector<CGameColladaSceneNode*>& listNodes, int track = 0, bool loop = true )
 	{
-		setAnimation( animName.c_str(), listNodes, loop );
+		setAnimation( animName.c_str(), listNodes, track, loop );
 	}
 
 	// getCurrentAnim
@@ -641,44 +639,46 @@ public:
 
 	// pauseAtFrame
 	// pause anim at frame id
-	inline void pauseAtFrame( float frame )
+	inline void pauseAtFrame( float frame, int trackChannel = 0 )
 	{
-		m_pauseAnim = true;
-		m_pauseAnimFrame = frame;
+		// todo later	
 	}
 
 	// getCurrentFrame
 	// get current frame of anim
-	float getCurrentFrame()
+	float getCurrentFrame(int trackChannel = 0)
 	{
-		return m_currentFrame;
+		// todo later
+		return 0.0f;
 	}
 
 	// setCurrentFrame	
-	void setCurrentFrame(float f)
+	void setCurrentFrame(float f, int trackChannel = 0)
 	{
-		m_currentFrame = f;
+		// todo later
 	}
 
 	// resumeAnim
 	// resume animation
-	inline void resumeAnim()
+	inline void resumeAnim(int trackChannel = 0)
 	{
-		m_pauseAnim = false;		
+		// todo later
 	}
 
 	// isPauseAnim
 	// check anim is pause??
 	inline bool isPauseAnim()
 	{
-		return m_pauseAnim;
+		// todo later
+		return false;
 	}
 
 	// getPauseAnim
 	// get frame is pause
 	inline float getPauseAnim()
 	{
-		return m_pauseAnimFrame;
+		// todo later
+		return 0.0f;
 	}
 
 public:

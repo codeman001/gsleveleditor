@@ -129,7 +129,7 @@ void CBinaryUtils::saveAnimClip( io::IWriteFile *file, SColladaAnimClip* animCli
 		memStream.writeData( &nPos, sizeof(int) );
 		for ( int j = 0; j < nPos; j++ )
 		{
-			CGameColladaSceneNode::SPositionKey &key = nodeFrames->PositionKeys[j];
+			CGameAnimationTrack::SPositionKey &key = nodeFrames->PositionKeys[j];
 
 			memStream.writeData( &key.frame, sizeof(float) );
 
@@ -142,7 +142,7 @@ void CBinaryUtils::saveAnimClip( io::IWriteFile *file, SColladaAnimClip* animCli
 		memStream.writeData( &nRot, sizeof(int) );
 		for ( int j = 0; j < nRot; j++ )
 		{
-			CGameColladaSceneNode::SRotationKey &key = nodeFrames->RotationKeys[j];
+			CGameAnimationTrack::SRotationKey &key = nodeFrames->RotationKeys[j];
 			
 			memStream.writeData( &key.frame, sizeof(float) );
 
@@ -158,7 +158,7 @@ void CBinaryUtils::saveAnimClip( io::IWriteFile *file, SColladaAnimClip* animCli
 		memStream.writeData( &nScale, sizeof(int) );
 		for ( int j = 0; j < nScale; j++ )
 		{
-			CGameColladaSceneNode::SScaleKey &key = nodeFrames->ScaleKeys[j];
+			CGameAnimationTrack::SScaleKey &key = nodeFrames->ScaleKeys[j];
 			memStream.writeData( &key.frame, sizeof(float) );
 
 			getArrayFromVector( key.scale, floatArray );
@@ -266,7 +266,7 @@ void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode
 	memStream.writeData( &isRootNode, sizeof(int) );
 
 	// fps
-	float fps =	node->getFPS();
+	float fps =	40.0f;//node->getFPS();
 	memStream.writeData( &fps, sizeof(float) );
 
 	
@@ -596,7 +596,7 @@ void CBinaryUtils::readAnimClip( unsigned char *data, unsigned long size, CColla
 
 		for ( int j = 0; j < nPos; j++ )
 		{						
-			CGameColladaSceneNode::SPositionKey &key = nodeFrames->PositionKeys[j];
+			CGameAnimationTrack::SPositionKey &key = nodeFrames->PositionKeys[j];
 
 			memStream.readData( &key.frame, sizeof(float) );			
 			memStream.readData( floatArray, sizeof(float) * 3 );
@@ -611,7 +611,7 @@ void CBinaryUtils::readAnimClip( unsigned char *data, unsigned long size, CColla
 
 		for ( int j = 0; j < nRot; j++ )
 		{
-			CGameColladaSceneNode::SRotationKey &key = nodeFrames->RotationKeys[j];
+			CGameAnimationTrack::SRotationKey &key = nodeFrames->RotationKeys[j];
 			
 			memStream.readData( &key.frame, sizeof(float) );			
 			memStream.readData( floatArray, sizeof(float) * 4 );
@@ -630,7 +630,7 @@ void CBinaryUtils::readAnimClip( unsigned char *data, unsigned long size, CColla
 
 		for ( int j = 0; j < nScale; j++ )
 		{
-			CGameColladaSceneNode::SScaleKey &key = nodeFrames->ScaleKeys[j];
+			CGameAnimationTrack::SScaleKey &key = nodeFrames->ScaleKeys[j];
 			memStream.readData( &key.frame, sizeof(float) );
 			memStream.readData( floatArray, sizeof(float) * 3 );
 
@@ -867,7 +867,7 @@ void CBinaryUtils::readColladaScene( unsigned char *data, unsigned long size, CG
 	// fps
 	float fps =	24.0f;
 	memStream.readData( &fps, sizeof(float) );	
-	newNode->setFPS( fps );
+	//newNode->setFPS( fps );
 
 #ifdef GSANIMATION
 	if ( haveMesh == 0 )

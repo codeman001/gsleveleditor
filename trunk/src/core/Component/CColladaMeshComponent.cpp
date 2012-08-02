@@ -614,8 +614,8 @@ bool CColladaAnimation::getRotationFrameID( SColladaNodeAnim* frames, float fram
 			last = mid - 1;
 		else
 		{			
-			CGameColladaSceneNode::SRotationKey &frame1 = frames->RotationKeys[ mid ];
-			CGameColladaSceneNode::SRotationKey &frame2 = frames->RotationKeys[ mid + 1 ];
+			CGameAnimationTrack::SRotationKey &frame1 = frames->RotationKeys[ mid ];
+			CGameAnimationTrack::SRotationKey &frame2 = frames->RotationKeys[ mid + 1 ];
 
 			core::quaternion q1, q2;
 			q1 = frame1.rotation;
@@ -652,8 +652,8 @@ bool CColladaAnimation::getPositionFrameID( SColladaNodeAnim* frames, float fram
 			last = mid - 1;
 		else
 		{			
-			CGameColladaSceneNode::SPositionKey &frame1 = frames->PositionKeys[ mid ];
-			CGameColladaSceneNode::SPositionKey &frame2 = frames->PositionKeys[ mid + 1 ];
+			CGameAnimationTrack::SPositionKey &frame1 = frames->PositionKeys[ mid ];
+			CGameAnimationTrack::SPositionKey &frame2 = frames->PositionKeys[ mid + 1 ];
 
 			
 			core::vector3df v1 = frame1.position;
@@ -760,7 +760,7 @@ void CColladaAnimation::clipDaeAnim()
 
 					if ( beginID == endID )
 					{													
-						CGameColladaSceneNode::SRotationKey rotKey;
+						CGameAnimationTrack::SRotationKey rotKey;
 						
 						// frame1
 						rotKey.frame = 0;
@@ -776,7 +776,7 @@ void CColladaAnimation::clipDaeAnim()
 					{
 						for ( int i = beginID; i <= endID; i++ )
 						{						
-							CGameColladaSceneNode::SRotationKey		rotKey;
+							CGameAnimationTrack::SRotationKey		rotKey;
 
 							if ( i == beginID )
 							{
@@ -790,7 +790,7 @@ void CColladaAnimation::clipDaeAnim()
 							}
 							else
 							{
-								CGameColladaSceneNode::SRotationKey&	animFrame = nodeAnim->RotationKeys[i];
+								CGameAnimationTrack::SRotationKey&	animFrame = nodeAnim->RotationKeys[i];
 
 								currentFrame =  animFrame.frame - frameBegin;
 								rotKey.rotation = animFrame.rotation;
@@ -821,7 +821,7 @@ void CColladaAnimation::clipDaeAnim()
 
 					if ( beginID == endID )
 					{													
-						CGameColladaSceneNode::SPositionKey posKey;
+						CGameAnimationTrack::SPositionKey posKey;
 						
 						// frame1
 						posKey.frame = 0;
@@ -837,7 +837,7 @@ void CColladaAnimation::clipDaeAnim()
 					{
 						for ( int i = beginID; i <= endID; i++ )
 						{						
-							CGameColladaSceneNode::SPositionKey		posKey;
+							CGameAnimationTrack::SPositionKey		posKey;
 
 							if ( i == beginID )
 							{
@@ -851,7 +851,7 @@ void CColladaAnimation::clipDaeAnim()
 							}
 							else
 							{
-								CGameColladaSceneNode::SPositionKey&	animFrame = nodeAnim->PositionKeys[i];
+								CGameAnimationTrack::SPositionKey&	animFrame = nodeAnim->PositionKeys[i];
 
 								currentFrame	=  animFrame.frame - frameBegin;
 								posKey.position = animFrame.position;
@@ -1039,7 +1039,7 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 								fvector[3] = -arrayFloat[i*4 + 3];
 							}
 
-							CGameColladaSceneNode::SRotationKey key;
+							CGameAnimationTrack::SRotationKey key;
 							key.frame = arrayTime[i]*k_defaultAnimFPS;
 							key.rotation.fromAngleAxis(
 									fvector[3] * core::DEGTORAD, 
@@ -1062,7 +1062,7 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 								fvector[2] = arrayFloat[i*3 + 2];	
 							}
 
-							CGameColladaSceneNode::SPositionKey key;
+							CGameAnimationTrack::SPositionKey key;
 							key.frame = arrayTime[i]*k_defaultAnimFPS;
 							key.position = core::vector3df(fvector[0], fvector[1], fvector[2] );
 							nodeAnim->PositionKeys.push_back(key);
@@ -1091,12 +1091,12 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 							else
 								mat = core::matrix4( mat, core::matrix4::EM4CONST_TRANSPOSED);
 														
-							CGameColladaSceneNode::SRotationKey key;
+							CGameAnimationTrack::SRotationKey key;
 							key.frame = arrayTime[i]*k_defaultAnimFPS;
 							key.rotation = core::quaternion( mat );
 							nodeAnim->RotationKeys.push_back(key);
 
-							CGameColladaSceneNode::SPositionKey keyPos;
+							CGameAnimationTrack::SPositionKey keyPos;
 							keyPos.frame = arrayTime[i]*k_defaultAnimFPS;
 							keyPos.position = mat.getTranslation();
 							nodeAnim->PositionKeys.push_back(keyPos);
@@ -1297,6 +1297,26 @@ void CColladaAnimation::loadFile( char *lpFileName )
 		loadDotAnim( lpFileName );	
 }
 
+void CColladaAnimation::removeClip( const std::string& clipName )
+{
+	SColladaAnimClip *clip = m_animWithName[ clipName ];
+	if ( clip == NULL )
+		return;
+
+	vector<SColladaAnimClip*>::iterator it = m_colladaAnim.begin(), end = m_colladaAnim.end();
+	while ( it != end )
+	{
+		if ( (*it) == clip )
+		{
+			delete (*it);
+			m_colladaAnim.erase(it);
+			m_animWithName[ clipName ] = NULL;
+			return;
+		}
+		it++;
+	}
+}
+
 void CColladaAnimation::cloneAnim( const char *lpAnimName, const char *lpNewAnimName )
 {
 	SColladaAnimClip *clip = m_animWithName[ lpAnimName ];
@@ -1314,8 +1334,9 @@ void CColladaAnimation::cloneAnim( const char *lpAnimName, const char *lpNewAnim
 		SColladaNodeAnim* nodeAnim = new SColladaNodeAnim();
 		*nodeAnim = *clip->animInfo[i];
 		newClip->animInfo.push_back( nodeAnim );
-
 	}
+
+	removeClip( lpNewAnimName );
 	addClip( newClip );	
 }
 
@@ -1383,12 +1404,6 @@ CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 	m_colladaNode = NULL;
 
 	m_animeshFile = "";
-
-	m_animFrames = 0.0f;	
-	m_currentFrame = 0.0f;
-
-	m_pauseAnimFrame = 0.0f;
-	m_pauseAnim = false;
 
 	m_currentAnim = NULL;
 	m_colladaAnimation = NULL;
@@ -3318,22 +3333,23 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, float 
 		core::quaternion	currentRotate;
 		j->getCurrentFrameData( currentPos, currentRotate, currentScale );
 
-		CGameColladaSceneNode::SRotationKey rot;
+		CGameAnimationTrack::SRotationKey rot;
 		rot.frame		= 0;
 		rot.rotation	= currentRotate;
 
-		CGameColladaSceneNode::SPositionKey pos;
+		CGameAnimationTrack::SPositionKey pos;
 		pos.frame		= 0;
 		pos.position	= currentPos;
 
 		// clear old key frame
-		j->clearAllKeyFrame();
+		// j->clearAllKeyFrame();
 		
 		// todo add animation key
 		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
 
 		if ( anim )
 		{
+			/*
 			if ( minFps > j->getFPS() )
 				minFps = j->getFPS();
 
@@ -3356,6 +3372,7 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, float 
 				pos.position	= anim->PositionKeys[0].position;
 				j->PositionKeys.push_back( pos );
 			}
+			*/
 		}		
 
 		i++;
@@ -3382,7 +3399,7 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, float 
 
 // setAnimation
 // apply Animation to skin joint
-void CColladaMeshComponent::setAnimation(const char *lpAnimName, bool loop)
+void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChannel, bool loop)
 {
 	if ( m_colladaNode == NULL )
 		return;
@@ -3411,27 +3428,29 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, bool loop)
 			i++;
 			continue;
 		}
-
+		
 		// clear old key frame
-		j->clearAllKeyFrame();
+		CGameAnimationTrack *track = j->getAnimation()->getTrack( trackChannel );
+		track->clearAllKeyFrame();
 						
 		// todo add animation key
 		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
 
 		if ( anim )
-		{
+		{			
 			int nRotKey = anim->RotationKeys.size();
 			for ( int i = 0; i < nRotKey; i++ )
 			{
-				j->RotationKeys.push_back( anim->RotationKeys[i] );	
+				track->RotationKeys.push_back( anim->RotationKeys[i] );	
 			}
 
 			int nPosKey = anim->PositionKeys.size();
 			for ( int i = 0; i < nPosKey; i++ )
 			{
-				j->PositionKeys.push_back( anim->PositionKeys[i] );
+				track->PositionKeys.push_back( anim->PositionKeys[i] );
 			}
 
+			track->setLoop( loop );
 		}
 
 		// next node
@@ -3441,7 +3460,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, bool loop)
 
 // setAnimation
 // apply Animation to array of skin joint
-void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameColladaSceneNode*>& listNodes, bool loop )
+void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameColladaSceneNode*>& listNodes, int trackChannel, bool loop )
 {
 	if ( m_colladaNode == NULL )
 		return;
@@ -3470,7 +3489,8 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameCol
 		}
 
 		// clear old key frame
-		j->clearAllKeyFrame();					
+		CGameAnimationTrack *track = j->getAnimation()->getTrack( trackChannel );
+		track->clearAllKeyFrame();					
 
 		// todo add animation key
 		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( j->getName() );
@@ -3480,15 +3500,16 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameCol
 			int nRotKey = anim->RotationKeys.size();
 			for ( int i = 0; i < nRotKey; i++ )
 			{
-				j->RotationKeys.push_back( anim->RotationKeys[i] );	
+				track->RotationKeys.push_back( anim->RotationKeys[i] );	
 			}
 
 			int nPosKey = anim->PositionKeys.size();
 			for ( int i = 0; i < nPosKey; i++ )
 			{
-				j->PositionKeys.push_back( anim->PositionKeys[i] );
+				track->PositionKeys.push_back( anim->PositionKeys[i] );
 			}
 
+			track->setLoop( loop );
 		}
 
 		// next node
@@ -3663,7 +3684,7 @@ void CColladaMeshComponent::updateCrossFadeAnim()
 
 	if ( m_crossFadeAnimTime <= 0 )
 	{
-		setAnimation(m_crossFadeToAnim, m_crossFadeToAnimLoop);
+		setAnimation(m_crossFadeToAnim, 0, m_crossFadeToAnimLoop);
 		m_isCrossFadeAnim = false;
 	}
 }

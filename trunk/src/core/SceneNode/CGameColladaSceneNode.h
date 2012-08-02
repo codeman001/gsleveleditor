@@ -7,6 +7,8 @@ class CGameColladaSceneNode;
 class CColladaMeshComponent;
 class CGameObject;
 
+// SColladaMeshBuffer
+// Collada mesh buffer
 struct SColladaMeshBuffer: public SMeshBuffer
 {
 	int	beginVertex;
@@ -19,6 +21,8 @@ struct SColladaMeshBuffer: public SMeshBuffer
 	}
 };
 
+// CGameColladaMesh
+// Collada mesh
 class CGameColladaMesh: public IMesh
 {
 public:
@@ -174,7 +178,178 @@ public:
 	bool						IsStaticMesh;
 };
 
+// CGameAnimationTrack
+// An animation track
+class CGameAnimationTrack
+{
+public:	
+	// begin declare animation key frame
+	struct SPositionKey
+	{
+		f32 frame;
+		core::vector3df position;
+	};
 
+	struct SScaleKey
+	{
+		f32 frame;
+		core::vector3df scale;
+	};
+
+	struct SRotationKey
+	{
+		f32 frame;
+		core::quaternion rotation;
+	};
+	
+	struct SEventKey
+	{
+		f32 frame;
+		core::stringc	event;
+	};
+
+protected:
+	
+	s32			m_posHint;
+	s32			m_scaleHint;
+	s32			m_rotHint;
+	float		m_currentFrame;
+	float		m_totalFrame;
+	
+	float		m_framePerSecond;
+
+	bool		m_isEnable;
+	float		m_animWeight;
+
+	bool		m_isPause;
+	bool		m_isLoop;
+public:
+
+	core::array<CGameAnimationTrack::SPositionKey>	PositionKeys;
+	core::array<CGameAnimationTrack::SScaleKey>		ScaleKeys;
+	core::array<CGameAnimationTrack::SRotationKey>	RotationKeys;
+	core::array<CGameAnimationTrack::SEventKey>		EventKeys;
+
+public:
+	CGameAnimationTrack();
+	virtual ~CGameAnimationTrack();
+
+	// getCurrentFrame
+	// get time of current animation
+	inline float getCurrentFrame()			{ return m_currentFrame; }	
+
+	// setCurrentFrame
+	// set current frame
+	inline float setCurrentFrame(float f)	{ m_currentFrame = f; }
+
+	// getTotalFrame
+	// return animation total time
+	inline float getTotalFrame()			{ return m_totalFrame; }
+
+	// setFPS
+	// set animation speed
+	inline void setFPS( float f )			{ m_framePerSecond = f; }
+	inline float getFPS()					{ return m_framePerSecond; }
+
+	// setEnable
+	// enable this animation track
+	inline bool isEnable()					{ return m_isEnable; }
+	inline void setEnable(bool b)			{ m_isEnable = b; }
+
+	// setAnimWeight
+	// set anim weight
+	inline void setAnimWeight(float f)		{ m_animWeight = f; }
+	inline float getAnimWeight()			{ return m_animWeight; }
+
+	// setPause
+	// set pause anim
+	inline void setPause( bool b )			{ m_isPause = b; }
+	inline bool isPause()					{ return m_isPause; }
+
+	// setLoop
+	// set loop anim
+	inline void setLoop( bool b )			{ m_isLoop = b; }
+	inline bool isLoop()					{ return m_isLoop; }
+
+	// getFrameData
+	// get anim at frame
+	void getFrameData(f32 frame, core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix);
+
+	// update
+	// update per frame
+	void update(float timeStep);
+
+	// clearAllKeyFrame
+	// clear all animation key frame
+	void clearAllKeyFrame()
+	{
+		PositionKeys.clear();
+		ScaleKeys.clear();
+		if ( RotationKeys.size() > 0 )
+		{
+			int t = 0;
+			t++;
+		}
+		RotationKeys.clear();
+
+		m_posHint = 0;
+		m_scaleHint = 0;
+		m_rotHint = 0;
+		m_currentFrame = 0;
+	}
+
+};
+
+// CGameAnimation
+// game animation (it will management many animation track)
+class CGameAnimation
+{
+protected:
+	CGameAnimationTrack	m_animTrack[2];
+
+public:
+	CGameAnimation();
+	virtual ~CGameAnimation();
+
+	// getTrack
+	// get animation track
+	CGameAnimationTrack* getTrack(int i)
+	{
+		return &m_animTrack[i];
+	}
+
+	// disableAllTrack
+	// disable all track
+	void disableAllTrack()
+	{
+		for ( int i = 0; i < 2; i++ )
+			m_animTrack[i].setEnable( false );
+	}
+
+	// onlyEnableTrack
+	// enable a track i
+	void onlyEnableTrack( int track )
+	{
+		for ( int i = 0; i < 2; i++ )
+		{
+			if ( i == track )
+				m_animTrack[i].setEnable( true );
+			else
+				m_animTrack[i].setEnable( false );
+		}
+	}
+
+	// getFrameData
+	// get anim at frame
+	void getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix);
+
+	// update
+	// update per frame
+	void update(float timeStep);
+};
+
+// CGameColladaSceneNode
+// Collada Node
 class CGameColladaSceneNode: public ISceneNode
 {
 protected:
@@ -431,101 +606,30 @@ public:
 	// getCurrentFrameData
 	// get current frame
 	void getCurrentFrameData( core::vector3df& position, core::quaternion& rotation, core::vector3df& scale );
-
-public:
-
-	// begin declare animation key frame
-	struct SPositionKey
-	{
-		f32 frame;
-		core::vector3df position;
-	};
-
-	struct SScaleKey
-	{
-		f32 frame;
-		core::vector3df scale;
-	};
-
-	struct SRotationKey
-	{
-		f32 frame;
-		core::quaternion rotation;
-	};
 	
-	struct SEventKey
+	// getAnimation
+	// get animation data
+	inline CGameAnimation* getAnimation()
 	{
-		f32 frame;
-		core::stringc	event;
-	};
-
-	core::array<SPositionKey>	PositionKeys;
-	core::array<SScaleKey>		ScaleKeys;
-	core::array<SRotationKey>	RotationKeys;
-	core::array<SEventKey>		EventKeys;
-
-	// end animation
-
-	// clearAllKeyFrame
-	// clear all animation key frame
-	void clearAllKeyFrame()
-	{
-		PositionKeys.clear();
-		ScaleKeys.clear();
-		RotationKeys.clear();
-
-		m_posHint = 0;
-		m_scaleHint = 0;
-		m_rotHint = 0;
-		m_currentFrame = 0;
+		return &m_gameAnimation;
 	}
 
-protected:
-	float	m_currentFrame;
-	float	m_totalFrame;
-
-	float	m_framePerSecond;
-
-	u32		m_timer;
-
-	s32		m_posHint;
-	s32		m_scaleHint;
-	s32		m_rotHint;
-	
-	bool	m_isSkydome;
-	bool	m_terrainNode;
-	bool	m_hideTerrainNode;
 protected:	
-	
-	// getFrameData
-	// get position, scale, rotation data
-	void getFrameData(f32 frame,
-				core::vector3df &position,	s32 &positionHint,
-				core::vector3df &scale,		s32 &scaleHint,
-				core::quaternion &rotation, s32 &rotationHint);
+	u32				m_timer;	
+
+	bool			m_isSkydome;
+	bool			m_terrainNode;
+	bool			m_hideTerrainNode;
+
+	CGameAnimation	m_gameAnimation;
+
+protected:		
 
 	// skin
 	// skin mesh
 	void skin();
 public:
-	
-	// getCurrentFrame
-	// get time of current animation
-	inline float getCurrentFrame()			{ return m_currentFrame; }	
-
-	// setCurrentFrame
-	// set current frame
-	inline float setCurrentFrame(float f)	{ m_currentFrame = f; }
-
-	// getTotalFrame
-	// return animation total time
-	inline float getTotalFrame()			{ return m_totalFrame; }
-
-	// setFPS
-	// set animation speed
-	inline void setFPS( float f )			{ m_framePerSecond = f; }
-	inline float getFPS()					{ return m_framePerSecond; }
-
+		
 	inline void setRootColladaNode( bool b )	{ m_isRootColladaNode = b; }
 	inline bool isRootColladaNode()				{ return m_isRootColladaNode; }
 };

@@ -240,7 +240,7 @@ public:
 
 	// setCurrentFrame
 	// set current frame
-	inline float setCurrentFrame(float f)	{ m_currentFrame = f; }
+	inline void setCurrentFrame(float f)	{ m_currentFrame = f; }
 
 	// getTotalFrame
 	// return animation total time

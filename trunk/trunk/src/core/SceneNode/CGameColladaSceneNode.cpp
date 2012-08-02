@@ -349,7 +349,7 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 		// calc result
 		position.interpolate( posTrack1, posTrack2, w );
 		scale.interpolate( scaleTrack1, scaleTrack2, w );
-		rotation.slerp( rotTrack1, rotTrack2, w);
+		rotation.slerp( rotTrack2, rotTrack1, w);
 	}
 	else
 	{
@@ -365,6 +365,7 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 			core::vector3df		posTrack;
 			core::vector3df		scaleTrack;
 			core::quaternion	rotTrack;
+			core::quaternion	zero( localMatrix );
 
 			// get frame data
 			track->getFrameData
@@ -377,11 +378,15 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 				);
 
 			// compute animation
-			float w = track->getAnimWeight();
-						
-			position	= posTrack		* w;
-			scale		= scaleTrack	* w;
-			rotation	= rotTrack		* w;			
+			float w = track->getAnimWeight();			
+
+			position	= posTrack;
+			scale		= scaleTrack;
+
+			if ( w == 1.0f )
+				rotation = rotTrack;
+			else
+				rotation.slerp(zero, rotTrack, w);			
 		}
 		else
 		{

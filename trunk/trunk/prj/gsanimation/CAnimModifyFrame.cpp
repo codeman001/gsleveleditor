@@ -467,54 +467,6 @@ void CAnimModifyFrame::_onSelectTime( uiObject *pSender )
 		setNodeInfoToProperty( m_lastSelectNode );
 }
 
-void CAnimModifyFrame::updateTimelineToSceneNode( CTimelineControl *control )
-{
-	if ( control == m_timeControlRot )
-	{
-		m_lastSelectNode->RotationKeys.clear();
-		
-		int n = m_timeControlRot->getValueCount();
-		for ( int i = 0; i < n; i++ )
-		{
-			STimelineValue& value =	m_timeControlRot->getValue(i);
-			core::vector3df rot(value.x, value.y, value.z);
-			
-			core::matrix4 mat;
-			mat.setRotationDegrees( rot );
-
-			core::quaternion quat( mat );
-
-			CGameColladaSceneNode::SRotationKey key;
-			key.frame = value.time;
-			key.rotation = quat;
-
-			m_lastSelectNode->RotationKeys.push_back( key );
-
-		}			
-	}
-	else if ( control == m_timeControlPos )
-	{
-		m_lastSelectNode->PositionKeys.clear();
-		
-		int n = m_timeControlRot->getValueCount();
-		for ( int i = 0; i < n; i++ )
-		{
-			STimelineValue& value =	m_timeControlPos->getValue(i);
-			core::vector3df pos(value.x, value.y, value.z);
-			
-			CGameColladaSceneNode::SPositionKey key;
-			key.frame = value.time;
-			key.position = pos;
-
-			m_lastSelectNode->PositionKeys.push_back( key );
-
-		}
-	}
-
-	updateTimeLine( m_lastSelectNode );
-
-}
-
 void CAnimModifyFrame::_onUpdateValue( uiObject *pSender )
 {
 	if ( m_lastSelectNode )
@@ -530,13 +482,15 @@ void CAnimModifyFrame::_onChangeValue( uiObject *pSender )
 	if ( m_lastSelectNode == NULL )
 		return;
 
+	CGameAnimationTrack *track = m_lastSelectNode->getAnimation()->getTrack(0);
+
 	if ( pSender == m_timeControlRot )
 	{
 		int timeID = m_timeControlRot->getSelectTimeID();
 		STimelineValue& value =	m_timeControlRot->getValue( timeID );
 
 		// get rotation from scenenode
-		CGameColladaSceneNode::SRotationKey &key = m_lastSelectNode->RotationKeys[timeID];
+		CGameAnimationTrack::SRotationKey &key = track->RotationKeys[timeID];
 		core::vector3df rotVec = key.rotation.getMatrix().getRotationDegrees();
 
 		if ( rotVec.X > 180 )
@@ -564,7 +518,7 @@ void CAnimModifyFrame::_onChangeValue( uiObject *pSender )
 		STimelineValue& value =	m_timeControlPos->getValue( timeID );
 
 		//update position
-		CGameColladaSceneNode::SPositionKey &key = m_lastSelectNode->PositionKeys[timeID];
+		CGameAnimationTrack::SPositionKey &key = track->PositionKeys[timeID];
 		key.position.X = value.x;
 		key.position.Y = value.y;
 		key.position.Z = value.z;
@@ -685,25 +639,79 @@ void CAnimModifyFrame::addNodeToTreeView( uiTreeViewItem *parent, ISceneNode* no
 	treeItem->update();
 }
 
+void CAnimModifyFrame::updateTimelineToSceneNode( CTimelineControl *control )
+{
+	if ( control == m_timeControlRot )
+	{
+		// clear old key frames
+		m_lastSelectNode->getAnimation()->getTrack(0)->RotationKeys.clear();
+		
+		// add new key frames
+		int n = m_timeControlRot->getValueCount();
+		for ( int i = 0; i < n; i++ )
+		{
+			STimelineValue& value =	m_timeControlRot->getValue(i);
+			core::vector3df rot(value.x, value.y, value.z);
+			
+			core::matrix4 mat;
+			mat.setRotationDegrees( rot );
+
+			core::quaternion quat( mat );
+
+			CGameAnimationTrack::SRotationKey key;
+			key.frame = value.time;
+			key.rotation = quat;
+
+			m_lastSelectNode->getAnimation()->getTrack(0)->RotationKeys.push_back( key );
+
+		}			
+	}
+	else if ( control == m_timeControlPos )
+	{
+		// clear old key frames		
+		m_lastSelectNode->getAnimation()->getTrack(0)->PositionKeys.clear();
+		
+		// add new key frames
+		int n = m_timeControlRot->getValueCount();
+		for ( int i = 0; i < n; i++ )
+		{
+			STimelineValue& value =	m_timeControlPos->getValue(i);
+			core::vector3df pos(value.x, value.y, value.z);
+			
+			CGameAnimationTrack::SPositionKey key;
+			key.frame = value.time;
+			key.position = pos;
+
+			m_lastSelectNode->getAnimation()->getTrack(0)->PositionKeys.push_back( key );
+
+		}
+	}
+
+	updateTimeLine( m_lastSelectNode );
+
+}
+
 void CAnimModifyFrame::updateTimeLine( CGameColladaSceneNode *node )
 {
 	m_timeControlRot->clearAllValue();
 	m_timeControlPos->clearAllValue();
 
 	if ( node == NULL )
-	{		
+	{
 		m_timeControlRot->invalidateRect(NULL, true);
 		m_timeControlPos->invalidateRect(NULL, true);
 		return;
 	}
-	
+
+	CGameAnimationTrack *track = node->getAnimation()->getTrack(0);
+
 	// ROTATION
-	{
+	{		
 		// rotation
-		int nKeys = node->RotationKeys.size();
+		int nKeys = track->RotationKeys.size();
 		for ( int i = 0; i < nKeys; i++ )
 		{
-			CGameColladaSceneNode::SRotationKey &key = node->RotationKeys[i];			
+			CGameAnimationTrack::SRotationKey &key = track->RotationKeys[i];			
 			
 			core::vector3df rotVec = key.rotation.getMatrix().getRotationDegrees();
 			if ( rotVec.X > 180 )
@@ -717,23 +725,23 @@ void CAnimModifyFrame::updateTimeLine( CGameColladaSceneNode *node )
 
 		// set time
 		if ( nKeys > 0 )
-			m_timeControlRot->setTimeLength( node->RotationKeys.getLast().frame );
+			m_timeControlRot->setTimeLength( track->RotationKeys.getLast().frame );
 	}
 	
 	// POSITION
 	{
 		// position
-		int nKeys = node->PositionKeys.size();
+		int nKeys = track->PositionKeys.size();
 		for ( int i = 0; i < nKeys; i++ )
 		{
-			CGameColladaSceneNode::SPositionKey &key = node->PositionKeys[i];			
+			CGameAnimationTrack::SPositionKey &key = track->PositionKeys[i];			
 						
 			m_timeControlPos->addValue( key.frame, key.position.X, key.position.Y, key.position.Z );			
 		}
 
 		// set time
 		if ( nKeys > 0 )
-			m_timeControlPos->setTimeLength( node->PositionKeys.getLast().frame );
+			m_timeControlPos->setTimeLength( track->PositionKeys.getLast().frame );
 	}
 
 	m_timeControlRot->invalidateRect(NULL, true);

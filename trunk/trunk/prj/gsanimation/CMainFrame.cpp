@@ -111,6 +111,11 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 		m_editorWin->setParent(NULL);
 		m_editorWin->showWindow(false);
 
+		m_blenddingWin = ref<CAnimBlendingFrame>( new CAnimBlendingFrame( L"Anim editor", 100,100, 400,200,this)  );
+		m_blenddingWin->changeWindowStyle( UISTYLE_RESIZE );
+		m_blenddingWin->setParent(NULL);
+		m_blenddingWin->showWindow(false);
+
 		// set event selected node
 		m_irrWin->getController()->setEventOnNodeSelected<CAnimModifyFrame, &CAnimModifyFrame::_onSelectedNode>(m_editorWin);		
 	}
@@ -414,6 +419,9 @@ void CMainFrame::toolbarLoadMesh( uiObject *pSender )
 	m_editorWin->setColladaComponent( m_irrWin->getAnimComponent() );
 	m_editorWin->showWindow(true);
 
+	// show blending win
+	m_blenddingWin->showWindow(true);
+
 	// setup camera	
 	m_needSetCamera = true;
 	
@@ -489,6 +497,8 @@ void CMainFrame::updateAnimDataToUI()
 
 }
 
+// listPropertyOnItemEdit
+// dbClick on item
 void CMainFrame::listPropertyOnItemEdit( uiObject *pSender )
 {
 	uiListViewRowSelected selectRow;

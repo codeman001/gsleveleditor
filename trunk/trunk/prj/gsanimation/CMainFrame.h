@@ -3,13 +3,18 @@
 
 #include "stdafx.h"
 #include "CIrrWindow.h"
+
 #include "CAnimModifyFrame.h"
+#include "CAnimBlendingFrame.h"
 
 class CMainFrame: public uiForm
 {
 protected:
 	CIrrWindow		*m_irrWin;
-	CAnimModifyFrame *m_editorWin;
+	
+	CAnimModifyFrame	*m_editorWin;
+	CAnimBlendingFrame *m_blenddingWin;
+
 	uiListView		*m_listView;
 
 	bool			m_needSetCamera;

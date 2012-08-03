@@ -204,6 +204,9 @@ void CMainFrame::_OnIdle()
 				colladaComponent->loadFromFile( (char*)m_file1.c() );
 				m_editorWin->setColladaComponent( m_irrWin->getAnimComponent() );
 				m_editorWin->showWindow(true);
+
+				m_blenddingWin->setColladaComponent( m_irrWin->getAnimComponent() );
+				m_blenddingWin->showWindow(true);
 				m_needSetCamera = true;
 			}
 
@@ -212,6 +215,9 @@ void CMainFrame::_OnIdle()
 				CColladaAnimation *colladaAnim = CColladaAnimationFactory::getInstance()->loadAnimation("baseAnim", (char*) m_file2.c());
 				colladaComponent->setAnimationPackage( colladaAnim );
 				
+				m_blenddingWin->setColladaComponent( m_irrWin->getAnimComponent() );
+				m_blenddingWin->showWindow(true);
+
 				updateAnimDataToUI();
 				m_needSetCamera = true;
 			}			
@@ -449,6 +455,9 @@ void CMainFrame::toolbarLoadAnimDae( uiObject *pSender )
 	CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
 	colladaComponent->setAnimationPackage( colladaAnim );
 
+	// set component
+	m_blenddingWin->setColladaComponent( colladaComponent );
+	m_blenddingWin->showWindow(true);
 
 	// update anim data
 	updateAnimDataToUI();

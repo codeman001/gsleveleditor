@@ -3416,7 +3416,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChanne
 	animClip->loop = loop;
 
 	// set begin frame
-	setCurrentFrame(0);
+	setCurrentFrame(0, trackChannel);
 	
 	// set current anim clip
 	m_currentAnim = animClip;
@@ -3518,6 +3518,29 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameCol
 		}
 
 		// next node
+		i++;
+	}
+}
+
+// synchronizedByTimeScale
+// sync 2 animation
+void CColladaMeshComponent::synchronizedByTimeScale( float f )
+{
+	// loop all node
+	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		const std::string& nodeName = (*i).first;
+		CGameColladaSceneNode* j = (*i).second;
+				
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+		
+		j->getAnimation()->synchronizedByTimeScale( f );
+
 		i++;
 	}
 }

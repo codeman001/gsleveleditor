@@ -324,12 +324,16 @@ void CAnimModifyFrame::_onToolbarCommand( uiObject *pSender )
 	if ( pSender == m_playButton )
 	{
 		m_colladaComponent->resumeAnim();
+		m_colladaComponent->onlyEnableAnimTrackChannel(0);
+
 		m_timeControlRot->enableChangeTimeAndValue( false );
 		m_timeControlPos->enableChangeTimeAndValue( false );
 	}
 	else if ( pSender == m_stopButton )
 	{
 		m_colladaComponent->pauseAtFrame(0);
+		m_colladaComponent->onlyEnableAnimTrackChannel(0);
+
 		m_timeControlRot->setCurrentTime(0);
 		m_timeControlRot->enableChangeTimeAndValue( true );
 		m_timeControlPos->setCurrentTime(0);
@@ -341,9 +345,11 @@ void CAnimModifyFrame::_onToolbarCommand( uiObject *pSender )
 	else
 	{
 		m_colladaComponent->pauseAtFrame( m_colladaComponent->getCurrentFrame() );
+		m_colladaComponent->onlyEnableAnimTrackChannel(0);
+
 		m_timeControlRot->enableChangeTimeAndValue( true );
 		m_timeControlPos->enableChangeTimeAndValue( true );
-	}	
+	}
 }
 
 void CAnimModifyFrame::_onTabChange( uiObject *pSender )

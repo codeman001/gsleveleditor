@@ -3626,6 +3626,28 @@ void CColladaMeshComponent::resumeAnim(int trackChannel)
 	}
 }
 
+void CColladaMeshComponent::enableAnimTrackChanel( int trackChannel, bool b)
+{
+	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		CGameColladaSceneNode* j = (*i).second;
+		j->getAnimation()->getTrack(trackChannel)->setEnable( b );		
+		i++;
+	}
+}
+
+void CColladaMeshComponent::onlyEnableAnimTrackChannel( int trackChannel )
+{
+	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		CGameColladaSceneNode* j = (*i).second;
+		j->getAnimation()->onlyEnableTrack( trackChannel );
+		i++;
+	}
+}
+
 
 // saveSceneToBinary
 // save collada mesh info to binary file

@@ -1,6 +1,7 @@
 #ifndef _ANIM_MODIFYFRAME_
 #define _ANIM_MODIFYFRAME_
 
+#include "stdafx.h"
 #include "CColladaMeshComponent.h"
 #include "CTimelineControl.h"
 

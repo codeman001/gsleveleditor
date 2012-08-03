@@ -392,6 +392,14 @@
 			Name="Frame"
 			>
 			<File
+				RelativePath=".\CAnimBlendingFrame.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CAnimBlendingFrame.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CAnimModifyFrame.cpp"
 				>
 			</File>

@@ -1,25 +1,25 @@
 #include "stdafx.h"
-#include "CAnimBlenddingFrame.h"
+#include "CAnimBlendingFrame.h"
 
-CAnimBlenddingFrame::CAnimBlenddingFrame( LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent )
+CAnimBlendingFrame::CAnimBlendingFrame( LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent )
 	:uiWindow( lpTitle, x,y,w,h, pParent )
 {
 }
 
-CAnimBlenddingFrame::~CAnimBlenddingFrame()
+CAnimBlendingFrame::~CAnimBlendingFrame()
 {
 }
 	
 // messageMap
 // Phan tich su kien cho uiForm
-LRESULT	CAnimBlenddingFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT	CAnimBlendingFrame::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	return uiWindow::messageMap( hWnd, uMsg, wParam, lParam );
 }
 
 // setColladaComponent
 // update new collada scene
-void CAnimBlenddingFrame::setColladaComponent( CColladaMeshComponent *comp )
+void CAnimBlendingFrame::setColladaComponent( CColladaMeshComponent *comp )
 {
 	m_colladaComponent = comp;
 }

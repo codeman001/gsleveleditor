@@ -655,6 +655,10 @@ public:
 	// resume animation
 	void resumeAnim(int trackChannel = 0);
 
+	// enableAnimTrackChanel
+	void enableAnimTrackChanel( int trackChannel, bool b);
+	void onlyEnableAnimTrackChannel( int trackChannel );
+
 	// isPauseAnim
 	// check anim is pause??
 	inline bool isPauseAnim(int trackChanel = 0)

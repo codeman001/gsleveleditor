@@ -603,6 +603,10 @@ public:
 		setAnimation( animName.c_str(), listNodes, track, loop );
 	}
 
+	// synchronizedByTimeScale
+	// sync 2 animation
+	void synchronizedByTimeScale( float f );
+
 	// getCurrentAnim
 	// get current anim
 	inline SColladaAnimClip* getCurrentAnim()

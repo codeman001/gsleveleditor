@@ -563,6 +563,11 @@ void CBinaryUtils::readAnimClip( unsigned char *data, unsigned long size, CColla
 	
 	// read clip name	
 	memStream.readData( stringc, STRING_BUFFER_SIZE );
+
+	// this anim has in package
+	if ( anim->getAnim( stringc ) != NULL )
+		return;
+
 	animClip->animName = stringc;
 	anim->addClip( animClip );
 

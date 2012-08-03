@@ -285,8 +285,11 @@ void CGameAnimationTrack::update(float timeStep)
 		m_totalFrame = PositionKeys.getLast().frame;
 
 	if ( m_totalFrame == 0 )
+	{
+		m_endTrack = true;
 		return;
-		
+	}
+
 	if ( m_isPause == false )
 	{
 		// calc current frame	
@@ -419,17 +422,18 @@ void CGameAnimation::synchronizedByTimeScale( float weight )
 		return;
 	}
 
-	float weight1 = core::clamp<float>( weight, 0.0f, 1.0f );
-	float weight2 = 1.0f - weight1;
+	weight = core::clamp<float>( weight, 0.0f, 1.0f );
 	float time1 = m_animTrack[0].getTotalFrame();
 	float time2 = m_animTrack[1].getTotalFrame();
 	 
 	// interpolate speed ratio 2 channel
-	float ratio1 = time1 + ( ( time2 - time1 ) * weight1 );
-	float ratio2 = time2 + ( ( time1 - time2 ) * weight2 );
+	float ratio = time2 + ( ( time1 - time2 ) * weight );
 
-	m_animTrack[0].setSpeedRatio( ratio1/time1 );
-	m_animTrack[1].setSpeedRatio( ratio2/time2 );
+	m_animTrack[0].setSpeedRatio( time1/ratio );
+	m_animTrack[0].setAnimWeight( weight );
+
+	m_animTrack[1].setSpeedRatio( time2/ratio );
+	m_animTrack[1].setAnimWeight( 1.0f - weight );
 }
 
 // update

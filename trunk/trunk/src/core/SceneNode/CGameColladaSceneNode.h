@@ -217,12 +217,15 @@ protected:
 	float		m_totalFrame;
 	
 	float		m_framePerSecond;
+	float		m_speedRatio;
 
 	bool		m_isEnable;
 	float		m_animWeight;
 
 	bool		m_isPause;
 	bool		m_isLoop;
+	bool		m_endTrack;
+
 public:
 
 	core::array<CGameAnimationTrack::SPositionKey>	PositionKeys;
@@ -270,6 +273,15 @@ public:
 	// set loop anim
 	inline void setLoop( bool b )			{ m_isLoop = b; }
 	inline bool isLoop()					{ return m_isLoop; }
+
+	// isEndTrack
+	// return true currentFrame == totalFrame
+	inline bool isEndTrack()				{ return m_endTrack; }
+
+	// setSpeedRatio
+	// set speed ratio of track
+	inline void setSpeedRatio( float ratio ){ m_speedRatio = ratio; }
+	inline float getSpeedRatio(){ return m_speedRatio; }
 
 	// getFrameData
 	// get anim at frame
@@ -342,6 +354,11 @@ public:
 	// getFrameData
 	// get anim at frame
 	void getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix);
+
+	// synchronizedTimeScale
+	// sync speed of 2 track
+	// w: weight of track 1,  value domain: 0.0f -> 1.0f
+	void synchronizedByTimeScale( float w );
 
 	// update
 	// update per frame

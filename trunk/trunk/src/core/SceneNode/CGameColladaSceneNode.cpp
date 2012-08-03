@@ -58,7 +58,8 @@ CGameAnimationTrack::CGameAnimationTrack()
 	m_currentFrame = 0;
 	m_totalFrame = 0;
 	m_framePerSecond = 30.0f;
-	
+	m_speedRatio = 1.0f;
+
 	m_posHint = 0;
 	m_scaleHint = 0;
 	m_rotHint = 0;
@@ -68,6 +69,8 @@ CGameAnimationTrack::CGameAnimationTrack()
 	m_isEnable = false;
 	m_isPause = false;
 	m_isLoop = true;
+
+	m_endTrack = false;
 }
 
 CGameAnimationTrack::~CGameAnimationTrack()
@@ -287,15 +290,18 @@ void CGameAnimationTrack::update(float timeStep)
 	if ( m_isPause == false )
 	{
 		// calc current frame	
-		m_currentFrame += timeStep * m_framePerSecond/1000.0f;
+		m_currentFrame += timeStep * m_framePerSecond/1000.0f * m_speedRatio;
 		
 		if ( m_currentFrame > m_totalFrame )
 		{
-			if ( m_isLoop == false )
-				m_currentFrame = m_totalFrame;
-			else
-				m_currentFrame = 0;
+			m_currentFrame = m_totalFrame;
+			m_endTrack = true;
 		}
+		else
+		{
+			m_endTrack = false;
+		}
+
 	}	
 }
 
@@ -400,15 +406,59 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 	}
 }
 
+// synchronizedTimeScale
+// sync speed of 2 track
+// weight: 0.0f -> 1.0f
+void CGameAnimation::synchronizedByTimeScale( float weight )
+{	
+	if ( m_animTrack[0].isEnable() == false || m_animTrack[1].isEnable() == false ||
+		m_animTrack[0].getTotalFrame() == 0.0f || m_animTrack[1].getTotalFrame() == 0.0f )
+	{
+		m_animTrack[0].setSpeedRatio( 1.0f );
+		m_animTrack[1].setSpeedRatio( 1.0f );
+		return;
+	}
+
+	float weight1 = core::clamp<float>( weight, 0.0f, 1.0f );
+	float weight2 = 1.0f - weight1;
+	float time1 = m_animTrack[0].getTotalFrame();
+	float time2 = m_animTrack[1].getTotalFrame();
+	 
+	// interpolate speed ratio 2 channel
+	float ratio1 = time1 + ( ( time2 - time1 ) * weight1 );
+	float ratio2 = time2 + ( ( time1 - time2 ) * weight2 );
+
+	m_animTrack[0].setSpeedRatio( ratio1/time1 );
+	m_animTrack[1].setSpeedRatio( ratio2/time2 );
+}
+
 // update
 // update per frame
 void CGameAnimation::update(float timeStep)
 {
+	bool startNewLoop = true;
+
 	for ( int i = 0; i < 2; i++ )
 	{
 		if ( m_animTrack[i].isEnable() )
 		{
 			m_animTrack[i].update( timeStep );
+
+			// the new track need wait another end track
+			if ( m_animTrack[i].isEndTrack() == false )
+				startNewLoop = false;
+		}
+	}
+
+	// we will synchronized all animation loop
+	if ( startNewLoop )
+	{
+		for ( int i = 0; i < 2; i++ )
+		{
+			if ( m_animTrack[i].isEnable() && m_animTrack[i].isLoop() )
+			{
+				m_animTrack[i].setCurrentFrame( 0.0f );
+			}
 		}
 	}
 }

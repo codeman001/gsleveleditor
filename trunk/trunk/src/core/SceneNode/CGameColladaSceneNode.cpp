@@ -426,9 +426,15 @@ void CGameAnimation::synchronizedByTimeScale( float weight )
 	float time1 = m_animTrack[0].getTotalFrame();
 	float time2 = m_animTrack[1].getTotalFrame();
 	 
+	// sync frame
+	float frame1 = m_animTrack[0].getCurrentFrame();
+	float frame2 = time2*frame1/time1;
+	m_animTrack[1].setCurrentFrame( frame2 );
+
 	// interpolate speed ratio 2 channel
 	float ratio = time2 + ( ( time1 - time2 ) * weight );
 
+	// sync speed
 	m_animTrack[0].setSpeedRatio( time1/ratio );
 	m_animTrack[0].setAnimWeight( weight );
 

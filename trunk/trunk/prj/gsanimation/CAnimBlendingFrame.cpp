@@ -57,7 +57,7 @@ CAnimBlendingFrame::CAnimBlendingFrame( LPWSTR lpTitle, int x, int y, int w, int
 	m_trackbar = ref<uiTrackBar>( new uiTrackBar( L"Trackbar", 0,0, 200, 30, this, true, true ) );
 	m_trackbar->setMargin( paddingLeft, paddingRight,paddingTop,0 );
 	m_trackbar->setDock( this, UIDOCK_FILL );
-	m_trackbar->setRange( 0,10 );
+	m_trackbar->setRange( 0,50 );
 }
 
 CAnimBlendingFrame::~CAnimBlendingFrame()
@@ -141,7 +141,7 @@ void CAnimBlendingFrame::updateBlendAnim()
 	m_colladaComponent->enableAnimTrackChanel( 1, true );	
 
 	// synchronized blend anim
-	float f = 1.0f - m_trackbar->getPosition()/10.0f;
+	float f = 1.0f - m_trackbar->getPosition()/50.0f;
 	m_colladaComponent->synchronizedByTimeScale( f );
 }
 

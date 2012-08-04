@@ -108,24 +108,28 @@ void CAnimBlendingFrame::_onCmbCommand( uiObject *pSender )
 	if ( m_colladaComponent == NULL )
 		return;	
 
-	wchar_t animW[1024] = {0};
-	char anim[1024] = {0};
+	wchar_t animW1[1024] = {0};
+	wchar_t animW2[1024] = {0};
+	char anim1[1024] = {0};
+	char anim2[1024] = {0};
 
 	// set anim 1
 	if ( pSender == m_cmbAnim1 )
 	{
-		m_cmbAnim1->getSelectString(animW);
-		uiString::copy<char, wchar_t>(anim, animW);
-		m_colladaComponent->setAnimation( anim, 0 );	
+		m_cmbAnim1->getSelectString(animW1);
+		uiString::copy<char, wchar_t>(anim1, animW1);
+		m_colladaComponent->setAnimation( anim1, 0 );	
 	}
 
 	// set anim 2
 	if ( pSender == m_cmbAnim2 )
 	{
-		m_cmbAnim2->getSelectString(animW);
-		uiString::copy<char, wchar_t>(anim, animW);
-		m_colladaComponent->setAnimation( anim, 1 );
+		m_cmbAnim2->getSelectString(animW2);
+		uiString::copy<char, wchar_t>(anim2, animW2);
+		m_colladaComponent->setAnimation( anim2, 1 );
 	}
+
+	//m_colladaComponent->getCurrentAnimPackage()->createSynchronizedAnim("compileAnim", anim1, anim2, 0.5f);
 
 	m_colladaComponent->pauseAtFrame( 0.0f, 0 );
 	m_colladaComponent->pauseAtFrame( 0.0f, 1 );
@@ -135,13 +139,16 @@ void CAnimBlendingFrame::updateBlendAnim()
 {
 	if ( m_colladaComponent == NULL )
 		return;
-		
+	
+	//m_colladaComponent->setAnimation("compileAnim", 0, true );
+	//m_colladaComponent->onlyEnableAnimTrackChannel(0);
+
 	// enable blend anim
 	m_colladaComponent->enableAnimTrackChanel( 0, true );
 	m_colladaComponent->enableAnimTrackChanel( 1, true );	
 
 	// synchronized blend anim
-	float f = 1.0f - m_trackbar->getPosition()/50.0f;
+	float f = 1.0f - m_trackbar->getPosition()/50.0f;	
 	m_colladaComponent->synchronizedByTimeScale( f );
 }
 

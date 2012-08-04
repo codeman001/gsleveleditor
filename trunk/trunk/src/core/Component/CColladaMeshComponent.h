@@ -346,6 +346,8 @@ public:
 	void removeClip( const std::string& clipName );
 
 	void cloneAnim( const char *lpAnimName, const char *lpNewAnimName );
+
+	void createSynchronizedAnim( const char *lpNewName, const char *lpAnim1, const char *lpAnim2, float w );
 	
 };
 

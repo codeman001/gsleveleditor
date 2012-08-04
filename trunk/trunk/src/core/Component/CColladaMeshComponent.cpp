@@ -1337,7 +1337,111 @@ void CColladaAnimation::cloneAnim( const char *lpAnimName, const char *lpNewAnim
 	}
 
 	removeClip( lpNewAnimName );
-	addClip( newClip );	
+	addClip( newClip );
+}
+
+void CColladaAnimation::createSynchronizedAnim( const char *lpNewName, const char *lpAnim1, const char *lpAnim2, float w )
+{
+	SColladaAnimClip *clip1 = m_animWithName[ lpAnim1 ];
+	SColladaAnimClip *clip2 = m_animWithName[ lpAnim2 ];
+	if ( clip1 == NULL || clip2 == NULL || clip1->duration == 0.0f || clip2->duration == 0.0f )
+		return;
+
+	w = core::clamp<float>( w, 0.0f, 1.0f );
+	float time1 = clip1->duration;
+	float time2 = clip2->duration;
+	 	
+	// interpolate speed ratio 2 channel
+	float time = time1 + ( ( time2 - time1 ) * w );
+
+	SColladaAnimClip *newClip = new SColladaAnimClip();
+	newClip->animName	= lpNewName;
+	newClip->time		= clip1->time;
+	newClip->duration	= time;
+	newClip->loop		= true;
+
+	for ( int i = 0, n = clip1->animInfo.size(); i < n; i++ )
+	{
+		SColladaNodeAnim* nodeAnim1 = clip1->animInfo[i];
+		SColladaNodeAnim* nodeAnim2 = clip2->getAnimOfSceneNode( nodeAnim1->sceneNodeName.c_str() );
+		
+		SColladaNodeAnim* newNode = new SColladaNodeAnim();
+
+		// set name
+		newNode->sceneNodeName = nodeAnim1->sceneNodeName;
+
+		// set node info
+		if ( nodeAnim2 == NULL )
+		{
+			float ratio = time/time1;
+
+			for ( int key = 0, nKey = nodeAnim1->PositionKeys.size(); key < nKey; key++ )
+			{
+				newNode->PositionKeys.push_back( nodeAnim1->PositionKeys[key] );
+				newNode->PositionKeys[key].frame = newNode->PositionKeys[key].frame * ratio;
+			}
+
+			for ( int key = 0, nKey = nodeAnim1->RotationKeys.size(); key < nKey; key++ )
+			{
+				newNode->RotationKeys.push_back( nodeAnim1->RotationKeys[key] );
+				newNode->RotationKeys[key].frame = newNode->RotationKeys[key].frame * ratio;
+			}
+		}
+		else
+		{
+			CGameAnimationTrack track1, track2;
+			core::vector3df		pos1, pos2, scale1, scale2;
+			core::quaternion	rot1, rot2;			
+
+			track1.RotationKeys = nodeAnim1->RotationKeys;
+			track1.PositionKeys = nodeAnim1->PositionKeys;
+			track1.ScaleKeys = nodeAnim1->ScaleKeys;
+
+			track2.RotationKeys = nodeAnim2->RotationKeys;
+			track2.PositionKeys = nodeAnim2->PositionKeys;
+			track2.ScaleKeys = nodeAnim2->ScaleKeys;
+
+			CGameAnimationTrack::SRotationKey	rotKey;
+			CGameAnimationTrack::SPositionKey	posKey;
+			CGameAnimationTrack::SScaleKey		scaleKey;
+
+			float frameSplit = 2.0f;
+			float f = 0.0f;
+			float ratio = time/time1;
+
+			while ( 1 )
+			{				
+				track1.getFrameData(f, pos1, scale1, rot1, core::IdentityMatrix);
+				track2.getFrameData(time2*f/time1, pos2, scale2, rot2, core::IdentityMatrix);
+				
+				posKey.frame = f*ratio;
+				posKey.position.interpolate(pos1, pos2, w );
+				newNode->PositionKeys.push_back( posKey );
+
+				scaleKey.frame = posKey.frame;
+				scaleKey.scale.interpolate(scale1, scale2, w);
+				newNode->ScaleKeys.push_back( scaleKey );
+
+				rotKey.frame = posKey.frame;
+				rotKey.rotation.slerp( rot1, rot2, w);				
+				newNode->RotationKeys.push_back( rotKey );				
+
+				if ( f == time1 )
+					break;
+
+				f += frameSplit;
+
+				if ( f > time1 )
+					f = time1;
+			}		
+		}
+
+		// add node anim
+		newClip->addNodeAnim( newNode );
+	}
+	
+	removeClip( lpNewName );
+	addClip( newClip );
 }
 
 #pragma endregion

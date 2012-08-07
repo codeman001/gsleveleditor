@@ -269,7 +269,7 @@ void CPlayerComponent::updateStateIdle()
 		int r = device->getRandomizer()->rand() % m_animIdle.size();		
 		const char *anim = m_animIdle[r].c_str();
 
-		m_collada->setCrossFadeAnimation( anim, 10.0f, false );
+		m_collada->setCrossFadeAnimation( anim, 0, 10.0f, false );
 		m_animCurrentTime = m_collada->getCurrentAnimTimeLength();
 
 		m_subState = SubStateActive;
@@ -340,7 +340,7 @@ void CPlayerComponent::updateStateRun()
 			s_alowModifyPosOnRotate = false;
 			s_rotateSpeed = 4.0f;
 
-			m_collada->setCrossFadeAnimation( m_animRunNoGun, 5.0f );
+			m_collada->setCrossFadeAnimation( m_animRunNoGun, 0, 5.0f );
 		}
 		else
 		{

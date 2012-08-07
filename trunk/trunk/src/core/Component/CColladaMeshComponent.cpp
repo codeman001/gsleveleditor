@@ -1513,6 +1513,7 @@ CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 	m_colladaAnimation = NULL;
 
 	m_crossFadeAnimTime = 0;
+	m_crossFadeAnimChannel = 0;
 	m_isCrossFadeAnim	= false;
 	
 	m_crossFadeAnimClip.animName	= "crossFadeAnim";
@@ -3422,8 +3423,6 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 	if ( animClip == NULL )
 		return;
 	
-	float minFps = 999999.0f;
-
 	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
@@ -3454,15 +3453,13 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 
 		// clear old key frame		
 		track->clearAllKeyFrame();
-		
+		track->setLoop( false );
+
 		// todo add animation key
 		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
 
 		if ( anim )
-		{			
-			if ( minFps > track->getFPS() )
-				minFps = track->getFPS();
-
+		{
 			int nRotKey = anim->RotationKeys.size();
 			if ( nRotKey > 0 )
 			{
@@ -3490,13 +3487,13 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 	// create crossfade anim
 	m_crossFadeAnimClip.duration = nFrames;	
 	m_crossFadeAnimClip.loop = false;	
-	
+	m_crossFadeAnimChannel = trackChannel;
+
 	// init variable
-	m_crossFadeAnimTime = (nFrames/minFps) * 1000.0f;
-	m_crossFadeAnimFps = minFps;
-	m_crossFadeToAnim = lpAnimName;
-	m_crossFadeToAnimLoop = loop;
 	m_isCrossFadeAnim = true;
+	m_crossFadeAnimTime = getCurrentCrossfadeAnimTimeLength();
+	m_crossFadeToAnim = lpAnimName;
+	m_crossFadeToAnimLoop = loop;	
 
 	// current anim crossfade clip
 	m_currentAnim = animClip;
@@ -3759,7 +3756,8 @@ void CColladaMeshComponent::enableAnimTrackChanel( int trackChannel, bool b)
 	while ( i != end )
 	{
 		CGameColladaSceneNode* j = (*i).second;
-		j->getAnimation()->getTrack(trackChannel)->setEnable( b );		
+		if ( j != NULL )
+			j->getAnimation()->getTrack(trackChannel)->setEnable( b );		
 		i++;
 	}
 }
@@ -3770,7 +3768,8 @@ void CColladaMeshComponent::onlyEnableAnimTrackChannel( int trackChannel )
 	while ( i != end )
 	{
 		CGameColladaSceneNode* j = (*i).second;
-		j->getAnimation()->onlyEnableTrack( trackChannel );
+		if ( j != NULL )
+			j->getAnimation()->onlyEnableTrack( trackChannel );
 		i++;
 	}
 }
@@ -3942,7 +3941,7 @@ void CColladaMeshComponent::updateCrossFadeAnim()
 
 	if ( m_crossFadeAnimTime <= 0 )
 	{
-		setAnimation(m_crossFadeToAnim, 0, m_crossFadeToAnimLoop);
+		setAnimation(m_crossFadeToAnim, m_crossFadeAnimChannel, m_crossFadeToAnimLoop);
 		m_isCrossFadeAnim = false;
 	}
 }

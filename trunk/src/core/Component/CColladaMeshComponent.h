@@ -407,11 +407,11 @@ protected:
 	// current animation clip info
 	CColladaAnimation							*m_colladaAnimation;
 
-	// m_crossFadeAnimClip
+	// crossFadeAnimClip
 	SColladaAnimClip							m_crossFadeAnimClip;
 	float										m_crossFadeAnimTime;
-	float										m_crossFadeAnimFps;
 	std::string									m_crossFadeToAnim;
+	int											m_crossFadeAnimChannel;
 	bool										m_crossFadeToAnimLoop;
 	bool										m_isCrossFadeAnim;
 
@@ -631,7 +631,7 @@ public:
 		if ( m_currentAnim )
 			time = time + m_currentAnim->getRealTimeLength();
 		if ( m_isCrossFadeAnim )
-			time = time + m_crossFadeAnimClip.getRealTimeLength( m_crossFadeAnimFps );
+			time = time + m_crossFadeAnimClip.getRealTimeLength();
 
 		return time;
 	}
@@ -642,7 +642,7 @@ public:
 	{
 		float time = 0;
 		if ( m_isCrossFadeAnim )
-			time = time + m_crossFadeAnimClip.getRealTimeLength( m_crossFadeAnimFps );
+			time = time + m_crossFadeAnimClip.getRealTimeLength();
 		return time;
 	}
 

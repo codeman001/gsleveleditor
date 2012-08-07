@@ -351,6 +351,13 @@ public:
 		}
 	}
 
+	// setAnimWeight
+	// set anim weight
+	void setAnimWeight( int track, float w )
+	{
+		m_animTrack[track].setAnimWeight( w );
+	}
+
 	// getFrameData
 	// get anim at frame
 	void getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix);

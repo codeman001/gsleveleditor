@@ -3413,7 +3413,7 @@ void CColladaMeshComponent::getChildsOfSceneNode( const char *name, vector<CGame
 
 // setCrossFadeAnimation
 // crossfade current animation to new animation
-void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, float nFrames, bool loop)
+void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int trackChannel, float nFrames, bool loop)
 {
 	if ( m_colladaNode == NULL )
 		return;
@@ -3440,7 +3440,9 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, float 
 		core::vector3df		currentPos;
 		core::vector3df		currentScale;
 		core::quaternion	currentRotate;
-		j->getCurrentFrameData( currentPos, currentRotate, currentScale );
+		CGameAnimationTrack *track = j->getAnimation()->getTrack(trackChannel);
+
+		track->getFrameData( track->getCurrentFrame(), currentPos, currentScale, currentRotate, j->LocalMatrix );
 
 		CGameAnimationTrack::SRotationKey rot;
 		rot.frame		= 0;
@@ -3450,39 +3452,37 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, float 
 		pos.frame		= 0;
 		pos.position	= currentPos;
 
-		// clear old key frame
-		// j->clearAllKeyFrame();
+		// clear old key frame		
+		track->clearAllKeyFrame();
 		
 		// todo add animation key
 		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
 
 		if ( anim )
-		{
-			/*
-			if ( minFps > j->getFPS() )
-				minFps = j->getFPS();
+		{			
+			if ( minFps > track->getFPS() )
+				minFps = track->getFPS();
 
 			int nRotKey = anim->RotationKeys.size();
 			if ( nRotKey > 0 )
 			{
-				j->RotationKeys.push_back( rot );
+				track->RotationKeys.push_back( rot );
 
 				rot.frame		= nFrames;
 				rot.rotation	= anim->RotationKeys[0].rotation;
-				j->RotationKeys.push_back( rot );
+				track->RotationKeys.push_back( rot );
 			}
 
 			int nPosKey = anim->PositionKeys.size();
 			if ( nPosKey > 0 )
 			{
-				j->PositionKeys.push_back( pos );
+				track->PositionKeys.push_back( pos );
 
 				pos.frame		= nFrames;
 				pos.position	= anim->PositionKeys[0].position;
-				j->PositionKeys.push_back( pos );
+				track->PositionKeys.push_back( pos );
 			}
-			*/
-		}		
+		}
 
 		i++;
 	}

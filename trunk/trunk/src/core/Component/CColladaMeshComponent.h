@@ -583,10 +583,10 @@ public:
 
 	// setCrossFadeAnimation
 	// crossfade current animation to new animation
-	void setCrossFadeAnimation(const char *lpAnimName, float nFrames = 10.0f, bool loop = true);
-	void setCrossFadeAnimation(const std::string& animName, float nFrames = 10.0f, bool loop = true)
+	void setCrossFadeAnimation(const char *lpAnimName, int trackChannel = 0, float nFrames = 10.0f, bool loop = true);
+	void setCrossFadeAnimation(const std::string& animName, int trackChannel = 0, float nFrames = 10.0f, bool loop = true)
 	{
-		setCrossFadeAnimation( animName.c_str(), nFrames, loop );
+		setCrossFadeAnimation( animName.c_str(), trackChannel, nFrames, loop );
 	}
 
 	// setAnimation

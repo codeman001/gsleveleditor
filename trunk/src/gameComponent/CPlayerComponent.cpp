@@ -295,109 +295,21 @@ void CPlayerComponent::updateStateIdle()
 
 void CPlayerComponent::updateStateRun()
 {
-	static int		s_lastActionKey = 0;
-	static bool		s_alowModifyPosOnRotate = false;
-	static float	s_rotateSpeed = 1.0f;
-
-	// update animation time
-	stepAnimationTime();
-
 	if ( m_subState == SubStateInit )
-	{		
-		float rot = 0.0f;
-		if ( m_runBack )
-		{
-			rot += 180.0f;
-
-			if ( m_runLeft )
-				rot += 45.0f;
-			else if ( m_runRight )
-				rot -= 45.0f;
-		}
-		else if ( m_runUp )
-		{
-			rot = 0;
-
-			if ( m_runLeft )
-				rot -= 45.0f;
-			else if ( m_runRight )
-				rot += 45.0f;
-		}
-		else if ( m_runUp == false && m_runBack == false )
-		{
-			if ( m_runLeft )
-				rot -= 90.0f;
-			else if ( m_runRight )
-				rot += 90.0f;
-		}
-
-		bool needRotate = fabs( rot - m_runRotation ) >= 100.0f;
-		m_runRotation = m_runRotation + rot;
-		
-		if ( s_lastActionKey == 0 || needRotate == true )
-		{
-			// change from idle state
-			s_alowModifyPosOnRotate = false;
-			s_rotateSpeed = 4.0f;
-
-			m_collada->setCrossFadeAnimation( m_animRunNoGun, 0, 5.0f );
-		}
-		else
-		{
-			// repeat animation
-			s_alowModifyPosOnRotate = true;
-			s_rotateSpeed = 1.0f;
-		}
-
-		// change to active state
-		s_lastActionKey = m_keyActionBit;
+	{
 		m_subState = SubStateActive;
-		
-		// get anim time
-		m_animCurrentTime	= m_collada->getCurrentAnimTimeLength();
-		m_animCrossfadeTime = m_collada->getCurrentCrossfadeAnimTimeLength();
 	}
 	else if ( m_subState == SubStateEnd )
 	{
-		s_lastActionKey = 0;
 		doNextState();		
 	}
 	else
-	{	
-		// rotate object with front camera
-		if ( updateRotateObject(s_rotateSpeed) == 0 )
-		{
-			s_alowModifyPosOnRotate = true;
-			s_rotateSpeed = 3.0f;
-		}
-		
-		// update position
-		if ( s_alowModifyPosOnRotate == true )
-		{
-			// update run
-			float diff = getIView()->getTimeStep() * 0.1f;	
-			
-			core::vector3df pos		= m_gameObject->getPosition();
-			core::vector3df front	= m_gameObject->getFront();
-			
-			m_gameObject->setPosition( pos + front * m_runNoGunSpeed * diff );			
-		}
+	{
+		core::vector3df cameraFront = getCameraFrontVector();
+		core::vector3df objectFront = m_gameObject->getFront();
 
-		// change to idle if no command run
-		if ( m_runCommand == false )
-		{
-			setState( CPlayerComponent::PlayerIdle );
-		}
-
-		// reinit state
-		if ( s_lastActionKey != m_keyActionBit )
-			m_subState = SubStateInit;
-
-		// end anim loop
-		if ( m_animCurrentTime <= 0 )
-		{						
-			m_animCurrentTime = m_collada->getCurrentAnimTimeLength();
-		}
+		turnToDir( objectFront, cameraFront, 1.0f );
+		m_gameObject->lookAt( m_gameObject->getPosition() + objectFront );
 	}
 }
 
@@ -418,125 +330,6 @@ void CPlayerComponent::stepAnimationTime()
 	if ( m_animCrossfadeTime < 0 )
 		m_animCrossfadeTime = 0;
 }
-
-// updateActiveFire
-// update shot weapon action
-void CPlayerComponent::updateActionShotWeapon()
-{	
-/*
-	CWeaponComponent *weapon = getCurrentWeapon();
-	if ( weapon )
-	{
-		if ( weapon->getWeaponType() == CWeaponComponent::ShotGun )
-		{
-			// update shoot gun
-			if (	(m_keyActionBit & CPlayerComponent::KeyFire ) != 0 &&
-					( 
-						m_animShotCurrentTime == m_animShotTotalTime || 
-						m_animShotTotalTime == 0 
-					)
-				)
-			{
-				// begin state
-				m_collada->setAnimation("idle_attack_shotgun_fire", m_handAndHeadNodes);
-				m_collada->getCurrentAnim()->loop = false;
-				m_animShotTotalTime		= m_collada->getCurrentAnim()->duration * ( 1000.0f/m_gunDummyNode->getFPS());
-				m_animShotCurrentTime	= 0.0f;
-			}
-			else
-			{				
-   				if ( m_animShotCurrentTime >= m_animShotTotalTime )
-				{
-					m_animShotCurrentTime = m_animShotTotalTime;
-
-					if ( (m_keyActionBit & CPlayerComponent::KeyFire) == 0 )
-					{
-						m_collada->setAnimation("idle_attack_shotgun", m_handAndHeadNodes);
-					}
-				}
-				else
-				{
-					m_animShotCurrentTime += getIView()->getTimeStep();
-				}
-			}
-		}
-	}
-*/
-}
-
-// updateRotateObject
-// rotate the object to camera front
-float CPlayerComponent::updateRotateObject(float rotSpeed)
-{
-	// get camera front vector
-	CGameCamera* cam = CGameLevel::getCurrentLevel()->getCamera();
-	core::vector3df front = cam->getPosition() - cam->getTarget();
-	front.Y = 0;
-	front.normalize();
-
-	core::vector3df objFront = m_gameObject->getFront();
-
-	// current object position	
-	core::vector3df	moveFront = -front;
-
-	// set rotation by camera
-	float angle1 = (float)(core::vector2df( moveFront.X, moveFront.Z ).getAngleTrig() - m_runRotation);
-	float angle2 = (float)(core::vector2df(  objFront.X,  objFront.Z ).getAngleTrig());
-	
-	// find shortest arc
-	if ( fabs(angle2 - angle1) > 180 )
-	{
-		if ( angle2 > angle1 )
-			angle2 = angle2 - 360.0f;
-		else
-			angle1 = angle1 - 360.0f;
-	}
-
-	// linear calc current rotation
-	float diff = getIView()->getTimeStep() * 0.1f;
-	float r = rotSpeed  * diff;
-
-	// set flag
-	m_rotateFinish = false;	
-
-	if ( angle2 < angle1 )
-		angle2 = angle2 + r;
-	else if ( angle2 > angle1 )
-		angle2 = angle2 - r;		
-	if ( fabs( angle2 - angle1 ) < r )
-	{
-		angle2 = angle1;
-		m_rotateFinish = true;
-	}
-		
-	// rotate object & front vector
-	m_gameObject->setRotation(core::vector3df(0.0f, 90 - angle2, 0.0f));
-
-	// return delta rotation
-	return fabs( angle2 - angle1 );
-}
-
-// rotateObject	
-void CPlayerComponent::rotateObject()
-{
-	// get camera front vector
-	CGameCamera* cam = CGameLevel::getCurrentLevel()->getCamera();
-	core::vector3df front = cam->getPosition() - cam->getTarget();
-	front.Y = 0;
-	front.normalize();
-
-	core::vector3df objFront = m_gameObject->getFront();
-
-	// current object position	
-	core::vector3df	moveFront = -front;
-
-	// set rotation by camera
-	float angle1 = (float)(core::vector2df( moveFront.X, moveFront.Z ).getAngleTrig() - m_runRotation);
-		
-	// rotate object & front vector
-	m_gameObject->setRotation(core::vector3df(0.0f, 90 - angle1, 0.0f));
-}
-
 
 // updateWeaponPosition
 // update weapon
@@ -572,4 +365,67 @@ CWeaponComponent* CPlayerComponent::getCurrentWeapon()
 		}
 	}
 	return NULL;
+}
+
+
+// getCameraFrontVector
+// return camera front vector
+core::vector3df CPlayerComponent::getCameraFrontVector()
+{
+	CGameCamera* cam = CGameLevel::getCurrentLevel()->getCamera();
+	core::vector3df front = cam->getTarget() - cam->getPosition();
+	front.Y = 0;
+	front.normalize();
+	return front;
+}
+
+
+#define REAL_PRECISION	0.000001f
+inline bool REAL_IS_ZERO(float x, float precision = REAL_PRECISION) 
+{ 
+	return fabs(x) < precision; 
+};
+inline bool REAL_IS_EQUAL(float a, float b, float precision = REAL_PRECISION) 
+{ 
+	return REAL_IS_ZERO(a-b, precision); 
+};
+
+// turnToDir
+// turn vector dir to turnTo
+bool CPlayerComponent::turnToDir( core::vector3df& dir, const core::vector3df& turnTo, float speed )
+{
+	int turnDirection = 1;
+	
+	// calc turn Direction
+	core::vector3df test;
+	test = dir.crossProduct(turnTo);
+
+	if (test.Y > 0)
+		turnDirection = 1;
+	else if (test.Y < 0)
+		turnDirection = -1;
+	
+	// calc angle
+	float angle = turnTo.dotProduct( dir );
+	if (REAL_IS_EQUAL(angle, 1.f, 0.001f))
+		angle = 1.f;
+	else if (REAL_IS_EQUAL(angle, -1.f, 0.001f))
+		angle = -1.f;
+
+	// calc angle
+	angle = core::radToDeg(acos(angle));
+
+	float dt = getIView()->getTimeStep() * 0.01f;
+	float rotSpeed = speed * dt;
+	if (angle > rotSpeed)
+	{
+		core::quaternion q;
+		test.normalize();
+		q.fromAngleAxis( turnDirection * rotSpeed, test );
+		q.getMatrix().transformVect( dir );
+		return false;
+	}
+	
+	dir = turnTo;
+	return true;
 }

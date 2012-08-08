@@ -555,6 +555,6 @@ void CMainFrame::listPropertyOnItemChange( uiObject *pSender )
 	//colladaComponent->setAnimation( animName );
 	//colladaComponent->pauseAtFrame( 0 );
 
-	colladaComponent->setCrossFadeAnimation( animName, 10.0f );
+	colladaComponent->setCrossFadeAnimation( animName, 0, 10.0f );
 	colladaComponent->resumeAnim();
 }

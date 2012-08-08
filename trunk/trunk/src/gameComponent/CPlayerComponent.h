@@ -185,13 +185,6 @@ protected:
 	// shoot weapon action
 	void updateActionShotWeapon();
 
-	// updateRotateObject
-	// rotate the object to camera front
-	float updateRotateObject(float rotSpeed = 3.0f);
-
-	// rotateObject	
-	void rotateObject();
-
 	// updateWeaponPosition
 	// update weapon
 	void updateWeaponPosition();	
@@ -210,6 +203,16 @@ protected:
 	// getCurrentWeapon
 	// get weapon
 	CWeaponComponent* getCurrentWeapon();
+
+public:
+
+	// getCameraFrontVector
+	// return camera front vector
+	core::vector3df getCameraFrontVector();
+
+	// turnToDir
+	// turn vector dir to turnTo
+	bool turnToDir( core::vector3df& dir, const core::vector3df& turnTo, float speed );
 };
 
 #endif

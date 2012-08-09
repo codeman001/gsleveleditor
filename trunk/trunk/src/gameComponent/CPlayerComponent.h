@@ -20,6 +20,7 @@ public:
 	{
 		PlayerNone = 0,
 		PlayerIdle,
+		PlayerTurn,
 		PlayerRun,
 		PlayerRunBackward,
 		PlayerRunLeft,
@@ -116,6 +117,8 @@ protected:
 	int						m_keyActionBit;
 
 	bool					m_noGun;
+
+	float					m_runFactor;
 public:
 	CPlayerComponent(CGameObject* obj);
 	virtual ~CPlayerComponent();
@@ -173,6 +176,7 @@ protected:
 	void updateState();
 
 	void updateStateIdle();
+	void updateStateTurn();
 	void updateStateRun();
 	void updateStateRunBackward();
 	void updateStateRunLeft();

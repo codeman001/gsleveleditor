@@ -440,6 +440,8 @@ core::vector3df CPlayerComponent::interpolateTurnToDir( const core::vector3df& t
 float CPlayerComponent::getRatioWithAngle( const core::vector3df& turnFrom, const core::vector3df& turnTo, float angle )
 {
 	float angleVec = turnTo.dotProduct( turnFrom );
+	if ( angleVec == 0.0f )
+		return 1.0f;
 	angleVec = core::radToDeg( acos(angleVec) );	
 	return angle/angleVec;
 }

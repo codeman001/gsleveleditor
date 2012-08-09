@@ -305,7 +305,7 @@ void CPlayerComponent::updateStateTurn()
 	{
 		m_subState = SubStateActive;
 
-		m_collada->setCrossFadeAnimation( m_animIdle[1].c_str() );
+		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str() );
 
 		m_animCurrentTime	= m_collada->getCurrentAnimTimeLength();
 		m_animCrossfadeTime = m_collada->getCurrentCrossfadeAnimTimeLength();
@@ -323,7 +323,7 @@ void CPlayerComponent::updateStateTurn()
 		v1 = getCameraFrontVector();
 		
 		// step to turn camera vector
-		bool turnFinish  = turnToDir( v0, v1, 8.0f );
+		bool turnFinish  = turnToDir( v0, v1, 5.0f );
 
 		// rotate object
 		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
@@ -381,6 +381,17 @@ void CPlayerComponent::updateStateRun()
 			m_collada->synchronizedByTimeScale(m_runFactor);
 		}
 		
+
+		core::vector3df v0, v1;
+
+		// get vector rotate & speed
+		v0 = m_gameObject->getFront();
+		v1 = getCameraFrontVector();
+		
+		// step to turn camera vector
+		bool turnFinish  = turnToDir( v0, v1, 2.0f );
+		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+
 	}
 }
 

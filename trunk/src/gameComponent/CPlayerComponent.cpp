@@ -295,21 +295,35 @@ void CPlayerComponent::updateStateIdle()
 
 void CPlayerComponent::updateStateRun()
 {
+	static float f = 0.0f;	
+	
 	if ( m_subState == SubStateInit )
 	{
-		m_subState = SubStateActive;
+		m_subState = SubStateActive;		
+		f = 0.0f;		
 	}
 	else if ( m_subState == SubStateEnd )
 	{
 		doNextState();		
 	}
 	else
-	{
-		core::vector3df cameraFront = getCameraFrontVector();
-		core::vector3df objectFront = m_gameObject->getFront();
+	{		
+		core::vector3df v0, v1;
 
-		turnToDir( objectFront, cameraFront, 1.0f );
+		// get vector rotate & speed
+		v0 = m_gameObject->getFront();
+		v1 = getCameraFrontVector();
+		float speed = getRatioWithAngle(v0, v1, 4.0f);
+
+		// rotate front vec
+		f = f + speed*0.1f*getIView()->getTimeStep();
+		core::vector3df objectFront = turnToDir( v0, v1, f );
+
+		// rotate object
 		m_gameObject->lookAt( m_gameObject->getPosition() + objectFront );
+		
+		if ( f > 1.0f )
+			setState( CPlayerComponent::PlayerIdle );
 	}
 }
 
@@ -379,53 +393,39 @@ core::vector3df CPlayerComponent::getCameraFrontVector()
 	return front;
 }
 
-
-#define REAL_PRECISION	0.000001f
-inline bool REAL_IS_ZERO(float x, float precision = REAL_PRECISION) 
-{ 
-	return fabs(x) < precision; 
-};
-inline bool REAL_IS_EQUAL(float a, float b, float precision = REAL_PRECISION) 
-{ 
-	return REAL_IS_ZERO(a-b, precision); 
-};
-
 // turnToDir
 // turn vector dir to turnTo
-bool CPlayerComponent::turnToDir( core::vector3df& dir, const core::vector3df& turnTo, float speed )
+core::vector3df CPlayerComponent::turnToDir( const core::vector3df& turnFrom, const core::vector3df& turnTo, float f )
 {
-	int turnDirection = 1;
-	
 	// calc turn Direction
-	core::vector3df test;
-	test = dir.crossProduct(turnTo);
+	core::vector3df normal;
+	normal = turnTo.crossProduct(turnFrom);
+	normal.normalize();
 
-	if (test.Y > 0)
-		turnDirection = 1;
-	else if (test.Y < 0)
-		turnDirection = -1;
-	
-	// calc angle
-	float angle = turnTo.dotProduct( dir );
-	if (REAL_IS_EQUAL(angle, 1.f, 0.001f))
-		angle = 1.f;
-	else if (REAL_IS_EQUAL(angle, -1.f, 0.001f))
-		angle = -1.f;
+	// fix f factor
+	f = core::clamp( f, 0.0f, 1.0f );
 
 	// calc angle
-	angle = core::radToDeg(acos(angle));
-
-	float dt = getIView()->getTimeStep() * 0.01f;
-	float rotSpeed = speed * dt;
-	if (angle > rotSpeed)
-	{
-		core::quaternion q;
-		test.normalize();
-		q.fromAngleAxis( turnDirection * rotSpeed, test );
-		q.getMatrix().transformVect( dir );
-		return false;
-	}
+	float angle = turnTo.dotProduct( turnFrom );
+	angle = acos(angle);
 	
-	dir = turnTo;
-	return true;
+	// interpolate	
+	core::quaternion q, q1,q2;
+	
+	q1.fromAngleAxis( 0,		normal );
+	q2.fromAngleAxis( angle,	normal );
+	q.slerp( q1, q2, f );
+
+	// rotate result vector
+	core::vector3df dir = turnFrom;
+	q.getMatrix().rotateVect( dir );
+	return dir;	
+}
+
+// getRatioWithAngle	
+float CPlayerComponent::getRatioWithAngle( const core::vector3df& turnFrom, const core::vector3df& turnTo, float angle )
+{
+	float angleVec = turnTo.dotProduct( turnFrom );
+	angleVec = core::radToDeg( acos(angleVec) );	
+	return angle/angleVec;
 }

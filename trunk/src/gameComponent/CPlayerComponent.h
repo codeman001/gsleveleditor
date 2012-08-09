@@ -212,7 +212,10 @@ public:
 
 	// turnToDir
 	// turn vector dir to turnTo
-	bool turnToDir( core::vector3df& dir, const core::vector3df& turnTo, float speed );
+	core::vector3df turnToDir( const core::vector3df& turnFrom, const core::vector3df& turnTo, float f );
+
+	// getRatioWithAngle	
+	float getRatioWithAngle( const core::vector3df& turnFrom, const core::vector3df& turnTo, float angle );
 };
 
 #endif

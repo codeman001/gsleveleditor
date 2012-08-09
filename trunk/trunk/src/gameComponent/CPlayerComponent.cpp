@@ -27,9 +27,9 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_keyActionBit	= CPlayerComponent::KeyNone;
 
 	// init run const
-	m_runSpeed				= 3.0f;
-	m_runBackSpeed			= 2.0f;
-	m_runNoGunSpeed			= 5.0f;
+	m_runSpeed				= 5.0f;
+	m_runBackSpeed			= 3.0f;
+	m_runNoGunSpeed			= 8.0f;
 
 	m_bipSpineNode	= NULL;
 	m_bipSpine1Node	= NULL;
@@ -359,7 +359,7 @@ void CPlayerComponent::updateStateRun()
 	}
 	else
 	{
-		float step = 0.002f*getIView()->getTimeStep();
+		float step = 0.001f*getIView()->getTimeStep();
 
 		if ( m_runCommand == false )
 		{
@@ -392,6 +392,9 @@ void CPlayerComponent::updateStateRun()
 		bool turnFinish  = turnToDir( v0, v1, 2.0f );
 		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 
+		// run
+		float runSpeed = m_runSpeed * (1.0f - m_runFactor) * getIView()->getTimeStep() * 0.1f;
+		m_gameObject->setPosition( m_gameObject->getPosition() + m_gameObject->getFront() * runSpeed );
 	}
 }
 

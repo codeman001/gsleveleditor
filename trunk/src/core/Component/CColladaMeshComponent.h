@@ -657,6 +657,9 @@ public:
 	// setCurrentFrame	
 	void setCurrentFrame(float f, int trackChannel = 0);
 
+	// setAnimWeight
+	void setAnimWeight(float w, int trackChannel = 0);
+
 	// resumeAnim
 	// resume animation
 	void resumeAnim(int trackChannel = 0);

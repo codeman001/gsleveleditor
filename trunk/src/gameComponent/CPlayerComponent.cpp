@@ -249,6 +249,9 @@ void CPlayerComponent::updateState()
 	case CPlayerComponent::PlayerIdle:
 		updateStateIdle();			
 		break;
+	case CPlayerComponent::PlayerTurn:
+		updateStateTurn();			
+		break;
 	case CPlayerComponent::PlayerRun:
 		updateStateRun();		
 		break;
@@ -283,27 +286,32 @@ void CPlayerComponent::updateStateIdle()
 		m_currentRunRot = 0.0f;
 	
 		if ( m_runCommand )
-		{			
-			setState( CPlayerComponent::PlayerRun );
+		{
+			if ( m_noGun )
+				setState( CPlayerComponent::PlayerTurn );							
 		}
+
 
 		if ( m_animCurrentTime <= 0 )
 			m_subState = SubStateInit;
 	}
 }
 
-
-void CPlayerComponent::updateStateRun()
+void CPlayerComponent::updateStateTurn()
 {
-	static float f = 0.0f;	
-	
+	stepAnimationTime();
+
 	if ( m_subState == SubStateInit )
 	{
-		m_subState = SubStateActive;		
-		f = 0.0f;		
+		m_subState = SubStateActive;
+
+		m_collada->setCrossFadeAnimation( m_animIdle[1].c_str() );
+
+		m_animCurrentTime	= m_collada->getCurrentAnimTimeLength();
+		m_animCrossfadeTime = m_collada->getCurrentCrossfadeAnimTimeLength();
 	}
 	else if ( m_subState == SubStateEnd )
-	{
+	{		
 		doNextState();		
 	}
 	else
@@ -314,13 +322,65 @@ void CPlayerComponent::updateStateRun()
 		v0 = m_gameObject->getFront();
 		v1 = getCameraFrontVector();
 		
-		bool turnFinish  = turnToDir( v0, v1, 4.0f );
+		// step to turn camera vector
+		bool turnFinish  = turnToDir( v0, v1, 8.0f );
 
 		// rotate object
 		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 		
 		if ( turnFinish )
-			setState( CPlayerComponent::PlayerIdle );
+		{
+			if ( m_noGun )
+				setState( CPlayerComponent::PlayerRun );
+			else
+				setState( CPlayerComponent::PlayerIdle );
+		}
+	}
+}
+
+void CPlayerComponent::updateStateRun()
+{	
+	if ( m_subState == SubStateInit )
+	{		
+		m_collada->enableAnimTrackChanel(0, true);
+		m_collada->enableAnimTrackChanel(1, true);
+
+		m_runFactor = 1.0f;
+		m_collada->setAnimation( m_animRunNoGun.c_str(), 1, true );
+		m_collada->synchronizedByTimeScale(m_runFactor);
+
+		m_subState = SubStateActive;
+	}
+	else if ( m_subState == SubStateEnd )
+	{
+		m_collada->setAnimWeight(1.0f, 0);
+		m_collada->enableAnimTrackChanel(1, false);
+		doNextState();
+	}
+	else
+	{
+		float step = 0.002f*getIView()->getTimeStep();
+
+		if ( m_runCommand == false )
+		{
+			m_runFactor = m_runFactor + step;
+			if ( m_runFactor > 1.0f )
+			{
+				m_runFactor = 1.0f;
+				setState( CPlayerComponent::PlayerIdle );
+			}
+
+			m_collada->synchronizedByTimeScale(m_runFactor);
+		}
+		else if ( m_runFactor > 0.0f )
+		{
+			m_runFactor = m_runFactor - step;
+			if ( m_runFactor < 0.0f )
+				m_runFactor = 0.0f;
+
+			m_collada->synchronizedByTimeScale(m_runFactor);
+		}
+		
 	}
 }
 

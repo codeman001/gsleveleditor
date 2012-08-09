@@ -313,16 +313,13 @@ void CPlayerComponent::updateStateRun()
 		// get vector rotate & speed
 		v0 = m_gameObject->getFront();
 		v1 = getCameraFrontVector();
-		float speed = getRatioWithAngle(v0, v1, 4.0f);
-
-		// rotate front vec
-		f = f + speed*0.1f*getIView()->getTimeStep();
-		core::vector3df objectFront = turnToDir( v0, v1, f );
+		
+		bool turnFinish  = turnToDir( v0, v1, 4.0f );
 
 		// rotate object
-		m_gameObject->lookAt( m_gameObject->getPosition() + objectFront );
+		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 		
-		if ( f > 1.0f )
+		if ( turnFinish )
 			setState( CPlayerComponent::PlayerIdle );
 	}
 }
@@ -394,8 +391,25 @@ core::vector3df CPlayerComponent::getCameraFrontVector()
 }
 
 // turnToDir
+bool CPlayerComponent::turnToDir(core::vector3df& dir, const core::vector3df& turnTo, float speed )
+{
+	speed = getRatioWithAngle(dir, turnTo, speed);
+
+	// rotate front vec
+	float f = speed*0.1f*getIView()->getTimeStep();	
+	if ( f >= 1.0f )
+	{
+		dir = turnTo;
+		return true;
+	}
+	
+	dir = interpolateTurnToDir( dir, turnTo, f );
+	return false;
+}
+
+// turnToDir
 // turn vector dir to turnTo
-core::vector3df CPlayerComponent::turnToDir( const core::vector3df& turnFrom, const core::vector3df& turnTo, float f )
+core::vector3df CPlayerComponent::interpolateTurnToDir( const core::vector3df& turnFrom, const core::vector3df& turnTo, float f )
 {
 	// calc turn Direction
 	core::vector3df normal;

@@ -211,8 +211,11 @@ public:
 	core::vector3df getCameraFrontVector();
 
 	// turnToDir
+	bool turnToDir(core::vector3df& dir, const core::vector3df& turnTo, float speed );
+
+	// turnToDir
 	// turn vector dir to turnTo
-	core::vector3df turnToDir( const core::vector3df& turnFrom, const core::vector3df& turnTo, float f );
+	core::vector3df interpolateTurnToDir( const core::vector3df& turnFrom, const core::vector3df& turnTo, float f );
 
 	// getRatioWithAngle	
 	float getRatioWithAngle( const core::vector3df& turnFrom, const core::vector3df& turnTo, float angle );

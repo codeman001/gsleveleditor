@@ -52,6 +52,7 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_animCurrentTime		= 0.0f;
 
 	m_noGun = true;	
+	m_spineRotation = 0;
 }
 
 CPlayerComponent::~CPlayerComponent()
@@ -79,9 +80,17 @@ void CPlayerComponent::initComponent()
 	m_collada->getChildsOfSceneNode("RightUpLeg",	m_nodesFoot);
 
 	// chest nodes
-	m_nodesChest.push_back( m_collada->getSceneNode("Spine") );
-	m_nodesChest.push_back( m_collada->getSceneNode("Spine1") );
-	m_nodesChest.push_back( m_collada->getSceneNode("Spine2") );
+	CGameColladaSceneNode *spine = m_collada->getSceneNode("Spine");
+	spine->setAnimationCallback(this);
+	m_nodesChest.push_back( spine );
+	
+	spine = m_collada->getSceneNode("Spine1");
+	spine->setAnimationCallback(this);	
+	m_nodesChest.push_back( spine );
+
+	spine = m_collada->getSceneNode("Spine2");
+	spine->setAnimationCallback(this);
+	m_nodesChest.push_back( spine );
 
 	// hand, head
 	m_nodesHandsAndHead.push_back( m_collada->getSceneNode("RightGun") );		
@@ -402,7 +411,7 @@ void CPlayerComponent::updateStateRun()
 				q.fromAngleAxis( core::degToRad(-45.0f), core::vector3df(0,1,0) );
 			else
 				q.fromAngleAxis( core::degToRad(-90.0f), core::vector3df(0,1,0) );
-		}
+		}		
 		q.getMatrix().rotateVect(v1);
 		v1.normalize();		
 
@@ -410,11 +419,42 @@ void CPlayerComponent::updateStateRun()
 		bool turnFinish  = turnToDir( v0, v1, 2.0f );
 		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 
+		float a = getAngle( v0, getCameraFrontVector() );
+		setSpineRotation( a );
+
 		// run
 		float runSpeed = m_runSpeed * (1.0f - m_runFactor) * getIView()->getTimeStep() * 0.1f;
-		m_gameObject->setPosition( m_gameObject->getPosition() + m_gameObject->getFront() * runSpeed );
+		m_gameObject->setPosition( m_gameObject->getPosition() + v0 * runSpeed );
 	}
 }
+
+// _onUpdateFrameData
+// call back frame update on scenenode
+void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation )
+{
+	const core::vector3df rotAxis = core::vector3df(0,0,1);
+	float r = m_spineRotation/3.0f;
+	
+	if ( node == m_nodesChest[0] )
+	{
+		core::quaternion q;
+		q.fromAngleAxis( core::degToRad( r ), rotAxis  );
+		rotation = rotation * q;
+	}
+	else if ( node == m_nodesChest[1] )
+	{
+		core::quaternion q;
+		q.fromAngleAxis( core::degToRad( r ), rotAxis );
+		rotation = rotation * q;
+	}
+	else if ( node == m_nodesChest[2] )
+	{
+		core::quaternion q;
+		q.fromAngleAxis( core::degToRad( r ), rotAxis );
+		rotation = rotation * q;
+	}
+}
+
 
 ///////////////////////////////////////////////////////////////////////
 // Player component end update state function
@@ -540,6 +580,20 @@ float CPlayerComponent::getRatioWithAngle( const core::vector3df& turnFrom, cons
 	angleVec = fixAngle(angleVec);
 	angleVec = core::radToDeg( acos(angleVec) );	
 	return angle/angleVec;
+}
+
+float CPlayerComponent::getAngle( const core::vector3df& v1, const core::vector3df& v2 )
+{
+	core::vector3df normal = v2.crossProduct(v1);	
+	
+	float angleVec = v2.dotProduct( v1 );
+	
+	angleVec = fixAngle(angleVec);
+	angleVec = core::radToDeg( acos(angleVec) );
+
+	if ( normal.Y < 0 )
+		angleVec = -angleVec;
+	return angleVec;
 }
 
 #define REAL_PRECISION	0.000001f

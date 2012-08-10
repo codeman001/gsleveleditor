@@ -13,7 +13,8 @@ class CColladaMeshComponent;
 
 class CPlayerComponent: 
 	public IObjectComponent,
-	public IEventReceiver
+	public IEventReceiver,
+	public IGameAnimationCallback
 {
 public:	
 	enum EPlayerState
@@ -119,6 +120,7 @@ protected:
 	bool					m_noGun;
 
 	float					m_runFactor;
+	float					m_spineRotation;
 public:
 	CPlayerComponent(CGameObject* obj);
 	virtual ~CPlayerComponent();
@@ -167,9 +169,9 @@ public:
 	}
 
 protected:
-	// _onUpdateAnim
-	// event when update anim
-	void _onUpdateAnim( CGameColladaSceneNode *node );
+
+	// call back frame update on scenenode
+	virtual void _onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation );
 
 protected:
 	// updateState	
@@ -210,6 +212,16 @@ protected:
 
 public:
 
+	// setSpineRotation	
+	void setSpineRotation( float r )
+	{
+		m_spineRotation = r;
+		if ( m_spineRotation > 60.0f )
+			m_spineRotation = 60.0f;
+		if ( m_spineRotation < -60.0f )
+			m_spineRotation = -60.0f;
+	}
+
 	// getCameraFrontVector
 	// return camera front vector
 	core::vector3df getCameraFrontVector();
@@ -223,6 +235,7 @@ public:
 
 	// getRatioWithAngle	
 	float getRatioWithAngle( const core::vector3df& turnFrom, const core::vector3df& turnTo, float angle );
+	float getAngle( const core::vector3df& v1, const core::vector3df& v2 );
 
 	// fixAngle
 	float fixAngle( float f );

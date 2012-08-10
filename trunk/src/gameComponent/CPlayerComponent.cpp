@@ -27,9 +27,9 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_keyActionBit	= CPlayerComponent::KeyNone;
 
 	// init run const
-	m_runSpeed				= 5.0f;
+	m_runSpeed				= 4.0f;
 	m_runBackSpeed			= 3.0f;
-	m_runNoGunSpeed			= 8.0f;
+	m_runNoGunSpeed			= 6.0f;
 
 	m_bipSpineNode	= NULL;
 	m_bipSpine1Node	= NULL;
@@ -323,7 +323,7 @@ void CPlayerComponent::updateStateTurn()
 		v1 = getCameraFrontVector();
 		
 		// step to turn camera vector
-		bool turnFinish  = turnToDir( v0, v1, 5.0f );
+		bool turnFinish  = turnToDir( v0, v1, 6.0f );
 
 		// rotate object
 		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
@@ -359,7 +359,7 @@ void CPlayerComponent::updateStateRun()
 	}
 	else
 	{
-		float step = 0.001f*getIView()->getTimeStep();
+		float step = 0.002f*getIView()->getTimeStep();
 
 		if ( m_runCommand == false )
 		{
@@ -388,6 +388,24 @@ void CPlayerComponent::updateStateRun()
 		v0 = m_gameObject->getFront();
 		v1 = getCameraFrontVector();
 		
+		core::quaternion q;
+		if ( m_runLeft )
+		{
+			if ( m_runUp )
+				q.fromAngleAxis( core::degToRad( 45.0f), core::vector3df(0,1,0) );
+			else
+				q.fromAngleAxis( core::degToRad( 90.0f), core::vector3df(0,1,0) );
+		}
+		else if ( m_runRight )
+		{
+			if ( m_runUp )
+				q.fromAngleAxis( core::degToRad(-45.0f), core::vector3df(0,1,0) );
+			else
+				q.fromAngleAxis( core::degToRad(-90.0f), core::vector3df(0,1,0) );
+		}
+		q.getMatrix().rotateVect(v1);
+		v1.normalize();
+
 		// step to turn camera vector
 		bool turnFinish  = turnToDir( v0, v1, 2.0f );
 		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );

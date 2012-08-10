@@ -106,7 +106,14 @@ void CGameCameraFollowAnimator::animateNode(ISceneNode* node, u32 timeMs)
 	mat.setRotationDegrees(core::vector3df(m_rotate.X, m_rotate.Y, 0));
 	mat.transformVect(pos);
 
+	// calc position
 	pos = target + pos;
+
+	// recalc target (look at right character)
+	target = target - pos;
+	mat.setRotationDegrees( core::vector3df(0, 10, 0) );
+	mat.transformVect(target);
+	target = pos + target;
 
 	// need check camera collision with another object
 	core::vector3df	colPos;

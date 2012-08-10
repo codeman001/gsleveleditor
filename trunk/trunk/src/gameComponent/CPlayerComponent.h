@@ -223,6 +223,9 @@ public:
 
 	// getRatioWithAngle	
 	float getRatioWithAngle( const core::vector3df& turnFrom, const core::vector3df& turnTo, float angle );
+
+	// fixAngle
+	float fixAngle( float f );
 };
 
 #endif

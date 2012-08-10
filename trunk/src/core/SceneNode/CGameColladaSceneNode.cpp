@@ -490,7 +490,9 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 
 	ColladaMesh = NULL;	
 	m_component = NULL;
-	m_hookTransformObject = NULL;
+	
+	m_hookTransformObject	= NULL;
+	m_animationCallback		= NULL;
 
 #ifdef GSANIMATION
 	m_isShowName = false;
@@ -655,7 +657,7 @@ void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 	{	
 		// update anim track
 		float timeStep = (float)(timeMs - m_timer);
-		m_gameAnimation.update( timeStep );	
+		m_gameAnimation.update( timeStep );			
 
 		// update anim animation
 		updateAnimation();	
@@ -780,6 +782,10 @@ void CGameColladaSceneNode::updateAnimation()
 	core::quaternion rotation;
 	
 	m_gameAnimation.getFrameData( position, scale, rotation, LocalMatrix );
+
+	// run callback
+	if ( m_animationCallback )
+		m_animationCallback->_onUpdateFrameData( this,  position, scale, rotation );
 
 	// rotation
 	core::matrix4 mat = rotation.getMatrix();

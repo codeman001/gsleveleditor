@@ -317,7 +317,7 @@ public:
 class CGameAnimation
 {
 protected:
-	CGameAnimationTrack	m_animTrack[2];
+	CGameAnimationTrack		m_animTrack[2];
 
 public:
 	CGameAnimation();
@@ -372,6 +372,14 @@ public:
 	void update(float timeStep);
 };
 
+// IGameAnimationCallback
+// interface for modify animation data
+class IGameAnimationCallback
+{
+public:
+	virtual void _onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation ) = 0;
+};
+
 // CGameColladaSceneNode
 // Collada Node
 class CGameColladaSceneNode: public ISceneNode
@@ -403,6 +411,7 @@ protected:
 	CColladaMeshComponent		*m_component;
 	CGameObject					*m_hookTransformObject;
 
+	IGameAnimationCallback		*m_animationCallback;
 public:
 	CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id);
 
@@ -509,6 +518,11 @@ public:
 	inline CGameObject* getHookTransformObject()
 	{
 		return m_hookTransformObject;
+	}
+
+	inline void setAnimationCallback( IGameAnimationCallback *callback )
+	{
+		m_animationCallback = callback;
 	}
 
 	// setSkydome

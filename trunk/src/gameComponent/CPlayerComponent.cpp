@@ -404,7 +404,7 @@ void CPlayerComponent::updateStateRun()
 				q.fromAngleAxis( core::degToRad(-90.0f), core::vector3df(0,1,0) );
 		}
 		q.getMatrix().rotateVect(v1);
-		v1.normalize();
+		v1.normalize();		
 
 		// step to turn camera vector
 		bool turnFinish  = turnToDir( v0, v1, 2.0f );
@@ -486,7 +486,7 @@ core::vector3df CPlayerComponent::getCameraFrontVector()
 bool CPlayerComponent::turnToDir(core::vector3df& dir, const core::vector3df& turnTo, float speed )
 {
 	speed = getRatioWithAngle(dir, turnTo, speed);
-
+	
 	// rotate front vec
 	float f = speed*0.1f*getIView()->getTimeStep();	
 	if ( f >= 1.0f )
@@ -513,6 +513,7 @@ core::vector3df CPlayerComponent::interpolateTurnToDir( const core::vector3df& t
 
 	// calc angle
 	float angle = turnTo.dotProduct( turnFrom );
+	angle = fixAngle(angle);
 	angle = acos(angle);
 	
 	// interpolate	
@@ -525,6 +526,7 @@ core::vector3df CPlayerComponent::interpolateTurnToDir( const core::vector3df& t
 	// rotate result vector
 	core::vector3df dir = turnFrom;
 	q.getMatrix().rotateVect( dir );
+	dir.normalize();
 	return dir;	
 }
 
@@ -534,6 +536,28 @@ float CPlayerComponent::getRatioWithAngle( const core::vector3df& turnFrom, cons
 	float angleVec = turnTo.dotProduct( turnFrom );
 	if ( angleVec == 0.0f )
 		return 1.0f;
+	
+	angleVec = fixAngle(angleVec);
 	angleVec = core::radToDeg( acos(angleVec) );	
 	return angle/angleVec;
+}
+
+#define REAL_PRECISION	0.000001f
+inline bool realIsZero(float x, float precision = REAL_PRECISION) 
+{ 
+	return fabs(x) < precision; 
+};
+inline bool realIsEqual(float a, float b, float precision = REAL_PRECISION) 
+{ 
+	return realIsZero(a-b, precision); 
+};
+
+// fixAngle
+float CPlayerComponent::fixAngle( float f )
+{
+	if (realIsEqual(f, 1.f, 0.001f))
+		f = 1.f;
+	else if (realIsEqual(f, -1.f, 0.001f))
+		f = -1.f;
+	return f;
 }

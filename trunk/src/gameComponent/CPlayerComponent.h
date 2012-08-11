@@ -121,6 +121,7 @@ protected:
 
 	float					m_runFactor;
 	float					m_spineRotation;
+	float					m_lastRotation;
 public:
 	CPlayerComponent(CGameObject* obj);
 	virtual ~CPlayerComponent();

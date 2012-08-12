@@ -74,15 +74,10 @@ protected:
 	CColladaMeshComponent*	m_collada;
 	CInventoryComponent*	m_inventory;
 
-	CGameColladaSceneNode*	m_bipRootNode;
-	CGameColladaSceneNode*	m_bipSpineNode;
-	CGameColladaSceneNode*	m_bipSpine1Node;
-	CGameColladaSceneNode*	m_gunDummyNode;
-
-
 	vector<CGameColladaSceneNode*>	m_nodesHandsAndHead;
 	vector<CGameColladaSceneNode*>	m_nodesChest;
 	vector<CGameColladaSceneNode*>	m_nodesFoot;
+	CGameColladaSceneNode*			m_nodeNeck;
 
 	// begin anim name declare
 	vector<std::string>				m_animIdle;
@@ -218,17 +213,14 @@ public:
 	// setSpineRotation	
 	void setSpineRotation( float r )
 	{
-		const float maxAngle = 70.0f;
+		const float maxAngle = 110.0f;
 		m_spineRotation = r;
-		if ( m_spineRotation > maxAngle )
-			m_spineRotation = maxAngle;
-		if ( m_spineRotation < -maxAngle )
-			m_spineRotation = -maxAngle;
+		m_spineRotation = core::clamp<float>(m_spineRotation, -maxAngle, maxAngle);		
 	}
 
 	// setSpineLookAt
 	// rotate spine to look at a pos
-	void setSpineLookAt( const core::vector3df& pos, float speed = 2.0f );
+	void setSpineLookAt( const core::vector3df& pos, float speed = 3.0f );
 
 	// getCameraFrontVector
 	// return camera front vector

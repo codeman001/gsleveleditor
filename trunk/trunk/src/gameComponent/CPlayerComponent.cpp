@@ -42,10 +42,6 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_runBackSpeed			= 3.0f;
 	m_runNoGunSpeed			= 6.0f;
 
-	m_bipSpineNode	= NULL;
-	m_bipSpine1Node	= NULL;
-	m_gunDummyNode	= NULL;
-
 	m_runUp			= false;
 	m_runBack		= false;
 	m_runLeft		= false;
@@ -107,6 +103,10 @@ void CPlayerComponent::initComponent()
 	// hand, head
 	m_nodesHandsAndHead.push_back( m_collada->getSceneNode("RightGun") );		
 	m_collada->getChildsOfSceneNode("Spine3",m_nodesHandsAndHead);
+
+	// neck
+	m_nodeNeck = m_collada->getSceneNode("Neck");
+	m_nodeNeck->setAnimationCallback(this);
 
 	// decalre anim list
 	m_animIdle.push_back( "Hero@Idle" );
@@ -381,11 +381,7 @@ void CPlayerComponent::updateStateTurn()
 
 		// rotate object
 		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
-		
-		// calc spine rotation
-		//core::vector3df lookPos = m_gameObject->getPosition() + getCameraFrontVector();
-		//setSpineLookAt( lookPos );
-
+				
 		if ( turnFinish )
 		{
 			if ( m_noGun )
@@ -561,8 +557,11 @@ void CPlayerComponent::updateStateRun()
 				m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 
 				// calc spine rotation
-				core::vector3df lookPos = m_gameObject->getPosition() + getCameraFrontVector();
-				setSpineLookAt( lookPos );
+				if ( m_runFactor <= 0.1f )
+				{
+					core::vector3df lookPos = m_gameObject->getPosition() + getCameraFrontVector();
+					setSpineLookAt( lookPos );
+				}
 			}
 			
 			// update run position
@@ -577,7 +576,11 @@ void CPlayerComponent::updateStateRun()
 void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation )
 {
 	const core::vector3df rotAxis = core::vector3df(0,0,1);
-	float r = m_spineRotation/3.0f;
+
+	const float maxSpine = 70.0f;
+	float spineAngle = core::clamp<float>(m_spineRotation, -maxSpine, maxSpine);
+	float neckAngle = m_spineRotation - spineAngle;
+	float r = spineAngle/3.0f;
 	
 	if ( node == m_nodesChest[0] )
 	{
@@ -595,6 +598,14 @@ void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& po
 	{
 		core::quaternion q;
 		q.fromAngleAxis( core::degToRad( r ), rotAxis );
+		rotation = rotation * q;
+	}
+	else if ( node == m_nodeNeck )
+	{
+		core::quaternion q;
+		core::vector3df neckAxis = core::vector3df(0.0f,-0.8f,1.0f);
+		neckAxis.normalize();
+		q.fromAngleAxis( core::degToRad( neckAngle ), neckAxis );
 		rotation = rotation * q;
 	}
 }
@@ -622,7 +633,7 @@ void CPlayerComponent::stepAnimationTime()
 // update weapon
 void CPlayerComponent::updateWeaponPosition()
 {	
-	if ( m_inventory && m_collada && m_gunDummyNode )
+	if ( m_inventory && m_collada )
 	{
 		CInventoryComponent::SInventoryItem* item = m_inventory->getActiveItem();
 		if ( item && item->m_item )
@@ -642,7 +653,7 @@ void CPlayerComponent::updateWeaponPosition()
 // get weapon
 CWeaponComponent* CPlayerComponent::getCurrentWeapon()
 {
-	if ( m_inventory && m_collada && m_gunDummyNode )
+	if ( m_inventory && m_collada )
 	{
 		CInventoryComponent::SInventoryItem* item = m_inventory->getActiveItem();
 		if ( item && item->m_item )

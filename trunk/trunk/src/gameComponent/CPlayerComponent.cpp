@@ -46,7 +46,6 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_bipSpine1Node	= NULL;
 	m_gunDummyNode	= NULL;
 
-	m_runRotation	= 0.0f;
 	m_runUp			= false;
 	m_runBack		= false;
 	m_runLeft		= false;
@@ -56,8 +55,6 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 
 	m_runFactor = 1.0f;
 	m_runAccel	= 0.002f;
-
-	m_currentRunRot	= 0.0f;
 
 	m_collada	= NULL;
 	m_inventory = NULL;
@@ -310,7 +307,9 @@ void CPlayerComponent::updateStateIdle()
 	}
 	else
 	{
-		m_currentRunRot = 0.0f;
+		// calc spine rotation
+		core::vector3df lookPos = m_gameObject->getPosition() + m_gameObject->getFront();
+		setSpineLookAt( lookPos, 1.0f );
 	
 		if ( m_runCommand )
 		{
@@ -383,6 +382,10 @@ void CPlayerComponent::updateStateTurn()
 		// rotate object
 		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 		
+		// calc spine rotation
+		//core::vector3df lookPos = m_gameObject->getPosition() + getCameraFrontVector();
+		//setSpineLookAt( lookPos );
+
 		if ( turnFinish )
 		{
 			if ( m_noGun )
@@ -423,9 +426,9 @@ void CPlayerComponent::updateStateRunTurn()
 		// rotate object
 		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 
-		// change spine rotation		
-		//float a = getAngle( m_gameObject->getFront(), v1 );
-		//setSpineRotation( a );
+		// calc spine rotation
+		core::vector3df lookPos = m_gameObject->getPosition() + getCameraFrontVector();
+		setSpineLookAt( lookPos );
 
 
 		// synch animation to idle
@@ -473,6 +476,10 @@ void CPlayerComponent::updateStateRun()
 
 		if ( m_runCommand == false )
 		{
+			// calc spine rotation
+			core::vector3df lookPos = m_gameObject->getPosition() + m_gameObject->getFront();
+			setSpineLookAt( lookPos, 1.0f );
+
 			m_runFactor = m_runFactor + step;
 			if ( m_runFactor > 1.0f )
 			{
@@ -552,13 +559,12 @@ void CPlayerComponent::updateStateRun()
 			{
 				bool turnFinish  = turnToDir( v0, v1, 2.0f );
 				m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+
+				// calc spine rotation
+				core::vector3df lookPos = m_gameObject->getPosition() + getCameraFrontVector();
+				setSpineLookAt( lookPos );
 			}
-
-			// calc spine rotation
-			//v1 = getCameraFrontVector();			
-			//float a = getAngle( v0, v1 );
-			//setSpineRotation( a );
-
+			
 			// update run position
 			float runSpeed = m_runSpeed * (1.0f - m_runFactor) * getIView()->getTimeStep() * 0.1f;
 			m_gameObject->setPosition( m_gameObject->getPosition() + v0 * runSpeed );
@@ -646,6 +652,27 @@ CWeaponComponent* CPlayerComponent::getCurrentWeapon()
 		}
 	}
 	return NULL;
+}
+
+// setSpineLookAt
+// rotate spine to look at a pos
+void CPlayerComponent::setSpineLookAt( const core::vector3df& pos, float speed )
+{
+	core::vector3df lookAt = pos - m_gameObject->getPosition();
+	lookAt.normalize();
+
+	float a = getAngle( m_gameObject->getFront(), lookAt );
+	
+	speed = speed * getIView()->getTimeStep() * 0.1f;
+	if ( m_spineRotation < a )
+		m_spineRotation = m_spineRotation+speed;
+	else if ( m_spineRotation > a )
+		m_spineRotation = m_spineRotation-speed;
+
+	if ( fabs(m_spineRotation-a) <= speed )
+		m_spineRotation = a;
+
+	setSpineRotation(m_spineRotation);
 }
 
 

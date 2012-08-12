@@ -110,12 +110,6 @@ protected:
 	std::string						m_animShootStraight;
 	// end anim name declare
 
-	// m_targetRotation
-	// the target rotation
-	float					m_runRotation;
-	float					m_currentRunRot;
-	bool					m_rotateFinish;
-	core::vector3df			m_targetRotation;
 	int						m_keyActionBit;
 
 	bool					m_noGun;
@@ -224,12 +218,17 @@ public:
 	// setSpineRotation	
 	void setSpineRotation( float r )
 	{
+		const float maxAngle = 70.0f;
 		m_spineRotation = r;
-		if ( m_spineRotation > 60.0f )
-			m_spineRotation = 60.0f;
-		if ( m_spineRotation < -60.0f )
-			m_spineRotation = -60.0f;
+		if ( m_spineRotation > maxAngle )
+			m_spineRotation = maxAngle;
+		if ( m_spineRotation < -maxAngle )
+			m_spineRotation = -maxAngle;
 	}
+
+	// setSpineLookAt
+	// rotate spine to look at a pos
+	void setSpineLookAt( const core::vector3df& pos, float speed = 2.0f );
 
 	// getCameraFrontVector
 	// return camera front vector

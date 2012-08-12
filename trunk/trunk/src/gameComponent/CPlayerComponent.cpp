@@ -9,6 +9,7 @@
 #include "CWeaponComponent.h"
 
 #include "gameLevel/CGameLevel.h"
+#include "gameDebug/CGameDebug.h"
 
 #define LOG_ANIM_TIME
 
@@ -52,6 +53,9 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_runRight		= false;
 	m_runNoGun		= true;
 	m_runCommand	= false;
+
+	m_runFactor = 1.0f;
+	m_runAccel	= 0.002f;
 
 	m_currentRunRot	= 0.0f;
 
@@ -272,6 +276,9 @@ void CPlayerComponent::updateState()
 	case CPlayerComponent::PlayerTurn:
 		updateStateTurn();			
 		break;
+	case CPlayerComponent::PlayerRunTurn:
+		updateStateRunTurn();
+		break;
 	case CPlayerComponent::PlayerRun:
 		updateStateRun();		
 		break;
@@ -328,7 +335,7 @@ void CPlayerComponent::updateStateTurn()
 		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str() );
 
 		m_animCurrentTime	= m_collada->getCurrentAnimTimeLength();
-		m_animCrossfadeTime = m_collada->getCurrentCrossfadeAnimTimeLength();
+		m_animCrossfadeTime = m_collada->getCurrentCrossfadeAnimTimeLength();				
 	}
 	else if ( m_subState == SubStateEnd )
 	{		
@@ -342,6 +349,34 @@ void CPlayerComponent::updateStateTurn()
 		v0 = m_gameObject->getFront();
 		v1 = getCameraFrontVector();
 		
+		float rot = 0.0f;
+		if ( m_runLeft )
+		{
+			if ( m_runUp )
+				rot = 43.0f;
+			else if ( m_runBack )
+				rot = 133.0f;
+			else
+				rot = 88.0f;
+		}
+		else if ( m_runRight )
+		{
+			if ( m_runUp )
+				rot = -43.0f;
+			else if ( m_runBack )
+				rot = -133.0f;
+			else
+				rot = -88.0f;
+		}
+		else if ( m_runBack )
+		{
+			rot = -178.0f;
+		}
+		core::quaternion q;
+		q.fromAngleAxis( core::degToRad(rot), core::vector3df(0,1,0) );
+		q.getMatrix().rotateVect(v1);
+		v1.normalize();
+
 		// step to turn camera vector
 		bool turnFinish  = turnToDir( v0, v1, 6.0f );
 
@@ -358,6 +393,57 @@ void CPlayerComponent::updateStateTurn()
 	}
 }
 
+void CPlayerComponent::updateStateRunTurn()
+{
+	stepAnimationTime();
+
+	if ( m_subState == SubStateInit )
+	{
+		m_collada->enableAnimTrackChanel(1, true);
+		m_collada->synchronizedByTimeScale(m_runFactor);
+
+		m_subState = SubStateActive;		
+	}
+	else if ( m_subState == SubStateEnd )
+	{		
+		doNextState();		
+	}
+	else
+	{		
+		core::vector3df v0, v1;
+
+		// get vector rotate & speed
+		v0 = m_gameObject->getFront();
+		v1 = m_runCurrentVector + m_runTurnVector;
+		v1.normalize();
+		
+		// step to turn camera vector
+		bool turnFinish  = turnToDir( v0, v1, 1.0f );
+
+		// rotate object
+		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+
+		// change spine rotation		
+		//float a = getAngle( m_gameObject->getFront(), v1 );
+		//setSpineRotation( a );
+
+
+		// synch animation to idle
+		float step = m_runAccel*getIView()->getTimeStep()*0.8f;
+		m_runFactor = m_runFactor + step;
+		if ( m_runFactor > 1.0f )
+		{
+			m_runFactor = 1.0f;
+			setState( CPlayerComponent::PlayerRun );
+		}
+		m_collada->synchronizedByTimeScale(m_runFactor);
+		
+		// update run position
+		float runSpeed = m_runSpeed * (1.0f - m_runFactor) * getIView()->getTimeStep() * 0.1f;
+		m_gameObject->setPosition( m_gameObject->getPosition() + m_runCurrentVector * runSpeed );
+	}
+}
+
 void CPlayerComponent::updateStateRun()
 {	
 	if ( m_subState == SubStateInit )
@@ -366,6 +452,7 @@ void CPlayerComponent::updateStateRun()
 		m_collada->enableAnimTrackChanel(1, true);
 
 		m_runFactor = 1.0f;
+
 		m_collada->setAnimation( m_animRunNoGun.c_str(), 1, true );
 		m_collada->synchronizedByTimeScale(m_runFactor);
 
@@ -373,13 +460,16 @@ void CPlayerComponent::updateStateRun()
 	}
 	else if ( m_subState == SubStateEnd )
 	{
-		m_collada->setAnimWeight(1.0f, 0);
-		m_collada->enableAnimTrackChanel(1, false);
+		if ( m_nextState == CPlayerComponent::PlayerIdle )
+		{
+			m_collada->setAnimWeight(1.0f, 0);
+			m_collada->enableAnimTrackChanel(1, false);
+		}
 		doNextState();
 	}
 	else
 	{
-		float step = 0.002f*getIView()->getTimeStep();
+		float step = m_runAccel*getIView()->getTimeStep();
 
 		if ( m_runCommand == false )
 		{
@@ -414,34 +504,65 @@ void CPlayerComponent::updateStateRun()
 		if ( m_runLeft )
 		{
 			if ( m_runUp )
-				rot = 45.0f;				
+				rot = 43.0f;
+			else if ( m_runBack )
+				rot = 133.0f;
 			else
-				rot = 90.0f;
+				rot = 88.0f;
 		}
 		else if ( m_runRight )
 		{
 			if ( m_runUp )
-				rot = -45.0f;
+				rot = -43.0f;
+			else if ( m_runBack )
+				rot = -133.0f;
 			else
-				rot = -90.0f;
+				rot = -88.0f;
 		}
-
-		m_lastRotation = rot;
+		else if ( m_runBack )
+		{
+			rot = -178.0f;
+		}
+				
 		q.fromAngleAxis( core::degToRad(rot), core::vector3df(0,1,0) );
 		q.getMatrix().rotateVect(v1);
 		v1.normalize();
 
-		// step to turn camera vector
-		bool turnFinish  = turnToDir( v0, v1, 2.0f );
-		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+		if ( fabs( getAngle(v0,v1) ) >= 150.0f && m_runCommand )
+		{			
+			setState( CPlayerComponent::PlayerRunTurn );			
+			m_runTurnVector  = v1;
+			m_runCurrentVector = m_gameObject->getFront();
+		}
+		else
+		{
+			m_lastRotation = rot;
 
-		// calc spine rotation
-		float a = getAngle( v0, getCameraFrontVector() );
-		setSpineRotation( a );
+			// debug line
+			CGameDebug *debug = CGameDebug::getInstance();
+			core::line3df line;
+			line.start	= m_gameObject->getPosition();
+			line.end	= m_gameObject->getPosition() + v1 * 400.0f;
+			debug->addDrawLine(line, SColor(255,255,0,0) ); 
+			line.end	= m_gameObject->getPosition() + v0 * 400.0f;
+			debug->addDrawLine(line, SColor(255,0,255,0) );
 
-		// update run position
-		float runSpeed = m_runSpeed * (1.0f - m_runFactor) * getIView()->getTimeStep() * 0.1f;
-		m_gameObject->setPosition( m_gameObject->getPosition() + v0 * runSpeed );
+			// step to turn camera vector
+			if ( m_runCommand )
+			{
+				bool turnFinish  = turnToDir( v0, v1, 2.0f );
+				m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+			}
+
+			// calc spine rotation
+			//v1 = getCameraFrontVector();			
+			//float a = getAngle( v0, v1 );
+			//setSpineRotation( a );
+
+			// update run position
+			float runSpeed = m_runSpeed * (1.0f - m_runFactor) * getIView()->getTimeStep() * 0.1f;
+			m_gameObject->setPosition( m_gameObject->getPosition() + v0 * runSpeed );
+		}
 	}
 }
 

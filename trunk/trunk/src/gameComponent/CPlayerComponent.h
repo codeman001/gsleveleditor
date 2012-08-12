@@ -20,8 +20,9 @@ public:
 	enum EPlayerState
 	{
 		PlayerNone = 0,
-		PlayerIdle,
+		PlayerIdle,		
 		PlayerTurn,
+		PlayerRunTurn,
 		PlayerRun,
 		PlayerRunBackward,
 		PlayerRunLeft,
@@ -120,8 +121,14 @@ protected:
 	bool					m_noGun;
 
 	float					m_runFactor;
+	float					m_runAccel;
+
 	float					m_spineRotation;
 	float					m_lastRotation;
+
+	core::vector3df			m_runTurnVector;
+	core::vector3df			m_runCurrentVector;
+
 public:
 	CPlayerComponent(CGameObject* obj);
 	virtual ~CPlayerComponent();
@@ -178,8 +185,9 @@ protected:
 	// updateState	
 	void updateState();
 
-	void updateStateIdle();
+	void updateStateIdle();	
 	void updateStateTurn();
+	void updateStateRunTurn();
 	void updateStateRun();
 	void updateStateRunBackward();
 	void updateStateRunLeft();

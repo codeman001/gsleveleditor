@@ -481,6 +481,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\SceneNode\CGameDebugSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameDebugSceneNode.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\SceneNode\CGameGrassSceneNode.cpp"
 						>
 					</File>
@@ -727,6 +735,18 @@
 				</File>
 				<File
 					RelativePath="..\..\src\gameComponent\CWeaponComponent.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="gameDebug"
+				>
+				<File
+					RelativePath="..\..\src\gameDebug\CGameDebug.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameDebug\CGameDebug.h"
 					>
 				</File>
 			</Filter>

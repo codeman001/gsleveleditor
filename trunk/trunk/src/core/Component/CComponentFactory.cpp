@@ -16,6 +16,7 @@
 #include "CGrassComponent.h"
 #include "CWaterComponent.h"
 #include "CEllipsoidCollisionComponent.h"
+#include "CLightingComponent.h"
 #endif 
 
 #ifdef GSGAMEPLAY
@@ -144,6 +145,16 @@ void CComponentFactory::initComponentTemplate()
 	s_compTemplate.push_back( CSerializable() );
 	p = &s_compTemplate[ IObjectComponent::EllipsoidCollision ];
 	p->addGroup(stringOfComponent(IObjectComponent::EllipsoidCollision));
+
+	// add lighting
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::Lighting ];
+	p->addGroup(stringOfComponent(IObjectComponent::Lighting));
+	p->addInt("lightingType", 0, true);
+	p->addString("diffuseColor","ffffff", true);
+	p->addString("specularColor","ffffff", true);
+	p->addString("strength", 1.0f, true);
+	p->addFloat("radius",800.0f, true);
 
 	loadAllTemplate();
 }

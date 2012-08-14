@@ -17,6 +17,7 @@ const char *IObjectComponent::s_compType[] =
 	"Terrain component",
 	"Grass component",
 	"Water component",
+	"Lighting component",
 	"Ellipsoid collision component"
 };
 

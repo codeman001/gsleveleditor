@@ -24,6 +24,7 @@ public:
 		Grass,
 		Water,
 		EllipsoidCollision,
+		Lighting,
 		NumBuildInComponent
 	};
 

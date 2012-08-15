@@ -301,6 +301,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\Component\CLightingComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CLightingComponent.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Component\CObjectCollisionComponent.cpp"
 						>
 					</File>

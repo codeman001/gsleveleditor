@@ -67,9 +67,9 @@ void CDocument::newDocument()
 	ISceneNode* pNode = smgr->addEmptySceneNode();
 
 	// default light
-	//smgr->setAmbientLight( video::SColorf(0.2f, 0.2f, 0.2f ,1.0f) );
-	ILightSceneNode *light = smgr->addLightSceneNode( pNode, core::vector3df(0, 0, 0) );
-	light->setLightType( video::ELT_DIRECTIONAL );
+	smgr->setAmbientLight( video::SColorf(0.2f, 0.2f, 0.2f ,1.0f) );
+	//ILightSceneNode *light = smgr->addLightSceneNode( pNode, core::vector3df(0, 0, 0) );
+	//light->setLightType( video::ELT_DIRECTIONAL );
 
 	// reset file path
 	m_filePath = L"";

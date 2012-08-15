@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LevelScript.h"
 #include "CGameLevel.h"
+#include "IView.h"
 
 #define getLevel()	CGameLevel::getCurrentLevel()
 
@@ -17,9 +18,9 @@ int getObjectByName(lua_State* state)
 	
 	CGameObject* p = getLevel()->searchObject( objName );
 	if ( p )
-		lua_pushinteger( state, p->getID() );
+		lua_pushinteger( state, (int)p );
 	else
-		lua_pushinteger( state, -1 );
+		lua_pushinteger( state, 0 );
 	return 1;
 }
 
@@ -29,7 +30,7 @@ int getObjectByName(lua_State* state)
 int disableObject(lua_State* state)
 {
 	int objID = lua_tointeger(state,1);
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 		obj->setEnable(false);
 	return 0;
@@ -41,7 +42,7 @@ int disableObject(lua_State* state)
 int enableObject(lua_State* state)
 {
 	int objID = lua_tointeger(state,1);
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 		obj->setEnable(true);
 	return 0;
@@ -52,7 +53,7 @@ int enableObject(lua_State* state)
 int getObjectPosition(lua_State* state)
 {
 	int objID = lua_tointeger(state,1);
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 	{
 		core::vector3df pos = obj->getPosition();
@@ -78,7 +79,7 @@ int setObjectPosition(lua_State* state)
 	float y		= (float)lua_tonumber(state,3);
 	float z		= (float)lua_tonumber(state,4);
 
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 		obj->setPosition( core::vector3df(x,y,z) );
 	
@@ -90,7 +91,7 @@ int setObjectPosition(lua_State* state)
 int getObjectRotation(lua_State* state)
 {
 	int objID = lua_tointeger(state,1);
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 	{
 		core::vector3df rot = obj->getRotation();
@@ -116,7 +117,7 @@ int setObjectRotation(lua_State* state)
 	float y		= (float)lua_tonumber(state,3);
 	float z		= (float)lua_tonumber(state,4);
 
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 		obj->setRotation( core::vector3df(x,y,z) );
 	
@@ -130,8 +131,8 @@ int setObjectLookAtObject(lua_State* state)
 	int objID		= lua_tointeger(state,1);
 	int objTargetID	= lua_tointeger(state,2);
 
-	CGameObject* obj		= getLevel()->searchObject( objID );
-	CGameObject* objTarget	= getLevel()->searchObject( objTargetID );
+	CGameObject* obj		= (CGameObject*)objID;
+	CGameObject* objTarget	= (CGameObject*)objTargetID;
 
 	if ( obj && objTarget )
 		obj->lookAt( objTarget );
@@ -146,8 +147,8 @@ int setObjectOrientation(lua_State* state)
 	int objID		= lua_tointeger(state,1);
 	int objTargetID	= lua_tointeger(state,2);
 
-	CGameObject* obj		= getLevel()->searchObject( objID );
-	CGameObject* objTarget	= getLevel()->searchObject( objTargetID );
+	CGameObject* obj		= (CGameObject*)objID;
+	CGameObject* objTarget	= (CGameObject*)objTargetID;
 
 	if ( obj && objTarget )
 	{
@@ -169,8 +170,8 @@ int setAnimatorMoveToWayPoint(lua_State* state)
 	float speed = (float)lua_tonumber(state,3);
 	int loop = lua_toboolean(state,4);
 
-	CGameObject* obj = getLevel()->searchObject( objID );
-	CGameObject* way = getLevel()->searchObject( wayID );
+	CGameObject* obj = (CGameObject*)objID;
+	CGameObject* way = (CGameObject*)wayID;
 	if ( obj == NULL || way == NULL || way->getObjectType() != CGameObject::WaypointObject )
 		return 0;
 
@@ -187,12 +188,15 @@ int addObjectLod(lua_State* state)
 	float dis = (float)lua_tonumber(state,2);
 	const char* node = lua_tostring(state,3);
 
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* obj = (CGameObject*)objID;
 	
-	// add on player comp
-	CColladaMeshComponent* colladaComp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
-	if ( colladaComp )
-		colladaComp->addLodData( dis, node );
+	if ( obj )
+	{
+		// add on player comp
+		CColladaMeshComponent* colladaComp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
+		if ( colladaComp )
+			colladaComp->addLodData( dis, node );
+	}
 
 	return 0;
 }
@@ -202,7 +206,7 @@ int addObjectLod(lua_State* state)
 int clearObjectLod(lua_State* state)
 {
 	int objID = lua_tointeger(state,1);
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* obj = (CGameObject*)objID;
 	
 	// clear all lod data
 	CColladaMeshComponent* colladaComp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
@@ -223,8 +227,8 @@ int clearObjectLod(lua_State* state)
 int setLevelCamera(lua_State* state)
 {
 	int camID = lua_tointeger(state,1);
-	CGameObject* cam = getLevel()->searchObject( camID );
-	if ( cam->getObjectType() == CGameObject::CameraObject )
+	CGameObject* cam = (CGameObject*)camID;
+	if ( cam && cam->getObjectType() == CGameObject::CameraObject )
 		getLevel()->setCamera((CGameCamera*)cam);
 
 	return 0;
@@ -237,8 +241,8 @@ int setCameraFarValue(lua_State* state)
 	int camID = lua_tointeger(state,1);
 	double farValue = lua_tonumber(state,2);
 
-	CGameObject* obj = getLevel()->searchObject( camID );
-	if ( obj->getObjectType() == CGameObject::CameraObject )
+	CGameObject* obj = (CGameObject*)camID;
+	if ( obj && obj->getObjectType() == CGameObject::CameraObject )
 	{
 		CGameCamera *cam = (CGameCamera*)obj;
 		cam->setFarValue( (float)farValue );
@@ -253,8 +257,8 @@ int setCameraLookAtObj(lua_State* state)
 	int camID = lua_tointeger(state,1);
 	int objID = lua_tointeger(state,2);
 
-	CGameObject* cam = getLevel()->searchObject( camID );
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* cam = (CGameObject*)camID;
+	CGameObject* obj = (CGameObject*)objID;
 
 	if ( cam == NULL || obj == NULL || cam->getObjectType() != CGameObject::CameraObject )
 		return 0;
@@ -271,8 +275,8 @@ int setCameraFollowObject(lua_State* state)
 	int objID = lua_tointeger(state,2);
 	float radius  = (float)lua_tonumber(state,3);
 
-	CGameObject* cam = getLevel()->searchObject( camID );
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* cam = (CGameObject*)camID;
+	CGameObject* obj = (CGameObject*)objID;
 
 	if ( cam == NULL || obj == NULL || cam->getObjectType() != CGameObject::CameraObject )
 		return 0;
@@ -301,7 +305,6 @@ int getCurrentCameraPosition(lua_State* state)
 	lua_pushnumber( state, 0 );
 	lua_pushnumber( state, 0 );
 	return 3;
-	return 3;
 }
 
 //////////////////////////////////////////////////////////
@@ -319,7 +322,7 @@ int setSceneNodePosition(lua_State* state)
 	float y		= (float)lua_tonumber(state,4);
 	float z		= (float)lua_tonumber(state,5);
 
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 	{
 		CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
@@ -348,7 +351,7 @@ int setSceneNodeIsSkydome(lua_State* state)
 	float y		= (float)lua_tonumber(state,4);
 	float z		= (float)lua_tonumber(state,5);
 
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 	{
 		CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
@@ -374,7 +377,7 @@ int setSceneNodeVisible(lua_State* state)
 	const char* sceneNodeName = lua_tostring(state,2);
 	bool b		= lua_toboolean(state,3) == 1;
 
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 	{
 		CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
@@ -393,6 +396,21 @@ int setSceneNodeVisible(lua_State* state)
 }
 
 //////////////////////////////////////////////////////////
+// LIGHTING FUNCTION IMPLEMENT
+//////////////////////////////////////////////////////////
+
+// setLevelAmbientLight
+// set default lighting for level
+int setLevelAmbientLight(lua_State* state)
+{
+	u32 r	= (u32)lua_tointeger(state,1);
+	u32 g	= (u32)lua_tointeger(state,2);
+	u32 b	= (u32)lua_tointeger(state,3);
+	getIView()->getSceneMgr()->setAmbientLight( SColor(0xff, r,g,b) );
+	return 0;
+}
+
+//////////////////////////////////////////////////////////
 // INVETORY FUNCTION IMPLEMENT
 //////////////////////////////////////////////////////////
 
@@ -405,7 +423,7 @@ int addItemToInventory(lua_State* state)
 	int objID = lua_tointeger(state,1);
 	const char* itemTemplate = lua_tostring(state,2);
 
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 	{
 		CInventoryComponent* inventory = (CInventoryComponent*) obj->getComponent( CGameComponent::InventoryComponent );
@@ -425,7 +443,7 @@ int setActiveItemOnInventory(lua_State* state)
 	int objID = lua_tointeger(state,1);
 	const char* itemTemplate = lua_tostring(state,2);
 
-	CGameObject* obj = getLevel()->searchObject( objID );
+	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 	{
 		CInventoryComponent* inventory = (CInventoryComponent*) obj->getComponent( CGameComponent::InventoryComponent );
@@ -466,6 +484,9 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(setSceneNodePosition);
 	REGISTER_C_FUNCTION(setSceneNodeIsSkydome);	
 	REGISTER_C_FUNCTION(setSceneNodeVisible);
+
+	// lighting function
+	REGISTER_C_FUNCTION(setLevelAmbientLight);
 
 	// inventory function
 	REGISTER_C_FUNCTION(addItemToInventory);

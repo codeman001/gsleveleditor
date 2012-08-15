@@ -40,22 +40,7 @@ void CLightingComponent::initComponent()
 		ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox(node);
 		node->setTriangleSelector(selector);
 		selector->drop();
-		
-		
-		// add light scenenode
-		m_lightSceneNode = smgr->addLightSceneNode( node );
-		m_lightSceneNode->setDebugDataVisible( EDS_BBOX );
-
-		// setting light data
-		video::SLight &light = m_lightSceneNode->getLightData();
-		light.Type = m_lightType == 0? ELT_POINT : ELT_DIRECTIONAL;
-		light.DiffuseColor	= m_diffuseColor;
-		light.SpecularColor = m_specularColor;
-		light.Radius		= m_radius;
-		light.Attenuation.X	= 0.0f;
-		light.Attenuation.Y	= 1.0f/(m_radius * m_strength);
-		light.Attenuation.Z	= 0.0f;		
-
+						
 		// update game object
 		m_gameObject->m_node = node;
 		m_gameObject->m_node->setVisible( true );	
@@ -65,12 +50,28 @@ void CLightingComponent::initComponent()
 		m_gameObject->updateNodePosition();
 		m_gameObject->updateNodeRotation();		
 #else
+		ISceneNode *emtyNode = smgr->addEmptySceneNode( m_gameObject->m_node );		
+		m_gameObject->m_node = emtyNode;
+
+		// update position
+		m_gameObject->updateNodePosition();
+		m_gameObject->updateNodeRotation();	
 #endif
 	}
-	else
-	{
-		
-	}
+
+	// add light scenenode
+	m_lightSceneNode = smgr->addLightSceneNode( m_gameObject->m_node );
+	m_lightSceneNode->setDebugDataVisible( EDS_BBOX );
+
+	// setting light data
+	video::SLight &light = m_lightSceneNode->getLightData();
+	light.Type = m_lightType == 0? ELT_POINT : ELT_DIRECTIONAL;
+	light.DiffuseColor	= m_diffuseColor;
+	light.SpecularColor = m_specularColor;
+	light.Radius		= m_radius;
+	light.Attenuation.X	= 0.0f;
+	light.Attenuation.Y	= 1.0f/(m_radius * m_strength);
+	light.Attenuation.Z	= 0.0f;		
 }
 
 // update

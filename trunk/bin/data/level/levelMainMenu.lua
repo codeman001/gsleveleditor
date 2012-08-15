@@ -13,7 +13,10 @@ function triggerInitLevel_enable(triggerID)
 	
 	-- set skybox
 	local levelObjectID = getObjectByName("levelMainMenu")
-	setSceneNodeIsSkydome(levelObjectID,"Object01-node")	
+	setSceneNodeIsSkydome(levelObjectID,"Object01-node")
+	
+	-- default ambient light
+	setLevelAmbientLight(50,50,50)
 end
 
 function triggerSkybox_always(triggerID)

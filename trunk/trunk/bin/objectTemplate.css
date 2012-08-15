@@ -8,10 +8,15 @@ water
 		waterNormalTexture: data/texture/waterNormal.tga | stringType;
 	}
 }
-light
+pointLight
 {
 	Lighting component
 	{
+		lightingType: 0 | intType;
+		diffuseColor: ffffffff | stringType;
+		specularColor: ffffffff | stringType;
+		strength: 1.0 | floatType;
+		radius: 500.0000000 | floatType;
 	}
 }
 levelMainMenu

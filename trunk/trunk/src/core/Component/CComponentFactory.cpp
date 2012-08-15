@@ -151,8 +151,8 @@ void CComponentFactory::initComponentTemplate()
 	p = &s_compTemplate[ IObjectComponent::Lighting ];
 	p->addGroup(stringOfComponent(IObjectComponent::Lighting));
 	p->addInt("lightingType", 0, true);
-	p->addString("diffuseColor","ffffff", true);
-	p->addString("specularColor","ffffff", true);
+	p->addString("diffuseColor","ffffffff", true);
+	p->addString("specularColor","ffffffff", true);
 	p->addFloat("strength", 1.0f, true);
 	p->addFloat("radius",800.0f, true);
 

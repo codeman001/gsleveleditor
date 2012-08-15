@@ -7,7 +7,14 @@
 class CLightingComponent: public IObjectComponent
 {
 protected:
-	
+	ILightSceneNode	*m_lightSceneNode;
+
+	int		m_lightType;
+	SColor	m_diffuseColor;
+	SColor	m_specularColor;
+	float	m_strength;
+	float	m_radius;
+
 public:
 	CLightingComponent(CGameObject *pObj);
 
@@ -28,6 +35,17 @@ public:
 	// loadData
 	// load data to serializable
 	virtual void loadData( CSerializable* pObj );
+
+protected:
+	
+	// getColorString
+	// get string hexa color name from SColor
+	std::string getColorString( const SColor& color );
+
+	// setColorString
+	// get SColor from string hexa name
+	SColor setColorString( const std::string& stringColor );
+
 };
 
 #endif

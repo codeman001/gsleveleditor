@@ -8,6 +8,12 @@ water
 		waterNormalTexture: data/texture/waterNormal.tga | stringType;
 	}
 }
+light
+{
+	Lighting component
+	{
+	}
+}
 levelMainMenu
 {
 	Collada mesh component

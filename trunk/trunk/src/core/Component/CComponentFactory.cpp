@@ -153,7 +153,7 @@ void CComponentFactory::initComponentTemplate()
 	p->addInt("lightingType", 0, true);
 	p->addString("diffuseColor","ffffff", true);
 	p->addString("specularColor","ffffff", true);
-	p->addString("strength", 1.0f, true);
+	p->addFloat("strength", 1.0f, true);
 	p->addFloat("radius",800.0f, true);
 
 	loadAllTemplate();
@@ -344,6 +344,8 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 			pComp = new CWaterComponent( pObj );
 		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::EllipsoidCollision ) ) == 0 )
 			pComp = new CEllipsoidCollisionComponent( pObj );
+		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Lighting ) ) == 0 )
+			pComp = new CLightingComponent( pObj );
 #endif
 #if defined(GSANIMATION) || defined(GSGAMEPLAY) || defined(GSEDITOR)
 		if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ColladaMesh ) ) == 0 )

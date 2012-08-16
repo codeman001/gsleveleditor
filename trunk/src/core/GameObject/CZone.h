@@ -5,6 +5,7 @@
 #include "CWayPoint.h"
 #include "CGameCamera.h"
 #include "CTrigger.h"
+#include "CLightObject.h"
 
 class CZone: public CGameObject
 {
@@ -17,11 +18,6 @@ protected:
 #ifdef GSGAMEPLAY
 	core::map<wstring, CGameObject*>	m_objectByName;
 #endif
-
-protected:
-	// addChild
-	// add a game object to child list
-	void addChild( CGameObject *p );
 
 public:
 	CZone();
@@ -75,11 +71,19 @@ public:
 	// createTrigger
 	// create a trigger object
 	CTrigger* createTrigger();
+
+	// createLight
+	// create a light object
+	CLightObject* createLight();
 #endif
 
 	// removeObject
 	// remove object
 	void removeObject( CGameObject *pObj );
+
+	// addChild
+	// add a game object to child list
+	void addChild( CGameObject *p );
 
 #ifdef GSEDITOR
 	// setUIVisible

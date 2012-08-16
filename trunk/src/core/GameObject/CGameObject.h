@@ -40,6 +40,7 @@ public:
 		WaypointObject,
 		CameraObject,
 		TriggerObject,
+		LightObject,
 		NumObject
 	};
 	
@@ -91,6 +92,7 @@ protected:
 #ifdef GSEDITOR	
 	uiTreeViewItem		*m_treeItem;
 	bool				m_uiVisible;
+	bool				m_dummyObject;
 #endif
 
 public:
@@ -194,13 +196,23 @@ public:
 		return m_uiVisible;
 	}
 
+	inline bool isDummyObject()
+	{
+		return m_dummyObject;
+	}
+
+	inline void setDummyObject(bool b)
+	{
+		m_dummyObject = b;
+	}
+
 	virtual void setUIVisible(bool b)
 	{
 		m_uiVisible = b;
 
 		if ( m_node )
 			m_node->setVisible( m_visible && b );
-	}
+	}	
 #endif
 
 	// getParent
@@ -424,6 +436,10 @@ public:
 	// remove node on scene
 	virtual void destroyNode();
 	
+	// remove
+	// destroy object
+	virtual void remove();
+
 	// saveData
 	// save data to serializable ( use for save in game .sav )
 	virtual void saveData( CSerializable* pObj );

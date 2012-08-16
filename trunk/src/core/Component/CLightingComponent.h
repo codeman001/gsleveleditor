@@ -9,7 +9,6 @@ class CLightingComponent: public IObjectComponent
 protected:
 	ILightSceneNode	*m_lightSceneNode;
 
-	int		m_lightType;
 	SColor	m_diffuseColor;
 	SColor	m_specularColor;
 	float	m_strength;

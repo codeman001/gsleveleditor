@@ -16,7 +16,6 @@ protected:
 
 #ifdef GSEDITOR
 	CGameObject	*m_directionObj;
-	bool		m_setDirectionPos;
 #endif
 
 protected:

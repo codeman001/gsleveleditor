@@ -17,6 +17,7 @@ protected:
 	DWORD m_nTreeCollision;
 	DWORD m_nTreeWaypoint;
 	DWORD m_nTreeCamera;
+	DWORD m_nTreeLight;
 
 public:
 	CDocTreeWindow( WCHAR* lpString, uiWindow *p );

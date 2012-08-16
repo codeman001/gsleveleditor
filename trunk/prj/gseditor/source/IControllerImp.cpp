@@ -8,6 +8,7 @@
 #include "CAddWaypointController.h"
 #include "CAddCameraController.h"
 #include "CAddTriggerController.h"
+#include "CAddLightController.h"
 
 // CControllerManager
 // 
@@ -27,6 +28,7 @@ CControllerManager::CControllerManager()
 	m_controller[ (int)IController::AddWaypoint ]		= new CAddWaypointController();
 	m_controller[ (int)IController::AddCamera ]			= new CAddCameraController();
 	m_controller[ (int)IController::AddTrigger ]		= new CAddTriggerController();
+	m_controller[ (int)IController::AddLight ]			= new CAddLightController();
 	
 	// default is null controller
 	m_currentController = m_controller[ (int)IController::NullController ];

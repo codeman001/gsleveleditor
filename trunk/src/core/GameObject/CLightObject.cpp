@@ -26,7 +26,6 @@ CLightObject::~CLightObject()
 			delete m_directionObj;
 
 		m_directionObj = NULL;
-		m_setDirectionPos = true;
 	}
 #endif
 }
@@ -43,14 +42,13 @@ void CLightObject::initLight()
 
 #ifdef GSEDITOR
 	m_directionObj = NULL;
-	m_setDirectionPos = true;
 #endif
 
 	// create light object
 	ISceneManager *smgr = getIView()->getSceneMgr();
 
 #ifdef GSEDITOR
-	ISceneNode *node = new CGameBillboardSceneNode
+	CGameBillboardSceneNode *node = new CGameBillboardSceneNode
 			( 
 				this, 
 				this->getParentSceneNode(), 
@@ -89,8 +87,7 @@ void CLightObject::initLight()
 #endif
 
 	// add light scenenode
-	m_lightSceneNode = smgr->addLightSceneNode( getParentSceneNode() );
-	m_lightSceneNode->setDebugDataVisible( EDS_BBOX );
+	m_lightSceneNode = smgr->addLightSceneNode( m_node );
 
 	// setting light data
 	video::SLight &light = m_lightSceneNode->getLightData();
@@ -112,8 +109,8 @@ void CLightObject::initLight()
 		zone->addChild( m_directionObj );
 
 	// add billboard
-	ISceneNode *nodeDirection = new CGameBillboardSceneNode
-		( 
+	CGameBillboardSceneNode *nodeDirection = new CGameBillboardSceneNode
+		(
 			m_directionObj, 
 			m_directionObj->getParentSceneNode(),
 			smgr, 
@@ -128,11 +125,11 @@ void CLightObject::initLight()
 	
 	// add collision
 	ITriangleSelector *selectorDirection = smgr->createTriangleSelectorFromBoundingBox(nodeDirection);
-	node->setTriangleSelector(selectorDirection);
+	nodeDirection->setTriangleSelector(selectorDirection);
 	selectorDirection->drop();
 
-	m_directionObj->m_node = nodeDirection;		
-	m_directionObj->setVisible( true );
+	m_directionObj->m_node = nodeDirection;
+	m_directionObj->setVisible( false );
 	m_directionObj->setLighting(false);
 	m_directionObj->setDummyObject(true);
 	m_directionObj->updateNodePosition();
@@ -173,6 +170,16 @@ void CLightObject::loadData( CSerializable* pObj )
 
 	m_diffuseColor = setColorString(diffuseColor);
 	m_specularColor = setColorString(specularColor);
+
+	// setting light data
+	video::SLight &light = m_lightSceneNode->getLightData();
+	light.Type = m_lightType == 0? ELT_POINT : ELT_DIRECTIONAL;
+	light.DiffuseColor	= m_diffuseColor;
+	light.SpecularColor = m_specularColor;
+	light.Radius		= m_radius;
+	light.Attenuation.X	= 0.0f;
+	light.Attenuation.Y	= 1.0f/(m_radius * m_strength);
+	light.Attenuation.Z	= 0.0f;
 
 	CGameObject::loadData( pObj );
 }
@@ -230,10 +237,12 @@ void CLightObject::updateData( CSerializable* pObj )
 void CLightObject::updateObject()
 {
 #ifdef GSEDITOR	
-	if ( m_directionObj && m_setDirectionPos )
+	if ( m_directionObj )
 	{
-		m_directionObj->setPosition( getPosition() + core::vector3df(0.0f, -1.0f, 0.0f) * 100.0f );
-		m_setDirectionPos = false;		
+		if ( m_lightType != 0 )
+			m_directionObj->setVisible( true );
+		else
+			m_directionObj->setVisible( false );
 	}
 #endif
 	CGameObject::updateObject();
@@ -263,7 +272,7 @@ SColor CLightObject::setColorString( const std::string& stringColor )
 // drawObject	
 void CLightObject::drawObject()
 {
-	if ( m_visible )
+	if ( m_visible && m_lightType != 0 )
 	{
 		IVideoDriver *driver = getIView()->getDriver();
 

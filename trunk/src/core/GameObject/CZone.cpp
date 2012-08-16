@@ -268,8 +268,8 @@ CLightObject* CZone::createLight()
 	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) lpName );
 	CDocument *pDoc = (CDocument*) getIView()->getDocument();
 
-	pTreeItem->setIconIndex( 4 );
-	pTreeItem->setIconStateIndex( 4 );
+	pTreeItem->setIconIndex( 9 );
+	pTreeItem->setIconStateIndex( 9 );
 	pTreeItem->update();
 
 	pTreeItem->setData( p );

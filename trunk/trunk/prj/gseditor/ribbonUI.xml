@@ -55,6 +55,11 @@
         <Image>ribbonIcon/add_camera.bmp</Image>
       </Command.LargeImages>
     </Command>
+	<Command Name="cmdAddLight" LabelTitle="Add light" Symbol="ID_ADDLIGHT">
+      <Command.LargeImages>
+        <Image>ribbonIcon/add_light.bmp</Image>
+      </Command.LargeImages>
+    </Command>
     
 
     <Command Name="cmdGroupCamera" LabelTitle="Camera" />
@@ -195,11 +200,12 @@
             </SplitButtonGallery>
             
           </Group>                      
-          <Group CommandName="cmdGroupObject" SizeDefinition="FourButtons">
+          <Group CommandName="cmdGroupObject" SizeDefinition="FiveButtons">
             <ToggleButton CommandName="cmdAddObject" />
             <ToggleButton CommandName="cmdAddTrigger"/>
             <ToggleButton CommandName="cmdAddWaypoint"/>
-            <ToggleButton CommandName="cmdAddCamera"/>            
+            <ToggleButton CommandName="cmdAddCamera"/>
+			<ToggleButton CommandName="cmdAddLight"/>
           </Group>
           <Group CommandName="cmdGroupObjTransform" SizeDefinition="FourButtons">
             <ToggleButton CommandName="cmdSelectObject" />

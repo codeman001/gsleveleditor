@@ -509,7 +509,7 @@ void CDocument::selectObject( int mouseX, int mouseY, bool isControlHold )
 		CGameObject *pObj =	searchObject( selectedSceneNode->getID() );
 
 		// add to select list
-		if ( pObj )
+		if ( pObj && pObj->isVisible() )
 		{
 			if ( isControlHold == false || pObj->getObjectState() == CGameObject::Normal )
 				m_selectObjects.push_back( pObj );
@@ -564,7 +564,7 @@ void CDocument::selectObject( int x, int y, int w, int h, bool isControlHold )
 			
 			pNode = pGameObj->getSceneNode();
 			
-			if ( pNode != NULL )
+			if ( pNode != NULL && pGameObj->isVisible() )
 			{
 				core::vector3df center = pGameObj->getPosition();
 

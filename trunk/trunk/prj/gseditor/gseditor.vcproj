@@ -877,6 +877,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\source\CAddLightController.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\source\CAddLightController.h"
+						>
+					</File>
+					<File
 						RelativePath=".\source\CAddObjectController.cpp"
 						>
 					</File>

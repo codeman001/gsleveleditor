@@ -41,6 +41,7 @@ IDI_TREETRIGGER			ICON					"treeviewIcon\\trigger.ico"
 IDI_TREECOLLISION		ICON					"treeviewIcon\\collision.ico"
 IDI_TREEWAYPOINT		ICON					"treeviewIcon\\waypoint.ico"
 IDI_TREECAMERA			ICON					"treeviewIcon\\camera.ico"
+IDI_TREELIGHT			ICON					"treeviewIcon\\light.ico"
 
 IDI_TOOLBARADD		    ICON                    "toolbarIcon\\toolbar-Add.ico"
 IDI_TOOLBAREDIT			ICON                    "toolbarIcon\\toolbar-Edit.ico"

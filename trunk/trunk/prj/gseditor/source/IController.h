@@ -18,6 +18,7 @@ public:
 		AddWaypoint,
 		AddCamera,
 		AddTrigger,
+		AddLight,
 		NumController
 	};
 

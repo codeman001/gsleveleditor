@@ -76,6 +76,12 @@ END
 ID_ADDCAMERA_LargeImages_RESID    BITMAP    "ribbonIcon\\add_camera.bmp" /* LargeImages ID_ADDCAMERA_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
+    ID_ADDLIGHT_LabelTitle_RESID L"Add light" /* LabelTitle ID_ADDLIGHT_LabelTitle_RESID: (null) */
+END
+
+ID_ADDLIGHT_LargeImages_RESID    BITMAP    "ribbonIcon\\add_light.bmp" /* LargeImages ID_ADDLIGHT_LargeImages_RESID: (null) */
+STRINGTABLE 
+BEGIN
     cmdGroupCamera_LabelTitle_RESID L"Camera" /* LabelTitle cmdGroupCamera_LabelTitle_RESID: (null) */
 END
 

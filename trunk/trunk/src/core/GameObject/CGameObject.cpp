@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "CZone.h"
 #include "CGameObject.h"
 #include "CComponentFactory.h"
 #include "IView.h"
@@ -22,6 +23,7 @@ const char* CGameObject::s_stringObjType[] =
 	"Waypoint Object",
 	"Camera Object",
 	"Trigger Object",
+	"Light Object"
 	"NumObject"
 };
 
@@ -71,6 +73,7 @@ void CGameObject::initNull()
 #ifdef GSEDITOR
 	m_treeItem		= NULL;
 	m_uiVisible		= true;
+	m_dummyObject	= false;
 #endif
 }
 
@@ -287,6 +290,15 @@ void CGameObject::destroyNode()
 		m_node->remove();
 		m_node = NULL;
 	}
+}
+
+// remove
+// destroy object
+void CGameObject::remove()
+{
+	CZone *zone = (CZone*)getParent();
+	if ( zone )
+		zone->removeObject( this );
 }
 
 // saveData

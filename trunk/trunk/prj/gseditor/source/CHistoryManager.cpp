@@ -77,9 +77,11 @@ bool CHistoryManager::doCreate(	SAction* action, bool redo )
 			pObj = pZone->createCamera();			
 		else if ( strcmp( pObjectType->data, strOfObjType( CGameObject::WaypointObject ) ) == 0 )
 			pObj = pZone->createWaypoint();		
-		else if ( strcmp( pObjectType->data, strOfObjType( CGameObject::TriggerObject ) ) == 0 )		
-			pObj = pZone->createTrigger();			
-		
+		else if ( strcmp( pObjectType->data, strOfObjType( CGameObject::TriggerObject ) ) == 0 )
+			pObj = pZone->createTrigger();
+		else if ( strcmp( pObjectType->data, strOfObjType( CGameObject::LightObject ) ) == 0 )
+			pObj = pZone->createLight();
+
 		if ( pObj )
 		{
 			pObj->updateData( pObject );

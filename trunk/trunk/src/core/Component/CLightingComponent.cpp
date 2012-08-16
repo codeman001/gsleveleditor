@@ -6,6 +6,7 @@
 CLightingComponent::CLightingComponent(CGameObject *pObj)
 	:IObjectComponent( pObj, IObjectComponent::Lighting )
 {
+
 }
 
 CLightingComponent::~CLightingComponent()
@@ -50,7 +51,8 @@ void CLightingComponent::initComponent()
 		m_gameObject->updateNodePosition();
 		m_gameObject->updateNodeRotation();		
 #else
-		ISceneNode *emtyNode = smgr->addEmptySceneNode( m_gameObject->m_node );		
+		ISceneNode *emtyNode = smgr->addEmptySceneNode( this->getParentSceneNode() );
+		emtyNode->grab();
 		m_gameObject->m_node = emtyNode;
 
 		// update position
@@ -58,20 +60,20 @@ void CLightingComponent::initComponent()
 		m_gameObject->updateNodeRotation();	
 #endif
 	}
-
+	
 	// add light scenenode
 	m_lightSceneNode = smgr->addLightSceneNode( m_gameObject->m_node );
-	m_lightSceneNode->setDebugDataVisible( EDS_BBOX );
 
 	// setting light data
 	video::SLight &light = m_lightSceneNode->getLightData();
-	light.Type = m_lightType == 0? ELT_POINT : ELT_DIRECTIONAL;
+	light.Type			= ELT_POINT;
 	light.DiffuseColor	= m_diffuseColor;
 	light.SpecularColor = m_specularColor;
 	light.Radius		= m_radius;
 	light.Attenuation.X	= 0.0f;
 	light.Attenuation.Y	= 1.0f/(m_radius * m_strength);
-	light.Attenuation.Z	= 0.0f;		
+	light.Attenuation.Z	= 0.0f;	
+
 }
 
 // update
@@ -89,7 +91,6 @@ void CLightingComponent::saveData( CSerializable* pObj )
 	std::string diffuseColor = getColorString(m_diffuseColor);
 	std::string specularColor = getColorString(m_specularColor);
 
-	pObj->addInt("lightingType", m_lightType, true);
 	pObj->addString("diffuseColor", diffuseColor.c_str(), true);
 	pObj->addString("specularColor",specularColor.c_str(), true);
 	pObj->addFloat("strength", m_strength, true);
@@ -102,7 +103,6 @@ void CLightingComponent::loadData( CSerializable* pObj )
 {
 	pObj->nextRecord();
 
-	m_lightType = pObj->readInt();
 	std::string diffuseColor	= pObj->readString();
 	std::string specularColor	= pObj->readString();
 	m_strength = pObj->readFloat();

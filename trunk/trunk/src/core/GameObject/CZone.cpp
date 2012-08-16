@@ -251,6 +251,39 @@ CTrigger* CZone::createTrigger()
 	return p;
 }
 
+// createLight
+// create a light object
+CLightObject* CZone::createLight()
+{
+	CLightObject *p = new CLightObject(this);
+	
+	wchar_t lpName[1024];
+	swprintf( lpName, 1024, L"%s_%d", L"light", (int)CGameObject::s_objectID );
+	
+	p->setID( CGameObject::s_objectID++ );
+	p->setParent( this );
+
+#ifdef GSEDITOR
+	// create tree item
+	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) lpName );
+	CDocument *pDoc = (CDocument*) getIView()->getDocument();
+
+	pTreeItem->setIconIndex( 4 );
+	pTreeItem->setIconStateIndex( 4 );
+	pTreeItem->update();
+
+	pTreeItem->setData( p );
+	p->setTreeItem( pTreeItem );
+	m_treeItem->update();
+	m_treeItem->expandChild( true );	
+#endif
+
+	p->setName( lpName );
+	addChild( p );
+
+	return p;
+}
+
 
 #endif
 

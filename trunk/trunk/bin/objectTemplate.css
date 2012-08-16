@@ -12,7 +12,6 @@ pointLight
 {
 	Lighting component
 	{
-		lightingType: 0 | intType;
 		diffuseColor: ffffffff | stringType;
 		specularColor: ffffffff | stringType;
 		strength: 1.0 | floatType;

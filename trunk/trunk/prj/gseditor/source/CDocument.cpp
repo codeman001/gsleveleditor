@@ -166,14 +166,17 @@ bool CDocument::saveDocument(wchar_t* lpPath)
 		{
 			CGameObject *pGameObj = (CGameObject*)(*i);
 
-			serializable.clear();
-			pGameObj->getData( &serializable );
-			
-			sprintf(lpString, "object_%d", pGameObj->getID());
-			file << lpString << "\n";
-			file << "{\n";
-			serializable.saveData( file, 1 );
-			file << "}\n";
+			if ( pGameObj->isDummyObject() == false )
+			{
+				serializable.clear();
+				pGameObj->getData( &serializable );
+				
+				sprintf(lpString, "object_%d", pGameObj->getID());
+				file << lpString << "\n";
+				file << "{\n";
+				serializable.saveData( file, 1 );
+				file << "}\n";
+			}
 
 			i++;
 		}

@@ -401,6 +401,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\GameObject\CLightObject.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CLightObject.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\GameObject\CTrigger.cpp"
 						>
 					</File>

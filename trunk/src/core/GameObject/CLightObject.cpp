@@ -152,7 +152,9 @@ void CLightObject::saveData( CSerializable* pObj )
 	pObj->addFloat("strength", m_strength);
 	pObj->addFloat("radius", m_radius);
 
+#ifdef GSEDITOR
 	m_direction = m_directionObj->getPosition();
+#endif
 	pObj->addFloat("directionX",m_direction.X);	
 	pObj->addFloat("directionY",m_direction.Y);
 	pObj->addFloat("directionZ",m_direction.Z);
@@ -176,8 +178,10 @@ void CLightObject::loadData( CSerializable* pObj )
 	m_direction.Z = pObj->readFloat();
 	CGameObject::loadData( pObj );
 
-
+#ifdef GSEDITOR
 	m_directionObj->setPosition( m_direction );
+#endif
+
 	m_diffuseColor = setColorString(diffuseColor);
 	m_specularColor = setColorString(specularColor);
 	
@@ -191,7 +195,7 @@ void CLightObject::loadData( CSerializable* pObj )
 	light.Attenuation.Y	= 1.0f/(m_radius * m_strength);
 	light.Attenuation.Z	= 0.0f;
 		
-	setLightOrientation( ( m_directionObj->getPosition() - getPosition() ).normalize() );	
+	setLightOrientation( ( m_direction - getPosition() ).normalize() );	
 }
 
 // getData
@@ -209,7 +213,10 @@ void CLightObject::getData( CSerializable* pObj )
 	pObj->addFloat("strength", m_strength);
 	pObj->addFloat("radius", m_radius);
 
+#ifdef GSEDITOR
 	m_direction = m_directionObj->getPosition();
+#endif
+
 	pObj->addFloat("directionX",m_direction.X);	
 	pObj->addFloat("directionY",m_direction.Y);
 	pObj->addFloat("directionZ",m_direction.Z);
@@ -234,7 +241,10 @@ void CLightObject::updateData( CSerializable* pObj )
 
 	CGameObject::updateData( pObj );
 
+#ifdef GSEDITOR
 	m_directionObj->setPosition( m_direction );
+#endif
+
 	m_diffuseColor = setColorString(diffuseColor);
 	m_specularColor = setColorString(specularColor);
 
@@ -248,7 +258,7 @@ void CLightObject::updateData( CSerializable* pObj )
 	light.Attenuation.Y	= 1.0f/(m_radius * m_strength);
 	light.Attenuation.Z	= 0.0f;
 	
-	setLightOrientation( ( m_directionObj->getPosition() - getPosition() ).normalize() );	
+	setLightOrientation( ( m_direction - getPosition() ).normalize() );	
 }
 
 // updateObject

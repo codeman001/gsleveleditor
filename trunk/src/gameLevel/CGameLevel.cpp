@@ -298,6 +298,19 @@ bool CGameLevel::loadStep( int nStep )
 						m_numObjectsLoaded++;
 					}
 				}
+				else if ( strcmp( objType, strOfType( CGameObject::LightObject ) ) == 0 )
+				{
+					if ( m_loadZone )
+					{
+						CLightObject *obj = m_loadZone->createLight();
+						obj->updateData( &objData );
+						obj->setVisible( false );
+						
+						// register name for search object by name
+						m_loadZone->registerObjectName( obj );
+						m_numObjectsLoaded++;
+					}
+				}
 				else if ( strcmp( objType, "Game level" ) == 0 )
 				{
 					SSerializableRec* r = objData.getProperty("numberObjects");

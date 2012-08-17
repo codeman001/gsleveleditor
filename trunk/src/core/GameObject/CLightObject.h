@@ -8,11 +8,12 @@ class CLightObject: public CGameObject
 protected:
 	ILightSceneNode	*m_lightSceneNode;
 
-	int		m_lightType;
-	SColor	m_diffuseColor;
-	SColor	m_specularColor;
-	float	m_strength;
-	float	m_radius;
+	int				m_lightType;
+	SColor			m_diffuseColor;
+	SColor			m_specularColor;
+	float			m_strength;
+	float			m_radius;
+	core::vector3df	m_direction;
 
 #ifdef GSEDITOR
 	CGameObject	*m_directionObj;
@@ -66,6 +67,10 @@ public:
 	// setColorString
 	// get SColor from string hexa name
 	SColor setColorString( const std::string& stringColor );
+
+	// setLightOrientation
+	// set light dir rotation
+	void setLightOrientation( const core::vector3df& v );
 
 #ifdef GSEDITOR
 	// drawObject	

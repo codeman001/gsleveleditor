@@ -264,6 +264,14 @@ bool CDocument::readDocumentFromData( char *lpData )
 						obj->updateData( &objData );
 					}
 				}
+				else if ( strcmp( objType, strOfType( CGameObject::LightObject ) ) == 0 )
+				{
+					if ( currentZone )
+					{
+						CLightObject *obj = currentZone->createLight();
+						obj->updateData( &objData );
+					}
+				}
 				else if ( strcmp( objType, "Game level" ) == 0 )
 				{
 					updateData( &objData );

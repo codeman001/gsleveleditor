@@ -99,7 +99,6 @@ void CLightObject::initLight()
 	light.Attenuation.Y	= 1.0f/(m_radius * m_strength);
 	light.Attenuation.Z	= 0.0f;
 
-
 #ifdef GSEDITOR
 	CZone *zone = (CZone*)m_parent;
 	m_directionObj = new CGameObject( zone );	
@@ -153,6 +152,11 @@ void CLightObject::saveData( CSerializable* pObj )
 	pObj->addFloat("strength", m_strength);
 	pObj->addFloat("radius", m_radius);
 
+	m_direction = m_directionObj->getPosition();
+	pObj->addFloat("directionX",m_direction.X);	
+	pObj->addFloat("directionY",m_direction.Y);
+	pObj->addFloat("directionZ",m_direction.Z);
+
 	CGameObject::saveData( pObj );
 }
 
@@ -167,10 +171,16 @@ void CLightObject::loadData( CSerializable* pObj )
 	std::string specularColor	= pObj->readString();
 	m_strength = pObj->readFloat();
 	m_radius = pObj->readFloat();
+	m_direction.X = pObj->readFloat();
+	m_direction.Y = pObj->readFloat();
+	m_direction.Z = pObj->readFloat();
+	CGameObject::loadData( pObj );
 
+
+	m_directionObj->setPosition( m_direction );
 	m_diffuseColor = setColorString(diffuseColor);
 	m_specularColor = setColorString(specularColor);
-
+	
 	// setting light data
 	video::SLight &light = m_lightSceneNode->getLightData();
 	light.Type = m_lightType == 0? ELT_POINT : ELT_DIRECTIONAL;
@@ -180,8 +190,8 @@ void CLightObject::loadData( CSerializable* pObj )
 	light.Attenuation.X	= 0.0f;
 	light.Attenuation.Y	= 1.0f/(m_radius * m_strength);
 	light.Attenuation.Z	= 0.0f;
-
-	CGameObject::loadData( pObj );
+		
+	setLightOrientation( ( m_directionObj->getPosition() - getPosition() ).normalize() );	
 }
 
 // getData
@@ -199,6 +209,11 @@ void CLightObject::getData( CSerializable* pObj )
 	pObj->addFloat("strength", m_strength);
 	pObj->addFloat("radius", m_radius);
 
+	m_direction = m_directionObj->getPosition();
+	pObj->addFloat("directionX",m_direction.X);	
+	pObj->addFloat("directionY",m_direction.Y);
+	pObj->addFloat("directionZ",m_direction.Z);
+
 	CGameObject::getData( pObj );
 }
 
@@ -213,10 +228,15 @@ void CLightObject::updateData( CSerializable* pObj )
 	std::string specularColor	= pObj->readString();
 	m_strength = pObj->readFloat();
 	m_radius = pObj->readFloat();
+	m_direction.X = pObj->readFloat();
+	m_direction.Y = pObj->readFloat();
+	m_direction.Z = pObj->readFloat();
 
+	CGameObject::updateData( pObj );
+
+	m_directionObj->setPosition( m_direction );
 	m_diffuseColor = setColorString(diffuseColor);
 	m_specularColor = setColorString(specularColor);
-
 
 	// setting light data
 	video::SLight &light = m_lightSceneNode->getLightData();
@@ -227,9 +247,8 @@ void CLightObject::updateData( CSerializable* pObj )
 	light.Attenuation.X	= 0.0f;
 	light.Attenuation.Y	= 1.0f/(m_radius * m_strength);
 	light.Attenuation.Z	= 0.0f;
-
-
-	CGameObject::updateData( pObj );
+	
+	setLightOrientation( ( m_directionObj->getPosition() - getPosition() ).normalize() );	
 }
 
 // updateObject
@@ -254,7 +273,7 @@ void CLightObject::updateObject()
 std::string CLightObject::getColorString( const SColor& color )
 {
 	char lpColor[512];
-	sprintf(lpColor, "%x%x%x%x", color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue() );
+	sprintf(lpColor, "%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue() );
 	return std::string(lpColor);
 }
 
@@ -298,6 +317,47 @@ SColor CLightObject::setColorString( const std::string& stringColor )
 	sscanf( bColor, "%X", &_b );
 		
 	return SColor(0xff, _r, _g, _b);
+}
+
+// setLightOrientation
+// set light dir rotation
+void CLightObject::setLightOrientation( const core::vector3df& v )
+{
+	core::vector3df front = v;
+	core::vector3df up(0,1,0);
+
+	front.normalize();
+
+	core::vector3df right = up.crossProduct(front);
+	up = front.crossProduct(right);
+
+	f32 matData[16];
+
+	matData[ 0] = right.X;
+	matData[ 1] = right.Y;
+	matData[ 2] = right.Z;
+	matData[ 3] = 0.0f;
+
+	matData[ 4] = up.X;
+	matData[ 5] = up.Y;
+	matData[ 6] = up.Z;
+	matData[ 7] = 0.0f;
+
+	matData[ 8] = front.X;
+	matData[ 9] = front.Y;
+	matData[10] = front.Z;
+	matData[11] = 0.0f;
+
+	matData[12] = 0.0f;
+	matData[13] = 0.0f;
+	matData[14] = 0.0f;
+	matData[15] = 1.0f;
+
+	core::matrix4 rotationMatrix;
+	rotationMatrix.setM(matData);
+
+	core::vector3df rotation = rotationMatrix.getRotationDegrees();
+	m_lightSceneNode->setRotation( rotation );
 }
 
 #ifdef GSEDITOR

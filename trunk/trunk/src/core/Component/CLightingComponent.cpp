@@ -118,7 +118,7 @@ void CLightingComponent::loadData( CSerializable* pObj )
 std::string CLightingComponent::getColorString( const SColor& color )
 {
 	char lpColor[512];
-	sprintf(lpColor, "%x%x%x%x", color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue() );
+	sprintf(lpColor, "%02x%02x%02x",color.getRed(), color.getGreen(), color.getBlue() );
 	return std::string(lpColor);
 }
 

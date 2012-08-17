@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="Windows-1252" ?>
+<NotepadPlus>
+	<AutoComplete>
+		<KeyWord name="getObjectByName" func="yes">
+            <Overload retVal="int">
+                <Param name="string objectName" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="disableObject" func="yes">
+            <Overload retVal="void">
+                <Param name="int objectID" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="enableObject" func="yes">
+            <Overload retVal="void">
+                <Param name="int objectID" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="getObjectPosition" func="yes">
+            <Overload retVal="x,y,z =">
+                <Param name="int objectID" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setObjectPosition" func="yes">
+            <Overload retVal="void">
+				<Param name="int objectID" />
+                <Param name="float x" />
+				<Param name="float y" />
+				<Param name="float z" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="getObjectRotation" func="yes">
+            <Overload retVal="x,y,z =">
+                <Param name="int objectID" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setObjectRotation" func="yes">
+            <Overload retVal="void">
+				<Param name="int objectID" />
+                <Param name="float x" />
+				<Param name="float y" />
+				<Param name="float z" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setObjectLookAtObject" func="yes">
+            <Overload retVal="void">
+				<Param name="int objectID" />
+				<Param name="int lookObjectID" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setObjectOrientation" func="yes">
+            <Overload retVal="void">
+				<Param name="int objectID" />
+				<Param name="int lookObjectID" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setAnimatorMoveToWayPoint" func="yes">
+            <Overload retVal="void">
+				<Param name="int objectID" />
+				<Param name="int waypointID" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="addObjectLod" func="yes">
+            <Overload retVal="void">
+				<Param name="int objectID" />
+				<Param name="float distance" />
+				<Param name="string nodeName" />				
+            </Overload>
+        </KeyWord>
+		<KeyWord name="clearObjectLod" func="yes">
+            <Overload retVal="void">
+				<Param name="int objectID" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setLevelCamera" func="yes">
+            <Overload retVal="void">
+				<Param name="int cameraID" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setCameraFarValue" func="yes">
+            <Overload retVal="void">
+				<Param name="int cameraID" />
+				<Param name="float far" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setCameraLookAtObj" func="yes">
+            <Overload retVal="void">
+				<Param name="int cameraID" />
+				<Param name="int lookObjectID" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setCameraFollowObject" func="yes">
+            <Overload retVal="void">
+				<Param name="int cameraID" />
+				<Param name="int lookObjectID" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="getCurrentCameraPosition" func="yes">
+            <Overload retVal="x,y,z =">				
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setSceneNodePosition" func="yes">
+            <Overload retVal="void">
+				<Param name="int objectID" />
+				<Param name="string nodeName" />
+				<Param name="float x" />
+				<Param name="float y" />
+				<Param name="float z" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setSceneNodeIsSkydome" func="yes">
+            <Overload retVal="void">
+				<Param name="int objectID" />
+				<Param name="string nodeName" />				
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setSceneNodeVisible" func="yes">
+            <Overload retVal="void">
+				<Param name="int objectID" />
+				<Param name="string nodeName" />
+				<Param name="int visible" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setLevelAmbientLight" func="yes">
+            <Overload retVal="void">
+				<Param name="int r" />
+				<Param name="int g" />
+				<Param name="int b" />
+            </Overload>
+        </KeyWord>
+		<KeyWord name="addItemToInventory" func="yes">
+            <Overload retVal="void">
+				<Param name="int objectID" />
+				<Param name="string itemTemplate" />				
+            </Overload>
+        </KeyWord>
+		<KeyWord name="setActiveItemOnInventory" func="yes">
+            <Overload retVal="void">
+				<Param name="int objectID" />
+				<Param name="string itemTemplate" />				
+            </Overload>
+        </KeyWord>
+	</AutoComplete>
+</NotepadPlus>

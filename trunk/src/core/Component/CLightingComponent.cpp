@@ -51,7 +51,7 @@ void CLightingComponent::initComponent()
 		m_gameObject->updateNodePosition();
 		m_gameObject->updateNodeRotation();		
 #else
-		ISceneNode *emtyNode = smgr->addEmptySceneNode( this->getParentSceneNode() );
+		ISceneNode *emtyNode = smgr->addEmptySceneNode( m_gameObject->getParentSceneNode() );
 		emtyNode->grab();
 		m_gameObject->m_node = emtyNode;
 
@@ -126,8 +126,40 @@ std::string CLightingComponent::getColorString( const SColor& color )
 // get SColor from string hexa name
 SColor CLightingComponent::setColorString( const std::string& stringColor )
 {
-	std::string hexa = std::string("0x") + stringColor;
-	irr::u32 color = 0;
-	sscanf(hexa.c_str(),"%x", &color);
-	return SColor (color);
+	unsigned int rgbColor = 0;
+	unsigned int _r = 0, _g = 0, _b = 0;
+
+	char strColor[512];
+	uiString::copy<char, const char>(strColor, stringColor.c_str());
+
+	uiString::toUpper<char>( strColor );
+	int len = uiString::length<char>( strColor );
+	
+	for ( ;len < 6; len++)
+		strColor[len] = '0';
+	strColor[len] = 0;
+
+	char rColor[5] = {0};
+	rColor[0] = '0';
+	rColor[1] = 'x';
+	rColor[2] = strColor[0];
+	rColor[3] = strColor[1];
+
+	char gColor[5] = {0};
+	gColor[0] = '0';
+	gColor[1] = 'x';
+	gColor[2] = strColor[2];
+	gColor[3] = strColor[3];
+
+	char bColor[5] = {0};
+	bColor[0] = '0';
+	bColor[1] = 'x';
+	bColor[2] = strColor[4];
+	bColor[3] = strColor[5];
+
+	sscanf( rColor, "%X", &_r );
+	sscanf( gColor, "%X", &_g );
+	sscanf( bColor, "%X", &_b );
+		
+	return SColor(0xff, _r, _g, _b);
 }

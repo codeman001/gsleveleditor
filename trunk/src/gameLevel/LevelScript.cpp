@@ -346,10 +346,7 @@ int setSceneNodePosition(lua_State* state)
 int setSceneNodeIsSkydome(lua_State* state)
 {
 	int objID	= lua_tointeger(state,1);
-	const char* sceneNodeName = lua_tostring(state,2);
-	float x		= (float)lua_tonumber(state,3);
-	float y		= (float)lua_tonumber(state,4);
-	float z		= (float)lua_tonumber(state,5);
+	const char* sceneNodeName = lua_tostring(state,2);	
 
 	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )

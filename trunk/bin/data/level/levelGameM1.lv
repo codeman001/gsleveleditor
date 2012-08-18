@@ -4,13 +4,13 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: 1236.4013672 | floatType;
-		cameraY: -216.9889069 | floatType;
-		cameraZ: 540.1294556 | floatType;
-		cameraTargetX: 1828.2700195 | floatType;
-		cameraTargetY: -411.0059509 | floatType;
-		cameraTargetZ: 1756.5017090 | floatType;
-		numberObjects: 6 | intType;
+		cameraX: 2044.1499023 | floatType;
+		cameraY: 2435.1547852 | floatType;
+		cameraZ: 2160.1591797 | floatType;
+		cameraTargetX: 2270.3312988 | floatType;
+		cameraTargetY: -1155.7424316 | floatType;
+		cameraTargetZ: 807.7115479 | floatType;
+		numberObjects: 10 | intType;
 	}
 }
 zone_1
@@ -118,7 +118,7 @@ object_6
 		objectTemplate: player | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
-		lighting: false | boolType;
+		lighting: true | boolType;
 		lock: true | boolType;
 		positionX: 1787.7031250 | floatType;
 		positionY: -806.6190186 | floatType;
@@ -157,6 +157,76 @@ object_7
 		rotationX: 218.5078888 | floatType;
 		rotationY: 25.2485695 | floatType;
 		rotationZ: 180.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_9
+{
+	Light Object
+	{
+		lightingType: 1 | intType;
+		diffuseColor: ffffff | stringType;
+		specularColor: ffffff | stringType;
+		strength: 1.0000000 | floatType;
+		radius: 100.0000000 | floatType;
+		directionX: 1295.0153809 | floatType;
+		directionY: -166.4641724 | floatType;
+		directionZ: 1334.2022705 | floatType;
+	}
+	Game object
+	{
+		objectID: 9 | longType;
+		parentID: 1 | longType;
+		objectType: Light Object | stringType;
+		objectName: light_9 | stringType;
+		objectTemplate:  | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: 559.1906738 | floatType;
+		positionY: 798.7294312 | floatType;
+		positionZ: 1816.7373047 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_11
+{
+	Light Object
+	{
+		lightingType: 1 | intType;
+		diffuseColor: ffffff | stringType;
+		specularColor: ffffff | stringType;
+		strength: 1.0000000 | floatType;
+		radius: 100.0000000 | floatType;
+		directionX: 2156.1132813 | floatType;
+		directionY: 263.6507568 | floatType;
+		directionZ: 1473.7374268 | floatType;
+	}
+	Game object
+	{
+		objectID: 11 | longType;
+		parentID: 1 | longType;
+		objectType: Light Object | stringType;
+		objectName: light_11 | stringType;
+		objectTemplate:  | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: 2818.2421875 | floatType;
+		positionY: 792.2371216 | floatType;
+		positionZ: 1978.2734375 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
 		scaleX: 1.0000000 | floatType;
 		scaleY: 1.0000000 | floatType;
 		scaleZ: 1.0000000 | floatType;

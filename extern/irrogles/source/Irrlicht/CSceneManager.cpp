@@ -1455,7 +1455,7 @@ void CSceneManager::drawAll()
 		if (LightManager)
 		{
 			LightManager->OnRenderPassPreRender(CurrentRendertime);
-			for (i=0; i<SkyBoxList.size(); ++i)
+			for (int i=0, allSkyBox = SkyBoxList.size(); i< allSkyBox; ++i)
 			{
 				ISceneNode* node = SkyBoxList[i];
 				LightManager->OnNodePreRender(node);
@@ -1486,7 +1486,7 @@ void CSceneManager::drawAll()
 		if (LightManager)
 		{
 			LightManager->OnRenderPassPreRender(CurrentRendertime);
-			for (i=0; i<SolidNodeList.size(); ++i)
+			for (int i=0, allSoild = SolidNodeList.size(); i < allSoild; ++i)
 			{
 				ISceneNode* node = SolidNodeList[i].Node;
 				LightManager->OnNodePreRender(node);
@@ -1496,7 +1496,7 @@ void CSceneManager::drawAll()
 		}
 		else
 		{
-			for (i=0; i<SolidNodeList.size(); ++i)
+			for (int i=0, allSoild = SolidNodeList.size(); i < allSoild; ++i)
 				SolidNodeList[i].Node->render();
 		}
 
@@ -1515,7 +1515,7 @@ void CSceneManager::drawAll()
 		if (LightManager)
 		{
 			LightManager->OnRenderPassPreRender(CurrentRendertime);
-			for (i=0; i<ShadowNodeList.size(); ++i)
+			for (int i=0, allShadow = ShadowNodeList.size(); i < allShadow; ++i)
 			{
 				ISceneNode* node = ShadowNodeList[i];
 				LightManager->OnNodePreRender(node);
@@ -1525,7 +1525,7 @@ void CSceneManager::drawAll()
 		}
 		else
 		{
-			for (i=0; i<ShadowNodeList.size(); ++i)
+			for (int i=0, allShadow = ShadowNodeList.size(); i < allShadow; ++i)
 				ShadowNodeList[i]->render();
 		}
 
@@ -1549,7 +1549,7 @@ void CSceneManager::drawAll()
 		{
 			LightManager->OnRenderPassPreRender(CurrentRendertime);
 
-			for (i=0; i<TransparentNodeList.size(); ++i)
+			for (int i=0, allTransparent=TransparentNodeList.size(); i<allTransparent; ++i)
 			{
 				ISceneNode* node = TransparentNodeList[i].Node;
 				LightManager->OnNodePreRender(node);
@@ -1559,7 +1559,7 @@ void CSceneManager::drawAll()
 		}
 		else
 		{
-			for (i=0; i<TransparentNodeList.size(); ++i)
+			for (int i=0, allTransparent=TransparentNodeList.size(); i<allTransparent; ++i)
 				TransparentNodeList[i].Node->render();
 		}
 
@@ -1581,7 +1581,7 @@ void CSceneManager::drawAll()
 		{
 			LightManager->OnRenderPassPreRender(CurrentRendertime);
 
-			for (i=0; i<TransparentEffectNodeList.size(); ++i)
+			for (int i=0, allTransparent=TransparentEffectNodeList.size(); i<allTransparent; ++i)
 			{
 				ISceneNode* node = TransparentEffectNodeList[i].Node;
 				LightManager->OnNodePreRender(node);
@@ -1591,7 +1591,7 @@ void CSceneManager::drawAll()
 		}
 		else
 		{
-			for (i=0; i<TransparentEffectNodeList.size(); ++i)
+			for (int i=0, allTransparent=TransparentEffectNodeList.size(); i<allTransparent; ++i)
 				TransparentEffectNodeList[i].Node->render();
 		}
 

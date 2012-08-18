@@ -92,8 +92,8 @@ namespace scene
 		{
 			if (IsVisible)
 			{
-				ISceneNodeList::Iterator it = Children.begin();
-				for (; it != Children.end(); ++it)
+				ISceneNodeList::Iterator it = Children.begin(), end = Children.end();
+				for (; it != end; ++it)
 					(*it)->OnRegisterSceneNode();
 			}
 		}
@@ -111,8 +111,8 @@ namespace scene
 			{
 				// animate this node with all animators
 
-				ISceneNodeAnimatorList::Iterator ait = Animators.begin();
-				while (ait != Animators.end())
+				ISceneNodeAnimatorList::Iterator ait = Animators.begin(), end = Animators.end();
+				while (ait != end)
 					{
 					// continue to the next node before calling animateNode()
 					// so that the animator may remove itself from the scene
@@ -127,8 +127,8 @@ namespace scene
 
 				// perform the post render process on all children
 
-				ISceneNodeList::Iterator it = Children.begin();
-				for (; it != Children.end(); ++it)
+				ISceneNodeList::Iterator it = Children.begin(), endNode = Children.end();
+				for (; it != endNode; ++it)
 					(*it)->OnAnimate(timeMs);
 			}
 		}

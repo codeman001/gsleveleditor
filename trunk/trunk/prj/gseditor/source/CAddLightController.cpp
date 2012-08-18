@@ -42,6 +42,7 @@ void CAddLightController::onLMouseUp(int x, int y)
 			CLightObject *pObj =	pView->getCurrentZone()->createLight();
 			
 			pObj->setPosition( hit );
+			pObj->getDirectionObject()->setPosition( hit + core::vector3df(0,-1,0)*100.0f );
 			pObj->setVisible( true );
 
 			// add history

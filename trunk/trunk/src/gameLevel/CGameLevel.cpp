@@ -304,7 +304,6 @@ bool CGameLevel::loadStep( int nStep )
 					{
 						CLightObject *obj = m_loadZone->createLight();
 						obj->updateData( &objData );
-						obj->setVisible( false );
 						
 						// register name for search object by name
 						m_loadZone->registerObjectName( obj );

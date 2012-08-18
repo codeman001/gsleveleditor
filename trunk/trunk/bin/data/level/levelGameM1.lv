@@ -4,12 +4,12 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: 2044.1499023 | floatType;
-		cameraY: 2435.1547852 | floatType;
-		cameraZ: 2160.1591797 | floatType;
-		cameraTargetX: 2270.3312988 | floatType;
-		cameraTargetY: -1155.7424316 | floatType;
-		cameraTargetZ: 807.7115479 | floatType;
+		cameraX: 1771.9564209 | floatType;
+		cameraY: 2398.2329102 | floatType;
+		cameraZ: 2322.1679688 | floatType;
+		cameraTargetX: 1229.8547363 | floatType;
+		cameraTargetY: -937.5332031 | floatType;
+		cameraTargetZ: 630.2446289 | floatType;
 		numberObjects: 10 | intType;
 	}
 }
@@ -186,9 +186,9 @@ object_9
 		visible: true | boolType;
 		lighting: false | boolType;
 		lock: false | boolType;
-		positionX: 559.1906738 | floatType;
+		positionX: 623.3055420 | floatType;
 		positionY: 798.7294312 | floatType;
-		positionZ: 1816.7373047 | floatType;
+		positionZ: 2121.1394043 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;
@@ -221,9 +221,9 @@ object_11
 		visible: true | boolType;
 		lighting: false | boolType;
 		lock: false | boolType;
-		positionX: 2818.2421875 | floatType;
+		positionX: 2727.8654785 | floatType;
 		positionY: 792.2371216 | floatType;
-		positionZ: 1978.2734375 | floatType;
+		positionZ: 618.1285400 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;

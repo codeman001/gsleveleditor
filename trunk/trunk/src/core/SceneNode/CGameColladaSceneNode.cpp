@@ -674,7 +674,7 @@ void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 // skin
 // skin mesh
 void CGameColladaSceneNode::skin()
-{	
+{
 	if ( ColladaMesh == NULL || ColladaMesh->IsStaticMesh == true )
 		return;
 	
@@ -684,17 +684,23 @@ void CGameColladaSceneNode::skin()
 	
 	// array joint
 	int nJoint = ColladaMesh->Joints.size();
-	CGameColladaMesh::SJoint *arrayJoint = ColladaMesh->Joints.pointer();
-	CGameColladaMesh::SJoint *pJoint = arrayJoint;
-	
+	CGameColladaMesh::SJoint	*arrayJoint = ColladaMesh->Joints.pointer();
+	CGameColladaMesh::SJoint	*pJoint = arrayJoint;
+	CGameColladaMesh::SWeight	*pWeight = NULL;
+
 	// calc joint matrix
 	for ( int i = 0; i < nJoint; i++, pJoint++ )
-		pJoint->skinningMatrix.setbyproduct( pJoint->node->AbsoluteAnimationMatrix, pJoint->globalInversedMatrix );
+	{
+		core::matrix4 mat;
+		mat.setbyproduct( pJoint->node->AbsoluteAnimationMatrix, pJoint->globalInversedMatrix );
+		pJoint->skinningMatrix.setbyproduct( mat, ColladaMesh->BindShapeMatrix );
+	}
 
 	int lastVertexTransform = 0;
 
 	// skinning all mesh buffer
 	int nMeshBuffer = ColladaMesh->getMeshBufferCount();
+
 	for ( int mesh = 0; mesh < nMeshBuffer; mesh++ )
 	{
 		SColladaMeshBuffer *meshBuffer	= (SColladaMeshBuffer*)ColladaMesh->getMeshBuffer(mesh);			
@@ -719,27 +725,25 @@ void CGameColladaSceneNode::skin()
 		// seek to vertex buffer
 		vertex += begin;
 
+		core::vector3df positionCumulator;
+		core::vector3df normalCumulator;
+		s32 nJointCount = 0;
+
 		// skinning
 		for ( int i = begin; i <= end; i++, vertex++ )
 		{
-			core::vector3df positionCumulator(0.0, 0.0, 0.0);
-			core::vector3df normalCumulator(0.0, 0.0, 0.0);
+			positionCumulator.set(0,0,0);
+			normalCumulator.set(0,0,0);
 			
-			s32 nJointCount = jointInVertex[i];
+			nJointCount = jointInVertex[i];
 
-			for ( int iJoint = 0; iJoint < nJointCount; iJoint++ )
-			{
-				u32 boneId		= *jointIndex; jointIndex++;
-				u32 weightId	= *jointIndex; jointIndex++;
-				
-				CGameColladaMesh::SJoint	*pJoint		= &arrayJoint[boneId];
-				CGameColladaMesh::SWeight	*pWeight	= &pJoint->weights[weightId];
-				
-				// transform vertex position
-				ColladaMesh->BindShapeMatrix.transformVect( tempVertex, pWeight->staticPos );
+			while ( --nJointCount >= 0  )
+			{								
+				pJoint	= &arrayJoint[ *jointIndex++ ];
+				pWeight	= &pJoint->weights[ *jointIndex++];
 
 				// skin vertex
-				pJoint->skinningMatrix.transformVect	(thisVertexMove, tempVertex);
+				pJoint->skinningMatrix.transformVect	(thisVertexMove, pWeight->staticPos);
 
 				// transform normal vector
 				pJoint->skinningMatrix.rotateVect		(thisNormalMove, pWeight->staticNormal);
@@ -749,8 +753,8 @@ void CGameColladaSceneNode::skin()
 			}
 			
 			// apply skin pos & normal
-			vertex->Pos = positionCumulator;
-			vertex->Normal = normalCumulator;
+			vertex->Pos		= positionCumulator;
+			vertex->Normal	= normalCumulator;
 		}
 		
 		lastVertexTransform = end + 1;
@@ -762,8 +766,8 @@ void CGameColladaSceneNode::skin()
 			ColladaMesh->BoundingBox = meshBuffer->getBoundingBox();
 		else
 			ColladaMesh->BoundingBox.addInternalBox(meshBuffer->getBoundingBox());
-
 	}
+
 }
 
 // getCurrentFrameData

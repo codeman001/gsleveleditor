@@ -37,7 +37,7 @@ mediump vec3 gNormal;
 
 mediump vec4 lightEquation(int lidx)
 {		
-	mediump vec4 color = vec4(0.0);
+	mediump vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
 	mediump vec3 lightDir = -uLightDirection[lidx].xyz;			
 	
 	// add material ambient color
@@ -56,26 +56,25 @@ mediump vec4 lightEquation(int lidx)
 	return color;
 }
 
-mediump vec4 computeLighting(void)
-{
-	// base color is ambient color
-	mediump vec4 color = uMaterialEmission + uAmbientColor;
-
-	// add with light color
-	for ( int i = 0; i < uNumLight; ++i)
-	{
-		color += lightEquation(i);
-	}
-	
-	color.a = uMaterialDiffuse.a;
-	return color;
-}
-
 void main(void)
 {	
 	gNormal = inVertexNormal.xyz;
-	varVertexColor = inVertexColor * computeLighting();
 	
+	// calc light color
+	mediump vec4 lightColor = uMaterialEmission + uAmbientColor;
+	
+	// calc light direction
+	mediump int i = uNumLight;
+	do
+	{
+		lightColor += lightEquation(--i);		
+	}
+	while ( i >= 0 );
+
+	lightColor.a = uMaterialDiffuse.a;
+	
+	// calc vertex color
+	varVertexColor = inVertexColor * lightColor;	
 	varTexCoord0 = inTexCoord0;
 	gl_Position = uMvpMatrix * inVertexPosition;	
 }

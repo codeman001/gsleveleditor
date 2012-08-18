@@ -109,7 +109,8 @@ namespace video
 
 		float Normalize;
 
-
+		bool	UseTexture[MATERIAL_MAX_TEXTURES];
+		bool	UseTexMatrix[MATERIAL_MAX_TEXTURES];
 		int		TextureUnits[MATERIAL_MAX_TEXTURES];
 		mat4	TextureMatrix[MATERIAL_MAX_TEXTURES];
 
@@ -117,16 +118,19 @@ namespace video
 		float AlphaValue;
 		AlphaFunc AlphaFunction;
 
-		int Lighting;
-		vec4 LightPosition[MAX_LIGHTS];
-		SColorf LightAmbient[MAX_LIGHTS];
-		SColorf LightDiffuse[MAX_LIGHTS];
-		SColorf LightSpecular[MAX_LIGHTS];
-		core::vector3df LightDirection[MAX_LIGHTS];
-		core::vector3df LightAttenuation[MAX_LIGHTS];
-		float LightExponent[MAX_LIGHTS];
-		float LightCutoff[MAX_LIGHTS];
-		SColorf AmbientColor;
+		int				Lighting;
+		
+		vec4			LightDirection		[MAX_LIGHTS];
+		SColorf			LightAmbient		[MAX_LIGHTS];
+		SColorf			LightDiffuse		[MAX_LIGHTS];
+		SColorf			LightSpecular		[MAX_LIGHTS];
+		
+		vec4			PointLightPosition	[MAX_LIGHTS];
+		SColorf			PointLightAmbient	[MAX_LIGHTS];
+		SColorf			PointLightDiffuse	[MAX_LIGHTS];
+		SColorf			PointLightSpecular	[MAX_LIGHTS];
+		core::vector3df PointLightAttenuation[MAX_LIGHTS];
+		SColorf			AmbientColor;
 
 		int Fog;
 		int FogType;
@@ -144,6 +148,7 @@ namespace video
 		SColorf MaterialDiffuse;
 		SColorf MaterialSpecular;
 		float MaterialShininess;
+		SMaterial	Material;
 
 		E_MATERIAL_TYPE RenderMode;
 	private :
@@ -153,15 +158,21 @@ namespace video
 			WORLD_MATRIX,
 			NORMALIZE,
 			EYE_POSITION,
-			USE_LIGHT,
-			LIGHT_POSITION,
+
+			LIGHT_DIRECTION,
 			LIGHT_AMBIENT,
 			LIGHT_DIFFUSE,
 			LIGHT_SPECULAR,
-			LIGHT_DIRECTION,
-			LIGHT_ATTENUATION,
-			LIGHT_EXPONENT,
-			LIGHT_CUTOFF,
+
+			POINTLIGHT_POSITION,
+			POINTLIGHT_AMBIENT,
+			POINTLIGHT_DIFFUSE,
+			POINTLIGHT_SPECULAR,
+			POINTLIGHT_ATTENUATION,
+
+			NUMLIGHT,
+			NUMPOINTLIGHT,
+
 			AMBIENT_COLOR,
 			MATERIAL_AMBIENT,
 			MATERIAL_EMISSION,
@@ -169,6 +180,7 @@ namespace video
 			MATERIAL_SPECULAR,
 			MATERIAL_SHININESS,
 			COLOR_MATERIAL,
+
 			TEXTURE_MATRIX,
 			CLIP_PLANE,
 			ALPHA_TEST,

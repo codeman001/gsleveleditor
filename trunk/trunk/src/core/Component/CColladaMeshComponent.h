@@ -519,6 +519,7 @@ protected:
 	// constructMeshBuffer
 	// create mesh buffer
 	void constructMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri, IMeshBuffer *buffer, int *beginVertex, int *endVertex ,bool flip );
+	void constructSkinMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri, IMeshBuffer *buffer, int *beginVertex, int *endVertex ,bool flip );
 
 	// constructSkinMesh
 	// apply bone to vertex

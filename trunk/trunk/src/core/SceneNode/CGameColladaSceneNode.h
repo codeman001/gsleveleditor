@@ -21,6 +21,18 @@ struct SColladaMeshBuffer: public SMeshBuffer
 	}
 };
 
+struct SColladaSkinMeshBuffer: public SMeshBufferSkin
+{
+	int	beginVertex;
+	int endVertex;
+	
+	SColladaSkinMeshBuffer()
+	{
+		beginVertex = -1;
+		endVertex	= -1;
+	}
+};
+
 // CGameColladaMesh
 // Collada mesh
 class CGameColladaMesh: public IMesh
@@ -145,21 +157,9 @@ public:
 	//! Shape matrix from dae
 	core::matrix4	BindShapeMatrix;
 
-	// ! For Skinning
-	struct SWeight
-	{	
-		u16 buffer_id;
-		u32 vertex_id;
-		f32 strength;
-		core::vector3df staticPos;
-		core::vector3df staticNormal;
-	};
-
 	struct SJoint
 	{
 		std::wstring			name;
-		core::array<SWeight>	weights;
-
 		core::matrix4			globalInversedMatrix;
 		core::matrix4			skinningMatrix;
 
@@ -171,10 +171,7 @@ public:
 		}
 	};
 	
-	core::array<SJoint>			Joints;
-	core::array<s32>			JointIndex;
-	core::array<s32>			JointVertexIndex;
-
+	core::array<SJoint>			Joints;	
 	bool						IsStaticMesh;
 };
 
@@ -402,6 +399,12 @@ protected:
 	bool			m_isRootColladaNode;
 	bool			m_enableAnim;
 
+	// for hardware skinning
+	bool			m_isHardwareSkinning;
+	core::matrix4	*m_boneMatrix;
+	int				*m_skinIndices;
+	float			*m_skinWeight;
+
 #ifdef GSANIMATION
 	bool			m_isShowName;
 #endif
@@ -409,11 +412,10 @@ protected:
 	std::string		m_sid;
 
 	CColladaMeshComponent		*m_component;
-	CGameObject					*m_hookTransformObject;
 
 	IGameAnimationCallback		*m_animationCallback;
 public:
-	CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id);
+	CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id, bool hardwareSkinning = true);
 
 	virtual ~CGameColladaSceneNode();
 
@@ -454,17 +456,7 @@ public:
 
 	// setColladaMesh
 	// Set current collada mesh
-	void setColladaMesh(CGameColladaMesh* mesh)
-	{
-		if ( ColladaMesh )
-			ColladaMesh->drop();
-
-		ColladaMesh = mesh;
-		Box = ColladaMesh->getBoundingBox();
-
-		if ( ColladaMesh )
-			ColladaMesh->grab();
-	}
+	void setColladaMesh(CGameColladaMesh* mesh);
 
 	CGameColladaMesh* getMesh()
 	{
@@ -509,15 +501,6 @@ public:
 	void setComponent( CColladaMeshComponent *comp )
 	{
 		m_component = comp;
-	}
-
-	// setHookTransformObject
-	// hook transform obj to absolute position
-	void setHookTransformObject( CGameObject *obj );	
-
-	inline CGameObject* getHookTransformObject()
-	{
-		return m_hookTransformObject;
 	}
 
 	inline void setAnimationCallback( IGameAnimationCallback *callback )

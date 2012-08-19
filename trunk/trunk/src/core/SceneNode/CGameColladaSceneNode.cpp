@@ -14,9 +14,7 @@ CGameColladaMesh* CGameColladaMesh::clone()
 {
 	CGameColladaMesh* newMesh = new CGameColladaMesh();
 
-	newMesh->Joints = Joints;
-	newMesh->JointIndex = JointIndex;
-	newMesh->JointVertexIndex = JointVertexIndex;
+	newMesh->Joints = Joints;	
 	newMesh->BoundingBox = BoundingBox;
 	
 	ISceneManager *smgr = getIView()->getSceneMgr();
@@ -477,11 +475,11 @@ void CGameAnimation::update(float timeStep)
 // CGameColladaSceneNode implement
 //////////////////////////////////////////////////////////
 
-CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id)
+CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id, bool hardwareSkinning)
 	:ISceneNode( parent, mgr, id )
 {	
 	m_isRootColladaNode = true;
-	m_enableAnim = true;
+	m_enableAnim = true;	
 	m_timer = 0;
 	
 	m_isSkydome = false;
@@ -491,8 +489,14 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	ColladaMesh = NULL;	
 	m_component = NULL;
 	
-	m_hookTransformObject	= NULL;
 	m_animationCallback		= NULL;
+
+	
+	// hardware skinning
+	m_isHardwareSkinning = hardwareSkinning;
+	m_boneMatrix	= NULL;
+	m_skinIndices	= NULL;
+	m_skinWeight	= NULL;
 
 #ifdef GSANIMATION
 	m_isShowName = false;
@@ -505,14 +509,104 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 
 CGameColladaSceneNode::~CGameColladaSceneNode()
 {
-	if ( m_hookTransformObject )
-	{
-		m_hookTransformObject->setHookTransformNode( NULL );
-		m_hookTransformObject = NULL;
-	}
-
 	if ( ColladaMesh )
 		ColladaMesh->drop();
+	
+	if ( m_boneMatrix )
+		delete m_boneMatrix;
+	if ( m_skinIndices )
+		delete m_skinIndices;
+	if ( m_skinWeight )
+		delete m_skinWeight;
+}
+
+// setColladaMesh
+// Set current collada mesh
+void CGameColladaSceneNode::setColladaMesh(CGameColladaMesh* mesh)
+{
+	if ( ColladaMesh )
+		ColladaMesh->drop();
+
+	ColladaMesh = mesh;
+	Box = ColladaMesh->getBoundingBox();
+
+	if ( ColladaMesh )
+		ColladaMesh->grab();
+
+	// init skin data
+	/*
+	if ( m_isHardwareSkinning && ColladaMesh->IsStaticMesh == false && ColladaMesh->getMeshBufferCount() > 0 )
+	{	
+		if ( m_boneMatrix )
+			delete m_boneMatrix;
+		if ( m_skinIndices )
+			delete m_skinIndices;
+		if ( m_skinWeight )
+			delete m_skinWeight;
+
+		// init boneMatrix array
+		int nJoint = ColladaMesh->Joints.size();
+		m_boneMatrix = new core::matrix4[ nJoint ];
+
+		// vertex count
+		int vertexCount = ColladaMesh->getMeshBuffer(0)->getVertexCount();
+		int numEntity = vertexCount * 4;
+		m_skinIndices	= new int[numEntity];
+		m_skinWeight	= new float[numEntity];
+		memset( m_skinIndices, 0, sizeof(int)*numEntity );
+		memset( m_skinWeight, 0, sizeof(float)*numEntity );
+
+		// setup skin buffer
+		int nMeshBuffer = ColladaMesh->getMeshBufferCount();
+		int lastVertexTransform = 0;
+
+		s32			*jointInVertex	= (s32*)ColladaMesh->JointVertexIndex.pointer();
+		s32			*jointIndex		= (s32*)ColladaMesh->JointIndex.pointer();
+		CGameColladaMesh::SJoint	*arrayJoint = ColladaMesh->Joints.pointer();
+		CGameColladaMesh::SJoint	*pJoint = arrayJoint;
+		CGameColladaMesh::SWeight	*pWeight = NULL;
+
+		for ( int mesh = 0; mesh < nMeshBuffer; mesh++ )
+		{
+			SColladaMeshBuffer *meshBuffer	= (SColladaMeshBuffer*)ColladaMesh->getMeshBuffer(mesh);
+
+			// get vertex position
+			int begin	= meshBuffer->beginVertex;
+			int end		= meshBuffer->endVertex;
+			if ( begin < 0 )
+				begin = 0;
+			if ( end < 0 || end > (int)meshBuffer->getVertexCount() )
+				end = meshBuffer->getVertexCount() - 1;
+
+			if ( begin < lastVertexTransform )
+				begin = lastVertexTransform;
+			
+			// skinning
+			for ( int i = begin; i <= end; i++ )
+			{
+				int pos = i*4;
+				s32 nJointCount = jointInVertex[i];				
+
+				for ( int j = 0; j < nJointCount; j++ )
+				{
+					int jIndex = *jointIndex++;
+					int wIndex = *jointIndex++;
+					
+					if ( j >= 4 )
+						continue;
+
+					pJoint	= &arrayJoint[jIndex];
+					pWeight	= &pJoint->weights[wIndex];
+
+					m_skinIndices[pos + j] = jIndex;
+					m_skinWeight[pos + j] = pWeight->strength;
+				}						
+			}
+			
+			lastVertexTransform = end + 1;			
+		}	// for all mesh buffer		
+	} // if hardware
+	*/
 }
 
 // setSkydome
@@ -596,27 +690,9 @@ void CGameColladaSceneNode::updateAbsolutePosition()
 	if ( m_isRootColladaNode == true )
 		AbsoluteAnimationMatrix = RelativeMatrix;
 	else
-		AbsoluteAnimationMatrix = ((CGameColladaSceneNode*)Parent)->AbsoluteAnimationMatrix * RelativeMatrix;
-
-	// set hook transfrom object
-	if ( m_hookTransformObject )
-		m_hookTransformObject->setTransform( AbsoluteTransformation );
+		AbsoluteAnimationMatrix = ((CGameColladaSceneNode*)Parent)->AbsoluteAnimationMatrix * RelativeMatrix;	
 }
 
-// setHookTransformObject
-// hook transform obj to absolute position
-void CGameColladaSceneNode::setHookTransformObject( CGameObject *obj )
-{
-	// unhook old object
-	if ( m_hookTransformObject )
-		m_hookTransformObject->setHookTransformNode( NULL );
-
-	m_hookTransformObject = obj;
-
-	// hook new object
-	if ( m_hookTransformObject )
-		m_hookTransformObject->setHookTransformNode( this );
-}
 
 // enableAnimOnAllChild
 // enable/disable anim on all child
@@ -676,17 +752,11 @@ void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 void CGameColladaSceneNode::skin()
 {
 	if ( ColladaMesh == NULL || ColladaMesh->IsStaticMesh == true )
-		return;
-	
-	// get joint buffer
-	s32			*jointInVertex	= (s32*)ColladaMesh->JointVertexIndex.pointer();
-	s32			*jointIndex		= (s32*)ColladaMesh->JointIndex.pointer();
+		return;	
 	
 	// array joint
-	int nJoint = ColladaMesh->Joints.size();
-	CGameColladaMesh::SJoint	*arrayJoint = ColladaMesh->Joints.pointer();
-	CGameColladaMesh::SJoint	*pJoint = arrayJoint;
-	CGameColladaMesh::SWeight	*pWeight = NULL;
+	int nJoint = ColladaMesh->Joints.size();	
+	CGameColladaMesh::SJoint	*pJoint = ColladaMesh->Joints.pointer();
 
 	// calc joint matrix
 	for ( int i = 0; i < nJoint; i++, pJoint++ )
@@ -696,78 +766,82 @@ void CGameColladaSceneNode::skin()
 		pJoint->skinningMatrix.setbyproduct( mat, ColladaMesh->BindShapeMatrix );
 	}
 
-	int lastVertexTransform = 0;
-
-	// skinning all mesh buffer
-	int nMeshBuffer = ColladaMesh->getMeshBufferCount();
-
-	for ( int mesh = 0; mesh < nMeshBuffer; mesh++ )
+	/*
+	if ( m_isHardwareSkinning == false )	
 	{
-		SColladaMeshBuffer *meshBuffer	= (SColladaMeshBuffer*)ColladaMesh->getMeshBuffer(mesh);			
-		
-		// get vertex buffer
-		S3DVertex	*vertex	= (S3DVertex*)meshBuffer->getVertices();		
-		
-		// skinning in vertex
-		core::vector3df thisVertexMove, thisNormalMove, tempVertex;
-			
-		// get vertex position
-		int begin	= meshBuffer->beginVertex;
-		int end		= meshBuffer->endVertex;
-		if ( begin < 0 )
-			begin = 0;
-		if ( end < 0 || end > (int)meshBuffer->getVertexCount() )
-			end = meshBuffer->getVertexCount() - 1;
+		int lastVertexTransform = 0;
 
-		if ( begin < lastVertexTransform )
-			begin = lastVertexTransform;
+		// skinning all mesh buffer
+		int nMeshBuffer = ColladaMesh->getMeshBufferCount();
 
-		// seek to vertex buffer
-		vertex += begin;
-
-		core::vector3df positionCumulator;
-		core::vector3df normalCumulator;
-		s32 nJointCount = 0;
-
-		// skinning
-		for ( int i = begin; i <= end; i++, vertex++ )
+		for ( int mesh = 0; mesh < nMeshBuffer; mesh++ )
 		{
-			positionCumulator.set(0,0,0);
-			normalCumulator.set(0,0,0);
+			SColladaMeshBuffer *meshBuffer	= (SColladaMeshBuffer*)ColladaMesh->getMeshBuffer(mesh);			
 			
-			nJointCount = jointInVertex[i];
-
-			while ( --nJointCount >= 0  )
-			{								
-				pJoint	= &arrayJoint[ *jointIndex++ ];
-				pWeight	= &pJoint->weights[ *jointIndex++];
-
-				// skin vertex
-				pJoint->skinningMatrix.transformVect	(thisVertexMove, pWeight->staticPos);
-
-				// transform normal vector
-				pJoint->skinningMatrix.rotateVect		(thisNormalMove, pWeight->staticNormal);
+			// get vertex buffer
+			S3DVertex	*vertex	= (S3DVertex*)meshBuffer->getVertices();
+			
+			// skinning in vertex
+			core::vector3df thisVertexMove, thisNormalMove, tempVertex;
 				
-				positionCumulator	+= thisVertexMove * pWeight->strength;
-				normalCumulator		+= thisNormalMove * pWeight->strength;
+			// get vertex position
+			int begin	= meshBuffer->beginVertex;
+			int end		= meshBuffer->endVertex;
+			if ( begin < 0 )
+				begin = 0;
+			if ( end < 0 || end > (int)meshBuffer->getVertexCount() )
+				end = meshBuffer->getVertexCount() - 1;
+
+			if ( begin < lastVertexTransform )
+				begin = lastVertexTransform;
+
+			// seek to vertex buffer
+			vertex += begin;
+
+			core::vector3df positionCumulator;
+			core::vector3df normalCumulator;
+			s32 nJointCount = 0;
+
+			// skinning
+			for ( int i = begin; i <= end; i++, vertex++ )
+			{
+				positionCumulator.set(0,0,0);
+				normalCumulator.set(0,0,0);			
+				nJointCount = jointInVertex[i];
+
+				while ( --nJointCount >= 0  )
+				{								
+					pJoint	= &arrayJoint[ *jointIndex++ ];
+					pWeight	= &pJoint->weights[ *jointIndex++];
+					
+					// skin vertex
+					pJoint->skinningMatrix.transformVect	(thisVertexMove, pWeight->staticPos);
+
+					// transform normal vector
+					pJoint->skinningMatrix.rotateVect		(thisNormalMove, pWeight->staticNormal);
+					
+					positionCumulator	+= thisVertexMove * pWeight->strength;
+					normalCumulator		+= thisNormalMove * pWeight->strength;
+				}
+				
+				// apply skin pos & normal
+				vertex->Pos		= positionCumulator;
+				vertex->Normal	= normalCumulator;
 			}
 			
-			// apply skin pos & normal
-			vertex->Pos		= positionCumulator;
-			vertex->Normal	= normalCumulator;
-		}
-		
-		lastVertexTransform = end + 1;
+			lastVertexTransform = end + 1;
 
-		meshBuffer->recalculateBoundingBox();
-		meshBuffer->setDirty( EBT_VERTEX );	
+			meshBuffer->recalculateBoundingBox();
+			meshBuffer->setDirty( EBT_VERTEX );	
 
-		if ( mesh == 0 )
-			ColladaMesh->BoundingBox = meshBuffer->getBoundingBox();
-		else
-			ColladaMesh->BoundingBox.addInternalBox(meshBuffer->getBoundingBox());
-	}
+			if ( mesh == 0 )
+				ColladaMesh->BoundingBox = meshBuffer->getBoundingBox();
+			else
+				ColladaMesh->BoundingBox.addInternalBox(meshBuffer->getBoundingBox());
+		}	// for all mesh buffer
 
+	}	// if hardware
+	*/
 }
 
 // getCurrentFrameData

@@ -293,6 +293,8 @@ namespace scene
 	typedef CMeshBuffer<video::S3DVertex2TCoords> SMeshBufferLightMap;
 	//! Meshbuffer with vertices having tangents stored, e.g. for normal mapping
 	typedef CMeshBuffer<video::S3DVertexTangents> SMeshBufferTangents;
+	//! Meshbuffer with vertices having boneweight, boneindex
+	typedef CMeshBuffer<video::S3DVertexSkin> SMeshBufferSkin;
 } // end namespace scene
 } // end namespace irr
 

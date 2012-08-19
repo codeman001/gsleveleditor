@@ -493,7 +493,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 
 	
 	// hardware skinning
-	m_isHardwareSkinning = hardwareSkinning;
+	m_isHardwareSkinning = false;//hardwareSkinning;
 	m_boneMatrix	= NULL;
 	m_skinIndices	= NULL;
 	m_skinWeight	= NULL;
@@ -756,30 +756,31 @@ void CGameColladaSceneNode::skin()
 	
 	// array joint
 	int nJoint = ColladaMesh->Joints.size();	
-	CGameColladaMesh::SJoint	*pJoint = ColladaMesh->Joints.pointer();
+	CGameColladaMesh::SJoint	*arrayJoint = ColladaMesh->Joints.pointer();
+	CGameColladaMesh::SJoint	*pJoint = NULL;
 
 	// calc joint matrix
-	for ( int i = 0; i < nJoint; i++, pJoint++ )
+	for ( int i = 0; i < nJoint; i++)
 	{
+		pJoint = &arrayJoint[i];
 		core::matrix4 mat;
 		mat.setbyproduct( pJoint->node->AbsoluteAnimationMatrix, pJoint->globalInversedMatrix );
 		pJoint->skinningMatrix.setbyproduct( mat, ColladaMesh->BindShapeMatrix );
 	}
-
-	/*
+	
 	if ( m_isHardwareSkinning == false )	
 	{
 		int lastVertexTransform = 0;
+		int jointIndex = 0;
 
 		// skinning all mesh buffer
 		int nMeshBuffer = ColladaMesh->getMeshBufferCount();
-
 		for ( int mesh = 0; mesh < nMeshBuffer; mesh++ )
 		{
 			SColladaMeshBuffer *meshBuffer	= (SColladaMeshBuffer*)ColladaMesh->getMeshBuffer(mesh);			
 			
 			// get vertex buffer
-			S3DVertex	*vertex	= (S3DVertex*)meshBuffer->getVertices();
+			S3DVertexSkin	*vertex	= (S3DVertexSkin*)meshBuffer->getVertices();
 			
 			// skinning in vertex
 			core::vector3df thisVertexMove, thisNormalMove, tempVertex;
@@ -800,30 +801,42 @@ void CGameColladaSceneNode::skin()
 
 			core::vector3df positionCumulator;
 			core::vector3df normalCumulator;
-			s32 nJointCount = 0;
 
 			// skinning
 			for ( int i = begin; i <= end; i++, vertex++ )
 			{
 				positionCumulator.set(0,0,0);
 				normalCumulator.set(0,0,0);			
-				nJointCount = jointInVertex[i];
 
-				while ( --nJointCount >= 0  )
-				{								
-					pJoint	= &arrayJoint[ *jointIndex++ ];
-					pWeight	= &pJoint->weights[ *jointIndex++];
-					
-					// skin vertex
-					pJoint->skinningMatrix.transformVect	(thisVertexMove, pWeight->staticPos);
-
-					// transform normal vector
-					pJoint->skinningMatrix.rotateVect		(thisNormalMove, pWeight->staticNormal);
-					
-					positionCumulator	+= thisVertexMove * pWeight->strength;
-					normalCumulator		+= thisNormalMove * pWeight->strength;
-				}
 				
+				// bone 0
+				pJoint = &arrayJoint[ (int)vertex->BoneIndex.X ];
+				pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
+				pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
+				positionCumulator	+= thisVertexMove * vertex->BoneWeight.X;
+				normalCumulator		+= thisNormalMove * vertex->BoneWeight.X;
+								
+				// bone 1
+				pJoint = &arrayJoint[ (int)vertex->BoneIndex.Y ];
+				pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
+				pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
+				positionCumulator	+= thisVertexMove * vertex->BoneWeight.Y;
+				normalCumulator		+= thisNormalMove * vertex->BoneWeight.Y;
+
+				// bone 2
+				pJoint = &arrayJoint[ (int)vertex->BoneIndex.Z ];
+				pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
+				pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
+				positionCumulator	+= thisVertexMove * vertex->BoneWeight.Z;
+				normalCumulator		+= thisNormalMove * vertex->BoneWeight.Z;
+
+				// bone 3
+				pJoint = &arrayJoint[ (int)vertex->BoneIndex.W ];
+				pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
+				pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
+				positionCumulator	+= thisVertexMove * vertex->BoneWeight.W;
+				normalCumulator		+= thisNormalMove * vertex->BoneWeight.W;
+
 				// apply skin pos & normal
 				vertex->Pos		= positionCumulator;
 				vertex->Normal	= normalCumulator;
@@ -840,8 +853,7 @@ void CGameColladaSceneNode::skin()
 				ColladaMesh->BoundingBox.addInternalBox(meshBuffer->getBoundingBox());
 		}	// for all mesh buffer
 
-	}	// if hardware
-	*/
+	}	// if hardware	
 }
 
 // getCurrentFrameData

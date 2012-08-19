@@ -680,9 +680,7 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 		CGameColladaMesh *mesh = m_listMesh[ meshID ];
 		
 		if ( node != NULL && mesh != NULL )
-		{
-			node->setColladaMesh( mesh );
-			
+		{						
 			// set child bouding box
 			pParent->addBoundingBoxOfChild( node );
 			
@@ -703,6 +701,9 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 						buffer->getMaterial() = *mat;
 				}
 			}
+
+			node->setColladaMesh( mesh );
+
 		}
 		it++;
 	}
@@ -919,7 +920,13 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 
 	for ( int i = 0; i < nMeshBuffer; i++ )
 	{		
-		SColladaMeshBuffer* meshBuffer = new SColladaMeshBuffer();
+		scene::IMeshBuffer* meshBuffer = NULL;
+
+		if ( newMesh->IsStaticMesh )
+			meshBuffer = new SColladaMeshBuffer();
+		else
+			meshBuffer = new SColladaSkinMeshBuffer();
+
 
 		// write meshbuffer ID
 		unsigned long bufferID = 0;
@@ -934,8 +941,22 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 		int indexCount = 0;
 
 		// read begin & end vertex
-		memStream.readData( &meshBuffer->beginVertex, sizeof(int) );
-		memStream.readData( &meshBuffer->endVertex, sizeof(int) );
+		int beginVertex = 0;
+		int endVertex = 0;
+		memStream.readData( &beginVertex, sizeof(int) );
+		memStream.readData( &endVertex, sizeof(int) );
+	
+		if ( newMesh->IsStaticMesh )
+		{
+			((SColladaMeshBuffer*)meshBuffer)->beginVertex = beginVertex;
+			((SColladaMeshBuffer*)meshBuffer)->endVertex = endVertex;
+		}
+		else
+		{
+			((SColladaSkinMeshBuffer*)meshBuffer)->beginVertex = beginVertex;
+			((SColladaSkinMeshBuffer*)meshBuffer)->endVertex = endVertex;
+		}
+
 
 		memStream.readData( &vertexType, sizeof(int) );
 		memStream.readData( &vertexCount, sizeof(int) );
@@ -962,14 +983,29 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 		{
 			bufferSize = sizeof(video::S3DVertexSkin) * vertexCount;
 		}
+				
+		if ( newMesh->IsStaticMesh )
+		{
+			SColladaMeshBuffer *mesh = (SColladaMeshBuffer*)meshBuffer;
+			// read vertices
+			mesh->Vertices.set_used( vertexCount );
+			memStream.readData( mesh->Vertices.pointer(), bufferSize );
 
-		// read vertices
-		meshBuffer->Vertices.set_used( vertexCount );
-		memStream.readData( meshBuffer->Vertices.pointer(), bufferSize );
-		
-		// read indices
-		meshBuffer->Indices.set_used( indexCount );
-		memStream.readData( meshBuffer->Indices.pointer(), sizeof(u16)*indexCount );
+			// read indices
+			mesh->Indices.set_used( indexCount );
+			memStream.readData( mesh->Indices.pointer(), sizeof(u16)*indexCount );
+		}
+		else
+		{
+			SColladaSkinMeshBuffer *mesh = (SColladaSkinMeshBuffer*)meshBuffer;
+			// read vertices
+			mesh->Vertices.set_used( vertexCount );
+			memStream.readData( mesh->Vertices.pointer(), bufferSize );
+
+			// read indices
+			mesh->Indices.set_used( indexCount );
+			memStream.readData( mesh->Indices.pointer(), sizeof(u16)*indexCount );
+		}		
 
 		// map meshID & matID		
 		m_constructMeshMaterial[bufferID] = matID;

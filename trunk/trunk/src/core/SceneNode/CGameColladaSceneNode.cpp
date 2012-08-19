@@ -472,6 +472,37 @@ void CGameAnimation::update(float timeStep)
 }
 
 //////////////////////////////////////////////////////////
+// CSkinTechincalCallBack implement
+//////////////////////////////////////////////////////////
+
+static s32 s_skinTechnical = -1;
+class CSkinTechincalCallBack : public video::IShaderConstantSetCallBack
+{
+private:
+	int textureID;
+
+public:
+    CSkinTechincalCallBack()
+    {
+		// default use TEXTURE0
+		textureID = 0;
+    }
+
+    virtual void OnSetConstants(video::IMaterialRendererServices* services, s32 userData)
+    {		
+		video::IVideoDriver* driver = services->getVideoDriver();			
+		
+		core::matrix4 worldViewProj = driver->getTransform(video::ETS_PROJECTION);
+		worldViewProj *= driver->getTransform(video::ETS_VIEW);
+		worldViewProj *= driver->getTransform(ETS_WORLD);
+		services->setVertexShaderConstant("uMvpMatrix", worldViewProj.pointer(), 16);
+
+		services->setPixelShaderConstant("uTextureUnit0", (float*)&textureID, 1);		
+    }
+
+};
+
+//////////////////////////////////////////////////////////
 // CGameColladaSceneNode implement
 //////////////////////////////////////////////////////////
 
@@ -493,7 +524,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 
 	
 	// hardware skinning
-	m_isHardwareSkinning = false;//hardwareSkinning;
+	m_isHardwareSkinning = hardwareSkinning;
 	m_boneMatrix	= NULL;
 	m_skinIndices	= NULL;
 	m_skinWeight	= NULL;
@@ -533,80 +564,30 @@ void CGameColladaSceneNode::setColladaMesh(CGameColladaMesh* mesh)
 	if ( ColladaMesh )
 		ColladaMesh->grab();
 
-	// init skin data
-	/*
-	if ( m_isHardwareSkinning && ColladaMesh->IsStaticMesh == false && ColladaMesh->getMeshBufferCount() > 0 )
-	{	
-		if ( m_boneMatrix )
-			delete m_boneMatrix;
-		if ( m_skinIndices )
-			delete m_skinIndices;
-		if ( m_skinWeight )
-			delete m_skinWeight;
-
-		// init boneMatrix array
-		int nJoint = ColladaMesh->Joints.size();
-		m_boneMatrix = new core::matrix4[ nJoint ];
-
-		// vertex count
-		int vertexCount = ColladaMesh->getMeshBuffer(0)->getVertexCount();
-		int numEntity = vertexCount * 4;
-		m_skinIndices	= new int[numEntity];
-		m_skinWeight	= new float[numEntity];
-		memset( m_skinIndices, 0, sizeof(int)*numEntity );
-		memset( m_skinWeight, 0, sizeof(float)*numEntity );
-
-		// setup skin buffer
-		int nMeshBuffer = ColladaMesh->getMeshBufferCount();
-		int lastVertexTransform = 0;
-
-		s32			*jointInVertex	= (s32*)ColladaMesh->JointVertexIndex.pointer();
-		s32			*jointIndex		= (s32*)ColladaMesh->JointIndex.pointer();
-		CGameColladaMesh::SJoint	*arrayJoint = ColladaMesh->Joints.pointer();
-		CGameColladaMesh::SJoint	*pJoint = arrayJoint;
-		CGameColladaMesh::SWeight	*pWeight = NULL;
-
-		for ( int mesh = 0; mesh < nMeshBuffer; mesh++ )
+	if ( m_isHardwareSkinning && mesh->IsStaticMesh == false )
+	{		
+		if ( s_skinTechnical == -1 )
 		{
-			SColladaMeshBuffer *meshBuffer	= (SColladaMeshBuffer*)ColladaMesh->getMeshBuffer(mesh);
+			ISceneManager *mgr = getIView()->getSceneMgr();
+			CSkinTechincalCallBack* skinTechnicalCB = new CSkinTechincalCallBack();
 
-			// get vertex position
-			int begin	= meshBuffer->beginVertex;
-			int end		= meshBuffer->endVertex;
-			if ( begin < 0 )
-				begin = 0;
-			if ( end < 0 || end > (int)meshBuffer->getVertexCount() )
-				end = meshBuffer->getVertexCount() - 1;
+			s_skinTechnical = mgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles
+			(
+				getIView()->getPath("shader/extern/skinCharacter.vsh"), "vertexMain",	video::EVST_VS_1_1,
+				getIView()->getPath("shader/extern/skinCharacter.fsh"), "pixelMain",	video::EPST_PS_1_1,
+				skinTechnicalCB, 
+				video::EMT_SOLID
+			);
 
-			if ( begin < lastVertexTransform )
-				begin = lastVertexTransform;
-			
-			// skinning
-			for ( int i = begin; i <= end; i++ )
-			{
-				int pos = i*4;
-				s32 nJointCount = jointInVertex[i];				
+			skinTechnicalCB->drop();
+		}
 
-				for ( int j = 0; j < nJointCount; j++ )
-				{
-					int jIndex = *jointIndex++;
-					int wIndex = *jointIndex++;
-					
-					if ( j >= 4 )
-						continue;
+		for (u32 i = 0; i < ColladaMesh->getMeshBufferCount(); i++ )
+		{
+			ColladaMesh->getMeshBuffer(i)->getMaterial().MaterialType = (E_MATERIAL_TYPE)s_skinTechnical;
+		}
 
-					pJoint	= &arrayJoint[jIndex];
-					pWeight	= &pJoint->weights[wIndex];
-
-					m_skinIndices[pos + j] = jIndex;
-					m_skinWeight[pos + j] = pWeight->strength;
-				}						
-			}
-			
-			lastVertexTransform = end + 1;			
-		}	// for all mesh buffer		
-	} // if hardware
-	*/
+	}
 }
 
 // setSkydome
@@ -801,14 +782,31 @@ void CGameColladaSceneNode::skin()
 
 			core::vector3df positionCumulator;
 			core::vector3df normalCumulator;
+			core::matrix4	netMatrix;
 
 			// skinning
 			for ( int i = begin; i <= end; i++, vertex++ )
 			{
-				positionCumulator.set(0,0,0);
-				normalCumulator.set(0,0,0);			
+				/*
+				pJoint = &arrayJoint[ (int)vertex->BoneIndex.X ];
+				netMatrix = vertex->BoneWeight.X * pJoint->skinningMatrix;
 
+				pJoint = &arrayJoint[ (int)vertex->BoneIndex.Y ];
+				netMatrix += vertex->BoneWeight.Y * pJoint->skinningMatrix;
+
+				pJoint = &arrayJoint[ (int)vertex->BoneIndex.Z ];
+				netMatrix += vertex->BoneWeight.Z * pJoint->skinningMatrix;
+
+				pJoint = &arrayJoint[ (int)vertex->BoneIndex.W ];
+				netMatrix += vertex->BoneWeight.W * pJoint->skinningMatrix;
+
+				netMatrix.transformVect( vertex->Pos, vertex->StaticPos );
+				netMatrix.rotateVect( vertex->Normal, vertex->StaticNormal );				
+				*/
 				
+				positionCumulator.set(0,0,0);
+				normalCumulator.set(0,0,0);
+
 				// bone 0
 				pJoint = &arrayJoint[ (int)vertex->BoneIndex.X ];
 				pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
@@ -931,7 +929,7 @@ void CGameColladaSceneNode::render()
 				if (mb)
 				{
 					const video::SMaterial& material = mb->getMaterial();
-
+			
 					video::IMaterialRenderer* rnd = driver->getMaterialRenderer(material.MaterialType);
 					bool transparent = (rnd && rnd->isTransparent());
 

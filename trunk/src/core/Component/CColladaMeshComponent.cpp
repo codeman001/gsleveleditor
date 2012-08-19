@@ -3067,13 +3067,13 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 		// setup skinvertex data
 		if ( vertex )
 		{
-			float* boneIndex		= (float*)&(vertex->BoneIndex);
-			float* boneWeight		= (float*)&(vertex->BoneWeight);
+			float* boneIndex		= (float*)&(vertex[ weight.VertexID ].BoneIndex);
+			float* boneWeight		= (float*)&(vertex[ weight.VertexID ].BoneWeight);
 			
 			boneIndex[nBone]		= (float)boneID;
-			boneIndex[nBone]		= weight.Strength;
-			vertex->StaticPos		= vertex[ weight.VertexID ].Pos;
-			vertex->StaticNormal	= vertex[ weight.VertexID ].Normal;
+			boneWeight[nBone]		= weight.Strength;
+			vertex[ weight.VertexID ].StaticPos		= vertex[ weight.VertexID ].Pos;
+			vertex[ weight.VertexID ].StaticNormal	= vertex[ weight.VertexID ].Normal;
 		}
 	}
 

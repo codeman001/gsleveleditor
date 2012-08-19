@@ -806,6 +806,37 @@ namespace video
 						glVertexAttribPointer(EVA_TCOORD1, 2, GL_FLOAT, false, sizeof(S3DVertex), buffer_offset(28));
 				}
 				break;
+			case EVT_SKIN:
+				if (vertices)
+				{
+					glVertexAttribPointer(EVA_POSITION, (threed ? 3 : 2), GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Pos);
+					if (threed)
+						glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Normal);
+					glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Color);
+					glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].TCoords);
+					glVertexAttribPointer(EVA_BONEINDEX, 4, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].BoneIndex);
+					glVertexAttribPointer(EVA_BONEWEIGHT, 4, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].BoneWeight);
+				}
+				else
+				{
+					glVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertexSkin), 0);
+					glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertexSkin), buffer_offset(12));
+					glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertexSkin), buffer_offset(24));
+					glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertexSkin), buffer_offset(28));
+					glVertexAttribPointer(EVA_BONEINDEX, 4, GL_FLOAT, false, sizeof(S3DVertexSkin), buffer_offset(36));
+					glVertexAttribPointer(EVA_BONEWEIGHT, 4, GL_FLOAT, false, sizeof(S3DVertexSkin), buffer_offset(52));
+				}
+
+				if (CurrentTexture[1])
+				{
+					// There must be some optimisation here as it uses the same texture coord !
+					glEnableVertexAttribArray(EVA_TCOORD1);
+					if (vertices)
+						glVertexAttribPointer(EVA_TCOORD1, 2, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].TCoords);
+					else
+						glVertexAttribPointer(EVA_TCOORD1, 2, GL_FLOAT, false, sizeof(S3DVertexSkin), buffer_offset(28));
+				}
+				break;
 			case EVT_2TCOORDS:
 				glEnableVertexAttribArray(EVA_TCOORD1);
 				if (vertices)

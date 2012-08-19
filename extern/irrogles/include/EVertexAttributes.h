@@ -16,6 +16,8 @@ enum E_VERTEX_ATTRIBUTES
 	EVA_TCOORD1,
 	EVA_TANGENT,
 	EVA_BINORMAL,
+	EVA_BONEINDEX,
+	EVA_BONEWEIGHT,
 	EVA_COUNT
 };
 
@@ -29,6 +31,8 @@ const char* const sBuiltInVertexAttributeNames[] =
 	"inTexCoord1",
 	"inVertexTangent",
 	"inVertexBinormal",
+	"inBoneIndex",
+	"inBoneWeight",
 	0
 };
 

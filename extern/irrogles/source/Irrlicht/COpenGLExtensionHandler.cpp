@@ -519,6 +519,11 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 	pGlProgramParameteriARB= (PFNGLPROGRAMPARAMETERIARBPROC) IRR_OGL_LOAD_EXTENSION("glProgramParameteriARB");
 	pGlProgramParameteriEXT= (PFNGLPROGRAMPARAMETERIEXTPROC) IRR_OGL_LOAD_EXTENSION("glProgramParameteriEXT");
 
+	pGlEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC) IRR_OGL_LOAD_EXTENSION("glEnableVertexAttribArray");
+	pGlDisableVertexAttribArray = (PFNGLDISABLEVERTEXATTRIBARRAYPROC) IRR_OGL_LOAD_EXTENSION("glDisableVertexAttribArray");
+	pGlVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC) IRR_OGL_LOAD_EXTENSION("glVertexAttribPointer");
+	pGlBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC) IRR_OGL_LOAD_EXTENSION("glBindAttribLocation");
+
 	// occlusion query
 	pGlGenQueriesARB = (PFNGLGENQUERIESARBPROC) IRR_OGL_LOAD_EXTENSION("glGenQueriesARB");
 	pGlDeleteQueriesARB = (PFNGLDELETEQUERIESARBPROC) IRR_OGL_LOAD_EXTENSION("glDeleteQueriesARB");

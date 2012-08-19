@@ -1338,6 +1338,63 @@ void COpenGLDriver::drawVertexPrimitiveList(const void* vertices, u32 vertexCoun
 				}
 			}
 			break;
+		case EVT_SKIN:
+			if (vertices)
+			{
+				if ( useHighLevelShader )
+				{
+					extGlVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Pos);
+					extGlVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].TCoords);
+					extGlVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Normal);
+				}
+				else
+				{
+					glNormalPointer(GL_FLOAT, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Normal);
+					glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].TCoords);
+					glVertexPointer(3, GL_FLOAT, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Pos);
+				}
+			}
+			else
+			{
+				if ( useHighLevelShader )
+				{
+					extGlVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertexSkin), 0);
+					extGlVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertexSkin), buffer_offset(12));
+					extGlVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertexSkin), buffer_offset(24));
+					extGlVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertexSkin), buffer_offset(28));
+				}
+				else
+				{
+					glNormalPointer(GL_FLOAT, sizeof(S3DVertexSkin), buffer_offset(12));
+					glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(S3DVertexSkin), buffer_offset(24));
+					glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertexSkin), buffer_offset(28));
+					glVertexPointer(3, GL_FLOAT, sizeof(S3DVertexSkin), 0);
+				}
+			}
+
+			if (MultiTextureExtension && CurrentTexture[1] )
+			{
+				extGlClientActiveTexture(GL_TEXTURE1_ARB);
+
+				if ( useHighLevelShader == true )
+				{
+					extGlEnableVertexAttribArray( EVA_TCOORD1 );
+
+					if (vertices)
+						extGlVertexAttribPointer(EVA_TCOORD1, 2, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
+					else
+						extGlVertexAttribPointer(EVA_TCOORD1, 2, GL_FLOAT, false, sizeof(S3DVertexSkin), buffer_offset(28));
+				}
+				else
+				{
+					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+					if (vertices)
+						glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].TCoords);
+					else
+						glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertexSkin), buffer_offset(28));
+				}
+			}
+			break;
 		case EVT_2TCOORDS:
 			if (vertices)
 			{

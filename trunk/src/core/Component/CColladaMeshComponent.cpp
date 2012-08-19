@@ -2657,7 +2657,7 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 // create mesh buffer
 void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMeshBuffer *buffer, int *beginVertex, int *endVertex, bool flip )
 {
-	scene::SMeshBuffer *mbuffer = (scene::SMeshBuffer*) buffer;
+	SColladaMeshBuffer *mbuffer = (SColladaMeshBuffer*) buffer;
 					
 	SVerticesParam	*vertices = &mesh->Vertices[ tri->VerticesIndex ];
 	
@@ -2828,55 +2828,198 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 	mbuffer->recalculateBoundingBox();
 }
 
-// constructSkinMesh
-// apply bone to vertex
-void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColladaMesh *mesh )
-{	
-	int nJoint = meshParam->Joints.size();
+void CColladaMeshComponent::constructSkinMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri, IMeshBuffer *buffer, int *beginVertex, int *endVertex ,bool flip )
+{
+	SColladaSkinMeshBuffer *mbuffer = (SColladaSkinMeshBuffer*) buffer;
+					
+	SVerticesParam	*vertices = &mesh->Vertices[ tri->VerticesIndex ];
+	
+	SEffect	*effect = NULL;
+	SBufferParam *position	= NULL;
+	SBufferParam *normal	= NULL;
+	SBufferParam *texCoord1 = NULL;
+	SBufferParam *texCoord2 = NULL;
+		
+	if ( tri->EffectIndex != -1 )
+		effect = &m_listEffects[ tri->EffectIndex ];
 
-	char sidName[1024];
+	if ( vertices->PositionIndex == -1 )
+		return;
 
-	for ( int i = 0; i < nJoint; i++ )
+	// position buffer
+	position = &mesh->Buffers[vertices->PositionIndex];
+
+	if ( vertices->NormalIndex != -1 )
+		normal = &mesh->Buffers[vertices->NormalIndex];
+
+	if ( vertices->TexCoord1Index != -1 )
+		texCoord1 =	&mesh->Buffers[vertices->TexCoord1Index];
+
+	if ( vertices->TexCoord2Index != -1 )
+		texCoord2 =	&mesh->Buffers[vertices->TexCoord2Index];
+
+	// alloc vertex
+	int vertexCount = position->ArrayCount/3;
+	mbuffer->Vertices.reallocate(mbuffer->Vertices.size() + vertexCount);
+		
+	core::array<u16> indices;
+
+	for ( int i = 0; i < vertexCount; i++ )
 	{
-		SJointParam& joint = meshParam->Joints[i];
-		
-		// add joint to mesh
-		mesh->Joints.push_back( CGameColladaMesh::SJoint() );
+		video::S3DVertexSkin vtx;
+		vtx.Color = SColor(0xFFFFFFFF);
 
-		// get last joint
-		CGameColladaMesh::SJoint& newJoint = mesh->Joints.getLast();
-		
-		// set weight data
-		int nWeight = joint.Weights.size();
-		for ( int j = 0; j < nWeight; j++ )
-		{						
-			SWeightParam& weight = joint.Weights[j];
+		int vIndex = i;
+		int idx = vIndex * position->Strike;
 
-			newJoint.weights.push_back( CGameColladaMesh::SWeight() );
-			CGameColladaMesh::SWeight &newWeight = newJoint.weights.getLast();
+		// set position
+		vtx.Pos.X = position->FloatArray[idx+0];
+		if (flip)
+		{
+			vtx.Pos.Z = position->FloatArray[idx+1];
+			vtx.Pos.Y = position->FloatArray[idx+2];
+		}
+		else
+		{
+			vtx.Pos.Y = position->FloatArray[idx+1];
+			vtx.Pos.Z = position->FloatArray[idx+2];
+		}
 
-			newWeight.buffer_id = 0;
-			newWeight.strength	= weight.Strength;
-			newWeight.vertex_id = weight.VertexID;
-			
-			// find buffer			
-			video::S3DVertex *vertex = NULL;			
-			for (int i = 0, n = mesh->getMeshBufferCount(); i < n; i++ )
-			{
-				SColladaMeshBuffer *buffer = (SColladaMeshBuffer*)mesh->getMeshBuffer(i);
-				if ( buffer->beginVertex <= (int)weight.VertexID && buffer->endVertex >= (int)weight.VertexID )
+		if ( tri->NumElementPerVertex == 1 )
+		{
+			// set normal
+			if ( normal != NULL )
+			{		
+				int idx = vIndex * normal->Strike;
+
+				vtx.Normal.X = normal->FloatArray[idx+0];
+				if (flip)
 				{
-					vertex = (video::S3DVertex*)buffer->getVertices();
-					break;
+					vtx.Normal.Z = normal->FloatArray[idx+1];
+					vtx.Normal.Y = normal->FloatArray[idx+2];
+				}
+				else
+				{
+					vtx.Normal.Y = normal->FloatArray[idx+1];
+					vtx.Normal.Z = normal->FloatArray[idx+2];
 				}
 			}
 
-			// store static position & normal for skinning
-			newWeight.staticPos		= vertex[ weight.VertexID ].Pos;
-			newWeight.staticNormal	= vertex[ weight.VertexID ].Normal;
-		}
+			// set texcoord
+			if ( texCoord1 ) 
+			{
+				idx = vIndex * texCoord1->Strike;
+				if ( texCoord1 != NULL )
+				{
+					vtx.TCoords.X = texCoord1->FloatArray[idx+0];
+					vtx.TCoords.Y = texCoord1->FloatArray[idx+1];
+				}
+			}
+		}		
+		mbuffer->Vertices.push_back( vtx );
+	}
 		
-		// set node data
+	indices.set_used( tri->NumPolygon * 3 );
+
+	*beginVertex	= 9999999;
+	*endVertex		= 0;
+
+	int totalElement = tri->NumPolygon * tri->NumElementPerVertex * 3;	
+	int index = 0;
+	for ( int i = 0; i < totalElement; i+= tri->NumElementPerVertex)
+	{
+		indices[index] = tri->IndexBuffer[i];
+
+		if ( *beginVertex > indices[index] )
+			*beginVertex = indices[index];
+		if ( *endVertex < indices[index] )
+			*endVertex = indices[index];
+
+		if ( tri->NumElementPerVertex != 1 )
+		{
+			video::S3DVertexSkin &vtx = mbuffer->Vertices[ tri->IndexBuffer[i] ];
+			if ( normal != NULL )
+			{
+				int idx = tri->IndexBuffer[i + tri->OffsetNormal] * normal->Strike;
+				vtx.Normal.X = normal->FloatArray[idx];
+				if (flip)
+				{
+					vtx.Normal.Z = normal->FloatArray[idx+1];
+					vtx.Normal.Y = normal->FloatArray[idx+2];
+				}
+				else
+				{
+					vtx.Normal.Y = normal->FloatArray[idx+1];
+					vtx.Normal.Z = normal->FloatArray[idx+2];
+				}
+			}
+
+			if ( texCoord1 != NULL ) 
+			{
+				int idx = tri->IndexBuffer[i + tri->OffsetTexcoord1] * texCoord1->Strike;
+				vtx.TCoords.X = texCoord1->FloatArray[idx];
+				vtx.TCoords.Y = 1.0f - texCoord1->FloatArray[idx+1];
+			}
+		}
+
+		index++;
+	}
+
+
+	// it's just triangles
+	u32 nPoly = indices.size()/3;
+
+	for (u32 i = 0; i < nPoly; i++)
+	{
+		u32 ind = i * 3;
+
+		if (flip)
+		{
+			mbuffer->Indices.push_back(indices[ind+2]);
+			mbuffer->Indices.push_back(indices[ind+1]);
+			mbuffer->Indices.push_back(indices[ind+0]);
+		}
+		else
+		{
+			mbuffer->Indices.push_back(indices[ind+0]);
+			mbuffer->Indices.push_back(indices[ind+1]);
+			mbuffer->Indices.push_back(indices[ind+2]);
+		}
+	}
+	
+	// set material
+	if ( effect )
+	{
+		mbuffer->getMaterial() = effect->Mat;		
+	}
+
+	// calc normal vector
+	if (!normal)
+		getIView()->getSceneMgr()->getMeshManipulator()->recalculateNormals(mbuffer, true);
+
+	// recalculate bounding box
+	mbuffer->recalculateBoundingBox();
+}
+
+
+// constructSkinMesh
+// apply bone to vertex
+void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColladaMesh *mesh )
+{		
+	char sidName[1024];
+
+	int nJoint = meshParam->Joints.size();
+	
+	// set up joint
+	// --------------------------
+	for ( int i = 0; i < nJoint; i++ )
+	{						
+		mesh->Joints.push_back( CGameColladaMesh::SJoint() );		
+		CGameColladaMesh::SJoint& newJoint = mesh->Joints.getLast();
+
+		SJointParam& joint = meshParam->Joints[i];
+
+		// set joint name
 		uiString::copy<char, const wchar_t>( sidName, joint.Name.c_str() );
 		newJoint.name = joint.Name;
 		newJoint.node = m_sidNode[ std::string(sidName) ];
@@ -2885,15 +3028,56 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 		newJoint.globalInversedMatrix = joint.InvMatrix;
 		newJoint.node->GlobalInversedMatrix = joint.InvMatrix;
 	}
-	
-	// set joint index
-	mesh->JointIndex.set_used( meshParam->JointIndex.size() );
-	for ( int i = 0, n = (int)meshParam->JointIndex.size(); i < n; i++ )
-		mesh->JointIndex[i] = meshParam->JointIndex[i];
 
-	mesh->JointVertexIndex.set_used( meshParam->JointVertexIndex.size() );
-	for ( int i = 0, n = (int)meshParam->JointVertexIndex.size(); i < n; i++ )
-		mesh->JointVertexIndex[i] = meshParam->JointVertexIndex[i];
+	// setup vertex bone buffer
+	// ----------------------------
+	SMeshBufferSkin *skinBuffer = (SMeshBufferSkin*)mesh->getMeshBuffer(0);
+	int numVertex = skinBuffer->getVertexCount();
+	
+	int *nBoneCount = new int[numVertex];
+	memset(nBoneCount, 0, sizeof(int)*numVertex);
+
+	for ( int i = 0, n = (int)meshParam->JointIndex.size(); i < n; i+=2 )
+	{
+		int boneID		= meshParam->JointIndex[i];
+		int weightID	= meshParam->JointIndex[i + 1];
+
+		SJointParam& joint		= meshParam->Joints[boneID];
+		SWeightParam& weight	= joint.Weights[weightID];
+		
+		int nBone = nBoneCount[ weight.VertexID ]++;
+		
+		// only support 4bones affect on 1vertex
+		if ( nBone >= 4 )
+			continue;
+
+		// find skin buffer
+		video::S3DVertexSkin *vertex = NULL;			
+		for (int i = 0, n = mesh->getMeshBufferCount(); i < n; i++ )
+		{
+			SColladaMeshBuffer *buffer = (SColladaMeshBuffer*)mesh->getMeshBuffer(i);
+
+			if ( buffer->beginVertex <= (int)weight.VertexID && buffer->endVertex >= (int)weight.VertexID )
+			{
+				vertex = (video::S3DVertexSkin*)buffer->getVertices();
+				break;
+			}
+		}
+
+		// setup skinvertex data
+		if ( vertex )
+		{
+			float* boneIndex		= (float*)&(vertex->BoneIndex);
+			float* boneWeight		= (float*)&(vertex->BoneWeight);
+			
+			boneIndex[nBone]		= (float)boneID;
+			boneIndex[nBone]		= weight.Strength;
+			vertex->StaticPos		= vertex[ weight.VertexID ].Pos;
+			vertex->StaticNormal	= vertex[ weight.VertexID ].Normal;
+		}
+	}
+
+	delete nBoneCount;
 }
 
 
@@ -3003,9 +3187,29 @@ void CColladaMeshComponent::constructScene()
 					STrianglesParam& tri = pMesh->Triangles[i];
 					
 					// create mesh buffer
-					SColladaMeshBuffer* meshBuffer = new SColladaMeshBuffer();
-					constructMeshBuffer( pMesh, &tri, meshBuffer, &meshBuffer->beginVertex, &meshBuffer->endVertex, m_needFlip );
+					IMeshBuffer* meshBuffer = NULL;
 					
+					int beginVertex = -1;
+					int endVertex = -1;
+
+			
+					if ( pMesh->Type == k_skinMesh )
+					{
+						meshBuffer = new SColladaSkinMeshBuffer();
+						constructSkinMeshBuffer( pMesh, &tri, meshBuffer, &beginVertex, &endVertex, m_needFlip );
+						SColladaSkinMeshBuffer *mesh = (SColladaSkinMeshBuffer*)meshBuffer;
+						mesh->beginVertex = beginVertex;
+						mesh->endVertex = endVertex;
+					}
+					else
+					{
+						meshBuffer = new SColladaMeshBuffer();
+						constructMeshBuffer( pMesh, &tri, meshBuffer, &beginVertex, &endVertex, m_needFlip );
+						SColladaMeshBuffer *mesh = (SColladaMeshBuffer*)meshBuffer;
+						mesh->beginVertex = beginVertex;
+						mesh->endVertex = endVertex;
+					}
+
 					// add mesh buffer								
 					pColladaMesh->addMeshBuffer( meshBuffer );
 					pColladaMesh->recalculateBoundingBox();
@@ -3013,7 +3217,7 @@ void CColladaMeshComponent::constructScene()
 					meshBuffer->drop();
 				}
 				
-				if ( pMesh->Type == k_skinMesh )
+				if ( pMesh->Type == k_skinMesh )				
 					pColladaMesh->IsStaticMesh = false;
 				else
 				{

@@ -319,42 +319,11 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 		// joint name
 		uiString::convertUnicodeToUTF8( (unsigned short*) joint.name.c_str(), stringc ); 
 		memStream.writeData( stringc, STRING_BUFFER_SIZE );
-
-		// array weight
-		int nWeight = joint.weights.size();
-		memStream.writeData( &nWeight, sizeof(int) );
-		for (int j = 0; j < nWeight; j++ )
-		{
-			CGameColladaMesh::SWeight& weight = joint.weights[j];
-			memStream.writeData( &weight.buffer_id, sizeof(u16) );
-			memStream.writeData( &weight.vertex_id, sizeof(u32) );
-			memStream.writeData( &weight.strength, sizeof(f32) );
-
-			getArrayFromVector( weight.staticPos, floatArray );
-			memStream.writeData( floatArray, sizeof(f32)*3 );	
-
-			getArrayFromVector( weight.staticNormal, floatArray );			
-			memStream.writeData( floatArray, sizeof(f32)*3 );	
-		}
 		
 		memStream.writeData(  joint.globalInversedMatrix.pointer(), sizeof(f32)*16 );
 		memStream.writeData(  joint.skinningMatrix.pointer(), sizeof(f32)*16 );
 
-	}
-
-
-	// write num joint index
-	int nJointIndex = mesh->JointIndex.size();
-	memStream.writeData( &nJointIndex, sizeof(int) );
-	
-	// write joint index (boneID, weightID) buffer
-	memStream.writeData( mesh->JointIndex.pointer(), sizeof(s32) * nJointIndex );
-
-	// write num joint(bone) in vertex
-	int nJointVertexIndex =	mesh->JointVertexIndex.size();
-	memStream.writeData( &nJointVertexIndex, sizeof(int) );
-
-	memStream.writeData( mesh->JointVertexIndex.pointer(), sizeof(s32) * nJointVertexIndex );
+	}	
 
 	
 	// bouding box	
@@ -411,6 +380,10 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 		else if ( vertexType == video::EVT_TANGENTS )
 		{
 			bufferSize = sizeof(video::S3DVertexTangents) * vertexCount;
+		}
+		else if ( vertexType == video::EVT_SKIN )
+		{
+			bufferSize = sizeof(video::S3DVertexSkin) * vertexCount;
 		}
 
 		memStream.writeData( buffer->getVertices(), bufferSize );
@@ -926,47 +899,12 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 		// joint name
 		memStream.readData( stringc, STRING_BUFFER_SIZE );
 		uiString::convertUTF8ToUnicode( stringc, (unsigned short*) stringw );
-		joint.name = stringw;
-
-		// array weight
-		int nWeight = 0;
-		memStream.readData( &nWeight, sizeof(int) );
-		joint.weights.set_used( nWeight );
-
-		for (int j = 0; j < nWeight; j++ )
-		{
-			CGameColladaMesh::SWeight& weight = joint.weights[j];
-
-			memStream.readData( &weight.buffer_id, sizeof(u16) );
-			memStream.readData( &weight.vertex_id, sizeof(u32) );
-			memStream.readData( &weight.strength, sizeof(f32) );
-
-			memStream.readData( floatArray, sizeof(f32)*3 );	
-			weight.staticPos = core::vector3df( floatArray[0], floatArray[1], floatArray[2] );
-		
-			memStream.readData( floatArray, sizeof(f32)*3 );	
-			weight.staticNormal = core::vector3df( floatArray[0], floatArray[1], floatArray[2] );
-		}
+		joint.name = stringw;		
 		
 		memStream.readData(  joint.globalInversedMatrix.pointer(), sizeof(f32)*16 );
 		memStream.readData(  joint.skinningMatrix.pointer(), sizeof(f32)*16 );
 
-	}
-
-	// read num joint index
-	int nJointIndex = 0;
-	memStream.readData( &nJointIndex, sizeof(int) );
-	newMesh->JointIndex.set_used( nJointIndex );
-
-	// read joint index (boneID, weightID) buffer
-	memStream.readData( newMesh->JointIndex.pointer(), sizeof(s32) * nJointIndex );
-
-	// read num joint(bone) in vertex
-	int nJointVertexIndex =	0;
-	memStream.readData( &nJointVertexIndex, sizeof(int) );
-	newMesh->JointVertexIndex.set_used( nJointVertexIndex );
-
-	memStream.readData( newMesh->JointVertexIndex.pointer(), sizeof(s32) * nJointVertexIndex );
+	}	
 
 	// read bouding box	
 	memStream.readData( floatArray, sizeof(float)*3 );
@@ -1019,6 +957,10 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 		else if ( vertexType == video::EVT_TANGENTS )
 		{
 			bufferSize = sizeof(video::S3DVertexTangents) * vertexCount;
+		}
+		else if ( vertexType == video::EVT_SKIN )
+		{
+			bufferSize = sizeof(video::S3DVertexSkin) * vertexCount;
 		}
 
 		// read vertices

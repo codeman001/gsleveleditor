@@ -64,8 +64,6 @@ void CGameObject::initNull()
 	m_lighting		= true;
 	m_lockObject	= false;
 
-	m_hookTransformNode = NULL;
-
 	m_parent		= NULL;
 
 	m_needSortComponent	= true;
@@ -79,11 +77,6 @@ void CGameObject::initNull()
 
 CGameObject::~CGameObject()
 {	
-	if ( m_hookTransformNode )
-	{
-		((CGameColladaSceneNode*)m_hookTransformNode)->setHookTransformObject(NULL);
-	}
-
 	releaseAllComponent();
 	destroyNode();
 }

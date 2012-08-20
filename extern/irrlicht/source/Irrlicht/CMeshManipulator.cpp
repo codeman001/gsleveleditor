@@ -352,6 +352,24 @@ SMesh* CMeshManipulator::createMeshCopy(scene::IMesh* mesh) const
 				buffer->drop();
 			}
 			break;
+		case video::EVT_SKIN:
+			{
+				SMeshBufferSkin* buffer = new SMeshBufferSkin();
+				buffer->Material = mb->getMaterial();
+				const u32 vcount = mb->getVertexCount();
+				buffer->Vertices.reallocate(vcount);
+				video::S3DVertexSkin* vertices = (video::S3DVertexSkin*)mb->getVertices();
+				for (u32 i=0; i < vcount; ++i)
+					buffer->Vertices.push_back(vertices[i]);
+				const u32 icount = mb->getIndexCount();
+				buffer->Indices.reallocate(icount);
+				const u16* indices = mb->getIndices();
+				for (u32 i=0; i < icount; ++i)
+					buffer->Indices.push_back(indices[i]);
+				clone->addMeshBuffer(buffer);
+				buffer->drop();
+			}
+			break;
 		}// end switch
 
 	}// end for all mesh buffers
@@ -545,6 +563,32 @@ IMesh* CMeshManipulator::createMeshUniquePrimitives(IMesh* mesh) const
 				}
 
 				buffer->setBoundingBox(mesh->getMeshBuffer(b)->getBoundingBox());
+				clone->addMeshBuffer(buffer);
+				buffer->drop();
+			}
+			break;
+		case video::EVT_SKIN:
+			{
+				SMeshBufferSkin* buffer = new SMeshBufferSkin();
+				buffer->Material = mb->getMaterial();
+
+				video::S3DVertexSkin* v =
+					(video::S3DVertexSkin*)mb->getVertices();
+
+				buffer->Vertices.reallocate(idxCnt);
+				buffer->Indices.reallocate(idxCnt);
+				for (s32 i=0; i<idxCnt; i += 3)
+				{
+					buffer->Vertices.push_back( v[idx[i + 0 ]] );
+					buffer->Vertices.push_back( v[idx[i + 1 ]] );
+					buffer->Vertices.push_back( v[idx[i + 2 ]] );
+
+					buffer->Indices.push_back( i + 0 );
+					buffer->Indices.push_back( i + 1 );
+					buffer->Indices.push_back( i + 2 );
+				}
+
+				buffer->setBoundingBox(mb->getBoundingBox());
 				clone->addMeshBuffer(buffer);
 				buffer->drop();
 			}

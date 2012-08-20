@@ -20,7 +20,8 @@ namespace irr
 {
 namespace video
 {
-#define MAX_LIGHTS 8
+	#define MAX_LIGHTS		2
+	#define MAX_POINTLIGHTS	4
 
 	enum AlphaFunc
 	{
@@ -91,6 +92,7 @@ namespace video
 	private:
 
 		void initData();
+		void zeroLightData();
 
 	private:
 
@@ -125,11 +127,11 @@ namespace video
 		SColorf			LightDiffuse		[MAX_LIGHTS];
 		SColorf			LightSpecular		[MAX_LIGHTS];
 		
-		vec4			PointLightPosition	[MAX_LIGHTS];
-		SColorf			PointLightAmbient	[MAX_LIGHTS];
-		SColorf			PointLightDiffuse	[MAX_LIGHTS];
-		SColorf			PointLightSpecular	[MAX_LIGHTS];
-		core::vector3df PointLightAttenuation[MAX_LIGHTS];
+		vec4			PointLightPosition	[MAX_POINTLIGHTS];
+		SColorf			PointLightAmbient	[MAX_POINTLIGHTS];
+		SColorf			PointLightDiffuse	[MAX_POINTLIGHTS];
+		SColorf			PointLightSpecular	[MAX_POINTLIGHTS];
+		core::vector3df PointLightAttenuation[MAX_POINTLIGHTS];
 		SColorf			AmbientColor;
 
 		int Fog;

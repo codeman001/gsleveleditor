@@ -111,6 +111,19 @@ namespace video
 		for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
 			TextureUnits[i] = i;
 				
+		zeroLightData();
+
+		memset(FogColor, 0, sizeof(FogColor));
+		memset(&ClipPlane, 0, sizeof(ClipPlane));
+
+		memset(&MaterialAmbient,	0, sizeof(MaterialAmbient));
+		memset(&MaterialEmission,	0, sizeof(MaterialEmission));
+		memset(&MaterialDiffuse,	0, sizeof(MaterialDiffuse));
+		memset(&MaterialSpecular,	0, sizeof(MaterialSpecular));
+	}
+
+	void COGLES2FixedPipelineShader::zeroLightData()
+	{
 		memset(LightDirection,	0, sizeof(LightDirection));		
 		memset(LightAmbient,	0, sizeof(LightAmbient));		
 		memset(LightDiffuse,	0, sizeof(LightDiffuse));		
@@ -120,15 +133,7 @@ namespace video
 		memset(PointLightAmbient,		0, sizeof(PointLightAmbient));
 		memset(PointLightDiffuse,		0, sizeof(PointLightDiffuse));
 		memset(PointLightSpecular,		0, sizeof(PointLightSpecular));
-		memset(PointLightAttenuation,	0, sizeof(PointLightAttenuation));		
-
-		memset(FogColor, 0, sizeof(FogColor));
-		memset(&ClipPlane, 0, sizeof(ClipPlane));
-
-		memset(&MaterialAmbient,	0, sizeof(MaterialAmbient));
-		memset(&MaterialEmission,	0, sizeof(MaterialEmission));
-		memset(&MaterialDiffuse,	0, sizeof(MaterialDiffuse));
-		memset(&MaterialSpecular,	0, sizeof(MaterialSpecular));
+		memset(PointLightAttenuation,	0, sizeof(PointLightAttenuation));
 	}
 
 	bool COGLES2FixedPipelineShader::OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype)
@@ -228,13 +233,15 @@ namespace video
 			Driver->getTransform(ETS_WORLD).getInverse(invWorld);
 
 			// support
-			const int kDirectionLight	= 3;
+			const int kDirectionLight	= 2;
 			const int kPointLight		= 4;
 
 			int nLightDirection = 0;
 			int nLightPoint		= 0;
 
-			for ( size_t i = 0; i < MAX_LIGHTS; ++i )
+			zeroLightData();
+
+			for ( size_t i = 0; i < 8; ++i )
 			{
 				if ( i < cnt )
 				{
@@ -273,16 +280,16 @@ namespace video
 				}			
 			}
 			
-			mat->setUniform( LIGHT_DIRECTION,		LightDirection,		nLightDirection );
-			mat->setUniform( LIGHT_AMBIENT,			LightAmbient,		nLightDirection );
-			mat->setUniform( LIGHT_DIFFUSE,			LightDiffuse,		nLightDirection );
-			mat->setUniform( LIGHT_SPECULAR,		LightSpecular,		nLightDirection );
+			mat->setUniform( LIGHT_DIRECTION,		LightDirection,		MAX_LIGHTS );
+			mat->setUniform( LIGHT_AMBIENT,			LightAmbient,		MAX_LIGHTS );
+			mat->setUniform( LIGHT_DIFFUSE,			LightDiffuse,		MAX_LIGHTS );
+			mat->setUniform( LIGHT_SPECULAR,		LightSpecular,		MAX_LIGHTS );
 
-			mat->setUniform( POINTLIGHT_POSITION,		PointLightPosition,		nLightPoint );
-			mat->setUniform( POINTLIGHT_AMBIENT,		PointLightAmbient,		nLightPoint );
-			mat->setUniform( POINTLIGHT_DIFFUSE,		PointLightDiffuse,		nLightPoint );
-			mat->setUniform( POINTLIGHT_SPECULAR,		PointLightSpecular,		nLightPoint );
-			mat->setUniform( POINTLIGHT_ATTENUATION,	PointLightAttenuation,	nLightPoint );			
+			mat->setUniform( POINTLIGHT_POSITION,		PointLightPosition,		MAX_POINTLIGHTS );
+			mat->setUniform( POINTLIGHT_AMBIENT,		PointLightAmbient,		MAX_POINTLIGHTS );
+			mat->setUniform( POINTLIGHT_DIFFUSE,		PointLightDiffuse,		MAX_POINTLIGHTS );
+			mat->setUniform( POINTLIGHT_SPECULAR,		PointLightSpecular,		MAX_POINTLIGHTS );
+			mat->setUniform( POINTLIGHT_ATTENUATION,	PointLightAttenuation,	MAX_POINTLIGHTS );			
 
 			mat->setUniform( NUMLIGHT,		&nLightDirection );
 			mat->setUniform( NUMPOINTLIGHT, &nLightPoint );

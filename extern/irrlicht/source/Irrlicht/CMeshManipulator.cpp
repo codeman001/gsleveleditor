@@ -355,6 +355,8 @@ SMesh* CMeshManipulator::createMeshCopy(scene::IMesh* mesh) const
 		case video::EVT_SKIN:
 			{
 				SMeshBufferSkin* buffer = new SMeshBufferSkin();
+				IMeshBuffer *mb = mesh->getMeshBuffer(b);
+
 				buffer->Material = mb->getMaterial();
 				const u32 vcount = mb->getVertexCount();
 				buffer->Vertices.reallocate(vcount);
@@ -570,6 +572,8 @@ IMesh* CMeshManipulator::createMeshUniquePrimitives(IMesh* mesh) const
 		case video::EVT_SKIN:
 			{
 				SMeshBufferSkin* buffer = new SMeshBufferSkin();
+				IMeshBuffer* mb = mesh->getMeshBuffer(b);
+
 				buffer->Material = mb->getMaterial();
 
 				video::S3DVertexSkin* v =

@@ -891,7 +891,7 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 	memStream.readData( matrix, sizeof(f32)*16 );
 	newMesh->BindShapeMatrix.setM( matrix );
 
-	// read joint buffer (arrayWeight in bone)	
+	// read joint buffer (bone matrix)	
 	for (int i = 0; i < nJoint; i++ )
 	{
 		newMesh->Joints.push_back( CGameColladaMesh::SJoint() );
@@ -914,7 +914,7 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 	memStream.readData( floatArray, sizeof(float)*3 );
 	newMesh->BoundingBox.MinEdge = core::vector3df( floatArray[0], floatArray[1], floatArray[2] );
 
-	// write mesh buffer
+	// read mesh buffer
 	int nMeshBuffer = 0;
 	memStream.readData( &nMeshBuffer, sizeof(int) );
 
@@ -987,6 +987,7 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 		if ( newMesh->IsStaticMesh )
 		{
 			SColladaMeshBuffer *mesh = (SColladaMeshBuffer*)meshBuffer;
+
 			// read vertices
 			mesh->Vertices.set_used( vertexCount );
 			memStream.readData( mesh->Vertices.pointer(), bufferSize );
@@ -998,6 +999,7 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 		else
 		{
 			SColladaSkinMeshBuffer *mesh = (SColladaSkinMeshBuffer*)meshBuffer;
+
 			// read vertices
 			mesh->Vertices.set_used( vertexCount );
 			memStream.readData( mesh->Vertices.pointer(), bufferSize );

@@ -3057,7 +3057,7 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 		{
 			SColladaMeshBuffer *buffer = (SColladaMeshBuffer*)mesh->getMeshBuffer(i);
 
-			if ( buffer->beginVertex <= (int)weight.VertexID && buffer->endVertex >= (int)weight.VertexID )
+			if ( buffer->beginVertex <= (int)weight.VertexID && buffer->endVertex > (int)weight.VertexID )
 			{
 				vertex = (video::S3DVertexSkin*)buffer->getVertices();
 				break;

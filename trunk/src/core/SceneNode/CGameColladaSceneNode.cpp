@@ -476,6 +476,8 @@ void CGameAnimation::update(float timeStep)
 //////////////////////////////////////////////////////////
 
 static s32 s_skinTechnical = -1;
+static CGameColladaSceneNode *s_sceneNodeRendering = NULL;
+
 class CSkinTechincalCallBack : public video::IShaderConstantSetCallBack
 {
 private:
@@ -496,6 +498,7 @@ public:
 		worldViewProj *= driver->getTransform(video::ETS_VIEW);
 		worldViewProj *= driver->getTransform(ETS_WORLD);
 		services->setVertexShaderConstant("uMvpMatrix", worldViewProj.pointer(), 16);
+		services->setVertexShaderConstant("uBoneMatrix[0]", s_sceneNodeRendering->BoneMatrix, 16*MAX_BONEMATRIX );
 
 		services->setPixelShaderConstant("uTextureUnit0", (float*)&textureID, 1);		
     }
@@ -524,10 +527,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 
 	
 	// hardware skinning
-	m_isHardwareSkinning = hardwareSkinning;
-	m_boneMatrix	= NULL;
-	m_skinIndices	= NULL;
-	m_skinWeight	= NULL;
+	m_isHardwareSkinning = hardwareSkinning;	
 
 #ifdef GSANIMATION
 	m_isShowName = false;
@@ -541,14 +541,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 CGameColladaSceneNode::~CGameColladaSceneNode()
 {
 	if ( ColladaMesh )
-		ColladaMesh->drop();
-	
-	if ( m_boneMatrix )
-		delete m_boneMatrix;
-	if ( m_skinIndices )
-		delete m_skinIndices;
-	if ( m_skinWeight )
-		delete m_skinWeight;
+		ColladaMesh->drop();	
 }
 
 // setColladaMesh
@@ -564,6 +557,7 @@ void CGameColladaSceneNode::setColladaMesh(CGameColladaMesh* mesh)
 	if ( ColladaMesh )
 		ColladaMesh->grab();
 
+	// config shader if use hardware for skinning
 	if ( m_isHardwareSkinning && mesh->IsStaticMesh == false )
 	{		
 		if ( s_skinTechnical == -1 )
@@ -747,9 +741,12 @@ void CGameColladaSceneNode::skin()
 		core::matrix4 mat;
 		mat.setbyproduct( pJoint->node->AbsoluteAnimationMatrix, pJoint->globalInversedMatrix );
 		pJoint->skinningMatrix.setbyproduct( mat, ColladaMesh->BindShapeMatrix );
+
+		// set bone matrix
+		memcpy(BoneMatrix + i*16, pJoint->skinningMatrix.pointer(), 16*sizeof(float));
 	}
 	
-	if ( m_isHardwareSkinning == false )	
+	if ( m_isHardwareSkinning == false )
 	{
 		int lastVertexTransform = 0;
 		int jointIndex = 0;
@@ -764,7 +761,7 @@ void CGameColladaSceneNode::skin()
 			S3DVertexSkin	*vertex	= (S3DVertexSkin*)meshBuffer->getVertices();
 			
 			// skinning in vertex
-			core::vector3df thisVertexMove, thisNormalMove, tempVertex;
+			core::vector3df thisVertexMove, thisNormalMove;
 				
 			// get vertex position
 			int begin	= meshBuffer->beginVertex;
@@ -789,55 +786,63 @@ void CGameColladaSceneNode::skin()
 			{
 				/*
 				pJoint = &arrayJoint[ (int)vertex->BoneIndex.X ];
-				netMatrix = vertex->BoneWeight.X * pJoint->skinningMatrix;
+				netMatrix = pJoint->skinningMatrix * vertex->BoneWeight.X;
 
 				pJoint = &arrayJoint[ (int)vertex->BoneIndex.Y ];
-				netMatrix += vertex->BoneWeight.Y * pJoint->skinningMatrix;
+				netMatrix += pJoint->skinningMatrix * vertex->BoneWeight.Y;
 
 				pJoint = &arrayJoint[ (int)vertex->BoneIndex.Z ];
-				netMatrix += vertex->BoneWeight.Z * pJoint->skinningMatrix;
+				netMatrix += pJoint->skinningMatrix * vertex->BoneWeight.Z;
 
 				pJoint = &arrayJoint[ (int)vertex->BoneIndex.W ];
-				netMatrix += vertex->BoneWeight.W * pJoint->skinningMatrix;
+				netMatrix += pJoint->skinningMatrix * vertex->BoneWeight.W;
 
 				netMatrix.transformVect( vertex->Pos, vertex->StaticPos );
-				netMatrix.rotateVect( vertex->Normal, vertex->StaticNormal );				
+				netMatrix.rotateVect( vertex->Normal, vertex->StaticNormal );
 				*/
-				
+		
 				positionCumulator.set(0,0,0);
 				normalCumulator.set(0,0,0);
 
-				// bone 0
+				// bone 0				
 				pJoint = &arrayJoint[ (int)vertex->BoneIndex.X ];
 				pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
 				pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
-				positionCumulator	+= thisVertexMove * vertex->BoneWeight.X;
-				normalCumulator		+= thisNormalMove * vertex->BoneWeight.X;
-								
+				thisVertexMove *= vertex->BoneWeight.X;
+				thisNormalMove *= vertex->BoneWeight.X;
+				positionCumulator	+= thisVertexMove;
+				normalCumulator		+= thisNormalMove;
+									
 				// bone 1
 				pJoint = &arrayJoint[ (int)vertex->BoneIndex.Y ];
 				pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
 				pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
-				positionCumulator	+= thisVertexMove * vertex->BoneWeight.Y;
-				normalCumulator		+= thisNormalMove * vertex->BoneWeight.Y;
-
+				thisVertexMove *= vertex->BoneWeight.Y;
+				thisNormalMove *= vertex->BoneWeight.Y;
+				positionCumulator	+= thisVertexMove;
+				normalCumulator		+= thisNormalMove;
+				
 				// bone 2
 				pJoint = &arrayJoint[ (int)vertex->BoneIndex.Z ];
 				pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
 				pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
-				positionCumulator	+= thisVertexMove * vertex->BoneWeight.Z;
-				normalCumulator		+= thisNormalMove * vertex->BoneWeight.Z;
+				thisVertexMove *= vertex->BoneWeight.Z;
+				thisNormalMove *= vertex->BoneWeight.Z;
+				positionCumulator	+= thisVertexMove;
+				normalCumulator		+= thisNormalMove;
 
 				// bone 3
 				pJoint = &arrayJoint[ (int)vertex->BoneIndex.W ];
 				pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
 				pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
-				positionCumulator	+= thisVertexMove * vertex->BoneWeight.W;
-				normalCumulator		+= thisNormalMove * vertex->BoneWeight.W;
+				thisVertexMove *= vertex->BoneWeight.W;
+				thisNormalMove *= vertex->BoneWeight.W;
+				positionCumulator	+= thisVertexMove;
+				normalCumulator		+= thisNormalMove;
 
 				// apply skin pos & normal
 				vertex->Pos		= positionCumulator;
-				vertex->Normal	= normalCumulator;
+				vertex->Normal	= normalCumulator;			
 			}
 			
 			lastVertexTransform = end + 1;
@@ -849,6 +854,7 @@ void CGameColladaSceneNode::skin()
 				ColladaMesh->BoundingBox = meshBuffer->getBoundingBox();
 			else
 				ColladaMesh->BoundingBox.addInternalBox(meshBuffer->getBoundingBox());
+
 		}	// for all mesh buffer
 
 	}	// if hardware	
@@ -908,12 +914,15 @@ void CGameColladaSceneNode::render()
 	IVideoDriver* driver = getSceneManager()->getVideoDriver();	
 	IView *pView = getIView();	
 
+	// set current render
+	s_sceneNodeRendering = this;
+
 	if ( ColladaMesh )
 	{		
 
 #ifdef GSGAMEPLAY
 		// do not render terrain node, 
-		// but we still setvisible for active OnAnimate(update position)
+		// but we still setvisible for run function OnAnimate(update position)
 		if ( m_hideTerrainNode == false )
 #endif
 		{
@@ -938,6 +947,13 @@ void CGameColladaSceneNode::render()
 					if (transparent == isTransparentPass)
 					{
 						driver->setMaterial(material);
+
+						if ( mb->getVertexType() == EVT_SKIN )
+						{
+							if ( i <= 1 )
+								continue;
+						}
+
 						driver->drawMeshBuffer(mb);
 					}
 				}

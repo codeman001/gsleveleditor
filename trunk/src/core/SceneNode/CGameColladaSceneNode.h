@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 
+#define MAX_BONEMATRIX	64
+
 class CGameColladaSceneNode;
 class CColladaMeshComponent;
 class CGameObject;
@@ -394,6 +396,7 @@ public:
 	core::matrix4	GlobalInversedMatrix;
 	
 	CGameColladaMesh	*ColladaMesh;
+	float				BoneMatrix[MAX_BONEMATRIX*16];
 
 protected:
 	bool			m_isRootColladaNode;
@@ -401,9 +404,6 @@ protected:
 
 	// for hardware skinning
 	bool			m_isHardwareSkinning;
-	core::matrix4	*m_boneMatrix;
-	int				*m_skinIndices;
-	float			*m_skinWeight;
 
 #ifdef GSANIMATION
 	bool			m_isShowName;

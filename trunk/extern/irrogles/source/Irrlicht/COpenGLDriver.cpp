@@ -3394,7 +3394,13 @@ void COpenGLDriver::setRenderStates2DMode(bool alpha, bool texture, bool alphaCh
 
 		if (!OverrideMaterial2DEnabled)
 		{
+			// add tofix bug do not disable shader program
+			if (LastMaterial.MaterialType != InitMaterial2D.MaterialType &&
+				static_cast<u32>(LastMaterial.MaterialType) < MaterialRenderers.size())
+				MaterialRenderers[LastMaterial.MaterialType].Renderer->OnUnsetMaterial();
+
 			setBasicRenderStates(InitMaterial2D, LastMaterial, true);
+		
 			LastMaterial = InitMaterial2D;
 		}
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -3406,8 +3412,14 @@ void COpenGLDriver::setRenderStates2DMode(bool alpha, bool texture, bool alphaCh
 	}
 	if (OverrideMaterial2DEnabled)
 	{
+		// add tofix bug do not disable shader program	
+		if (LastMaterial.MaterialType != OverrideMaterial2D.MaterialType &&
+				static_cast<u32>(LastMaterial.MaterialType) < MaterialRenderers.size())
+			MaterialRenderers[LastMaterial.MaterialType].Renderer->OnUnsetMaterial();
+
 		OverrideMaterial2D.Lighting=false;
-		setBasicRenderStates(OverrideMaterial2D, LastMaterial, false);
+		setBasicRenderStates(OverrideMaterial2D, LastMaterial, false);		
+
 		LastMaterial = OverrideMaterial2D;
 	}
 

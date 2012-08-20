@@ -948,11 +948,11 @@ void CGameColladaSceneNode::render()
 					{
 						driver->setMaterial(material);
 
-						if ( mb->getVertexType() == EVT_SKIN )
-						{
-							if ( i <= 1 )
-								continue;
-						}
+						//if ( mb->getVertexType() == EVT_SKIN )
+						//{
+						//	if ( i <= 1 )
+						//		continue;
+						//}
 
 						driver->drawMeshBuffer(mb);
 					}

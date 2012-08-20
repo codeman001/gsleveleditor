@@ -3076,7 +3076,7 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 			vertex[ weight.VertexID ].StaticPos		= vertex[ weight.VertexID ].Pos;
 			vertex[ weight.VertexID ].StaticNormal	= vertex[ weight.VertexID ].Normal;
 		}
-#endif
+#else
 		video::S3DVertexSkin *vertex = NULL;			
 		for (int i = 0, n = mesh->getMeshBufferCount(); i < n; i++ )
 		{
@@ -3091,6 +3091,8 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 			vertex[ weight.VertexID ].StaticPos		= vertex[ weight.VertexID ].Pos;
 			vertex[ weight.VertexID ].StaticNormal	= vertex[ weight.VertexID ].Normal;
 		}
+#endif
+
 	}
 
 	delete nBoneCount;

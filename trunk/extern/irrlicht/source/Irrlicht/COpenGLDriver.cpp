@@ -1255,6 +1255,13 @@ void COpenGLDriver::drawVertexPrimitiveList(const void* vertices, u32 vertexCoun
 	{
 		extGlEnableVertexAttribArray( EVA_COLOR );
 		extGlEnableVertexAttribArray( EVA_POSITION );
+		
+		if ( vType == EVT_SKIN )
+		{
+			extGlEnableVertexAttribArray( EVA_BONEINDEX );
+			extGlEnableVertexAttribArray( EVA_BONEWEIGHT );
+		}
+
 
 		if ((pType!=scene::EPT_POINTS) && (pType!=scene::EPT_POINT_SPRITES))
 			extGlEnableVertexAttribArray( EVA_TCOORD0 );
@@ -1346,6 +1353,8 @@ void COpenGLDriver::drawVertexPrimitiveList(const void* vertices, u32 vertexCoun
 					extGlVertexAttribPointer(EVA_POSITION, 3, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Pos);
 					extGlVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].TCoords);
 					extGlVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Normal);
+					extGlVertexAttribPointer(EVA_BONEINDEX, 4, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].BoneIndex);
+					extGlVertexAttribPointer(EVA_BONEWEIGHT, 4, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].BoneWeight);
 				}
 				else
 				{
@@ -1362,6 +1371,8 @@ void COpenGLDriver::drawVertexPrimitiveList(const void* vertices, u32 vertexCoun
 					extGlVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertexSkin), buffer_offset(12));
 					extGlVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertexSkin), buffer_offset(24));
 					extGlVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertexSkin), buffer_offset(28));
+					extGlVertexAttribPointer(EVA_BONEINDEX, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertexSkin), buffer_offset(36));
+					extGlVertexAttribPointer(EVA_BONEWEIGHT, 4, GL_FLOAT, false, sizeof(S3DVertexSkin), buffer_offset(52));
 				}
 				else
 				{
@@ -1503,7 +1514,7 @@ void COpenGLDriver::drawVertexPrimitiveList(const void* vertices, u32 vertexCoun
 			else
 				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
-		if ((vType!=EVT_STANDARD) || CurrentTexture[1])
+		if ((vType!=EVT_STANDARD && vType != EVT_SKIN) || CurrentTexture[1])
 		{
 			extGlClientActiveTexture(GL_TEXTURE1_ARB);
 
@@ -1521,6 +1532,12 @@ void COpenGLDriver::drawVertexPrimitiveList(const void* vertices, u32 vertexCoun
 		extGlDisableVertexAttribArray( EVA_POSITION );
 		extGlDisableVertexAttribArray( EVA_TCOORD0 );
 		extGlDisableVertexAttribArray( EVA_NORMAL );
+
+		if ( vType == EVT_SKIN )
+		{
+			extGlDisableVertexAttribArray( EVA_BONEINDEX );
+			extGlDisableVertexAttribArray( EVA_BONEWEIGHT );
+		}
 	}
 	else
 	{
@@ -1564,6 +1581,15 @@ void COpenGLDriver::createColorBuffer(const void* vertices, u32 vertexCount, E_V
 		case EVT_TANGENTS:
 		{
 			const S3DVertexTangents* p = static_cast<const S3DVertexTangents*>(vertices);
+			for (i=0; i<vertexCount; i+=4)
+			{
+				p->Color.toOpenGLColor(&ColorBuffer[i]);
+				++p;
+			}
+		}
+		case EVT_SKIN:
+		{
+			const S3DVertexSkin* p = static_cast<const S3DVertexSkin*>(vertices);
 			for (i=0; i<vertexCount; i+=4)
 			{
 				p->Color.toOpenGLColor(&ColorBuffer[i]);

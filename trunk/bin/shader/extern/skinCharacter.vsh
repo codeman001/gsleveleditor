@@ -6,7 +6,7 @@ attribute highp vec4 inBoneIndex;
 attribute highp vec4 inBoneWeight;
 
 uniform highp mat4 uMvpMatrix;
-uniform highp mat4 uBoneMatrix[64];
+uniform highp mat4 uBoneMatrix[62];
 
 varying highp vec4 varVertexColor;
 varying highp vec2 varTexCoord0;

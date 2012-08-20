@@ -3085,14 +3085,23 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 			// only support 4bones affect on 1vertex
 			if ( nBone >= 4 )
 			{
-				for ( int i = 0; i < 4; i++ )
+				int		minIndex = 0;
+				float	minWeight = boneWeight[0];
+				
+				for ( int i = 1; i < 4; i++ )
 				{
-					if ( boneWeight[i] < weight.Strength )
+					if ( boneWeight[i] < minWeight )
 					{
-						boneIndex[i]		= (float)boneID;
-						boneWeight[i]		= weight.Strength;
+						minIndex = i;
+						minWeight = boneWeight[i];
 						break;
 					}					
+				}
+
+				if ( weight.Strength > minWeight )
+				{
+					boneIndex[minIndex]		= (float)boneID;
+					boneWeight[minIndex]		= weight.Strength;
 				}
 			}
 			else

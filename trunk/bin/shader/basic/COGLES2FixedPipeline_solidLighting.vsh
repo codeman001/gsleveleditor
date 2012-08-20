@@ -1,4 +1,5 @@
-#define MAX_LIGHTS 4
+#define MAX_LIGHTS 2
+#define MAX_POINTLIGHTS 4
 
 attribute mediump vec4 inVertexPosition;
 attribute mediump vec4 inVertexColor;
@@ -14,11 +15,11 @@ uniform mediump vec4  uLightAmbient     [MAX_LIGHTS];
 uniform mediump vec4  uLightDiffuse     [MAX_LIGHTS];
 uniform mediump vec4  uLightSpecular    [MAX_LIGHTS];
 
-uniform mediump vec4  uPointLightPosition   	[MAX_LIGHTS];
-uniform mediump vec4  uPointLightAmbient     	[MAX_LIGHTS];
-uniform mediump vec4  uPointLightDiffuse     	[MAX_LIGHTS];
-uniform mediump vec4  uPointLightSpecular    	[MAX_LIGHTS];
-uniform mediump vec3  uPointLightAttenuation	[MAX_LIGHTS];
+uniform mediump vec4  uPointLightPosition   	[MAX_POINTLIGHTS];
+uniform mediump vec4  uPointLightAmbient     	[MAX_POINTLIGHTS];
+uniform mediump vec4  uPointLightDiffuse     	[MAX_POINTLIGHTS];
+uniform mediump vec4  uPointLightSpecular    	[MAX_POINTLIGHTS];
+uniform mediump vec3  uPointLightAttenuation	[MAX_POINTLIGHTS];
 
 uniform mediump int   uNumLight;
 uniform mediump int   uPointLight;
@@ -33,47 +34,49 @@ uniform mediump int   uColorMaterial;
 varying mediump vec4 varVertexColor;
 varying mediump vec2 varTexCoord0;
 
-mediump vec3 gNormal;
-
-mediump vec4 lightEquation(int lidx)
-{		
-	mediump vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
-	mediump vec3 lightDir = -uLightDirection[lidx].xyz;			
-	
-	// add material ambient color
-	color += uLightAmbient[lidx] * uMaterialAmbient;
-		
-	// compute cos(Light, Normal)
-	mediump float NdotL = max(dot(normalize(gNormal), lightDir), 0.0);
-	color += NdotL * uLightDiffuse[lidx] * uMaterialDiffuse;
-		
-	// compute specular color cos(hvec, Normal)
-	// mediump vec3 hvec = normalize(lightDir + vec3(0.0, 0.0, 1.0));
-	// mediump float NdotH = dot(gNormal, hvec);
-	// if(NdotH > 0.0)
-	//	color += pow(NdotH, uMaterialShininess) * uLightSpecular[lidx] * uMaterialSpecular;
-	
-	return color;
-}
-
 void main(void)
 {	
-	gNormal = inVertexNormal.xyz;
-	
 	// calc light color
 	mediump vec4 lightColor = uMaterialEmission + uAmbientColor;
 	
-	// calc light direction
-	mediump int i = uNumLight;
-	do
-	{
-		lightColor += lightEquation(--i);		
-	}
-	while ( i >= 0 );
-
-	lightColor.a = uMaterialDiffuse.a;
+	// ---------------------------------
+	// DIRECTION LIGHT
+	// ---------------------------------
+	// calc light direction 1	
+	mediump vec3 lightDir = -uLightDirection[0].xyz;			
 	
-	// calc vertex color
+	// add material ambient color
+	lightColor += uLightAmbient[0] * uMaterialAmbient;
+		
+	// compute cos(Light, Normal)
+	mediump float NdotL = max(dot(normalize(inVertexNormal.xyz), lightDir), 0.0);
+	lightColor += NdotL * uLightDiffuse[0] * uMaterialDiffuse;
+	
+	
+	// calc light direction 2
+	// ---------------------------------
+	lightDir = -uLightDirection[1].xyz;			
+	
+	// add material ambient color
+	lightColor += uLightAmbient[1] * uMaterialAmbient;
+		
+	// compute cos(Light, Normal)
+	NdotL = max(dot(normalize(inVertexNormal.xyz), lightDir), 0.0);
+	lightColor += NdotL * uLightDiffuse[1] * uMaterialDiffuse;
+	
+	
+	
+	// ---------------------------------
+	// POINT LIGHT
+	// ---------------------------------
+	
+
+	
+		
+	// ---------------------------------
+	// VERTEX COLOR
+	// ---------------------------------
+	lightColor.a = uMaterialDiffuse.a;
 	varVertexColor = inVertexColor * lightColor;	
 	varTexCoord0 = inTexCoord0;
 	gl_Position = uMvpMatrix * inVertexPosition;	

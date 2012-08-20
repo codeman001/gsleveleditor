@@ -3045,11 +3045,7 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 		SJointParam& joint		= meshParam->Joints[boneID];
 		SWeightParam& weight	= joint.Weights[weightID];
 		
-		int nBone = nBoneCount[ weight.VertexID ]++;
-		
-		// only support 4bones affect on 1vertex
-		if ( nBone >= 4 )
-			continue;
+		int nBone = nBoneCount[ weight.VertexID ]++;	
 
 		// find skin buffer
 #if 0
@@ -3085,9 +3081,26 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 			
 			float* boneIndex		= (float*)&(vertex[ weight.VertexID ].BoneIndex);
 			float* boneWeight		= (float*)&(vertex[ weight.VertexID ].BoneWeight);
-			
-			boneIndex[nBone]		= (float)boneID;
-			boneWeight[nBone]		= weight.Strength;
+
+			// only support 4bones affect on 1vertex
+			if ( nBone >= 4 )
+			{
+				for ( int i = 0; i < 4; i++ )
+				{
+					if ( boneWeight[i] < weight.Strength )
+					{
+						boneIndex[i]		= (float)boneID;
+						boneWeight[i]		= weight.Strength;
+						break;
+					}					
+				}
+			}
+			else
+			{								
+				boneIndex[nBone]		= (float)boneID;
+				boneWeight[nBone]		= weight.Strength;
+			}
+
 			vertex[ weight.VertexID ].StaticPos		= vertex[ weight.VertexID ].Pos;
 			vertex[ weight.VertexID ].StaticNormal	= vertex[ weight.VertexID ].Normal;
 		}

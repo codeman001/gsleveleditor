@@ -527,7 +527,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 
 	
 	// hardware skinning
-	m_isHardwareSkinning = false;//hardwareSkinning;	
+	m_isHardwareSkinning = hardwareSkinning;	
 
 #ifdef GSANIMATION
 	m_isShowName = false;
@@ -579,7 +579,7 @@ void CGameColladaSceneNode::setColladaMesh(CGameColladaMesh* mesh)
 		for (u32 i = 0; i < ColladaMesh->getMeshBufferCount(); i++ )
 		{
 			ColladaMesh->getMeshBuffer(i)->getMaterial().MaterialType = (E_MATERIAL_TYPE)s_skinTechnical;
-		}
+		}		
 
 	}
 }
@@ -804,41 +804,53 @@ void CGameColladaSceneNode::skin()
 				positionCumulator.set(0,0,0);
 				normalCumulator.set(0,0,0);
 
-				// bone 0				
-				pJoint = &arrayJoint[ (int)vertex->BoneIndex.X ];
-				pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
-				pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
-				thisVertexMove *= vertex->BoneWeight.X;
-				thisNormalMove *= vertex->BoneWeight.X;
-				positionCumulator	+= thisVertexMove;
-				normalCumulator		+= thisNormalMove;
-									
+				// bone 0
+				if ( vertex->BoneWeight.X > 0.0f )
+				{
+					pJoint = &arrayJoint[ (int)vertex->BoneIndex.X ];
+					pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
+					pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
+					thisVertexMove *= vertex->BoneWeight.X;
+					thisNormalMove *= vertex->BoneWeight.X;
+					positionCumulator	+= thisVertexMove;
+					normalCumulator		+= thisNormalMove;
+				}
+
 				// bone 1
-				pJoint = &arrayJoint[ (int)vertex->BoneIndex.Y ];
-				pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
-				pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
-				thisVertexMove *= vertex->BoneWeight.Y;
-				thisNormalMove *= vertex->BoneWeight.Y;
-				positionCumulator	+= thisVertexMove;
-				normalCumulator		+= thisNormalMove;
-				
+				if ( vertex->BoneWeight.Y > 0.0f )
+				{
+					pJoint = &arrayJoint[ (int)vertex->BoneIndex.Y ];
+					pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
+					pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
+					thisVertexMove *= vertex->BoneWeight.Y;
+					thisNormalMove *= vertex->BoneWeight.Y;
+					positionCumulator	+= thisVertexMove;
+					normalCumulator		+= thisNormalMove;
+				}
+
 				// bone 2
-				pJoint = &arrayJoint[ (int)vertex->BoneIndex.Z ];
-				pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
-				pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
-				thisVertexMove *= vertex->BoneWeight.Z;
-				thisNormalMove *= vertex->BoneWeight.Z;
-				positionCumulator	+= thisVertexMove;
-				normalCumulator		+= thisNormalMove;
+				if ( vertex->BoneWeight.Z > 0.0f )
+				{
+					pJoint = &arrayJoint[ (int)vertex->BoneIndex.Z ];
+					pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
+					pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
+					thisVertexMove *= vertex->BoneWeight.Z;
+					thisNormalMove *= vertex->BoneWeight.Z;
+					positionCumulator	+= thisVertexMove;
+					normalCumulator		+= thisNormalMove;
+				}
 
 				// bone 3
-				pJoint = &arrayJoint[ (int)vertex->BoneIndex.W ];
-				pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
-				pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
-				thisVertexMove *= vertex->BoneWeight.W;
-				thisNormalMove *= vertex->BoneWeight.W;
-				positionCumulator	+= thisVertexMove;
-				normalCumulator		+= thisNormalMove;
+				if ( vertex->BoneWeight.W > 0.0f )
+				{
+					pJoint = &arrayJoint[ (int)vertex->BoneIndex.W ];
+					pJoint->skinningMatrix.transformVect	(thisVertexMove, vertex->StaticPos);
+					pJoint->skinningMatrix.rotateVect		(thisNormalMove, vertex->StaticNormal);
+					thisVertexMove *= vertex->BoneWeight.W;
+					thisNormalMove *= vertex->BoneWeight.W;
+					positionCumulator	+= thisVertexMove;
+					normalCumulator		+= thisNormalMove;
+				}
 
 				// apply skin pos & normal
 				vertex->Pos		= positionCumulator;

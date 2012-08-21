@@ -36,6 +36,7 @@ namespace video
 		enum E_SHADER
 		{
 			ES_SOLID = 0,
+			ES_SOLID_ONETEXTURE,
 			ES_SOLID_LIGHT,
 			ES_COUNT
 		};

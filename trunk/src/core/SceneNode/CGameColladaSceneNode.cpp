@@ -526,14 +526,14 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	m_component = NULL;
 	
 	m_animationCallback		= NULL;
-
 	
 	// hardware skinning
-	m_isHardwareSkinning = hardwareSkinning;	
+	m_isHardwareSkinning = false;//hardwareSkinning;
 
 #ifdef GSANIMATION
 	m_isShowName = false;
 	m_renderRotate = 0;
+	m_isHardwareSkinning = false;
 #endif
 
 	Box.MinEdge = core::vector3df(-2, -2, -2);
@@ -964,6 +964,7 @@ void CGameColladaSceneNode::render()
 
 						//if ( mb->getVertexType() == EVT_SKIN )
 						//{
+						//	int t = 0;
 						//	if ( i <= 1 )
 						//		continue;
 						//}

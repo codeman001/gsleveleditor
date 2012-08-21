@@ -403,8 +403,8 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 			SColladaSkinMeshBuffer *skinBuffer = (SColladaSkinMeshBuffer*)buffer;
 			for ( int i = 0; i < vertexCount; i++ )
 			{
-				skinBuffer->Vertices[i].Pos = skinBuffer->Vertices[i].StaticPos;
-				skinBuffer->Vertices[i].Normal = skinBuffer->Vertices[i].StaticNormal;
+				skinBuffer->Vertices[i].Pos		= skinBuffer->Vertices[i].StaticPos;
+				skinBuffer->Vertices[i].Normal	= skinBuffer->Vertices[i].StaticNormal;
 			}
 		}
 

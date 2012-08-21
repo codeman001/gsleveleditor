@@ -3075,7 +3075,7 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 				if ( weight.Strength > minWeight )
 				{
 					boneIndex[minIndex]		= (float)boneID;
-					boneWeight[minIndex]		= weight.Strength;
+					boneWeight[minIndex]	= weight.Strength;
 				}
 			}
 			else

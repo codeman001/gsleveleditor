@@ -34,7 +34,7 @@ void main(void)
 	
 	netPosition = (netMatrix * inVertexPosition).xyz;	
 	netNormal 	= (netMatrix * vec4(inVertexNormal, 0.0)).xyz;	
-	// ---------------------------------	
+	// ---------------------------------		
 	
 	varVertexColor = inVertexColor;
 	varTexCoord0 = inTexCoord0;

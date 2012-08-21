@@ -121,6 +121,8 @@ namespace video
 				E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
 				E_INDEX_TYPE iType = EIT_16BIT, bool threed = true);
 
+		void getColorBuffer(const void* vertices, u32 vertexCount, E_VERTEX_TYPE vType);
+
 		//! queries the features of the driver, returns true if feature is available
 		virtual bool queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
 		{
@@ -393,6 +395,7 @@ namespace video
 
 		core::stringw Name;
 		core::matrix4 Matrices[ETS_COUNT];
+		core::array<u8> ColorBuffer;
 
 		//! enumeration for rendering modes such as 2d and 3d for minizing the switching of renderStates.
 		enum E_RENDER_MODE

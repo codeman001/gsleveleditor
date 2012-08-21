@@ -3047,32 +3047,6 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 		
 		int nBone = nBoneCount[ weight.VertexID ]++;	
 
-		// find skin buffer
-#if 0
-		video::S3DVertexSkin *vertex = NULL;			
-		for (int i = 0, n = mesh->getMeshBufferCount(); i < n; i++ )
-		{
-			SColladaMeshBuffer *buffer = (SColladaMeshBuffer*)mesh->getMeshBuffer(i);
-
-			if ( buffer->beginVertex <= (int)weight.VertexID && buffer->endVertex > (int)weight.VertexID )
-			{
-				vertex = (video::S3DVertexSkin*)buffer->getVertices();
-				break;
-			}
-		}
-
-		// setup skinvertex data
-		if ( vertex )
-		{
-			float* boneIndex		= (float*)&(vertex[ weight.VertexID ].BoneIndex);
-			float* boneWeight		= (float*)&(vertex[ weight.VertexID ].BoneWeight);
-			
-			boneIndex[nBone]		= (float)boneID;
-			boneWeight[nBone]		= weight.Strength;
-			vertex[ weight.VertexID ].StaticPos		= vertex[ weight.VertexID ].Pos;
-			vertex[ weight.VertexID ].StaticNormal	= vertex[ weight.VertexID ].Normal;
-		}
-#else
 		video::S3DVertexSkin *vertex = NULL;			
 		for (int i = 0, n = mesh->getMeshBufferCount(); i < n; i++ )
 		{
@@ -3113,8 +3087,6 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 			vertex[ weight.VertexID ].StaticPos		= vertex[ weight.VertexID ].Pos;
 			vertex[ weight.VertexID ].StaticNormal	= vertex[ weight.VertexID ].Normal;
 		}
-#endif
-
 	}
 
 	delete nBoneCount;

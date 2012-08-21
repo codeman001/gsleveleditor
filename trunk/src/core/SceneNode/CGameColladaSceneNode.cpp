@@ -497,10 +497,11 @@ public:
 		core::matrix4 worldViewProj = driver->getTransform(video::ETS_PROJECTION);
 		worldViewProj *= driver->getTransform(video::ETS_VIEW);
 		worldViewProj *= driver->getTransform(ETS_WORLD);
+		
 		services->setVertexShaderConstant("uMvpMatrix", worldViewProj.pointer(), 16);
 
 		if ( services->setVertexShaderConstant("uBoneMatrix", s_sceneNodeRendering->BoneMatrix, 16*MAX_BONEMATRIX ) == false )
-			services->setVertexShaderConstant("uBoneMatrix[0]", s_sceneNodeRendering->BoneMatrix, 16*MAX_BONEMATRIX );
+			services->setVertexShaderConstant("uBoneMatrix[0]", s_sceneNodeRendering->BoneMatrix, 16*MAX_BONEMATRIX );		
 
 		services->setPixelShaderConstant("uTextureUnit0", (float*)&textureID, 1);		
     }
@@ -528,7 +529,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	m_animationCallback		= NULL;
 	
 	// hardware skinning
-	m_isHardwareSkinning = false;//hardwareSkinning;
+	m_isHardwareSkinning = hardwareSkinning;
 
 #ifdef GSANIMATION
 	m_isShowName = false;

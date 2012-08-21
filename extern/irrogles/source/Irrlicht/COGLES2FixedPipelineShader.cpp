@@ -58,10 +58,14 @@ namespace video
 		0
 	};
 
-	const c8 Solid_VertexShaderFile[]			= IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline_solid.vsh";
-	const c8 Solid_FragmentShaderFile[]			= IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline_solid.fsh";
-	const c8 SolidLighting_VertexShaderFile[]	= IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline_solidLighting.vsh";
-	const c8 SolidLighting_FragmentShaderFile[]	= IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline_solidLighting.fsh";
+	const c8 Solid_VertexShaderFile[]				= IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline_solid.vsh";
+	const c8 Solid_FragmentShaderFile[]				= IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline_solid.fsh";
+
+	const c8 SolidOneTexture_VertexShaderFile[]		= IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline_solidOneTexture.vsh";
+	const c8 SolidOneTexture_FragmentShaderFile[]	= IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline_solidOneTexture.fsh";
+
+	const c8 SolidLighting_VertexShaderFile[]		= IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline_solidLighting.vsh";
+	const c8 SolidLighting_FragmentShaderFile[]		= IRR_OGLES2_SHADER_PATH "COGLES2FixedPipeline_solidLighting.fsh";
 
 	COGLES2FixedPipelineShader::COGLES2FixedPipelineShader(video::COGLES2Driver *driver, io::IFileSystem* fs)
 		:Driver(driver), Normalize(0), AlphaTest(0), AlphaValue(0.f), AlphaFunction(ALPHA_GREATER),
@@ -81,6 +85,18 @@ namespace video
 					UNIFORM_COUNT
 				);
 		MaterialType[ ES_SOLID ]->initFromFiles( dummy, Solid_VertexShaderFile, Solid_FragmentShaderFile, false );
+
+		// init solid with one texture shader
+		MaterialType[ ES_SOLID_ONETEXTURE ] = new COGLES2SLMaterialRenderer( Driver,
+					fs,
+					NULL,
+					NULL,
+					sBuiltInShaderUniformNames,
+					UNIFORM_COUNT
+				);
+		MaterialType[ ES_SOLID_ONETEXTURE ]->initFromFiles( dummy, SolidOneTexture_VertexShaderFile, SolidOneTexture_FragmentShaderFile, false );
+
+
 
 		// init solid shader with lighting
 		MaterialType[ ES_SOLID_LIGHT ] = new COGLES2SLMaterialRenderer( Driver,
@@ -146,27 +162,37 @@ namespace video
 		Fog			= Material.FogEnable;
 		Normalize	= Material.NormalizeNormals;
 		
-		//for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
-		//{
-		//	UseTexture[i] = Material.getTexture(i) != 0;
-		//	if (UseTexture[i])
-		//	{
-		//		UseTexMatrix[i] = false;
-		//		const core::matrix4& texMat = Material.getTextureMatrix(i);
-		//		if (!texMat.isIdentity())
-		//		{
-		//			UseTexMatrix[i] = true;
-		//			memcpy(&TextureMatrix[i], texMat.pointer(), sizeof(mat4));
-		//		}
-		//	}
-		//}		
+		int nTexture = 0;
+		for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
+		{
+			UseTexture[i] = Material.getTexture(i) != 0;
+			if (UseTexture[i])
+			{
+				nTexture++;
+
+				//UseTexMatrix[i] = false;
+				//const core::matrix4& texMat = Material.getTextureMatrix(i);
+				//if (!texMat.isIdentity())
+				//{
+				//	UseTexMatrix[i] = true;
+				//	memcpy(&TextureMatrix[i], texMat.pointer(), sizeof(mat4));
+				//}
+			}
+		}		
 
 		if ( RenderMode == EMT_SOLID )
 		{
 			if ( Lighting == false )
-				mat = MaterialType[ ES_SOLID ];
+			{
+				if ( nTexture == 0 )
+					mat = MaterialType[ ES_SOLID ];
+				else
+					mat = MaterialType[ ES_SOLID_ONETEXTURE ];
+			}
 			else
+			{
 				mat = MaterialType[ ES_SOLID_LIGHT ];
+			}
 
 		}
 		else

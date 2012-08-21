@@ -250,7 +250,9 @@ namespace video
 		if ( material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates )
 		{
 			if ( Program )
+			{
 				glUseProgram( Program );
+			}
 
 			//let callback know used material
 			if ( CallBack )
@@ -374,11 +376,17 @@ namespace video
 			SUniformInfo ui;
 			glGetActiveUniform( Program, i, maxlen, 0, &size, &ui.type, reinterpret_cast<char*>( buf ) );
 			ui.location = glGetUniformLocation( Program, buf );
+			ui.name = buf;
 			uni.push_back( ui );
 			names.push_back( buf );
 		}
 
 		delete [] buf;
+
+		if ( UniformCount == 0 )
+		{
+			UniformInfo = uni;
+		}
 
 		for ( int i = 0; i < UniformCount; ++i )
 		{
@@ -449,8 +457,64 @@ namespace video
 
 	bool COGLES2SLMaterialRenderer::setPixelShaderConstant( const c8* name, const f32* floats, int count )
 	{
-		os::Printer::log( "Cannot set constant, use high level shader call.", ELL_WARNING );
-		return false;
+		int index = 0, n = 0;		
+		for (index = 0, n = UniformInfo.size(); index < n; index++ )
+		{
+			if ( UniformInfo[index].name == name )
+				break;
+		}
+
+		if ((u32)index>=UniformInfo.size())
+			return false;
+
+		SUniformInfo& ui = UniformInfo[index];
+
+		if ( ui.location == -1 )
+			return false;
+		switch ( ui.type )
+		{
+			case GL_FLOAT:
+				glUniform1fv( ui.location, count, floats );
+				break;
+			case GL_FLOAT_VEC2:
+				glUniform2fv( ui.location, count/2, floats );
+				break;
+			case GL_FLOAT_VEC3:
+				glUniform3fv( ui.location, count/3, floats );
+				break;
+			case GL_FLOAT_VEC4:
+				glUniform4fv( ui.location, count/4, floats );
+				break;
+			case GL_INT:
+			case GL_BOOL:
+				glUniform1iv( ui.location, count, (const GLint*) floats );
+				break;
+			case GL_INT_VEC2:
+			case GL_BOOL_VEC2:
+				glUniform2iv( ui.location, count/2, (const GLint*) floats );
+				break;
+			case GL_INT_VEC3:
+			case GL_BOOL_VEC3:
+				glUniform3iv( ui.location, count/3, (const GLint*) floats );
+				break;
+			case GL_INT_VEC4:
+			case GL_BOOL_VEC4:
+				glUniform4iv( ui.location, count/4, (const GLint*) floats );
+				break;
+			case GL_FLOAT_MAT2:
+				glUniformMatrix2fv( ui.location, count/4, false, (const GLfloat*) floats );
+				break;
+			case GL_FLOAT_MAT3:
+				glUniformMatrix3fv( ui.location, count/9, false, (const GLfloat*) floats );
+				break;
+			case GL_FLOAT_MAT4:
+				glUniformMatrix4fv( ui.location, count/16, false, (const GLfloat*) floats );
+				break;
+			default: // sampler
+				glUniform1iv( ui.location, count, (const GLint*) floats );
+				break;
+		}
+		return !Driver->testGLError();
 	}
 
 	bool COGLES2SLMaterialRenderer::setUniform( int index, const void* data, int count )

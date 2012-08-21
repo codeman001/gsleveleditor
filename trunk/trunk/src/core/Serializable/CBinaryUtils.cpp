@@ -341,8 +341,8 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 
 	for ( int i = 0; i < nMeshBuffer; i++ )
 	{
-		// get mesh buffer
-		SColladaMeshBuffer *buffer = (SColladaMeshBuffer*)mesh->getMeshBuffer(i);		
+		// get mesh buffer		
+		IMeshBuffer *buffer = mesh->getMeshBuffer(i);		
 		
 		int vertexType = buffer->getVertexType();
 		int vertexCount = buffer->getVertexCount();
@@ -353,8 +353,22 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 		memStream.writeData( &bufferID, sizeof(unsigned long) );
 
 		// write begin & end vertex
-		memStream.writeData( &buffer->beginVertex, sizeof(unsigned long) );
-		memStream.writeData( &buffer->endVertex, sizeof(unsigned long) );
+		unsigned long beginVertex = 0;
+		unsigned long endVertex = 0;
+
+		if ( vertexType == video::EVT_SKIN )
+		{
+			beginVertex = ((SColladaSkinMeshBuffer*)buffer)->beginVertex;
+			endVertex	= ((SColladaSkinMeshBuffer*)buffer)->endVertex;
+		}
+		else
+		{
+			beginVertex = ((SColladaMeshBuffer*)buffer)->beginVertex;
+			endVertex	= ((SColladaMeshBuffer*)buffer)->endVertex;
+		}
+
+		memStream.writeData( &beginVertex, sizeof(unsigned long) );
+		memStream.writeData( &endVertex, sizeof(unsigned long) );
 
 		// write buffer type
 		memStream.writeData( &vertexType, sizeof(int) );
@@ -384,6 +398,14 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 		else if ( vertexType == video::EVT_SKIN )
 		{
 			bufferSize = sizeof(video::S3DVertexSkin) * vertexCount;
+						
+			// add to fix if the vertex is modify
+			SColladaSkinMeshBuffer *skinBuffer = (SColladaSkinMeshBuffer*)buffer;
+			for ( int i = 0; i < vertexCount; i++ )
+			{
+				skinBuffer->Vertices[i].Pos = skinBuffer->Vertices[i].StaticPos;
+				skinBuffer->Vertices[i].Normal = skinBuffer->Vertices[i].StaticNormal;
+			}
 		}
 
 		memStream.writeData( buffer->getVertices(), bufferSize );

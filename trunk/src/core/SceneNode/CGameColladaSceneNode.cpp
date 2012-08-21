@@ -498,7 +498,9 @@ public:
 		worldViewProj *= driver->getTransform(video::ETS_VIEW);
 		worldViewProj *= driver->getTransform(ETS_WORLD);
 		services->setVertexShaderConstant("uMvpMatrix", worldViewProj.pointer(), 16);
-		services->setVertexShaderConstant("uBoneMatrix", s_sceneNodeRendering->BoneMatrix, 16*MAX_BONEMATRIX );
+
+		if ( services->setVertexShaderConstant("uBoneMatrix", s_sceneNodeRendering->BoneMatrix, 16*MAX_BONEMATRIX ) == false )
+			services->setVertexShaderConstant("uBoneMatrix[0]", s_sceneNodeRendering->BoneMatrix, 16*MAX_BONEMATRIX );
 
 		services->setPixelShaderConstant("uTextureUnit0", (float*)&textureID, 1);		
     }

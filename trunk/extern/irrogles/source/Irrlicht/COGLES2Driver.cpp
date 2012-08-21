@@ -749,6 +749,9 @@ namespace video
 			return;
 
 		CNullDriver::drawVertexPrimitiveList(vertices, vertexCount, indexList, primitiveCount, vType, pType, iType);
+		
+		if ( vertices )
+			getColorBuffer(vertices, vertexCount, vType);
 
 		//TODO: treat #ifdef GL_OES_point_size_array outside this if
 		if (NoHighLevelShader)
@@ -768,6 +771,9 @@ namespace video
 				glEnableVertexAttribArray(EVA_NORMAL);
 			}
 
+			if ( vertices )
+				glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, 0, &ColorBuffer[0]);
+
 			switch (vType)
 			{
 			case EVT_STANDARD:
@@ -784,7 +790,7 @@ namespace video
 						glVertexAttribPointer(EVA_POSITION, (threed ? 3 : 2), GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
 					if (threed)
 						glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Normal);
-					glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
+					//glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
 					glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
 
 				}
@@ -812,7 +818,7 @@ namespace video
 					glVertexAttribPointer(EVA_POSITION, (threed ? 3 : 2), GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Pos);
 					if (threed)
 						glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Normal);
-					glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Color);
+					//glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Color);
 					glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].TCoords);
 					glVertexAttribPointer(EVA_BONEINDEX, 4, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].BoneIndex);
 					glVertexAttribPointer(EVA_BONEWEIGHT, 4, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].BoneWeight);
@@ -844,7 +850,7 @@ namespace video
 					glVertexAttribPointer(EVA_POSITION, (threed ? 3 : 2), GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Pos);
 					if (threed)
 						glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Normal);
-					glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Color);
+					//glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Color);
 					glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].TCoords);
 					glVertexAttribPointer(EVA_TCOORD1, 2, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].TCoords2);
 				}
@@ -1003,7 +1009,58 @@ namespace video
 		}
 		testGLError();
 	}
+	
+	void COGLES2Driver::getColorBuffer(const void* vertices, u32 vertexCount, E_VERTEX_TYPE vType)
+	{
+		// convert colors to gl color format.
+		vertexCount *= 4; //reused as color component count
+		ColorBuffer.set_used(vertexCount);
+		u32 i;
 
+		switch (vType)
+		{
+			case EVT_STANDARD:
+			{
+				const S3DVertex* p = static_cast<const S3DVertex*>(vertices);
+				for (i=0; i<vertexCount; i+=4)
+				{
+					p->Color.toOpenGLColor(&ColorBuffer[i]);
+					++p;
+				}
+			}
+			break;
+			case EVT_2TCOORDS:
+			{
+				const S3DVertex2TCoords* p = static_cast<const S3DVertex2TCoords*>(vertices);
+				for (i=0; i<vertexCount; i+=4)
+				{
+					p->Color.toOpenGLColor(&ColorBuffer[i]);
+					++p;
+				}
+			}
+			break;
+			case EVT_TANGENTS:
+			{
+				const S3DVertexTangents* p = static_cast<const S3DVertexTangents*>(vertices);
+				for (i=0; i<vertexCount; i+=4)
+				{
+					p->Color.toOpenGLColor(&ColorBuffer[i]);
+					++p;
+				}
+			}
+			break;
+			case EVT_SKIN:
+			{
+				const S3DVertexSkin* p = static_cast<const S3DVertexSkin*>(vertices);
+				for (i=0; i<vertexCount; i+=4)
+				{
+					p->Color.toOpenGLColor(&ColorBuffer[i]);
+					++p;
+				}
+			}
+			break;
+		}
+	}
 
 	//! draws a 2d image, using a color and the alpha channel of the texture
 	void COGLES2Driver::draw2DImage(const video::ITexture* texture,

@@ -17,7 +17,7 @@ void main(void)
 	// SKINNING 
 	// ---------------------------------
     highp mat4 netMatrix 	= mat4(0.0);
-	highp vec3 netPosition 	= vec4(0.0);
+	highp vec3 netPosition 	= vec3(0.0);
 	highp vec3 netNormal	= vec3(0.0);
 	
 	highp int index = int(inBoneIndex[0]);

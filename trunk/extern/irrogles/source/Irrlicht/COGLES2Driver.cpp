@@ -758,6 +758,13 @@ namespace video
 		{
 			glEnableVertexAttribArray(EVA_COLOR);
 			glEnableVertexAttribArray(EVA_POSITION);
+
+			if ( vType == EVT_SKIN )
+			{
+				glEnableVertexAttribArray(EVA_BONEINDEX);
+				glEnableVertexAttribArray(EVA_BONEWEIGHT);
+			}
+
 			if ((pType != scene::EPT_POINTS) && (pType != scene::EPT_POINT_SPRITES))
 			{
 				glEnableVertexAttribArray(EVA_TCOORD0);
@@ -993,6 +1000,13 @@ namespace video
 				glDisableVertexAttribArray(EVA_TANGENT);
 				glDisableVertexAttribArray(EVA_BINORMAL);
 			}
+			
+			if ( vType == EVT_SKIN )
+			{
+				glDisableVertexAttribArray(EVA_BONEINDEX);
+				glDisableVertexAttribArray(EVA_BONEWEIGHT);
+			}
+
 			if ((vType != EVT_STANDARD) || CurrentTexture[1])
 			{
 				glDisableVertexAttribArray(EVA_TCOORD1);

@@ -1,26 +1,26 @@
-attribute highp vec4 inVertexPosition;
-attribute highp vec4 inVertexColor;
-attribute highp vec3 inVertexNormal;
-attribute highp vec2 inTexCoord0;
-attribute highp vec4 inBoneIndex;
-attribute highp vec4 inBoneWeight;
+attribute mediump vec4 inVertexPosition;
+attribute mediump vec4 inVertexColor;
+attribute mediump vec3 inVertexNormal;
+attribute mediump vec2 inTexCoord0;
+attribute mediump vec4 inBoneIndex;
+attribute mediump vec4 inBoneWeight;
 
-uniform highp mat4 uMvpMatrix;
-uniform highp mat4 uBoneMatrix[62];
+uniform mediump mat4 uMvpMatrix;
+uniform mediump mat4 uBoneMatrix[62];
 
-varying highp vec4 varVertexColor;
-varying highp vec2 varTexCoord0;
+varying mediump vec4 varVertexColor;
+varying mediump vec2 varTexCoord0;
 
 void main(void)
 {	    
 	// ---------------------------------
 	// SKINNING 
 	// ---------------------------------
-    highp mat4 netMatrix 	= mat4(0.0);
-	highp vec3 netPosition 	= vec3(0.0);
-	highp vec3 netNormal	= vec3(0.0);
+    mediump mat4 netMatrix 		= mat4(0.0);
+	mediump vec3 netPosition 	= vec3(0.0);
+	mediump vec3 netNormal		= vec3(0.0);
 	
-	highp int index = int(inBoneIndex[0]);
+	mediump int index = int(inBoneIndex[0]);
 	netMatrix = inBoneWeight[0] * uBoneMatrix[index];
 		
 	index = int(inBoneIndex[1]);

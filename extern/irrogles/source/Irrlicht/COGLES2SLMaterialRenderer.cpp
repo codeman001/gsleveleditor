@@ -107,6 +107,9 @@ namespace video
 			if ( !createShader( GL_FRAGMENT_SHADER, pixelShaderProgram, "" ) )
 				return false;
 
+		for ( size_t i = 0; i < EVA_COUNT; ++i )
+			glBindAttribLocation( Program, i, sBuiltInVertexAttributeNames[i] );
+
 		if ( !linkProgram() )
 			return false;
 
@@ -271,8 +274,8 @@ namespace video
 	{
 		glUseProgram( 0 );
 
-		//if (BaseMaterial)
-		//	BaseMaterial->OnUnsetMaterial();
+		if (BaseMaterial)
+			BaseMaterial->OnUnsetMaterial();
 	}
 
 	//! Returns if the material is transparent.

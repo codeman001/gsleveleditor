@@ -582,6 +582,7 @@ void CGameColladaSceneNode::setColladaMesh(CGameColladaMesh* mesh)
 		for (u32 i = 0; i < ColladaMesh->getMeshBufferCount(); i++ )
 		{
 			ColladaMesh->getMeshBuffer(i)->getMaterial().MaterialType = (E_MATERIAL_TYPE)s_skinTechnical;
+			ColladaMesh->getMeshBuffer(i)->setHardwareMappingHint( EHM_STATIC );
 		}		
 
 	}

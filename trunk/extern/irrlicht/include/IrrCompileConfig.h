@@ -129,8 +129,6 @@ define out. */
 
 #define _IRR_COMPILE_WITH_OPENGL_
 
-//#define _IRR_COMPILE_WITH_OPENGL_ES_
-
 //! Define _IRR_COMPILE_WITH_SOFTWARE_ to compile the Irrlicht engine with software driver
 /** If you do not need the software driver, or want to use Burning's Video instead,
 comment this define out */

@@ -4,6 +4,7 @@
 #include "CColladaMeshComponent.h"
 #include "IView.h"
 
+#pragma region COLLADAMESH
 //////////////////////////////////////////////////////////
 // CGameColladaMesh implement
 //////////////////////////////////////////////////////////
@@ -48,6 +49,10 @@ void CGameColladaMesh::updateJoint()
 	}
 }
 
+#pragma endregion
+
+
+#pragma region COLLADAANIMATIONTRACK
 //////////////////////////////////////////////////////////
 // CGameAnimationTrack implement
 //////////////////////////////////////////////////////////
@@ -307,6 +312,11 @@ void CGameAnimationTrack::update(float timeStep)
 	}	
 }
 
+#pragma endregion
+
+
+#pragma region COLLADAANIMATION
+
 //////////////////////////////////////////////////////////
 // CGameAnimation implement
 //////////////////////////////////////////////////////////
@@ -472,6 +482,11 @@ void CGameAnimation::update(float timeStep)
 	}
 }
 
+#pragma endregion
+
+
+#pragma region SKINTECHNICAL
+
 //////////////////////////////////////////////////////////
 // CSkinTechincalCallBack implement
 //////////////////////////////////////////////////////////
@@ -509,6 +524,9 @@ public:
 
 };
 
+#pragma endregion
+
+
 //////////////////////////////////////////////////////////
 // CGameColladaSceneNode implement
 //////////////////////////////////////////////////////////
@@ -529,13 +547,18 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	
 	m_animationCallback		= NULL;
 	
-	// hardware skinning
-	m_isHardwareSkinning = hardwareSkinning;
 
 #ifdef GSANIMATION
 	m_isShowName = false;
 	m_renderRotate = 0;
 	m_isHardwareSkinning = false;
+#else	
+	#ifdef _IRR_COMPILE_WITH_OGLES1_
+		m_isHardwareSkinning = false;
+	#else
+		m_isHardwareSkinning = hardwareSkinning;
+	#endif
+
 #endif
 
 	Box.MinEdge = core::vector3df(-2, -2, -2);

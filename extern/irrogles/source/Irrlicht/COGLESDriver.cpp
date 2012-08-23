@@ -1797,6 +1797,7 @@ void COGLES1Driver::setMaterial(const SMaterial& material)
 
 	for (s32 i = MaxTextureUnits-1; i>= 0; --i)
 	{
+		setActiveTexture(i, material.getTexture(i));
 		setTransform ((E_TRANSFORMATION_STATE) ( ETS_TEXTURE_0 + i ),
 				Material.getTextureMatrix(i));
 	}

@@ -30,6 +30,7 @@
 #include <GLES/gl.h>
 #endif
 #ifdef _MSC_VER
+	#pragma comment(lib, "libEGL.lib")
 	#pragma comment(lib, "libgles_cm.lib")
 #endif
 #include "COGLESExtensionHandler.h"
@@ -108,6 +109,11 @@ namespace video
 		virtual void drawVertexPrimitiveList(const void* vertices, u32 vertexCount,
 				const void* indexList, u32 primitiveCount,
 				E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType);
+
+		//! draws a vertex primitive list in 2d
+		virtual void draw2DVertexPrimitiveList(const void* vertices, u32 vertexCount,
+				const void* indexList, u32 primitiveCount,
+				E_VERTEX_TYPE vType=EVT_STANDARD, scene::E_PRIMITIVE_TYPE pType=scene::EPT_TRIANGLES, E_INDEX_TYPE iType=EIT_16BIT);
 
 		void drawVertexPrimitiveList2d3d(const void* vertices, u32 vertexCount, const void* indexList, u32 primitiveCount, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType=EIT_16BIT, bool threed=true);
 

@@ -43,17 +43,13 @@ namespace video
 		"uPointLightDiffuse[0]",
 		"uPointLightSpecular[0]",
 		"uPointLightAttenuation[0]",
-
-		"uNumLight",
-		"uNumPointLight",
-
+		
 		"uAmbientColor",
 		"uMaterialAmbient",
 		"uMaterialEmission",
 		"uMaterialDiffuse",
 		"uMaterialSpecular",
 		"uMaterialShininess",
-		"uColorMaterial",
 
 		"uTextureMatrix",
 		"uClipPlane",
@@ -230,12 +226,7 @@ namespace video
 						
 		if ( Lighting )
 		{
-			// set material color
-			if (ColorMaterial != Material.ColorMaterial)
-			{
-				ColorMaterial = Material.ColorMaterial;
-				mat->setUniform(COLOR_MATERIAL, &ColorMaterial);
-			}
+			// set material color		
 			if (MaterialAmbient != Material.AmbientColor)
 			{
 				MaterialAmbient   = Material.AmbientColor;
@@ -341,10 +332,7 @@ namespace video
 				mat->setUniform( POINTLIGHT_ARRAY_DIFFUSE,		PointLightDiffuse,		MAX_POINTLIGHTS );
 				mat->setUniform( POINTLIGHT_ARRAY_SPECULAR,		PointLightSpecular,		MAX_POINTLIGHTS );
 				mat->setUniform( POINTLIGHT_ARRAY_ATTENUATION,	PointLightAttenuation,	MAX_POINTLIGHTS );
-			}
-
-			mat->setUniform( NUMLIGHT,		&nLightDirection );
-			mat->setUniform( NUMPOINTLIGHT, &nLightPoint );
+			}			
 
 			AmbientColor = Driver->getAmbientLight();
 			mat->setUniform( AMBIENT_COLOR, &AmbientColor );

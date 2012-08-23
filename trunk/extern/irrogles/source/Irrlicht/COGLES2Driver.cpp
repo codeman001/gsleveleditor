@@ -750,8 +750,8 @@ namespace video
 
 		CNullDriver::drawVertexPrimitiveList(vertices, vertexCount, indexList, primitiveCount, vType, pType, iType);
 		
-		if ( vertices )
-			getColorBuffer(vertices, vertexCount, vType);
+		//if ( vertices )
+		//	getColorBuffer(vertices, vertexCount, vType);
 
 		//TODO: treat #ifdef GL_OES_point_size_array outside this if
 		if (NoHighLevelShader)
@@ -778,8 +778,8 @@ namespace video
 				glEnableVertexAttribArray(EVA_NORMAL);
 			}
 
-			if ( vertices )
-				glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, 0, &ColorBuffer[0]);
+			//if ( vertices )
+			//	glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, 0, &ColorBuffer[0]);
 
 			switch (vType)
 			{
@@ -797,7 +797,7 @@ namespace video
 						glVertexAttribPointer(EVA_POSITION, (threed ? 3 : 2), GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Pos);
 					if (threed)
 						glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Normal);
-					//glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
+					glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].Color);
 					glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex), &(static_cast<const S3DVertex*>(vertices))[0].TCoords);
 
 				}
@@ -825,7 +825,7 @@ namespace video
 					glVertexAttribPointer(EVA_POSITION, (threed ? 3 : 2), GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Pos);
 					if (threed)
 						glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Normal);
-					//glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Color);
+					glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Color);
 					glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].TCoords);
 					glVertexAttribPointer(EVA_BONEINDEX, 4, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].BoneIndex);
 					glVertexAttribPointer(EVA_BONEWEIGHT, 4, GL_FLOAT, false, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].BoneWeight);
@@ -857,7 +857,7 @@ namespace video
 					glVertexAttribPointer(EVA_POSITION, (threed ? 3 : 2), GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Pos);
 					if (threed)
 						glVertexAttribPointer(EVA_NORMAL, 3, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Normal);
-					//glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Color);
+					glVertexAttribPointer(EVA_COLOR, 4, GL_UNSIGNED_BYTE, true, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].Color);
 					glVertexAttribPointer(EVA_TCOORD0, 2, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].TCoords);
 					glVertexAttribPointer(EVA_TCOORD1, 2, GL_FLOAT, false, sizeof(S3DVertex2TCoords), &(static_cast<const S3DVertex2TCoords*>(vertices))[0].TCoords2);
 				}
@@ -934,18 +934,7 @@ namespace video
 				// if ==0 we use the point size array
 				if (Material.Thickness != 0.f)
 				{
-//						float quadratic[] = {0.0f, 0.0f, 10.01f};
-					//TODO : OpenGL ES 2.0 Port GL_POINT_DISTANCE_ATTENUATION
-					//glPointParameterfv(GL_POINT_DISTANCE_ATTENUATION, quadratic);
-//						float maxParticleSize = 1.0f;
-					//TODO : OpenGL ES 2.0 Port GL_POINT_SIZE_MAX
-					//glGetFloatv(GL_POINT_SIZE_MAX, &maxParticleSize);
-//			maxParticleSize=maxParticleSize<Material.Thickness?maxParticleSize:Material.Thickness;
-//			glPointParameterf(GL_POINT_SIZE_MAX,maxParticleSize);
-//			glPointParameterf(GL_POINT_SIZE_MIN,Material.Thickness);
-					//TODO : OpenGL ES 2.0 Port GL_POINT_FADE_THRESHOLD_SIZE
-					//glPointParameterf(GL_POINT_FADE_THRESHOLD_SIZE, 60.0f);
-					//glPointSize(Material.Thickness);
+
 				}
 #ifdef GL_OES_point_sprite
 				if (pType == scene::EPT_POINT_SPRITES && FeatureAvailable[IRR_OES_point_sprite])
@@ -2437,6 +2426,11 @@ namespace video
 
 		u16 indices[] = {0, 1};
 		S3DVertex vertices[2];
+		
+		s32 openglColor;
+		color.toOpenGLColor( (u8*)&openglColor );
+		color.color = openglColor;
+
 		vertices[0] = S3DVertex(start.X, start.Y, start.Z, 0, 0, 1, color, 0, 0);
 		vertices[1] = S3DVertex(end.X, end.Y, end.Z, 0, 0, 1, color, 0, 0);
 		drawVertexPrimitiveList2d3d(vertices, 2, indices, 1, video::EVT_STANDARD, scene::EPT_LINES);

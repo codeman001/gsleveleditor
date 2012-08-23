@@ -16,7 +16,8 @@ CGameColladaMesh* CGameColladaMesh::clone()
 
 	newMesh->Joints = Joints;	
 	newMesh->BoundingBox = BoundingBox;
-	
+	newMesh->IsStaticMesh = IsStaticMesh;
+
 	ISceneManager *smgr = getIView()->getSceneMgr();
 	SMesh *mesh = smgr->getMeshManipulator()->createMeshCopy( this );
 
@@ -1397,9 +1398,20 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 		}
 		else
 		{
-			// dynamic mesh
-			newNode->ColladaMesh = ColladaMesh->clone();
-			newNode->ColladaMesh->IsStaticMesh = false;
+			if ( m_isHardwareSkinning == true && newNode->m_isHardwareSkinning == true )
+			{
+				// static mesh
+				newNode->ColladaMesh = ColladaMesh;
+				newNode->ColladaMesh->grab();
+			}
+			else
+			{
+				// dynamic mesh
+				CGameColladaMesh *mesh = ColladaMesh->clone();
+				
+				// update hardware skinning
+				newNode->setColladaMesh( mesh );
+			}
 		}
 	}
 
@@ -1411,6 +1423,6 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 	newNode->m_hideTerrainNode	= m_hideTerrainNode;	
 
 	int ref = newNode->getReferenceCount();
-
+	
 	return newNode;
 }

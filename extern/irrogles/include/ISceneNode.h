@@ -49,7 +49,7 @@ namespace scene
 			: RelativeTranslation(position), RelativeRotation(rotation), RelativeScale(scale),
 				Parent(0), SceneManager(mgr), TriangleSelector(0), ID(id),
 				AutomaticCullingState(EAC_BOX), DebugDataVisible(EDS_OFF),
-				IsVisible(true), IsDebugObject(false)
+				IsVisible(true), IsDebugObject(false), IsDirtyTransform(true)
 		{
 			if (parent)
 				parent->addChild(this);
@@ -196,20 +196,25 @@ namespace scene
 		vectors: translation, rotation and scale. To get the relative
 		transformation matrix, it is calculated from these values.
 		\return The relative transformation matrix. */
-		virtual core::matrix4 getRelativeTransformation() const
+		virtual core::matrix4 getRelativeTransformation()
 		{
-			core::matrix4 mat;
-			mat.setRotationDegrees(RelativeRotation);
-			mat.setTranslation(RelativeTranslation);
-
-			if (RelativeScale != core::vector3df(1.f,1.f,1.f))
+			if ( IsDirtyTransform == true )
 			{
-				core::matrix4 smat;
-				smat.setScale(RelativeScale);
-				mat *= smat;
+				core::matrix4 mat;
+				mat.setRotationDegrees(RelativeRotation);
+				mat.setTranslation(RelativeTranslation);
+
+				if (RelativeScale != core::vector3df(1.f,1.f,1.f))
+				{
+					core::matrix4 smat;
+					smat.setScale(RelativeScale);
+					mat *= smat;
+				}
+				RelativeTransformation = mat;
+				IsDirtyTransform = false;
 			}
 
-			return mat;
+			return RelativeTransformation;
 		}
 
 
@@ -463,6 +468,7 @@ namespace scene
 		virtual void setScale(const core::vector3df& scale)
 		{
 			RelativeScale = scale;
+			IsDirtyTransform = true;
 		}
 
 
@@ -483,6 +489,7 @@ namespace scene
 		virtual void setRotation(const core::vector3df& rotation)
 		{
 			RelativeRotation = rotation;
+			IsDirtyTransform = true;
 		}
 
 
@@ -502,6 +509,7 @@ namespace scene
 		virtual void setPosition(const core::vector3df& newpos)
 		{
 			RelativeTranslation = newpos;
+			IsDirtyTransform = true;
 		}
 
 
@@ -800,6 +808,8 @@ namespace scene
 		//! Absolute transformation of the node.
 		core::matrix4 AbsoluteTransformation;
 
+		//! Relative transformation of the node
+		core::matrix4 RelativeTransformation;
 		//! Relative translation of the scene node.
 		core::vector3df RelativeTranslation;
 
@@ -838,6 +848,8 @@ namespace scene
 
 		//! Is debug object?
 		bool IsDebugObject;
+		//! Is transform change
+		bool IsDirtyTransform;
 	};
 
 

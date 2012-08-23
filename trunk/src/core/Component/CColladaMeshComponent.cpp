@@ -3244,7 +3244,8 @@ void CColladaMeshComponent::constructScene()
 			}
 
 			// add update bounding box with this child
-			((CGameChildContainerSceneNode*)m_gameObject->m_node)->addBoundingBoxOfChild( colladaSceneNode );
+			if ( colladaSceneNode->ColladaMesh )
+				((CGameChildContainerSceneNode*)m_gameObject->m_node)->addBoundingBoxOfChild( colladaSceneNode );
 
 		}
 #ifdef GSANIMATION
@@ -3449,9 +3450,7 @@ void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
 		// clone new node
 		CGameColladaSceneNode *newNode = (CGameColladaSceneNode*)groupNode.initChild->clone( groupNode.colladaParent, smgr );
 		newNode->setComponent( this );
-
-		m_colladaNode->addBoundingBoxOfChild( newNode );
-				
+						
 		// store name this node
 		std::string name = groupNode.initChild->getName();
 		if ( name.length() > 0 )
@@ -3473,6 +3472,8 @@ void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
 			listSkinMesh.push_back( mesh );
 		}
 	
+		if ( mesh )
+			m_colladaNode->addBoundingBoxOfChild( newNode );
 
 		const core::list<ISceneNode*>& childs = groupNode.initChild->getChildren();
 		core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();

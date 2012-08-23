@@ -385,7 +385,11 @@ void CDocument::drawDocument()
 	int fps = driver->getFPS();
 	core::stringw text(L"fps: ");
 	text += fps;
-	text += L" frame/second";
+	text += L" frame/second \n";
+
+	int primitiveDraw =	driver->getPrimitiveCountDrawn();
+	text += L"primitive: ";
+	text += primitiveDraw;
 
 	irr::gui::IGUIFont* font = smgr->getGUIEnvironment()->getBuiltInFont();
 	font->draw( text.c_str(), core::recti( 10, 10, 200, 20), video::SColor(255, 255,0,0) );

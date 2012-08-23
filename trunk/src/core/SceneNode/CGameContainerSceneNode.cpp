@@ -1,9 +1,13 @@
 #include "stdafx.h"
 #include "CGameContainerSceneNode.h"
+#include "CGameColladaSceneNode.h"
 #include "IView.h"
+
+#pragma region GAME_CONTAINER
 
 //////////////////////////////////////////////////////////
 // CGameContainerSceneNode implement
+// Manager all game scenenode
 //////////////////////////////////////////////////////////
 
 CGameContainerSceneNode::CGameContainerSceneNode(
@@ -82,9 +86,14 @@ void CGameContainerSceneNode::render()
 	}
 }
 
+#pragma endregion
+
+
+#pragma region GAME_COLLADA_CONTAINER
 
 //////////////////////////////////////////////////////////
 // CGameChildContainerSceneNode implement
+// Manager collada node
 //////////////////////////////////////////////////////////
 
 
@@ -127,18 +136,22 @@ void CGameChildContainerSceneNode::OnRegisterSceneNode()
 		// box is equal first child
 		Box.reset(core::vector3df(0,0,0));
 
-		// box is equal first child
-		Box.reset(core::vector3df(0,0,0));
-		if ( it != end )
-		{
-			Box = computeChildBoudingBox( (*it) );
-			it++;
-		}
+		bool first = true;
 
 		// update another child
 		for (; it != end; ++it)
-		{			
-			Box.addInternalBox( computeChildBoudingBox( (*it) ) );
+		{	
+			CGameColladaSceneNode *node = (CGameColladaSceneNode*)(*it);			
+			if ( node->ColladaMesh )
+			{
+				if ( first == true )
+				{
+					Box = computeChildBoudingBox( node );
+					first = false;
+				}
+				else
+					Box.addInternalBox( computeChildBoudingBox( node ) );
+			}
 		}
 	}
 }
@@ -207,3 +220,5 @@ void CGameChildContainerSceneNode::render()
 		m_owner->drawCircleAroundObject();	
 #endif
 }
+
+#pragma endregion

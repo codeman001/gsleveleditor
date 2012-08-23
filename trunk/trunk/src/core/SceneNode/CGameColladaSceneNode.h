@@ -3,7 +3,9 @@
 
 #include "stdafx.h"
 
-#define MAX_BONEMATRIX	62
+#define MAX_BONEMATRIX	58
+#define MAX_LIGHTS		2
+#define MAX_POINTLIGHTS	4
 
 class CGameColladaSceneNode;
 class CColladaMeshComponent;

@@ -5,6 +5,8 @@
 	#define MAX_POINTLIGHTS 4
 #endif
 
+#define MAX_BONES	58
+
 attribute mediump vec4 inVertexPosition;
 attribute mediump vec4 inVertexColor;
 attribute mediump vec3 inVertexNormal;
@@ -13,7 +15,7 @@ attribute mediump vec4 inBoneIndex;
 attribute mediump vec4 inBoneWeight;
 
 uniform mediump mat4 uMvpMatrix;
-uniform mediump mat4 uBoneMatrix[62];
+uniform mediump mat4 uBoneMatrix[MAX_BONES];
 
 varying mediump vec4 varVertexColor;
 varying mediump vec2 varTexCoord0;

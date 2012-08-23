@@ -540,10 +540,9 @@ public:
 
 		float shininess  = s_materialRendering.Shininess;
 		services->setPixelShaderConstant("uMaterialShininess", (float*)&shininess, 1);	
-
-		/*
+		
 		//lighting
-		u32 cnt = Driver->getDynamicLightCount();
+		u32 cnt = driver->getDynamicLightCount();
 			
 		core::matrix4 invWorld;
 		driver->getTransform(ETS_WORLD).getInverse(invWorld);
@@ -554,25 +553,35 @@ public:
 
 		int nLightDirection = 0;
 		int nLightPoint		= 0;
-
-		zeroLightData();
+		
+		SVec4			lightDirection		[MAX_LIGHTS];
+		SColorf			lightAmbient		[MAX_LIGHTS];
+		SColorf			lightDiffuse		[MAX_LIGHTS];
+		SColorf			lightSpecular		[MAX_LIGHTS];
+		
+		SVec4			pointLightPosition	[MAX_POINTLIGHTS];
+		SColorf			pointLightAmbient	[MAX_POINTLIGHTS];
+		SColorf			pointLightDiffuse	[MAX_POINTLIGHTS];
+		SColorf			pointLightSpecular	[MAX_POINTLIGHTS];
+		core::vector3df pointLightAttenuation[MAX_POINTLIGHTS];
+		SColorf			ambientColor;
 
 		for ( size_t i = 0; i < 8; ++i )
 		{
 			if ( i < cnt )
 			{
 				video::SLight light;
-				light = Driver->getDynamicLight( i );
+				light = driver->getDynamicLight( i );
 
 				switch ( light.Type )
 				{
 					case ELT_DIRECTIONAL:
 						if ( nLightDirection < kDirectionLight )
 						{
-							invWorld.rotateVect(( f32* )&LightDirection[nLightDirection],light.Direction );
-							LightAmbient[nLightDirection]		= light.AmbientColor;
-							LightDiffuse[nLightDirection]		= light.DiffuseColor;
-							LightSpecular[nLightDirection]		= light.SpecularColor;
+							invWorld.rotateVect(( f32* )&lightDirection[nLightDirection],light.Direction );
+							lightAmbient[nLightDirection]		= light.AmbientColor;
+							lightDiffuse[nLightDirection]		= light.DiffuseColor;
+							lightSpecular[nLightDirection]		= light.SpecularColor;
 
 							nLightDirection++;
 						}
@@ -580,12 +589,12 @@ public:
 					case ELT_POINT:
 						if ( nLightPoint < kPointLight )
 						{
-							invWorld.transformVect(( f32* )&PointLightPosition[nLightPoint],light.Position );
-							PointLightAttenuation[nLightPoint]	= light.Attenuation;
-							PointLightAmbient[nLightPoint]		= light.AmbientColor;
-							PointLightDiffuse[nLightPoint]		= light.DiffuseColor;
-							PointLightSpecular[nLightPoint]		= light.SpecularColor;
-							PointLightAttenuation[nLightPoint]	= light.Attenuation;
+							invWorld.transformVect(( f32* )&pointLightPosition[nLightPoint],light.Position );
+							pointLightAttenuation[nLightPoint]	= light.Attenuation;
+							pointLightAmbient[nLightPoint]		= light.AmbientColor;
+							pointLightDiffuse[nLightPoint]		= light.DiffuseColor;
+							pointLightSpecular[nLightPoint]		= light.SpecularColor;
+							pointLightAttenuation[nLightPoint]	= light.Attenuation;
 
 							nLightPoint++;
 						}
@@ -596,35 +605,22 @@ public:
 			}			
 		}
 		
-		if ( mat->setUniform( LIGHT_DIRECTION,		LightDirection,		MAX_LIGHTS ) == true )
+		if ( services->setPixelShaderConstant( "uLightDirection", (float*)&lightDirection, MAX_LIGHTS*4 ) == true )
 		{
-			mat->setUniform( LIGHT_AMBIENT,			LightAmbient,		MAX_LIGHTS );
-			mat->setUniform( LIGHT_DIFFUSE,			LightDiffuse,		MAX_LIGHTS );
-			mat->setUniform( LIGHT_SPECULAR,		LightSpecular,		MAX_LIGHTS );
-
-			mat->setUniform( POINTLIGHT_POSITION,		PointLightPosition,		MAX_POINTLIGHTS );
-			mat->setUniform( POINTLIGHT_AMBIENT,		PointLightAmbient,		MAX_POINTLIGHTS );
-			mat->setUniform( POINTLIGHT_DIFFUSE,		PointLightDiffuse,		MAX_POINTLIGHTS );
-			mat->setUniform( POINTLIGHT_SPECULAR,		PointLightSpecular,		MAX_POINTLIGHTS );
-			mat->setUniform( POINTLIGHT_ATTENUATION,	PointLightAttenuation,	MAX_POINTLIGHTS );
+			services->setPixelShaderConstant( "uLightAmbient", (float*)&lightAmbient,	MAX_LIGHTS*4 );
+			services->setPixelShaderConstant( "uLightDiffuse", (float*)&lightDiffuse,	MAX_LIGHTS*4 );
+			services->setPixelShaderConstant( "uLightSpecular",(float*)&lightSpecular,	MAX_LIGHTS*4 );			
 		}
 		else
 		{
-			mat->setUniform( LIGHT_ARRAY_DIRECTION,			LightDirection,		MAX_LIGHTS );
-			mat->setUniform( LIGHT_ARRAY_AMBIENT,		LightAmbient,		MAX_LIGHTS );
-			mat->setUniform( LIGHT_ARRAY_DIFFUSE,		LightDiffuse,		MAX_LIGHTS );
-			mat->setUniform( LIGHT_ARRAY_SPECULAR,		LightSpecular,		MAX_LIGHTS );
+			services->setPixelShaderConstant( "uLightDirection[0]", (float*)&lightDirection,	MAX_LIGHTS*4 );
+			services->setPixelShaderConstant( "uLightAmbient[0]",	(float*)&lightAmbient,		MAX_LIGHTS*4 );
+			services->setPixelShaderConstant( "uLightDiffuse[0]",	(float*)&lightDiffuse,		MAX_LIGHTS*4 );
+			services->setPixelShaderConstant( "uLightSpecular[0]",	(float*)&lightSpecular,		MAX_LIGHTS*4 );
+		}	
 
-			mat->setUniform( POINTLIGHT_ARRAY_POSITION,		PointLightPosition,		MAX_POINTLIGHTS );
-			mat->setUniform( POINTLIGHT_ARRAY_AMBIENT,		PointLightAmbient,		MAX_POINTLIGHTS );
-			mat->setUniform( POINTLIGHT_ARRAY_DIFFUSE,		PointLightDiffuse,		MAX_POINTLIGHTS );
-			mat->setUniform( POINTLIGHT_ARRAY_SPECULAR,		PointLightSpecular,		MAX_POINTLIGHTS );
-			mat->setUniform( POINTLIGHT_ARRAY_ATTENUATION,	PointLightAttenuation,	MAX_POINTLIGHTS );
-		}			
-
-		AmbientColor = Driver->getAmbientLight();
-		mat->setUniform( AMBIENT_COLOR, &AmbientColor );
-		*/
+		ambientColor = getIView()->getSceneMgr()->getAmbientLight();
+		services->setPixelShaderConstant( "uAmbientColor", (float*)&ambientColor, 4 );
     }
 
 };

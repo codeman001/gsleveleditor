@@ -930,6 +930,15 @@ void COGLES1Driver::drawVertexPrimitiveList2d3d(const void* vertices, u32 vertex
 					++p;
 				}
 			}
+			case EVT_SKIN:
+			{
+				const S3DVertexSkin* p = static_cast<const S3DVertexSkin*>(vertices);
+				for ( i=0; i<vertexCount; i+=4)
+				{
+					p->Color.toOpenGLColor(&ColorBuffer[i]);
+					++p;
+				}
+			}
 			break;
 		}
 	}

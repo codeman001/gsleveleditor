@@ -772,8 +772,10 @@ void CGameColladaSceneNode::OnRegisterSceneNode()
 					}
 				}
 			}
+#ifdef GSANIMATION
 			else
 				SceneManager->registerNodeForRendering(this);
+#endif
 		}
 	}
 	ISceneNode::OnRegisterSceneNode();
@@ -822,33 +824,35 @@ void CGameColladaSceneNode::enableAnimOnAllChild( bool b )
 }
 
 void CGameColladaSceneNode::OnAnimate(u32 timeMs)
-{
-	ISceneNode::OnAnimate( timeMs );
-	
+{		
 	// reset timer
 	if ( m_timer == 0 )
 	{
-		m_timer = timeMs;
-		return;
+		m_timer = timeMs;		
 	}
-			
-	// update animation translate
-	if ( m_enableAnim == true )
-	{	
-		// update anim track
-		float timeStep = (float)(timeMs - m_timer);
-		m_gameAnimation.update( timeStep );			
+	else
+	{
+		// update animation translate
+		if ( m_enableAnim == true )
+		{	
+			// update anim track
+			float timeStep = (float)(timeMs - m_timer);
+			m_gameAnimation.update( timeStep );			
 
-		// update anim animation
-		updateAnimation();	
+			// update anim animation
+			updateAnimation();	
+		}
+		
+		// save current time
+		m_timer = timeMs;
 	}
+
+	ISceneNode::OnAnimate( timeMs );
 
 	// skin mesh
 	if ( ColladaMesh != NULL && ColladaMesh->IsStaticMesh == false && IsVisible == true )		
 		skin();
 
-	// save current time
-	m_timer = timeMs;
 }
 
 // skin
@@ -869,7 +873,7 @@ void CGameColladaSceneNode::skin()
 		pJoint = &arrayJoint[i];
 		core::matrix4 mat;
 		mat.setbyproduct( pJoint->node->AbsoluteAnimationMatrix, pJoint->globalInversedMatrix );
-		pJoint->skinningMatrix.setbyproduct( mat, ColladaMesh->BindShapeMatrix );
+		pJoint->skinningMatrix.setbyproduct( mat, ColladaMesh->BindShapeMatrix );	
 
 		// set bone matrix
 		memcpy(BoneMatrix + i*16, pJoint->skinningMatrix.pointer(), 16*sizeof(float));

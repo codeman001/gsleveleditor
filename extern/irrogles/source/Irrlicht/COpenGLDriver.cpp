@@ -1009,6 +1009,16 @@ bool COpenGLDriver::updateVertexHardwareBuffer(SHWBufferLink_opengl *HWBuffer)
 				}
 			}
 			break;
+			case EVT_SKIN:
+			{
+				S3DVertexSkin* pb = reinterpret_cast<S3DVertexSkin*>(buffer.pointer());
+				const S3DVertexSkin* po = static_cast<const S3DVertexSkin*>(vertices);
+				for (u32 i=0; i<vertexCount; i++)
+				{
+					po[i].Color.toOpenGLColor((u8*)&(pb[i].Color.color));
+				}
+			}
+			break;
 			default:
 			{
 				return false;

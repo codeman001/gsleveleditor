@@ -492,7 +492,8 @@ void CGameAnimation::update(float timeStep)
 //////////////////////////////////////////////////////////
 
 static s32 s_skinTechnical = -1;
-static CGameColladaSceneNode *s_sceneNodeRendering = NULL;
+static CGameColladaSceneNode	*s_sceneNodeRendering = NULL;
+static SMaterial				s_materialRendering;
 
 class CSkinTechincalCallBack : public video::IShaderConstantSetCallBack
 {
@@ -514,12 +515,116 @@ public:
 		worldViewProj *= driver->getTransform(video::ETS_VIEW);
 		worldViewProj *= driver->getTransform(ETS_WORLD);
 		
+		// projection
 		services->setVertexShaderConstant("uMvpMatrix", worldViewProj.pointer(), 16);
 
+		// bone
 		if ( services->setVertexShaderConstant("uBoneMatrix", s_sceneNodeRendering->BoneMatrix, 16*MAX_BONEMATRIX ) == false )
 			services->setVertexShaderConstant("uBoneMatrix[0]", s_sceneNodeRendering->BoneMatrix, 16*MAX_BONEMATRIX );		
 
+		// texture
 		services->setPixelShaderConstant("uTextureUnit0", (float*)&textureID, 1);		
+
+		// material		
+		SColorf ColorMaterial   = s_materialRendering.AmbientColor;
+		services->setPixelShaderConstant("uMaterialAmbient", (float*)&ColorMaterial, 4);
+
+		ColorMaterial   = s_materialRendering.EmissiveColor;
+		services->setPixelShaderConstant("uMaterialEmission", (float*)&ColorMaterial, 4);
+
+		ColorMaterial   = s_materialRendering.DiffuseColor;
+		services->setPixelShaderConstant("uMaterialDiffuse", (float*)&ColorMaterial, 4);
+
+		ColorMaterial   = s_materialRendering.SpecularColor;
+		services->setPixelShaderConstant("uMaterialSpecular", (float*)&ColorMaterial, 4);
+
+		float shininess  = s_materialRendering.Shininess;
+		services->setPixelShaderConstant("uMaterialShininess", (float*)&shininess, 1);	
+
+		/*
+		//lighting
+		u32 cnt = Driver->getDynamicLightCount();
+			
+		core::matrix4 invWorld;
+		driver->getTransform(ETS_WORLD).getInverse(invWorld);
+
+		// support
+		const int kDirectionLight	= 2;
+		const int kPointLight		= 4;
+
+		int nLightDirection = 0;
+		int nLightPoint		= 0;
+
+		zeroLightData();
+
+		for ( size_t i = 0; i < 8; ++i )
+		{
+			if ( i < cnt )
+			{
+				video::SLight light;
+				light = Driver->getDynamicLight( i );
+
+				switch ( light.Type )
+				{
+					case ELT_DIRECTIONAL:
+						if ( nLightDirection < kDirectionLight )
+						{
+							invWorld.rotateVect(( f32* )&LightDirection[nLightDirection],light.Direction );
+							LightAmbient[nLightDirection]		= light.AmbientColor;
+							LightDiffuse[nLightDirection]		= light.DiffuseColor;
+							LightSpecular[nLightDirection]		= light.SpecularColor;
+
+							nLightDirection++;
+						}
+						break;				
+					case ELT_POINT:
+						if ( nLightPoint < kPointLight )
+						{
+							invWorld.transformVect(( f32* )&PointLightPosition[nLightPoint],light.Position );
+							PointLightAttenuation[nLightPoint]	= light.Attenuation;
+							PointLightAmbient[nLightPoint]		= light.AmbientColor;
+							PointLightDiffuse[nLightPoint]		= light.DiffuseColor;
+							PointLightSpecular[nLightPoint]		= light.SpecularColor;
+							PointLightAttenuation[nLightPoint]	= light.Attenuation;
+
+							nLightPoint++;
+						}
+						break;
+					default:
+						break;
+				}				
+			}			
+		}
+		
+		if ( mat->setUniform( LIGHT_DIRECTION,		LightDirection,		MAX_LIGHTS ) == true )
+		{
+			mat->setUniform( LIGHT_AMBIENT,			LightAmbient,		MAX_LIGHTS );
+			mat->setUniform( LIGHT_DIFFUSE,			LightDiffuse,		MAX_LIGHTS );
+			mat->setUniform( LIGHT_SPECULAR,		LightSpecular,		MAX_LIGHTS );
+
+			mat->setUniform( POINTLIGHT_POSITION,		PointLightPosition,		MAX_POINTLIGHTS );
+			mat->setUniform( POINTLIGHT_AMBIENT,		PointLightAmbient,		MAX_POINTLIGHTS );
+			mat->setUniform( POINTLIGHT_DIFFUSE,		PointLightDiffuse,		MAX_POINTLIGHTS );
+			mat->setUniform( POINTLIGHT_SPECULAR,		PointLightSpecular,		MAX_POINTLIGHTS );
+			mat->setUniform( POINTLIGHT_ATTENUATION,	PointLightAttenuation,	MAX_POINTLIGHTS );
+		}
+		else
+		{
+			mat->setUniform( LIGHT_ARRAY_DIRECTION,			LightDirection,		MAX_LIGHTS );
+			mat->setUniform( LIGHT_ARRAY_AMBIENT,		LightAmbient,		MAX_LIGHTS );
+			mat->setUniform( LIGHT_ARRAY_DIFFUSE,		LightDiffuse,		MAX_LIGHTS );
+			mat->setUniform( LIGHT_ARRAY_SPECULAR,		LightSpecular,		MAX_LIGHTS );
+
+			mat->setUniform( POINTLIGHT_ARRAY_POSITION,		PointLightPosition,		MAX_POINTLIGHTS );
+			mat->setUniform( POINTLIGHT_ARRAY_AMBIENT,		PointLightAmbient,		MAX_POINTLIGHTS );
+			mat->setUniform( POINTLIGHT_ARRAY_DIFFUSE,		PointLightDiffuse,		MAX_POINTLIGHTS );
+			mat->setUniform( POINTLIGHT_ARRAY_SPECULAR,		PointLightSpecular,		MAX_POINTLIGHTS );
+			mat->setUniform( POINTLIGHT_ARRAY_ATTENUATION,	PointLightAttenuation,	MAX_POINTLIGHTS );
+		}			
+
+		AmbientColor = Driver->getAmbientLight();
+		mat->setUniform( AMBIENT_COLOR, &AmbientColor );
+		*/
     }
 
 };
@@ -986,15 +1091,9 @@ void CGameColladaSceneNode::render()
 					// and solid only in solid pass
 					if (transparent == isTransparentPass)
 					{
-						driver->setMaterial(material);
+						s_materialRendering = material;
 
-						//if ( mb->getVertexType() == EVT_SKIN )
-						//{
-						//	int t = 0;
-						//	if ( i <= 1 )
-						//		continue;
-						//}
-
+						driver->setMaterial(material);						
 						driver->drawMeshBuffer(mb);
 					}
 				}

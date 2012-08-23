@@ -21,15 +21,11 @@ uniform mediump vec4  uPointLightDiffuse     	[MAX_POINTLIGHTS];
 uniform mediump vec4  uPointLightSpecular    	[MAX_POINTLIGHTS];
 uniform mediump vec3  uPointLightAttenuation	[MAX_POINTLIGHTS];
 
-uniform mediump int   uNumLight;
-uniform mediump int   uPointLight;
-
 uniform mediump vec4  uMaterialAmbient;
 uniform mediump vec4  uMaterialEmission;
 uniform mediump vec4  uMaterialDiffuse;
 uniform mediump vec4  uMaterialSpecular;
 uniform mediump float uMaterialShininess;
-uniform mediump int   uColorMaterial;
 
 varying mediump vec4 varVertexColor;
 varying mediump vec2 varTexCoord0;

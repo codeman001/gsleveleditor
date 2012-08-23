@@ -864,6 +864,21 @@ void COGLES1Driver::drawVertexPrimitiveList(const void* vertices, u32 vertexCoun
 	drawVertexPrimitiveList2d3d(vertices, vertexCount, (const u16*)indexList, primitiveCount, vType, pType, iType);
 }
 
+void COGLES1Driver::draw2DVertexPrimitiveList(const void* vertices, u32 vertexCount,
+				const void* indexList, u32 primitiveCount,
+				E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType)
+{
+	testGLError();
+	if (!checkPrimitiveCount(primitiveCount))
+		return;
+
+	setRenderStates2DMode(true, (Material.getTexture(0) != 0), Material.MaterialType==EMT_TRANSPARENT_ALPHA_CHANNEL);
+
+	drawVertexPrimitiveList2d3d(vertices, vertexCount, (const u16*)indexList, primitiveCount, vType, pType, iType);
+
+	if (static_cast<u32>(Material.MaterialType) < MaterialRenderers.size())
+		MaterialRenderers[Material.MaterialType].Renderer->PostRender(this, video::EVT_STANDARD);
+}
 
 void COGLES1Driver::drawVertexPrimitiveList2d3d(const void* vertices, u32 vertexCount,
 		const void* indexList, u32 primitiveCount,
@@ -973,6 +988,40 @@ void COGLES1Driver::drawVertexPrimitiveList2d3d(const void* vertices, u32 vertex
 				else
 					glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertex), buffer_offset(28));
 			}
+			break;
+		case EVT_SKIN:
+			if (vertices)
+			{
+#ifdef GL_OES_point_size_array
+				if ((pType==scene::EPT_POINTS) || (pType==scene::EPT_POINT_SPRITES))
+				{
+					if (FeatureAvailable[IRR_OES_point_size_array] && (Material.Thickness==0.0f))
+						glPointSizePointerOES(GL_FLOAT, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Normal.X);
+				}
+				else
+#endif
+				if (threed)
+					glNormalPointer(GL_FLOAT, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Normal);
+				glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].TCoords);
+				glVertexPointer((threed?3:2), GL_FLOAT, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].Pos);
+			}
+			else
+			{
+				glNormalPointer(GL_FLOAT, sizeof(S3DVertexSkin), buffer_offset(12));
+				glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(S3DVertexSkin), buffer_offset(24));
+				glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertexSkin), buffer_offset(28));
+				glVertexPointer(3, GL_FLOAT, sizeof(S3DVertexSkin), 0);
+			}
+
+			if (MultiTextureExtension && CurrentTexture[1])
+			{
+				extGlClientActiveTexture(GL_TEXTURE1);
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+				if (vertices)
+					glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertexSkin), &(static_cast<const S3DVertexSkin*>(vertices))[0].TCoords);
+				else
+					glTexCoordPointer(2, GL_FLOAT, sizeof(S3DVertexSkin), buffer_offset(28));
+			}			
 			break;
 		case EVT_2TCOORDS:
 			if (vertices)
@@ -2274,7 +2323,7 @@ void COGLES1Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaCh
 			if (static_cast<u32>(LastMaterial.MaterialType) < MaterialRenderers.size())
 				MaterialRenderers[LastMaterial.MaterialType].Renderer->OnUnsetMaterial();
 		}
-		if (Transformation3DChanged)
+		if (Transformation3DChanged && EnableChangeProjectionMatrixWhenSetRenderMode)
 		{
 			glMatrixMode(GL_PROJECTION);
 
@@ -2297,6 +2346,16 @@ void COGLES1Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaCh
 
 			Transformation3DChanged = false;
 		}
+		else if ( EnableChangeProjectionMatrixWhenSetRenderMode == false )
+		{
+			// switch back the matrices
+			glMatrixMode(GL_MODELVIEW);
+			glLoadMatrixf((Matrices[ETS_VIEW] * Matrices[ETS_WORLD]).pointer());
+
+			glMatrixMode(GL_PROJECTION);
+			glLoadMatrixf(Matrices[ETS_PROJECTION].pointer());
+		}
+
 		if (!OverrideMaterial2DEnabled)
 		{
 			setBasicRenderStates(InitMaterial2D, LastMaterial, true);
@@ -2337,7 +2396,8 @@ void COGLES1Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaCh
 		setTransform(ETS_TEXTURE_0, core::IdentityMatrix);
 		// Due to the transformation change, the previous line would call a reset each frame
 		// but we can safely reset the variable as it was false before
-		Transformation3DChanged=false;
+		if ( EnableChangeProjectionMatrixWhenSetRenderMode )
+			Transformation3DChanged=false;
 
 		if (alphaChannel)
 		{
@@ -2376,7 +2436,8 @@ void COGLES1Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaCh
 		}
 	}
 
-	CurrentRenderMode = ERM_2D;
+	if ( EnableChangeProjectionMatrixWhenSetRenderMode )
+		CurrentRenderMode = ERM_2D;
 }
 
 

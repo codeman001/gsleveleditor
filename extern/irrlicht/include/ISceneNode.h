@@ -651,10 +651,7 @@ namespace scene
 		virtual void updateAbsolutePosition()
 		{
 			if (Parent)
-			{
-				AbsoluteTransformation =
-					Parent->getAbsoluteTransformation() * getRelativeTransformation();
-			}
+				AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(), getRelativeTransformation());
 			else
 				AbsoluteTransformation = getRelativeTransformation();
 		}

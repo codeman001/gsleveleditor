@@ -51,13 +51,13 @@ protected:
 };
 
 
-class CGameChildContainerSceneNode: public CGameContainerSceneNode
+class CGameColladaContainerSceneNode: public CGameContainerSceneNode
 {
 protected:
 	vector<ISceneNode*>		m_boundingBoxOfChild;
 
 public:
-	CGameChildContainerSceneNode(
+	CGameColladaContainerSceneNode(
 			CGameObject *owner,
 			ISceneNode* parent, ISceneManager* mgr, s32 id,
 			const core::vector3df& position = core::vector3df(0,0,0),
@@ -65,10 +65,13 @@ public:
 			const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f)
 			);
 
-	virtual ~CGameChildContainerSceneNode();
+	virtual ~CGameColladaContainerSceneNode();
 
 	//! This method is called just before the rendering process of the whole scene.
 	virtual void OnRegisterSceneNode();
+	
+	//! Overide OnAnimate
+	virtual void OnAnimate(irr::u32 timeMs);
 
 	void addBoundingBoxOfChild( ISceneNode *p )
 	{

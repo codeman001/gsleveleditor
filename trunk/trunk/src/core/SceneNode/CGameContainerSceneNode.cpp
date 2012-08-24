@@ -92,12 +92,12 @@ void CGameContainerSceneNode::render()
 #pragma region GAME_COLLADA_CONTAINER
 
 //////////////////////////////////////////////////////////
-// CGameChildContainerSceneNode implement
+// CGameColladaContainerSceneNode implement
 // Manager collada node
 //////////////////////////////////////////////////////////
 
 
-CGameChildContainerSceneNode::CGameChildContainerSceneNode(
+CGameColladaContainerSceneNode::CGameColladaContainerSceneNode(
 			CGameObject *owner,
 			ISceneNode* parent, ISceneManager* mgr, s32 id,
 			const core::vector3df& position,
@@ -109,7 +109,7 @@ CGameChildContainerSceneNode::CGameChildContainerSceneNode(
 }
 
 
-CGameChildContainerSceneNode::~CGameChildContainerSceneNode()
+CGameColladaContainerSceneNode::~CGameColladaContainerSceneNode()
 {
 	vector<ISceneNode*>::iterator i = m_boundingBoxOfChild.begin(), end = m_boundingBoxOfChild.end();
 	while( i != end )
@@ -121,7 +121,7 @@ CGameChildContainerSceneNode::~CGameChildContainerSceneNode()
 }
 
 //! This method is called just before the rendering process of the whole scene.
-void CGameChildContainerSceneNode::OnRegisterSceneNode()
+void CGameColladaContainerSceneNode::OnRegisterSceneNode()
 {
 	if (IsVisible && m_owner)
 	{
@@ -156,8 +156,60 @@ void CGameChildContainerSceneNode::OnRegisterSceneNode()
 	}
 }
 
+//! Overide OnAnimate
+void CGameColladaContainerSceneNode::OnAnimate(irr::u32 timeMs)
+{	
+	if ( IsVisible == false )
+		return;
+
+	// animate this node with all animators
+	ISceneNodeAnimatorList::Iterator ait = Animators.begin(), aend = Animators.end();
+	while (ait != aend)
+	{		
+		(*ait)->animateNode(this, timeMs);
+		++ait;
+	}
+
+	// update absolute position
+	updateAbsolutePosition();
+
+	// call child OnAnimate and destroy recursive
+	std::queue<ISceneNode*>	queue;
+	ISceneNodeList::ConstIterator it = Children.begin(), end = Children.end();
+	while ( it != end )
+	{
+		queue.push( (*it) );
+		it++;
+	}
+	
+	while ( queue.size() )
+	{
+		ISceneNode* top = queue.front();
+		queue.pop();
+
+		// call child OnAnimate
+		top->OnAnimate( timeMs );
+				
+		it	= top->getChildren().begin();
+		end = top->getChildren().end();
+		while ( it != end )
+		{
+			queue.push( (*it) );
+			it++;
+		}
+	}
+
+	// update skin
+	vector<ISceneNode*>::iterator itSkin = m_boundingBoxOfChild.begin(), endSkin = m_boundingBoxOfChild.end();
+	while ( itSkin != endSkin )
+	{
+		((CGameColladaSceneNode*)(*itSkin))->skin();
+		itSkin++;
+	}
+}
+
 // compute bb
-core::aabbox3df	CGameChildContainerSceneNode::computeChildBoudingBox( ISceneNode *node )
+core::aabbox3df	CGameColladaContainerSceneNode::computeChildBoudingBox( ISceneNode *node )
 {
 	core::aabbox3d<f32> box = node->getBoundingBox();
 	core::matrix4	mat;
@@ -172,7 +224,7 @@ core::aabbox3df	CGameChildContainerSceneNode::computeChildBoudingBox( ISceneNode
 	return box;
 }
 
-void CGameChildContainerSceneNode::render()
+void CGameColladaContainerSceneNode::render()
 {
 	if (m_owner == NULL)
 		return;

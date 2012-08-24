@@ -59,7 +59,7 @@ CBinaryUtils::~CBinaryUtils()
 void CBinaryUtils::saveCollada( io::IWriteFile *file, CGameObject* gameObject )
 {
 	CColladaMeshComponent *comp = m_component;
-	CGameChildContainerSceneNode *colladaNode = comp->getColladaNode();
+	CGameColladaContainerSceneNode *colladaNode = comp->getColladaNode();
 
 	std::queue<CGameColladaSceneNode*> queueNode;
 
@@ -684,7 +684,7 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 
 	// current component
 	CColladaMeshComponent *comp = m_component;
-	CGameChildContainerSceneNode *pParent = comp->getColladaNode();
+	CGameColladaContainerSceneNode *pParent = comp->getColladaNode();
 
 	// update scenenode with mesh
 	vector< SPairID >::iterator it = m_constructSceneMesh.begin(), end = m_constructSceneMesh.end();

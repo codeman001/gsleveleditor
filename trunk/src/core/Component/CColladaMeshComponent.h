@@ -402,7 +402,7 @@ protected:
 #pragma endregion
 
 	// current node
-	CGameChildContainerSceneNode				*m_colladaNode;
+	CGameColladaContainerSceneNode				*m_colladaNode;
 
 	// current animation clip info
 	CColladaAnimation							*m_colladaAnimation;
@@ -437,7 +437,7 @@ public:
 
 	// initFromNode
 	// init cache from node
-	void initFromNode( CGameChildContainerSceneNode* node );
+	void initFromNode( CGameColladaContainerSceneNode* node );
 
 	// getSceneNode
 	// find child node with name
@@ -490,7 +490,7 @@ public:
 
 	// getColladaNode
 	// get root of collada node
-	CGameChildContainerSceneNode* getColladaNode()
+	CGameColladaContainerSceneNode* getColladaNode()
 	{
 		return m_colladaNode;
 	}
@@ -750,11 +750,11 @@ class CColladaCache
 {
 public:
 	// for cache node
-	static map<string, CGameChildContainerSceneNode*>	s_nodeCache;
+	static map<string, CGameColladaContainerSceneNode*>	s_nodeCache;
 
 	// cacheNode
 	// cache node with name
-	static void cacheNode( const std::string &name, CGameChildContainerSceneNode* node )
+	static void cacheNode( const std::string &name, CGameColladaContainerSceneNode* node )
 	{
 		s_nodeCache[name] = node;
 		node->grab();
@@ -762,7 +762,7 @@ public:
 
 	// getNodeInCache
 	// get node in cache
-	static CGameChildContainerSceneNode* getNodeInCache( const std::string &name )
+	static CGameColladaContainerSceneNode* getNodeInCache( const std::string &name )
 	{
 		return s_nodeCache[name];
 	}
@@ -771,10 +771,10 @@ public:
 	// destroy all cache
 	static void freeData()
 	{
-		map<string, CGameChildContainerSceneNode*>::iterator i = s_nodeCache.begin(), end = s_nodeCache.end();
+		map<string, CGameColladaContainerSceneNode*>::iterator i = s_nodeCache.begin(), end = s_nodeCache.end();
 		while ( i != end )
 		{
-			CGameChildContainerSceneNode *node = (*i).second;
+			CGameColladaContainerSceneNode *node = (*i).second;
 			if ( node != NULL )
 				node->drop();
 			i++;

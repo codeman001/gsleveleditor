@@ -1495,7 +1495,7 @@ void CColladaAnimationFactory::freeAllAnimationPackage()
 // CColladaCache implement
 //////////////////////////////////////////////////////////
 
-map<string, CGameChildContainerSceneNode*>	CColladaCache::s_nodeCache;
+map<string, CGameColladaContainerSceneNode*>	CColladaCache::s_nodeCache;
 
 
 //////////////////////////////////////////////////////////
@@ -1602,7 +1602,7 @@ void CColladaMeshComponent::loadFromFile( const char *lpFilename )
 	m_animeshFile = lpFilename;
 
 	// search in cache	
-	CGameChildContainerSceneNode* cacheNode = CColladaCache::getNodeInCache( m_animeshFile );
+	CGameColladaContainerSceneNode* cacheNode = CColladaCache::getNodeInCache( m_animeshFile );
 	if ( cacheNode != NULL )
 	{
 		initFromNode( cacheNode );
@@ -3105,7 +3105,7 @@ void CColladaMeshComponent::constructScene()
 	m_mapNode.clear();
 
 	// create new scene node
-	m_colladaNode = new CGameChildContainerSceneNode( 
+	m_colladaNode = new CGameColladaContainerSceneNode( 
 			m_gameObject, 
 			m_gameObject->getParentSceneNode(),
 			smgr,
@@ -3245,7 +3245,7 @@ void CColladaMeshComponent::constructScene()
 
 			// add update bounding box with this child
 			if ( colladaSceneNode->ColladaMesh )
-				((CGameChildContainerSceneNode*)m_gameObject->m_node)->addBoundingBoxOfChild( colladaSceneNode );
+				((CGameColladaContainerSceneNode*)m_gameObject->m_node)->addBoundingBoxOfChild( colladaSceneNode );
 
 		}
 #ifdef GSANIMATION
@@ -3364,7 +3364,7 @@ void CColladaMeshComponent::loadScene( const char *lpFilename )
 	// todo load scene
 	ISceneManager *smgr = getIView()->getSceneMgr();
 
-	m_colladaNode = new CGameChildContainerSceneNode
+	m_colladaNode = new CGameColladaContainerSceneNode
 		(
 			m_gameObject,
 			m_gameObject->getParentSceneNode(),
@@ -3417,11 +3417,11 @@ struct SGroupNode
 	}
 };
 
-void CColladaMeshComponent::initFromNode( CGameChildContainerSceneNode* node )
+void CColladaMeshComponent::initFromNode( CGameColladaContainerSceneNode* node )
 {
 	ISceneManager *smgr = getIView()->getSceneMgr();
 
-	m_colladaNode = new CGameChildContainerSceneNode
+	m_colladaNode = new CGameColladaContainerSceneNode
 		(
 			m_gameObject,
 			m_gameObject->getParentSceneNode(),

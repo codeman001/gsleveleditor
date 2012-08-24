@@ -845,13 +845,18 @@ void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 		
 		// save current time
 		m_timer = timeMs;
+	}	
+
+	// animate this node with all animators
+	ISceneNodeAnimatorList::Iterator ait = Animators.begin(), end = Animators.end();
+	while (ait != end)
+	{				
+		(*ait)->animateNode(this, timeMs);
+		++ait;
 	}
 
-	ISceneNode::OnAnimate( timeMs );
-
-	// skin mesh
-	if ( ColladaMesh != NULL && ColladaMesh->IsStaticMesh == false && IsVisible == true )		
-		skin();
+	// update absolute position
+	updateAbsolutePosition();
 
 }
 
@@ -859,7 +864,7 @@ void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 // skin mesh
 void CGameColladaSceneNode::skin()
 {
-	if ( ColladaMesh == NULL || ColladaMesh->IsStaticMesh == true )
+	if ( ColladaMesh == NULL || ColladaMesh->IsStaticMesh == true || IsVisible == false )
 		return;	
 	
 	// array joint

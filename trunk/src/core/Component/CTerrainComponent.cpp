@@ -62,7 +62,7 @@ void CTerrainComponent::initComponent()
 	else if ( m_gameObject->getComponent( IObjectComponent::ColladaMesh ) != NULL )
 	{
 		CColladaMeshComponent *comp = (CColladaMeshComponent*)m_gameObject->getComponent( IObjectComponent::ColladaMesh );
-		CGameChildContainerSceneNode* colladaNode = comp->getColladaNode();
+		CGameColladaContainerSceneNode* colladaNode = comp->getColladaNode();
 		
 		std::queue<ISceneNode*>	listSceneNode;
 		const core::list<ISceneNode*>* listChild = &colladaNode->getChildren();

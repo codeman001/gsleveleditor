@@ -646,7 +646,7 @@ protected:
 
 	CGameAnimation	m_gameAnimation;
 
-protected:		
+public:		
 
 	// skin
 	// skin mesh

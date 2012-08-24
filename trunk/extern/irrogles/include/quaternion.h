@@ -169,9 +169,61 @@ inline quaternion::quaternion(const vector3df& vec)
 
 
 // Constructor which converts a matrix to a quaternion
-inline quaternion::quaternion(const matrix4& mat)
+inline quaternion::quaternion(const matrix4& m)
 {
-	(*this) = mat;
+	const f32 diag = m(0,0) + m(1,1) + m(2,2) + 1;
+
+	if( diag > 0.0f )
+	{
+		const f32 scale = sqrtf(diag) * 2.0f; // get scale from diagonal
+
+		// TODO: speed this up
+		X = ( m(2,1) - m(1,2)) / scale;
+		Y = ( m(0,2) - m(2,0)) / scale;
+		Z = ( m(1,0) - m(0,1)) / scale;
+		W = 0.25f * scale;
+	}
+	else
+	{
+		if ( m(0,0) > m(1,1) && m(0,0) > m(2,2))
+		{
+			// 1st element of diag is greatest value
+			// find scale according to 1st element, and double it
+			const f32 scale = sqrtf( 1.0f + m(0,0) - m(1,1) - m(2,2)) * 2.0f;
+
+			// TODO: speed this up
+			X = 0.25f * scale;
+			Y = (m(0,1) + m(1,0)) / scale;
+			Z = (m(2,0) + m(0,2)) / scale;
+			W = (m(2,1) - m(1,2)) / scale;
+		}
+		else if ( m(1,1) > m(2,2))
+		{
+			// 2nd element of diag is greatest value
+			// find scale according to 2nd element, and double it
+			const f32 scale = sqrtf( 1.0f + m(1,1) - m(0,0) - m(2,2)) * 2.0f;
+
+			// TODO: speed this up
+			X = (m(0,1) + m(1,0) ) / scale;
+			Y = 0.25f * scale;
+			Z = (m(1,2) + m(2,1) ) / scale;
+			W = (m(0,2) - m(2,0) ) / scale;
+		}
+		else
+		{
+			// 3rd element of diag is greatest value
+			// find scale according to 3rd element, and double it
+			const f32 scale = sqrtf( 1.0f + m(2,2) - m(0,0) - m(1,1)) * 2.0f;
+
+			// TODO: speed this up
+			X = (m(0,2) + m(2,0)) / scale;
+			Y = (m(1,2) + m(2,1)) / scale;
+			Z = 0.25f * scale;
+			W = (m(1,0) - m(0,1)) / scale;
+		}
+	}
+
+	normalize();
 }
 
 
@@ -487,9 +539,14 @@ inline quaternion& quaternion::normalize()
 
 	if (n == 1)
 		return *this;
+	
+	float f = reciprocal_squareroot ( n );
+	X*=f;
+	Y*=f;
+	Z*=f;
+	W*=f;
 
-	//n = 1.0f / sqrtf(n);
-	return (*this *= reciprocal_squareroot ( n ));
+	return *this;
 }
 
 

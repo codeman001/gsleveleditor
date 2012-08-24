@@ -334,9 +334,9 @@ CGameAnimation::~CGameAnimation()
 // get anim at frame
 void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix)
 {
-	position	= core::vector3df();
-	scale		= core::vector3df();
-	rotation	= core::quaternion();	
+	position.set(0.0f, 0.0f, 0.0f);
+	scale.set(1.0f,1.0f,1.0f);
+	rotation.set(0.0f, 0.0f, 0.0f, 1.0f);	
 
 	// blend animation
 	if ( m_animTrack[0].isEnable() && m_animTrack[1].isEnable() )
@@ -784,19 +784,17 @@ void CGameColladaSceneNode::OnRegisterSceneNode()
 
 void CGameColladaSceneNode::updateAbsolutePosition()
 {
-	core::matrix4 RelativeMatrix = getRelativeTransformation() * AnimationMatrix;
+	core::matrix4 RelativeMatrix;
+	RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(),AnimationMatrix);
 	
 	// calc absolute transform
-	if ( Parent )
-		AbsoluteTransformation = Parent->getAbsoluteTransformation() * RelativeMatrix;
-	else
-		AbsoluteTransformation = RelativeMatrix;
+	AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(),RelativeMatrix);
 
 	// calc absolute animation
 	if ( m_isRootColladaNode == true )
 		AbsoluteAnimationMatrix = RelativeMatrix;
 	else
-		AbsoluteAnimationMatrix = ((CGameColladaSceneNode*)Parent)->AbsoluteAnimationMatrix * RelativeMatrix;	
+		AbsoluteAnimationMatrix.setbyproduct_nocheck(((CGameColladaSceneNode*)Parent)->AbsoluteAnimationMatrix, RelativeMatrix);
 }
 
 
@@ -1032,7 +1030,8 @@ void CGameColladaSceneNode::updateAnimation()
 		m_animationCallback->_onUpdateFrameData( this,  position, scale, rotation );
 
 	// rotation
-	core::matrix4 mat = rotation.getMatrix();
+	core::matrix4 mat;
+	rotation.getMatrix_transposed(mat);
 	
 	// position	
 	f32 *m1 = mat.pointer();

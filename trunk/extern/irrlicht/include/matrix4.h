@@ -67,19 +67,23 @@ namespace core
 			CMatrix4( const CMatrix4<T>& other,eConstructor constructor = EM4CONST_COPY);
 
 			//! Simple operator for directly accessing every element of the matrix.
-			T& operator()(const s32 row, const s32 col)
+			inline T& operator()(const s32 row, const s32 col)
 			{ 
 #if defined ( USE_MATRIX_TEST )
 				definitelyIdentityMatrix=false;
 #endif
-				return M[ row * 4 + col ];
+				//return M[ row * 4 + col ];
+				return M[ (row << 2) + col ];
 			}
 
 			//! Simple operator for directly accessing every element of the matrix.
-			const T& operator()(const s32 row, const s32 col) const { return M[row * 4 + col]; }
-
+			inline  const T& operator()(const s32 row, const s32 col) const 
+			{ 
+				//return M[row * 4 + col]; 
+				return M[ (row << 2) + col ];
+			}
 			//! Simple operator for linearly accessing every element of the matrix.
-			T& operator[](u32 index)
+			inline T& operator[](u32 index)
 			{ 
 #if defined ( USE_MATRIX_TEST )
 				definitelyIdentityMatrix=false; 
@@ -88,7 +92,7 @@ namespace core
 			}
 
 			//! Simple operator for linearly accessing every element of the matrix.
-			const T& operator[](u32 index) const { return M[index]; }
+			inline const T& operator[](u32 index) const { return M[index]; }
 
 			//! Sets this matrix equal to the other matrix.
 			inline CMatrix4<T>& operator=(const CMatrix4<T> &other);

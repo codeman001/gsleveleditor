@@ -486,7 +486,7 @@ void CLightManager::OnNodePreRender(ISceneNode* node)
 	sortingDirectionLightArray.sort();
 
 	// turn on avaliable point light
-	for(i = 0, n = sortingPointLightArray.size(); i < n && i < 4; ++i)
+	for(i = 0, n = sortingPointLightArray.size(); i < n && i < 3; ++i)
 		sortingPointLightArray[i].node->setVisible(true);
 	
 	// turn on avaliable direction light

@@ -3245,7 +3245,7 @@ void CColladaMeshComponent::constructScene()
 
 			// add update bounding box with this child
 			if ( colladaSceneNode->ColladaMesh )
-				((CGameColladaContainerSceneNode*)m_gameObject->m_node)->addBoundingBoxOfChild( colladaSceneNode );
+				((CGameColladaContainerSceneNode*)m_gameObject->m_node)->addBoundingMeshNode( colladaSceneNode );
 
 		}
 #ifdef GSANIMATION
@@ -3473,7 +3473,7 @@ void CColladaMeshComponent::initFromNode( CGameColladaContainerSceneNode* node )
 		}
 	
 		if ( mesh )
-			m_colladaNode->addBoundingBoxOfChild( newNode );
+			m_colladaNode->addBoundingMeshNode( newNode );
 
 		const core::list<ISceneNode*>& childs = groupNode.initChild->getChildren();
 		core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();

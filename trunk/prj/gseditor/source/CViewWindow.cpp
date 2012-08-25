@@ -96,6 +96,10 @@ void CViewWindow::createIrrDevice()
 	// share for multithread
 	wglShareLists((HGLRC)m_driver->getExposedVideoData().OpenGLWin32.HRc, (HGLRC)m_videoData.OpenGLWin32.HRc);
 
+	// set light manager
+	CLightManager *lightMgr = new CLightManager();
+	m_smgr->setLightManager(lightMgr);
+	lightMgr->drop();
 }
 
 void CViewWindow::_OnSize(	uiSizeEvent sizeEvent, int nWidth, int nHeight)

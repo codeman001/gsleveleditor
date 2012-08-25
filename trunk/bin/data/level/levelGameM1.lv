@@ -4,13 +4,13 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: 1771.9564209 | floatType;
-		cameraY: 2398.2329102 | floatType;
-		cameraZ: 2322.1679688 | floatType;
-		cameraTargetX: 1229.8547363 | floatType;
-		cameraTargetY: -937.5332031 | floatType;
-		cameraTargetZ: 630.2446289 | floatType;
-		numberObjects: 10 | intType;
+		cameraX: 1027.6203613 | floatType;
+		cameraY: 621.8182983 | floatType;
+		cameraZ: -551.6572266 | floatType;
+		cameraTargetX: 162.4656372 | floatType;
+		cameraTargetY: -329.2753906 | floatType;
+		cameraTargetZ: -245.2012024 | floatType;
+		numberObjects: 12 | intType;
 	}
 }
 zone_1
@@ -35,7 +35,7 @@ object_2
 		objectTemplate: levelGameM1 | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
-		lighting: false | boolType;
+		lighting: true | boolType;
 		lock: true | boolType;
 		positionX: 0.0000000 | floatType;
 		positionY: 0.0000000 | floatType;
@@ -224,6 +224,41 @@ object_11
 		positionX: 2727.8654785 | floatType;
 		positionY: 792.2371216 | floatType;
 		positionZ: 618.1285400 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_13
+{
+	Light Object
+	{
+		lightingType: 0 | intType;
+		diffuseColor: ffffff | stringType;
+		specularColor: ffffff | stringType;
+		strength: 1.0000000 | floatType;
+		radius: 500.0000000 | floatType;
+		directionX: 796.2230225 | floatType;
+		directionY: -605.7125244 | floatType;
+		directionZ: 668.9312744 | floatType;
+	}
+	Game object
+	{
+		objectID: 13 | longType;
+		parentID: 1 | longType;
+		objectType: Light Object | stringType;
+		objectName: light_13 | stringType;
+		objectTemplate:  | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: 127.7525330 | floatType;
+		positionY: -306.2447510 | floatType;
+		positionZ: -104.2933350 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;

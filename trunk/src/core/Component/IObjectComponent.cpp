@@ -18,7 +18,9 @@ const char *IObjectComponent::s_compType[] =
 	"Grass component",
 	"Water component",	
 	"Ellipsoid collision component",
-	"Lighting component"
+	"Lighting component",	
+	"Object property component",
+	NULL
 };
 
 IObjectComponent::IObjectComponent(CGameObject *pObj, int compID)

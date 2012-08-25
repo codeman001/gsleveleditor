@@ -704,7 +704,7 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 		if ( node != NULL && mesh != NULL )
 		{						
 			// set child bouding box
-			pParent->addBoundingBoxOfChild( node );
+			pParent->addBoundingMeshNode( node );
 			
 			// set material to buffer
 			int nBufferCount = mesh->getMeshBufferCount();

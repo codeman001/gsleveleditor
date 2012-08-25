@@ -79,4 +79,59 @@ public:
 
 };
 
+// A utility class to aid in sorting scene nodes into a distance order
+class LightDistanceElement
+{
+public:
+	LightDistanceElement() {};
+
+	LightDistanceElement(scene::ILightSceneNode* n, f64 d)
+		: node(n), distance(d) { }
+
+	scene::ILightSceneNode* node;
+	f64 distance;
+
+	// Lower distance elements are sorted to the start of the array
+	bool operator < (const LightDistanceElement& other) const
+	{
+		return (distance < other.distance);
+	}
+};
+
+class CLightManager: public	ILightManager
+{
+protected:
+	core::array<ILightSceneNode*>*	m_listLightOnMap;
+	scene::E_SCENE_NODE_RENDER_PASS m_renderPass;
+public: 
+	CLightManager();
+	virtual ~CLightManager();
+
+	ILightManager* getLightMgr()
+	{
+		return (ILightManager*)this;
+	}
+
+	// OnPreRender
+	// This is called before the first scene node is rendered.
+	virtual void OnPreRender(core::array<ILightSceneNode*> & lightList);
+	
+
+	// OnPostRender
+	// Called after the last scene node is rendered.
+	virtual void OnPostRender(void);
+
+	virtual void OnRenderPassPreRender(E_SCENE_NODE_RENDER_PASS renderPass);
+
+	virtual void OnRenderPassPostRender(E_SCENE_NODE_RENDER_PASS renderPass);
+
+	// OnNodePreRender
+	// This is called before the specified scene node is rendered
+	virtual void OnNodePreRender(ISceneNode* node);
+		
+	// OnNodePostRender
+	// Called after the specified scene node is rendered
+	virtual void OnNodePostRender(ISceneNode* node);
+};
+
 #endif

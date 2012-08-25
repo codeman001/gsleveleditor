@@ -317,6 +317,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\Component\CObjectPropertyComponent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Component\CObjectPropertyComponent.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\Component\CObjectTransformComponent.cpp"
 						>
 					</File>

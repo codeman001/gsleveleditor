@@ -4,6 +4,8 @@
 #include "CGameBillboardSceneNode.h"
 #include "CLightObject.h"
 
+#pragma region LIGHTOBJECT
+
 CLightObject::CLightObject()
 {
 	m_objectType = CGameObject::LightObject;
@@ -394,3 +396,108 @@ void CLightObject::drawObject()
 	}
 }
 #endif
+
+
+#pragma endregion
+
+
+
+#pragma region LIGHTMANAGER
+
+CLightManager::CLightManager()
+{
+}
+
+CLightManager::~CLightManager()
+{
+}
+
+// OnPreRender
+// This is called before the first scene node is rendered.
+void CLightManager::OnPreRender(core::array<ILightSceneNode*> &lightList)
+{
+	m_listLightOnMap = &lightList;
+}
+
+// OnPostRender
+// Called after the last scene node is rendered.
+void CLightManager::OnPostRender(void)
+{
+	// turn on all light
+	for(u32 i = 0, n = m_listLightOnMap->size(); i < n; i++)
+		(*m_listLightOnMap)[i]->setVisible(true);
+}
+
+// begin a renderpass
+void CLightManager::OnRenderPassPreRender(E_SCENE_NODE_RENDER_PASS renderPass)
+{
+	m_renderPass = renderPass;
+}
+
+// end a renderpass
+void CLightManager::OnRenderPassPostRender(E_SCENE_NODE_RENDER_PASS renderPass)
+{
+
+}
+
+// OnNodePreRender
+// This is called before the specified scene node is rendered
+void CLightManager::OnNodePreRender(ISceneNode* node)
+{
+	if ( scene::ESNRP_SOLID != m_renderPass )
+		return;
+
+	if ( node->isEnablePointLight() == false && node->isEnableDirectionLight() == false )
+		return;
+		
+	// get node pos
+	const core::vector3df nodePosition = node->getAbsolutePosition();
+
+	// get light
+	core::array<LightDistanceElement> sortingPointLightArray;
+	core::array<LightDistanceElement> sortingDirectionLightArray;
+
+	// init list light
+	sortingPointLightArray.reallocate(m_listLightOnMap->size());
+	sortingDirectionLightArray.reallocate(m_listLightOnMap->size());
+
+	u32 i, n;
+	for(i = 0, n = m_listLightOnMap->size(); i < n; ++i)
+	{
+		scene::ILightSceneNode* lightNode = (*m_listLightOnMap)[i];
+		video::SLight &lightData = lightNode->getLightData();
+		
+		// turn off all light
+		lightNode->setVisible( false );
+
+		if ( lightData.Type == video::ELT_DIRECTIONAL && node->isEnableDirectionLight() )
+		{
+			f64 distance = lightNode->getAbsolutePosition().getDistanceFromSQ(nodePosition);
+			sortingDirectionLightArray.push_back(LightDistanceElement(lightNode, distance));
+		}
+		else if ( lightData.Type == video::ELT_POINT && node->isEnablePointLight() )
+		{
+			f64 distance = lightNode->getAbsolutePosition().getDistanceFromSQ(nodePosition);
+			sortingPointLightArray.push_back(LightDistanceElement(lightNode, distance));
+		}				
+	}
+
+	sortingPointLightArray.sort();
+	sortingDirectionLightArray.sort();
+
+	// turn on avaliable point light
+	for(i = 0, n = sortingPointLightArray.size(); i < n && i < 4; ++i)
+		sortingPointLightArray[i].node->setVisible(true);
+	
+	// turn on avaliable direction light
+	for(i = 0, n = sortingDirectionLightArray.size(); i < n && i < 2; ++i)
+		sortingDirectionLightArray[i].node->setVisible(true);
+}
+	
+// OnNodePostRender
+// Called after the specified scene node is rendered
+void CLightManager::OnNodePostRender(ISceneNode* node)
+{
+}
+
+#pragma endregion

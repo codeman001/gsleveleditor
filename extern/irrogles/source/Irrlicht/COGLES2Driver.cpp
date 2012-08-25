@@ -2224,6 +2224,13 @@ namespace video
 		requestedLight.DesireToBeOn = turnOn;
 	}
 
+	bool COGLES2Driver::isLightTurnOn(s32 lightIndex)
+	{
+		if (lightIndex < 0 || lightIndex >= (s32)RequestedLights.size())
+			return false;
+		RequestedLight & requestedLight = RequestedLights[lightIndex];
+		return requestedLight.DesireToBeOn;
+	}
 
 	//! returns the maximal amount of dynamic lights the device can handle
 	u32 COGLES2Driver::getMaximalDynamicLightAmount() const

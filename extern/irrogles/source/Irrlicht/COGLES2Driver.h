@@ -198,6 +198,8 @@ namespace video
 		\param turnOn: true to turn the light on, false to turn it off */
 		virtual void turnLightOn(s32 lightIndex, bool turnOn);
 
+		bool isLightTurnOn(s32 lightIndex);
+
 		//! returns the maximal amount of dynamic lights the device can handle
 		virtual u32 getMaximalDynamicLightAmount() const;
 

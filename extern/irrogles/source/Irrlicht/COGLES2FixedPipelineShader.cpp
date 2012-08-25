@@ -269,12 +269,15 @@ namespace video
 
 			zeroLightData();
 
-			for ( size_t i = 0; i < 8; ++i )
+			for ( size_t i = 0; i < cnt; ++i )
 			{
-				if ( i < cnt )
+				if ( nLightDirection >= kDirectionLight && nLightPoint >= nLightPoint )
 				{
+					if ( Driver->isLightTurnOn(i) == false )
+						continue;
+
 					video::SLight light;
-					light = Driver->getDynamicLight( i );
+					light = Driver->getDynamicLight( i );					
 
 					switch ( light.Type )
 					{
@@ -305,7 +308,9 @@ namespace video
 						default:
 							break;
 					}				
-				}			
+				}
+				else
+					break;
 			}
 			
 			if ( mat->setUniform( LIGHT_DIRECTION,		LightDirection,		MAX_LIGHTS ) == true )

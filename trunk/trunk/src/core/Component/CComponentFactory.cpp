@@ -17,6 +17,7 @@
 #include "CWaterComponent.h"
 #include "CEllipsoidCollisionComponent.h"
 #include "CLightingComponent.h"
+#include "CObjectPropertyComponent.h"
 #endif 
 
 #ifdef GSGAMEPLAY
@@ -155,6 +156,13 @@ void CComponentFactory::initComponentTemplate()
 	p->addString("specularColor","ffffffff", true);
 	p->addFloat("strength", 1.0f, true);
 	p->addFloat("radius",800.0f, true);
+
+	// add object property
+	s_compTemplate.push_back( CSerializable() );
+	p = &s_compTemplate[ IObjectComponent::ObjectProperty ];
+	p->addGroup(stringOfComponent(IObjectComponent::ObjectProperty));
+	p->addBool("enableDirectionLight",	true);
+	p->addBool("enablePointLight",		true);
 
 	loadAllTemplate();
 }
@@ -346,6 +354,8 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 			pComp = new CEllipsoidCollisionComponent( pObj );
 		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::Lighting ) ) == 0 )
 			pComp = new CLightingComponent( pObj );
+		else if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ObjectProperty ) ) == 0 )
+			pComp = new CObjectPropertyComponent( pObj );
 #endif
 #if defined(GSANIMATION) || defined(GSGAMEPLAY) || defined(GSEDITOR)
 		if ( strcmp( lpComponentName, stringOfComponent(IObjectComponent::ColladaMesh ) ) == 0 )

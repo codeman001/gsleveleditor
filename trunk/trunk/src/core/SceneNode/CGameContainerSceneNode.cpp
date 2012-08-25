@@ -111,13 +111,13 @@ CGameColladaContainerSceneNode::CGameColladaContainerSceneNode(
 
 CGameColladaContainerSceneNode::~CGameColladaContainerSceneNode()
 {
-	vector<ISceneNode*>::iterator i = m_boundingBoxOfChild.begin(), end = m_boundingBoxOfChild.end();
+	vector<ISceneNode*>::iterator i = m_boudingMeshNode.begin(), end = m_boudingMeshNode.end();
 	while( i != end )
 	{
 		(*i)->drop();
 		i++;
 	}
-	m_boundingBoxOfChild.clear();
+	m_boudingMeshNode.clear();
 }
 
 //! This method is called just before the rendering process of the whole scene.
@@ -131,7 +131,7 @@ void CGameColladaContainerSceneNode::OnRegisterSceneNode()
 		ISceneNode::OnRegisterSceneNode();
 
 		// need update bouding box
-		vector<ISceneNode*>::iterator it = m_boundingBoxOfChild.begin(), end = m_boundingBoxOfChild.end();
+		vector<ISceneNode*>::iterator it = m_boudingMeshNode.begin(), end = m_boudingMeshNode.end();
 		
 		// box is equal first child
 		Box.reset(core::vector3df(0,0,0));
@@ -200,7 +200,7 @@ void CGameColladaContainerSceneNode::OnAnimate(irr::u32 timeMs)
 	}
 
 	// update skin
-	vector<ISceneNode*>::iterator itSkin = m_boundingBoxOfChild.begin(), endSkin = m_boundingBoxOfChild.end();
+	vector<ISceneNode*>::iterator itSkin = m_boudingMeshNode.begin(), endSkin = m_boudingMeshNode.end();
 	while ( itSkin != endSkin )
 	{
 		((CGameColladaSceneNode*)(*itSkin))->skin();

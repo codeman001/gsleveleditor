@@ -37,6 +37,11 @@ levelGameM1
 		meshFile: data/mesh/environment/levelGameM1/levelGameM1.scene | filePathType;
 		defaultNode:  | stringType;
 	}
+	Object property component
+	{
+		enableDirectionLight: false | boolType;
+		enablePointLight: true | boolType;
+	}
 }
 levelGameM1Col
 {

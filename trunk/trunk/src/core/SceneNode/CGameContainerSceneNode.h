@@ -54,7 +54,7 @@ protected:
 class CGameColladaContainerSceneNode: public CGameContainerSceneNode
 {
 protected:
-	vector<ISceneNode*>		m_boundingBoxOfChild;
+	vector<ISceneNode*>		m_boudingMeshNode;
 
 public:
 	CGameColladaContainerSceneNode(
@@ -73,13 +73,18 @@ public:
 	//! Overide OnAnimate
 	virtual void OnAnimate(irr::u32 timeMs);
 
-	void addBoundingBoxOfChild( ISceneNode *p )
+	void addBoundingMeshNode( ISceneNode *p )
 	{
-		if ( std::find( m_boundingBoxOfChild.begin(), m_boundingBoxOfChild.end(), p ) == m_boundingBoxOfChild.end() )
+		if ( std::find( m_boudingMeshNode.begin(), m_boudingMeshNode.end(), p ) == m_boudingMeshNode.end() )
 		{
 			p->grab();
-			m_boundingBoxOfChild.push_back( p );
+			m_boudingMeshNode.push_back( p );
 		}
+	}
+
+	vector<ISceneNode*>* getBoundingMeshNode()
+	{
+		return &m_boudingMeshNode;
 	}
 
 	virtual void render();

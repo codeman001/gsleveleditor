@@ -3760,17 +3760,27 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChanne
 		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
 
 		if ( anim )
-		{			
+		{
+			// add rotation key
 			int nRotKey = anim->RotationKeys.size();
-			for ( int i = 0; i < nRotKey; i++ )
+			if ( nRotKey > 0 )
 			{
-				track->RotationKeys.push_back( anim->RotationKeys[i] );	
+				track->RotationKeys.set_used( nRotKey );
+				for ( int i = 0; i < nRotKey; i++ )
+				{
+					track->RotationKeys[i] = anim->RotationKeys[i];
+				}
 			}
 
+			// add position key
 			int nPosKey = anim->PositionKeys.size();
-			for ( int i = 0; i < nPosKey; i++ )
+			if ( nPosKey > 0 )
 			{
-				track->PositionKeys.push_back( anim->PositionKeys[i] );
+				track->PositionKeys.set_used( nPosKey );
+				for ( int i = 0; i < nPosKey; i++ )
+				{
+					track->PositionKeys[i] = anim->PositionKeys[i];
+				}
 			}
 
 			track->setLoop( loop );

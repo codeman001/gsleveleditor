@@ -49,7 +49,8 @@ namespace scene
 			: RelativeTranslation(position), RelativeRotation(rotation), RelativeScale(scale),
 				Parent(0), SceneManager(mgr), TriangleSelector(0), ID(id),
 				AutomaticCullingState(EAC_BOX), DebugDataVisible(EDS_OFF),
-				IsVisible(true), IsDebugObject(false), IsDirtyTransform(true)
+				IsVisible(true), IsDebugObject(false), IsDirtyTransform(true), 
+				IsEnablePointLight(true), IsEnableDirectionLight(true)
 		{
 			if (parent)
 				parent->addChild(this);
@@ -416,6 +417,29 @@ namespace scene
 			return 0;
 		}
 
+		//! enablePointLight
+		// this node is lighting with point light
+		inline void enablePointLight( bool b )
+		{
+			IsEnablePointLight = b;
+		}
+
+		//! enableDirectionLight
+		// this node is lighting with direction light
+		inline void enableDirectionLight( bool b )
+		{
+			IsEnableDirectionLight = b;
+		}
+
+		inline bool isEnablePointLight()
+		{
+			return IsEnablePointLight;
+		}
+
+		inline bool isEnableDirectionLight()
+		{
+			return IsEnableDirectionLight;
+		}
 
 		//! Sets all material flags at once to a new value.
 		/** Useful, for example, if you want the whole mesh to be
@@ -847,6 +871,10 @@ namespace scene
 		bool IsDebugObject;
 		//! Is transform change
 		bool IsDirtyTransform;
+		
+		bool IsEnablePointLight;
+
+		bool IsEnableDirectionLight;
 	};
 
 

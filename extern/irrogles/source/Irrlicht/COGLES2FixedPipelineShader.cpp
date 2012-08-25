@@ -22,28 +22,29 @@ namespace video
 		"uNormalize",
 		"uEyePos",
 
-		"uLightDirection",
-		"uLightAmbient",
-		"uLightDiffuse",
-		"uLightSpecular",
+		"uLightDirection1",
+		"uLightDiffuse1",
+		"uLightSpecular1",
 
-		"uPointLightPosition",
-		"uPointLightAmbient",
-		"uPointLightDiffuse",
-		"uPointLightSpecular",
-		"uPointLightAttenuation",
+		"uLightDirection2",
+		"uLightDiffuse2",
+		"uLightSpecular2",
 
-		"uLightDirection[0]",
-		"uLightAmbient[0]",
-		"uLightDiffuse[0]",
-		"uLightSpecular[0]",
+		"uPointLightPosition1",
+		"uPointLightDiffuse1",
+		"uPointLightSpecular1",
+		"uPointLightAttenuation1",
 
-		"uPointLightPosition[0]",
-		"uPointLightAmbient[0]",
-		"uPointLightDiffuse[0]",
-		"uPointLightSpecular[0]",
-		"uPointLightAttenuation[0]",
-		
+		"uPointLightPosition2",
+		"uPointLightDiffuse2",
+		"uPointLightSpecular2",
+		"uPointLightAttenuation2",
+
+		"uPointLightPosition3",
+		"uPointLightDiffuse3",
+		"uPointLightSpecular3",
+		"uPointLightAttenuation3",
+
 		"uAmbientColor",
 		"uMaterialAmbient",
 		"uMaterialEmission",
@@ -261,8 +262,8 @@ namespace video
 			Driver->getTransform(ETS_WORLD).getInverse(invWorld);
 
 			// support
-			const int kDirectionLight	= 2;
-			const int kPointLight		= 4;
+			const int kDirectionLight	= MAX_LIGHTS;
+			const int kPointLight		= MAX_POINTLIGHTS;
 
 			int nLightDirection = 0;
 			int nLightPoint		= 0;
@@ -271,7 +272,7 @@ namespace video
 
 			for ( size_t i = 0; i < cnt; ++i )
 			{
-				if ( nLightDirection >= kDirectionLight && nLightPoint >= nLightPoint )
+				if ( nLightDirection < kDirectionLight || nLightPoint < nLightPoint )
 				{
 					if ( Driver->isLightTurnOn(i) == false )
 						continue;
@@ -313,31 +314,28 @@ namespace video
 					break;
 			}
 			
-			if ( mat->setUniform( LIGHT_DIRECTION,		LightDirection,		MAX_LIGHTS ) == true )
-			{
-				mat->setUniform( LIGHT_AMBIENT,			LightAmbient,		MAX_LIGHTS );
-				mat->setUniform( LIGHT_DIFFUSE,			LightDiffuse,		MAX_LIGHTS );
-				mat->setUniform( LIGHT_SPECULAR,		LightSpecular,		MAX_LIGHTS );
+			mat->setUniform( LIGHT_DIRECTION1,		&LightDirection[0]);
+			mat->setUniform( LIGHT_DIFFUSE1,		&LightDiffuse[0]);
+			mat->setUniform( LIGHT_SPECULAR1,		&LightSpecular[0]);
 
-				mat->setUniform( POINTLIGHT_POSITION,		PointLightPosition,		MAX_POINTLIGHTS );
-				mat->setUniform( POINTLIGHT_AMBIENT,		PointLightAmbient,		MAX_POINTLIGHTS );
-				mat->setUniform( POINTLIGHT_DIFFUSE,		PointLightDiffuse,		MAX_POINTLIGHTS );
-				mat->setUniform( POINTLIGHT_SPECULAR,		PointLightSpecular,		MAX_POINTLIGHTS );
-				mat->setUniform( POINTLIGHT_ATTENUATION,	PointLightAttenuation,	MAX_POINTLIGHTS );
-			}
-			else
-			{
-				mat->setUniform( LIGHT_ARRAY_DIRECTION,			LightDirection,		MAX_LIGHTS );
-				mat->setUniform( LIGHT_ARRAY_AMBIENT,		LightAmbient,		MAX_LIGHTS );
-				mat->setUniform( LIGHT_ARRAY_DIFFUSE,		LightDiffuse,		MAX_LIGHTS );
-				mat->setUniform( LIGHT_ARRAY_SPECULAR,		LightSpecular,		MAX_LIGHTS );
+			mat->setUniform( LIGHT_DIRECTION2,		&LightDirection[1]);
+			mat->setUniform( LIGHT_DIFFUSE2,		&LightDiffuse[1]);
+			mat->setUniform( LIGHT_SPECULAR2,		&LightSpecular[1]);
 
-				mat->setUniform( POINTLIGHT_ARRAY_POSITION,		PointLightPosition,		MAX_POINTLIGHTS );
-				mat->setUniform( POINTLIGHT_ARRAY_AMBIENT,		PointLightAmbient,		MAX_POINTLIGHTS );
-				mat->setUniform( POINTLIGHT_ARRAY_DIFFUSE,		PointLightDiffuse,		MAX_POINTLIGHTS );
-				mat->setUniform( POINTLIGHT_ARRAY_SPECULAR,		PointLightSpecular,		MAX_POINTLIGHTS );
-				mat->setUniform( POINTLIGHT_ARRAY_ATTENUATION,	PointLightAttenuation,	MAX_POINTLIGHTS );
-			}			
+			mat->setUniform( POINTLIGHT_POSITION1,		&PointLightPosition[0]);
+			mat->setUniform( POINTLIGHT_DIFFUSE1,		&PointLightDiffuse[0]);
+			mat->setUniform( POINTLIGHT_SPECULAR1,		&PointLightSpecular[0]);
+			mat->setUniform( POINTLIGHT_ATTENUATION1,	&PointLightAttenuation[0]);
+
+			mat->setUniform( POINTLIGHT_POSITION2,		&PointLightPosition[1]);
+			mat->setUniform( POINTLIGHT_DIFFUSE2,		&PointLightDiffuse[1]);
+			mat->setUniform( POINTLIGHT_SPECULAR2,		&PointLightSpecular[1]);
+			mat->setUniform( POINTLIGHT_ATTENUATION2,	&PointLightAttenuation[1]);
+
+			mat->setUniform( POINTLIGHT_POSITION3,		&PointLightPosition[2]);
+			mat->setUniform( POINTLIGHT_DIFFUSE3,		&PointLightDiffuse[2]);
+			mat->setUniform( POINTLIGHT_SPECULAR3,		&PointLightSpecular[2]);
+			mat->setUniform( POINTLIGHT_ATTENUATION3,	&PointLightAttenuation[2]);
 
 			AmbientColor = Driver->getAmbientLight();
 			mat->setUniform( AMBIENT_COLOR, &AmbientColor );

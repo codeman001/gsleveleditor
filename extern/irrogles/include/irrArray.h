@@ -18,7 +18,7 @@ namespace core
 //! Self reallocating template array (like stl vector) with additional features.
 /** Some features are: Heap sorting, binary search methods, easier debugging.
 */
-template <class T, typename TAlloc = irrAllocator<T> >
+template <class T, typename TAlloc = irrAllocatorFast<T> >
 class array
 {
 
@@ -303,7 +303,7 @@ public:
 
 
 	//! Direct access operator
-	T& operator [](u32 index)
+	inline T& operator [](u32 index)
 	{
 		_IRR_DEBUG_BREAK_IF(index>=used) // access violation
 
@@ -312,7 +312,7 @@ public:
 
 
 	//! Direct const access operator
-	const T& operator [](u32 index) const
+	inline const T& operator [](u32 index) const
 	{
 		_IRR_DEBUG_BREAK_IF(index>=used) // access violation
 
@@ -321,7 +321,7 @@ public:
 
 
 	//! Gets last element.
-	T& getLast()
+	inline T& getLast()
 	{
 		_IRR_DEBUG_BREAK_IF(!used) // access violation
 
@@ -330,7 +330,7 @@ public:
 
 
 	//! Gets last element
-	const T& getLast() const
+	inline const T& getLast() const
 	{
 		_IRR_DEBUG_BREAK_IF(!used) // access violation
 
@@ -340,7 +340,7 @@ public:
 
 	//! Gets a pointer to the array.
 	/** \return Pointer to the array. */
-	T* pointer()
+	inline T* pointer()
 	{
 		return data;
 	}
@@ -348,7 +348,7 @@ public:
 
 	//! Gets a const pointer to the array.
 	/** \return Pointer to the array. */
-	const T* const_pointer() const
+	inline const T* const_pointer() const
 	{
 		return data;
 	}
@@ -356,7 +356,7 @@ public:
 
 	//! Get number of occupied elements of the array.
 	/** \return Size of elements in the array which are actually occupied. */
-	u32 size() const
+	inline u32 size() const
 	{
 		return used;
 	}
@@ -365,7 +365,7 @@ public:
 	//! Get amount of memory allocated.
 	/** \return Amount of memory allocated. The amount of bytes
 	allocated would be allocated_size() * sizeof(ElementTypeUsed); */
-	u32 allocated_size() const
+	inline u32 allocated_size() const
 	{
 		return allocated;
 	}
@@ -373,7 +373,7 @@ public:
 
 	//! Check if array is empty.
 	/** \return True if the array is empty false if not. */
-	bool empty() const
+	inline bool empty() const
 	{
 		return used == 0;
 	}

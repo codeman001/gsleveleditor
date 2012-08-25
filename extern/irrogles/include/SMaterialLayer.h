@@ -214,7 +214,7 @@ namespace video
 
 	private:
 		friend class SMaterial;
-		irr::core::irrAllocator<irr::core::matrix4> MatrixAllocator;
+		irr::core::irrAllocatorFast<irr::core::matrix4> MatrixAllocator;
 
 		//! Texture Matrix
 		/** Do not access this element directly as the internal

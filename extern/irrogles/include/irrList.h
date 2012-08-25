@@ -404,7 +404,7 @@ private:
 	SKListNode* First;
 	SKListNode* Last;
 	u32 Size;
-	irrAllocator<SKListNode> allocator;
+	irrAllocatorFast<SKListNode> allocator;
 
 };
 

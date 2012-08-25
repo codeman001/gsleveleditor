@@ -69,7 +69,7 @@ static inline u32 locale_upper ( u32 x )
 }
 
 
-template <typename T, typename TAlloc = irrAllocator<T> >
+template <typename T, typename TAlloc = irrAllocatorFast<T> >
 class string
 {
 public:

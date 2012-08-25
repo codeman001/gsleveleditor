@@ -30,25 +30,25 @@ public:
 	virtual ~irrAllocator() {}
 
 	//! Allocate memory for an array of objects
-	T* allocate(size_t cnt)
+	inline T* allocate(size_t cnt)
 	{
 		return (T*)internal_new(cnt* sizeof(T));
 	}
 
 	//! Deallocate memory for an array of objects
-	void deallocate(T* ptr)
+	inline void deallocate(T* ptr)
 	{
 		internal_delete(ptr);
 	}
 
 	//! Construct an element
-	void construct(T* ptr, const T&e)
+	inline void construct(T* ptr, const T&e)
 	{
 		new ((void*)ptr) T(e);
 	}
 
 	//! Destruct an element
-	void destruct(T* ptr)
+	inline void destruct(T* ptr)
 	{
 		ptr->~T();
 	}
@@ -77,25 +77,25 @@ class irrAllocatorFast
 public:
 
 	//! Allocate memory for an array of objects
-	T* allocate(size_t cnt)
+	inline T* allocate(size_t cnt)
 	{
 		return (T*)operator new(cnt* sizeof(T));
 	}
 
 	//! Deallocate memory for an array of objects
-	void deallocate(T* ptr)
+	inline void deallocate(T* ptr)
 	{
 		operator delete(ptr);
 	}
 
 	//! Construct an element
-	void construct(T* ptr, const T&e)
+	inline void construct(T* ptr, const T&e)
 	{
 		new ((void*)ptr) T(e);
 	}
 
 	//! Destruct an element
-	void destruct(T* ptr)
+	inline void destruct(T* ptr)
 	{
 		ptr->~T();
 	}

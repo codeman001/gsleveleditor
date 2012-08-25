@@ -192,8 +192,9 @@ struct SColladaAnimClip
 	float		duration;
 	bool		loop;
 
-	vector<SColladaNodeAnim*> animInfo;
-	
+	vector<SColladaNodeAnim*>				animInfo;
+	map<std::string, SColladaNodeAnim*>		animNameToInfo;
+
 	SColladaAnimClip()
 	{
 		animName = "";
@@ -216,6 +217,7 @@ struct SColladaAnimClip
 			i++;
 		}
 		animInfo.clear();
+		animNameToInfo.clear();
 	}
 
 	void addNodeAnim( SColladaNodeAnim* anim )
@@ -227,12 +229,14 @@ struct SColladaAnimClip
 			{
 				delete (*i);
 				*i = anim;
+				animNameToInfo[ (*i)->sceneNodeName ] = anim;
 				return;
 			}
 			i++;
 		}
 		
 		animInfo.push_back( anim );
+		animNameToInfo[ anim->sceneNodeName ] = anim;
 
 	}
 
@@ -253,17 +257,8 @@ struct SColladaAnimClip
 	// getAnimOfSceneNode
 	// get array frame of scenenode
 	SColladaNodeAnim* getAnimOfSceneNode(const char *sceneNodeName)
-	{
-		vector<SColladaNodeAnim*>::iterator i = animInfo.begin(), end = animInfo.end();
-		while ( i != end )
-		{
-			if ( (*i)->sceneNodeName == sceneNodeName )
-			{
-				return *i;
-			}
-			i++;
-		}
-		return NULL;
+	{		
+		return animNameToInfo[sceneNodeName];
 	}
 
 	// getRealTimeLength

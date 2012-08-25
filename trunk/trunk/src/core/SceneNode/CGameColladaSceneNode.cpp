@@ -605,19 +605,34 @@ public:
 			}			
 		}
 		
-		if ( services->setPixelShaderConstant( "uLightDirection", (float*)&lightDirection, MAX_LIGHTS*4 ) == true )
-		{
-			services->setPixelShaderConstant( "uLightAmbient", (float*)&lightAmbient,	MAX_LIGHTS*4 );
-			services->setPixelShaderConstant( "uLightDiffuse", (float*)&lightDiffuse,	MAX_LIGHTS*4 );
-			services->setPixelShaderConstant( "uLightSpecular",(float*)&lightSpecular,	MAX_LIGHTS*4 );			
-		}
-		else
-		{
-			services->setPixelShaderConstant( "uLightDirection[0]", (float*)&lightDirection,	MAX_LIGHTS*4 );
-			services->setPixelShaderConstant( "uLightAmbient[0]",	(float*)&lightAmbient,		MAX_LIGHTS*4 );
-			services->setPixelShaderConstant( "uLightDiffuse[0]",	(float*)&lightDiffuse,		MAX_LIGHTS*4 );
-			services->setPixelShaderConstant( "uLightSpecular[0]",	(float*)&lightSpecular,		MAX_LIGHTS*4 );
-		}	
+		// direction light 1
+		services->setPixelShaderConstant( "uLightDirection1",	(float*)&lightDirection[0],	4 );		
+		services->setPixelShaderConstant( "uLightDiffuse1",		(float*)&lightDiffuse[0],	4 );
+		services->setPixelShaderConstant( "uLightSpecular1",	(float*)&lightSpecular[0],	4 );
+
+		// direction light 2
+		services->setPixelShaderConstant( "uLightDirection2",	(float*)&lightDirection[1],	4 );
+		services->setPixelShaderConstant( "uLightDiffuse2",		(float*)&lightDiffuse[1],	4 );
+		services->setPixelShaderConstant( "uLightSpecular2",	(float*)&lightSpecular[1],	4 );
+
+		// point light 1
+		services->setPixelShaderConstant( "uPointLightPosition1",		(float*)&pointLightPosition[0],		4 );
+		services->setPixelShaderConstant( "uPointLightDiffuse1",		(float*)&pointLightDiffuse[0],		4 );
+		services->setPixelShaderConstant( "uPointLightSpecular1",		(float*)&pointLightSpecular[0],		4 );
+		services->setPixelShaderConstant( "uPointLightAttenuation1",	(float*)&pointLightAttenuation[0],	4 );
+
+		// point light 2
+		services->setPixelShaderConstant( "uPointLightPosition2",		(float*)&pointLightPosition[1],		4 );
+		services->setPixelShaderConstant( "uPointLightDiffuse2",		(float*)&pointLightDiffuse[1],		4 );
+		services->setPixelShaderConstant( "uPointLightSpecular2",		(float*)&pointLightSpecular[1],		4 );
+		services->setPixelShaderConstant( "uPointLightAttenuation2",	(float*)&pointLightAttenuation[1],	4 );
+
+		// point light 3
+		services->setPixelShaderConstant( "uPointLightPosition3",		(float*)&pointLightPosition[2],		4 );
+		services->setPixelShaderConstant( "uPointLightDiffuse3",		(float*)&pointLightDiffuse[2],		4 );
+		services->setPixelShaderConstant( "uPointLightSpecular3",		(float*)&pointLightSpecular[2],		4 );
+		services->setPixelShaderConstant( "uPointLightAttenuation3",	(float*)&pointLightAttenuation[2],	4 );
+
 
 		ambientColor = getIView()->getSceneMgr()->getAmbientLight();
 		services->setPixelShaderConstant( "uAmbientColor", (float*)&ambientColor, 4 );

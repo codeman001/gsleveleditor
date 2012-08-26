@@ -826,8 +826,8 @@ void CGameColladaSceneNode::enableAnimOnAllChild( bool b )
 
 		n->setEnableAnim( true );
 
-		core::list<ISceneNode*>& childs = (core::list<ISceneNode*>)n->getChildren();
-		core::list<ISceneNode*>::Iterator i = childs.begin(), end = childs.end();
+		const core::list<ISceneNode*>& childs = (core::list<ISceneNode*>)n->getChildren();
+		core::list<ISceneNode*>::ConstIterator i = childs.begin(), end = childs.end();
 		while ( i != end )
 		{
 			myStack.push( (CGameColladaSceneNode*)(*i) );

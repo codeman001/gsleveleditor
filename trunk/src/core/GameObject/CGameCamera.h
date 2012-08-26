@@ -57,11 +57,7 @@ public:
 
 	// setTarget
 	// set target look at camera
-	virtual void setTarget( core::vector3df& v )
-	{
-		m_targetPos = v;
-		m_camera->setTarget( m_targetPos );
-	}
+	void setTarget( core::vector3df& v );	
 
 	// getTarget
 	// get target look

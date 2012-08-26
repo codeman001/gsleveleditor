@@ -209,8 +209,9 @@ void CGameObject::lookAt(const core::vector3df& pos)
 {
 	float angle = (float)(core::vector2df( pos.X - m_position.X, pos.Z - m_position.Z ).getAngleTrig());
 	
-	// rotation oz
-	setRotation(core::vector3df(0.0f, 90-angle, 0.0f));
+	// rotation oy
+	core::vector3df oy(0.0f, 90-angle, 0.0f);
+	setRotation(oy);
 }
 
 // fixRotationVector

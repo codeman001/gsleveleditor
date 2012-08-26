@@ -187,8 +187,8 @@ CGameObject* CObjTemplateFactory::spawnObject( wchar_t* templateName, CGameObjec
 // save obj template to file
 void CObjTemplateFactory::saveAllObjectTemplate()
 {
-	wchar_t path[MAX_PATH] = {0};
-	wchar_t fileName[MAX_PATH] = {0};
+	wchar_t path[512] = {0};
+	wchar_t fileName[512] = {0};
 
 	std::ofstream file( getIView()->getPath("objectTemplate.css") );
 	

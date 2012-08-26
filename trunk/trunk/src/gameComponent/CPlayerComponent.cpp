@@ -439,7 +439,8 @@ void CPlayerComponent::updateStateRunTurn()
 		
 		// update run position
 		float runSpeed = m_runSpeed * (1.0f - m_runFactor) * getIView()->getTimeStep() * 0.1f;
-		m_gameObject->setPosition( m_gameObject->getPosition() + m_runCurrentVector * runSpeed );
+		core::vector3df newPos = m_gameObject->getPosition() + m_runCurrentVector * runSpeed;
+		m_gameObject->setPosition( newPos );
 	}
 }
 
@@ -566,7 +567,8 @@ void CPlayerComponent::updateStateRun()
 			
 			// update run position
 			float runSpeed = m_runSpeed * (1.0f - m_runFactor) * getIView()->getTimeStep() * 0.1f;
-			m_gameObject->setPosition( m_gameObject->getPosition() + v0 * runSpeed );
+			core::vector3df newPos = m_gameObject->getPosition() + v0 * runSpeed;
+			m_gameObject->setPosition( newPos );
 		}
 	}
 }

@@ -35,8 +35,11 @@ CGameCamera::CGameCamera()
 	m_camera->setFarValue( 8000.0f );
 	m_camera->grab();	
 	
-	setPosition( core::vector3df(0,0,0) );
-	setTarget( core::vector3df(1,0,0) );	
+	core::vector3df	pos(0,0,0);
+	setPosition( pos );
+
+	core::vector3df target(1,0,0);
+	setTarget( target );
 
 #ifdef GSEDITOR	
 	CColladaMeshComponent *comp = new CColladaMeshComponent( this );
@@ -76,6 +79,12 @@ CGameCamera::~CGameCamera()
 	// set null camera on scenenode
 	if ( smgr->getActiveCamera() == m_node )
 		smgr->setActiveCamera( NULL );
+}
+
+void CGameCamera::setTarget( core::vector3df& v )
+{
+	m_targetPos = v;
+	m_camera->setTarget( m_targetPos );
 }
 
 // updateObject

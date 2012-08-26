@@ -1,7 +1,8 @@
 LOCAL_C_INCLUDES := ../../../../extern/irrogles/include \
-../../../../extern/irrogles/include 
+../../../../extern/irrogles/source/Irrlicht/zlib 
 
-LOCAL_CFLAGS := -DIRRLICHT_EXPORTS 
+LOCAL_CFLAGS := -DIRRLICHT_EXPORTS \
+-DANDROID 
 
 LOCAL_SRC_FILES := ../../../../extern/irrogles/source/Irrlicht/C3DSMeshFileLoader.cpp \
 ../../../../extern/irrogles/source/Irrlicht/CAnimatedMeshHalfLife.cpp \

@@ -3,7 +3,9 @@ LOCAL_C_INCLUDES := ../../../../extern/gameswf \
 ../../../../extern/irrogles/include \
 ../../../../extern/irrogles/source/Irrlicht 
 
-LOCAL_CFLAGS := -DANDROID 
+LOCAL_CFLAGS := -DANDROID \
+-DTU_USE_SDL \
+-D_TU_USE_STL=1 
 
 LOCAL_SRC_FILES := ../../../base/component_hackery.cpp \
 ../../../base/configvars.cpp \

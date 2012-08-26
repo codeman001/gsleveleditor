@@ -1,6 +1,5 @@
 LOCAL_C_INCLUDES := ../../../src \
 ../../../../extern/irrogles/include \
-../../../../extern/uiClass \
 ../../../../extern/irrogles/source/Irrlicht \
 ../../../src/core \
 ../../../src/core/Animators \

@@ -48,6 +48,7 @@ void readListFolder(const char *lpString, list<string>* list)
 	DWORD pos = 0;
 	while ( uiString::split<char>(lpSplit, (char*)lpString, (char*)";", &pos) )
 	{
+		lpInc[0] = NULL;
 		uiString::getBlock<char,char>(lpInc, lpSplit,"\"");
 
 		if ( uiString::length<char>(lpInc) == 0 )

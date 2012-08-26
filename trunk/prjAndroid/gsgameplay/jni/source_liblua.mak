@@ -1,4 +1,6 @@
-LOCAL_C_INCLUDES := LOCAL_CFLAGS := LOCAL_SRC_FILES := ../../../../extern/lua/src/lapi.c \
+LOCAL_C_INCLUDES := LOCAL_CFLAGS := -DANDROID 
+
+LOCAL_SRC_FILES := ../../../../extern/lua/src/lapi.c \
 ../../../../extern/lua/src/lauxlib.c \
 ../../../../extern/lua/src/lbaselib.c \
 ../../../../extern/lua/src/lcode.c \

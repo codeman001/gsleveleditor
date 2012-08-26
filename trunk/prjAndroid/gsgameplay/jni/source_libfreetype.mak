@@ -1,7 +1,8 @@
 LOCAL_C_INCLUDES := ../../../../extern/freetype/include 
 
 LOCAL_CFLAGS := -D_LIB \
--DFT2_BUILD_LIBRARY 
+-DFT2_BUILD_LIBRARY \
+-DANDROID 
 
 LOCAL_SRC_FILES := ../../../../extern/freetype/src/base/ftbbox.c \
 ../../../../extern/freetype/src/base/ftgxval.c \

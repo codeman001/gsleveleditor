@@ -1,22 +1,22 @@
-LOCAL_C_INCLUDES := ../../../src/ \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) \
-$(ProjectDir) 
+LOCAL_C_INCLUDES := ../../../src \
+../../../../extern/irrogles/include \
+../../../../extern/uiClass \
+../../../../extern/irrogles/source/Irrlicht \
+../../../src/core \
+../../../src/core/Animators \
+../../../src/core/Component \
+../../../src/core/GameObject \
+../../../src/core/ObjectTemplate \
+../../../src/core/SceneNode \
+../../../src/core/Serializable \
+../../../../extern/spark/include \
+../../../../extern/gameswf \
+../../../../extern/freetype/include \
+../../../../extern/lua/src \
+../../../../extern/vld/include 
 
-LOCAL_CFLAGS := -DGSGAMEPLAY 
+LOCAL_CFLAGS := -DGSGAMEPLAY \
+-DANDROID 
 
 LOCAL_SRC_FILES := ../../../src/core/Animators/CGameCameraFollowAnimator.cpp \
 ../../../src/core/Animators/CGameGSCameraAnimator.cpp \

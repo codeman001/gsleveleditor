@@ -98,16 +98,19 @@ namespace gameswf
 
 		if ( m_compiled_code.is_valid() )
 		{
+#ifdef WIN32
 			try
+#endif
 			{
 				m_compiled_code.call< array<as_value>&, vm_stack &, vm_stack &, as_value * >
 				( local_register, *env, env->m_scope, fn.result );
 			}
-
+#ifdef WIN32
 			catch ( ... )
 			{
 				log_msg ( "jitted code crashed" );
 			}
+#endif
 		}
 
 		else

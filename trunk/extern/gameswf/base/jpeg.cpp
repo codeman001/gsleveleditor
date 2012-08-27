@@ -76,7 +76,9 @@ namespace jpeg
 				if ( src->m_start_of_file )
 				{
 					// Treat this as a fatal error.
+#ifdef WIN32
 					throw "empty jpeg source stream.";
+#endif
 				}
 
 				// warn("jpeg end-of-stream");
@@ -207,7 +209,9 @@ namespace jpeg
 			{
 				// Error.
 				// @@ bah, exceptions suck.  TODO consider alternatives.
+#ifdef WIN32
 				throw "jpeg::rw_dest couldn't write data.";
+#endif
 			}
 
 			dest->m_pub.next_output_byte = dest->m_buffer;
@@ -229,7 +233,9 @@ namespace jpeg
 				if ( dest->m_out_stream->write_bytes ( dest->m_buffer, datacount ) != datacount )
 				{
 					// Error.
+#ifdef WIN32
 					throw "jpeg::rw_dest::term_destination couldn't write data.";
+#endif
 				}
 			}
 

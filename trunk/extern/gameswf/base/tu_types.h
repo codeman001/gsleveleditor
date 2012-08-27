@@ -30,14 +30,12 @@ typedef unsigned int	Uint32;
 typedef int	Sint32;
 #	endif
 #else
-#	ifndef Uint8
 typedef unsigned char	Uint8;
 typedef signed char	Sint8;
 typedef unsigned short	Uint16;
 typedef short	Sint16;
 typedef unsigned int	Uint32;
 typedef int	Sint32;
-#	endif
 #endif
 
 #ifndef _MSC_VER

@@ -18,7 +18,10 @@
 #include "CImage.h"
 #include "os.h"
 
+#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 #include <GLES2/egl.h>
+#endif
+
 #include <GLES2/gl2.h>
 
 namespace irr
@@ -36,8 +39,10 @@ namespace video
 		: CNullDriver(io, params.WindowSize), COGLES2ExtensionHandler(),
 		CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
 		Transformation3DChanged(true), AntiAlias(params.AntiAlias),
-		RenderTargetTexture(0), CurrentRendertargetSize(0, 0), ColorFormat(ECF_R8G8B8),
-		EglDisplay(EGL_NO_DISPLAY)
+		RenderTargetTexture(0), CurrentRendertargetSize(0, 0), ColorFormat(ECF_R8G8B8)
+#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+		,EglDisplay(EGL_NO_DISPLAY)
+#endif
 #if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 		, HDc(0)
 #elif defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
@@ -54,6 +59,7 @@ namespace video
 		setDebugName("COGLES2Driver");
 #endif
 		ExposedData = data;
+
 #if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 		EglWindow = (EGLNativeWindowType)data.OpenGLWin32.HWnd;
 		HDc = GetDC((HWND)EglWindow);
@@ -64,6 +70,8 @@ namespace video
 #elif defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
 		Device = device;
 #endif
+
+#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 		if (EglDisplay == EGL_NO_DISPLAY)
 		{
 			os::Printer::log("Getting OpenGL-ES2 display.");
@@ -212,6 +220,7 @@ namespace video
 		if (minorVersion>1)
 			eglBindAPI(EGL_OPENGL_ES_API);
 #endif
+
 		os::Printer::log("Creating EglContext...");
 		EglContext = eglCreateContext(EglDisplay, config, EGL_NO_CONTEXT, contextAttrib);
 		if (testEGLError())
@@ -225,12 +234,16 @@ namespace video
 		{
 			os::Printer::log("Could not make Context current for OpenGL-ES2 display.");
 		}
+#endif	// !Android
 
 		genericDriverInit(params.WindowSize, params.Stencilbuffer);
 
 		// set vsync
+#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 		if (params.Vsync)
 			eglSwapInterval(EglDisplay, 1);
+#endif
+
 	}
 
 
@@ -240,11 +253,13 @@ namespace video
 		deleteMaterialRenders();
 		deleteAllTextures();
 
+#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 		// HACK : the following is commented because destroying the context crashes under Linux (Thibault 04-feb-10)
 		/*eglMakeCurrent(EGL_NO_DISPLAY, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 		eglDestroyContext(EglDisplay, EglContext);
 		eglDestroySurface(EglDisplay, EglSurface);*/
 		eglTerminate(EglDisplay);
+#endif
 
 #if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 		if (HDc)
@@ -264,7 +279,9 @@ namespace video
 		Name = glGetString(GL_VERSION);
 		printVersion();
 
+#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 		os::Printer::log(eglQueryString(EglDisplay, EGL_CLIENT_APIS));
+#endif
 
 		// print renderer information
 		vendorName = glGetString(GL_VENDOR);
@@ -275,7 +292,9 @@ namespace video
 			CurrentTexture[i] = 0;
 		// load extensions
 		initExtensions(this,
+#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 						EglDisplay,
+#endif
 						stencilBuffer);
 
 		StencilBuffer = stencilBuffer;
@@ -391,6 +410,9 @@ namespace video
 	{
 		CNullDriver::endScene();
 
+#if defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+		// todo swapbuffer
+#else
 		eglSwapBuffers(EglDisplay, EglSurface);
 		EGLint g = eglGetError();
 		if (EGL_SUCCESS != g)
@@ -404,6 +426,8 @@ namespace video
 				os::Printer::log("Could not swap buffers for OpenGL-ES2 driver.");
 			return false;
 		}
+#endif
+
 		return true;
 	}
 

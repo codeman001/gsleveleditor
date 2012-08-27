@@ -100,14 +100,20 @@
 #if defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__) || defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #define _IRR_IPHONE_PLATFORM_
 #define _IRR_COMPILE_WITH_IPHONE_DEVICE_
-#define _IRR_COMPILE_WITH_OGLES1_ // necessary for IPhone for now
+#define _IRR_COMPILE_WITH_OGLES2_ // necessary for IPhone for now
 #else
 #define _IRR_COMPILE_WITH_OSX_DEVICE_
 #endif
 #endif
 
+#if defined(ANDROID)
+#define _IRR_ANDROID_PLATFROM_
+#define _IRR_COMPILE_WITH_ANDROID_DEVICE_
+#define _IRR_COMPILE_WITH_OGLES2_
+#endif
 
-#if !defined(_IRR_WINDOWS_API_) && !defined(_IRR_OSX_PLATFORM_)
+
+#if !defined(_IRR_WINDOWS_API_) && !defined(_IRR_OSX_PLATFORM_) && !defined(_IRR_ANDROID_PLATFROM_)
 #ifndef _IRR_SOLARIS_PLATFORM_
 #define _IRR_LINUX_PLATFORM_
 #endif

@@ -30,7 +30,7 @@
 		#include <tchar.h>
 	#endif
 #else
-	#if (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_))
+	#if (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_) || defined(_IRR_ANDROID_PLATFROM_))
 		#include <stdio.h>
 		#include <stdlib.h>
 		#include <string.h>
@@ -550,7 +550,7 @@ bool CFileSystem::changeWorkingDirectoryTo(const io::path& newDirectory)
 		success=(_chdir(newDirectory.c_str()) == 0);
 	#endif
 #else
-		success=(chdir(newDirectory.c_str()) == 0);
+	success=(chdir(newDirectory.c_str()) == 0);
 #endif
 	}
 
@@ -929,8 +929,9 @@ bool CFileSystem::existFile(const io::path& filename) const
 #elif defined(F_OK)
 	return (access(filename.c_str(), F_OK) != -1);
 #else
-    return (access(filename.c_str(), 0) != -1);
+	return (access(filename.c_str(), 0) != -1);	
 #endif
+
 #endif
 }
 

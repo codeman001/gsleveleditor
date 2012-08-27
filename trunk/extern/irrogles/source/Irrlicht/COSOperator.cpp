@@ -5,16 +5,19 @@
 #include "COSOperator.h"
 
 #ifdef _IRR_WINDOWS_API_
-#ifndef _IRR_XBOX_PLATFORM_
-#include <windows.h>
-#endif
+	#ifndef _IRR_XBOX_PLATFORM_
+		#include <windows.h>
+	#endif
+#elif defined(_IRR_ANDROID_PLATFROM_)
+	#include <string.h>
+	#include <unistd.h>
 #else
-#include <string.h>
-#include <unistd.h>
-#ifndef _IRR_SOLARIS_PLATFORM_
-#include <sys/types.h>
-#include <sys/sysctl.h>
-#endif
+	#include <string.h>
+	#include <unistd.h>
+	#ifndef _IRR_SOLARIS_PLATFORM_
+		#include <sys/types.h>
+		#include <sys/sysctl.h>
+	#endif
 #endif
 
 #if defined(_IRR_COMPILE_WITH_X11_DEVICE_)

@@ -29,13 +29,13 @@ void tu_swap ( T *a, T *b )
 //
 
 
-inline Uint16 swap16 ( Uint16 u )
+inline Uint16 tu_swap16 ( Uint16 u )
 {
 	return ( ( u & 0x00FF ) << 8 ) |
 	       ( ( u & 0xFF00 ) >> 8 );
 }
 
-inline Uint32 swap32 ( Uint32 u )
+inline Uint32 tu_swap32 ( Uint32 u )
 {
 	return ( ( u & 0x000000FF ) << 24 ) |
 	       ( ( u & 0x0000FF00 ) << 8 )  |
@@ -43,7 +43,7 @@ inline Uint32 swap32 ( Uint32 u )
 	       ( ( u & 0xFF000000 ) >> 24 );
 }
 
-inline Uint64 swap64 ( Uint64 u )
+inline Uint64 tu_swap64 ( Uint64 u )
 {
 #ifdef __GNUC__
 	return ( ( u & 0x00000000000000FFLL ) << 56 ) |
@@ -67,7 +67,7 @@ inline Uint64 swap64 ( Uint64 u )
 }
 
 
-inline Uint64	swap_le64 ( Uint64 le_64 )
+inline Uint64	tu_swap_le64 ( Uint64 le_64 )
 // Given a 64-bit little-endian piece of data, return it as a 64-bit
 // integer in native endian-ness.  I.e., do a swap if we're on a
 // big-endian machine.
@@ -75,12 +75,12 @@ inline Uint64	swap_le64 ( Uint64 le_64 )
 #if _TU_LITTLE_ENDIAN_
 	return le_64;
 #else	// not _TU_LITTLE_ENDIAN_
-	return swap64 ( le_64 );	// convert to big-endian.
+	return tu_swap64 ( le_64 );	// convert to big-endian.
 #endif	// not _TU_LITTLE_ENDIAN_
 }
 
 
-inline Uint32	swap_le32 ( Uint32 le_32 )
+inline Uint32	tu_swap_le32 ( Uint32 le_32 )
 // Given a 32-bit little-endian piece of data, return it as a 32-bit
 // integer in native endian-ness.  I.e. on a little-endian machine,
 // this just returns the input; on a big-endian machine, this swaps
@@ -89,31 +89,31 @@ inline Uint32	swap_le32 ( Uint32 le_32 )
 #if _TU_LITTLE_ENDIAN_
 	return le_32;
 #else	// not _TU_LITTLE_ENDIAN_
-	return swap32 ( le_32 );	// convert to big-endian.
+	return tu_swap32 ( le_32 );	// convert to big-endian.
 #endif	// not _TU_LITTLE_ENDIAN_
 }
 
 
-inline Uint16	swap_le16 ( Uint16 le_16 )
+inline Uint16	tu_swap_le16 ( Uint16 le_16 )
 // Given a 16-bit little-endian piece of data, return it as a 16-bit
 // integer in native endianness.
 {
 #if _TU_LITTLE_ENDIAN_
 	return le_16;
 #else	// not _TU_LITTLE_ENDIAN_
-	return swap16 ( le_16 );	// convert to big-endian.
+	return tu_swap16 ( le_16 );	// convert to big-endian.
 #endif	// not _TU_LITTLE_ENDIAN_
 }
 
 
-inline Uint32	swap_be32 ( Uint32 le_32 )
+inline Uint32	tu_swap_be32 ( Uint32 le_32 )
 // Given a 32-bit big-endian piece of data, return it as a 32-bit
 // integer in native endian-ness.  I.e. on a little-endian machine,
 // this swaps the bytes around; on a big-endian machine, it just
 // returns the input.
 {
 #if _TU_LITTLE_ENDIAN_
-	return swap32 ( le_32 );	// convert to little-endian.
+	return tu_swap32 ( le_32 );	// convert to little-endian.
 #else	// not _TU_LITTLE_ENDIAN_
 	return le_32;
 #endif	// not _TU_LITTLE_ENDIAN_
@@ -125,7 +125,7 @@ inline Uint16	swap_be16 ( Uint16 le_16 )
 // integer in native endianness.
 {
 #if _TU_LITTLE_ENDIAN_
-	return swap16 ( le_16 );	// convert to little-endian.
+	return tu_swap16 ( le_16 );	// convert to little-endian.
 #else	// not _TU_LITTLE_ENDIAN_
 	return le_16;
 #endif	// not _TU_LITTLE_ENDIAN_

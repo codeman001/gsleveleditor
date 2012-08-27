@@ -709,7 +709,7 @@ namespace gameswf
 						} u;
 						compiler_assert ( sizeof ( u ) == sizeof ( u.i ) );
 						memcpy ( &u.i, instruction_data + 3 + i, 4 );
-						u.i = swap_le32 ( u.i );
+						u.i = tu_swap_le32 ( u.i );
 						i += 4;
 						log_msg ( "(float) %f\n", u.f );
 					}
@@ -756,7 +756,7 @@ namespace gameswf
 						compiler_assert ( sizeof ( u ) == sizeof ( u.i ) );
 						memcpy ( &u.sub.hi, instruction_data + 3 + i, 4 );
 						memcpy ( &u.sub.lo, instruction_data + 3 + i + 4, 4 );
-						u.i = swap_le64 ( u.i );
+						u.i = tu_swap_le64 ( u.i );
 						i += 8;
 						log_msg ( "(double) %f\n", u.d );
 					}

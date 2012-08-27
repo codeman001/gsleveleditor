@@ -2028,7 +2028,7 @@ namespace gameswf
 									} u;
 									compiler_assert ( sizeof ( u ) == sizeof ( u.i ) );
 									memcpy ( &u.i, &buffer[3 + i], 4 );
-									u.i = swap_le32 ( u.i );
+									u.i = tu_swap_le32 ( u.i );
 									i += 4;
 									env->push ( u.f );
 									IF_VERBOSE_ACTION ( log_msg ( "-------------- pushed '%f'\n", u.f ) );
@@ -2107,7 +2107,7 @@ namespace gameswf
 									compiler_assert ( sizeof ( u ) == sizeof ( u.i ) );
 									memcpy ( &u.sub.hi, &buffer[3 + i], 4 );
 									memcpy ( &u.sub.lo, &buffer[3 + i + 4], 4 );
-									u.i = swap_le64 ( u.i );
+									u.i = tu_swap_le64 ( u.i );
 									i += 8;
 									//							if (i == 9)	// spec case, NaN constant
 									//							{

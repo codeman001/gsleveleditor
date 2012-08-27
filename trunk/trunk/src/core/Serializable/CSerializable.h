@@ -140,7 +140,7 @@ public:
 	static NSSerializable::dataType getType( char *lpType );
 
 protected:	
-	vector<SSerializableRec>	m_data;
+	std::vector<SSerializableRec>	m_data;
 
 	int m_cursor;
 public:
@@ -259,7 +259,7 @@ public:
 
 	// getAllRecord
 	// get all record
-	inline vector<SSerializableRec>* getAllRecord()
+	inline std::vector<SSerializableRec>* getAllRecord()
 	{
 		return &m_data;
 	}
@@ -277,8 +277,8 @@ public:
 	void	readArrayByte( char* data, int *size );
 
 protected:
-	virtual void	saveItem( std::ofstream& f,  vector<SSerializableRec>::iterator& it,  int nTab = 0 );
-	virtual void	saveGroup( std::ofstream& f, vector<SSerializableRec>::iterator& it,  int nTab = 0 );
+	virtual void	saveItem( std::ofstream& f,  std::vector<SSerializableRec>::iterator& it,  int nTab = 0 );
+	virtual void	saveGroup( std::ofstream& f, std::vector<SSerializableRec>::iterator& it,  int nTab = 0 );
 public:
 
 	virtual void	saveData( std::ofstream& f, int nTab = 0 );
@@ -286,8 +286,8 @@ public:
 
 };
 
-typedef vector<CSerializable>				ArraySerializable;
-typedef vector<SSerializableRec>			ArraySerializableRec;
-typedef vector<SSerializableRec>::iterator	ArraySerializableRecIter;
+typedef std::vector<CSerializable>				ArraySerializable;
+typedef std::vector<SSerializableRec>			ArraySerializableRec;
+typedef std::vector<SSerializableRec>::iterator	ArraySerializableRecIter;
 
 #endif

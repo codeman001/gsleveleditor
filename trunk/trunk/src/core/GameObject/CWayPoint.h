@@ -70,7 +70,7 @@ public:
 
 	// getSpline
 	// getspline
-	void getSpline( vector<core::vector3df>& points, bool loop);
+	void getSpline( std::vector<core::vector3df>& points, bool loop);
 
 #ifdef GSEDITOR
 	// drawObject	

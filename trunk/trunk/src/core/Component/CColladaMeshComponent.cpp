@@ -24,14 +24,14 @@
 
 
 void			uriToId(std::wstring& str);
-wstring			readId(io::IXMLReader *xmlRead);
+std::wstring			readId(io::IXMLReader *xmlRead);
 void			findNextNoneWhiteSpace(const c8** start);
 inline f32		readFloat(const c8** p);
 
 void			readIntsInsideElement(io::IXMLReader* reader, s32* ints, u32 count);
-void			readIntsInsideElement(io::IXMLReader* reader, vector<s32>& arrayInt);
+void			readIntsInsideElement(io::IXMLReader* reader, std::vector<s32>& arrayInt);
 void			readFloatsInsideElement(io::IXMLReader* reader, f32* floats, u32 count);
-void			readStringInsideElement(io::IXMLReader* reader, vector<std::wstring>& arrayString);
+void			readStringInsideElement(io::IXMLReader* reader, std::vector<std::wstring>& arrayString);
 
 SColorf			readColorNode(io::IXMLReader* reader);
 f32				readFloatNode(io::IXMLReader* reader);
@@ -153,7 +153,7 @@ void readIntsInsideElement(io::IXMLReader* reader, s32* ints, u32 count)
 }
 
 //! reads ints from inside of xml element until end of xml element
-void readIntsInsideElement(io::IXMLReader* reader, vector<s32>& arrayInt)
+void readIntsInsideElement(io::IXMLReader* reader, std::vector<s32>& arrayInt)
 {
 	if (reader->isEmptyElement())
 		return;
@@ -203,7 +203,7 @@ void readIntsInsideElement(io::IXMLReader* reader, vector<s32>& arrayInt)
 	}
 }				
 
-void readStringInsideElement(io::IXMLReader* reader, vector<std::wstring>& arrayString)
+void readStringInsideElement(io::IXMLReader* reader, std::vector<std::wstring>& arrayString)
 {
 	if (reader->isEmptyElement())
 		return;
@@ -583,7 +583,7 @@ CColladaAnimation::CColladaAnimation()
 CColladaAnimation::~CColladaAnimation()
 {
 	// release all anim clip
-	vector<SColladaAnimClip*>::iterator it = m_colladaAnim.begin(), end = m_colladaAnim.end();
+	std::vector<SColladaAnimClip*>::iterator it = m_colladaAnim.begin(), end = m_colladaAnim.end();
 	while ( it != end )
 	{
 		delete (*it);
@@ -690,7 +690,7 @@ void CColladaAnimation::clipDaeAnim()
 		
 		float frames = 0.0f;
 
-		vector<SColladaNodeAnim*>::iterator iNodeAnim = m_globalClip.animInfo.begin(), iNodeEnd = m_globalClip.animInfo.end();
+		std::vector<SColladaNodeAnim*>::iterator iNodeAnim = m_globalClip.animInfo.begin(), iNodeEnd = m_globalClip.animInfo.end();
 
 		while ( iNodeAnim != iNodeEnd )
 		{
@@ -723,13 +723,13 @@ void CColladaAnimation::clipDaeAnim()
 	else
 	{
 		// loop all animation clip
-		vector<SColladaAnimClip*>::iterator it = m_colladaAnim.begin(), end = m_colladaAnim.end();
+		std::vector<SColladaAnimClip*>::iterator it = m_colladaAnim.begin(), end = m_colladaAnim.end();
 		while ( it != end )
 		{
 			SColladaAnimClip* clip = (*it);
 
 			// loop all scenenode with anim
-			vector<SColladaNodeAnim*>::iterator iNodeAnim = m_globalClip.animInfo.begin(), 
+			std::vector<SColladaNodeAnim*>::iterator iNodeAnim = m_globalClip.animInfo.begin(), 
 				iNodeEnd = m_globalClip.animInfo.end();
 
 			while ( iNodeAnim != iNodeEnd )
@@ -977,7 +977,7 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 
 	float	*arrayFloat = NULL;
 
-	wstring arrayID;
+	std::wstring arrayID;
 	int count = 0;
 
 	int nAnimationTags = 1;
@@ -1201,7 +1201,7 @@ void CColladaAnimation::loadDae( char *lpFileName )
 	m_needFlip = false;
 	bool readLUpAxis = false;
 
-	vector<SColladaAnimClip*> oldAnim = m_colladaAnim;
+	std::vector<SColladaAnimClip*> oldAnim = m_colladaAnim;
 
 	m_colladaAnim.clear();	
 
@@ -1303,7 +1303,7 @@ void CColladaAnimation::removeClip( const std::string& clipName )
 	if ( clip == NULL )
 		return;
 
-	vector<SColladaAnimClip*>::iterator it = m_colladaAnim.begin(), end = m_colladaAnim.end();
+	std::vector<SColladaAnimClip*>::iterator it = m_colladaAnim.begin(), end = m_colladaAnim.end();
 	while ( it != end )
 	{
 		if ( (*it) == clip )
@@ -1478,7 +1478,7 @@ CColladaAnimation* CColladaAnimationFactory::loadAnimation( char *name, char *lp
 // release all package animation
 void CColladaAnimationFactory::freeAllAnimationPackage()
 {
-	map<std::string, CColladaAnimation*>::iterator i = m_animPackage.begin(), end = m_animPackage.end();
+	std::map<std::string, CColladaAnimation*>::iterator i = m_animPackage.begin(), end = m_animPackage.end();
 	while ( i != end )
 	{
 		delete (*i).second;
@@ -1495,7 +1495,7 @@ void CColladaAnimationFactory::freeAllAnimationPackage()
 // CColladaCache implement
 //////////////////////////////////////////////////////////
 
-map<string, CGameColladaContainerSceneNode*>	CColladaCache::s_nodeCache;
+std::map<std::string, CGameColladaContainerSceneNode*>	CColladaCache::s_nodeCache;
 
 
 //////////////////////////////////////////////////////////
@@ -2010,15 +2010,15 @@ SMeshParam* CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 	const std::wstring sourceNode(L"source");
 	const std::wstring bindShapeMatrix(L"bind_shape_matrix");
 
-	vector<std::wstring>	nameArray;
+	std::vector<std::wstring>	nameArray;
 
 	int						numArray = 0;
 	float					*jointArray = NULL;
 	float					*transformArray = NULL;
 	float					*weightArray = NULL;
 	
-	vector<s32>				&vCountArray	= mesh->JointVertexIndex;
-	vector<s32>				vArray;
+	std::vector<s32>				&vCountArray	= mesh->JointVertexIndex;
+	std::vector<s32>				vArray;
 
 	while(xmlRead->read())
 	{							
@@ -2524,7 +2524,7 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 									}
 									else if ( textureNodeName == xmlRead->getNodeName() )
 									{
-										wstring tname = xmlRead->getAttributeValue(L"texture");
+										std::wstring tname = xmlRead->getAttributeValue(L"texture");
 										
 										if ( node == diffuseNode )
 										{
@@ -2560,7 +2560,7 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 						{						
 							if ( nodeName == bumpNode )
 							{
-								wstring tname = xmlRead->getAttributeValue(L"texture");
+								std::wstring tname = xmlRead->getAttributeValue(L"texture");
 								// bump mapping texture: todo later
 							}
 						}
@@ -3329,7 +3329,7 @@ void CColladaMeshComponent::cleanData()
 	{
 		SNodeParam* pNode = m_listNode[j];
 		
-		stack<SNodeParam*>	stackNode;
+		std::stack<SNodeParam*>	stackNode;
 		stackNode.push( pNode );
 		while ( stackNode.size() )
 		{
@@ -3497,7 +3497,7 @@ void CColladaMeshComponent::initFromNode( CGameColladaContainerSceneNode* node )
 	}
 
 	// need map scenenode to joint
-	vector<CGameColladaMesh*>::iterator iMesh = listSkinMesh.begin(), iMeshEnd = listSkinMesh.end();
+	std::vector<CGameColladaMesh*>::iterator iMesh = listSkinMesh.begin(), iMeshEnd = listSkinMesh.end();
 	while ( iMesh != iMeshEnd )
 	{
 		(*iMesh)->updateJoint();
@@ -3520,7 +3520,7 @@ void CColladaMeshComponent::initFromNode( CGameColladaContainerSceneNode* node )
 
 // updateJointToMesh
 // update joint
-void CColladaMeshComponent::updateJointToMesh( SMeshParam *mesh, vector<wstring>& arrayName, float *arrayWeight, float *arrayTransform, vector<s32>& vCountArray, vector<s32>& vArray, bool flipZ )
+void CColladaMeshComponent::updateJointToMesh( SMeshParam *mesh, std::vector<std::wstring>& arrayName, float *arrayWeight, float *arrayTransform, std::vector<s32>& vCountArray, std::vector<s32>& vArray, bool flipZ )
 {
 	int numJoint = (int)arrayName.size();
 
@@ -3597,13 +3597,13 @@ void CColladaMeshComponent::updateJointToMesh( SMeshParam *mesh, vector<wstring>
 
 // getChildsOfSceneNode
 // find all childs of scene node
-void CColladaMeshComponent::getChildsOfSceneNode( const char *name, vector<CGameColladaSceneNode*>& listChilds )
+void CColladaMeshComponent::getChildsOfSceneNode( const char *name, std::vector<CGameColladaSceneNode*>& listChilds )
 {
 	CGameColladaSceneNode *rootNode = getSceneNode( name );
 	if ( rootNode == NULL )
 		return;
 	
-	stack<ISceneNode*>	stackNodes;
+	std::stack<ISceneNode*>	stackNodes;
 	stackNodes.push( rootNode );
 
 	while ( stackNodes.size() )
@@ -3640,7 +3640,7 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 	if ( animClip == NULL )
 		return;
 	
-	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
 		const std::string& nodeName = (*i).first;
@@ -3740,7 +3740,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChanne
 	m_currentAnim = animClip;
 
 	// loop all node
-	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
 		const std::string& nodeName = (*i).first;
@@ -3793,7 +3793,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChanne
 
 // setAnimation
 // apply Animation to array of skin joint
-void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameColladaSceneNode*>& listNodes, int trackChannel, bool loop )
+void CColladaMeshComponent::setAnimation(const char *lpAnimName, std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, bool loop )
 {
 	if ( m_colladaNode == NULL )
 		return;
@@ -3810,7 +3810,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameCol
 	// set current anim clip
 	m_currentAnim = animClip;
 
-	vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
+	std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
 	while ( i != end )
 	{		
 		CGameColladaSceneNode* j = (*i);
@@ -3855,7 +3855,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, vector<CGameCol
 void CColladaMeshComponent::synchronizedByTimeScale( float f )
 {
 	// loop all node
-	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
 		const std::string& nodeName = (*i).first;
@@ -3881,7 +3881,7 @@ void CColladaMeshComponent::pauseAtFrame( float frame, int trackChannel)
 	m_pauseAtFrame[trackChannel]	= frame;
 
 	// loop all node
-	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
 		const std::string& nodeName = (*i).first;
@@ -3907,7 +3907,7 @@ void CColladaMeshComponent::pauseAtFrame( float frame, int trackChannel)
 float CColladaMeshComponent::getCurrentFrame(int trackChannel)
 {
 	// loop all node
-	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
 		const std::string& nodeName = (*i).first;
@@ -3933,7 +3933,7 @@ float CColladaMeshComponent::getCurrentFrame(int trackChannel)
 // setCurrentFrame	
 void CColladaMeshComponent::setCurrentFrame(float f, int trackChannel)
 {
-	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
 		const std::string& nodeName = (*i).first;
@@ -3958,7 +3958,7 @@ void CColladaMeshComponent::resumeAnim(int trackChannel)
 {
 	m_isPauseAnim[trackChannel]		= false;
 
-	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
 		const std::string& nodeName = (*i).first;
@@ -3980,7 +3980,7 @@ void CColladaMeshComponent::resumeAnim(int trackChannel)
 // setAnimWeight
 void CColladaMeshComponent::setAnimWeight(float w, int trackChannel)
 {
-	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
 		CGameColladaSceneNode* j = (*i).second;
@@ -3992,7 +3992,7 @@ void CColladaMeshComponent::setAnimWeight(float w, int trackChannel)
 
 void CColladaMeshComponent::enableAnimTrackChanel( int trackChannel, bool b)
 {
-	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
 		CGameColladaSceneNode* j = (*i).second;
@@ -4004,7 +4004,7 @@ void CColladaMeshComponent::enableAnimTrackChanel( int trackChannel, bool b)
 
 void CColladaMeshComponent::onlyEnableAnimTrackChannel( int trackChannel )
 {
-	map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
 		CGameColladaSceneNode* j = (*i).second;

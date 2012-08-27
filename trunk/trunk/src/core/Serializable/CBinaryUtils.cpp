@@ -189,7 +189,7 @@ void CBinaryUtils::saveAnimation( io::IWriteFile *file, CColladaAnimation *anim 
 void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode* node )
 {	
 	CMemoryReadWrite	memStream( 1024*1024*1 );
-	vector<CGameColladaMesh*>	listMesh;
+	std::vector<CGameColladaMesh*>	listMesh;
 
 
 	char	stringc[STRING_BUFFER_SIZE];
@@ -280,7 +280,7 @@ void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode
 
 
 	// write mesh info data to file
-	vector<CGameColladaMesh*>::iterator iMesh =	listMesh.begin(), iEndMesh = listMesh.end();
+	std::vector<CGameColladaMesh*>::iterator iMesh =	listMesh.begin(), iEndMesh = listMesh.end();
 	while ( iMesh != iEndMesh )
 	{
 		saveColladaMesh( file, (*iMesh) );
@@ -337,7 +337,7 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 	int nMeshBuffer = mesh->getMeshBufferCount();
 	memStream.writeData( &nMeshBuffer, sizeof(int) );
 
-	vector<SMaterial*>	listMaterial;
+	std::vector<SMaterial*>	listMaterial;
 
 	for ( int i = 0; i < nMeshBuffer; i++ )
 	{
@@ -428,7 +428,7 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 
 
 	// save list material
-	vector<SMaterial*>::iterator iMat = listMaterial.begin(), iMatEnd = listMaterial.end();
+	std::vector<SMaterial*>::iterator iMat = listMaterial.begin(), iMatEnd = listMaterial.end();
 	while ( iMat != iMatEnd )
 	{
 		saveMaterial( file, (*iMat) );
@@ -687,7 +687,7 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 	CGameColladaContainerSceneNode *pParent = comp->getColladaNode();
 
 	// update scenenode with mesh
-	vector< SPairID >::iterator it = m_constructSceneMesh.begin(), end = m_constructSceneMesh.end();
+	std::vector< SPairID >::iterator it = m_constructSceneMesh.begin(), end = m_constructSceneMesh.end();
 	while ( it != end )
 	{
 		unsigned long nodeID = (*it).first;
@@ -734,7 +734,7 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 	m_constructSceneMesh.clear();
 	
 	// update component to mesh & drop ref of mesh
-	map<unsigned long, CGameColladaMesh*>::iterator iMesh =	m_listMesh.begin(), iEnd = m_listMesh.end();
+	std::map<unsigned long, CGameColladaMesh*>::iterator iMesh =	m_listMesh.begin(), iEnd = m_listMesh.end();
 	while ( iMesh != iEnd )
 	{
 		CGameColladaMesh *mesh = (*iMesh).second;
@@ -751,7 +751,7 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 	m_listMesh.clear();
 
 	// release material
-	map<unsigned long, SMaterial*>::iterator iMat = m_listMaterial.begin(), iEndMat = m_listMaterial.end();
+	std::map<unsigned long, SMaterial*>::iterator iMat = m_listMaterial.begin(), iEndMat = m_listMaterial.end();
 	while ( iMat != iEndMat )
 	{
 		delete (*iMat).second;

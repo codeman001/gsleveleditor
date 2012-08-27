@@ -46,18 +46,18 @@ public:
 	}
 };
 
-typedef pair<unsigned long, unsigned long>	SPairID;
+typedef std::pair<unsigned long, unsigned long>	SPairID;
 
 class CBinaryUtils: public uiSingleton<CBinaryUtils>
 {
 protected:
-	map<unsigned long, CGameColladaSceneNode*>		m_listSceneNode;
-	map<unsigned long, CGameColladaMesh*>			m_listMesh;
-	map<unsigned long, SMaterial*>					m_listMaterial;
+	std::map<unsigned long, CGameColladaSceneNode*>		m_listSceneNode;
+	std::map<unsigned long, CGameColladaMesh*>			m_listMesh;
+	std::map<unsigned long, SMaterial*>					m_listMaterial;
 
-	vector< SPairID >								m_constructSceneMesh;
-	map<unsigned long, unsigned long>				m_constructMeshMaterial;
-	map<IMeshBuffer*, unsigned long>				m_constructMeshBufferID;
+	std::vector< SPairID >								m_constructSceneMesh;
+	std::map<unsigned long, unsigned long>				m_constructMeshMaterial;
+	std::map<IMeshBuffer*, unsigned long>				m_constructMeshBufferID;
 
 	CColladaMeshComponent*							m_component;
 public:

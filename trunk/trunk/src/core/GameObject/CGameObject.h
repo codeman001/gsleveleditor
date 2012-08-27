@@ -95,7 +95,7 @@ protected:
 
 public:
 	ISceneNode					*m_node;
-	vector<IObjectComponent*>	m_components;
+	std::vector<IObjectComponent*>	m_components;
 
 	void addComponenet( IObjectComponent* comp )
 	{
@@ -528,11 +528,11 @@ protected:
 };
 
 // typedef for array object
-typedef vector<CGameObject*>			ArrayGameObject;
-typedef vector<CGameObject*>::iterator	ArrayGameObjectIter;
+typedef std::vector<CGameObject*>			ArrayGameObject;
+typedef std::vector<CGameObject*>::iterator	ArrayGameObjectIter;
 
 // typedef for array component
-typedef vector<IObjectComponent*>			ArrayComponent;
-typedef vector<IObjectComponent*>::iterator	ArrayComponentIter;
+typedef std::vector<IObjectComponent*>			ArrayComponent;
+typedef std::vector<IObjectComponent*>::iterator	ArrayComponentIter;
 
 #endif

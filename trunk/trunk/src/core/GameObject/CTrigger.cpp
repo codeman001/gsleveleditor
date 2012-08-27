@@ -213,7 +213,7 @@ void CTrigger::updateObject()
 
 // runFunction
 // run script func with 1 param int
-void CTrigger::runFunction(const string& funcName, int id1)
+void CTrigger::runFunction(const std::string& funcName, int id1)
 {
 	if ( funcName.length() == 0 )
 		return;
@@ -222,7 +222,7 @@ void CTrigger::runFunction(const string& funcName, int id1)
 
 // runFunction
 // run script func with 2 param int
-void CTrigger::runFunction(const string& funcName, int id1, int id2)
+void CTrigger::runFunction(const std::string& funcName, int id1, int id2)
 {
 	if ( funcName.length() == 0 )
 		return;

@@ -185,7 +185,7 @@ SSerializableRec* CSerializable::getProperty( char *name )
 
 void CSerializable::saveItem( std::ofstream& f,  ArraySerializableRecIter& it,  int nTab )
 {
-	string tab = "";
+	std::string tab = "";
 	for ( int i = 0; i < nTab; i++ )
 		tab += "\t";
 
@@ -215,7 +215,7 @@ void CSerializable::saveItem( std::ofstream& f,  ArraySerializableRecIter& it,  
 
 void CSerializable::saveGroup( std::ofstream& f, ArraySerializableRecIter& it, int nTab )
 {
-	string tab = "";
+	std::string tab = "";
 	for ( int i = 0; i < nTab; i++ )
 		tab += "\t";
 

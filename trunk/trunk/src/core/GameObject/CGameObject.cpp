@@ -532,7 +532,7 @@ void CGameObject::setLighting( bool b )
 	if ( m_node == NULL )
 		return;
 
-	stack<ISceneNode*>	stackNode;
+	std::stack<ISceneNode*>	stackNode;
 	stackNode.push( m_node );
 	
 	while ( stackNode.size() )
@@ -705,7 +705,7 @@ void CGameObject::setAnimatorMoveToWayPoint( CWayPoint *wayPoint, float speed, b
 		return;
 	
 	// get waypoint as spline
-	vector<core::vector3df> listPoint;
+	std::vector<core::vector3df> listPoint;
 	wayPoint->getSpline( listPoint, loop );
 
 	// convert to irrlich array
@@ -965,7 +965,7 @@ void CGameObject::updateObject()
 		rotationMatrix.rotateVect(m_up);
 	}
 
-	vector<IObjectComponent*> physicComponents;
+	std::vector<IObjectComponent*> physicComponents;
 
 	// update all component
 	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();

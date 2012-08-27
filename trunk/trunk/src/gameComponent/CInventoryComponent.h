@@ -10,7 +10,7 @@ class CInventoryComponent: public IObjectComponent
 public:
 	struct SInventoryItem
 	{
-		string			m_nameItem;
+		std::string		m_nameItem;
 		CGameObject*	m_item;
 		int				m_count;
 
@@ -23,8 +23,8 @@ public:
 
 protected:	
 		
-	vector<SInventoryItem>			m_inventory;
-	int								m_activeItemSlot;
+	std::vector<SInventoryItem>			m_inventory;
+	int									m_activeItemSlot;
 
 public:
 	CInventoryComponent(CGameObject* obj);

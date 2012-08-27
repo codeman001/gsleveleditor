@@ -74,13 +74,13 @@ protected:
 	CColladaMeshComponent*	m_collada;
 	CInventoryComponent*	m_inventory;
 
-	vector<CGameColladaSceneNode*>	m_nodesHandsAndHead;
-	vector<CGameColladaSceneNode*>	m_nodesChest;
-	vector<CGameColladaSceneNode*>	m_nodesFoot;
+	std::vector<CGameColladaSceneNode*>	m_nodesHandsAndHead;
+	std::vector<CGameColladaSceneNode*>	m_nodesChest;
+	std::vector<CGameColladaSceneNode*>	m_nodesFoot;
 	CGameColladaSceneNode*			m_nodeNeck;
 
 	// begin anim name declare
-	vector<std::string>				m_animIdle;
+	std::vector<std::string>				m_animIdle;
 
 	std::string						m_animRun;
 	std::string						m_animRunForward;

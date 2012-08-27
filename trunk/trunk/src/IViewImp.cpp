@@ -167,9 +167,9 @@ void IView::enableFreeCamera( bool b )
 
 // register event
 // register input event
-void IView::registerEvent( string name, IEventReceiver *pEvent )
+void IView::registerEvent( std::string name, IEventReceiver *pEvent )
 {
-	vector<eventType>::iterator i = m_eventReceivers.begin(), end = m_eventReceivers.end();
+	std::vector<eventType>::iterator i = m_eventReceivers.begin(), end = m_eventReceivers.end();
 	while ( i != end )
 	{
 		if ( (*i).second == pEvent )
@@ -184,7 +184,7 @@ void IView::registerEvent( string name, IEventReceiver *pEvent )
 // unregister input event
 void IView::unRegisterEvent( IEventReceiver *pEvent )
 {
-	vector<eventType>::iterator i = m_eventReceivers.begin(), end = m_eventReceivers.end();
+	std::vector<eventType>::iterator i = m_eventReceivers.begin(), end = m_eventReceivers.end();
 	while ( i != end )
 	{
 		if ( (*i).second == pEvent )

@@ -32,7 +32,9 @@ using namespace SPK::IRR;
 #include <fstream>
 #include <string>
 
+#ifndef GSGAMEPLAY
 using namespace std;
+#endif
 
 #ifdef GSEDITOR
 	#define STR_APP_TITLE "gseditor"

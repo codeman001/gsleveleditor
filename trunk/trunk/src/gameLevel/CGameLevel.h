@@ -32,8 +32,8 @@ protected:
 	char*			m_loadPos;
 	CZone*			m_loadZone;
 
-	string			m_levelFile;
-	vector<string>	m_listScriptFile;
+	std::string					m_levelFile;
+	std::vector<std::string>	m_listScriptFile;
 	int				m_numObjects;
 	int				m_numObjectsLoaded;
 protected:

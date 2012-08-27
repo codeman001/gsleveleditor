@@ -118,7 +118,7 @@ CMenuFxObj* CMenuFx::getObj( const char *path )
 	if ( m_movie == NULL )
 		return NULL;
 	
-	vector<std::string>	folder;
+	std::vector<std::string>	folder;
 
 	char stringc[1024] = {0};
 	int len = uiString::length<const char>(path);	

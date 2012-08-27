@@ -24,7 +24,7 @@ struct SImage
 	std::wstring	name;
 	std::wstring	fileName;
 };
-typedef vector<SImage>	ArrayImages;
+typedef std::vector<SImage>	ArrayImages;
 
 struct SEffect
 {
@@ -39,7 +39,7 @@ struct SEffect
 		return Id < other.Id;
 	}
 };
-typedef vector<SEffect> ArrayEffects;
+typedef std::vector<SEffect> ArrayEffects;
 
 
 struct SEffectParam
@@ -48,7 +48,7 @@ struct SEffectParam
 	std::wstring		Source;
 	std::wstring		InitFromTexture;
 };
-typedef vector<SEffectParam> ArrayEffectParams;
+typedef std::vector<SEffectParam> ArrayEffectParams;
 
 
 struct SBufferParam
@@ -120,7 +120,7 @@ struct SJointParam
 {
 	std::wstring			Name;
 	core::matrix4			InvMatrix;
-	vector<SWeightParam>	Weights;	
+	std::vector<SWeightParam>	Weights;	
 };
 
 
@@ -129,18 +129,18 @@ struct SMeshParam
 	std::wstring			Name;
 	std::wstring			ControllerName;
 
-	vector<SBufferParam>	Buffers;
-	vector<SVerticesParam>	Vertices;
-	vector<STrianglesParam>	Triangles;
-	vector<SJointParam>		Joints;
+	std::vector<SBufferParam>	Buffers;
+	std::vector<SVerticesParam>	Vertices;
+	std::vector<STrianglesParam>	Triangles;
+	std::vector<SJointParam>		Joints;
 	
-	vector<s32>				JointVertexIndex;
-	vector<s32>				JointIndex;
+	std::vector<s32>				JointVertexIndex;
+	std::vector<s32>				JointIndex;
 
 	int						Type;
 	core::matrix4			BindShapeMatrix;
 };
-typedef vector<SMeshParam>	ArrayMeshParams;
+typedef std::vector<SMeshParam>	ArrayMeshParams;
 
 
 struct SNodeParam
@@ -150,7 +150,7 @@ struct SNodeParam
 	std::wstring			SID;
 	std::wstring			Instance;
 	core::matrix4			Transform;
-	vector<SNodeParam*>		Childs;
+	std::vector<SNodeParam*>		Childs;
 	SNodeParam*				Parent;
 
 	ISkinnedMesh::SJoint	*Joint;
@@ -164,7 +164,7 @@ struct SNodeParam
 		ChildLevel = 0;
 	}
 };
-typedef vector<SNodeParam*>	ArrayNodeParams;
+typedef std::vector<SNodeParam*>	ArrayNodeParams;
 
 #pragma endregion
 
@@ -192,8 +192,8 @@ struct SColladaAnimClip
 	float		duration;
 	bool		loop;
 
-	vector<SColladaNodeAnim*>				animInfo;
-	map<std::string, SColladaNodeAnim*>		animNameToInfo;
+	std::vector<SColladaNodeAnim*>				animInfo;
+	std::map<std::string, SColladaNodeAnim*>		animNameToInfo;
 
 	SColladaAnimClip()
 	{
@@ -210,7 +210,7 @@ struct SColladaAnimClip
 
 	void freeAllNodeAnim()
 	{
-		vector<SColladaNodeAnim*>::iterator i = animInfo.begin(), end = animInfo.end();
+		std::vector<SColladaNodeAnim*>::iterator i = animInfo.begin(), end = animInfo.end();
 		while ( i != end )
 		{
 			delete (*i);
@@ -222,7 +222,7 @@ struct SColladaAnimClip
 
 	void addNodeAnim( SColladaNodeAnim* anim )
 	{
-		vector<SColladaNodeAnim*>::iterator i = animInfo.begin(), end = animInfo.end();
+		std::vector<SColladaNodeAnim*>::iterator i = animInfo.begin(), end = animInfo.end();
 		while ( i != end )
 		{
 			if ( (*i)->sceneNodeName == anim->sceneNodeName )
@@ -280,8 +280,8 @@ class CColladaAnimation
 {
 protected:
 	std::string							m_animFileName;
-	vector<SColladaAnimClip*>			m_colladaAnim;
-	map<std::string, SColladaAnimClip*>	m_animWithName;
+	std::vector<SColladaAnimClip*>			m_colladaAnim;
+	std::map<std::string, SColladaAnimClip*>	m_animWithName;
 
 	// input need for dae parse
 	bool					m_needFlip;
@@ -351,7 +351,7 @@ public:
 class CColladaAnimationFactory: public uiSingleton<CColladaAnimationFactory>
 {
 protected:
-	map<std::string, CColladaAnimation*>	m_animPackage;
+	std::map<std::string, CColladaAnimation*>	m_animPackage;
 public:
 	CColladaAnimationFactory();
 	virtual ~CColladaAnimationFactory();
@@ -381,7 +381,7 @@ protected:
 	std::string					m_animeshFile;	
 	std::string					m_defaultNodeString;
 	
-	vector<CGameColladaSceneNode*>	m_defaultNode;
+	std::vector<CGameColladaSceneNode*>	m_defaultNode;
 	
 	// current anim is playing
 	SColladaAnimClip			*m_currentAnim;
@@ -410,8 +410,8 @@ protected:
 	bool										m_crossFadeToAnimLoop;
 	bool										m_isCrossFadeAnim;
 
-	map<std::string, CGameColladaSceneNode*>	m_mapNode;
-	map<std::string, CGameColladaSceneNode*>	m_sidNode;
+	std::map<std::string, CGameColladaSceneNode*>	m_mapNode;
+	std::map<std::string, CGameColladaSceneNode*>	m_sidNode;
 
 	bool						m_needFlip;
 
@@ -443,7 +443,7 @@ public:
 
 	// getChildsOfSceneNode
 	// find all childs of scene node
-	void getChildsOfSceneNode( const char *name, vector<CGameColladaSceneNode*>& listChilds );
+	void getChildsOfSceneNode( const char *name, std::vector<CGameColladaSceneNode*>& listChilds );
 
 	// getSceneNodeBySID
 	// find child node with name
@@ -554,7 +554,7 @@ protected:
 		
 	// updateJointToMesh
 	// update joint
-	void updateJointToMesh( SMeshParam *mesh, vector<wstring>& arrayName, float *arrayWeight, float *arrayTransform, vector<s32>& vCountArray, vector<s32>& vArray, bool flipZ );	
+	void updateJointToMesh( SMeshParam *mesh, std::vector<std::wstring>& arrayName, float *arrayWeight, float *arrayTransform, std::vector<s32>& vCountArray, std::vector<s32>& vArray, bool flipZ );	
 
 	// cleanData
 	// free all data from parse dae
@@ -595,8 +595,8 @@ public:
 
 	// setAnimation
 	// apply Animation to array of skin joint
-	void setAnimation(const char *lpAnimName,		vector<CGameColladaSceneNode*>& listNodes, int track = 0, bool loop = true );
-	void setAnimation(const std::string& animName,	vector<CGameColladaSceneNode*>& listNodes, int track = 0, bool loop = true )
+	void setAnimation(const char *lpAnimName,		std::vector<CGameColladaSceneNode*>& listNodes, int track = 0, bool loop = true );
+	void setAnimation(const std::string& animName,	std::vector<CGameColladaSceneNode*>& listNodes, int track = 0, bool loop = true )
 	{
 		setAnimation( animName.c_str(), listNodes, track, loop );
 	}
@@ -717,7 +717,7 @@ public:
 		std::string		node;
 	};
 
-	vector<SColladaLodNode>			m_colladaLodNode;
+	std::vector<SColladaLodNode>			m_colladaLodNode;
 
 	// sortLodData
 	// sort lod data by distance
@@ -745,7 +745,7 @@ class CColladaCache
 {
 public:
 	// for cache node
-	static map<string, CGameColladaContainerSceneNode*>	s_nodeCache;
+	static std::map<std::string, CGameColladaContainerSceneNode*>	s_nodeCache;
 
 	// cacheNode
 	// cache node with name
@@ -766,7 +766,7 @@ public:
 	// destroy all cache
 	static void freeData()
 	{
-		map<string, CGameColladaContainerSceneNode*>::iterator i = s_nodeCache.begin(), end = s_nodeCache.end();
+		std::map<std::string, CGameColladaContainerSceneNode*>::iterator i = s_nodeCache.begin(), end = s_nodeCache.end();
 		while ( i != end )
 		{
 			CGameColladaContainerSceneNode *node = (*i).second;

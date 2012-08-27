@@ -16,7 +16,7 @@ protected:
 	bool								m_needSortObject;
 
 #ifdef GSGAMEPLAY
-	core::map<wstring, CGameObject*>	m_objectByName;
+	core::map<std::wstring, CGameObject*>	m_objectByName;
 #endif
 
 public:
@@ -143,7 +143,7 @@ public:
 
 };
 
-typedef vector<CZone*>				ArrayZone;
-typedef vector<CZone*>::iterator	ArrayZoneIter;
+typedef std::vector<CZone*>				ArrayZone;
+typedef std::vector<CZone*>::iterator	ArrayZoneIter;
 
 #endif

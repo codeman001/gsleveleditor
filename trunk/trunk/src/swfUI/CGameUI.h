@@ -24,7 +24,7 @@ class CGameUI:
 {
 protected:
 	gameswf::render_handler				*m_render;
-	map<std::string, CMenuFx*>			m_flash;
+	std::map<std::string, CMenuFx*>			m_flash;
 public:
 	CGameUI();
 	virtual ~CGameUI();	

@@ -11,7 +11,7 @@ struct SMeshCollisionNode
 	ISceneNode	*node;		
 };
 
-typedef vector<SMeshCollisionNode>	ArrayMeshCollision;
+typedef std::vector<SMeshCollisionNode>	ArrayMeshCollision;
 
 class CTerrainComponent: public IObjectComponent
 {

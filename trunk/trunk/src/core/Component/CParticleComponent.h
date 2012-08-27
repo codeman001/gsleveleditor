@@ -29,7 +29,7 @@ typedef struct tagParticleInfo
 class CParticleComponent: public IObjectComponent
 {
 protected:
-	vector<SParticleInfo>	m_arrayParticle;
+	std::vector<SParticleInfo>	m_arrayParticle;
 	std::string				m_xmlPath;
 	
 	unsigned long			m_time;

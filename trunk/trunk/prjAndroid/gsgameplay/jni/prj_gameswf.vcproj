@@ -173,251 +173,251 @@
 				Name="base"
 				>
 				<File
-					RelativePath="..\..\..\base\component_hackery.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\component_hackery.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\configvars.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\configvars.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\configvars.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\configvars.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\container.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\container.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\container.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\container.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\cschema.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\cschema.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\ear_clip_triangulate.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\ear_clip_triangulate.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\ear_clip_triangulate_float.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\ear_clip_triangulate_float.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\ear_clip_triangulate_impl.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\ear_clip_triangulate_impl.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\ear_clip_triangulate_sint16.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\ear_clip_triangulate_sint16.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\file_util.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\file_util.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\file_util.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\file_util.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\grid_index.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\grid_index.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\image.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\image.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\image.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\image.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\image_filters.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\image_filters.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\jpeg.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\jpeg.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\jpeg.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\jpeg.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\logger.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\logger.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\logger.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\logger.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\membuf.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\membuf.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\membuf.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\membuf.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\png_helper.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\png_helper.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\png_helper.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\png_helper.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\postscript.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\postscript.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\postscript.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\postscript.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\smart_ptr.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\smart_ptr.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\triangulate.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\triangulate.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\triangulate_float.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\triangulate_float.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\triangulate_impl.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\triangulate_impl.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\triangulate_sint32.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\triangulate_sint32.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_config.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_config.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_file.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_file.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_file.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_file.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_file_SDL.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_file_SDL.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_gc.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_gc.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_gc_singlethreaded_marksweep.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_gc_singlethreaded_marksweep.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_gc_singlethreaded_marksweep.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_gc_singlethreaded_marksweep.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_gc_singlethreaded_refcount.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_gc_singlethreaded_refcount.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_gc_test.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_gc_test.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_gc_test_impl.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_gc_test_impl.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_loadlib.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_loadlib.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_loadlib.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_loadlib.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_math.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_math.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_memdebug.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_memdebug.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_opengl_includes.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_opengl_includes.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_queue.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_queue.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_random.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_random.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_random.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_random.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_swap.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_swap.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_timer.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_timer.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_timer.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_timer.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_types.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_types.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\tu_types.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\tu_types.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\utf8.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\utf8.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\utf8.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\utf8.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\utility.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\utility.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\utility.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\utility.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\vert_types.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\vert_types.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\weak_ptr.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\weak_ptr.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\zlib_adapter.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\base\zlib_adapter.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\base\zlib_adapter.h"
+					RelativePath="..\..\..\..\extern\gameswf\base\zlib_adapter.h"
 					>
 				</File>
 			</Filter>
@@ -425,243 +425,243 @@
 				Name="gameswf_as_classes"
 				>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_array.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_array.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_array.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_array.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_boolean.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_boolean.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_boolean.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_boolean.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_broadcaster.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_broadcaster.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_broadcaster.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_broadcaster.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_class.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_class.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_class.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_class.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_color.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_color.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_color.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_color.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_color_transform.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_color_transform.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_color_transform.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_color_transform.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_date.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_date.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_date.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_date.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_event.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_event.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_event.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_event.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_flash.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_flash.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_flash.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_flash.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_geom.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_geom.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_geom.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_geom.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_global.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_global.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_global.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_global.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_key.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_key.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_key.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_key.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_loadvars.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_loadvars.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_loadvars.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_loadvars.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_math.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_math.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_math.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_math.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_matrix.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_matrix.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_matrix.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_matrix.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_mcloader.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_mcloader.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_mcloader.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_mcloader.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_mouse.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_mouse.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_mouse.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_mouse.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_mouse_event.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_mouse_event.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_mouse_event.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_mouse_event.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_netconnection.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_netconnection.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_netconnection.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_netconnection.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_netstream.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_netstream.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_netstream.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_netstream.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_number.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_number.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_number.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_number.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_point.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_point.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_point.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_point.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_selection.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_selection.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_selection.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_selection.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_sharedobject.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_sharedobject.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_sharedobject.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_sharedobject.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_sound.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_sound.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_sound.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_sound.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_string.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_string.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_string.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_string.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_textformat.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_textformat.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_textformat.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_textformat.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_transform.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_transform.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_transform.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_transform.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_xml.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_xml.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_xml.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_xml.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_xmlsocket.cpp"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_xmlsocket.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\gameswf_as_classes\as_xmlsocket.h"
+					RelativePath="..\..\..\..\extern\gameswf\gameswf_as_classes\as_xmlsocket.h"
 					>
 				</File>
 			</Filter>
@@ -669,11 +669,11 @@
 				Name="platforms"
 				>
 				<File
-					RelativePath="..\..\..\platforms\gameswf_jit_x86.h"
+					RelativePath="..\..\..\..\extern\gameswf\platforms\gameswf_jit_x86.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\platforms\gameswf_jit_x86.hpp"
+					RelativePath="..\..\..\..\extern\gameswf\platforms\gameswf_jit_x86.hpp"
 					>
 				</File>
 			</Filter>

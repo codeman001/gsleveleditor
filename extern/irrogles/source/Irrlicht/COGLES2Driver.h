@@ -24,7 +24,9 @@
 
 #ifdef _IRR_COMPILE_WITH_OGLES2_
 
-#include <GLES2/eglplatform.h>
+#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+	#include <GLES2/eglplatform.h>
+#endif
 
 #include "CNullDriver.h"
 #include "IMaterialRendererServices.h"
@@ -452,10 +454,13 @@ namespace video
 #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
 		HDC HDc;
 #endif
+
+#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 		EGLNativeWindowType EglWindow;
 		void* EglDisplay;
 		void* EglSurface;
 		void* EglContext;
+#endif
 
 		COGLES2FixedPipelineShader* FixedPipeline;
 		COGLES2Renderer2d* TwoDRenderer;

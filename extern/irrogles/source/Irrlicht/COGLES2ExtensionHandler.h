@@ -10,8 +10,13 @@
 #include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_OGLES2_
+
+#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 #include <GLES2/egl.h>
+#endif
+
 #include <GLES2/gl2.h>
+
 // seems to be missing...
 typedef char GLchar;
 #if defined(_IRR_OGLES2_USE_EXTPOINTER_)
@@ -179,7 +184,10 @@ namespace video
 		void dump() const;
 
 		void initExtensions(COGLES2Driver* driver,
-				EGLDisplay display, bool withStencil);
+#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+				EGLDisplay display, 
+#endif
+				bool withStencil);
 
 	protected:
 		u16 EGLVersion;

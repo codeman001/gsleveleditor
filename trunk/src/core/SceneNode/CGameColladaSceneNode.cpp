@@ -457,7 +457,7 @@ void CGameAnimation::update(float timeStep)
 {
 	bool startNewLoop = true;
 
-	for ( int i = 0; i < 2; i++ )
+	for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 	{
 		if ( m_animTrack[i].isEnable() )
 		{
@@ -472,7 +472,7 @@ void CGameAnimation::update(float timeStep)
 	// we will synchronized all animation loop
 	if ( startNewLoop )
 	{
-		for ( int i = 0; i < 2; i++ )
+		for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 		{
 			if ( m_animTrack[i].isEnable() && m_animTrack[i].isLoop() )
 			{

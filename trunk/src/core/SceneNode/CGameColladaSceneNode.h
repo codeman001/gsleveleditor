@@ -7,6 +7,8 @@
 #define MAX_LIGHTS		2
 #define MAX_POINTLIGHTS	4
 
+#define MAX_ANIMTRACK	4
+
 class CGameColladaSceneNode;
 class CColladaMeshComponent;
 class CGameObject;
@@ -318,7 +320,7 @@ public:
 class CGameAnimation
 {
 protected:
-	CGameAnimationTrack		m_animTrack[2];
+	CGameAnimationTrack		m_animTrack[MAX_ANIMTRACK];
 
 public:
 	CGameAnimation();
@@ -335,7 +337,7 @@ public:
 	// disable all track
 	void disableAllTrack()
 	{
-		for ( int i = 0; i < 2; i++ )
+		for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 			m_animTrack[i].setEnable( false );
 	}
 
@@ -343,7 +345,7 @@ public:
 	// enable a track i
 	void onlyEnableTrack( int track )
 	{
-		for ( int i = 0; i < 2; i++ )
+		for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 		{
 			if ( i == track )
 				m_animTrack[i].setEnable( true );

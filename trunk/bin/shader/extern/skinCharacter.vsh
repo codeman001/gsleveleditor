@@ -114,7 +114,7 @@ void main(void)
 	// Light 1
 	fvDirection			= uPointLightPosition1.xyz - netPosition.xyz;
 	fDistance			= length(fvDirection);	
-	fAttenuation		= max(0.0, 1.0/(fDistance * uPointLightAttenuation1.y + 0.1));
+	fAttenuation		= max(0.0, 1.0/(fDistance * uPointLightAttenuation1.y + 0.0001));
 	NdotL				= max(0.0, dot(normalize(fvDirection), normalize(netNormal.xyz)));
 	fvLightColor		= uPointLightDiffuse1 * uMaterialDiffuse * (NdotL * fAttenuation);
 	lightColor += fvLightColor;
@@ -122,7 +122,7 @@ void main(void)
 	// Light 2
 	fvDirection			= uPointLightPosition2.xyz - netPosition.xyz;
 	fDistance			= length(fvDirection);	
-	fAttenuation		= max(0.0, 1.0/(fDistance * uPointLightAttenuation2.y + 0.1));
+	fAttenuation		= max(0.0, 1.0/(fDistance * uPointLightAttenuation2.y + 0.0001));
 	NdotL				= max(0.0, dot(normalize(fvDirection), normalize(netNormal.xyz)));
 	fvLightColor		= uPointLightDiffuse2 * uMaterialDiffuse * (NdotL * fAttenuation);
 	lightColor += fvLightColor;
@@ -130,7 +130,7 @@ void main(void)
 	// Light 3	
 	fvDirection			= uPointLightPosition3.xyz - netPosition.xyz;
 	fDistance			= length(fvDirection);	
-	fAttenuation		= max(0.0, 1.0/(fDistance * uPointLightAttenuation3.y + 0.1));
+	fAttenuation		= max(0.0, 1.0/(fDistance * uPointLightAttenuation3.y + 0.0001));
 	NdotL				= max(0.0, dot(normalize(fvDirection), normalize(netNormal.xyz)));
 	fvLightColor		= uPointLightDiffuse3 * uMaterialDiffuse * (NdotL * fAttenuation);
 	lightColor += fvLightColor;		

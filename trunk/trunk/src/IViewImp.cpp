@@ -6,7 +6,7 @@
 #include "CGameGSCameraAnimator.h"
 #endif
 
-#ifdef GSGAMEPLAY
+#if defined(GSGAMEPLAY) && defined(WIN32)
 	#define VISUALLEAKDETECTOR
 #endif
 
@@ -46,7 +46,7 @@ IView::~IView()
 	VLDDisable();
 #else
 
-#ifdef GSGAMEPLAY
+#if defined(GSGAMEPLAY) && defined(WIN32)
 	UIDEBUG_TRACE("Debug leak memory: \n");
 	UIDEBUG_DUMPLEAK();
 #endif

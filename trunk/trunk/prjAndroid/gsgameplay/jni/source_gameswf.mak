@@ -3,9 +3,7 @@ LOCAL_C_INCLUDES := ../../../../extern/gameswf \
 ../../../../extern/irrogles/include \
 ../../../../extern/irrogles/source/Irrlicht 
 
-LOCAL_CFLAGS := -DANDROID \
--DTU_USE_SDL \
--D_TU_USE_STL=1 
+LOCAL_CFLAGS := -DANDROID 
 
 LOCAL_SRC_FILES := ../../../base/component_hackery.cpp \
 ../../../base/configvars.cpp \
@@ -109,4 +107,4 @@ LOCAL_SRC_FILES := ../../../base/component_hackery.cpp \
 ../../../../extern/gameswf/gameswf/gameswf_tools.cpp \
 ../../../../extern/gameswf/gameswf/gameswf_types.cpp \
 ../../../../extern/gameswf/gameswf/gameswf_value.cpp \
-../../../../extern/gameswf/gameswf/gameswf_video_impl.cpp
+../../../../extern/gameswf/gameswf/gameswf_video_impl.cpp 

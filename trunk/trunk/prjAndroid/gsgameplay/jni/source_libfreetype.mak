@@ -33,7 +33,7 @@ LOCAL_SRC_FILES := ../../../../extern/freetype/src/base/ftbbox.c \
 ../../../../extern/freetype/src/base/ftbase.c \
 ../../../../extern/freetype/src/base/ftbitmap.c \
 ../../../../extern/freetype/src/cache/ftcache.c \
-../ftdebug.c \
+../../../../extern/freetype/src/base/ftdebug.c \
 ../../../../extern/freetype/src/base/ftfstype.c \
 ../../../../extern/freetype/src/base/ftgasp.c \
 ../../../../extern/freetype/src/base/ftglyph.c \

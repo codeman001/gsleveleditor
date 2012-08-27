@@ -447,7 +447,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\ftdebug.c"
+				RelativePath="..\..\..\..\extern\freetype\src\base\ftdebug.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"

@@ -28,4 +28,6 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := libgsgameplay
 include source_gameplay.mak
 LOCAL_CFLAGS += -w -fsigned-char
+LOCAL_STATIC_LIBRARIES := libfreetype liblua libgameswf libirrlicht
+LOCAL_LDLIBS := -lGLESv2 -ldl -llog -lc -lgcc
 include $(BUILD_SHARED_LIBRARY)

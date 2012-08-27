@@ -232,7 +232,7 @@ void CWayPoint::updateData( CSerializable* pObj )
 
 // getSpline
 // getspline
-void CWayPoint::getSpline( vector<core::vector3df>& points, bool loop)
+void CWayPoint::getSpline( std::vector<core::vector3df>& points, bool loop)
 {
 	CWayPoint *pWay = this;
 	CWayPoint *lastWay = NULL;

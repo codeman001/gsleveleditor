@@ -36,7 +36,7 @@
 
 #ifdef GSEDITOR
 // global template
-vector<CSerializable> CComponentFactory::s_compTemplate;
+std::vector<CSerializable> CComponentFactory::s_compTemplate;
 
 
 // initComponentTemplate

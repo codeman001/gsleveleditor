@@ -73,7 +73,7 @@ CMenuFx* CGameUI::openFlash( const char *name, const char *url )
 // unload all swf
 void CGameUI::releaseAllFlash()
 {
-	map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
+	std::map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 	while ( i != end )
 	{
 		if ( (*i).second )
@@ -87,7 +87,7 @@ void CGameUI::releaseAllFlash()
 // update game flash ui
 void CGameUI::update()
 {
-	map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
+	std::map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 	while ( i != end )
 	{
 		if ( (*i).second )
@@ -100,7 +100,7 @@ void CGameUI::update()
 // render game flash ui
 void CGameUI::render(int x, int y, int w, int h, bool hasBackground)
 {
-	map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
+	std::map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 	while ( i != end )
 	{
 		if ( (*i).second )
@@ -123,7 +123,7 @@ bool CGameUI::OnEvent(const SEvent& irrEvent)
 		case irr::EMIE_MOUSE_MOVED:
 			{				
 				// drag touch
-				map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
+				std::map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 				while ( i != end )
 				{
 					if ( (*i).second )
@@ -135,7 +135,7 @@ bool CGameUI::OnEvent(const SEvent& irrEvent)
 		case irr::EMIE_LMOUSE_PRESSED_DOWN:
 			{
 				// touch press
-				map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
+				std::map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 				while ( i != end )
 				{
 					if ( (*i).second )
@@ -147,7 +147,7 @@ bool CGameUI::OnEvent(const SEvent& irrEvent)
 		case irr::EMIE_LMOUSE_LEFT_UP:
 			{
 				// touch down
-				map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
+				std::map<std::string, CMenuFx*>::iterator i = m_flash.begin(), end = m_flash.end();
 				while ( i != end )
 				{
 					if ( (*i).second )

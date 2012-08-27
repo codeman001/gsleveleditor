@@ -14,7 +14,7 @@ protected:
 	bool					m_isDirty;
 #endif
 
-	vector<CSerializable>	m_objectComponents;
+	std::vector<CSerializable>	m_objectComponents;
 public:
 
 	CObjectTemplate();

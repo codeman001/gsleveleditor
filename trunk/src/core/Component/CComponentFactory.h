@@ -9,7 +9,7 @@ public:
 
 #ifdef GSEDITOR
 	// array of default template component 
-	static vector<CSerializable>	s_compTemplate;
+	static std::vector<CSerializable>	s_compTemplate;
 #endif
 
 public:

@@ -8,10 +8,10 @@ class CGameObject;
 class CObjTemplateFactory
 {
 public:
-	static vector<CObjectTemplate>	s_objectTemplate;
+	static std::vector<CObjectTemplate>	s_objectTemplate;
 
 #ifdef GSEDITOR
-	static vector<CGameObject*>		s_objects;
+	static std::vector<CGameObject*>		s_objects;
 #endif
 
 	static int s_idGenerate;
@@ -68,7 +68,7 @@ public:
 
 };
 
-typedef vector<CObjectTemplate>				ArrayTemplate;
-typedef vector<CObjectTemplate>::iterator	ArrayTemplateIter;
+typedef std::vector<CObjectTemplate>				ArrayTemplate;
+typedef std::vector<CObjectTemplate>::iterator	ArrayTemplateIter;
 
 #endif

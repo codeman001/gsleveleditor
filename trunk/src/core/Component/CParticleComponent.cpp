@@ -40,7 +40,7 @@ void CParticleComponent::updateComponent()
 
 	bool isStop = true;
 	
-	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+	std::vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
 	while (i != end )
 	{
 		SParticleInfo& p = (*i);
@@ -170,7 +170,7 @@ void CParticleComponent::removeParticle( int i )
 // remove all particle
 void CParticleComponent::removeAllParticle()
 {
-	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+	std::vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
 
 	while ( i != end )
 	{
@@ -185,7 +185,7 @@ void CParticleComponent::removeAllParticle()
 // get particle info
 SParticleInfo* CParticleComponent::getParticleInfo( IParticleSystemSceneNode *ps )
 {
-	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+	std::vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
 	while (i != end )
 	{
 		SParticleInfo& p = (*i);
@@ -203,7 +203,7 @@ SParticleInfo* CParticleComponent::getParticleInfo( IParticleSystemSceneNode *ps
 int CParticleComponent::getParticleID( IParticleSystemSceneNode *ps )
 {
 	int id = 0;
-	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+	std::vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
 	while (i != end )
 	{
 		SParticleInfo& p = (*i);
@@ -242,7 +242,7 @@ void CParticleComponent::saveXML( const char *lpFileName )
 	
 	wchar_t lpTemp[1024];	
 
-	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+	std::vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
 	while (i != end )
 	{
 		SParticleInfo& p = (*i);	
@@ -405,7 +405,7 @@ void CParticleComponent::stopParticle()
 	m_time = 0;
 	m_stopEmitter = true;
 
-	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+	std::vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
 	while (i != end )
 	{
 		SParticleInfo& p = (*i);
@@ -431,7 +431,7 @@ void CParticleComponent::startParticle()
 void CParticleComponent::fixParticlePosition()
 {
 	// ajust affector
-	vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+	std::vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
 	while (i != end )
 	{
 		SParticleInfo& p = (*i);	

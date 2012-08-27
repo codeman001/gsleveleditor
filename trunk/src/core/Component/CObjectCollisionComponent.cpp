@@ -30,7 +30,7 @@ void CObjectCollisionComponent::initComponent()
 	if ( node == NULL )
 		return;	
 
-	vector<SObjectCollisionParam>	listMesh;
+	std::vector<SObjectCollisionParam>	listMesh;
 	SObjectCollisionParam temp;
 
 	if ( m_gameObject->getComponent( IObjectComponent::StaticMesh ) != NULL )

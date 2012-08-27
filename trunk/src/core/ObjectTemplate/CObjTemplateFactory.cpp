@@ -4,10 +4,10 @@
 #include "IView.h"
 
 // global object template
-vector<CObjectTemplate> CObjTemplateFactory::s_objectTemplate;
+std::vector<CObjectTemplate> CObjTemplateFactory::s_objectTemplate;
 
 #ifdef GSEDITOR
-vector<CGameObject*>	CObjTemplateFactory::s_objects;
+std::vector<CGameObject*>	CObjTemplateFactory::s_objects;
 #endif
 
 // initObjectTempalte

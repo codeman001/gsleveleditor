@@ -75,8 +75,8 @@ public:
 	}
 #endif
 
-	typedef std::pair<string,IEventReceiver*>	eventType;
-	vector<	eventType >	m_eventReceivers;
+	typedef std::pair<std::string,IEventReceiver*>	eventType;
+	std::vector< eventType >	m_eventReceivers;
 
 public:
 	
@@ -193,7 +193,7 @@ public:
 	
 	// register event
 	// register input event
-	void registerEvent( string name, IEventReceiver *pEvent );
+	void registerEvent( std::string name, IEventReceiver *pEvent );
 
 	// unRegisterEvent
 	// unregister input event

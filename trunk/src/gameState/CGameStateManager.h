@@ -9,8 +9,8 @@ class CGameStateMgr:
 	public IEventReceiver
 {
 protected:
-	vector<CGameState*>	m_stackState;
-	vector<CGameState*>	m_willDeleteState;
+	std::vector<CGameState*>	m_stackState;
+	std::vector<CGameState*>	m_willDeleteState;
 public:
 	CGameStateMgr();
 	virtual ~CGameStateMgr();

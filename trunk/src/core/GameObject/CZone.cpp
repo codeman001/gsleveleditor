@@ -130,7 +130,7 @@ int CZone::getNumberObjects()
 #ifdef GSGAMEPLAY
 CGameObject* CZone::searchObject( const wchar_t *objectName )
 {
-	core::map<wstring, CGameObject*>::Node *node = m_objectByName.find( wstring(objectName) );
+	core::map<std::wstring, CGameObject*>::Node *node = m_objectByName.find( std::wstring(objectName) );
 	if ( node == NULL )
 		return NULL;
 

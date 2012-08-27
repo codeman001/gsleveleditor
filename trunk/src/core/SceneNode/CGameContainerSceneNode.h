@@ -54,7 +54,7 @@ protected:
 class CGameColladaContainerSceneNode: public CGameContainerSceneNode
 {
 protected:
-	vector<ISceneNode*>		m_boudingMeshNode;
+	std::vector<ISceneNode*>		m_boudingMeshNode;
 
 public:
 	CGameColladaContainerSceneNode(
@@ -82,7 +82,7 @@ public:
 		}
 	}
 
-	vector<ISceneNode*>* getBoundingMeshNode()
+	std::vector<ISceneNode*>* getBoundingMeshNode()
 	{
 		return &m_boudingMeshNode;
 	}

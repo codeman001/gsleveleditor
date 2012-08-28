@@ -25,9 +25,15 @@ LOCAL_CFLAGS += -w -fsigned-char
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
+LOCAL_MODULE    := libirrlichtex
+include source_irlichtex.mak
+LOCAL_CFLAGS += -w -fsigned-char
+include $(BUILD_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
 LOCAL_MODULE    := libgsgameplay
 include source_gameplay.mak
 LOCAL_CFLAGS += -w -fsigned-char
-LOCAL_STATIC_LIBRARIES := libfreetype liblua libgameswf libirrlicht
+LOCAL_STATIC_LIBRARIES := libfreetype liblua libgameswf libirrlicht libirrlichtex
 LOCAL_LDLIBS := -lGLESv2 -ldl -llog -lc -lgcc
 include $(BUILD_SHARED_LIBRARY)

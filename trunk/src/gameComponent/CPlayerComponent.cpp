@@ -399,7 +399,8 @@ void CPlayerComponent::updateStateRunTurn()
 	if ( m_subState == SubStateInit )
 	{
 		m_collada->enableAnimTrackChanel(1, true);
-		m_collada->synchronizedByTimeScale(m_runFactor);
+		m_collada->setAnimWeight(m_runFactor, 1);
+		m_collada->synchronizedByTimeScale();
 
 		m_subState = SubStateActive;		
 	}
@@ -435,7 +436,8 @@ void CPlayerComponent::updateStateRunTurn()
 			m_runFactor = 1.0f;
 			setState( CPlayerComponent::PlayerRun );
 		}
-		m_collada->synchronizedByTimeScale(m_runFactor);
+		m_collada->setAnimWeight(m_runFactor, 1);
+		m_collada->synchronizedByTimeScale();
 		
 		// update run position
 		float runSpeed = m_runSpeed * (1.0f - m_runFactor) * getIView()->getTimeStep() * 0.1f;
@@ -454,7 +456,8 @@ void CPlayerComponent::updateStateRun()
 		m_runFactor = 1.0f;
 
 		m_collada->setAnimation( m_animRunNoGun.c_str(), 1, true );
-		m_collada->synchronizedByTimeScale(m_runFactor);
+		m_collada->setAnimWeight(m_runFactor, 1);
+		m_collada->synchronizedByTimeScale();
 
 		m_subState = SubStateActive;
 	}
@@ -484,15 +487,16 @@ void CPlayerComponent::updateStateRun()
 				setState( CPlayerComponent::PlayerIdle );
 			}
 
-			m_collada->synchronizedByTimeScale(m_runFactor);
+			m_collada->setAnimWeight(m_runFactor, 1);
+			m_collada->synchronizedByTimeScale();
 		}
 		else if ( m_runFactor > 0.0f )
 		{
 			m_runFactor = m_runFactor - step;
 			if ( m_runFactor < 0.0f )
 				m_runFactor = 0.0f;
-
-			m_collada->synchronizedByTimeScale(m_runFactor);
+			m_collada->setAnimWeight(m_runFactor, 1);
+			m_collada->synchronizedByTimeScale();
 		}
 		
 

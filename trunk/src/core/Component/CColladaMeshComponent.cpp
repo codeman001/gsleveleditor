@@ -3852,7 +3852,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, std::vector<CGa
 
 // synchronizedByTimeScale
 // sync 2 animation
-void CColladaMeshComponent::synchronizedByTimeScale( float f )
+void CColladaMeshComponent::synchronizedByTimeScale()
 {
 	// loop all node
 	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
@@ -3867,7 +3867,7 @@ void CColladaMeshComponent::synchronizedByTimeScale( float f )
 			continue;
 		}
 		
-		j->getAnimation()->synchronizedByTimeScale( f );
+		j->getAnimation()->synchronizedByTimeScale();
 
 		i++;
 	}

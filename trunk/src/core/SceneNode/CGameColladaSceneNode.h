@@ -368,7 +368,7 @@ public:
 	// synchronizedTimeScale
 	// sync speed of 2 track
 	// w: weight of track 1,  value domain: 0.0f -> 1.0f
-	void synchronizedByTimeScale( float w );
+	void synchronizedByTimeScale();
 
 	// update
 	// update per frame

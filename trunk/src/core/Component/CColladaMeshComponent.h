@@ -602,8 +602,8 @@ public:
 	}
 
 	// synchronizedByTimeScale
-	// sync 2 animation
-	void synchronizedByTimeScale( float f );
+	// sync n animation
+	void synchronizedByTimeScale();
 
 	// getCurrentAnim
 	// get current anim

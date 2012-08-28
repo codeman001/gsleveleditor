@@ -338,91 +338,113 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 	scale.set(1.0f,1.0f,1.0f);
 	rotation.set(0.0f, 0.0f, 0.0f, 1.0f);	
 
-	// blend animation
-	if ( m_animTrack[0].isEnable() && m_animTrack[1].isEnable() )
-	{
-		core::vector3df		posTrack1, posTrack2;
-		core::vector3df		scaleTrack1, scaleTrack2;
-		core::quaternion	rotTrack1, rotTrack2;
-		
-		m_animTrack[0].getFrameData
-			(
-				m_animTrack[0].getCurrentFrame(), 
-				posTrack1, 
-				scaleTrack1, 
-				rotTrack1, 
-				localMatrix 
-			);
-		m_animTrack[1].getFrameData
-			(
-				m_animTrack[1].getCurrentFrame(), 
-				posTrack2, 
-				scaleTrack2, 
-				rotTrack2, 
-				localMatrix 
-			);
-		float w = m_animTrack[0].getAnimWeight();
-		core::clamp<float>( w, 0.0f, 1.0f );
-		
-		// calc result
-		position.interpolate( posTrack1, posTrack2, w );
-		scale.interpolate( scaleTrack1, scaleTrack2, w );
-		rotation.slerp( rotTrack2, rotTrack1, w);
-	}
-	else
-	{
-		CGameAnimationTrack *track = NULL;
-		if ( m_animTrack[0].isEnable() )
-			track = &m_animTrack[0];
-		else if ( m_animTrack[1].isEnable() )
-			track = &m_animTrack[1];
 
-		if ( track )
+	core::vector3df		currentPosTrack,	posTrack;
+	core::vector3df		currentScaleTrack,	scaleTrack;
+	core::quaternion	currentRotTrack,	rotTrack;
+	bool first = true;
+
+	for ( int i = 0; i < MAX_ANIMTRACK; i++ )
+	{
+		if ( m_animTrack[i].isEnable() == true )
 		{
-			// track
-			core::vector3df		posTrack;
-			core::vector3df		scaleTrack;
-			core::quaternion	rotTrack;
-			core::quaternion	zero( localMatrix );
-
-			// get frame data
-			track->getFrameData
-				( 
-					track->getCurrentFrame(), 
+			m_animTrack[i].getFrameData
+				(
+					m_animTrack[i].getCurrentFrame(), 
 					posTrack, 
 					scaleTrack, 
 					rotTrack, 
 					localMatrix 
 				);
 
-			// compute animation
-			float w = track->getAnimWeight();			
+			if ( first == true )
+			{
+				currentPosTrack		= posTrack;
+				currentScaleTrack	= scaleTrack;
+				currentRotTrack		= rotTrack;
 
-			position	= posTrack;
-			scale		= scaleTrack;
+				position	= currentPosTrack;
+				scale		= currentScaleTrack;
+				rotation	= currentRotTrack;
 
-			if ( w == 1.0f )
-				rotation = rotTrack;
+				first = false;
+			}
 			else
-				rotation.slerp(zero, rotTrack, w);			
-		}
-		else
-		{
-			// no enable animation
-			position	= core::vector3df();
-			localMatrix.transformVect( position );
-			scale		= core::vector3df(1,1,1);
-			rotation	= core::quaternion( localMatrix );
-		}
+			{
+				float w = m_animTrack[i].getAnimWeight();
+				w = core::clamp<float>(w, 0.0f, 1.0f);
+				
+				position.interpolate( posTrack, currentPosTrack, w );
+				scale.interpolate( scaleTrack, currentScaleTrack, w );
+				rotation.slerp( currentRotTrack, rotTrack, w );
 
+				currentPosTrack		= position;
+				currentScaleTrack	= scale;
+				currentRotTrack		= rotation;
+			}
+		}
 	}
+
+	if ( first )
+	{
+		// no enable animation
+		position	= core::vector3df();
+		localMatrix.transformVect( position );
+		scale		= core::vector3df(1,1,1);
+		rotation	= core::quaternion( localMatrix );
+	}
+
 }
 
 // synchronizedTimeScale
 // sync speed of 2 track
 // weight: 0.0f -> 1.0f
-void CGameAnimation::synchronizedByTimeScale( float weight )
+void CGameAnimation::synchronizedByTimeScale()
 {	
+#if 1
+	std::vector<int>	listTrackSync;
+
+	// add track 0
+	listTrackSync.push_back(0);
+	m_animTrack[0].setSpeedRatio(1.0f);
+
+	for ( int i = 1; i < MAX_ANIMTRACK; i++ )
+	{
+		if ( m_animTrack[i].isEnable() == true )
+		{
+			float time1 = m_animTrack[0].getTotalFrame();
+			float time2 = m_animTrack[i].getTotalFrame();
+			
+			float weight = m_animTrack[i].getAnimWeight();
+			weight = core::clamp<float>(weight, 0.0f, 1.0f);
+
+			// sync frame
+			float frame1 = m_animTrack[0].getCurrentFrame();
+			float frame2 = time2*frame1/time1;
+			m_animTrack[i].setCurrentFrame( frame2 );
+						
+			// interpolate speed ratio 2 channel
+			float ratio = time2 + ( (time1 - time2) * weight );
+
+			// sync speed
+			for (int j = 0, n = listTrackSync.size(); j < n; j++ )
+			{
+				float animTime		= m_animTrack[j].getTotalFrame();
+				float animRatio		= time2 + ( (animTime - time2) * weight );
+				float animWeight	= m_animTrack[j].getAnimWeight();
+
+				m_animTrack[j].setSpeedRatio( animTime/animRatio );
+				m_animTrack[j].setAnimWeight( animWeight*weight );
+			}
+
+			m_animTrack[i].setSpeedRatio( time2/ratio );
+			m_animTrack[i].setAnimWeight( 1.0f - weight );
+
+			// add track i
+			listTrackSync.push_back(i);
+		}
+	}
+#else
 	if ( m_animTrack[0].isEnable() == false || m_animTrack[1].isEnable() == false ||
 		m_animTrack[0].getTotalFrame() == 0.0f || m_animTrack[1].getTotalFrame() == 0.0f )
 	{
@@ -431,6 +453,7 @@ void CGameAnimation::synchronizedByTimeScale( float weight )
 		return;
 	}
 
+	float weight = m_animTrack[1].getAnimWeight();
 	weight = core::clamp<float>( weight, 0.0f, 1.0f );
 	float time1 = m_animTrack[0].getTotalFrame();
 	float time2 = m_animTrack[1].getTotalFrame();
@@ -440,7 +463,7 @@ void CGameAnimation::synchronizedByTimeScale( float weight )
 	float frame2 = time2*frame1/time1;
 	m_animTrack[1].setCurrentFrame( frame2 );
 
-	// interpolate speed ratio 2 channel
+	// interpolate speed ratio 2 channel	
 	float ratio = time2 + ( ( time1 - time2 ) * weight );
 
 	// sync speed
@@ -449,6 +472,7 @@ void CGameAnimation::synchronizedByTimeScale( float weight )
 
 	m_animTrack[1].setSpeedRatio( time2/ratio );
 	m_animTrack[1].setAnimWeight( 1.0f - weight );
+#endif
 }
 
 // update

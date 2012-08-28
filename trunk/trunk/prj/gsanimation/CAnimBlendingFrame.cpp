@@ -149,7 +149,8 @@ void CAnimBlendingFrame::updateBlendAnim()
 
 	// synchronized blend anim
 	float f = 1.0f - m_trackbar->getPosition()/50.0f;	
-	m_colladaComponent->synchronizedByTimeScale( f );
+	m_colladaComponent->setAnimWeight(f, 1);
+	m_colladaComponent->synchronizedByTimeScale();
 }
 
 // setColladaComponent

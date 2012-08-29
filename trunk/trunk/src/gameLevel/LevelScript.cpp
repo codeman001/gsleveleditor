@@ -81,8 +81,11 @@ int setObjectPosition(lua_State* state)
 
 	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
-		obj->setPosition( core::vector3df(x,y,z) );
-	
+	{
+		core::vector3df newPos(x,y,z);
+		obj->setPosition( newPos );
+	}
+
 	return 0;
 }
 
@@ -119,8 +122,11 @@ int setObjectRotation(lua_State* state)
 
 	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
-		obj->setRotation( core::vector3df(x,y,z) );
-	
+	{
+		core::vector3df newRot(x,y,z);
+		obj->setRotation( newRot );
+	}
+
 	return 0;
 }
 

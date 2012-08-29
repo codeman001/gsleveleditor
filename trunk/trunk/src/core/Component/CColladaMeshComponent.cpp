@@ -3712,15 +3712,103 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 			
 	// current anim crossfade clip
 	m_currentAnim = animClip;
-	m_currentAnim->loop = false;	// hardcode to turn of loop on current anim!
-
-	// set begin frame
-	setCurrentFrame(0);
+	m_currentAnim->loop = false;	// hardcode to turn of loop on current anim!	
 }
 
 
 void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, float nFrames, bool loop)
 {
+	if ( m_colladaNode == NULL )
+		return;
+
+	SColladaAnimClip *animClip = m_colladaAnimation->getAnim( lpAnimName );
+	if ( animClip == NULL )
+		return;
+	
+	std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
+	while ( i != end )
+	{
+		CGameColladaSceneNode* j = (*i);
+						
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+
+		std::string nodeName = j->getName();
+
+		// get current frame data
+		core::vector3df		currentPos;
+		core::vector3df		currentScale;
+		core::quaternion	currentRotate;
+		CGameAnimationTrack *track = j->getAnimation()->getTrack(trackChannel);
+
+		track->getFrameData( track->getCurrentFrame(), currentPos, currentScale, currentRotate, j->LocalMatrix );
+
+		CGameAnimationTrack::SRotationKey rot;
+		rot.frame		= 0;
+		rot.rotation	= currentRotate;
+
+		CGameAnimationTrack::SPositionKey pos;
+		pos.frame		= 0;
+		pos.position	= currentPos;
+
+		// clear old key frame		
+		track->clearAllKeyFrame();
+		track->setLoop( false );
+
+		// todo add animation key
+		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
+
+		if ( anim )
+		{			
+			int nRotKey = anim->RotationKeys.size();
+			if ( nRotKey > 0 )
+			{
+				// set current animation
+				track->RotationKeys.push_back( rot );
+
+				rot.frame		= nFrames;
+				rot.rotation	= anim->RotationKeys[0].rotation;
+				track->RotationKeys.push_back( rot );
+
+				// set cross animation
+				track->CrossAnimRotationKeys.set_used( nRotKey );
+				for ( int i = 0; i < nRotKey; i++ )
+				{
+					track->CrossAnimRotationKeys[i] = anim->RotationKeys[i];
+				}
+			}
+
+			int nPosKey = anim->PositionKeys.size();
+			if ( nPosKey > 0 )
+			{
+				// set current animation
+				track->PositionKeys.push_back( pos );
+
+				pos.frame		= nFrames;
+				pos.position	= anim->PositionKeys[0].position;
+				track->PositionKeys.push_back( pos );
+
+				// set cross animation
+				track->CrossAnimPositionKeys.set_used( nPosKey );
+				for ( int i = 0; i < nPosKey; i++ )
+				{
+					track->CrossAnimPositionKeys[i] = anim->PositionKeys[i];
+				}
+			}
+
+			// enable cross animation
+			track->enableCrossAnimation( loop );
+		}
+
+		i++;
+	}
+			
+	// current anim crossfade clip
+	m_currentAnim = animClip;
+	m_currentAnim->loop = false;	// hardcode to turn of loop on current anim!	
 }
 
 
@@ -3737,9 +3825,6 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChanne
 	
 	animClip->loop = loop;
 
-	// set begin frame
-	setCurrentFrame(0, trackChannel);
-	
 	// set current anim clip
 	m_currentAnim = animClip;
 
@@ -3807,10 +3892,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, std::vector<CGa
 		return;
 	
 	animClip->loop = loop;
-
-	// set begin frame
-	setCurrentFrame(0);
-
+	
 	// set current anim clip
 	m_currentAnim = animClip;
 
@@ -3827,7 +3909,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, std::vector<CGa
 
 		// clear old key frame
 		CGameAnimationTrack *track = j->getAnimation()->getTrack( trackChannel );
-		track->clearAllKeyFrame();					
+		track->clearAllKeyFrame();							
 
 		// todo add animation key
 		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( j->getName() );

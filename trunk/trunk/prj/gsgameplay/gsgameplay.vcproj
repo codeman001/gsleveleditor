@@ -195,6 +195,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\CApplication.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\CApplication.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\stdafx.cpp"
 				>
 				<FileConfiguration

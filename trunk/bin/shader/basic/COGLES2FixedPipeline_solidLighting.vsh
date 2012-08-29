@@ -58,6 +58,17 @@ void main(void)
 	lightColor += NdotL * uLightDiffuse1 * uMaterialDiffuse;
 	
 	
+	// calc specular light
+	//highp vec3 eyeDir = uEyePosLocal - inVertexPosition.xyz;
+	//highp vec3 eyeDirection = normalize(eyeDir);
+	//highp vec3 halfAngle = normalize(lightDir + eyeDirection);
+		
+	//mediump float NdotH = dot(normalize(inVertexNormal.xyz), halfAngle);
+	//mediump float spec = pow(max(NdotH, 0.0), max(uMaterialShininess, 1.0));
+	//mediump vec4 specColor = uLightSpecular1 * spec * uMaterialSpecular;
+	//lightColor += specColor;
+	
+	
 	// calc light direction 2
 	// ---------------------------------
 	lightDir = -uLightDirection2.xyz;
@@ -66,6 +77,7 @@ void main(void)
 	NdotL = max(dot(normalize(inVertexNormal.xyz), lightDir), 0.0);
 	lightColor += NdotL * uLightDiffuse2 * uMaterialDiffuse;
 	
+	// calc specular light
 	
 	
 	// ---------------------------------

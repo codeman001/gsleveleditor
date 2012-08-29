@@ -74,4 +74,5 @@ LOCAL_SRC_FILES := ../../../src/core/Animators/CGameCameraFollowAnimator.cpp \
 ../../../src/swfUI/CMenuFx.cpp \
 ../../../src/swfUI/CMenuFxObj.cpp \
 ../../../src/IViewImp.cpp \
+../../../src/CApplication.cpp \
 ../../../src/stdafx.cpp \

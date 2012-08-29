@@ -312,6 +312,34 @@ void CGameAnimationTrack::update(float timeStep)
 	}	
 }
 
+// crossAnimation
+// switch to main animation
+void CGameAnimationTrack::crossAnimation()
+{
+	if ( m_isCrossAnim )
+	{
+		// cross anim
+		PositionKeys.clear();		
+		RotationKeys.clear();		
+		PositionKeys = CrossAnimPositionKeys;	
+		RotationKeys = CrossAnimRotationKeys;	
+		
+		// update cross animation info
+		m_isLoop = m_crossAnimationLoop;
+		m_currentFrame = 0;
+		
+		m_totalFrame  = 0;
+		if ( RotationKeys.size() > 0 )
+			m_totalFrame = RotationKeys.getLast().frame;
+		else if ( PositionKeys.size() > 0 )
+			m_totalFrame = PositionKeys.getLast().frame;
+
+		// reset value
+		m_isCrossAnim = false;
+		m_crossAnimationLoop = false;
+	}
+}
+
 #pragma endregion
 
 
@@ -498,9 +526,12 @@ void CGameAnimation::update(float timeStep)
 	{
 		for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 		{
-			if ( m_animTrack[i].isEnable() && m_animTrack[i].isLoop() )
+			if ( m_animTrack[i].isEnable() )
 			{
-				m_animTrack[i].setCurrentFrame( 0.0f );
+				if ( m_animTrack[i].isLoop() )
+					m_animTrack[i].setCurrentFrame( 0.0f );
+				else if ( m_animTrack[i].isCrossAnim() )
+					m_animTrack[i].crossAnimation();
 			}
 		}
 	}

@@ -334,7 +334,6 @@ void CPlayerComponent::updateStateTurn()
 		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str() );
 
 		m_animCurrentTime	= m_collada->getCurrentAnimTimeLength();
-		m_animCrossfadeTime = m_collada->getCurrentCrossfadeAnimTimeLength();				
 	}
 	else if ( m_subState == SubStateEnd )
 	{		
@@ -626,13 +625,9 @@ void CPlayerComponent::stepAnimationTime()
 {
 	float timeStep = getIView()->getTimeStep();
 	m_animCurrentTime = m_animCurrentTime - timeStep;
-	m_animCrossfadeTime = m_animCrossfadeTime - timeStep;
 	
 	if ( m_animCurrentTime < 0 )
 		m_animCurrentTime = 0;
-
-	if ( m_animCrossfadeTime < 0 )
-		m_animCrossfadeTime = 0;
 }
 
 // updateWeaponPosition

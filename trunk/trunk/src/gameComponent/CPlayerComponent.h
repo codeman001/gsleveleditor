@@ -68,7 +68,6 @@ protected:
 
 	float					m_animShotCurrentTime;
 	float					m_animCurrentTime;
-	float					m_animCrossfadeTime;
 
 	CColladaAnimation*		m_animationPackage;
 	CColladaMeshComponent*	m_collada;
@@ -80,7 +79,7 @@ protected:
 	CGameColladaSceneNode*			m_nodeNeck;
 
 	// begin anim name declare
-	std::vector<std::string>				m_animIdle;
+	std::vector<std::string>		m_animIdle;
 
 	std::string						m_animRun;
 	std::string						m_animRunForward;

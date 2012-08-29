@@ -229,12 +229,19 @@ protected:
 	bool		m_isLoop;
 	bool		m_endTrack;
 
-public:
+	bool					m_isCrossAnim;
+	bool					m_crossAnimationLoop;
 
+public:
 	core::array<CGameAnimationTrack::SPositionKey>	PositionKeys;
 	core::array<CGameAnimationTrack::SScaleKey>		ScaleKeys;
 	core::array<CGameAnimationTrack::SRotationKey>	RotationKeys;
 	core::array<CGameAnimationTrack::SEventKey>		EventKeys;
+
+	core::array<CGameAnimationTrack::SPositionKey>	CrossAnimPositionKeys;
+	core::array<CGameAnimationTrack::SScaleKey>		CrossAnimScaleKeys;
+	core::array<CGameAnimationTrack::SRotationKey>	CrossAnimRotationKeys;
+	core::array<CGameAnimationTrack::SEventKey>		CrossAnimEventKeys;
 
 public:
 	CGameAnimationTrack();
@@ -281,6 +288,10 @@ public:
 	// return true currentFrame == totalFrame
 	inline bool isEndTrack()				{ return m_endTrack; }
 
+	// isCrossAnim
+	// return true if is crossfade animation
+	inline bool isCrossAnim()				{ return m_isCrossAnim; }
+
 	// setSpeedRatio
 	// set speed ratio of track
 	inline void setSpeedRatio( float ratio ){ m_speedRatio = ratio; }
@@ -299,20 +310,32 @@ public:
 	void clearAllKeyFrame()
 	{
 		PositionKeys.clear();
-		ScaleKeys.clear();
-		if ( RotationKeys.size() > 0 )
-		{
-			int t = 0;
-			t++;
-		}
+		ScaleKeys.clear();		
 		RotationKeys.clear();
+
+		CrossAnimPositionKeys.clear();
+		CrossAnimScaleKeys.clear();
+		CrossAnimRotationKeys.clear();
 
 		m_posHint = 0;
 		m_scaleHint = 0;
 		m_rotHint = 0;
 		m_currentFrame = 0;
+
+		m_isCrossAnim = false;
 	}
 
+	// setCrossAnimation
+	// setCrossCallback
+	void enableCrossAnimation(bool loop)
+	{
+		m_isCrossAnim			= true;
+		m_crossAnimationLoop	= loop;
+	}
+
+	// crossAnimation
+	// switch to main animation
+	void crossAnimation();
 };
 
 // CGameAnimation

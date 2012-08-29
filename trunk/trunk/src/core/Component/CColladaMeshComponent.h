@@ -402,14 +402,6 @@ protected:
 	// current animation clip info
 	CColladaAnimation							*m_colladaAnimation;
 
-	// crossFadeAnimClip
-	SColladaAnimClip							m_crossFadeAnimClip;
-	float										m_crossFadeAnimTime;
-	std::string									m_crossFadeToAnim;
-	int											m_crossFadeAnimChannel;
-	bool										m_crossFadeToAnimLoop;
-	bool										m_isCrossFadeAnim;
-
 	std::map<std::string, CGameColladaSceneNode*>	m_mapNode;
 	std::map<std::string, CGameColladaSceneNode*>	m_sidNode;
 
@@ -585,6 +577,13 @@ public:
 		setCrossFadeAnimation( animName.c_str(), trackChannel, nFrames, loop );
 	}
 
+	void setCrossFadeAnimation(const char *lpAnimName, std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel = 0, float nFrames = 10.0f, bool loop = true);
+	void setCrossFadeAnimation(const std::string& animName, std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel = 0, float nFrames = 10.0f, bool loop = true)
+	{
+		setCrossFadeAnimation( animName.c_str(), listNodes, trackChannel, nFrames, loop );
+	}
+
+
 	// setAnimation
 	// apply Animation to skin joint
 	void setAnimation(const char *lpAnimName,		int track = 0, bool loop = true);
@@ -612,13 +611,6 @@ public:
 		return m_currentAnim;
 	}
 
-	// getCrossfadeAnim
-	// get current crossfade anim
-	inline SColladaAnimClip* getCrossfadeAnim()
-	{
-		return &m_crossFadeAnimClip;
-	}
-
 	// getCurrentAnimTimeLength
 	// get current anim length
 	float getCurrentAnimTimeLength()
@@ -626,19 +618,7 @@ public:
 		float time = 0;
 		if ( m_currentAnim )
 			time = time + m_currentAnim->getRealTimeLength();
-		if ( m_isCrossFadeAnim )
-			time = time + m_crossFadeAnimClip.getRealTimeLength();
 
-		return time;
-	}
-
-	// getCurrentCrossfadeAnimTimeLength
-	// get crossfade anim time
-	float getCurrentCrossfadeAnimTimeLength()
-	{
-		float time = 0;
-		if ( m_isCrossFadeAnim )
-			time = time + m_crossFadeAnimClip.getRealTimeLength();
 		return time;
 	}
 
@@ -734,11 +714,6 @@ public:
 	// updateLod
 	// update lod mesh
 	void updateLod();
-
-	// updateCrossFadeAnim
-	// blend 2 animation
-	void updateCrossFadeAnim();
-
 };
 
 class CColladaCache

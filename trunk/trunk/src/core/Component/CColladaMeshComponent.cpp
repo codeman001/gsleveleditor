@@ -1510,16 +1510,7 @@ CColladaMeshComponent::CColladaMeshComponent( CGameObject *pObj )
 	m_animeshFile = "";
 
 	m_currentAnim = NULL;
-	m_colladaAnimation = NULL;
-
-	m_crossFadeAnimTime = 0;
-	m_crossFadeAnimChannel = 0;
-	m_isCrossFadeAnim	= false;
-	
-	m_crossFadeAnimClip.animName	= "crossFadeAnim";
-	m_crossFadeAnimClip.time		= 0.0f;
-	m_crossFadeAnimClip.duration	= 0.0f;
-	m_crossFadeAnimClip.loop		= false;
+	m_colladaAnimation = NULL;	
 
 	m_isPauseAnim[0]	= false;
 	m_isPauseAnim[1]	= false;
@@ -1546,7 +1537,6 @@ void CColladaMeshComponent::updateComponent()
 {
 	// update gameplay lod geometry 
 	updateLod();
-	updateCrossFadeAnim();
 }
 
  
@@ -3676,42 +3666,50 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
 
 		if ( anim )
-		{
+		{			
 			int nRotKey = anim->RotationKeys.size();
 			if ( nRotKey > 0 )
 			{
+				// set current animation
 				track->RotationKeys.push_back( rot );
 
 				rot.frame		= nFrames;
 				rot.rotation	= anim->RotationKeys[0].rotation;
 				track->RotationKeys.push_back( rot );
+
+				// set cross animation
+				track->CrossAnimRotationKeys.set_used( nRotKey );
+				for ( int i = 0; i < nRotKey; i++ )
+				{
+					track->CrossAnimRotationKeys[i] = anim->RotationKeys[i];
+				}
 			}
 
 			int nPosKey = anim->PositionKeys.size();
 			if ( nPosKey > 0 )
 			{
+				// set current animation
 				track->PositionKeys.push_back( pos );
 
 				pos.frame		= nFrames;
 				pos.position	= anim->PositionKeys[0].position;
 				track->PositionKeys.push_back( pos );
+
+				// set cross animation
+				track->CrossAnimPositionKeys.set_used( nPosKey );
+				for ( int i = 0; i < nPosKey; i++ )
+				{
+					track->CrossAnimPositionKeys[i] = anim->PositionKeys[i];
+				}
 			}
+
+			// enable cross animation
+			track->enableCrossAnimation( loop );
 		}
 
 		i++;
 	}
-	
-	// create crossfade anim
-	m_crossFadeAnimClip.duration = nFrames;	
-	m_crossFadeAnimClip.loop = false;	
-	m_crossFadeAnimChannel = trackChannel;
-
-	// init variable
-	m_isCrossFadeAnim = true;
-	m_crossFadeAnimTime = getCurrentCrossfadeAnimTimeLength();
-	m_crossFadeToAnim = lpAnimName;
-	m_crossFadeToAnimLoop = loop;	
-
+			
 	// current anim crossfade clip
 	m_currentAnim = animClip;
 	m_currentAnim->loop = false;	// hardcode to turn of loop on current anim!
@@ -3719,6 +3717,12 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 	// set begin frame
 	setCurrentFrame(0);
 }
+
+
+void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, float nFrames, bool loop)
+{
+}
+
 
 // setAnimation
 // apply Animation to skin joint
@@ -4164,24 +4168,5 @@ void CColladaMeshComponent::updateLod()
 				node->setVisible( false );
 		}
 
-	}
-}
-
-// updateCrossFadeAnim
-// blend 2 animation
-void CColladaMeshComponent::updateCrossFadeAnim()
-{
-	if ( m_isCrossFadeAnim == false )
-		return;
-
-	float timeStep = getIView()->getTimeStep();
-	m_crossFadeAnimTime = m_crossFadeAnimTime - timeStep;
-	if ( m_crossFadeAnimTime < 0 )
-		m_crossFadeAnimTime = 0;
-
-	if ( m_crossFadeAnimTime <= 0 )
-	{
-		setAnimation(m_crossFadeToAnim, m_crossFadeAnimChannel, m_crossFadeToAnimLoop);
-		m_isCrossFadeAnim = false;
 	}
 }

@@ -100,7 +100,8 @@
 #if defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__) || defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #define _IRR_IPHONE_PLATFORM_
 #define _IRR_COMPILE_WITH_IPHONE_DEVICE_
-#define _IRR_COMPILE_WITH_OGLES2_ // necessary for IPhone for now
+//#define _IRR_COMPILE_WITH_OGLES2_ // necessary for IPhone for now
+#define _IRR_COMPILE_WITH_OGLES1_
 #else
 #define _IRR_COMPILE_WITH_OSX_DEVICE_
 #endif
@@ -185,7 +186,7 @@ You should only use this define if you really need the OpenGL-ES driver, and
 it should be usually the only HW accelerated one. OpenGL is currently disabled
 if using this driver, to avoid problems with the ogl-es emulators.
 */
-//#define _IRR_COMPILE_WITH_OGLES1_
+#define _IRR_COMPILE_WITH_OGLES1_
 #ifdef NO_IRR_COMPILE_WITH_OGLES1_
 #undef _IRR_COMPILE_WITH_OGLES1_
 #endif
@@ -198,7 +199,7 @@ it should be usually the only HW accelerated one. OpenGL is currently disabled
 if using this driver, to avoid problems with the ogl-es emulators.
 */
 
-#define _IRR_COMPILE_WITH_OGLES2_
+//#define _IRR_COMPILE_WITH_OGLES2_
 #ifdef NO_IRR_COMPILE_WITH_OGLES2_
 #undef _IRR_COMPILE_WITH_OGLES2_
 #endif
@@ -246,7 +247,7 @@ define out. */
 	The iPhone does not have extension pointers, so disable it there always.
 */
 #ifdef _IRR_COMPILE_WITH_OGLES1_
-#if !defined(_IRR_IPHONE_PLATFORM_)
+#if !defined(_IRR_IPHONE_PLATFORM_) && !defined(_IRR_ANDROID_PLATFROM_)
 #define _IRR_OGLES1_USE_EXTPOINTER_
 #endif
 #endif

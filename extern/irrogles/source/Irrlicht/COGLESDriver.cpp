@@ -206,7 +206,7 @@ COGLES1Driver::COGLES1Driver(const SIrrlichtCreationParameters& params,
 	// set vsync
 	if (params.Vsync)
 		eglSwapInterval(EglDisplay, 1);
-#elif defined(GL_VERSION_ES_CM_1_0)
+#elif defined(GL_VERSION_ES_CM_1_0) && !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 	glGenFramebuffersOES(1, &ViewFramebuffer);
 	glGenRenderbuffersOES(1, &ViewRenderbuffer);
 	glBindRenderbufferOES(GL_RENDERBUFFER_OES, ViewRenderbuffer);
@@ -255,7 +255,7 @@ COGLES1Driver::~COGLES1Driver()
 	if (HDc)
 		ReleaseDC((HWND)EglWindow, HDc);
 #endif
-#elif defined(GL_VERSION_ES_CM_1_0)
+#elif defined(GL_VERSION_ES_CM_1_0) && !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 	if (0 != ViewFramebuffer)
 	{
 		extGlDeleteFramebuffers(1,&ViewFramebuffer);
@@ -443,10 +443,14 @@ bool COGLES1Driver::endScene()
 		return false;
 	}
 #elif defined(GL_VERSION_ES_CM_1_0)
-	glFlush();
-	glBindRenderbufferOES(GL_RENDERBUFFER_OES, ViewRenderbuffer);
-	#if defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
-	(*Device.displayEnd)(&Device);
+	#if defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+		glFlush();
+	#else
+		glFlush();
+		glBindRenderbufferOES(GL_RENDERBUFFER_OES, ViewRenderbuffer);
+		#if defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
+		(*Device.displayEnd)(&Device);
+		#endif
 	#endif
 #endif
 

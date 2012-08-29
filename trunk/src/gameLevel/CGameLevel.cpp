@@ -54,7 +54,7 @@ CGameObject* CGameLevel::createZone()
 		
 	// set up name
 	wchar_t name[512];
-	swprintf(name, L"zone%d", (int)CGameObject::s_objectID );
+	swprintf(name, 512, L"zone%d", (int)CGameObject::s_objectID );
 
 	// create name + id
 	pZone->setName( name );

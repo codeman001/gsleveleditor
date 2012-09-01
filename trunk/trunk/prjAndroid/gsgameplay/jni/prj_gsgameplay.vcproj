@@ -176,11 +176,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\native\AppInterface.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\src\CApplication.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\..\src\CApplication.h"
+				>
+			</File>
+			<File
+				RelativePath="..\native\NativeInterface.c"
 				>
 			</File>
 			<File

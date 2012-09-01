@@ -76,5 +76,8 @@ LOCAL_SRC_FILES := ../../../src/core/Animators/CGameCameraFollowAnimator.cpp \
 ../../../src/IViewImp.cpp \
 ../../../src/gameLevel/CGameLevel.cpp \
 ../../../src/gameLevel/LevelScript.cpp \
+../native/AppInterface.cpp \
 ../../../src/CApplication.cpp \
 ../../../src/stdafx.cpp \
+../native/NativeInterface.c 
+

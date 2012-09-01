@@ -20,17 +20,21 @@ public class MainActivity extends Activity {
     
     @Override
     protected void onPause() {
-        super.onPause();        
+        super.onPause();
+        NativeInterface.getInstance().mainPauseApp();
     }
 
     @Override
     protected void onResume() {
-        super.onResume();        
+        super.onResume();
+        NativeInterface.getInstance().mainResumeApp();
     }
 
-    private OpenGLES1View mGameES1View;
-
-    static {
-        System.loadLibrary("gsgameplay");
+    @Override 
+    protected void onDestroy(){
+    	NativeInterface.getInstance().mainExitApp();
+    	super.onDestroy();    	
     }
+    
+    private OpenGLES1View mGameES1View;    
 }

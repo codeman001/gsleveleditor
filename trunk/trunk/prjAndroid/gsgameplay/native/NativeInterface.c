@@ -16,9 +16,9 @@ void appicationTouchUp(int touchID, int x, int y);
 static JNIEnv* g_jniEnv = NULL;
 static jclass mClassNativeInterface;
 
-// class com.gseditor.NativeInterface
+// class com.gseditor.gsgameplay.NativeInterface
 // native member function mainInitApp
-JNIEXPORT void JNICALL Java_com_gseditor_NativeInterface_mainInitApp( JNIEnv* env, jobject thiz )
+JNIEXPORT void JNICALL Java_com_gseditor_gsgameplay_NativeInterface_mainInitApp( JNIEnv* env, jobject thiz )
 {
     // todo nothing
 	__android_log_print(ANDROID_LOG_INFO, "libgsgameplay.so" ,"Native Application Init");
@@ -27,7 +27,7 @@ JNIEXPORT void JNICALL Java_com_gseditor_NativeInterface_mainInitApp( JNIEnv* en
 
 	// init jni call from c to java
 	__android_log_print(ANDROID_LOG_INFO, "libgsgameplay.so" ,"Init jni java implement");
-	mClassNativeInterface = (*g_jniEnv)->FindClass(g_jniEnv,"com/gseditor/NativeInterface");
+	mClassNativeInterface = (*g_jniEnv)->FindClass(g_jniEnv,"com/gseditor/gsgameplay/NativeInterface");
 	if ( mClassNativeInterface != 0 )
 	{
 		// todo get java function
@@ -39,64 +39,64 @@ JNIEXPORT void JNICALL Java_com_gseditor_NativeInterface_mainInitApp( JNIEnv* en
 	appicationInitApp();
 }
 
-// class com.gseditor.NativeInterface
+// class com.gseditor.gsgameplay.NativeInterface
 // native member function mainLoop
-JNIEXPORT void JNICALL Java_com_gseditor_NativeInterface_mainLoop( JNIEnv* env, jobject thiz )
+JNIEXPORT void JNICALL Java_com_gseditor_gsgameplay_NativeInterface_mainLoop( JNIEnv* env, jobject thiz )
 {
 	appicationLoop();
 }
 
-// class com.gseditor.NativeInterface
+// class com.gseditor.gsgameplay.NativeInterface
 // native member function mainExitApp
-JNIEXPORT void JNICALL Java_com_gseditor_NativeInterface_mainExitApp( JNIEnv* env, jobject thiz )
+JNIEXPORT void JNICALL Java_com_gseditor_gsgameplay_NativeInterface_mainExitApp( JNIEnv* env, jobject thiz )
 {
 	__android_log_print(ANDROID_LOG_INFO, "libgsgameplay.so", "Native Application Exit");
 	appicationExitApp();
 }
 
-// class com.gseditor.NativeInterface
+// class com.gseditor.gsgameplay.NativeInterface
 // native member function mainPauseApp
-JNIEXPORT void JNICALL Java_com_gseditor_NativeInterface_mainPauseApp( JNIEnv* env, jobject thiz )
+JNIEXPORT void JNICALL Java_com_gseditor_gsgameplay_NativeInterface_mainPauseApp( JNIEnv* env, jobject thiz )
 {
 	__android_log_print(ANDROID_LOG_INFO, "libgsgameplay.so", "Native Application Pause");
 	appicationPauseApp();
 }
 
-// class com.gseditor.NativeInterface
+// class com.gseditor.gsgameplay.NativeInterface
 // native member function mainResumeApp
-JNIEXPORT void JNICALL Java_com_gseditor_NativeInterface_mainResumeApp( JNIEnv* env, jobject thiz )
+JNIEXPORT void JNICALL Java_com_gseditor_gsgameplay_NativeInterface_mainResumeApp( JNIEnv* env, jobject thiz )
 {
 	__android_log_print(ANDROID_LOG_INFO, "libgsgameplay.so", "Native Application Resume");
 	appicationResumeApp();
 }
 
-// class com.gseditor.NativeInterface
+// class com.gseditor.gsgameplay.NativeInterface
 // native member function mainResizeWindow
-JNIEXPORT void JNICALL Java_com_gseditor_NativeInterface_mainResizeWindow( JNIEnv* env, jobject thiz, int w, int h )
+JNIEXPORT void JNICALL Java_com_gseditor_gsgameplay_NativeInterface_mainResizeWindow( JNIEnv* env, jobject thiz, int w, int h )
 {
 	__android_log_print(ANDROID_LOG_INFO, "libgsgameplay.so", "Native Application resize: %d %d", w, h);
 	appicationResizeWindow(w,h);
 }
 
-// class com.gseditor.NativeInterface
+// class com.gseditor.gsgameplay.NativeInterface
 // native member function mainTouchDown
-JNIEXPORT void JNICALL Java_com_gseditor_NativeInterface_mainTouchDown( JNIEnv* env, jobject thiz, int touchID, int x, int y )
+JNIEXPORT void JNICALL Java_com_gseditor_gsgameplay_NativeInterface_mainTouchDown( JNIEnv* env, jobject thiz, int touchID, int x, int y )
 {
-	__android_log_print(ANDROID_LOG_INFO, "libgsgameplay.so", "Native Application Touchdown: %d %d %d", touchID, x,y );
+	//__android_log_print(ANDROID_LOG_INFO, "libgsgameplay.so", "Native Application Touchdown: %d %d %d", touchID, x,y );
 	appicationTouchDown(touchID, x,y);
 }
 
-// class com.gseditor.NativeInterface
+// class com.gseditor.gsgameplay.NativeInterface
 // native member function mainTouchMove
-JNIEXPORT void JNICALL Java_com_gseditor_NativeInterface_mainTouchMove( JNIEnv* env, jobject thiz, int touchID, int x, int y )
+JNIEXPORT void JNICALL Java_com_gseditor_gsgameplay_NativeInterface_mainTouchMove( JNIEnv* env, jobject thiz, int touchID, int x, int y )
 {	
 	appicationTouchMove(touchID, x,y);
 }
 
-// class com.gseditor.NativeInterface
+// class com.gseditor.gsgameplay.NativeInterface
 // native member function mainTouchUp
-JNIEXPORT void JNICALL Java_com_gseditor_NativeInterface_mainTouchUp( JNIEnv* env, jobject thiz, int touchID, int x, int y)
+JNIEXPORT void JNICALL Java_com_gseditor_gsgameplay_NativeInterface_mainTouchUp( JNIEnv* env, jobject thiz, int touchID, int x, int y)
 {
-	__android_log_print(ANDROID_LOG_INFO, "libgsgameplay.so", "Native Application Touchup: %d %d %d", touchID, x,y );
+	//__android_log_print(ANDROID_LOG_INFO, "libgsgameplay.so", "Native Application Touchup: %d %d %d", touchID, x,y );
 	appicationTouchUp(touchID, x,y);
 }

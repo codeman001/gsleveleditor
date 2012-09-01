@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "CApplication.h"
 
+#ifdef ANDROID
+	#include <android/log.h>
+#endif
+
 //#define LIMIT_FPS	30.0f
 
 IView* g_view = NULL;
@@ -30,7 +34,11 @@ bool CApplication::OnEvent(const SEvent& event)
 
 	if ( event.EventType == EET_LOG_TEXT_EVENT )
 	{
+#ifdef ANDROID
+		__android_log_print(ANDROID_LOG_INFO, "libgsgameplay.so" , event.LogEvent.Text );
+#else
 		printf("%s\n", event.LogEvent.Text);
+#endif
 	}
 
 	return true;

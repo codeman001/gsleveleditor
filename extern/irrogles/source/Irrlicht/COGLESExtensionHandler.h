@@ -9,22 +9,25 @@
 #include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_OGLES1_
+
 #if defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
-#include <OpenGLES/ES1/gl.h>
-#include <OpenGLES/ES1/glext.h>
+	#include <OpenGLES/ES1/gl.h>
+	#include <OpenGLES/ES1/glext.h>
 #elif defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
-#include <GLES/gl.h>
-#define GL_GLEXT_PROTOTYPES 
-#include <GLES/glext.h>
+	#include <GLES/gl.h>
+	#define GL_GLEXT_PROTOTYPES 
+	#include <GLES/glext.h>
 #else
-#include <GLES/egl.h>
-#include <GLES/gl.h>
-// seems to be missing...
-typedef char GLchar;
-#if defined(_IRR_OGLES1_USE_EXTPOINTER_)
-#include "gles-ext.h"
+	#include <GLES/egl.h>
+	#include <GLES/gl.h>
+	// seems to be missing...
+	typedef char GLchar;
+
+	#if defined(_IRR_OGLES1_USE_EXTPOINTER_)
+	#include "gles-ext.h"
+	#endif
 #endif
-#endif
+
 #include "os.h"
 #include "EDriverFeatures.h"
 

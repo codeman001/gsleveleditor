@@ -412,6 +412,7 @@ namespace video
 
 #if defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 		// todo swapbuffer
+		glFlush();
 #else
 		eglSwapBuffers(EglDisplay, EglSurface);
 		EGLint g = eglGetError();

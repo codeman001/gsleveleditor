@@ -37,7 +37,9 @@ using namespace std;
 #endif
 
 #ifdef GSGAMEPLAY
-#define USE_ZIPPACKAGE
+	#if defined(ANDROID)
+		#define USE_ZIPPACKAGE
+	#endif
 #endif
 
 #ifdef GSEDITOR

@@ -3,13 +3,84 @@
 #include "CMenuFx.h"
 #include "IView.h"
 
+
+////////////////////////////////////////////
+// GameSWF file open override static func implement
+////////////////////////////////////////////
+
+int irrReadFunc( void *dst, int bytes, void *appdata )
+{
+	io::IReadFile *file = (io::IReadFile*)appdata;
+	return file->read( dst, bytes );	
+}
+
+int irrWriteFunc( const void *src, int bytes, void *appdata )
+{
+	io::IReadFile *file = (io::IReadFile*)appdata;
+	return 0;
+}
+
+int irrSeekFunc( int pos, void *appdata )
+{
+	io::IReadFile *file = (io::IReadFile*)appdata;
+	return file->seek( pos, false );
+}
+
+int irrSeekToEndFunc( void *appdata )
+{
+	io::IReadFile *file = (io::IReadFile*)appdata;
+	file->seek( file->getSize(), false );
+	return 1;
+}
+
+int irrTellFunc( const void *appdata )
+{
+	io::IReadFile *file = (io::IReadFile*)appdata;
+	return file->getPos();
+}
+
+bool irrEOFFunc( void *appdata )
+{
+	io::IReadFile *file = (io::IReadFile*)appdata;
+	return file->getPos() == file->getSize();
+}
+
+int irrCloseFunc( void *appdata )
+{
+	io::IReadFile *file = (io::IReadFile*)appdata;
+	file->drop();
+	return 1;
+}
+
 ////////////////////////////////////////////
 // CGameUI static func implement
 ////////////////////////////////////////////
 
 tu_file* CGameUI::_fileOpen( const char *lpPath )
 {
-	return new tu_file(lpPath, "rb");
+
+#ifdef USE_ZIPPACKAGE
+	io::IReadFile *file = getIView()->getFileSystem()->createAndOpenFile( lpPath );
+	if ( file == NULL )
+	{
+		file = getIView()->getFileSystem()->createAndOpenFile( getIView()->getPath(lpPath) );
+
+		if ( file == NULL )
+			NULL;
+	}
+
+	return new tu_file(
+		file,
+		irrReadFunc,
+		irrWriteFunc,
+		irrSeekFunc,
+		irrSeekToEndFunc,
+		irrTellFunc,
+		irrEOFFunc,
+		irrCloseFunc);
+#else
+	return new tu_file( getIView()->getPath(*lpPath) );
+#endif
 }
 
 void CGameUI::_fsCallback( gameswf::character *movie, const char *lpCommand, const char *lpParams )
@@ -26,12 +97,21 @@ void CGameUI::_fsCallback( gameswf::character *movie, const char *lpCommand, con
 
 bool CGameUI::_getFont( const char *font_name, tu_string &file_name, bool is_bold, bool is_italic )
 {	
+#ifdef USE_ZIPPACKAGE
+	if ( strcmp("Arial Black",font_name) == 0 )
+		file_name = getIView()->getPath("killerants.ttf");
+	else if ( strcmp("Verdana",font_name) == 0 )
+		file_name = getIView()->getPath("zrnic.ttf");
+	else
+		file_name = getIView()->getPath("arial.ttf");
+#else
 	if ( strcmp("Arial Black",font_name) == 0 )
 		file_name = getIView()->getPath("data/font/killerants.ttf");
 	else if ( strcmp("Verdana",font_name) == 0 )
 		file_name = getIView()->getPath("data/font/zrnic.ttf");
 	else
-		file_name = getIView()->getPath("data/font/arial.ttf");		
+		file_name = getIView()->getPath("data/font/arial.ttf");
+#endif
 	return true;
 }
 

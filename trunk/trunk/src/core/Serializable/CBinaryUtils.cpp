@@ -1080,9 +1080,13 @@ void CBinaryUtils::readMaterial( unsigned char *data, unsigned long size, std::s
 		{
 			// load texture here
 			char fullPath[512];
-			uiString::getFolderPath( currentPath.c_str(), fullPath );
-			uiString::cat( fullPath , "/" );
-			uiString::cat( fullPath , stringc );
+#ifdef USE_ZIPPACKAGE
+			uiString::copy<char, char>( fullPath, stringc );
+#else
+			uiString::getFolderPath<const char,char>( currentPath.c_str(), fullPath );
+			uiString::cat<char,char>( fullPath , "/" );
+			uiString::cat<char,char>( fullPath , stringc );
+#endif
 			mat->setTexture(i, getIView()->getDriver()->getTexture( fullPath ) );
 		}
 	}

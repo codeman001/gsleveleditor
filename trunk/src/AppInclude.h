@@ -36,6 +36,10 @@ using namespace SPK::IRR;
 using namespace std;
 #endif
 
+#ifdef GSGAMEPLAY
+#define USE_ZIPPACKAGE
+#endif
+
 #ifdef GSEDITOR
 	#define STR_APP_TITLE "gseditor"
 #else

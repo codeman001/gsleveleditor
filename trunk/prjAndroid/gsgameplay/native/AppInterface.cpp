@@ -14,11 +14,18 @@ extern "C" {
 	{
 		if ( g_appInit )
 		{	
+
+			// add zip data
+			const char *dataPak = NULL;
+			#ifdef USE_ZIPPACKAGE
+			dataPak = "/mnt/sdcard/data.zip";
+			#endif
+		
 			// create irrlicht device
 			#if defined(_IRR_COMPILE_WITH_OGLES1_)
-			g_irrDevice = createDevice( irr::video::EDT_OGLES1, core::dimension2d<u32>(480, 800), 16, false, false, false, &g_myApp );
+			g_irrDevice = createDevice( irr::video::EDT_OGLES1, core::dimension2d<u32>(480, 800), 16, false, false, false, dataPak, &g_myApp );
 			#else
-			g_irrDevice = createDevice( irr::video::EDT_OGLES2, core::dimension2d<u32>(480, 800), 16, false, false, false, &g_myApp );	
+			g_irrDevice = createDevice( irr::video::EDT_OGLES2, core::dimension2d<u32>(480, 800), 16, false, false, false, dataPak, &g_myApp );
 			#endif
 			
 			// init application

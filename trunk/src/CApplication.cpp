@@ -58,15 +58,6 @@ void CApplication::initApplication( IrrlichtDevice* device )
 
 	m_device->setWindowCaption( STR_APP_TITLE );
 	
-	// add zip data
-#ifdef USE_ZIPPACKAGE
-	#ifdef ANDROID	
-		m_device->getFileSystem()->addZipFileArchive("/mnt/sdcard/data.zip");
-	#else
-		m_device->getFileSystem()->addZipFileArchive("data.zip");
-	#endif
-#endif
-
 	core::recti viewport = m_driver->getViewPort();
 	setCameraAspectRatio( viewport.getWidth()/(float)viewport.getHeight() );
 

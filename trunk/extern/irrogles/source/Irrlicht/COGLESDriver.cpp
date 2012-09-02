@@ -41,10 +41,12 @@ COGLES1Driver::COGLES1Driver(const SIrrlichtCreationParameters& params,
 	,ViewDepthRenderbuffer(0)
 #endif
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("COGLESDriver");
-	#endif
+#endif
+
 	ExposedData=data;
+
 #if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 	EglWindow = (NativeWindowType)data.OpenGLWin32.HWnd;
 	HDc = GetDC((HWND)EglWindow);
@@ -55,6 +57,7 @@ COGLES1Driver::COGLES1Driver(const SIrrlichtCreationParameters& params,
 #elif defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
 	Device = device;
 #endif
+
 #ifdef EGL_VERSION_1_0
 	if(EglDisplay == EGL_NO_DISPLAY)
 		EglDisplay = eglGetDisplay((NativeDisplayType) EGL_DEFAULT_DISPLAY);
@@ -3286,7 +3289,7 @@ namespace video
 // -----------------------------------
 // WINDOWS VERSION
 // -----------------------------------
-#if defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined(_IRR_COMPILE_WITH_SDL_DEVICE_) || defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined(_IRR_COMPILE_WITH_SDL_DEVICE_) || defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) || defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 IVideoDriver* createOGLES1Driver(const SIrrlichtCreationParameters& params,
 		video::SExposedVideoData& data, io::IFileSystem* io)
 {

@@ -3332,6 +3332,14 @@
 					Name="device"
 					>
 					<File
+						RelativePath=".\CIrrDeviceAndroid.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\CIrrDeviceAndroid.h"
+						>
+					</File>
+					<File
 						RelativePath=".\CIrrDeviceConsole.cpp"
 						>
 					</File>

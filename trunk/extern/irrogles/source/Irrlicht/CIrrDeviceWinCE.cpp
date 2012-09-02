@@ -335,8 +335,8 @@ namespace irr
 {
 
 //! constructor
-CIrrDeviceWinCE::CIrrDeviceWinCE(const SIrrlichtCreationParameters& params)
-: CIrrDeviceStub(params), HWnd(0),
+CIrrDeviceWinCE::CIrrDeviceWinCE(const SIrrlichtCreationParameters& params, const char* dataPak)
+: CIrrDeviceStub(params, dataPak), HWnd(0),
 	Win32CursorControl(0), ChangedToFullScreen(false), Resized(false),
 	ExternalWindow(false)
 {

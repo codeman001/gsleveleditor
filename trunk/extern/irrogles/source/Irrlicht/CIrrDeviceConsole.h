@@ -41,7 +41,7 @@ namespace irr
 	public:
 
 		//! constructor
-		CIrrDeviceConsole(const SIrrlichtCreationParameters& params);
+		CIrrDeviceConsole(const SIrrlichtCreationParameters& params, const char* dataPak);
 
 		//! destructor
 		virtual ~CIrrDeviceConsole();

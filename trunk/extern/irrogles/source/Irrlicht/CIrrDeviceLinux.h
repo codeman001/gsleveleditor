@@ -48,7 +48,7 @@ namespace irr
 	public:
 
 		//! constructor
-		CIrrDeviceLinux(const SIrrlichtCreationParameters& param);
+		CIrrDeviceLinux(const SIrrlichtCreationParameters& param, const char* dataPak);
 
 		//! destructor
 		virtual ~CIrrDeviceLinux();

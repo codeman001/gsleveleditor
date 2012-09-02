@@ -17,7 +17,7 @@
 namespace irr
 {
 //! constructor
-CIrrDeviceStub::CIrrDeviceStub(const SIrrlichtCreationParameters& params)
+CIrrDeviceStub::CIrrDeviceStub(const SIrrlichtCreationParameters& params, const char* dataPackage)
 : IrrlichtDevice(), VideoDriver(0), GUIEnvironment(0), SceneManager(0),
 	Timer(0), CursorControl(0), UserReceiver(params.EventReceiver), Logger(0), Operator(0),
 	Randomizer(0), FileSystem(0), InputReceivingSceneManager(0), CreationParams(params),
@@ -41,6 +41,10 @@ CIrrDeviceStub::CIrrDeviceStub(const SIrrlichtCreationParameters& params)
 	Randomizer = createDefaultRandomizer();
 
 	FileSystem = io::createFileSystem();
+
+	if ( dataPackage != NULL )
+		FileSystem->addZipFileArchive(dataPackage);
+
 	core::stringc s = "Irrlicht Engine version ";
 	s.append(getVersion());
 	os::Printer::log(s.c_str(), ELL_INFORMATION);

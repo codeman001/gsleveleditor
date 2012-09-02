@@ -33,7 +33,7 @@ namespace irr
 	public:
 
 		//! constructor
-		CIrrDeviceWin32(const SIrrlichtCreationParameters& params);
+		CIrrDeviceWin32(const SIrrlichtCreationParameters& params, const char* dataPak);
 
 		//! destructor
 		virtual ~CIrrDeviceWin32();

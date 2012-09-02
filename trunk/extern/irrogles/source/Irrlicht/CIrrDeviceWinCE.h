@@ -26,7 +26,7 @@ namespace irr
 	public:
 
 		//! constructor
-		CIrrDeviceWinCE( const SIrrlichtCreationParameters& params);
+		CIrrDeviceWinCE( const SIrrlichtCreationParameters& params, const char* dataPak);
 
 		//! destructor
 		virtual ~CIrrDeviceWinCE();

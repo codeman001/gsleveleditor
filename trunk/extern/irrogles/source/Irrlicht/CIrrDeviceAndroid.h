@@ -16,7 +16,7 @@ namespace irr
 	{
 	public:
 			//! constructor
-			CIrrDeviceAndroid(const SIrrlichtCreationParameters& params);
+			CIrrDeviceAndroid(const SIrrlichtCreationParameters& params, const char* dataPak);
 
 			//! destructor
 			virtual ~CIrrDeviceAndroid();

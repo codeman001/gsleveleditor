@@ -32,8 +32,8 @@ namespace irr
 {
 
 	//! constructor
-	CIrrDeviceAndroid::CIrrDeviceAndroid(const SIrrlichtCreationParameters& params)
-		: CIrrDeviceStub(params)
+	CIrrDeviceAndroid::CIrrDeviceAndroid(const SIrrlichtCreationParameters& params, const char* dataPak)
+		: CIrrDeviceStub(params, dataPak)
 	{
 		// create driver
 		createDriver();

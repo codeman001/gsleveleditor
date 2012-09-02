@@ -52,8 +52,8 @@ namespace irr
 {
 
 //! constructor
-CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
-	: CIrrDeviceStub(param),
+CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param, const char* dataPak)
+	: CIrrDeviceStub(param, dataPak),
 	Screen((SDL_Surface*)param.WindowId), SDL_Flags(SDL_ANYFORMAT),
 	MouseX(0), MouseY(0), MouseButtonStates(0),
 	Width(param.WindowSize.Width), Height(param.WindowSize.Height),

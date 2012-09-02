@@ -328,6 +328,7 @@ namespace irr
 		bool fullscreen = false,
 		bool stencilbuffer = false,
 		bool vsync = false,
+		const char* dataPak = NULL,
 		IEventReceiver* receiver = 0);
 
 	//! typedef for Function Pointer
@@ -338,6 +339,7 @@ namespace irr
 			bool fullscreen,
 			bool stencilbuffer,
 			bool vsync,
+			const char* dataPak,
 			IEventReceiver* receiver);
 
 
@@ -350,10 +352,12 @@ namespace irr
 	\return Returns pointer to the created IrrlichtDevice or null if the
 	device could not be created. */
 	extern "C" IRRLICHT_API IrrlichtDevice* IRRCALLCONV createDeviceEx(
-		const SIrrlichtCreationParameters& parameters);
+		const SIrrlichtCreationParameters& parameters,
+		const char* dataPak
+		);
 
 	//! typedef for Function Pointer
-	typedef IrrlichtDevice* (IRRCALLCONV *funcptr_createDeviceEx )( const SIrrlichtCreationParameters& parameters );
+	typedef IrrlichtDevice* (IRRCALLCONV *funcptr_createDeviceEx )( const SIrrlichtCreationParameters& parameters, const char* dataPak );
 
 
 	// THE FOLLOWING IS AN EMPTY LIST OF ALL SUB NAMESPACES

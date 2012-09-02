@@ -7,6 +7,7 @@
 ////////////////////////////////////////////
 // GameSWF file open override static func implement
 ////////////////////////////////////////////
+#ifdef USE_ZIPPACKAGE
 
 int irrReadFunc( void *dst, int bytes, void *appdata )
 {
@@ -52,6 +53,7 @@ int irrCloseFunc( void *appdata )
 	return 1;
 }
 
+#endif
 ////////////////////////////////////////////
 // CGameUI static func implement
 ////////////////////////////////////////////
@@ -79,7 +81,7 @@ tu_file* CGameUI::_fileOpen( const char *lpPath )
 		irrEOFFunc,
 		irrCloseFunc);
 #else
-	return new tu_file( getIView()->getPath(*lpPath) );
+	return new tu_file( getIView()->getPath(lpPath), "rb" );
 #endif
 }
 

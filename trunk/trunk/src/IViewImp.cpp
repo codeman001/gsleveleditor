@@ -203,8 +203,8 @@ char	g_tempPathA[1024];
 
 char* IView::getPath( const std::string& path )
 {
-#ifdef GSGAMEPLAY
-	uiString::copy<char,const char>( g_tempPathA, path.c_str() );
+#ifdef GSGAMEPLAY		
+	uiString::copy<char,const char>( g_tempPathA, path.c_str() );	
 #else	
 	uiApplication::getAppPath( (LPWSTR)g_tempPathW, MAX_PATH );
 	uiString::copy<char, wchar_t>( g_tempPathA, g_tempPathW  );

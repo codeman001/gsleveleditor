@@ -177,6 +177,7 @@ LOCAL_SRC_FILES := ../../../../extern/irrogles/source/Irrlicht/C3DSMeshFileLoade
 ../../../../extern/irrogles/source/Irrlicht/COGLES2SLMaterialRenderer.cpp \
 ../../../../extern/irrogles/source/Irrlicht/COGLES2Texture.cpp \
 ../../../../extern/irrogles/source/Irrlicht/CVideoModeList.cpp \
+../../../../extern/irrogles/source/Irrlicht/CIrrDeviceAndroid.cpp \
 ../../../../extern/irrogles/source/Irrlicht/CIrrDeviceConsole.cpp \
 ../../../../extern/irrogles/source/Irrlicht/CIrrDeviceFB.cpp \
 ../../../../extern/irrogles/source/Irrlicht/CIrrDeviceLinux.cpp \

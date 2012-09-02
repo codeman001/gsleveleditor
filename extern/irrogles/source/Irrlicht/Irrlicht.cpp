@@ -57,7 +57,7 @@ namespace irr
 	IRRLICHT_API IrrlichtDevice* IRRCALLCONV createDevice(video::E_DRIVER_TYPE driverType,
 			const core::dimension2d<u32>& windowSize,
 			u32 bits, bool fullscreen,
-			bool stencilbuffer, bool vsync, IEventReceiver* res)
+			bool stencilbuffer, bool vsync, const char* dataPak, IEventReceiver* res)
 	{
 		SIrrlichtCreationParameters p;
 		p.DriverType = driverType;
@@ -68,57 +68,57 @@ namespace irr
 		p.Vsync = vsync;
 		p.EventReceiver = res;
 
-		return createDeviceEx(p);
+		return createDeviceEx(p, dataPak);
 	}
 
-	extern "C" IRRLICHT_API IrrlichtDevice* IRRCALLCONV createDeviceEx(const SIrrlichtCreationParameters& params)
+	extern "C" IRRLICHT_API IrrlichtDevice* IRRCALLCONV createDeviceEx(const SIrrlichtCreationParameters& params, const char* dataPak)
 	{
 
 		IrrlichtDevice* dev = 0;
 
 #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
 		if (params.DeviceType == EIDT_WIN32 || (!dev && params.DeviceType == EIDT_BEST))
-			dev = new CIrrDeviceWin32(params);
+			dev = new CIrrDeviceWin32(params, dataPak);
 #endif
 
 #ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
 		if (params.DeviceType == EIDT_OSX || (!dev && params.DeviceType == EIDT_BEST))
-			dev = new CIrrDeviceMacOSX(params);
+			dev = new CIrrDeviceMacOSX(params, dataPak);
 #endif
 
 #ifdef _IRR_COMPILE_WITH_IPHONE_DEVICE_
 		if (params.DeviceType == EIDT_IPHONE || (!dev && params.DeviceType == EIDT_BEST))
-			dev = new CIrrDeviceIPhone(params);
+			dev = new CIrrDeviceIPhone(params, dataPak);
 #endif
 
 #ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
 	if (params.DeviceType == EIDT_ANDROID || (!dev && params.DeviceType == EIDT_BEST))
-			dev = new CIrrDeviceAndroid(params);
+			dev = new CIrrDeviceAndroid(params, dataPak);
 #endif
 
 #ifdef _IRR_COMPILE_WITH_WINDOWS_CE_DEVICE_
 		if (params.DeviceType == EIDT_WINCE || (!dev && params.DeviceType == EIDT_BEST))
-			dev = new CIrrDeviceWinCE(params);
+			dev = new CIrrDeviceWinCE(params, dataPak);
 #endif
 
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 		if (params.DeviceType == EIDT_X11 || (!dev && params.DeviceType == EIDT_BEST))
-			dev = new CIrrDeviceLinux(params);
+			dev = new CIrrDeviceLinux(params, dataPak);
 #endif
 
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
 		if (params.DeviceType == EIDT_SDL || (!dev && params.DeviceType == EIDT_BEST))
-		dev = new CIrrDeviceSDL(params);
+		dev = new CIrrDeviceSDL(params, dataPak);
 #endif
 
 #ifdef _IRR_COMPILE_WITH_FB_DEVICE_
 		if (params.DeviceType == EIDT_FRAMEBUFFER || (!dev && params.DeviceType == EIDT_BEST))
-		dev = new CIrrDeviceFB(params);
+		dev = new CIrrDeviceFB(params, dataPak);
 #endif
 
 #ifdef _IRR_COMPILE_WITH_CONSOLE_DEVICE_
 		if (params.DeviceType == EIDT_CONSOLE || (!dev && params.DeviceType == EIDT_BEST))
-		dev = new CIrrDeviceConsole(params);
+		dev = new CIrrDeviceConsole(params, dataPak);
 #endif
 
 		if (dev && !dev->getVideoDriver() && params.DriverType != video::EDT_NULL)

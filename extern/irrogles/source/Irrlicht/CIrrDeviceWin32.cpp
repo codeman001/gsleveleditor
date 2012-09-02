@@ -907,8 +907,8 @@ namespace irr
 {
 
 //! constructor
-CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
-: CIrrDeviceStub(params), HWnd(0), ChangedToFullScreen(false),
+CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params, const char* dataPak)
+: CIrrDeviceStub(params, dataPak), HWnd(0), ChangedToFullScreen(false),
 	IsNonNTWindows(false), Resized(false),
 	ExternalWindow(false), Win32CursorControl(0), JoyControl(0)
 {
@@ -1021,7 +1021,6 @@ CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters& params)
 	MouseMultiClicks.DoubleClickTime = GetDoubleClickTime();
 
 	// create driver
-
 	createDriver();
 
 	if (VideoDriver)

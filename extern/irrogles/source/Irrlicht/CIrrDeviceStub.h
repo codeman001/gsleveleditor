@@ -53,7 +53,7 @@ namespace irr
 	public:
 
 		//! constructor
-		CIrrDeviceStub(const SIrrlichtCreationParameters& param);
+		CIrrDeviceStub(const SIrrlichtCreationParameters& param, const char* dataPackage);
 
 		//! destructor
 		virtual ~CIrrDeviceStub();

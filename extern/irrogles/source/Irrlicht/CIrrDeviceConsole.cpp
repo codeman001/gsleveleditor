@@ -63,8 +63,8 @@ const u16 ASCIIArtCharsCount = 32;
 //const u16 ASCIIArtCharsCount = 5;
 
 //! constructor
-CIrrDeviceConsole::CIrrDeviceConsole(const SIrrlichtCreationParameters& params)
-  : CIrrDeviceStub(params), IsWindowFocused(true), ConsoleFont(0), OutFile(stdout)
+CIrrDeviceConsole::CIrrDeviceConsole(const SIrrlichtCreationParameters& params, const char* dataPak)
+  : CIrrDeviceStub(params, dataPak), IsWindowFocused(true), ConsoleFont(0), OutFile(stdout)
 {
 	DeviceToClose = this;
 

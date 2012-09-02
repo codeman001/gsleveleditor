@@ -27,7 +27,7 @@ namespace irr
 	public:
 
 		//! constructor
-		CIrrDeviceFB(const SIrrlichtCreationParameters& params);
+		CIrrDeviceFB(const SIrrlichtCreationParameters& params, const char* dataPak);
 
 		//! destructor
 		virtual ~CIrrDeviceFB();

@@ -74,8 +74,8 @@ namespace irr
 const char* wmDeleteWindow = "WM_DELETE_WINDOW";
 
 //! constructor
-CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param)
- : CIrrDeviceStub(param),
+CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters& param, const char* dataPak)
+ : CIrrDeviceStub(param, dataPak),
 #ifdef _IRR_COMPILE_WITH_X11_
 	display(0), visual(0), screennr(0), window(0), StdHints(0), SoftwareImage(0),
 #ifdef _IRR_COMPILE_WITH_OPENGL_

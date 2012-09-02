@@ -34,8 +34,8 @@ namespace irr
 {
 
 //! constructor
-CIrrDeviceFB::CIrrDeviceFB(const SIrrlichtCreationParameters& params)
- : CIrrDeviceStub(params), Framebuffer(-1), EventDevice(-1), SoftwareImage(0),
+CIrrDeviceFB::CIrrDeviceFB(const SIrrlichtCreationParameters& params, const char* dataPak)
+ : CIrrDeviceStub(params, dataPak), Framebuffer(-1), EventDevice(-1), SoftwareImage(0),
 	Pitch(0), FBColorFormat(video::ECF_A8R8G8B8), Close(false)
 {
 	#ifdef _DEBUG

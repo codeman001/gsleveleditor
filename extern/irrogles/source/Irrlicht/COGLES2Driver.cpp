@@ -55,9 +55,11 @@ namespace video
 		, SourceFactor(EBF_ZERO)
 		, DestFactor(EBF_ZERO)
 	{
+
 #ifdef _DEBUG
 		setDebugName("COGLES2Driver");
 #endif
+
 		ExposedData = data;
 
 #if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
@@ -2984,7 +2986,7 @@ namespace irr
 namespace video
 {
 
-#if defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined(_IRR_COMPILE_WITH_SDL_DEVICE_) || defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) || defined(_IRR_COMPILE_WITH_CONSOLE_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined(_IRR_COMPILE_WITH_SDL_DEVICE_) || defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) || defined(_IRR_COMPILE_WITH_CONSOLE_DEVICE_)  || defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 	IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params,
 			video::SExposedVideoData& data, io::IFileSystem* io)
 	{

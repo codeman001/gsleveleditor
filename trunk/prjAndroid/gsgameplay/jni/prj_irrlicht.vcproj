@@ -2296,6 +2296,14 @@
 					Name="device"
 					>
 					<File
+						RelativePath="..\..\..\..\extern\irrogles\source\Irrlicht\CIrrDeviceAndroid.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\..\extern\irrogles\source\Irrlicht\CIrrDeviceAndroid.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\..\..\extern\irrogles\source\Irrlicht\CIrrDeviceConsole.cpp"
 						>
 					</File>

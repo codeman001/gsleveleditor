@@ -1,0 +1,314 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7FE6C71B15F47C2D00E07797 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE6C71A15F47C2D00E07797 /* UIKit.framework */; };
+		7FE6C71D15F47C2D00E07797 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE6C71C15F47C2D00E07797 /* Foundation.framework */; };
+		7FE6C71F15F47C2D00E07797 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE6C71E15F47C2D00E07797 /* CoreGraphics.framework */; };
+		7FE6C72115F47C2D00E07797 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE6C72015F47C2D00E07797 /* GLKit.framework */; };
+		7FE6C72315F47C2D00E07797 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE6C72215F47C2D00E07797 /* OpenGLES.framework */; };
+		7FE6C72915F47C2D00E07797 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C72715F47C2D00E07797 /* InfoPlist.strings */; };
+		7FE6C72B15F47C2D00E07797 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE6C72A15F47C2D00E07797 /* main.m */; };
+		7FE6C72F15F47C2D00E07797 /* CAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE6C72E15F47C2D00E07797 /* CAppDelegate.m */; };
+		7FE6C73215F47C2D00E07797 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C73015F47C2D00E07797 /* MainStoryboard_iPhone.storyboard */; };
+		7FE6C73515F47C2D00E07797 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C73315F47C2D00E07797 /* MainStoryboard_iPad.storyboard */; };
+		7FE6C73715F47C2D00E07797 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C73615F47C2D00E07797 /* Shader.fsh */; };
+		7FE6C73915F47C2D00E07797 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C73815F47C2D00E07797 /* Shader.vsh */; };
+		7FE6C73C15F47C2D00E07797 /* CViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE6C73B15F47C2D00E07797 /* CViewController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		7FE6C71615F47C2D00E07797 /* gameplay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gameplay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7FE6C71A15F47C2D00E07797 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		7FE6C71C15F47C2D00E07797 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		7FE6C71E15F47C2D00E07797 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		7FE6C72015F47C2D00E07797 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		7FE6C72215F47C2D00E07797 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		7FE6C72615F47C2D00E07797 /* gameplay-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "gameplay-Info.plist"; sourceTree = "<group>"; };
+		7FE6C72815F47C2D00E07797 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		7FE6C72A15F47C2D00E07797 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		7FE6C72C15F47C2D00E07797 /* gameplay-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "gameplay-Prefix.pch"; sourceTree = "<group>"; };
+		7FE6C72D15F47C2D00E07797 /* CAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CAppDelegate.h; sourceTree = "<group>"; };
+		7FE6C72E15F47C2D00E07797 /* CAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CAppDelegate.m; sourceTree = "<group>"; };
+		7FE6C73115F47C2D00E07797 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
+		7FE6C73415F47C2D00E07797 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
+		7FE6C73615F47C2D00E07797 /* Shader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = Shaders/Shader.fsh; sourceTree = "<group>"; };
+		7FE6C73815F47C2D00E07797 /* Shader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = Shaders/Shader.vsh; sourceTree = "<group>"; };
+		7FE6C73A15F47C2D00E07797 /* CViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CViewController.h; sourceTree = "<group>"; };
+		7FE6C73B15F47C2D00E07797 /* CViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CViewController.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7FE6C71315F47C2D00E07797 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7FE6C71B15F47C2D00E07797 /* UIKit.framework in Frameworks */,
+				7FE6C71D15F47C2D00E07797 /* Foundation.framework in Frameworks */,
+				7FE6C71F15F47C2D00E07797 /* CoreGraphics.framework in Frameworks */,
+				7FE6C72115F47C2D00E07797 /* GLKit.framework in Frameworks */,
+				7FE6C72315F47C2D00E07797 /* OpenGLES.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7FE6C70B15F47C2D00E07797 = {
+			isa = PBXGroup;
+			children = (
+				7FE6C72415F47C2D00E07797 /* gameplay */,
+				7FE6C71915F47C2D00E07797 /* Frameworks */,
+				7FE6C71715F47C2D00E07797 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7FE6C71715F47C2D00E07797 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7FE6C71615F47C2D00E07797 /* gameplay.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7FE6C71915F47C2D00E07797 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7FE6C71A15F47C2D00E07797 /* UIKit.framework */,
+				7FE6C71C15F47C2D00E07797 /* Foundation.framework */,
+				7FE6C71E15F47C2D00E07797 /* CoreGraphics.framework */,
+				7FE6C72015F47C2D00E07797 /* GLKit.framework */,
+				7FE6C72215F47C2D00E07797 /* OpenGLES.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7FE6C72415F47C2D00E07797 /* gameplay */ = {
+			isa = PBXGroup;
+			children = (
+				7FE6C72D15F47C2D00E07797 /* CAppDelegate.h */,
+				7FE6C72E15F47C2D00E07797 /* CAppDelegate.m */,
+				7FE6C73015F47C2D00E07797 /* MainStoryboard_iPhone.storyboard */,
+				7FE6C73315F47C2D00E07797 /* MainStoryboard_iPad.storyboard */,
+				7FE6C73615F47C2D00E07797 /* Shader.fsh */,
+				7FE6C73815F47C2D00E07797 /* Shader.vsh */,
+				7FE6C73A15F47C2D00E07797 /* CViewController.h */,
+				7FE6C73B15F47C2D00E07797 /* CViewController.m */,
+				7FE6C72515F47C2D00E07797 /* Supporting Files */,
+			);
+			path = gameplay;
+			sourceTree = "<group>";
+		};
+		7FE6C72515F47C2D00E07797 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				7FE6C72615F47C2D00E07797 /* gameplay-Info.plist */,
+				7FE6C72715F47C2D00E07797 /* InfoPlist.strings */,
+				7FE6C72A15F47C2D00E07797 /* main.m */,
+				7FE6C72C15F47C2D00E07797 /* gameplay-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7FE6C71515F47C2D00E07797 /* gameplay */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7FE6C73F15F47C2D00E07797 /* Build configuration list for PBXNativeTarget "gameplay" */;
+			buildPhases = (
+				7FE6C71215F47C2D00E07797 /* Sources */,
+				7FE6C71315F47C2D00E07797 /* Frameworks */,
+				7FE6C71415F47C2D00E07797 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = gameplay;
+			productName = gameplay;
+			productReference = 7FE6C71615F47C2D00E07797 /* gameplay.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7FE6C70D15F47C2D00E07797 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = C;
+				LastUpgradeCheck = 0430;
+			};
+			buildConfigurationList = 7FE6C71015F47C2D00E07797 /* Build configuration list for PBXProject "gameplay" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 7FE6C70B15F47C2D00E07797;
+			productRefGroup = 7FE6C71715F47C2D00E07797 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7FE6C71515F47C2D00E07797 /* gameplay */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7FE6C71415F47C2D00E07797 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7FE6C72915F47C2D00E07797 /* InfoPlist.strings in Resources */,
+				7FE6C73215F47C2D00E07797 /* MainStoryboard_iPhone.storyboard in Resources */,
+				7FE6C73515F47C2D00E07797 /* MainStoryboard_iPad.storyboard in Resources */,
+				7FE6C73715F47C2D00E07797 /* Shader.fsh in Resources */,
+				7FE6C73915F47C2D00E07797 /* Shader.vsh in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7FE6C71215F47C2D00E07797 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7FE6C72B15F47C2D00E07797 /* main.m in Sources */,
+				7FE6C72F15F47C2D00E07797 /* CAppDelegate.m in Sources */,
+				7FE6C73C15F47C2D00E07797 /* CViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		7FE6C72715F47C2D00E07797 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7FE6C72815F47C2D00E07797 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		7FE6C73015F47C2D00E07797 /* MainStoryboard_iPhone.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7FE6C73115F47C2D00E07797 /* en */,
+			);
+			name = MainStoryboard_iPhone.storyboard;
+			sourceTree = "<group>";
+		};
+		7FE6C73315F47C2D00E07797 /* MainStoryboard_iPad.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7FE6C73415F47C2D00E07797 /* en */,
+			);
+			name = MainStoryboard_iPad.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		7FE6C73D15F47C2D00E07797 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7FE6C73E15F47C2D00E07797 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		7FE6C74015F47C2D00E07797 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "gameplay/gameplay-Prefix.pch";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				INFOPLIST_FILE = "gameplay/gameplay-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		7FE6C74115F47C2D00E07797 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "gameplay/gameplay-Prefix.pch";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				INFOPLIST_FILE = "gameplay/gameplay-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7FE6C71015F47C2D00E07797 /* Build configuration list for PBXProject "gameplay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7FE6C73D15F47C2D00E07797 /* Debug */,
+				7FE6C73E15F47C2D00E07797 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7FE6C73F15F47C2D00E07797 /* Build configuration list for PBXNativeTarget "gameplay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7FE6C74015F47C2D00E07797 /* Debug */,
+				7FE6C74115F47C2D00E07797 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7FE6C70D15F47C2D00E07797 /* Project object */;
+}

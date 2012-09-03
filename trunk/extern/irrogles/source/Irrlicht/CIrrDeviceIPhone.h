@@ -42,7 +42,8 @@ extern "C"
 #else
 extern
 #endif
-void irr_device_iphone_create(struct MIrrIPhoneDevice * dev);
+
+//void irr_device_iphone_create(struct MIrrIPhoneDevice * dev);
 
 #ifdef __cplusplus
 
@@ -62,7 +63,7 @@ namespace irr
 		typedef void * NativeWindowType;
 
 		//! constructor
-		CIrrDeviceIPhone(const SIrrlichtCreationParameters& params);
+		CIrrDeviceIPhone(const SIrrlichtCreationParameters& params, const char *packData);
 
 		//! destructor
 		virtual ~CIrrDeviceIPhone();

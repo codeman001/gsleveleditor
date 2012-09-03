@@ -30,7 +30,9 @@
 
 // C RunTime Header Files
 #include <stdlib.h>
+#ifndef IOS
 #include <malloc.h>
+#endif
 #include <memory.h>
 #include <stdio.h>
 #include <math.h>

@@ -180,6 +180,10 @@ struct SSkinMeshBuffer : public IMeshBuffer
 				}
 				break;
 			}
+            case video::EVT_SKIN:
+            {                                
+                break;
+            }
 		}
 	}
 

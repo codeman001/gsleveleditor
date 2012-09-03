@@ -116,6 +116,11 @@ namespace scene
 					NewVertices=new CSpecificVertexList<video::S3DVertexTangents>;
 					break;
 				}
+                case video::EVT_SKIN:
+                {
+                    NewVertices=new CSpecificVertexList<video::S3DVertexSkin>;
+                    break;
+                }
 			}
 			if (Vertices)
 			{

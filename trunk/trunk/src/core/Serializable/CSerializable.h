@@ -78,7 +78,7 @@ typedef struct tagSerializableRec
 		else if ( type == NSSerializable::longType )
 		{
 			long n = *((long*)value);
-			sprintf( this->data, "%d", n );
+			sprintf( this->data, "%ld", n );
 		}
 		else if ( type == NSSerializable::floatType )
 		{

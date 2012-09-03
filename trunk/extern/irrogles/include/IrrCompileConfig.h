@@ -99,10 +99,10 @@
 #endif
 #define _IRR_OSX_PLATFORM_ // we only support OSX on these systems
 
-#if defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__) || defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+#if defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__) || defined(__IPHONE_OS_VERSION_MIN_REQUIRED) || defined (IOS)
 #define _IRR_IPHONE_PLATFORM_
 #define _IRR_COMPILE_WITH_IPHONE_DEVICE_
-//#define _IRR_COMPILE_WITH_OGLES2_ // necessary for IPhone for now
+//#define _IRR_COMPILE_WITH_OGLES2_
 #define _IRR_COMPILE_WITH_OGLES1_
 #else
 #define _IRR_COMPILE_WITH_OSX_DEVICE_

@@ -1030,6 +1030,11 @@ IMesh* CMeshManipulator::createMeshWithTangents(IMesh* mesh, bool recalculateNor
 					vNew = v[idx[i]];
 				}
 				break;
+            case video::EVT_SKIN:
+                {
+                    
+                }
+                break;
 			}
 			core::map<video::S3DVertexTangents, int>::Node* n = vertMap.find(vNew);
 			if (n)

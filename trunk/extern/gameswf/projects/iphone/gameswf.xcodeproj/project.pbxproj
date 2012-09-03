@@ -128,7 +128,6 @@
 		107C1BF1154A9D4200A52CB8 /* gameswf_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 107C1B19154A9D4100A52CB8 /* gameswf_processor.cpp */; };
 		107C1BF2154A9D4200A52CB8 /* gameswf_render.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 107C1B1A154A9D4100A52CB8 /* gameswf_render.cpp */; };
 		107C1BF3154A9D4200A52CB8 /* gameswf_render.h in Headers */ = {isa = PBXBuildFile; fileRef = 107C1B1B154A9D4100A52CB8 /* gameswf_render.h */; };
-		107C1BF5154A9D4200A52CB8 /* gameswf_render_handler_ogles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 107C1B1D154A9D4100A52CB8 /* gameswf_render_handler_ogles.cpp */; };
 		107C1BF6154A9D4200A52CB8 /* gameswf_root.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 107C1B1E154A9D4100A52CB8 /* gameswf_root.cpp */; };
 		107C1BF7154A9D4200A52CB8 /* gameswf_root.h in Headers */ = {isa = PBXBuildFile; fileRef = 107C1B1F154A9D4100A52CB8 /* gameswf_root.h */; };
 		107C1BF8154A9D4200A52CB8 /* gameswf_shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 107C1B20154A9D4100A52CB8 /* gameswf_shape.cpp */; };
@@ -223,6 +222,7 @@
 		108E0221154A9E5500803EE6 /* gameswf_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 108E0220154A9E5500803EE6 /* gameswf_Prefix.pch */; };
 		108E0224154A9E7C00803EE6 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 108E0223154A9E7C00803EE6 /* OpenGLES.framework */; };
 		108E0226154A9E8400803EE6 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 108E0225154A9E8400803EE6 /* OpenAL.framework */; };
+		7FCBDE4115F4C46100C432A7 /* gameswf_render_handler_irrlicht.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FCBDE4015F4C46100C432A7 /* gameswf_render_handler_irrlicht.cpp */; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -348,7 +348,6 @@
 		107C1B19154A9D4100A52CB8 /* gameswf_processor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gameswf_processor.cpp; sourceTree = "<group>"; };
 		107C1B1A154A9D4100A52CB8 /* gameswf_render.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gameswf_render.cpp; sourceTree = "<group>"; };
 		107C1B1B154A9D4100A52CB8 /* gameswf_render.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameswf_render.h; sourceTree = "<group>"; };
-		107C1B1D154A9D4100A52CB8 /* gameswf_render_handler_ogles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gameswf_render_handler_ogles.cpp; sourceTree = "<group>"; };
 		107C1B1E154A9D4100A52CB8 /* gameswf_root.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gameswf_root.cpp; sourceTree = "<group>"; };
 		107C1B1F154A9D4100A52CB8 /* gameswf_root.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameswf_root.h; sourceTree = "<group>"; };
 		107C1B20154A9D4100A52CB8 /* gameswf_shape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gameswf_shape.cpp; sourceTree = "<group>"; };
@@ -443,6 +442,7 @@
 		108E0220154A9E5500803EE6 /* gameswf_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameswf_Prefix.pch; sourceTree = "<group>"; };
 		108E0223154A9E7C00803EE6 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		108E0225154A9E8400803EE6 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		7FCBDE4015F4C46100C432A7 /* gameswf_render_handler_irrlicht.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gameswf_render_handler_irrlicht.cpp; sourceTree = "<group>"; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D2AAC07E0554694100DB518D /* libgameswf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgameswf.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -569,6 +569,7 @@
 		107C1AE3154A9D4100A52CB8 /* gameswf */ = {
 			isa = PBXGroup;
 			children = (
+				7FCBDE4015F4C46100C432A7 /* gameswf_render_handler_irrlicht.cpp */,
 				107C1AE4154A9D4100A52CB8 /* gameswf.h */,
 				107C1AE5154A9D4100A52CB8 /* gameswf_abc.cpp */,
 				107C1AE6154A9D4100A52CB8 /* gameswf_abc.h */,
@@ -625,7 +626,6 @@
 				107C1B19154A9D4100A52CB8 /* gameswf_processor.cpp */,
 				107C1B1A154A9D4100A52CB8 /* gameswf_render.cpp */,
 				107C1B1B154A9D4100A52CB8 /* gameswf_render.h */,
-				107C1B1D154A9D4100A52CB8 /* gameswf_render_handler_ogles.cpp */,
 				107C1B1E154A9D4100A52CB8 /* gameswf_root.cpp */,
 				107C1B1F154A9D4100A52CB8 /* gameswf_root.h */,
 				107C1B20154A9D4100A52CB8 /* gameswf_shape.cpp */,
@@ -962,7 +962,6 @@
 				107C1BEF154A9D4200A52CB8 /* gameswf_player.cpp in Sources */,
 				107C1BF1154A9D4200A52CB8 /* gameswf_processor.cpp in Sources */,
 				107C1BF2154A9D4200A52CB8 /* gameswf_render.cpp in Sources */,
-				107C1BF5154A9D4200A52CB8 /* gameswf_render_handler_ogles.cpp in Sources */,
 				107C1BF6154A9D4200A52CB8 /* gameswf_root.cpp in Sources */,
 				107C1BF8154A9D4200A52CB8 /* gameswf_shape.cpp in Sources */,
 				107C1BFA154A9D4200A52CB8 /* gameswf_sound.cpp in Sources */,
@@ -1009,6 +1008,7 @@
 				107C1C4B154A9D4200A52CB8 /* as_xml.cpp in Sources */,
 				107C1C4D154A9D4200A52CB8 /* as_xmlsocket.cpp in Sources */,
 				1057B115154AD41500547140 /* jpeg.cpp in Sources */,
+				7FCBDE4115F4C46100C432A7 /* gameswf_render_handler_irrlicht.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1028,14 +1028,16 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = gameswf_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					FT2_BUILD_LIBRARY,
+					IOS,
+				);
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
-					"../../../../Externals/freetype/**",
-					"../../../../Externals/jpeg/**",
-					"../../../../Externals/zlib/**",
-					"../../../../Externals/irrlicht/include/**",
-					"../../../../Externals/gameswf/**",
-					../../../../Externals/,
+					"../../../gameswf/**",
+					"../../../freetype/include/**",
+					"../../../irrogles/source/Irrlicht/**",
+					"../../../irrogles/include/**",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
@@ -1056,14 +1058,16 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = gameswf_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					FT2_BUILD_LIBRARY,
+					IOS,
+				);
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
-					"../../../../Externals/freetype/**",
-					"../../../../Externals/jpeg/**",
-					"../../../../Externals/zlib/**",
-					"../../../../Externals/irrlicht/include/**",
-					"../../../../Externals/gameswf/**",
-					../../../../Externals/,
+					"../../../gameswf/**",
+					"../../../freetype/include/**",
+					"../../../irrogles/source/Irrlicht/**",
+					"../../../irrogles/include/**",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;

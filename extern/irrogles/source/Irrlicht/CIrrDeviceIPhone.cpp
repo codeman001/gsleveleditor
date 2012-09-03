@@ -38,8 +38,8 @@ namespace irr
 {
 
 //! constructor
-CIrrDeviceIPhone::CIrrDeviceIPhone(const SIrrlichtCreationParameters& params)
-	: CIrrDeviceStub(params)
+CIrrDeviceIPhone::CIrrDeviceIPhone(const SIrrlichtCreationParameters& params, const char *packData)
+	: CIrrDeviceStub(params, packData)
 	, Close(false)
 	, Closed(false)
 	, WindowActive(false)
@@ -58,7 +58,7 @@ CIrrDeviceIPhone::CIrrDeviceIPhone(const SIrrlichtCreationParameters& params)
 	IrrIPhoneDevice.onTerminate = &CIrrDeviceIPhone::onTerminate;
 	IrrIPhoneDevice.onWindowActive = &CIrrDeviceIPhone::onWindowActive;
 	
-	irr_device_iphone_create(&IrrIPhoneDevice);
+	//irr_device_iphone_create(&IrrIPhoneDevice);
 
 	// print version, distribution etc.
 	struct utsname info;

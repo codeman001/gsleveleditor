@@ -15,7 +15,7 @@
 #include <cstdarg>
 
 #define DLLEXPORT
-#define DWORD	unsigned int
+#define DWORD   int
 #define WCHAR	wchar_t
 
 namespace uiClass
@@ -707,7 +707,7 @@ namespace uiClass
 			
 			const char *pos = src;
 
-			while (*pos != NULL)
+			while (*pos != 0)
 				dst[t++] = utf8Char2Unicode(pos);
 
 			dst[t++] = 0;			

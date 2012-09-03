@@ -213,7 +213,11 @@ namespace gameswf
 			}
 			inline bool is_number() const
 			{
+#ifdef IOS
+				return m_type == NUMBER;
+#else
 				return m_type == NUMBER && isnan ( m_number ) == false;
+#endif
 			}
 			inline bool is_object() const
 			{

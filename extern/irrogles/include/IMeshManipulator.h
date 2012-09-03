@@ -360,6 +360,12 @@ protected:
 						func(verts[i]);
 					}
 					break;
+                case video::EVT_SKIN:
+                    {
+                        video::S3DVertexSkin* verts = (video::S3DVertexSkin*)buffer->getVertices();
+						func(verts[i]);
+                    }
+                    break;                        
 				}
 				if (boundingBoxUpdate)
 				{

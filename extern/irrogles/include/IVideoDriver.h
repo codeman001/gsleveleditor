@@ -145,6 +145,16 @@ namespace video
 		0
 	};
 
+	enum E_ORIENTATION
+	{
+		//! Default, no rotation
+		EOO_0 = 0,
+		//! Rotated 90 degrees clockwise
+		EOO_90,		
+		//! Rotated 270 degrees clockwise
+		EOO_270
+	};
+
 	struct SOverrideMaterial
 	{
 		//! The Material values
@@ -1458,6 +1468,12 @@ namespace video
 		*/
 		virtual void convertColor(const void* sP, ECOLOR_FORMAT sF, s32 sN,
 				void* dP, ECOLOR_FORMAT dF) const =0;
+
+		//! get orientation
+		virtual E_ORIENTATION getOrientation() const = 0;
+		
+		//! set orientation
+		virtual void setOrientation(E_ORIENTATION orientation) = 0;
 	};
 
 } // end namespace video

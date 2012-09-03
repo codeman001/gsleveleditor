@@ -861,6 +861,18 @@ ECOLOR_FORMAT CNullDriver::getColorFormat() const
 	return ECF_R5G6B5;
 }
 
+//! get orientation
+E_ORIENTATION CNullDriver::getOrientation() const
+{
+	return Orientation;
+}
+		
+//! set orientation
+void CNullDriver::setOrientation(E_ORIENTATION orientation)
+{
+	Orientation = orientation;
+}
+
 
 //! returns screen size
 const core::dimension2d<u32>& CNullDriver::getScreenSize() const

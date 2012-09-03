@@ -239,6 +239,12 @@ namespace video
 		//! get color format of the current color buffer
 		virtual ECOLOR_FORMAT getColorFormat() const;
 
+		//! get orientation
+		virtual E_ORIENTATION getOrientation() const;
+		
+		//! set orientation
+		virtual void setOrientation(E_ORIENTATION orientation);
+
 		//! get screen size
 		virtual const core::dimension2d<u32>& getScreenSize() const;
 
@@ -841,6 +847,8 @@ namespace video
 		bool PixelFog;
 		bool RangeFog;
 		bool AllowZWriteOnTransparent;
+
+		E_ORIENTATION	Orientation;
 
 		bool FeatureEnabled[video::EVDF_COUNT];
 

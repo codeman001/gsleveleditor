@@ -544,6 +544,33 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		M[15] = 1;
 		
 		m.setM(M);
+
+
+		// ROTATE by phone orientation
+		core::matrix4 r;
+		float w = m_display_width;
+		float h = m_display_height;
+
+		E_ORIENTATION currentOrientation = g_driver->getOrientation();
+		switch( currentOrientation )
+		{		
+		case EOO_90:
+			{
+				r.setTranslation(core::vector3df(0,h,0));
+				r.setRotationDegrees(core::vector3df(0,0,-90));
+				m *= r;
+			}
+			break;
+		case EOO_270:
+			{
+				r.setTranslation(core::vector3df(w,0,0));
+				r.setRotationDegrees(core::vector3df(0,0,90));
+				m *= r;
+			}
+			break;
+		default:
+			return;
+		}
 	}
 
 	void	begin_display (
@@ -564,11 +591,20 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	// coordinates of the movie that correspond to the viewport
 	// bounds.
 	{
+		
+		// swap w,h by orientation
+		E_ORIENTATION currentOrientation = g_driver->getOrientation();
+		if ( currentOrientation == video::EOO_90 || currentOrientation == video::EOO_270 )
+		{
+			core::swap<float,float>(x0, y1);
+			core::swap<float,float>(x1, y0);
+		}
+
 		m_display_width		= fabsf ( x1 - x0 );
-		m_display_height	= fabsf ( y1 - y0 );
-								
+		m_display_height	= fabsf ( y1 - y0 );		
+
 		// set viewport
-		core::recti rectViewport = core::recti(viewport_x0, viewport_y0, viewport_x0+viewport_width, viewport_y0+viewport_height);
+		core::recti rectViewport = core::recti(viewport_x0, viewport_y0, viewport_x0+viewport_width, viewport_y0+viewport_height);		
 		m_driver->setViewPort( rectViewport );
 		
 		// set prj matrix
@@ -580,7 +616,13 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		
 		// set world matrix (flip 0y)
 		m_viewMatrix = core::IdentityMatrix;
-		core::matrix4 trans; trans.setTranslation( core::vector3df(0, m_display_height, 0) );
+
+		// translate by orientation
+		float translate = m_display_height;
+		if ( currentOrientation == video::EOO_90 || currentOrientation == video::EOO_270 )
+			translate = m_display_width;
+
+		core::matrix4 trans; trans.setTranslation( core::vector3df(0, translate, 0) );
 		core::matrix4 scale; scale.setScale( core::vector3df(1.0, -1.0, 1.0) );
 		m_viewMatrix *= trans;
 		m_viewMatrix *= scale;		

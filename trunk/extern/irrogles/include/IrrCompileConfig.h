@@ -65,7 +65,8 @@
 #define _IRR_WINDOWS_
 #define _IRR_WINDOWS_API_
 #define _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-#define _IRR_COMPILE_WITH_OGLES2_
+//#define _IRR_COMPILE_WITH_OGLES2_
+#define _IRR_COMPILE_WITH_OPENGL_
 #endif
 
 //! WINCE is a very restricted environment for mobile devices

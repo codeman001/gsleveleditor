@@ -17,8 +17,9 @@ extern "C" {
 
 			// add zip data
 			const char *dataPak = NULL;
+			
 			#ifdef USE_ZIPPACKAGE
-			dataPak = "/mnt/sdcard/data.zip";
+			dataPak = getIView()->getPhysicPath("_common.zip");
 			#endif
 		
 			// create irrlicht device

@@ -101,11 +101,11 @@ bool CGameUI::_getFont( const char *font_name, tu_string &file_name, bool is_bol
 {	
 #ifdef USE_ZIPPACKAGE
 	if ( strcmp("Arial Black",font_name) == 0 )
-		file_name = getIView()->getPath("killerants.ttf");
+		file_name = getIView()->getPhysicPath("killerants.ttf");
 	else if ( strcmp("Verdana",font_name) == 0 )
-		file_name = getIView()->getPath("zrnic.ttf");
+		file_name = getIView()->getPhysicPath("zrnic.ttf");
 	else
-		file_name = getIView()->getPath("arial.ttf");
+		file_name = getIView()->getPhysicPath("arial.ttf");
 #else
 	if ( strcmp("Arial Black",font_name) == 0 )
 		file_name = getIView()->getPath("data/font/killerants.ttf");

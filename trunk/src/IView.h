@@ -205,6 +205,8 @@ public:
 	wchar_t *getPathW(	const std::string& path );
 	char	*getPath(	const std::wstring& path );
 	wchar_t *getPathW(	const std::wstring& path );
+
+	char	*getPhysicPath(	const std::string& path );
 };
 
 extern IView* getIView();

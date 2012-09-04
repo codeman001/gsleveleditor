@@ -61,6 +61,13 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 		// hide the menu
 		menu->setVisible( false );	
 
+#ifdef USE_ZIPPACKAGE
+		// add zip package
+		io::IFileSystem *fileSystem = getIView()->getDevice()->getFileSystem();
+		fileSystem->addZipFileArchive( getIView()->getPhysicPath("_scene.zip") );
+		fileSystem->addZipFileArchive( getIView()->getPhysicPath("_texture.zip") );
+#endif
+
 		// load all template
 		CObjTemplateFactory::loadAllObjectTemplate();
 

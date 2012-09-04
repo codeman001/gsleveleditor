@@ -201,10 +201,30 @@ void IView::unRegisterEvent( IEventReceiver *pEvent )
 wchar_t g_tempPathW[1024];
 char	g_tempPathA[1024];
 
+char* IView::getPhysicPath(	const std::string& path )
+{
+#ifdef GSGAMEPLAY
+	#if defined(ANDROID)
+		// android
+		uiString::copy<char,const char>( g_tempPathA, "/mnt/sdcard/" );
+		uiString::cat<char,const char>( g_tempPathA, path.c_str() );
+	#elif defined(IOS)
+		// iphone os
+
+	#else
+		// default win32
+		uiString::copy<char,const char>( g_tempPathA, path.c_str() );
+	#endif
+#else
+	uiString::copy<char,const char>( g_tempPathA, path.c_str() );
+#endif
+	return g_tempPathA;
+}
+
 char* IView::getPath( const std::string& path )
 {
 #ifdef GSGAMEPLAY		
-	uiString::copy<char,const char>( g_tempPathA, path.c_str() );	
+	uiString::copy<char,const char>( g_tempPathA, path.c_str() );
 #else	
 	uiApplication::getAppPath( (LPWSTR)g_tempPathW, MAX_PATH );
 	uiString::copy<char, wchar_t>( g_tempPathA, g_tempPathW  );

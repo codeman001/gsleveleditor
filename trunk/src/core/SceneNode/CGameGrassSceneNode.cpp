@@ -22,8 +22,8 @@ CGameGrassSceneNode::CGameGrassSceneNode(CGameObject *owner, IMesh* mesh, IScene
 
 		s_materialGrass = mgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles
 		(
-			getIView()->getPath("shader/extern/grass.vert"), "vertexMain",	video::EVST_VS_1_1,
-			getIView()->getPath("shader/extern/grass.frag"), "pixelMain",	video::EPST_PS_1_1,
+			getIView()->getPath("shader/extern/grass.vsh"), "vertexMain",	video::EVST_VS_1_1,
+			getIView()->getPath("shader/extern/grass.fsh"), "pixelMain",	video::EPST_PS_1_1,
 			grassShaderCB, 
 			video::EMT_TRANSPARENT_ALPHA_CHANNEL
 		);

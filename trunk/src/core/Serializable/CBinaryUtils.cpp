@@ -926,7 +926,7 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 		
 		memStream.readData(  joint.globalInversedMatrix.pointer(), sizeof(f32)*16 );
 		memStream.readData(  joint.skinningMatrix.pointer(), sizeof(f32)*16 );
-
+        
 	}	
 
 	// read bouding box	

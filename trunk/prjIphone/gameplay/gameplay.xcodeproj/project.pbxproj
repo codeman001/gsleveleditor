@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F1AEED615F789E900DF8EA0 /* CIOSApi.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEED515F789E900DF8EA0 /* CIOSApi.mm */; };
+		7F1AEEDE15F78CFB00DF8EA0 /* _common.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEED815F78CFA00DF8EA0 /* _common.zip */; };
+		7F1AEEDF15F78CFB00DF8EA0 /* _scene.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEED915F78CFA00DF8EA0 /* _scene.zip */; };
+		7F1AEEE015F78CFB00DF8EA0 /* _texture.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEEDA15F78CFA00DF8EA0 /* _texture.zip */; };
+		7F1AEEE115F78CFB00DF8EA0 /* arial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEEDB15F78CFB00DF8EA0 /* arial.ttf */; };
+		7F1AEEE215F78CFB00DF8EA0 /* killerants.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEEDC15F78CFB00DF8EA0 /* killerants.ttf */; };
+		7F1AEEE315F78CFB00DF8EA0 /* zrnic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEEDD15F78CFB00DF8EA0 /* zrnic.ttf */; };
+		7F1AEF0D15F7A02700DF8EA0 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEF0C15F7A02700DF8EA0 /* Application.cpp */; };
+		7F1AEF1015F7A2C500DF8EA0 /* CAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */; };
+		7F1AEF1115F7A2C500DF8EA0 /* CViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEF0F15F7A2C500DF8EA0 /* CViewController.mm */; };
 		7FCBD3E115F4B41700C432A7 /* libirrlicht.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBD12D15F4B13400C432A7 /* libirrlicht.a */; };
 		7FCBDE3D15F4C3E200C432A7 /* libgameswf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBDE3315F4C3A800C432A7 /* libgameswf.a */; };
 		7FCBDE3E15F4C3E200C432A7 /* libLua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBDE3C15F4C3CF00C432A7 /* libLua.a */; };
@@ -81,12 +91,8 @@
 		7FE6C72315F47C2D00E07797 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE6C72215F47C2D00E07797 /* OpenGLES.framework */; };
 		7FE6C72915F47C2D00E07797 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C72715F47C2D00E07797 /* InfoPlist.strings */; };
 		7FE6C72B15F47C2D00E07797 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE6C72A15F47C2D00E07797 /* main.m */; };
-		7FE6C72F15F47C2D00E07797 /* CAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE6C72E15F47C2D00E07797 /* CAppDelegate.m */; };
 		7FE6C73215F47C2D00E07797 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C73015F47C2D00E07797 /* MainStoryboard_iPhone.storyboard */; };
 		7FE6C73515F47C2D00E07797 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C73315F47C2D00E07797 /* MainStoryboard_iPad.storyboard */; };
-		7FE6C73715F47C2D00E07797 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C73615F47C2D00E07797 /* Shader.fsh */; };
-		7FE6C73915F47C2D00E07797 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C73815F47C2D00E07797 /* Shader.vsh */; };
-		7FE6C73C15F47C2D00E07797 /* CViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE6C73B15F47C2D00E07797 /* CViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,6 +127,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7F1AEED515F789E900DF8EA0 /* CIOSApi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CIOSApi.mm; sourceTree = "<group>"; };
+		7F1AEED815F78CFA00DF8EA0 /* _common.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _common.zip; path = ../../bin/_common.zip; sourceTree = "<group>"; };
+		7F1AEED915F78CFA00DF8EA0 /* _scene.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _scene.zip; path = ../../bin/_scene.zip; sourceTree = "<group>"; };
+		7F1AEEDA15F78CFA00DF8EA0 /* _texture.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _texture.zip; path = ../../bin/_texture.zip; sourceTree = "<group>"; };
+		7F1AEEDB15F78CFB00DF8EA0 /* arial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = arial.ttf; path = ../../bin/arial.ttf; sourceTree = "<group>"; };
+		7F1AEEDC15F78CFB00DF8EA0 /* killerants.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = killerants.ttf; path = ../../bin/killerants.ttf; sourceTree = "<group>"; };
+		7F1AEEDD15F78CFB00DF8EA0 /* zrnic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = zrnic.ttf; path = ../../bin/zrnic.ttf; sourceTree = "<group>"; };
+		7F1AEF0C15F7A02700DF8EA0 /* Application.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Application.cpp; sourceTree = "<group>"; };
+		7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CAppDelegate.mm; sourceTree = "<group>"; };
+		7F1AEF0F15F7A2C500DF8EA0 /* CViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CViewController.mm; sourceTree = "<group>"; };
 		7FCBD12815F4B13300C432A7 /* irrlicht.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = irrlicht.xcodeproj; path = ../../../extern/irrogles/source/Irrlicht/IOS/irrlicht/irrlicht.xcodeproj; sourceTree = "<group>"; };
 		7FCBDE2B15F4C3A800C432A7 /* gameswf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = gameswf.xcodeproj; path = ../../../extern/gameswf/projects/iphone/gameswf.xcodeproj; sourceTree = "<group>"; };
 		7FCBDE3415F4C3CE00C432A7 /* Lua.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lua.xcodeproj; path = ../../../extern/lua/Lua/Lua.xcodeproj; sourceTree = "<group>"; };
@@ -263,13 +279,9 @@
 		7FE6C72A15F47C2D00E07797 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7FE6C72C15F47C2D00E07797 /* gameplay-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "gameplay-Prefix.pch"; sourceTree = "<group>"; };
 		7FE6C72D15F47C2D00E07797 /* CAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CAppDelegate.h; sourceTree = "<group>"; };
-		7FE6C72E15F47C2D00E07797 /* CAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CAppDelegate.m; sourceTree = "<group>"; };
 		7FE6C73115F47C2D00E07797 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		7FE6C73415F47C2D00E07797 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
-		7FE6C73615F47C2D00E07797 /* Shader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = Shaders/Shader.fsh; sourceTree = "<group>"; };
-		7FE6C73815F47C2D00E07797 /* Shader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = Shaders/Shader.vsh; sourceTree = "<group>"; };
 		7FE6C73A15F47C2D00E07797 /* CViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CViewController.h; sourceTree = "<group>"; };
-		7FE6C73B15F47C2D00E07797 /* CViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -292,6 +304,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7F1AEED715F78CCD00DF8EA0 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				7F1AEED815F78CFA00DF8EA0 /* _common.zip */,
+				7F1AEED915F78CFA00DF8EA0 /* _scene.zip */,
+				7F1AEEDA15F78CFA00DF8EA0 /* _texture.zip */,
+				7F1AEEDB15F78CFB00DF8EA0 /* arial.ttf */,
+				7F1AEEDC15F78CFB00DF8EA0 /* killerants.ttf */,
+				7F1AEEDD15F78CFB00DF8EA0 /* zrnic.ttf */,
+			);
+			name = Resource;
+			sourceTree = "<group>";
+		};
 		7FCBD12915F4B13300C432A7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -327,21 +352,21 @@
 		7FD0BF4E15F4F34400626D90 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				7FD0BF5015F4F34400626D90 /* CApplication.cpp */,
+				7FD0BFCA15F4F34400626D90 /* IViewImp.cpp */,
 				7FD0C01915F4FADB00626D90 /* SPK_All.cpp */,
 				7FD0C01715F4FA9800626D90 /* SPK_IRR_ALL.cpp */,
+				7FD0BFCE15F4F34400626D90 /* stdafx.cpp */,
 				7FD0BF4F15F4F34400626D90 /* AppInclude.h */,
-				7FD0BF5015F4F34400626D90 /* CApplication.cpp */,
 				7FD0BF5115F4F34400626D90 /* CApplication.h */,
+				7FD0BFC915F4F34400626D90 /* IView.h */,
+				7FD0BFCF15F4F34400626D90 /* stdafx.h */,
 				7FD0BF5215F4F34400626D90 /* core */,
 				7FD0BFAB15F4F34400626D90 /* gameComponent */,
 				7FD0BFB415F4F34400626D90 /* gameDebug */,
 				7FD0BFB715F4F34400626D90 /* gameLevel */,
 				7FD0BFBC15F4F34400626D90 /* gameState */,
-				7FD0BFC915F4F34400626D90 /* IView.h */,
-				7FD0BFCA15F4F34400626D90 /* IViewImp.cpp */,
 				7FD0BFCB15F4F34400626D90 /* script */,
-				7FD0BFCE15F4F34400626D90 /* stdafx.cpp */,
-				7FD0BFCF15F4F34400626D90 /* stdafx.h */,
 				7FD0BFD015F4F34400626D90 /* swfUI */,
 				7FD0BFD715F4F34400626D90 /* uiClass */,
 			);
@@ -581,6 +606,7 @@
 				7FE6C71915F47C2D00E07797 /* Frameworks */,
 				7FE6C72415F47C2D00E07797 /* gameplay */,
 				7FE6C71715F47C2D00E07797 /* Products */,
+				7F1AEED715F78CCD00DF8EA0 /* Resource */,
 				7FD0BF4E15F4F34400626D90 /* src */,
 			);
 			sourceTree = "<group>";
@@ -608,14 +634,14 @@
 		7FE6C72415F47C2D00E07797 /* gameplay */ = {
 			isa = PBXGroup;
 			children = (
+				7F1AEF0C15F7A02700DF8EA0 /* Application.cpp */,
 				7FE6C72D15F47C2D00E07797 /* CAppDelegate.h */,
-				7FE6C72E15F47C2D00E07797 /* CAppDelegate.m */,
-				7FE6C73015F47C2D00E07797 /* MainStoryboard_iPhone.storyboard */,
-				7FE6C73315F47C2D00E07797 /* MainStoryboard_iPad.storyboard */,
-				7FE6C73615F47C2D00E07797 /* Shader.fsh */,
-				7FE6C73815F47C2D00E07797 /* Shader.vsh */,
+				7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */,
+				7F1AEED515F789E900DF8EA0 /* CIOSApi.mm */,
 				7FE6C73A15F47C2D00E07797 /* CViewController.h */,
-				7FE6C73B15F47C2D00E07797 /* CViewController.m */,
+				7F1AEF0F15F7A2C500DF8EA0 /* CViewController.mm */,
+				7FE6C73315F47C2D00E07797 /* MainStoryboard_iPad.storyboard */,
+				7FE6C73015F47C2D00E07797 /* MainStoryboard_iPhone.storyboard */,
 				7FE6C72515F47C2D00E07797 /* Supporting Files */,
 			);
 			path = gameplay;
@@ -735,8 +761,12 @@
 				7FE6C72915F47C2D00E07797 /* InfoPlist.strings in Resources */,
 				7FE6C73215F47C2D00E07797 /* MainStoryboard_iPhone.storyboard in Resources */,
 				7FE6C73515F47C2D00E07797 /* MainStoryboard_iPad.storyboard in Resources */,
-				7FE6C73715F47C2D00E07797 /* Shader.fsh in Resources */,
-				7FE6C73915F47C2D00E07797 /* Shader.vsh in Resources */,
+				7F1AEEDE15F78CFB00DF8EA0 /* _common.zip in Resources */,
+				7F1AEEDF15F78CFB00DF8EA0 /* _scene.zip in Resources */,
+				7F1AEEE015F78CFB00DF8EA0 /* _texture.zip in Resources */,
+				7F1AEEE115F78CFB00DF8EA0 /* arial.ttf in Resources */,
+				7F1AEEE215F78CFB00DF8EA0 /* killerants.ttf in Resources */,
+				7F1AEEE315F78CFB00DF8EA0 /* zrnic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -748,8 +778,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7FE6C72B15F47C2D00E07797 /* main.m in Sources */,
-				7FE6C72F15F47C2D00E07797 /* CAppDelegate.m in Sources */,
-				7FE6C73C15F47C2D00E07797 /* CViewController.m in Sources */,
 				7FD0BFDA15F4F34400626D90 /* CApplication.cpp in Sources */,
 				7FD0BFDB15F4F34400626D90 /* CGameCameraFollowAnimator.cpp in Sources */,
 				7FD0BFDC15F4F34400626D90 /* CGameGSCameraAnimator.cpp in Sources */,
@@ -813,6 +841,10 @@
 				7FD0C01615F4F34400626D90 /* CMenuFxObj.cpp in Sources */,
 				7FD0C01815F4FA9800626D90 /* SPK_IRR_ALL.cpp in Sources */,
 				7FD0C01A15F4FADB00626D90 /* SPK_All.cpp in Sources */,
+				7F1AEED615F789E900DF8EA0 /* CIOSApi.mm in Sources */,
+				7F1AEF0D15F7A02700DF8EA0 /* Application.cpp in Sources */,
+				7F1AEF1015F7A2C500DF8EA0 /* CAppDelegate.mm in Sources */,
+				7F1AEF1115F7A2C500DF8EA0 /* CViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

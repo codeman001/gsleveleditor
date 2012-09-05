@@ -2070,7 +2070,8 @@ void COGLES1Driver::setBasicRenderStates(const SMaterial& material, const SMater
 			// the npot extensions need some checks, because APPLE
 			// npot is somewhat restricted and only support non-mipmap filter
 			if (queryFeature(EVDF_TEXTURE_NPOT) && !FeatureAvailable[IRR_OES_texture_npot] &&
-					(CurrentTexture[i]->getSize() != CurrentTexture[i]->getOriginalSize()))
+				CurrentTexture[i] != NULL &&
+                (CurrentTexture[i]->getSize() != CurrentTexture[i]->getOriginalSize()))
 			{
 				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 					material.TextureLayer[i].TrilinearFilter ? GL_LINEAR:

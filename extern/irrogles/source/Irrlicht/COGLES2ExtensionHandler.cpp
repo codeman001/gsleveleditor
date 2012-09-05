@@ -136,13 +136,13 @@ namespace video
 
 
 	void COGLES2ExtensionHandler::initExtensions(COGLES2Driver* driver,
-#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 			EGLDisplay display, 
 #endif
 			bool withStencil)
 	{		
 
-#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 		const f32 egl_ver = core::fast_atof(reinterpret_cast<const c8*>(eglQueryString(display, EGL_VERSION)));
 		EGLVersion = static_cast<u16>(core::floor32(egl_ver) * 100 + core::round32(core::fract(egl_ver) * 10.0f));
 		core::stringc eglExtensions = eglQueryString(display, EGL_EXTENSIONS);

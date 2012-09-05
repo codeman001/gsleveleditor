@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F1AEED415F7897A00DF8EA0 /* IrrCompileConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F1AEED315F7897A00DF8EA0 /* IrrCompileConfig.h */; };
 		7FCBD11C15F4B13300C432A7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBD11B15F4B13300C432A7 /* Foundation.framework */; };
 		7FCBD31D15F4B2D400C432A7 /* aes.h in Headers */ = {isa = PBXBuildFile; fileRef = 7FCBD13215F4B2D300C432A7 /* aes.h */; };
 		7FCBD31E15F4B2D400C432A7 /* aescrypt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FCBD13315F4B2D300C432A7 /* aescrypt.cpp */; };
@@ -480,6 +481,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7F1AEED315F7897A00DF8EA0 /* IrrCompileConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IrrCompileConfig.h; path = ../../../../../include/IrrCompileConfig.h; sourceTree = "<group>"; };
 		7FCBD11815F4B13300C432A7 /* libirrlicht.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libirrlicht.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7FCBD11B15F4B13300C432A7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7FCBD11F15F4B13300C432A7 /* irrlicht-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "irrlicht-Prefix.pch"; sourceTree = "<group>"; };
@@ -994,6 +996,7 @@
 		7FCBD11D15F4B13300C432A7 /* irrlicht */ = {
 			isa = PBXGroup;
 			children = (
+				7F1AEED315F7897A00DF8EA0 /* IrrCompileConfig.h */,
 				7FCBD13015F4B28E00C432A7 /* Engine */,
 				7FCBD12F15F4B27300C432A7 /* Librarys */,
 				7FCBD11E15F4B13300C432A7 /* Supporting Files */,
@@ -1383,11 +1386,11 @@
 		7FCBD55C15F4BB1500C432A7 /* video */ = {
 			isa = PBXGroup;
 			children = (
-				7FCBDD6915F4C00A00C432A7 /* Null */,
-				7FCBD56215F4BB3A00C432A7 /* OpenGLES2 */,
 				7FCBD55E15F4BB3500C432A7 /* CVideoModeList.cpp */,
 				7FCBD55F15F4BB3500C432A7 /* CVideoModeList.h */,
+				7FCBDD6915F4C00A00C432A7 /* Null */,
 				7FCBD55D15F4BB1D00C432A7 /* OpenGLES1 */,
+				7FCBD56215F4BB3A00C432A7 /* OpenGLES2 */,
 			);
 			name = video;
 			sourceTree = "<group>";
@@ -1921,6 +1924,7 @@
 				7FCBDE2615F4C2E200C432A7 /* CDMFLoader.h in Headers */,
 				7FCBDE2A15F4C32400C432A7 /* CLMTSMeshFileLoader.h in Headers */,
 				7FD0C01E15F4FB3A00626D90 /* CWADReader.h in Headers */,
+				7F1AEED415F7897A00DF8EA0 /* IrrCompileConfig.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

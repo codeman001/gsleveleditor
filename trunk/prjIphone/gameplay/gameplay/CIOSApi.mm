@@ -4,13 +4,9 @@
 // getResourcePath
 // get path of application
 void getResourcePath(char* cBuffer, int iLength)
-{
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	
+{	
 	NSString* readPath = [[NSBundle mainBundle] resourcePath];
 	[readPath getCString:cBuffer maxLength:iLength encoding:NSASCIIStringEncoding];
-	
-	[pool release];
 }
 
 // getSavePath
@@ -115,4 +111,13 @@ int getDeviceOrientation()
             break;
     };
 	return 0;
+}
+
+// getDeviceWidthHeight
+// return width, height of screen
+void getDeviceWidthHeight( int &width, int &height )
+{
+    CGRect rect = [[UIScreen mainScreen] bounds];
+    width = (int)rect.size.width;
+    height = (int)rect.size.height;
 }

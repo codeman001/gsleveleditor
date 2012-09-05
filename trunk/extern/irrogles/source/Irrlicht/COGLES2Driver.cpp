@@ -31,11 +31,7 @@ namespace video
 
 //! constructor and init code
 	COGLES2Driver::COGLES2Driver(const SIrrlichtCreationParameters& params,
-			const SExposedVideoData& data, io::IFileSystem* io
-#if defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
-			, const MIrrIPhoneDevice& device
-#endif
-	)
+			const SExposedVideoData& data, io::IFileSystem* io	)
 		: CNullDriver(io, params.WindowSize), COGLES2ExtensionHandler(),
 		CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
 		Transformation3DChanged(true), AntiAlias(params.AntiAlias),
@@ -45,10 +41,6 @@ namespace video
 #endif
 #if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 		, HDc(0)
-#elif defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
-		, ViewFramebuffer(0)
-		, ViewRenderbuffer(0)
-		, ViewDepthRenderbuffer(0)
 #endif
 		, NoHighLevelShader(true)
 		, BlendEnabled(false)
@@ -69,11 +61,9 @@ namespace video
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 		EglWindow = (NativeWindowType)ExposedData.OpenGLLinux.X11Window;
 		EglDisplay = eglGetDisplay((NativeDisplayType)ExposedData.OpenGLLinux.X11Display);
-#elif defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
-		Device = device;
 #endif
 
-#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+#if !defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_) && !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 		if (EglDisplay == EGL_NO_DISPLAY)
 		{
 			os::Printer::log("Getting OpenGL-ES2 display.");
@@ -412,7 +402,7 @@ namespace video
 	{
 		CNullDriver::endScene();
 
-#if defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_) || defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 		// todo swapbuffer
 		glFlush();
 #else
@@ -3018,11 +3008,10 @@ namespace video
 // -----------------------------------
 #if defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
 	IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params,
-			video::SExposedVideoData& data, io::IFileSystem* io,
-			MIrrIPhoneDevice const & device)
+			video::SExposedVideoData& data, io::IFileSystem* io)
 	{
 #ifdef _IRR_COMPILE_WITH_OGLES2_
-		return new COGLES2Driver(params, data, io, device);
+		return new COGLES2Driver(params, data, io);
 #else
 		return 0;
 #endif // _IRR_COMPILE_WITH_OGLES2_

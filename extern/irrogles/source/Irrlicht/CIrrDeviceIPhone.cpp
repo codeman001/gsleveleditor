@@ -28,9 +28,8 @@ namespace irr
 {
 namespace video
 {
-	IVideoDriver* createOGLES1Driver(const SIrrlichtCreationParameters& params,
-		video::SExposedVideoData& data, io::IFileSystem* io,
-		MIrrIPhoneDevice const & device);
+	IVideoDriver* createOGLES1Driver(const SIrrlichtCreationParameters& params, video::SExposedVideoData& data, io::IFileSystem* io);
+	IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params, video::SExposedVideoData& data, io::IFileSystem* io);
 }
 }
 
@@ -47,18 +46,7 @@ CIrrDeviceIPhone::CIrrDeviceIPhone(const SIrrlichtCreationParameters& params, co
 {
 	#ifdef _DEBUG
 	setDebugName("CIrrDeviceIPhone");
-	#endif
-	
-	IrrIPhoneDevice.DeviceM = 0;
-	IrrIPhoneDevice.DeviceCPP = this;
-	IrrIPhoneDevice.displayCreate = 0;
-	IrrIPhoneDevice.displayInit = 0;
-	IrrIPhoneDevice.displayBegin = 0;
-	IrrIPhoneDevice.displayEnd = 0;
-	IrrIPhoneDevice.onTerminate = &CIrrDeviceIPhone::onTerminate;
-	IrrIPhoneDevice.onWindowActive = &CIrrDeviceIPhone::onWindowActive;
-	
-	//irr_device_iphone_create(&IrrIPhoneDevice);
+	#endif	
 
 	// print version, distribution etc.
 	struct utsname info;
@@ -69,14 +57,6 @@ CIrrDeviceIPhone::CIrrDeviceIPhone(const SIrrlichtCreationParameters& params, co
 			+info.version+" "
 			+info.machine).c_str());
 	os::Printer::log(Operator->getOperationSystemVersion(), ELL_INFORMATION);
-
-	// create display
-	if (CreationParams.DriverType != video::EDT_NULL)
-	{
-		// create the display, only if we do not use the null device
-		if (!createDisplay())
-			return;
-	}
 
 	// create driver
 	createDriver();
@@ -97,17 +77,6 @@ CIrrDeviceIPhone::~CIrrDeviceIPhone()
 }
 
 
-
-bool CIrrDeviceIPhone::createDisplay()
-{
-	(*IrrIPhoneDevice.displayCreate)(
-		&IrrIPhoneDevice,
-		&CreationParams.WindowId,
-		CreationParams.WindowSize.Width, CreationParams.WindowSize.Height);
-	return true;
-}
-
-
 //! create the driver
 void CIrrDeviceIPhone::createDriver()
 {
@@ -117,14 +86,22 @@ void CIrrDeviceIPhone::createDriver()
 	#ifdef _IRR_COMPILE_WITH_OGLES1_
 		{
 			video::SExposedVideoData data;
-			VideoDriver = video::createOGLES1Driver(
-				CreationParams, data, FileSystem, IrrIPhoneDevice);
+			VideoDriver = video::createOGLES1Driver( CreationParams, data, FileSystem );
 		}
 	#else
 		os::Printer::log("No OpenGL-ES1 support compiled in.", ELL_ERROR);
 	#endif
 		break;
-
+	case video::EDT_OGLES2:
+	#ifdef _IRR_COMPILE_WITH_OGLES2_
+		{
+			video::SExposedVideoData data;
+			VideoDriver = video::createOGLES2Driver( CreationParams, data, FileSystem );
+		}
+	#else
+		os::Printer::log("No OpenGL-ES2 support compiled in.", ELL_ERROR);
+	#endif
+		break;
 	case video::EDT_SOFTWARE:
 	case video::EDT_BURNINGSVIDEO:
 	case video::EDT_DIRECT3D8:
@@ -205,9 +182,7 @@ bool CIrrDeviceIPhone::present(video::IImage* image, void * windowId, core::rect
 void CIrrDeviceIPhone::closeDevice()
 {
 	WindowActive = false;
-	Close = true;
-	CFRunLoopStop(CFRunLoopGetMain());
-	while (!Closed) yield();
+	Close = true;	
 }
 
 
@@ -259,25 +234,6 @@ void CIrrDeviceIPhone::setWindowActive(bool active)
 {
 	WindowActive = active;
 }
-
-
-void CIrrDeviceIPhone::onTerminate(MIrrIPhoneDevice * dev)
-{
-	if (dev && dev->DeviceCPP)
-	{
-		static_cast<irr::CIrrDeviceIPhone*>(dev->DeviceCPP)->closeDevice();
-	}
-}
-
-
-void CIrrDeviceIPhone::onWindowActive(MIrrIPhoneDevice * dev, int active)
-{
-	if (dev && dev->DeviceCPP)
-	{
-		static_cast<irr::CIrrDeviceIPhone*>(dev->DeviceCPP)->setWindowActive(active != 0);
-	}
-}
-
 
 } // end namespace
 

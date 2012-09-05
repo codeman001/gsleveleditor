@@ -61,7 +61,7 @@ namespace video
 #if defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
 		COGLES1Driver(const SIrrlichtCreationParameters& params,
 				const SExposedVideoData& data,
-				io::IFileSystem* io, MIrrIPhoneDevice const & device);
+				io::IFileSystem* io);
 #endif
 
 		//! destructor
@@ -387,13 +387,11 @@ namespace video
 #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
 		HDC HDc;
 #endif
-#if defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
-		MIrrIPhoneDevice Device;
-		GLuint ViewFramebuffer;
-		GLuint ViewRenderbuffer;
-		GLuint ViewDepthRenderbuffer;
-#elif defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 
+#if defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
+		// do not need egl
+#elif defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+		// do not need egl
 #else
 		NativeWindowType EglWindow;
 		EGLDisplay EglDisplay;

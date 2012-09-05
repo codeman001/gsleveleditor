@@ -10,33 +10,6 @@
 
 #ifdef _IRR_COMPILE_WITH_IPHONE_DEVICE_
 
-//! Interface between ObjC device and C++ device.
-struct MIrrIPhoneDevice
-{
-	//! ObjC device object.
-	void * DeviceM;
-	
-	//! C++ device object.
-	void * DeviceCPP;
-
-	/* The *display* functions call into the Obj-C instance. */
-
-	void (*displayCreate)(struct MIrrIPhoneDevice * dev,
-			void** window, int w, int h);
-	void (*displayInit)(struct MIrrIPhoneDevice * dev,
-			void** context, void** view);
-	void (*displayBegin)(struct MIrrIPhoneDevice * dev);
-	void (*displayEnd)(struct MIrrIPhoneDevice * dev);
-
-	/* The *on* functions are callbacks from Obj-C to C++. */
-
-	void (*onTerminate)(struct MIrrIPhoneDevice * dev);
-	void (*onWindowActive)(struct MIrrIPhoneDevice * dev, int active);
-};
-
-/* 	The single link time interface call between ObjC and C++.
-	It creates the ObjC device object and initializes the interface functions.
-*/
 #ifdef __cplusplus
 extern "C"
 #else
@@ -119,9 +92,7 @@ namespace irr
 			return EIDT_OSX;
 		}
 
-	private:
-		
-		MIrrIPhoneDevice IrrIPhoneDevice;
+	private:		
 	
 		volatile bool Close;
 		volatile bool Closed;
@@ -129,18 +100,8 @@ namespace irr
 		volatile bool WindowMinimized;
 
 		//! Create the driver.
-		void createDriver();
-
-		//! Create the native display view.
-		bool createDisplay();
-		
-		//! Callback for when the device/app will terminate and hence
-		//! need immediate cleanup.
-		static void onTerminate(MIrrIPhoneDevice * dev);
-		
-		//! Callback to set the active state of the window. This calls
-		//! setWindowActive(bool) as needed.
-		static void onWindowActive(MIrrIPhoneDevice * dev, int active);
+		void createDriver();		
+				
 	};
 
 } // end namespace irr

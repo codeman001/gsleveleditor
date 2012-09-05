@@ -93,6 +93,7 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 	s32 scaleHint		= m_scaleHint;
 	s32 rotationHint	= m_rotHint;
 
+#pragma region QueryPosition
 	if (PositionKeys.size())
 	{
 		foundPositionIndex = -1;
@@ -151,8 +152,10 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 		localMatrix.translateVect( position );
 	}
 
-	//------------------------------------------------------------
+#pragma endregion	
 
+
+#pragma region QueryScale
 	if (ScaleKeys.size())
 	{
 		foundScaleIndex = -1;
@@ -209,9 +212,10 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 	{
 		scale = core::vector3df(1,1,1);
 	}
+#pragma endregion
+	
 
-	//-------------------------------------------------------------
-
+#pragma region QueryRotation
 	if (RotationKeys.size())
 	{
 		foundRotationIndex = -1;
@@ -271,6 +275,7 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 		// default rotation
 		rotation = core::quaternion(localMatrix);
 	}
+#pragma endregion
 
 	// save hint
 	m_posHint	= positionHint;

@@ -201,6 +201,11 @@ void IView::unRegisterEvent( IEventReceiver *pEvent )
 wchar_t g_tempPathW[1024];
 char	g_tempPathA[1024];
 
+#if defined(IOS)
+// get iphone resource
+extern void getResourcePath(char* cBuffer, int iLength);
+#endif
+
 char* IView::getPhysicPath(	const std::string& path )
 {
 #ifdef GSGAMEPLAY
@@ -210,7 +215,11 @@ char* IView::getPhysicPath(	const std::string& path )
 		uiString::cat<char,const char>( g_tempPathA, path.c_str() );
 	#elif defined(IOS)
 		// iphone os
-
+        char rootPath[512];
+        getResourcePath(rootPath, 512);
+        uiString::copy<char,const char>( g_tempPathA, rootPath );
+        uiString::cat<char,const char>( g_tempPathA, "/" );
+        uiString::cat<char,const char>( g_tempPathA, path.c_str() );
 	#else
 		// default win32
 		uiString::copy<char,const char>( g_tempPathA, path.c_str() );

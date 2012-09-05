@@ -11,11 +11,19 @@
 
 #ifdef _IRR_COMPILE_WITH_OGLES2_
 
-#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
-#include <GLES2/egl.h>
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
+    #include <GLES2/egl.h>
+    #include <GLES2/gl2.h>
 #endif
 
-#include <GLES2/gl2.h>
+#if defined (_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+    #include <GLES2/gl2.h>
+#endif
+
+#if defined (_IRR_COMPILE_WITH_IPHONE_DEVICE_)
+    #include <OpenGLES/ES2/gl.h>
+    //#include <OpenGLES/ES2/glext.h>
+#endif
 
 // seems to be missing...
 typedef char GLchar;
@@ -184,7 +192,7 @@ namespace video
 		void dump() const;
 
 		void initExtensions(COGLES2Driver* driver,
-#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 				EGLDisplay display, 
 #endif
 				bool withStencil);

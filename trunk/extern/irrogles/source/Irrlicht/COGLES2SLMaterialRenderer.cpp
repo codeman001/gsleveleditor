@@ -17,7 +17,13 @@
 #include "EVertexAttributes.h"
 #include "COGLES2Texture.h"
 
-#include <GLES2/gl2.h>
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) || defined (_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+    #include <GLES2/gl2.h>
+#endif
+
+#if defined (_IRR_COMPILE_WITH_IPHONE_DEVICE_)
+    #include <OpenGLES/ES2/gl.h>
+#endif
 
 namespace irr
 {

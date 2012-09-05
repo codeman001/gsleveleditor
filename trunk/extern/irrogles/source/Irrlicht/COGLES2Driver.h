@@ -24,8 +24,8 @@
 
 #ifdef _IRR_COMPILE_WITH_OGLES2_
 
-#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
-	#include <GLES2/eglplatform.h>
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
+    #include <GLES2/eglplatform.h>
 #endif
 
 #include "CNullDriver.h"
@@ -59,12 +59,6 @@ namespace video
 #ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
 		COGLES2Driver(const SIrrlichtCreationParameters& params,
 					io::IFileSystem* io, CIrrDeviceMacOSX *device);
-#endif
-
-#if defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
-		COGLES2Driver(const SIrrlichtCreationParameters& params,
-					const SExposedVideoData& data,
-					io::IFileSystem* io);
 #endif
 
 		//! destructor
@@ -455,7 +449,7 @@ namespace video
 		HDC HDc;
 #endif
 
-#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 		EGLNativeWindowType EglWindow;
 		void* EglDisplay;
 		void* EglSurface;

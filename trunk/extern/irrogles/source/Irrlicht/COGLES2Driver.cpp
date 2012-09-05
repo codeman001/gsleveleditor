@@ -18,11 +18,17 @@
 #include "CImage.h"
 #include "os.h"
 
-#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 #include <GLES2/egl.h>
 #endif
 
+#if defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 #include <GLES2/gl2.h>
+#endif
+
+#if defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
+#include <OpenGLES/ES2/gl.h>
+#endif
 
 namespace irr
 {
@@ -36,10 +42,9 @@ namespace video
 		CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
 		Transformation3DChanged(true), AntiAlias(params.AntiAlias),
 		RenderTargetTexture(0), CurrentRendertargetSize(0, 0), ColorFormat(ECF_R8G8B8)
-#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
-		,EglDisplay(EGL_NO_DISPLAY)
-#endif
 #if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
+    
+        ,EglDisplay(EGL_NO_DISPLAY)    
 		, HDc(0)
 #endif
 		, NoHighLevelShader(true)
@@ -231,7 +236,7 @@ namespace video
 		genericDriverInit(params.WindowSize, params.Stencilbuffer);
 
 		// set vsync
-#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 		if (params.Vsync)
 			eglSwapInterval(EglDisplay, 1);
 #endif
@@ -245,7 +250,7 @@ namespace video
 		deleteMaterialRenders();
 		deleteAllTextures();
 
-#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 		// HACK : the following is commented because destroying the context crashes under Linux (Thibault 04-feb-10)
 		/*eglMakeCurrent(EGL_NO_DISPLAY, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 		eglDestroyContext(EglDisplay, EglContext);
@@ -271,7 +276,7 @@ namespace video
 		Name = glGetString(GL_VERSION);
 		printVersion();
 
-#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 		os::Printer::log(eglQueryString(EglDisplay, EGL_CLIENT_APIS));
 #endif
 
@@ -284,7 +289,7 @@ namespace video
 			CurrentTexture[i] = 0;
 		// load extensions
 		initExtensions(this,
-#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 						EglDisplay,
 #endif
 						stencilBuffer);
@@ -2976,7 +2981,7 @@ namespace irr
 namespace video
 {
 
-#if defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined(_IRR_COMPILE_WITH_SDL_DEVICE_) || defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) || defined(_IRR_COMPILE_WITH_CONSOLE_DEVICE_)  || defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_X11_DEVICE_) || defined(_IRR_COMPILE_WITH_SDL_DEVICE_) || defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_) || defined(_IRR_COMPILE_WITH_CONSOLE_DEVICE_)  || defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_) || defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
 	IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params,
 			video::SExposedVideoData& data, io::IFileSystem* io)
 	{
@@ -3003,20 +3008,6 @@ namespace video
 	}
 #endif // _IRR_COMPILE_WITH_OSX_DEVICE_
 
-// -----------------------------------
-// IPHONE VERSION
-// -----------------------------------
-#if defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
-	IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params,
-			video::SExposedVideoData& data, io::IFileSystem* io)
-	{
-#ifdef _IRR_COMPILE_WITH_OGLES2_
-		return new COGLES2Driver(params, data, io);
-#else
-		return 0;
-#endif // _IRR_COMPILE_WITH_OGLES2_
-	}
-#endif // _IRR_COMPILE_WITH_IPHONE_DEVICE_
 
 } // end namespace
 } // end namespace

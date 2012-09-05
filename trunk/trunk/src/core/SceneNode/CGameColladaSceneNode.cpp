@@ -44,7 +44,8 @@ void CGameColladaMesh::updateJoint()
 
 	for ( int i = 0; i < nJoint; i++ )
 	{
-		uiString::copy<char, const wchar_t>( nameA, Joints[i].name.c_str() );
+		//uiString::copy<char, const wchar_t>( nameA, Joints[i].name.c_str() );
+        uiString::convertUnicodeToUTF8((unsigned short*)Joints[i].name.c_str(), nameA);
 		Joints[i].node = Component->getSceneNodeBySID( nameA ) ;
 	}
 }

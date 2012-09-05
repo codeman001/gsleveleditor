@@ -169,8 +169,11 @@ inline quaternion::quaternion(const vector3df& vec)
 
 
 // Constructor which converts a matrix to a quaternion
-inline quaternion::quaternion(const matrix4& m)
+inline quaternion::quaternion(const matrix4& mat)
 {
+	const f32 *matrix = mat.pointer();
+	#define m(x,y)	matrix[ (x << 2) + y ]
+
 	const f32 diag = m(0,0) + m(1,1) + m(2,2) + 1;
 
 	if( diag > 0.0f )
@@ -222,6 +225,8 @@ inline quaternion::quaternion(const matrix4& m)
 			W = (m(1,0) - m(0,1)) / scale;
 		}
 	}
+
+	#undef m
 
 	normalize();
 }

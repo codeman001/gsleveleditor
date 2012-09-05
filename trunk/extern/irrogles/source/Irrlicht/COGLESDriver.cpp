@@ -221,6 +221,8 @@ COGLES1Driver::~COGLES1Driver()
 	eglDestroyContext(EglDisplay, EglContext);
 	eglDestroySurface(EglDisplay, EglSurface);
 	eglTerminate(EglDisplay);
+#endif
+
 #if defined(_IRR_COMPILE_WITH_WINDOWS_DEVICE_)
 	if (HDc)
 		ReleaseDC((HWND)EglWindow, HDc);
@@ -3214,6 +3216,7 @@ core::dimension2du COGLES1Driver::getMaxTextureSize() const
 
 } // end namespace
 } // end namespace
+
 
 #endif // _IRR_COMPILE_WITH_OGLES1_
 

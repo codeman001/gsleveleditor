@@ -1227,7 +1227,7 @@ namespace core
 
 
 	template <class T>
-	inline bool CMatrix4<T>::getInverse(CMatrix4<T>& out) const
+	inline bool CMatrix4<T>::getInverse(CMatrix4<T>& outMat) const
 	{
 		/// Calculates the inverse of this Matrix
 		/// The inverse is calculated using Cramers rule.
@@ -1236,12 +1236,14 @@ namespace core
 #if defined ( USE_MATRIX_TEST )
 		if ( this->isIdentity() )
 		{
-			out=*this;
+			outMat=*this;
 			return true;
 		}
 #endif
-		const CMatrix4<T> &m = *this;
-
+		//const CMatrix4<T> &m = *this;
+		#define m(x,y)		M[ (x << 2) + y]
+		#define out(x,y)	outMat.M[ (x << 2) + y]
+		
 		f32 d = (m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0)) * (m(2, 2) * m(3, 3) - m(2, 3) * m(3, 2)) -
 			(m(0, 0) * m(1, 2) - m(0, 2) * m(1, 0)) * (m(2, 1) * m(3, 3) - m(2, 3) * m(3, 1)) +
 			(m(0, 0) * m(1, 3) - m(0, 3) * m(1, 0)) * (m(2, 1) * m(3, 2) - m(2, 2) * m(3, 1)) +
@@ -1303,8 +1305,10 @@ namespace core
 				m(0, 1) * (m(1, 2) * m(2, 0) - m(1, 0) * m(2, 2)) +
 				m(0, 2) * (m(1, 0) * m(2, 1) - m(1, 1) * m(2, 0)));
 
+		#undef m
+				
 #if defined ( USE_MATRIX_TEST )
-		out.definitelyIdentityMatrix = definitelyIdentityMatrix;
+		outMat.definitelyIdentityMatrix = definitelyIdentityMatrix;
 #endif
 		return true;
 	}

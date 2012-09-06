@@ -112,6 +112,15 @@ void CApplication::mainLoop()
 		m_timeStep = 1.0f;
 	m_lastUpdateTime = now;
 	
+
+	// update camera aspect
+	CGameCamera* activeCam = getActiveCamera();
+	if ( activeCam )
+	{
+		f32 fAspect = (f32)m_driver->getCurrentRenderTargetSize().Width / (f32)m_driver->getCurrentRenderTargetSize().Height;
+		activeCam->getCameraNode()->setAspectRatio( fAspect );
+	}
+
 	// clear debug
 	CGameDebug::getInstance()->clearLines();
 	CGameDebug::getInstance()->clearBoxs();

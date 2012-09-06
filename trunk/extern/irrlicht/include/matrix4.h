@@ -1306,7 +1306,8 @@ namespace core
 				m(0, 2) * (m(1, 0) * m(2, 1) - m(1, 1) * m(2, 0)));
 
 		#undef m
-				
+		#undef out
+
 #if defined ( USE_MATRIX_TEST )
 		outMat.definitelyIdentityMatrix = definitelyIdentityMatrix;
 #endif

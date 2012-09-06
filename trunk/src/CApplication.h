@@ -18,6 +18,9 @@ public:
 	int		m_fps;
 
 protected:
+	bool	m_resizeWin;
+
+protected:
 	gui::IGUIFont*	m_font;
 public:
 	CApplication();	
@@ -43,6 +46,9 @@ public:
 	// loop game
 	void mainLoop();	
 
+	// notifyResizeWin
+	// notify change size of window
+	void notifyResizeWin(int w, int h);	
 };
 
 

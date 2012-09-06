@@ -17,6 +17,7 @@ IView* getIView()
 CApplication::CApplication()
 {
 	g_view = (IView*) this;
+	m_resizeWin = false;
 }
 
 bool CApplication::OnEvent(const SEvent& event)
@@ -112,13 +113,18 @@ void CApplication::mainLoop()
 		m_timeStep = 1.0f;
 	m_lastUpdateTime = now;
 	
-
 	// update camera aspect
-	CGameCamera* activeCam = getActiveCamera();
-	if ( activeCam )
+#ifndef WIN32
+	if ( m_resizeWin )
+#endif
 	{
-		f32 fAspect = (f32)m_driver->getCurrentRenderTargetSize().Width / (f32)m_driver->getCurrentRenderTargetSize().Height;
-		activeCam->getCameraNode()->setAspectRatio( fAspect );
+		CGameCamera* activeCam = getActiveCamera();
+		if ( activeCam )
+		{
+			f32 fAspect = (f32)m_driver->getCurrentRenderTargetSize().Width / (f32)m_driver->getCurrentRenderTargetSize().Height;
+			activeCam->getCameraNode()->setAspectRatio( fAspect );
+		}
+		m_resizeWin = false;
 	}
 
 	// clear debug
@@ -177,4 +183,12 @@ void CApplication::mainLoop()
 #else
 	m_device->yield();
 #endif				
+}
+
+// notifyResizeWin
+// notify change size of window
+void CApplication::notifyResizeWin(int w, int h)
+{
+	m_driver->OnResize(irr::core::dimension2du((u32)w, (u32)h));
+	m_resizeWin = true;
 }

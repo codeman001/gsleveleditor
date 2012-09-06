@@ -64,8 +64,8 @@ extern "C" {
 	}
 
 	void appicationResizeWindow(int w, int h)
-	{
-		g_irrDevice->getVideoDriver()->OnResize(irr::core::dimension2du((u32)w, (u32)h));
+	{		
+		g_myApp.notifyResizeWin(w, h);
 	}
 
 	void appicationTouchDown(int touchID, int x, int y)

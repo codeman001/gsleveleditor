@@ -127,6 +127,9 @@ void CApplication::mainLoop()
 			m_resizeWin = false;
 		}		
 	}
+	
+	// update touch event
+	m_touchMgr.update();
 
 	// clear debug
 	CGameDebug::getInstance()->clearLines();
@@ -192,4 +195,11 @@ void CApplication::notifyResizeWin(int w, int h)
 {
 	m_driver->OnResize(irr::core::dimension2du((u32)w, (u32)h));
 	m_resizeWin = true;
+}
+
+// notifyTouchEvent
+// touch on device
+void CApplication::notifyTouchEvent(CTouchManager::TouchEvent touchEvent, int x, int y, int id)
+{
+	m_touchMgr.touchEvent( touchEvent, x, y, id );
 }

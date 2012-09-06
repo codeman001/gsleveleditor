@@ -5,6 +5,7 @@
 #include "IView.h"
 
 #include "CBinaryUtils.h"
+#include "CTouchManager.h"
 
 #include "gameState/CStateInit.h"
 #include "gameState/CGameStateManager.h"
@@ -16,12 +17,13 @@ class CApplication: public IEventReceiver, IView
 public:
 	long	m_lastUpdateTime;
 	int		m_fps;
-
+	
 protected:
-	bool	m_resizeWin;
-
+	bool			m_resizeWin;	
+	CTouchManager	m_touchMgr;
 protected:
 	gui::IGUIFont*	m_font;
+
 public:
 	CApplication();	
 
@@ -48,7 +50,11 @@ public:
 
 	// notifyResizeWin
 	// notify change size of window
-	void notifyResizeWin(int w, int h);	
+	void notifyResizeWin(int w, int h);
+
+	// notifyTouchEvent
+	// touch on device
+	void notifyTouchEvent(CTouchManager::TouchEvent touchEvent, int x, int y, int id);
 };
 
 

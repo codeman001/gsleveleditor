@@ -18,7 +18,6 @@ include $(BUILD_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE    := libirrlichtex
 include source_irlichtex.mak
-LOCAL_CFLAGS += -w -fsigned-char
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)

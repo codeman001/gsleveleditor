@@ -219,7 +219,7 @@ void COGLES1Texture::uploadTexture(bool newTexture, void* mipmapData, u32 level)
 			break;
 	}
 	// Hack for iPhone SDK, which requires a different InternalFormat
-#if defined(_IRR_IPHONE_PLATFORM_) || defined(_IRR_ANDROID_PLATFROM_)
+#if defined(_IRR_IPHONE_PLATFORM_)
 	if (InternalFormat==GL_BGRA)
 		InternalFormat=GL_RGBA;
 #endif

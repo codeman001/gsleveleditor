@@ -17,7 +17,7 @@ IView* getIView()
 CApplication::CApplication()
 {
 	g_view = (IView*) this;
-	m_resizeWin = false;
+	m_resizeWin = true;
 }
 
 bool CApplication::OnEvent(const SEvent& event)
@@ -120,11 +120,12 @@ void CApplication::mainLoop()
 	{
 		CGameCamera* activeCam = getActiveCamera();
 		if ( activeCam )
-		{
+		{ 
 			f32 fAspect = (f32)m_driver->getCurrentRenderTargetSize().Width / (f32)m_driver->getCurrentRenderTargetSize().Height;
 			activeCam->getCameraNode()->setAspectRatio( fAspect );
-		}
-		m_resizeWin = false;
+
+			m_resizeWin = false;
+		}		
 	}
 
 	// clear debug

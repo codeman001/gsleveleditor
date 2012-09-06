@@ -193,7 +193,9 @@ void CApplication::mainLoop()
 // notify change size of window
 void CApplication::notifyResizeWin(int w, int h)
 {
-	m_driver->OnResize(irr::core::dimension2du((u32)w, (u32)h));
+	m_driver->OnResize(core::dimension2du((u32)w, (u32)h));
+    core::rect<s32> winRect(0,0,w,h);
+    m_device->getCursorControl()->setReferenceRect(&winRect);
 	m_resizeWin = true;
 }
 

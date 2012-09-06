@@ -36,10 +36,18 @@ void CTouchManager::update()
 		event.MouseInput.Shift = false;
 		event.MouseInput.Control = false;
 
+        // touch 0 is UI touch
+        if ( i == 0 )
+        {
+            device->getCursorControl()->setPosition(m_touch[0].x, m_touch[0].y);
+        }
+        
 		if ( m_touch[i].touchEvent == CTouchManager::TouchDown )
 		{			
 			event.MouseInput.Event = irr::EMIE_LMOUSE_PRESSED_DOWN;
 			device->postEventFromUser(event);
+            
+            //printf("touch down: %d %d\n", m_touch[i].x, m_touch[i].y);
 		}
 		else if ( m_touch[i].touchEvent == CTouchManager::TouchMove )
 		{
@@ -101,9 +109,6 @@ void CTouchManager::touchEvent(TouchEvent touchEvent, int x, int y, int id)
 	if ( touchID == -1 )
 		return;
 	
-	if ( m_touch[touchID].touchEvent == CTouchManager::TouchDown )
-		touchEvent = CTouchManager::TouchMove;
-
 	m_touch[touchID].touchEvent	= touchEvent;
 	m_touch[touchID].x			= x;
 	m_touch[touchID].y			= y;

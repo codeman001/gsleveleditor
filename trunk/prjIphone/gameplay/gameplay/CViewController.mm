@@ -119,16 +119,8 @@ extern void appicationTouchUp(int touchID, int x, int y);
 {
     for (UITouch* touch in touches)
     {
-        CGPoint cursor = [touch locationInView:self];        
-		/*
-        irr::SEvent ievent;
-        ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
-        ievent.MouseInput.X = cursor.x * scale;
-        ievent.MouseInput.Y = cursor.y * scale;
-        ievent.MouseInput.Event = irr::EMIE_LMOUSE_PRESSED_DOWN;
-        ievent.DeviceID = (long) touch;
-        PostEvent(ievent);
-		*/
+        CGPoint cursor = [touch locationInView:self.view];        
+        appicationTouchDown( (int)touch, (int)cursor.x, (int)cursor.y);
     }
 }
 
@@ -136,16 +128,8 @@ extern void appicationTouchUp(int touchID, int x, int y);
 {
     for (UITouch* touch in touches)
     {
-        CGPoint cursor = [touch locationInView:self];
-        /*
-        irr::SEvent ievent;
-        ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
-        ievent.MouseInput.X = cursor.x * scale;
-        ievent.MouseInput.Y = cursor.y * scale;
-        ievent.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
-        ievent.DeviceID = (long) touch;        
-        PostEvent(ievent);
-		*/
+        CGPoint cursor = [touch locationInView:self.view];
+        appicationTouchMove((int)touch, (int)cursor.x, (int)cursor.y);
     }
 }
 
@@ -153,16 +137,8 @@ extern void appicationTouchUp(int touchID, int x, int y);
 {
     for (UITouch* touch in touches)
     {	
-        CGPoint cursor = [touch locationInView:self];
-		/*
-        irr::SEvent ievent;
-        ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
-        ievent.MouseInput.X = cursor.x * scale;
-        ievent.MouseInput.Y = cursor.y * scale;
-        ievent.MouseInput.Event = irr::EMIE_LMOUSE_LEFT_UP;
-        ievent.DeviceID = (long) touch;
-        PostEvent(ievent);
-		*/
+        CGPoint cursor = [touch locationInView:self.view];
+        appicationTouchUp( (int)touch, (int)cursor.x, (int)cursor.y);	
     }
 }
 

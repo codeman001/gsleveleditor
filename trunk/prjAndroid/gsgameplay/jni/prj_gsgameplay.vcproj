@@ -188,6 +188,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\src\CTouchManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\CTouchManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\native\NativeInterface.c"
 				>
 			</File>

@@ -2,13 +2,15 @@ package com.gseditor.gsgameplay;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.view.Menu;
 
 public class MainActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);        
+        super.onCreate(savedInstanceState);     
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         mGameES1View = new OpenGLES1View(this);
         setContentView(mGameES1View);
     }
@@ -32,7 +34,7 @@ public class MainActivity extends Activity {
 
     @Override 
     protected void onDestroy(){
-    	NativeInterface.getInstance().mainExitApp();
+    	//NativeInterface.getInstance().mainExitApp();
     	super.onDestroy();    	
     }
     

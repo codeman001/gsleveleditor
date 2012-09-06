@@ -113,4 +113,62 @@ extern void appicationTouchUp(int touchID, int x, int y);
     appicationLoop();
 }
 
+#pragma mark - GLKView and GLKViewController touches methods
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    for (UITouch* touch in touches)
+    {
+        CGPoint cursor = [touch locationInView:self];        
+		/*
+        irr::SEvent ievent;
+        ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
+        ievent.MouseInput.X = cursor.x * scale;
+        ievent.MouseInput.Y = cursor.y * scale;
+        ievent.MouseInput.Event = irr::EMIE_LMOUSE_PRESSED_DOWN;
+        ievent.DeviceID = (long) touch;
+        PostEvent(ievent);
+		*/
+    }
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    for (UITouch* touch in touches)
+    {
+        CGPoint cursor = [touch locationInView:self];
+        /*
+        irr::SEvent ievent;
+        ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
+        ievent.MouseInput.X = cursor.x * scale;
+        ievent.MouseInput.Y = cursor.y * scale;
+        ievent.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
+        ievent.DeviceID = (long) touch;        
+        PostEvent(ievent);
+		*/
+    }
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    for (UITouch* touch in touches)
+    {	
+        CGPoint cursor = [touch locationInView:self];
+		/*
+        irr::SEvent ievent;
+        ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
+        ievent.MouseInput.X = cursor.x * scale;
+        ievent.MouseInput.Y = cursor.y * scale;
+        ievent.MouseInput.Event = irr::EMIE_LMOUSE_LEFT_UP;
+        ievent.DeviceID = (long) touch;
+        PostEvent(ievent);
+		*/
+    }
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [self touchesEnded:touches withEvent:event];
+}
+
 @end

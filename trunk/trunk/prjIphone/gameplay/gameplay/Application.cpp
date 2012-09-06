@@ -62,18 +62,22 @@ void appicationResumeApp()
 }
     
 void appicationResizeWindow(int w, int h)
-{		
+{
+    g_myApp.notifyResizeWin(w, h);
 }
     
 void appicationTouchDown(int touchID, int x, int y)
-{	
+{
+    g_myApp.notifyTouchEvent(CTouchManager::TouchDown, x, y, touchID);
 }
     
 void appicationTouchMove(int touchID, int x, int y)
-{		
+{
+    g_myApp.notifyTouchEvent(CTouchManager::TouchMove, x, y, touchID);
 }
     
 void appicationTouchUp(int touchID, int x, int y)
-{		
+{
+    g_myApp.notifyTouchEvent(CTouchManager::TouchUp, x, y, touchID);
 }
     

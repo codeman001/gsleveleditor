@@ -68,6 +68,11 @@ CIrrDeviceIPhone::CIrrDeviceIPhone(const SIrrlichtCreationParameters& params, co
 	createGUIAndScene();
 	
 	WindowActive = true;
+    
+    static CIPhoneCursor s_cursor;
+    core::rect<s32> winRect(0,0,params.WindowSize.Width, params.WindowSize.Height);
+    s_cursor.setReferenceRect(&winRect);
+    CursorControl = &s_cursor;
 }
 
 

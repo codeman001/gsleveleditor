@@ -93,6 +93,7 @@
 		7FE6C72B15F47C2D00E07797 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE6C72A15F47C2D00E07797 /* main.m */; };
 		7FE6C73215F47C2D00E07797 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C73015F47C2D00E07797 /* MainStoryboard_iPhone.storyboard */; };
 		7FE6C73515F47C2D00E07797 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C73315F47C2D00E07797 /* MainStoryboard_iPad.storyboard */; };
+		7FE8A76F15F8FBE7004FC4D1 /* CTouchManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE8A76D15F8FBE7004FC4D1 /* CTouchManager.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -282,6 +283,8 @@
 		7FE6C73115F47C2D00E07797 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		7FE6C73415F47C2D00E07797 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		7FE6C73A15F47C2D00E07797 /* CViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CViewController.h; sourceTree = "<group>"; };
+		7FE8A76D15F8FBE7004FC4D1 /* CTouchManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CTouchManager.cpp; sourceTree = "<group>"; };
+		7FE8A76E15F8FBE7004FC4D1 /* CTouchManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTouchManager.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -352,6 +355,8 @@
 		7FD0BF4E15F4F34400626D90 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				7FE8A76D15F8FBE7004FC4D1 /* CTouchManager.cpp */,
+				7FE8A76E15F8FBE7004FC4D1 /* CTouchManager.h */,
 				7FD0BF5015F4F34400626D90 /* CApplication.cpp */,
 				7FD0BFCA15F4F34400626D90 /* IViewImp.cpp */,
 				7FD0C01915F4FADB00626D90 /* SPK_All.cpp */,
@@ -845,6 +850,7 @@
 				7F1AEF0D15F7A02700DF8EA0 /* Application.cpp in Sources */,
 				7F1AEF1015F7A2C500DF8EA0 /* CAppDelegate.mm in Sources */,
 				7F1AEF1115F7A2C500DF8EA0 /* CViewController.mm in Sources */,
+				7FE8A76F15F8FBE7004FC4D1 /* CTouchManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

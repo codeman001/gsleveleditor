@@ -202,7 +202,7 @@ wchar_t g_tempPathW[1024];
 char	g_tempPathA[1024];
 
 #if defined(IOS)
-// get iphone resource
+// get iphone resource path
 extern void getResourcePath(char* cBuffer, int iLength);
 #endif
 
@@ -211,7 +211,7 @@ char* IView::getPhysicPath(	const std::string& path )
 #ifdef GSGAMEPLAY
 	#if defined(ANDROID)
 		// android
-		uiString::copy<char,const char>( g_tempPathA, "/mnt/sdcard/" );
+		uiString::copy<char,const char>( g_tempPathA, "/mnt/sdcard/gsgameplay/" );
 		uiString::cat<char,const char>( g_tempPathA, path.c_str() );
 	#elif defined(IOS)
 		// iphone os

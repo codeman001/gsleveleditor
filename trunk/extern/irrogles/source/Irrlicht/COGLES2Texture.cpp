@@ -194,13 +194,15 @@ namespace video
 				break;
 			case ECF_A8R8G8B8:
 				PixelType = GL_UNSIGNED_BYTE;
+#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_)
 				if (Driver->queryOpenGLFeature(COGLES2ExtensionHandler::IRR_IMG_texture_format_BGRA8888) ||
-					Driver->queryOpenGLFeature( COGLES2ExtensionHandler::IRR_EXT_texture_format_BGRA8888))
+					Driver->queryOpenGLFeature(COGLES2ExtensionHandler::IRR_EXT_texture_format_BGRA8888))
 				{
 					InternalFormat = GL_BGRA;
 					PixelFormat = GL_BGRA;
 				}
 				else
+#endif
 				{
 					convert = CColorConverter::convert_A8R8G8B8toA8B8G8R8;
 					InternalFormat = GL_RGBA;

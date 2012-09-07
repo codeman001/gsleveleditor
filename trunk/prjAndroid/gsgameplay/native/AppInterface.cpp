@@ -69,15 +69,18 @@ extern "C" {
 	}
 
 	void appicationTouchDown(int touchID, int x, int y)
-	{	
+	{
+		g_myApp.notifyTouchEvent(CTouchManager::TouchDown, x, y, touchID);
 	}
-
+		
 	void appicationTouchMove(int touchID, int x, int y)
-	{		
+	{
+		g_myApp.notifyTouchEvent(CTouchManager::TouchMove, x, y, touchID);
 	}
-
+		
 	void appicationTouchUp(int touchID, int x, int y)
-	{		
+	{
+		g_myApp.notifyTouchEvent(CTouchManager::TouchUp, x, y, touchID);
 	}
-
+	
 }

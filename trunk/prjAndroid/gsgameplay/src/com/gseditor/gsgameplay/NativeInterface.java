@@ -4,6 +4,8 @@ public class NativeInterface {
 	
 	public static NativeInterface	sInstance = null;
 	
+	public static boolean IsUseOpenglES2 = true;
+	
 	static public NativeInterface getInstance()
 	{
 		if ( sInstance == null )

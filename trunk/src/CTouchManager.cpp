@@ -37,11 +37,13 @@ void CTouchManager::update()
 		event.MouseInput.Control = false;
 
         // touch 0 is UI touch
+#if defined(IOS) || defined(ANDROID)
         if ( i == 0 )
         {
             device->getCursorControl()->setPosition(m_touch[0].x, m_touch[0].y);
         }
-        
+#endif
+
 		if ( m_touch[i].touchEvent == CTouchManager::TouchDown )
 		{			
 			event.MouseInput.Event = irr::EMIE_LMOUSE_PRESSED_DOWN;

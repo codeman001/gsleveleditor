@@ -25,6 +25,6 @@ LOCAL_MODULE    := libgsgameplay
 include source_gameplay.mak
 #LOCAL_CFLAGS += -w -fsigned-char
 LOCAL_STATIC_LIBRARIES := liblua libgameswf libirrlicht libirrlichtex
-#LOCAL_LDLIBS := -lGLESv2 -ldl -llog -lc -lgcc
-LOCAL_LDLIBS := -lGLESv1_CM -ldl -llog -lc -lgcc
+LOCAL_LDLIBS := -lGLESv2 -ldl -llog -lc -lgcc
+#LOCAL_LDLIBS := -lGLESv1_CM -ldl -llog -lc -lgcc
 include $(BUILD_SHARED_LIBRARY)

@@ -95,7 +95,7 @@ namespace irr
         float                   m_invWidth;
         float                   m_invHeight;
     public:
-        CIPhoneCursor()
+        CAndroidCursor()
         {
             m_invWidth = 1.0f;
             m_invHeight = 1.0f;

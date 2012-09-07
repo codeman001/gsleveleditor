@@ -114,15 +114,13 @@ void CApplication::mainLoop()
 	m_lastUpdateTime = now;
 	
 	// update camera aspect
-#ifndef WIN32
 	if ( m_resizeWin )
-#endif
 	{
-		CGameCamera* activeCam = getActiveCamera();
-		if ( activeCam )
+        ICameraSceneNode *activeCamera = m_device->getSceneManager()->getActiveCamera();
+		if ( activeCamera )
 		{ 
 			f32 fAspect = (f32)m_driver->getCurrentRenderTargetSize().Width / (f32)m_driver->getCurrentRenderTargetSize().Height;
-			activeCam->getCameraNode()->setAspectRatio( fAspect );
+			activeCamera->setAspectRatio( fAspect );
 
 			m_resizeWin = false;
 		}		

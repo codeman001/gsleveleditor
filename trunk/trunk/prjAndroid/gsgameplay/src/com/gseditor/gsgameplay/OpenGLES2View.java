@@ -15,7 +15,7 @@ public class OpenGLES2View extends GLSurfaceView
 {
 	public OpenGLES2View(Context context) {
         super(context);        
-		init(false, 24, 16);
+		init(false, 16, 8);
     }
 
 	private void init(boolean translucent, int depth, int stencil) {

@@ -11,8 +11,17 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);     
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        mGameES1View = new OpenGLES1View(this);
-        setContentView(mGameES1View);
+        
+        if ( NativeInterface.IsUseOpenglES2 == true )
+        {
+        	mGameES2View = new OpenGLES2View(this);
+        	setContentView(mGameES2View);
+        }
+        else
+        {
+        	mGameES1View = new OpenGLES1View(this);
+        	setContentView(mGameES1View);
+        }
     }
 
     @Override
@@ -38,5 +47,6 @@ public class MainActivity extends Activity {
     	super.onDestroy();    	
     }
     
-    private OpenGLES1View mGameES1View;    
+    private OpenGLES1View mGameES1View = null;
+    private OpenGLES2View mGameES2View = null;
 }

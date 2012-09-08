@@ -188,14 +188,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\src\CTouchManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\CTouchManager.h"
-				>
-			</File>
-			<File
 				RelativePath="..\native\NativeInterface.c"
 				>
 			</File>
@@ -744,6 +736,26 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\gameLevel\LevelScript.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="gameControl"
+				>
+				<File
+					RelativePath="..\..\..\src\gameControl\CGameControl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gameControl\CGameControl.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gameControl\CTouchManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gameControl\CTouchManager.h"
 					>
 				</File>
 			</Filter>

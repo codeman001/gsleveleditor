@@ -2,6 +2,7 @@
 #include "CStateGameLoading.h"
 #include "CStateGameplay.h"
 #include "CGameStateManager.h"
+#include "IView.h"
 
 CStateGameLoading::CStateGameLoading()
 	:CGameState( CGameState::GSStateGameLoading )
@@ -48,7 +49,7 @@ void CStateGameLoading::onFsCommand( const char *command, const char *param )
 			m_beginLoading = true;
 		}
 		else if ( strcmp(param,"close") == 0 )
-		{
+		{			
 			CGameStateMgr::getInstance()->changeState( m_nextState );
 			m_nextState = NULL;
 		}
@@ -66,6 +67,23 @@ void CStateGameLoading::onUpdate()
 
 		if ( loadFinish )
 		{			
+			// load gameHud flash
+			CMenuFx *menu = CGameUI::getInstance()->openFlash("uiGameHud", getIView()->getPath("data/flashui/uiGameHud.swf"));
+			menu->setBackgroundTransparent(true);
+
+			// invisible all state
+			for ( int state = (int)CGameState::GSStateGameplay; state < (int)CGameState::StateCount; state++ )
+			{
+				// create flash mainmenu ui			
+				CMenuFxObj *menuObj = menu->getObj( CGameState::getStateName( (CGameState::EGameState)state ) );
+				if ( menuObj )
+				{
+					menuObj->setVisible( false );
+					menuObj->drop();
+				}			
+			}
+
+			// play animation
 			CMenuFxObj *menuObj = m_menuFx->getObj( getStateName(m_state) );
 			if ( menuObj )
 			{				

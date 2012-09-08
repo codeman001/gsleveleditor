@@ -16,12 +16,35 @@ void CMenuFxObj::setPosition( int x, int y )
 	if ( m_character )
 	{
 		const gameswf::matrix& curMat = m_character->get_matrix();
-
+		
 		gameswf::matrix mat;
 		mat.concatenate_translation(PIXELS_TO_TWIPS(x), PIXELS_TO_TWIPS(y));
 		mat.set_scale_rotation( curMat.get_x_scale(), curMat.get_y_scale(), curMat.get_rotation() );
 
 		m_character->set_matrix(mat);
+	}
+}
+
+// getBound
+// get bound
+void CMenuFxObj::getBound(int *x, int *y, int *w, int *h)
+{
+	*x = 0;
+	*y = 0;
+	*w = 0;
+	*h = 0;
+
+	if ( m_character )
+	{		
+		gameswf::rect rect;
+		m_character->get_bound(&rect);
+		
+		rect.twips_to_pixels();
+
+		*x = (int)rect.m_x_min;
+		*y = (int)rect.m_y_min;
+		*w = (int)rect.width();
+		*h = (int)rect.height();
 	}
 }
 

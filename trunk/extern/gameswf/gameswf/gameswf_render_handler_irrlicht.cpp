@@ -304,7 +304,7 @@ struct render_handler_irrlicht : public gameswf::render_handler
 				SMaterial* mat = m_render->m_material;
 				mat->setTexture(0, ((bitmap_info_irrlicht*)m_bitmap_info)->m_texture );
 
-				if ( m_render->m_isRenderMask )					
+				if ( m_render->m_isRenderMask )
 					mat->MaterialType = EMT_SOLID;
 				else
 					mat->MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;		
@@ -314,6 +314,7 @@ struct render_handler_irrlicht : public gameswf::render_handler
 
 				if ( primitive_type ==  GL_TRIANGLE_STRIP )		
 				{
+                    index_count = vertex_count - 2;
 					g_driver->draw2DVertexPrimitiveList(
 							vertex, vertex_count,
 							index, index_count,
@@ -323,6 +324,7 @@ struct render_handler_irrlicht : public gameswf::render_handler
 				}
 				else if ( primitive_type == GL_TRIANGLES )
 				{
+                    index_count = vertex_count/2;
 					g_driver->draw2DVertexPrimitiveList(
 							vertex, vertex_count,
 							index, index_count,
@@ -331,8 +333,44 @@ struct render_handler_irrlicht : public gameswf::render_handler
 						);			
 				}
 				
-				g_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );				
+				g_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );
 			}
+            else 
+            {
+                // set texture
+                SMaterial* mat = m_render->m_material;
+                mat->setTexture(0, NULL);
+                 
+				if ( m_render->m_isRenderMask )
+                    mat->MaterialType = EMT_SOLID;
+                else
+                    mat->MaterialType = EMT_TRANSPARENT_VERTEX_ALPHA;
+                 
+                g_driver->setMaterial( *mat );
+				g_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
+                
+                if ( primitive_type ==  GL_TRIANGLE_STRIP )		
+				{
+                    index_count = vertex_count - 2;
+					g_driver->draw2DVertexPrimitiveList(
+                                                        vertex, vertex_count,
+                                                        index, index_count,
+                                                        EVT_STANDARD,
+                                                        scene::EPT_TRIANGLE_STRIP
+                                                        );					
+				}
+				else if ( primitive_type == GL_TRIANGLES )
+				{
+                    index_count = vertex_count/2;
+					g_driver->draw2DVertexPrimitiveList(
+                                                        vertex, vertex_count,
+                                                        index, index_count,
+                                                        EVT_STANDARD,
+                                                        scene::EPT_TRIANGLES
+                                                        );			
+				}
+                g_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );
+            }
 		}
 
 		void	apply ( ) const
@@ -794,58 +832,23 @@ struct render_handler_irrlicht : public gameswf::render_handler
 			vertices[i].Color = m_color;
 
 			index[i] = i;
-		}
-			
+		}			
 
-		// set texture
-		m_material->setTexture(0, NULL);
-
-		if ( m_isRenderMask )
-			m_material->MaterialType = EMT_SOLID;
-		else
-			m_material->MaterialType = EMT_TRANSPARENT_VERTEX_ALPHA;
-		
-		m_driver->setMaterial( *m_material );
-
-		// draw first pass
-		if ( primitive_type ==  GL_TRIANGLE_STRIP )		
-		{			
-			index_count = vertex_count - 2;
-
-			m_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
-			m_driver->draw2DVertexPrimitiveList(
-					vertices, vertex_count,
-					index, index_count,
-					EVT_STANDARD,
-					scene::EPT_TRIANGLE_STRIP
-				);					
-			m_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );
-		}
-		else if ( primitive_type == GL_TRIANGLES )
-		{
-			index_count = vertex_count / 2;
-
-			m_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
-			m_driver->draw2DVertexPrimitiveList(
-					vertices, vertex_count,
-					index, index_count,
-					EVT_STANDARD,
-					scene::EPT_TRIANGLES
-				);
-			m_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );
-		}
-
+        // enable biliner zoom
+        m_material->TextureLayer[0].BilinearFilter = true;
+        
+        // draw sprite
+        m_current_styles[LEFT_STYLE].applyTexture ( primitive_type, vertices, vertex_count, index, index_count, coords );	
+        
 		// draw second pass
-		if ( m_current_styles[LEFT_STYLE].needs_second_pass() )
-		{
-			m_current_styles[LEFT_STYLE].apply_second_pass();
+		//if ( m_current_styles[LEFT_STYLE].needs_second_pass() )
+		//{
+		//	m_current_styles[LEFT_STYLE].apply_second_pass();
 					
 			// todo later
 
-			m_current_styles[LEFT_STYLE].cleanup_second_pass();
-		}
-		
-		m_current_styles[LEFT_STYLE].applyTexture ( primitive_type, vertices, vertex_count, index, index_count, coords );							
+		//	m_current_styles[LEFT_STYLE].cleanup_second_pass();
+		//}								
 
 		// pop matrix
 		m_worldMatrix = viewMat;

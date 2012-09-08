@@ -636,6 +636,9 @@ public:
 	// setAnimWeight
 	void setAnimWeight(float w, int trackChannel = 0);
 
+	// setAnimSpeed
+	void setAnimSpeed(float s, int trackChannel = 0);
+
 	// resumeAnim
 	// resume animation
 	void resumeAnim(int trackChannel = 0);

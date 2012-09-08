@@ -4076,6 +4076,19 @@ void CColladaMeshComponent::setAnimWeight(float w, int trackChannel)
 	}
 }
 
+// setAnimSpeed
+void CColladaMeshComponent::setAnimSpeed(float s, int trackChannel)
+{
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		CGameColladaSceneNode* j = (*i).second;
+		if ( j != NULL )
+			j->getAnimation()->getTrack(trackChannel)->setSpeedRatio(s);
+		i++;
+	}
+}
+
 void CColladaMeshComponent::enableAnimTrackChanel( int trackChannel, bool b)
 {
 	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();

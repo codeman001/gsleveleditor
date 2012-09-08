@@ -465,7 +465,8 @@ void CPlayerComponent::updateStateRun()
 		if ( m_nextState == CPlayerComponent::PlayerIdle )
 		{
 			m_collada->setAnimWeight(1.0f, 0);
-			m_collada->enableAnimTrackChanel(1, false);
+			m_collada->setAnimSpeed(1.0f, 0);
+			m_collada->onlyEnableAnimTrackChannel(0);
 		}
 		doNextState();
 	}

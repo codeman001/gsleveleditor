@@ -14,6 +14,10 @@ public:
 	// setpos xy
 	void setPosition( int x, int y );
 
+	// getBound
+	// get bound
+	void getBound(int *x, int *y, int *w, int *h);
+
 	// setVisible
 	// set visible
 	void setVisible( bool b );

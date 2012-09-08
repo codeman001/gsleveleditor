@@ -19,6 +19,25 @@ void CStateGameplay::onCreate()
 {
 	ISceneManager *smgr = getIView()->getSceneMgr();
 	CGameLevel::setCurrentLevel( m_level );
+
+	// show ui
+	m_menuFx = CGameUI::getInstance()->getFlash("uiGameHud");
+	setFxStateVisible( m_state, true );
+
+	// hide dpad touch
+	CMenuFxObj *dpadTouch = m_menuFx->findObj("mcDpadTouch");
+	if ( dpadTouch )
+	{
+		//int x = 0,y = 0,w = 0,h = 0;
+		//dpadTouch->getBound(&x, &y, &w, &h);
+
+		dpadTouch->setVisible(false);
+		dpadTouch->drop();
+	}
+	
+	// hidden touchzone
+	
+
 }
 
 void CStateGameplay::onDestroy()

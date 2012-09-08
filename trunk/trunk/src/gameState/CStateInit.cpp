@@ -27,6 +27,8 @@ CStateInit::~CStateInit()
 {
 	if ( m_mainMenuState )
 		delete m_mainMenuState;
+
+	CGameUI::getInstance()->releaseFlash("uiGameInit");
 }
 
 void CStateInit::onCreate()
@@ -47,7 +49,7 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 		CMenuFx *menu =	CGameUI::getInstance()->openFlash("uiGameMenu", getIView()->getPath("data/flashui/uiGameMenu.swf"));
 		
 		// invisible all state
-		for ( int state = (int)CGameState::GSStateMainMenu; state < (int)CGameState::StateCount; state++ )
+		for ( int state = (int)CGameState::GSStateMainMenu; state <= (int)CGameState::GSStateGameLoading; state++ )
 		{
 			// create flash mainmenu ui			
 			CMenuFxObj *menuObj = menu->getObj( CGameState::getStateName( (CGameState::EGameState)state ) );

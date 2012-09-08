@@ -52,6 +52,10 @@ public:
 		return m_flash[ lpName ];
 	}
 
+	// releaseFlash
+	// free flash
+	void releaseFlash( const char *lpName );
+
 	// handle event
 	virtual bool OnEvent(const SEvent& irrEvent);
 

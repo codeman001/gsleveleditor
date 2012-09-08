@@ -5,12 +5,12 @@
 #include "IView.h"
 
 #include "CBinaryUtils.h"
-#include "CTouchManager.h"
 
 #include "gameState/CStateInit.h"
 #include "gameState/CGameStateManager.h"
 #include "gameLevel/CGameLevel.h"
 #include "gameDebug/CGameDebug.h"
+#include "gameControl/CTouchManager.h"
 
 class CApplication: public IEventReceiver, IView
 {	

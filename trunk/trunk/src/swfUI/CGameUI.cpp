@@ -165,6 +165,18 @@ void CGameUI::releaseAllFlash()
 	m_flash.clear();
 }
 
+// releaseFlash
+// free flash
+void CGameUI::releaseFlash( const char *lpName )
+{
+	CMenuFx* flash = m_flash[lpName];
+	if ( flash )
+	{
+		delete flash;
+		m_flash.erase(lpName);
+	}
+}
+
 // update
 // update game flash ui
 void CGameUI::update()

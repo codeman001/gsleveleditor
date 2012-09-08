@@ -114,7 +114,9 @@ void CApplication::mainLoop()
 	m_lastUpdateTime = now;
 	
 	// update camera aspect
+#ifndef WIN32
 	if ( m_resizeWin )
+#endif
 	{
         ICameraSceneNode *activeCamera = m_device->getSceneManager()->getActiveCamera();
 		if ( activeCamera )

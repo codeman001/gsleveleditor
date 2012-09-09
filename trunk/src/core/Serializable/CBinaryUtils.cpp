@@ -538,7 +538,7 @@ void CBinaryUtils::loadAnim( io::IReadFile *file, CColladaAnimation* anim )
 		
 		file->read(chunkData, chunk.size);
 
-		if ( chunk.type = k_binaryTypeAnimation )
+		if ( chunk.type == k_binaryTypeAnimation )
 		{
 			readAnimClip( chunkData, chunk.size, anim );
 		}

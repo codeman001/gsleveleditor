@@ -211,8 +211,6 @@ CMenuFxObj* CMenuFx::findObj( char *name )
 			queueObj.push( displayList->get_character(j) );
 		}
 	}
-
-	int folderDepth = 0;
 	
 	while ( queueObj.size() )
 	{

@@ -3,6 +3,8 @@
 #include "CStateGameplay.h"
 #include "CGameCameraFollowAnimator.h"
 
+#include "gameControl/CGameControl.h"
+
 CStateGameplay::CStateGameplay()
 	:CGameState(CGameState::GSStateGameplay)
 {
@@ -17,7 +19,6 @@ CStateGameplay::~CStateGameplay()
 
 void CStateGameplay::onCreate()
 {
-	ISceneManager *smgr = getIView()->getSceneMgr();
 	CGameLevel::setCurrentLevel( m_level );
 
 	// show ui
@@ -28,20 +29,26 @@ void CStateGameplay::onCreate()
 	CMenuFxObj *dpadTouch = m_menuFx->findObj("mcDpadTouch");
 	if ( dpadTouch )
 	{
-		//int x = 0,y = 0,w = 0,h = 0;
-		//dpadTouch->getBound(&x, &y, &w, &h);
-
 		dpadTouch->setVisible(false);
 		dpadTouch->drop();
 	}
-	
-	// hidden touchzone
-	
+    
+	CMenuFxObj *dPadBase = m_menuFx->findObj("mcDpadBase");
+	if ( dPadBase )
+	{
+		dPadBase->setVisible(false);
+		dPadBase->drop();
+	}	
 
+    // enable gamecontrol
+    CGameControl::getInstance()->setEnable(true);
+    CGameControl::getInstance()->setNameFx("mcDpadTouch", "mcDpadBase", "mcDpadMove");
 }
 
 void CStateGameplay::onDestroy()
 {
+    // enable gamecontrol
+    CGameControl::getInstance()->setEnable(false);
 }
 
 void CStateGameplay::onFsCommand( const char *command, const char *param )

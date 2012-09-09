@@ -84,6 +84,7 @@
 		7FD0C01615F4F34400626D90 /* CMenuFxObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FD0BFD515F4F34400626D90 /* CMenuFxObj.cpp */; };
 		7FD0C01815F4FA9800626D90 /* SPK_IRR_ALL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FD0C01715F4FA9800626D90 /* SPK_IRR_ALL.cpp */; };
 		7FD0C01A15F4FADB00626D90 /* SPK_All.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FD0C01915F4FADB00626D90 /* SPK_All.cpp */; };
+		7FE43AD915FB99E600676177 /* CDpad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE43AD815FB99E600676177 /* CDpad.cpp */; };
 		7FE6C71B15F47C2D00E07797 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE6C71A15F47C2D00E07797 /* UIKit.framework */; };
 		7FE6C71D15F47C2D00E07797 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE6C71C15F47C2D00E07797 /* Foundation.framework */; };
 		7FE6C71F15F47C2D00E07797 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE6C71E15F47C2D00E07797 /* CoreGraphics.framework */; };
@@ -93,7 +94,8 @@
 		7FE6C72B15F47C2D00E07797 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE6C72A15F47C2D00E07797 /* main.m */; };
 		7FE6C73215F47C2D00E07797 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C73015F47C2D00E07797 /* MainStoryboard_iPhone.storyboard */; };
 		7FE6C73515F47C2D00E07797 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FE6C73315F47C2D00E07797 /* MainStoryboard_iPad.storyboard */; };
-		7FE8A76F15F8FBE7004FC4D1 /* CTouchManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE8A76D15F8FBE7004FC4D1 /* CTouchManager.cpp */; };
+		7FEF4F5E15FB376500D2894C /* CGameControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FEF4F5A15FB376500D2894C /* CGameControl.cpp */; };
+		7FEF4F5F15FB376500D2894C /* CTouchManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FEF4F5C15FB376500D2894C /* CTouchManager.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -269,6 +271,8 @@
 		7FD0BFD915F4F34400626D90 /* uiString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uiString.h; sourceTree = "<group>"; };
 		7FD0C01715F4FA9800626D90 /* SPK_IRR_ALL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SPK_IRR_ALL.cpp; path = ../../extern/spark/src/SPK_IRR_ALL.cpp; sourceTree = "<group>"; };
 		7FD0C01915F4FADB00626D90 /* SPK_All.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SPK_All.cpp; path = ../../extern/spark/src/SPK_All.cpp; sourceTree = "<group>"; };
+		7FE43AD715FB99D300676177 /* CDpad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDpad.h; sourceTree = "<group>"; };
+		7FE43AD815FB99E600676177 /* CDpad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDpad.cpp; sourceTree = "<group>"; };
 		7FE6C71615F47C2D00E07797 /* gameplay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gameplay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7FE6C71A15F47C2D00E07797 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7FE6C71C15F47C2D00E07797 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -283,8 +287,10 @@
 		7FE6C73115F47C2D00E07797 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		7FE6C73415F47C2D00E07797 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		7FE6C73A15F47C2D00E07797 /* CViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CViewController.h; sourceTree = "<group>"; };
-		7FE8A76D15F8FBE7004FC4D1 /* CTouchManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CTouchManager.cpp; sourceTree = "<group>"; };
-		7FE8A76E15F8FBE7004FC4D1 /* CTouchManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTouchManager.h; sourceTree = "<group>"; };
+		7FEF4F5A15FB376500D2894C /* CGameControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGameControl.cpp; sourceTree = "<group>"; };
+		7FEF4F5B15FB376500D2894C /* CGameControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGameControl.h; sourceTree = "<group>"; };
+		7FEF4F5C15FB376500D2894C /* CTouchManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CTouchManager.cpp; sourceTree = "<group>"; };
+		7FEF4F5D15FB376500D2894C /* CTouchManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTouchManager.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -359,9 +365,8 @@
 				7FD0BF5015F4F34400626D90 /* CApplication.cpp */,
 				7FD0BF5115F4F34400626D90 /* CApplication.h */,
 				7FD0BF5215F4F34400626D90 /* core */,
-				7FE8A76D15F8FBE7004FC4D1 /* CTouchManager.cpp */,
-				7FE8A76E15F8FBE7004FC4D1 /* CTouchManager.h */,
 				7FD0BFAB15F4F34400626D90 /* gameComponent */,
+				7FEF4F5915FB376500D2894C /* gameControl */,
 				7FD0BFB415F4F34400626D90 /* gameDebug */,
 				7FD0BFB715F4F34400626D90 /* gameLevel */,
 				7FD0BFBC15F4F34400626D90 /* gameState */,
@@ -663,6 +668,19 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		7FEF4F5915FB376500D2894C /* gameControl */ = {
+			isa = PBXGroup;
+			children = (
+				7FEF4F5A15FB376500D2894C /* CGameControl.cpp */,
+				7FEF4F5B15FB376500D2894C /* CGameControl.h */,
+				7FEF4F5C15FB376500D2894C /* CTouchManager.cpp */,
+				7FEF4F5D15FB376500D2894C /* CTouchManager.h */,
+				7FE43AD715FB99D300676177 /* CDpad.h */,
+				7FE43AD815FB99E600676177 /* CDpad.cpp */,
+			);
+			path = gameControl;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -850,7 +868,9 @@
 				7F1AEF0D15F7A02700DF8EA0 /* Application.cpp in Sources */,
 				7F1AEF1015F7A2C500DF8EA0 /* CAppDelegate.mm in Sources */,
 				7F1AEF1115F7A2C500DF8EA0 /* CViewController.mm in Sources */,
-				7FE8A76F15F8FBE7004FC4D1 /* CTouchManager.cpp in Sources */,
+				7FEF4F5E15FB376500D2894C /* CGameControl.cpp in Sources */,
+				7FEF4F5F15FB376500D2894C /* CTouchManager.cpp in Sources */,
+				7FE43AD915FB99E600676177 /* CDpad.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -935,6 +955,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Valeri Vuchov (WDTMDP2J2J)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Valeri Vuchov (WDTMDP2J2J)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "gameplay/gameplay-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -944,6 +966,8 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "gameplay/gameplay-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "AB43DA72-84D4-42C5-87D2-1AB19ACC2314";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src";
 				WRAPPER_EXTENSION = app;
 			};
@@ -953,6 +977,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Valeri Vuchov (WDTMDP2J2J)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Valeri Vuchov (WDTMDP2J2J)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "gameplay/gameplay-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -962,6 +988,8 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "gameplay/gameplay-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "AB43DA72-84D4-42C5-87D2-1AB19ACC2314";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src";
 				WRAPPER_EXTENSION = app;
 			};

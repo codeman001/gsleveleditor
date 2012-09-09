@@ -961,7 +961,6 @@ void CGameColladaSceneNode::skin()
 	if ( m_isHardwareSkinning == false )
 	{
 		int lastVertexTransform = 0;
-		int jointIndex = 0;
 
 		// skinning all mesh buffer
 		int nMeshBuffer = ColladaMesh->getMeshBufferCount();

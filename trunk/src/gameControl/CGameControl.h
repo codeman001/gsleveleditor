@@ -14,6 +14,8 @@ protected:
     
     CDpad       m_moveDpad;
     
+    core::recti m_touchDpad;
+    
     std::string m_fxnameDpadTouch;
     
     std::string m_fxnameDpad;
@@ -24,15 +26,7 @@ public:
 
     // setNameFx
     // set name of flash obj
-    inline void setNameFx( const std::string& nameDpadTouch, const std::string& nameDPad,const std::string& nameDpadMove )
-    {
-        m_fxnameDpadTouch = nameDpadTouch;
-        m_fxnameDpad = nameDPad;
-        m_fxnameDpadMove = nameDpadMove;
-        
-        // set fx for dpad
-        m_moveDpad.setDpadFxName(nameDPad, nameDpadMove);
-    }
+    void setNameFx( const std::string& nameDpadTouch, const std::string& nameDPad,const std::string& nameDpadMove );
     
     // update
     // main loop update

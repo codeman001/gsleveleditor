@@ -18,6 +18,8 @@ protected:
     
     CMenuFxObj*         m_fxDpad;
     CMenuFxObj*         m_fxDpadMove;
+    
+    int                 m_controlID;
 public:
     CDpad();
     virtual ~CDpad();
@@ -40,6 +42,22 @@ public:
     
     // setDpadFxName
     void setDpadFxName( const std::string& name, const std::string& move );
+    
+    // setControlID
+    // set touch control id
+    inline void setControlID(int id)
+    {
+        m_controlID = id;
+    }
+    
+    // getControlID
+    // get touch id
+    inline int getControlID()
+    {
+        return m_controlID;
+    }
+    
+    
 };
 
 #endif

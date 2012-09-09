@@ -13,6 +13,8 @@ CDpad::CDpad()
 {
     m_fxDpad = NULL;
     m_fxDpadMove = NULL;
+    
+    m_controlID = -1;
 }
 
 CDpad::~CDpad()
@@ -27,7 +29,17 @@ CDpad::~CDpad()
 // main loop update
 void CDpad::update()
 {
-    
+    if ( m_controlID == -1 )
+    {
+        // need hide dpad
+        if ( m_fxDpad )
+            m_fxDpad->setVisible(false);
+    }
+    else 
+    {
+        m_fxDpad->setVisible(true);
+        m_fxDpad->setPosition( m_dpadPos.X, m_dpadPos.Y );
+    }
 }
 
 // setVisible

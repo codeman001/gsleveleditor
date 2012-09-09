@@ -75,7 +75,7 @@ void CApplication::initApplication( IrrlichtDevice* device )
 	CScriptManager::createGetInstance();
 	CColladaAnimationFactory::createGetInstance();
 	CGameDebug::createGetInstance();
-
+    
 	// init instance for gamestate
 	CGameStateMgr::createGetInstance();
 	registerEvent( "gameStateMgr", CGameStateMgr::getInstance() );
@@ -84,6 +84,10 @@ void CApplication::initApplication( IrrlichtDevice* device )
 	CGameUI::createGetInstance();
 	registerEvent( "gameUIFlash", CGameUI::getInstance() );
 
+    // init instance for gamecontrol
+    CGameControl::createGetInstance();
+    registerEvent( "gameControl", CGameControl::getInstance() );
+    
 	// push gamestate
 	CGameStateMgr::getInstance()->pushState( new CStateInit() );
 }
@@ -93,7 +97,8 @@ void CApplication::destroyApplication()
 	// drop event
 	unRegisterEvent( CGameStateMgr::getInstance() );
 	unRegisterEvent( CGameUI::getInstance() );
-
+    unRegisterEvent( CGameControl::getInstance() );
+    
 	CColladaCache::freeData();		
 	CObjTemplateFactory::freeData();
 			
@@ -103,6 +108,7 @@ void CApplication::destroyApplication()
 	CColladaAnimationFactory::releaseInstance();
 	CGameDebug::releaseInstance();
 	CGameUI::releaseInstance();
+    CGameControl::releaseInstance();
 }
 
 void CApplication::mainLoop()
@@ -131,6 +137,10 @@ void CApplication::mainLoop()
 	// update touch event
 	m_touchMgr.update();
 
+    // update gamecontrol
+    if ( CGameControl::getInstance()->isEnable() )
+        CGameControl::getInstance()->update();
+    
 	// clear debug
 	CGameDebug::getInstance()->clearLines();
 	CGameDebug::getInstance()->clearBoxs();

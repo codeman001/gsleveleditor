@@ -11,6 +11,7 @@
 #include "gameLevel/CGameLevel.h"
 #include "gameDebug/CGameDebug.h"
 #include "gameControl/CTouchManager.h"
+#include "gameControl/CGameControl.h"
 
 class CApplication: public IEventReceiver, IView
 {	

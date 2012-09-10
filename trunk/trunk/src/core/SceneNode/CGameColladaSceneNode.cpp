@@ -1136,7 +1136,6 @@ void CGameColladaSceneNode::render()
 {
 	// get driver
 	IVideoDriver* driver = getSceneManager()->getVideoDriver();	
-	IView *pView = getIView();	
 
 	// set current render
 	s_sceneNodeRendering = this;
@@ -1217,6 +1216,8 @@ void CGameColladaSceneNode::render()
 #ifdef GSANIMATION
 	else
 	{
+        IView *pView = getIView();	
+        
 		// set identity transform
 		driver->setTransform(video::ETS_WORLD, core::IdentityMatrix );
 

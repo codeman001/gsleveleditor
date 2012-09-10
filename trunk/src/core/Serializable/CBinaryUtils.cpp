@@ -1017,6 +1017,28 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 			// read indices
 			mesh->Indices.set_used( indexCount );
 			memStream.readData( mesh->Indices.pointer(), sizeof(u16)*indexCount );
+            
+            if ( i == 2 )
+            {
+                char savePath[512] = {0};
+#ifdef IOS
+                extern void getSavePath(char* cBuffer, int iLength );                
+                getSavePath(savePath, 512);
+                strcat(savePath, "/");
+#endif
+                strcat(savePath, "meshDebugger.txt");
+                FILE *f = fopen(savePath, "wt");
+                if ( f )
+                {
+                    for (int t = 0; t < indexCount; t++ )
+                    {
+                        int poly = mesh->Indices[t];
+                        S3DVertex v = mesh->Vertices[poly];
+                        fprintf(f,"%d - %f %f %f\n", poly, v.Pos.X, v.Pos.Y, v.Pos.Z);
+                    }
+                    fclose(f);
+                }
+            }
 		}
 		else
 		{
@@ -1028,7 +1050,7 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 
 			// read indices
 			mesh->Indices.set_used( indexCount );
-			memStream.readData( mesh->Indices.pointer(), sizeof(u16)*indexCount );
+			memStream.readData( mesh->Indices.pointer(), sizeof(u16)*indexCount );            
 		}		
 
 		// map meshID & matID		

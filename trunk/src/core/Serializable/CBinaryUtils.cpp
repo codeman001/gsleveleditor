@@ -352,24 +352,6 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 		unsigned long bufferID = (unsigned long) buffer;		
 		memStream.writeData( &bufferID, sizeof(unsigned long) );
 
-		// write begin & end vertex
-		unsigned long beginVertex = 0;
-		unsigned long endVertex = 0;
-
-		if ( vertexType == video::EVT_SKIN )
-		{
-			beginVertex = ((SColladaSkinMeshBuffer*)buffer)->beginVertex;
-			endVertex	= ((SColladaSkinMeshBuffer*)buffer)->endVertex;
-		}
-		else
-		{
-			beginVertex = ((SColladaMeshBuffer*)buffer)->beginVertex;
-			endVertex	= ((SColladaMeshBuffer*)buffer)->endVertex;
-		}
-
-		memStream.writeData( &beginVertex, sizeof(unsigned long) );
-		memStream.writeData( &endVertex, sizeof(unsigned long) );
-
 		// write buffer type
 		memStream.writeData( &vertexType, sizeof(int) );
 		memStream.writeData( &vertexCount, sizeof(int) );
@@ -960,25 +942,7 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 		// get mesh buffer				
 		int vertexType = 0;
 		int vertexCount = 0;
-		int indexCount = 0;
-
-		// read begin & end vertex
-		int beginVertex = 0;
-		int endVertex = 0;
-		memStream.readData( &beginVertex, sizeof(int) );
-		memStream.readData( &endVertex, sizeof(int) );
-	
-		if ( newMesh->IsStaticMesh )
-		{
-			((SColladaMeshBuffer*)meshBuffer)->beginVertex = beginVertex;
-			((SColladaMeshBuffer*)meshBuffer)->endVertex = endVertex;
-		}
-		else
-		{
-			((SColladaSkinMeshBuffer*)meshBuffer)->beginVertex = beginVertex;
-			((SColladaSkinMeshBuffer*)meshBuffer)->endVertex = endVertex;
-		}
-
+		int indexCount = 0;		
 
 		memStream.readData( &vertexType, sizeof(int) );
 		memStream.readData( &vertexCount, sizeof(int) );
@@ -1016,29 +980,7 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 
 			// read indices
 			mesh->Indices.set_used( indexCount );
-			memStream.readData( mesh->Indices.pointer(), sizeof(u16)*indexCount );
-            
-            if ( i == 2 )
-            {
-                char savePath[512] = {0};
-#ifdef IOS
-                extern void getSavePath(char* cBuffer, int iLength );                
-                getSavePath(savePath, 512);
-                strcat(savePath, "/");
-#endif
-                strcat(savePath, "meshDebugger.txt");
-                FILE *f = fopen(savePath, "wt");
-                if ( f )
-                {
-                    for (int t = 0; t < indexCount; t++ )
-                    {
-                        int poly = mesh->Indices[t];
-                        S3DVertex v = mesh->Vertices[poly];
-                        fprintf(f,"%d - %f %f %f\n", poly, v.Pos.X, v.Pos.Y, v.Pos.Z);
-                    }
-                    fclose(f);
-                }
-            }
+			memStream.readData( mesh->Indices.pointer(), sizeof(u16)*indexCount );                     
 		}
 		else
 		{

@@ -49,6 +49,10 @@ public:
     {
         return m_isEnable;
     }
+
+	// isTouchOnScreen
+	// check a null touch on screen
+	bool isTouchOnScreen( int touchID );
 };
 
 #endif

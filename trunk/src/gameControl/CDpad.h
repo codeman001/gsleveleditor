@@ -13,13 +13,18 @@ protected:
     bool    m_visible;
     
     core::position2di   m_dpadPos;
+	core::position2di   m_dpadMovePos;
+
     core::position2di   m_touchPos;
+
     core::position2di   m_renderTouchPos;
     
     CMenuFxObj*         m_fxDpad;
     CMenuFxObj*         m_fxDpadMove;
     
     int                 m_controlID;
+	bool				m_active;
+
 public:
     CDpad();
     virtual ~CDpad();
@@ -57,7 +62,10 @@ public:
         return m_controlID;
     }
     
-    
+	// sendStopEvent
+	// send event to player stop run
+	void sendStopEvent();    
+	void sendRunEvent(float f, float rotate);
 };
 
 #endif

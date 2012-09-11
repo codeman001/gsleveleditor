@@ -87,3 +87,13 @@ bool CGameControl::OnEvent(const SEvent& event)
     }
     return true;
 }
+
+// isTouchOnScreen
+// check a null touch on screen
+bool CGameControl::isTouchOnScreen( int touchID )
+{
+	if ( touchID == m_moveDpad.getControlID() )
+		return false;
+
+	return true;
+}

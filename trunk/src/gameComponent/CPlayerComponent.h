@@ -5,6 +5,8 @@
 #include "CColladaMeshComponent.h"
 #include "CGameComponent.h"
 
+#include "gameEvent.h"
+
 #define SHIFTBIT(x)	(1<<x)
 
 class CWeaponComponent;
@@ -63,6 +65,9 @@ protected:
 	bool					m_runLeft;
 	bool					m_runRight;
 	bool					m_runCommand;
+
+	bool					m_dpadMove;
+	SEventPlayerMove		m_playerMoveEvt;
 
 	bool					m_runNoGun;
 

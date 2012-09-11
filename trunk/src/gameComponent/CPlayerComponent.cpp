@@ -48,6 +48,8 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_runRight		= false;
 	m_runNoGun		= true;
 	m_runCommand	= false;
+	
+	m_dpadMove		= false;
 
 	m_runFactor = 1.0f;
 	m_runAccel	= 0.002f;
@@ -253,6 +255,17 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 
 		m_runCommand = m_runUp || m_runBack || m_runLeft || m_runRight;
 	}
+	else if ( irrEvent.EventType == EET_USER_EVENT )
+	{
+		if ( irrEvent.UserEvent.UserData1 == EvtPlayerMove )
+		{
+			m_playerMoveEvt = *((SEventPlayerMove*)irrEvent.UserEvent.UserData2);
+			
+			// setting run command
+			m_runCommand	= m_playerMoveEvt.run;
+
+		}
+	}
 
 	return true;
 }
@@ -348,28 +361,36 @@ void CPlayerComponent::updateStateTurn()
 		v1 = getCameraFrontVector();
 		
 		float rot = 0.0f;
-		if ( m_runLeft )
+		if ( m_dpadMove )
 		{
-			if ( m_runUp )
-				rot = 43.0f;
+			rot = m_playerMoveEvt.rotate;
+		}
+		else
+		{
+			if ( m_runLeft )
+			{
+				if ( m_runUp )
+					rot = 43.0f;
+				else if ( m_runBack )
+					rot = 133.0f;
+				else
+					rot = 88.0f;
+			}
+			else if ( m_runRight )
+			{
+				if ( m_runUp )
+					rot = -43.0f;
+				else if ( m_runBack )
+					rot = -133.0f;
+				else
+					rot = -88.0f;
+			}
 			else if ( m_runBack )
-				rot = 133.0f;
-			else
-				rot = 88.0f;
+			{
+				rot = -178.0f;
+			}
 		}
-		else if ( m_runRight )
-		{
-			if ( m_runUp )
-				rot = -43.0f;
-			else if ( m_runBack )
-				rot = -133.0f;
-			else
-				rot = -88.0f;
-		}
-		else if ( m_runBack )
-		{
-			rot = -178.0f;
-		}
+
 		core::quaternion q;
 		q.fromAngleAxis( core::degToRad(rot), core::vector3df(0,1,0) );
 		q.getMatrix().rotateVect(v1);
@@ -491,10 +512,11 @@ void CPlayerComponent::updateStateRun()
 			m_collada->synchronizedByTimeScale();
 		}
 		else if ( m_runFactor > 0.0f )
-		{
+		{		
 			m_runFactor = m_runFactor - step;
 			if ( m_runFactor < 0.0f )
 				m_runFactor = 0.0f;
+
 			m_collada->setAnimWeight(m_runFactor, 1);
 			m_collada->synchronizedByTimeScale();
 		}
@@ -509,27 +531,34 @@ void CPlayerComponent::updateStateRun()
 		core::quaternion q;
 		float rot = 0.0f;
 
-		if ( m_runLeft )
+		if ( m_dpadMove )
 		{
-			if ( m_runUp )
-				rot = 43.0f;
-			else if ( m_runBack )
-				rot = 133.0f;
-			else
-				rot = 88.0f;
+			rot = m_playerMoveEvt.rotate;
 		}
-		else if ( m_runRight )
+		else
 		{
-			if ( m_runUp )
-				rot = -43.0f;
+			if ( m_runLeft )
+			{
+				if ( m_runUp )
+					rot = 43.0f;
+				else if ( m_runBack )
+					rot = 133.0f;
+				else
+					rot = 88.0f;
+			}
+			else if ( m_runRight )
+			{
+				if ( m_runUp )
+					rot = -43.0f;
+				else if ( m_runBack )
+					rot = -133.0f;
+				else
+					rot = -88.0f;
+			}
 			else if ( m_runBack )
-				rot = -133.0f;
-			else
-				rot = -88.0f;
-		}
-		else if ( m_runBack )
-		{
-			rot = -178.0f;
+			{
+				rot = -178.0f;
+			}
 		}
 				
 		q.fromAngleAxis( core::degToRad(rot), core::vector3df(0,1,0) );

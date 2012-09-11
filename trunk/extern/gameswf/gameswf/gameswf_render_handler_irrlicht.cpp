@@ -43,7 +43,20 @@ ITexture *create_texture( int format, int w, int h, void *data, int level )
 	case GL_RGBA:
 		{
 			imageFormat = ECF_A8R8G8B8;
-			sizePixel = 4;		
+			sizePixel = 4;
+
+			int totalSize = w*h;			
+			unsigned char *s = (unsigned char*)imageData;
+			unsigned char color;
+
+			for ( int i = 0; i < totalSize; i++ )
+			{
+				// swap to bgr
+				color = s[0];
+				s[0] = s[2];
+				s[2] = color;
+				s+=4;
+			}
 		}
 		break;
 	case GL_ALPHA:
@@ -71,6 +84,19 @@ ITexture *create_texture( int format, int w, int h, void *data, int level )
 		{
 			imageFormat = ECF_R8G8B8;
 			sizePixel = 3;
+
+			int totalSize = w*h;			
+			unsigned char *s = (unsigned char*)imageData;
+			unsigned char color;
+
+			for ( int i = 0; i < totalSize; i++ )
+			{
+				// swap to bgr
+				color = s[0];
+				s[0] = s[2];
+				s[2] = color;
+				s+=3;
+			}
 		}
 		break;
 	}

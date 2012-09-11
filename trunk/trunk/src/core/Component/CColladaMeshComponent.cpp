@@ -673,6 +673,44 @@ bool CColladaAnimation::getPositionFrameID( SColladaNodeAnim* frames, float fram
 	return false;
 }
 
+bool CColladaAnimation::getScaleFrameID( SColladaNodeAnim* frames, float frame, int *frameScaleID, core::vector3df  *scaleData )
+{
+	int nScaleFrames = frames->ScaleKeys.size();
+		
+	int first = 0, last = nScaleFrames - 2;
+	int mid = 0;
+		
+	while (first <= last)
+	{
+		mid = (first + last) / 2;
+
+		if ( frame > frames->ScaleKeys[mid].frame && frame > frames->ScaleKeys[mid + 1].frame )
+			first = mid + 1;
+		else if ( frame < frames->ScaleKeys[mid].frame )
+			last = mid - 1;
+		else
+		{			
+			CGameAnimationTrack::SScaleKey &frame1 = frames->ScaleKeys[ mid ];
+			CGameAnimationTrack::SScaleKey &frame2 = frames->ScaleKeys[ mid + 1 ];
+
+			
+			core::vector3df v1 = frame1.scale;
+			core::vector3df v2 = frame2.scale;
+					
+			float f = (frame - frame1.frame)/(frame2.frame - frame1.frame);
+
+			*scaleData = v1 + (v2 - v1) * f;			
+
+			// set frame id
+			*frameScaleID = mid + 1;
+			return true;
+		}
+	}
+
+	*frameScaleID = nScaleFrames - 1;
+	return false;
+}
+
 
 // clippingDaeAnim
 // clip a long clip to many clip
@@ -708,6 +746,11 @@ void CColladaAnimation::clipDaeAnim()
 			{
 				if ( frames < nodeAnim->RotationKeys.getLast().frame )
 					frames = nodeAnim->RotationKeys.getLast().frame;
+			}
+			if ( nodeAnim->ScaleKeys.size() )
+			{
+				if ( frames < nodeAnim->ScaleKeys.getLast().frame )
+					frames = nodeAnim->ScaleKeys.getLast().frame;
 			}
 
 			clip->animInfo.push_back( newNodeAnim );
@@ -745,6 +788,7 @@ void CColladaAnimation::clipDaeAnim()
 
 				int beginID, endID;
 
+#pragma region ClipRotation
 				// clip rotation
 				getRotationFrameID( nodeAnim, frameBegin,	&beginID,	&q1 );
 				getRotationFrameID( nodeAnim, frameEnd,		&endID,		&q2 );
@@ -802,7 +846,9 @@ void CColladaAnimation::clipDaeAnim()
 						}
 					}
 				}
+#pragma endregion
 
+#pragma region ClipPosition
 				// clip position
 				getPositionFrameID( nodeAnim, frameBegin,	&beginID,	&v1 );
 				getPositionFrameID( nodeAnim, frameEnd,		&endID,		&v2 );
@@ -863,6 +909,70 @@ void CColladaAnimation::clipDaeAnim()
 						}
 					}
 				}
+#pragma endregion
+
+#pragma region ClipScale
+				// clip position
+				getScaleFrameID( nodeAnim, frameBegin,	&beginID,	&v1 );
+				getScaleFrameID( nodeAnim, frameEnd,	&endID,		&v2 );
+
+				if ( beginID >= 0 && endID >= 0 )
+				{
+					SColladaNodeAnim *newNodeAnim = clip->getAnimOfSceneNode( nodeAnim->sceneNodeName.c_str() );
+					if ( newNodeAnim == NULL )
+					{
+						newNodeAnim = new SColladaNodeAnim();
+						newNodeAnim->sceneNodeName = nodeAnim->sceneNodeName;
+
+						// add new node anim
+						clip->addNodeAnim( newNodeAnim );
+					}
+
+					if ( beginID == endID )
+					{													
+						CGameAnimationTrack::SScaleKey scaleKey;
+						
+						// frame1
+						scaleKey.frame = 0;
+						scaleKey.scale = v1;
+						newNodeAnim->ScaleKeys.push_back( scaleKey );
+
+						// frame2
+						scaleKey.frame = frameEnd - frameBegin;
+						scaleKey.scale = v2;
+						newNodeAnim->ScaleKeys.push_back( scaleKey );				
+					}
+					else
+					{
+						for ( int i = beginID; i <= endID; i++ )
+						{						
+							CGameAnimationTrack::SScaleKey		scaleKey;
+
+							if ( i == beginID )
+							{
+								currentFrame = 0;							
+								scaleKey.scale = v1;
+							}
+							else if ( i == endID )
+							{
+								currentFrame = frameEnd - frameBegin;
+								scaleKey.scale = v2;
+							}
+							else
+							{
+								CGameAnimationTrack::SScaleKey&	animFrame = nodeAnim->ScaleKeys[i];
+
+								currentFrame	=	animFrame.frame - frameBegin;
+								scaleKey.scale	=	animFrame.scale;
+							}				
+																			
+							// add key frame
+							scaleKey.frame = currentFrame;
+							newNodeAnim->ScaleKeys.push_back( scaleKey );	
+						}
+					}
+				}			
+#pragma endregion
 
 				iNodeAnim++;
 			}
@@ -927,6 +1037,7 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 	std::wstring jointName;
 	bool isRotation = false;
 	bool isTranslate = false;
+	bool isScale = false;
 	bool isMatrix = false;
 
 	int pos = idNodeName.find( L"-rotation" );
@@ -945,13 +1056,25 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 		}
 		else
 		{
-			pos = idNodeName.find( L"-anim" );
-			isMatrix = true;
-			jointName = idNodeName.substr(0, pos);
+			pos = idNodeName.find( L"-scale" );
+			if ( pos > 0 )
+			{
+				isScale = true;
+				jointName = idNodeName.substr(0, pos);
+			}
+			else
+			{
+				pos = idNodeName.find( L"-anim" );
+				if ( pos > 0 )
+				{
+					isMatrix = true;
+					jointName = idNodeName.substr(0, pos);
+				}
+			}
 		}
 	}
 
-	if ( isRotation == false && isTranslate == false && isMatrix == false )
+	if ( isRotation == false && isTranslate == false && isScale == false && isMatrix == false )
 	{		
 		return;
 	}
@@ -1067,6 +1190,26 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 							key.position = core::vector3df(fvector[0], fvector[1], fvector[2] );
 							nodeAnim->PositionKeys.push_back(key);
 						}
+						else if ( isScale && stride == 3 )
+						{
+							if ( m_needFlip == true )
+							{
+								fvector[0] = arrayFloat[i*3];
+								fvector[1] = arrayFloat[i*3 + 2];
+								fvector[2] = arrayFloat[i*3 + 1];									
+							}
+							else
+							{
+								fvector[0] = arrayFloat[i*3];
+								fvector[1] = arrayFloat[i*3 + 1];
+								fvector[2] = arrayFloat[i*3 + 2];	
+							}
+
+							CGameAnimationTrack::SScaleKey key;
+							key.frame = arrayTime[i]*k_defaultAnimFPS;
+							key.scale = core::vector3df(fvector[0], fvector[1], fvector[2] );
+							nodeAnim->ScaleKeys.push_back(key);
+						}
 						else if ( isMatrix && stride == 16 )
 						{	
 							core::matrix4 mat;
@@ -1100,6 +1243,11 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 							keyPos.frame = arrayTime[i]*k_defaultAnimFPS;
 							keyPos.position = mat.getTranslation();
 							nodeAnim->PositionKeys.push_back(keyPos);
+
+							CGameAnimationTrack::SScaleKey keyScale;
+							keyScale.frame = arrayTime[i]*k_defaultAnimFPS;
+							keyScale.scale = mat.getScale();
+							nodeAnim->ScaleKeys.push_back(keyScale);
 						}
 						else
 						{
@@ -2645,7 +2793,7 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 
 // constructMeshBuffer
 // create mesh buffer
-void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMeshBuffer *buffer, int *beginVertex, int *endVertex, bool flip )
+void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMeshBuffer *buffer, bool flip )
 {
 	SColladaMeshBuffer *mbuffer = (SColladaMeshBuffer*) buffer;
 					
@@ -2737,21 +2885,14 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 	}
 		
 	indices.set_used( tri->NumPolygon * 3 );
-
-	*beginVertex	= 9999999;
-	*endVertex		= 0;
+	
 
 	int totalElement = tri->NumPolygon * tri->NumElementPerVertex * 3;	
 	int index = 0;
 	for ( int i = 0; i < totalElement; i+= tri->NumElementPerVertex)
 	{
 		indices[index] = tri->IndexBuffer[i];
-
-		if ( *beginVertex > indices[index] )
-			*beginVertex = indices[index];
-		if ( *endVertex < indices[index] )
-			*endVertex = indices[index];
-
+	
 		if ( tri->NumElementPerVertex != 1 )
 		{
 			video::S3DVertex &vtx = mbuffer->Vertices[ tri->IndexBuffer[i] ];
@@ -2804,6 +2945,40 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 		}
 	}
 	
+	
+	// we need optimize buffer
+	// todo remove unused vertex
+	int *mapIdx = new int[ mbuffer->getVertexCount() ];
+	for ( int i = 0, nVertex = mbuffer->getVertexCount(); i < nVertex; i++ )
+		mapIdx[i] = -1;	
+
+	core::array<S3DVertex>	vertexBuffer;
+	core::array<u16>		indexBuffer;
+	
+	for ( int i = 0, nIndex = mbuffer->getIndexCount(); i < nIndex; i++ )
+	{
+		int idx = mbuffer->Indices[i];
+		S3DVertex& v = mbuffer->Vertices[idx];
+
+		if ( mapIdx[idx] == -1 )
+		{
+			vertexBuffer.push_back(v);
+			
+			int vertexID = vertexBuffer.size() - 1;
+			indexBuffer.push_back( vertexID );
+			mapIdx[idx] = vertexID;
+		}
+		else
+		{
+			indexBuffer.push_back( mapIdx[idx] );
+		}
+	}
+
+	delete mapIdx;
+
+	mbuffer->Indices = indexBuffer;
+	mbuffer->Vertices = vertexBuffer;
+
 	// set material
 	if ( effect )
 	{
@@ -2818,7 +2993,7 @@ void CColladaMeshComponent::constructMeshBuffer( SMeshParam *mesh, STrianglesPar
 	mbuffer->recalculateBoundingBox();
 }
 
-void CColladaMeshComponent::constructSkinMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri, IMeshBuffer *buffer, int *beginVertex, int *endVertex ,bool flip )
+void CColladaMeshComponent::constructSkinMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri, IMeshBuffer *buffer, bool flip )
 {
 	SColladaSkinMeshBuffer *mbuffer = (SColladaSkinMeshBuffer*) buffer;
 					
@@ -2911,19 +3086,11 @@ void CColladaMeshComponent::constructSkinMeshBuffer( SMeshParam *mesh,	STriangle
 		
 	indices.set_used( tri->NumPolygon * 3 );
 
-	*beginVertex	= 9999999;
-	*endVertex		= 0;
-
 	int totalElement = tri->NumPolygon * tri->NumElementPerVertex * 3;	
 	int index = 0;
 	for ( int i = 0; i < totalElement; i+= tri->NumElementPerVertex)
 	{
-		indices[index] = tri->IndexBuffer[i];
-
-		if ( *beginVertex > indices[index] )
-			*beginVertex = indices[index];
-		if ( *endVertex < indices[index] )
-			*endVertex = indices[index];
+		indices[index] = tri->IndexBuffer[i];	
 
 		if ( tri->NumElementPerVertex != 1 )
 		{
@@ -2976,7 +3143,7 @@ void CColladaMeshComponent::constructSkinMeshBuffer( SMeshParam *mesh,	STriangle
 			mbuffer->Indices.push_back(indices[ind+2]);
 		}
 	}
-	
+		
 	// set material
 	if ( effect )
 	{
@@ -3080,6 +3247,45 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 	}
 
 	delete nBoneCount;
+
+
+	// we need optimize buffer
+	// todo remove unused vertex
+	for ( int i =0, nBuffer = mesh->getMeshBufferCount(); i < nBuffer; i++ )
+	{
+		SMeshBufferSkin *mbuffer = (SMeshBufferSkin*)mesh->getMeshBuffer(i);
+
+		int *mapIdx = new int[ mbuffer->getVertexCount() ];
+		for ( int i = 0, nVertex = mbuffer->getVertexCount(); i < nVertex; i++ )
+			mapIdx[i] = -1;	
+
+		core::array<S3DVertexSkin>	vertexBuffer;
+		core::array<u16>			indexBuffer;
+		
+		for ( int i = 0, nIndex = mbuffer->getIndexCount(); i < nIndex; i++ )
+		{
+			int idx = mbuffer->Indices[i];
+			S3DVertexSkin& v = mbuffer->Vertices[idx];
+
+			if ( mapIdx[idx] == -1 )
+			{
+				vertexBuffer.push_back(v);
+				
+				int vertexID = vertexBuffer.size() - 1;
+				indexBuffer.push_back( vertexID );
+				mapIdx[idx] = vertexID;
+			}
+			else
+			{
+				indexBuffer.push_back( mapIdx[idx] );
+			}
+		}
+
+		delete mapIdx;
+
+		mbuffer->Indices = indexBuffer;
+		mbuffer->Vertices = vertexBuffer;
+	}
 }
 
 
@@ -3189,27 +3395,19 @@ void CColladaMeshComponent::constructScene()
 					STrianglesParam& tri = pMesh->Triangles[i];
 					
 					// create mesh buffer
-					IMeshBuffer* meshBuffer = NULL;
-					
-					int beginVertex = -1;
-					int endVertex = -1;
-
+					IMeshBuffer* meshBuffer = NULL;										
 			
 					if ( pMesh->Type == k_skinMesh )
 					{
 						meshBuffer = new SColladaSkinMeshBuffer();
-						constructSkinMeshBuffer( pMesh, &tri, meshBuffer, &beginVertex, &endVertex, m_needFlip );
-						SColladaSkinMeshBuffer *mesh = (SColladaSkinMeshBuffer*)meshBuffer;
-						mesh->beginVertex = beginVertex;
-						mesh->endVertex = endVertex;
+						constructSkinMeshBuffer( pMesh, &tri, meshBuffer, m_needFlip );
+						SColladaSkinMeshBuffer *mesh = (SColladaSkinMeshBuffer*)meshBuffer;						
 					}
 					else
 					{
 						meshBuffer = new SColladaMeshBuffer();
-						constructMeshBuffer( pMesh, &tri, meshBuffer, &beginVertex, &endVertex, m_needFlip );
-						SColladaMeshBuffer *mesh = (SColladaMeshBuffer*)meshBuffer;
-						mesh->beginVertex = beginVertex;
-						mesh->endVertex = endVertex;
+						constructMeshBuffer( pMesh, &tri, meshBuffer, m_needFlip );
+						SColladaMeshBuffer *mesh = (SColladaMeshBuffer*)meshBuffer;						
 					}
 
 					// add mesh buffer								
@@ -3798,7 +3996,7 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, std::v
 					track->CrossAnimPositionKeys[i] = anim->PositionKeys[i];
 				}
 			}
-
+			
 			// enable cross animation
 			track->enableCrossAnimation( loop );
 		}
@@ -3872,6 +4070,17 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChanne
 				}
 			}
 
+			// add scale key
+			int nScaleKey = anim->ScaleKeys.size();
+			if ( nScaleKey > 0 )
+			{
+				track->ScaleKeys.set_used( nScaleKey );
+				for ( int i = 0; i < nScaleKey; i++ )
+				{
+					track->ScaleKeys[i] = anim->ScaleKeys[i];
+				}
+			}
+
 			track->setLoop( loop );
 		}
 
@@ -3927,6 +4136,12 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, std::vector<CGa
 			{
 				track->PositionKeys.push_back( anim->PositionKeys[i] );
 			}
+
+			int nScaleKey = anim->ScaleKeys.size();
+			for ( int i = 0; i < nScaleKey; i++ )
+			{
+				track->ScaleKeys.push_back( anim->ScaleKeys[i] );
+			}			
 
 			track->setLoop( loop );
 		}

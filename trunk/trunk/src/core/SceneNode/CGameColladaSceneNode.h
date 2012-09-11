@@ -17,25 +17,15 @@ class CGameObject;
 // Collada mesh buffer
 struct SColladaMeshBuffer: public SMeshBuffer
 {
-	int	beginVertex;
-	int endVertex;
-
 	SColladaMeshBuffer()
 	{
-		beginVertex = -1;
-		endVertex	= -1;
 	}
 };
 
 struct SColladaSkinMeshBuffer: public SMeshBufferSkin
 {
-	int	beginVertex;
-	int endVertex;
-	
 	SColladaSkinMeshBuffer()
 	{
-		beginVertex = -1;
-		endVertex	= -1;
 	}
 };
 

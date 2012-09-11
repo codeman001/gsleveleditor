@@ -786,6 +786,14 @@
 				Name="gameControl"
 				>
 				<File
+					RelativePath="..\..\src\gameControl\CDpad.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameControl\CDpad.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\gameControl\CGameControl.cpp"
 					>
 				</File>

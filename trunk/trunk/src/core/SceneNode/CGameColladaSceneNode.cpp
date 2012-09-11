@@ -293,6 +293,8 @@ void CGameAnimationTrack::update(float timeStep)
 		m_totalFrame = RotationKeys.getLast().frame;
 	else if ( PositionKeys.size() > 0 )
 		m_totalFrame = PositionKeys.getLast().frame;
+	else if ( ScaleKeys.size() > 0 )
+		m_totalFrame = ScaleKeys.getLast().frame;
 
 	if ( m_totalFrame == 0 )
 	{
@@ -434,8 +436,7 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 // sync speed of 2 track
 // weight: 0.0f -> 1.0f
 void CGameAnimation::synchronizedByTimeScale()
-{	
-#if 1
+{
 	std::vector<int>	listTrackSync;
 
 	// add track 0
@@ -478,35 +479,6 @@ void CGameAnimation::synchronizedByTimeScale()
 			listTrackSync.push_back(i);
 		}
 	}
-#else
-	if ( m_animTrack[0].isEnable() == false || m_animTrack[1].isEnable() == false ||
-		m_animTrack[0].getTotalFrame() == 0.0f || m_animTrack[1].getTotalFrame() == 0.0f )
-	{
-		m_animTrack[0].setSpeedRatio( 1.0f );
-		m_animTrack[1].setSpeedRatio( 1.0f );
-		return;
-	}
-
-	float weight = m_animTrack[1].getAnimWeight();
-	weight = core::clamp<float>( weight, 0.0f, 1.0f );
-	float time1 = m_animTrack[0].getTotalFrame();
-	float time2 = m_animTrack[1].getTotalFrame();
-	 
-	// sync frame
-	float frame1 = m_animTrack[0].getCurrentFrame();
-	float frame2 = time2*frame1/time1;
-	m_animTrack[1].setCurrentFrame( frame2 );
-
-	// interpolate speed ratio 2 channel	
-	float ratio = time2 + ( ( time1 - time2 ) * weight );
-
-	// sync speed
-	m_animTrack[0].setSpeedRatio( time1/ratio );
-	m_animTrack[0].setAnimWeight( weight );
-
-	m_animTrack[1].setSpeedRatio( time2/ratio );
-	m_animTrack[1].setAnimWeight( 1.0f - weight );
-#endif
 }
 
 // update
@@ -960,8 +932,6 @@ void CGameColladaSceneNode::skin()
 	
 	if ( m_isHardwareSkinning == false )
 	{
-		int lastVertexTransform = 0;
-
 		// skinning all mesh buffer
 		int nMeshBuffer = ColladaMesh->getMeshBufferCount();
 		for ( int mesh = 0; mesh < nMeshBuffer; mesh++ )
@@ -973,27 +943,14 @@ void CGameColladaSceneNode::skin()
 			
 			// skinning in vertex
 			core::vector3df thisVertexMove, thisNormalMove;
-				
-			// get vertex position
-			int begin	= meshBuffer->beginVertex;
-			int end		= meshBuffer->endVertex;
-			if ( begin < 0 )
-				begin = 0;
-			if ( end < 0 || end > (int)meshBuffer->getVertexCount() )
-				end = meshBuffer->getVertexCount() - 1;
-
-			if ( begin < lastVertexTransform )
-				begin = lastVertexTransform;
-
-			// seek to vertex buffer
-			vertex += begin;
+							
 
 			core::vector3df positionCumulator;
 			core::vector3df normalCumulator;
 			core::matrix4	netMatrix;
 
 			// skinning
-			for ( int i = begin; i <= end; i++, vertex++ )
+			for ( int i = 0, numVertex = meshBuffer->getVertexCount(); i <= numVertex; i++, vertex++ )
 			{
 				/*
 				pJoint = &arrayJoint[ (int)vertex->BoneIndex.X ];
@@ -1068,8 +1025,6 @@ void CGameColladaSceneNode::skin()
 				vertex->Normal	= normalCumulator;			
 			}
 			
-			lastVertexTransform = end + 1;
-
 			meshBuffer->recalculateBoundingBox();
 			meshBuffer->setDirty( EBT_VERTEX );	
 
@@ -1127,6 +1082,22 @@ void CGameColladaSceneNode::updateAnimation()
 	m1[13] += position.Y*m1[15];
 	m1[14] += position.Z*m1[15];
 	
+	// scale
+	m1[0] *= scale.X;
+	m1[1] *= scale.X;
+	m1[2] *= scale.X;
+	m1[3] *= scale.X;
+
+	m1[4] *= scale.Y;
+	m1[5] *= scale.Y;
+	m1[6] *= scale.Y;
+	m1[7] *= scale.Y;
+
+	m1[8] *= scale.Z;
+	m1[9] *= scale.Z;
+	m1[10] *= scale.Z;
+	m1[11] *= scale.Z;
+
 	// update current relative matrix
 	AnimationMatrix = mat;
 

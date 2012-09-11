@@ -1170,45 +1170,55 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 								);
 							nodeAnim->RotationKeys.push_back(key);
 						}
-						else if ( isTranslate && stride == 3 )
-						{							
-							if ( m_needFlip == true )
+						else if ( isTranslate )
+						{				
+							if ( stride == 3 )
 							{
-								fvector[0] = arrayFloat[i*3];
-								fvector[1] = arrayFloat[i*3 + 2];
-								fvector[2] = arrayFloat[i*3 + 1];									
+								if ( m_needFlip == true )
+								{
+									fvector[0] = arrayFloat[i*3];
+									fvector[1] = arrayFloat[i*3 + 2];
+									fvector[2] = arrayFloat[i*3 + 1];									
+								}
+								else
+								{
+									fvector[0] = arrayFloat[i*3];
+									fvector[1] = arrayFloat[i*3 + 1];
+									fvector[2] = arrayFloat[i*3 + 2];	
+								}
+					
+								CGameAnimationTrack::SPositionKey key;
+								key.frame = arrayTime[i]*k_defaultAnimFPS;
+								key.position = core::vector3df(fvector[0], fvector[1], fvector[2] );
+								nodeAnim->PositionKeys.push_back(key);
 							}
 							else
-							{
-								fvector[0] = arrayFloat[i*3];
-								fvector[1] = arrayFloat[i*3 + 1];
-								fvector[2] = arrayFloat[i*3 + 2];	
-							}
-
-							CGameAnimationTrack::SPositionKey key;
-							key.frame = arrayTime[i]*k_defaultAnimFPS;
-							key.position = core::vector3df(fvector[0], fvector[1], fvector[2] );
-							nodeAnim->PositionKeys.push_back(key);
+								printf("Warning: May be not support stride: %d on translate!\n", stride);
 						}
-						else if ( isScale && stride == 3 )
+						else if ( isScale )
 						{
-							if ( m_needFlip == true )
+							if ( stride == 3 )
 							{
-								fvector[0] = arrayFloat[i*3];
-								fvector[1] = arrayFloat[i*3 + 2];
-								fvector[2] = arrayFloat[i*3 + 1];									
+								if ( m_needFlip == true )
+								{
+									fvector[0] = arrayFloat[i*3];
+									fvector[1] = arrayFloat[i*3 + 2];
+									fvector[2] = arrayFloat[i*3 + 1];									
+								}
+								else
+								{
+									fvector[0] = arrayFloat[i*3];
+									fvector[1] = arrayFloat[i*3 + 1];
+									fvector[2] = arrayFloat[i*3 + 2];	
+								}
+
+								CGameAnimationTrack::SScaleKey key;
+								key.frame = arrayTime[i]*k_defaultAnimFPS;
+								key.scale = core::vector3df(fvector[0], fvector[1], fvector[2] );
+								nodeAnim->ScaleKeys.push_back(key);
 							}
 							else
-							{
-								fvector[0] = arrayFloat[i*3];
-								fvector[1] = arrayFloat[i*3 + 1];
-								fvector[2] = arrayFloat[i*3 + 2];	
-							}
-
-							CGameAnimationTrack::SScaleKey key;
-							key.frame = arrayTime[i]*k_defaultAnimFPS;
-							key.scale = core::vector3df(fvector[0], fvector[1], fvector[2] );
-							nodeAnim->ScaleKeys.push_back(key);
+								printf("Warning: May be not support stride: %d on scale!\n", stride);
 						}
 						else if ( isMatrix && stride == 16 )
 						{	

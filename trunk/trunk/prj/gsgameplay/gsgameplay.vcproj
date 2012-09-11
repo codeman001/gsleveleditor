@@ -203,6 +203,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\gameEvent.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\stdafx.cpp"
 				>
 				<FileConfiguration

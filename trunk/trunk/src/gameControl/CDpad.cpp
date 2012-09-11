@@ -9,12 +9,16 @@
 #include "stdafx.h"
 #include "CDpad.h"
 
+#include "gameEvent.h"
+#include "IView.h"
+
 CDpad::CDpad()
 {
     m_fxDpad = NULL;
     m_fxDpadMove = NULL;
     
     m_controlID = -1;
+	m_active = false;
 }
 
 CDpad::~CDpad()
@@ -34,11 +38,59 @@ void CDpad::update()
         // need hide dpad
         if ( m_fxDpad )
             m_fxDpad->setVisible(false);
+
+		if ( m_fxDpadMove )
+			m_fxDpadMove->setVisible(false);
+
+		if ( m_active )
+		{
+			sendStopEvent();
+			m_active = false;
+		}
     }
     else 
     {
-        m_fxDpad->setVisible(true);
-        m_fxDpad->setPosition( m_dpadPos.X, m_dpadPos.Y );
+		m_active = true;
+
+		core::position2di delta = m_touchPos - m_dpadPos;
+		core::position2df moveVec((float)delta.X, (float)delta.Y);
+
+		const float k_maxMove = 100.0f;
+
+		float length = moveVec.getLength();
+		if ( length > k_maxMove )
+			length = k_maxMove;
+
+		// calc run angle
+		moveVec.normalize();
+		
+		// run event
+		float f = length/k_maxMove;
+		if ( f >= 0.3f )
+		{
+			sendRunEvent( f, (float)moveVec.getAngle() - 90.0f );
+		}
+		else
+		{
+			sendStopEvent();
+		}
+
+
+		// recalc touch pos to render
+		moveVec *= length;
+		m_dpadMovePos = m_dpadPos + core::position2di((int)moveVec.X, (int)moveVec.Y);
+
+		if ( m_fxDpad )
+		{
+			m_fxDpad->setVisible(true);
+			m_fxDpad->setPosition( m_dpadPos.X, m_dpadPos.Y );
+		}
+
+		if ( m_fxDpadMove )
+		{
+			m_fxDpadMove->setVisible(true);
+			m_fxDpadMove->setPosition( m_dpadMovePos.X, m_dpadMovePos.Y );
+		}
     }
 }
 
@@ -80,4 +132,32 @@ void CDpad::setDpadFxName( const std::string& name, const std::string& move )
     
     m_fxDpad = menuFx->findObj( (char*)name.c_str());
     m_fxDpadMove = menuFx->findObj( (char*)move.c_str()); 
+}
+
+void CDpad::sendStopEvent()
+{
+	SEvent	playerStop;
+	SEventPlayerMove stopEvent;
+	stopEvent.rotate = 0.0f;
+	stopEvent.strength = 0.0f;
+	stopEvent.run = false;
+
+	playerStop.EventType = EET_USER_EVENT;
+	playerStop.UserEvent.UserData1 = (s32)EvtPlayerMove;
+	playerStop.UserEvent.UserData2 = (s32)&stopEvent;
+	getIView()->getDevice()->postEventFromUser( playerStop );
+}
+
+void CDpad::sendRunEvent(float f, float rotate)
+{
+	SEvent	playerMove;
+	SEventPlayerMove moveEvent;
+	moveEvent.rotate = rotate;
+	moveEvent.strength = f;
+	moveEvent.run = true;
+
+	playerMove.EventType = EET_USER_EVENT;
+	playerMove.UserEvent.UserData1 = (s32)EvtPlayerMove;
+	playerMove.UserEvent.UserData2 = (s32)&moveEvent;
+	getIView()->getDevice()->postEventFromUser( playerMove );
 }

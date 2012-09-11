@@ -4,6 +4,10 @@
 #include "CTerrainComponent.h"
 #include "gameLevel/CGameLevel.h"
 
+#ifdef GSGAMEPLAY
+#include "gameControl/CGameControl.h"		
+#endif
+
 //! Constructor
 CGameCameraFollowAnimator::CGameCameraFollowAnimator(	gui::ICursorControl* cursorControl, float radius, f32 rotateSpeed )
 {
@@ -31,6 +35,12 @@ bool CGameCameraFollowAnimator::OnEvent(const SEvent& evt)
 		break;
 
 	case EET_MOUSE_INPUT_EVENT:
+
+#ifdef GSGAMEPLAY
+		if ( CGameControl::getInstance()->isTouchOnScreen( evt.EventControlID ) == false )
+			return false;
+#endif
+
 		if (evt.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN)
 		{
 			m_leftMousePress = true;

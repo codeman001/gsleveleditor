@@ -228,6 +228,18 @@ private:
 	E_PARTICLES_PRIMITIVE ParticlePrimitive;
 
 	bool ParticlesAreGlobal;
+
+	bool IsRotateParticle;
+	enum E_PARTICLE_ROTATE
+	{
+		EPR_LEFT,
+		EPR_RIGHT,
+		EPR_BOTH
+	};
+	E_PARTICLE_ROTATE	ParticleRotate;
+	float				ParticleRotateSpeed;
+
+	bool IsRandomSprite;
 };
 
 } // end namespace scene

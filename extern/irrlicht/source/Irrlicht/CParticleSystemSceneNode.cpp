@@ -34,7 +34,9 @@ CParticleSystemSceneNode::CParticleSystemSceneNode(bool createDefaultEmitter,
 	const core::vector3df& scale)
 	: IParticleSystemSceneNode(parent, mgr, id, position, rotation, scale),
 	Emitter(0), ParticleSize(core::dimension2d<f32>(5.0f, 5.0f)), LastEmitTime(0),
-	MaxParticles(0xffff), Buffer(0), ParticlesAreGlobal(true)
+	MaxParticles(0xffff), Buffer(0), ParticlesAreGlobal(true), 
+	IsRotateParticle(false), ParticleRotate(EPR_LEFT), ParticleRotateSpeed(0.0f),
+	IsRandomSprite(false)
 {
 	#ifdef _DEBUG
 	setDebugName("CParticleSystemSceneNode");
@@ -386,11 +388,56 @@ void CParticleSystemSceneNode::render()
 			f32 f;
 
 			f = 0.5f * particle.size.Width;
-			const core::vector3df horizontal ( m[0] * f, m[4] * f, m[8] * f );
+			core::vector3df horizontal ( m[0] * f, m[4] * f, m[8] * f );
 
 			f = -0.5f * particle.size.Height;
-			const core::vector3df vertical ( m[1] * f, m[5] * f, m[9] * f );
+			core::vector3df vertical ( m[1] * f, m[5] * f, m[9] * f );
 		#endif
+
+		if (IsRotateParticle)
+		{		
+			core::quaternion quaternion; 			
+			quaternion.fromAngleAxis(particle.spinAngle, view); 
+
+			core::matrix4 matrix = quaternion.getMatrix(); 
+			matrix.rotateVect(horizontal); 
+			matrix.rotateVect(vertical); 
+		}
+
+		if (IsRandomSprite)
+		{			
+			float x = 0.0f;
+			float y = 0.0f;
+
+			switch( particle.spriteID )
+			{
+			case 1:
+				x = 0.5f;
+				break;
+			case 2:
+				y = 0.5f;
+				break;
+			case 3:
+				x = 0.5f;
+				y = 0.5f;
+				break;
+			default:
+				x = 0.0f;
+				y = 0.0f;
+			};
+			Buffer->Vertices[0+idx].TCoords.set(x,		y);
+			Buffer->Vertices[1+idx].TCoords.set(x,		y+0.5f);
+			Buffer->Vertices[2+idx].TCoords.set(x+0.5f,	y+0.5f);
+			Buffer->Vertices[3+idx].TCoords.set(x+0.5f, y);
+		}
+		else
+		{
+			// fill remaining vertices		
+			Buffer->Vertices[0+idx].TCoords.set(0.0f, 0.0f);
+			Buffer->Vertices[1+idx].TCoords.set(0.0f, 1.0f);
+			Buffer->Vertices[2+idx].TCoords.set(1.0f, 1.0f);
+			Buffer->Vertices[3+idx].TCoords.set(1.0f, 0.0f);		
+		}
 
 		Buffer->Vertices[0+idx].Pos = particle.pos + horizontal + vertical;
 		Buffer->Vertices[0+idx].Color = particle.color;
@@ -497,6 +544,35 @@ void CParticleSystemSceneNode::doParticleSystem(u32 time)
 		else
 		{
 			Particles[i].pos += (Particles[i].vector * scale);
+
+			if ( IsRotateParticle )
+			{
+				if ( Particles[i].spinSpeed == 0.0f )
+				{
+					// we need init
+					if ( ParticleRotate == EPR_LEFT )
+					{
+						Particles[i].spinSpeed = ParticleRotateSpeed;
+					}
+					else if ( ParticleRotate == EPR_RIGHT )
+					{
+						Particles[i].spinSpeed = -ParticleRotateSpeed;
+					}
+					else
+					{
+						int rand = os::Randomizer::rand()%2;
+						if ( rand == 0 )
+							Particles[i].spinSpeed = -ParticleRotateSpeed;
+						else
+							Particles[i].spinSpeed = ParticleRotateSpeed;
+					}
+				}
+				
+				// rotate particle
+				Particles[i].spinAngle = Particles[i].spinAngle + Particles[i].spinSpeed*timediff*0.01f;
+			}
+
+
 			Buffer->BoundingBox.addInternalPoint(Particles[i].pos);
 			++i;
 		}
@@ -551,16 +627,7 @@ void CParticleSystemSceneNode::reallocateBuffers()
 		Buffer->Vertices.set_used(Particles.size() * 4);
 
 		u32 i;
-
-		// fill remaining vertices
-		for (i=oldSize; i<Buffer->Vertices.size(); i+=4)
-		{
-			Buffer->Vertices[0+i].TCoords.set(0.0f, 0.0f);
-			Buffer->Vertices[1+i].TCoords.set(0.0f, 1.0f);
-			Buffer->Vertices[2+i].TCoords.set(1.0f, 1.0f);
-			Buffer->Vertices[3+i].TCoords.set(1.0f, 0.0f);
-		}
-
+	
 		// fill remaining indices
 		u32 oldIdxSize = Buffer->getIndexCount();
 		u32 oldvertices = oldSize;
@@ -588,6 +655,12 @@ void CParticleSystemSceneNode::serializeAttributes(io::IAttributes* out, io::SAt
 	out->addBool("GlobalParticles", ParticlesAreGlobal);
 	out->addFloat("ParticleWidth", ParticleSize.Width);
 	out->addFloat("ParticleHeight", ParticleSize.Height);
+	
+	out->addBool("RotateParticle", IsRotateParticle);
+	out->addInt("RotateParticleType", (int)ParticleRotate);
+	out->addFloat("RotateParticleSpeed", ParticleRotateSpeed);
+
+	out->addBool("IsRandomSprite", IsRandomSprite);
 
 	// write emitter
 
@@ -630,8 +703,13 @@ void CParticleSystemSceneNode::deserializeAttributes(io::IAttributes* in, io::SA
 	ParticleSize.Width = in->getAttributeAsFloat("ParticleWidth");
 	ParticleSize.Height = in->getAttributeAsFloat("ParticleHeight");
 
-	// read emitter
+	IsRotateParticle	= in->getAttributeAsBool("RotateParticle");
+	ParticleRotate		= (E_PARTICLE_ROTATE)in->getAttributeAsInt("RotateParticleType");
+	ParticleRotateSpeed = fabs(in->getAttributeAsFloat("RotateParticleSpeed"));
 
+	IsRandomSprite = in->getAttributeAsBool("IsRandomSprite");
+
+	// read emitter
 	int emitterIdx = in->findAttribute("Emitter");
 	if (emitterIdx == -1)
 		return;

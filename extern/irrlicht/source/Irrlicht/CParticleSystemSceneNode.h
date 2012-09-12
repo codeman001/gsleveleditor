@@ -230,6 +230,9 @@ private:
 	bool ParticlesAreGlobal;
 
 	bool IsRotateParticle;
+	
+	bool IsNoBillboardParticle;
+
 	enum E_PARTICLE_ROTATE
 	{
 		EPR_LEFT,

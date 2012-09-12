@@ -18,6 +18,8 @@ CApplication::CApplication()
 {
 	g_view = (IView*) this;
 	m_resizeWin = true;
+    m_width = 0;
+    m_height = 0;
 }
 
 bool CApplication::OnEvent(const SEvent& event)
@@ -62,6 +64,9 @@ void CApplication::initApplication( IrrlichtDevice* device )
 	core::recti viewport = m_driver->getViewPort();
 	setCameraAspectRatio( viewport.getWidth()/(float)viewport.getHeight() );
 
+    m_width = viewport.getWidth();
+    m_height = viewport.getHeight();
+    
 	// set light manager
 	CLightManager *lightMgr = new CLightManager();
 	m_smgr->setLightManager( lightMgr );
@@ -90,6 +95,10 @@ void CApplication::initApplication( IrrlichtDevice* device )
     
 	// push gamestate
 	CGameStateMgr::getInstance()->pushState( new CStateInit() );
+    
+#ifdef IOS
+    m_driver->setOrientation(video::EOO_90);
+#endif
 }
 
 void CApplication::destroyApplication()
@@ -203,6 +212,9 @@ void CApplication::mainLoop()
 // notify change size of window
 void CApplication::notifyResizeWin(int w, int h)
 {
+    m_width = w;
+    m_height = h;
+    
 	m_driver->OnResize(core::dimension2du((u32)w, (u32)h));
     core::rect<s32> winRect(0,0,w,h);
     m_device->getCursorControl()->setReferenceRect(&winRect);
@@ -213,5 +225,12 @@ void CApplication::notifyResizeWin(int w, int h)
 // touch on device
 void CApplication::notifyTouchEvent(CTouchManager::TouchEvent touchEvent, int x, int y, int id)
 {
+    E_ORIENTATION orientation = m_driver->getOrientation();
+    if ( orientation == video::EOO_90 )
+    {
+        core::swap<int>(x,y);
+        x = m_height - x;
+    }
+
 	m_touchMgr.touchEvent( touchEvent, x, y, id );
 }

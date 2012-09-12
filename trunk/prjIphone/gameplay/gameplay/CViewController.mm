@@ -5,6 +5,7 @@
 //  Created by Pham Hong Duc on 9/3/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
+#ifdef IOS5
 
 #import "CViewController.h"
 
@@ -51,6 +52,7 @@ extern void appicationTouchUp(int touchID, int x, int y);
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
     view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+    view.drawableColorFormat = GLKViewDrawableColorFormatRGB565;
     
     [self setupGL];
     
@@ -148,3 +150,5 @@ extern void appicationTouchUp(int touchID, int x, int y);
 }
 
 @end
+
+#endif

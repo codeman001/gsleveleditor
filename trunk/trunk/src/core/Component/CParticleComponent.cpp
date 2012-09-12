@@ -24,8 +24,18 @@ void CParticleComponent::initComponent()
 void CParticleComponent::updateComponent()
 {
 	if ( m_stopEmitter == true )
+	{
+		std::vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+		while (i != end )
+		{
+			SParticleInfo& p = (*i);
+			p.ps->getEmitter()->setMinParticlesPerSecond( 0 );
+			p.ps->getEmitter()->setMaxParticlesPerSecond( 0 );
+			i++;
+		}
 		return;
-	
+	}
+
 	if ( m_time == 0 )
 	{				
 		m_time = (long) irr::os::Timer::getTime();
@@ -45,22 +55,27 @@ void CParticleComponent::updateComponent()
 	{
 		SParticleInfo& p = (*i);
 		
-		if ( 
-				p.startTime > deltaTime || 
-				( p.lifeTime > 0 && p.startTime + p.lifeTime < deltaTime )
-			)
+		if ( p.startTime > deltaTime )
 		{
+			// wait to start time
+			p.ps->getEmitter()->setMinParticlesPerSecond( 0 );
+			p.ps->getEmitter()->setMaxParticlesPerSecond( 0 );
+			isStop = false;
+		}
+		else if ( p.lifeTime > 0 && p.startTime + p.lifeTime < deltaTime )
+		{
+			// end life time
 			p.ps->getEmitter()->setMinParticlesPerSecond( 0 );
 			p.ps->getEmitter()->setMaxParticlesPerSecond( 0 );
 			p.isStop = true;
+			isStop = true;
 		}
 		else
 		{
+			// update particle
 			p.ps->getEmitter()->setMinParticlesPerSecond( p.minParticle );
 			p.ps->getEmitter()->setMaxParticlesPerSecond( p.maxParticle );
 			p.isStop = false;
-
-			// need stop emitter
 			isStop = false;
 		}
 
@@ -265,6 +280,14 @@ void CParticleComponent::saveXML( const char *lpFileName )
 		propertyName.push_back( L"texture" );
 		propertyValue.push_back( core::stringw(lpTemp) );
 		
+		// particle transparent
+		if ( p.additiveTrans )
+			uiString::copy<wchar_t, const wchar_t>( lpTemp, L"true" );
+		else
+			uiString::copy<wchar_t, const wchar_t>( lpTemp, L"false" );
+		propertyName.push_back( L"additiveTrans" );
+		propertyValue.push_back( core::stringw(lpTemp) );
+
 		// time start
 		uiString::format<wchar_t>( lpTemp, L"%d", p.startTime);
 		propertyName.push_back( L"startTime" );
@@ -339,23 +362,32 @@ void CParticleComponent::loadXML( const char *lpFileName )
 							particle->setName( attribValue );
 
 							attribValue = xmlRead->getAttributeValue(L"texture");							
-							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );							
-
+							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );
+														
 							// set texture
 							particleInfo->texture = attribValueA;
 
 							ITexture *pTex = driver->getTexture( attribValueA );
-
 							if ( pTex == NULL )
-							{
 								pTex = driver->getTexture( getIView()->getPath(attribValueA) );
-							}
+
+							attribValue = xmlRead->getAttributeValue(L"additiveTrans");
+							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );
+							if ( strcmp( attribValueA, "true") == 0 )
+								particleInfo->additiveTrans = true;
+							else
+								particleInfo->additiveTrans = false;
+							
 
 							if ( pTex && particle )
 							{
 								particle->setMaterialTexture(0, pTex );
 								particle->setMaterialFlag(	video::EMF_LIGHTING, false );
-								particle->setMaterialType(	video::EMT_TRANSPARENT_ADD_COLOR);
+
+								if ( particleInfo->additiveTrans )
+									particle->setMaterialType(	video::EMT_TRANSPARENT_ADD_COLOR );
+								else
+									particle->setMaterialType(	video::EMT_TRANSPARENT_ALPHA_CHANNEL );
 							}
 
 							// set start time

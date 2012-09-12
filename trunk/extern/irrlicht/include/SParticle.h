@@ -22,6 +22,15 @@ namespace scene
 		//! Direction and speed of the particle
 		core::vector3df vector;
 
+		//! Spin rotate of the particle 
+		f32	spinAngle;
+
+		//! Rotate speed
+		f32	spinSpeed;
+
+		//!
+		u32	spriteID;
+
 		//! Start life time of the particle
 		u32 startTime;
 

@@ -102,7 +102,13 @@ s32 CParticleAnimatedMeshSceneNodeEmitter::emitt(u32 now, u32 timeSinceLastCall,
 						else
 							p.startSize = MinStartSize.getInterpolated(
 								MaxStartSize, (os::Randomizer::rand() % 100) / 100.0f);
+						
 						p.size = p.startSize;
+
+						p.spriteID = os::Randomizer::rand() % 4;
+
+						p.spinAngle = 0.0f;
+						p.spinSpeed = 0.0f;
 
 						Particles.push_back(p);
 					}
@@ -156,6 +162,11 @@ s32 CParticleAnimatedMeshSceneNodeEmitter::emitt(u32 now, u32 timeSinceLastCall,
 					p.startSize = MinStartSize.getInterpolated(
 							MaxStartSize, (os::Randomizer::rand() % 100) / 100.0f);
 				p.size = p.startSize;
+
+				p.spriteID = os::Randomizer::rand() % 4;
+
+				p.spinAngle = 0.0f;
+				p.spinSpeed = 0.0f;
 
 				Particles.push_back(p);
 			}

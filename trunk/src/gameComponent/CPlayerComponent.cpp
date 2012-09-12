@@ -261,8 +261,12 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 		{
 			m_playerMoveEvt = *((SEventPlayerMove*)irrEvent.UserEvent.UserData2);
 			
-			// setting run command
+			// setting run command			
 			m_runCommand	= m_playerMoveEvt.run;
+
+			m_dpadMove		= false;
+			if ( m_runCommand )
+				m_dpadMove = true;
 
 		}
 	}

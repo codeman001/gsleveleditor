@@ -285,13 +285,16 @@ void CMainFrame::getAttribFromPropertyControl( irr::io::IAttributes *attrb )
 	
 	WCHAR	lpAttribValueW[1024] = {0};
 	char	lpAttribValue[1024] = {0};
+	int		currentRow = 0;
 
-	uiListPropertyItem *pItem = m_effectPropertyWin->getItem(0);
+	// get particle texture
+	uiListPropertyItem *pItem = m_effectPropertyWin->getItem(currentRow++);	
 
 	uiListPropertyRow* pRow = (uiListPropertyRow*) pItem;
 	pRow->getText( lpAttribValueW, 1 );
 	uiString::copy<char, WCHAR>( lpAttribValue, lpAttribValueW );
 	uiString::trim<char>( lpAttribValue );
+	std::string textureFile = lpAttribValue;
 
 	// get particle component
 	CGameObject *pParticle = m_irrWin->getParticle();	
@@ -301,10 +304,20 @@ void CMainFrame::getAttribFromPropertyControl( irr::io::IAttributes *attrb )
 	SParticleInfo *psInfo = pParticleComponent->getParticleInfo( m_currentParticle );
 	psInfo->texture = lpAttribValue;
 
-	if ( uiString::length<char>( lpAttribValue ) > 0 )
-	{
-		std::string textureFile = lpAttribValue;
+	
+	// get transparent type
+	pItem = m_effectPropertyWin->getItem(currentRow++);	
+	pRow = (uiListPropertyRow*) pItem;
+	pRow->getText( lpAttribValueW, 1 );
+	uiString::copy<char, WCHAR>( lpAttribValue, lpAttribValueW );
+	uiString::trim<char>( lpAttribValue );
+	
+	bool isAddtive = false;
+	if ( strcmp( lpAttribValue, "true") == 0 )
+		isAddtive = true;
 
+	if ( uiString::length<char>( lpAttribValue ) > 0 )
+	{		
 		// set texture to particle
 		ITexture *pTex = getIView()->getDriver()->getTexture( textureFile.c_str() );
 		if ( pTex == NULL )
@@ -326,13 +339,18 @@ void CMainFrame::getAttribFromPropertyControl( irr::io::IAttributes *attrb )
 		{
 			m_currentParticle->setMaterialTexture(0, pTex );
 			m_currentParticle->setMaterialFlag(	video::EMF_LIGHTING, false );
-			m_currentParticle->setMaterialType(	video::EMT_TRANSPARENT_ADD_COLOR);
+
+			if ( isAddtive )
+				m_currentParticle->setMaterialType(	video::EMT_TRANSPARENT_ADD_COLOR);
+			else
+				m_currentParticle->setMaterialType(	video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+
 		}
 
-	}
+	}	
 
 	// start time
-	pRow = (uiListPropertyRow*)m_effectPropertyWin->getItem(1);
+	pRow = (uiListPropertyRow*)m_effectPropertyWin->getItem(currentRow++);
 	pRow->getText( lpAttribValueW, 1 );
 	uiString::copy<char, WCHAR>( lpAttribValue, lpAttribValueW );
 	uiString::trim<char>( lpAttribValue );
@@ -343,7 +361,7 @@ void CMainFrame::getAttribFromPropertyControl( irr::io::IAttributes *attrb )
 		psInfo->startTime = 0;
 
 	// life time
-	pRow = (uiListPropertyRow*)m_effectPropertyWin->getItem(2);
+	pRow = (uiListPropertyRow*)m_effectPropertyWin->getItem(currentRow++);
 	pRow->getText( lpAttribValueW, 1 );
 	uiString::copy<char, WCHAR>( lpAttribValue, lpAttribValueW );
 	uiString::trim<char>( lpAttribValue );
@@ -355,19 +373,21 @@ void CMainFrame::getAttribFromPropertyControl( irr::io::IAttributes *attrb )
 
 
 	int nRow = m_effectPropertyWin->getItemCount(); 
-	for ( int i = 3; i < nRow; i++ )
+	int beginParticleAttrb = currentRow;
+
+	for ( int i = beginParticleAttrb; i < nRow; i++ )
 	{
 		pItem = m_effectPropertyWin->getItem(i);
 
 		// get type of attrb
-		io::E_ATTRIBUTE_TYPE atrbType = currentAttrb->getAttributeType( i - 3 );
+		io::E_ATTRIBUTE_TYPE atrbType = currentAttrb->getAttributeType( i - beginParticleAttrb );
 
 		uiListPropertyRow *pRow = (uiListPropertyRow*) pItem;
 		pRow->getText( lpAttribValueW, 1 );
 
 
 		uiString::copy<char, WCHAR>( lpAttribValue, lpAttribValueW );
-		const char *lpAttribName = (const char *)currentAttrb->getAttributeName(i - 3);
+		const char *lpAttribName = (const char *)currentAttrb->getAttributeName(i - beginParticleAttrb);
 
 		switch( atrbType )
 		{
@@ -644,7 +664,8 @@ void CMainFrame::onTreeEffectChange( uiObject *pSender )
 		// get attrib
 		irr::io::IAttributes *attrib = getIView()->getDevice()->getFileSystem()->createEmptyAttributes();
 				
-		attrib->addString( "Texture", (const c8*) psInfo->texture.c_str() );
+		attrib->addString("Texture", (const c8*) psInfo->texture.c_str() );
+		attrib->addBool("AdditiveTrans", psInfo->additiveTrans);
 		attrib->addInt("StartTime", psInfo->startTime);
 		attrib->addInt("LifeTime", psInfo->lifeTime);
 

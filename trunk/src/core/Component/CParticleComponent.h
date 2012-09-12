@@ -8,6 +8,7 @@ typedef struct tagParticleInfo
 {
 	IParticleSystemSceneNode*	ps;
 	std::string					texture;
+	bool						additiveTrans;
 	long						startTime;
 	long						lifeTime;	
 	int							minParticle;
@@ -18,6 +19,7 @@ typedef struct tagParticleInfo
 	{
 		ps = NULL;
 		texture = "";
+		additiveTrans = true;
 		startTime = 0;
 		lifeTime = -1;
 		isStop = false;

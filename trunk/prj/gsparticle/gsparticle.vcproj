@@ -261,6 +261,14 @@
 				Name="SceneNode"
 				>
 				<File
+					RelativePath="..\..\src\core\SceneNode\CGameColladaSceneNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\SceneNode\CGameColladaSceneNode.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\SceneNode\CGameOxySceneNode.cpp"
 					>
 				</File>

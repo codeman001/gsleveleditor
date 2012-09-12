@@ -24,7 +24,8 @@ protected:
 	CTouchManager	m_touchMgr;
 protected:
 	gui::IGUIFont*	m_font;
-
+    int             m_width;
+    int             m_height;
 public:
 	CApplication();	
 

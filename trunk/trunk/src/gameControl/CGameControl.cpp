@@ -27,7 +27,7 @@ void CGameControl::setNameFx( const std::string& nameDpadTouch, const std::strin
     if ( dpadTouch )
     {
         int x,y,w,h;
-        dpadTouch->getBound(&x, &y, &w, &h);
+        dpadTouch->getBound(&x, &y, &w, &h);        
         
         m_touchDpad.UpperLeftCorner = core::vector2di(x,y);
         m_touchDpad.LowerRightCorner = core::vector2di(x+w, y+h);
@@ -68,7 +68,7 @@ bool CGameControl::OnEvent(const SEvent& event)
                     m_moveDpad.setControlID( controlID );
                     m_moveDpad.setDpadPos( event.MouseInput.X, event.MouseInput.Y );
                 }
-            }
+            }          
             
         }
         else if ( event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP )

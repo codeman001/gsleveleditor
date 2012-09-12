@@ -424,6 +424,7 @@
 			baseConfigurationReference = 982254F711C3985A004FEDA3 /* debug-libLua.xcconfig */;
 			buildSettings = {
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -433,6 +434,7 @@
 			buildSettings = {
 				OTHER_CFLAGS = "-fno-regmove";
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};

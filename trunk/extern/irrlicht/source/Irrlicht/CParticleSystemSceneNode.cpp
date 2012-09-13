@@ -378,8 +378,75 @@ void CParticleSystemSceneNode::render()
 
 		if ( IsNoBillboardParticle == true )
 		{
-			// no billboard for trail explosion
+			if (IsRandomSprite)
+			{			
+				float x = 0.0f;
+				float y = 0.0f;
 
+				switch( particle.spriteID )
+				{
+				case 1:
+					x = 0.5f;
+					break;
+				case 2:
+					y = 0.5f;
+					break;
+				case 3:
+					x = 0.5f;
+					y = 0.5f;
+					break;
+				default:
+					x = 0.0f;
+					y = 0.0f;
+				};
+				Buffer->Vertices[0+idx].TCoords.set(x,		y);
+				Buffer->Vertices[1+idx].TCoords.set(x,		y+0.5f);
+				Buffer->Vertices[2+idx].TCoords.set(x+0.5f,	y+0.5f);
+				Buffer->Vertices[3+idx].TCoords.set(x+0.5f, y);
+			}
+			else
+			{
+				// fill remaining vertices		
+				Buffer->Vertices[0+idx].TCoords.set(0.0f, 0.0f);
+				Buffer->Vertices[1+idx].TCoords.set(0.0f, 1.0f);
+				Buffer->Vertices[2+idx].TCoords.set(1.0f, 1.0f);
+				Buffer->Vertices[3+idx].TCoords.set(1.0f, 0.0f);		
+			}
+
+			// no billboard for trail explosion
+			// calc plane position
+			f32 f = 0.5f * particle.size.Width;
+			core::vector3df horizontal ( f, 0, 0 );
+
+			f = 0.5f * particle.size.Height;
+			core::vector3df vertical ( 0, f, 0 );
+
+			core::quaternion quaternion;
+			core::vector3df direction( -particle.vector.X, particle.vector.Y, -particle.vector.Z );
+			quaternion.rotationFromTo( core::vector3df(0.0f,1.0f,0.0f), direction );
+			core::matrix4 matrix = quaternion.getMatrix(); 
+			matrix.rotateVect(horizontal); 
+			matrix.rotateVect(vertical); 
+
+
+			// update buffer position
+			Buffer->Vertices[0+idx].Pos = particle.pos + horizontal + vertical;
+			Buffer->Vertices[0+idx].Color = particle.color;
+			Buffer->Vertices[0+idx].Normal = particle.vector;
+
+			Buffer->Vertices[1+idx].Pos = particle.pos + horizontal - vertical;
+			Buffer->Vertices[1+idx].Color = particle.color;
+			Buffer->Vertices[1+idx].Normal = particle.vector;
+
+			Buffer->Vertices[2+idx].Pos = particle.pos - horizontal - vertical;
+			Buffer->Vertices[2+idx].Color = particle.color;
+			Buffer->Vertices[2+idx].Normal = particle.vector;
+
+			Buffer->Vertices[3+idx].Pos = particle.pos - horizontal + vertical;
+			Buffer->Vertices[3+idx].Color = particle.color;
+			Buffer->Vertices[3+idx].Normal = particle.vector;
+
+			idx += 4;		
 		}
 		else if ( IsPlaneParticle == true )
 		{
@@ -549,6 +616,13 @@ void CParticleSystemSceneNode::render()
 		mat.setTranslation(AbsoluteTransformation.getTranslation());
 	driver->setTransform(video::ETS_WORLD, mat);
 
+	// render 2 face on nonbillboard particle
+	if ( IsNoBillboardParticle )
+	{
+		Buffer->Material.BackfaceCulling = false;
+		Buffer->Material.FrontfaceCulling = false;
+	}
+
 	driver->setMaterial(Buffer->Material);
 
 	driver->drawVertexPrimitiveList(Buffer->getVertices(), Particles.size()*4,
@@ -707,8 +781,7 @@ void CParticleSystemSceneNode::setParticleSize(const core::dimension2d<f32> &siz
 
 void CParticleSystemSceneNode::reallocateBuffers()
 {
-	if (Particles.size() * 4 > Buffer->getVertexCount() ||
-			Particles.size() * 6 > Buffer->getIndexCount())
+	if (Particles.size() * 4 > Buffer->getVertexCount() || Particles.size() * 6 > Buffer->getIndexCount())
 	{
 		u32 oldSize = Buffer->getVertexCount();
 		Buffer->Vertices.set_used(Particles.size() * 4);
@@ -730,7 +803,7 @@ void CParticleSystemSceneNode::reallocateBuffers()
 			Buffer->Indices[5+i] = (u16)2+oldvertices;
 			oldvertices += 4;
 		}
-	}
+	}	
 }
 
 

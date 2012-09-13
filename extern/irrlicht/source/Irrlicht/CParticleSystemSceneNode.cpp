@@ -37,7 +37,7 @@ CParticleSystemSceneNode::CParticleSystemSceneNode(bool createDefaultEmitter,
 	MaxParticles(0xffff), Buffer(0), ParticlesAreGlobal(true), 
 	IsRotateParticle(false), ParticleRotate(EPR_LEFT), ParticleRotateSpeed(0.0f),
 	IsRandomSprite(false),
-	IsNoBillboardParticle(false);
+	IsNoBillboardParticle(false), IsPlaneParticle(false)
 {
 	#ifdef _DEBUG
 	setDebugName("CParticleSystemSceneNode");
@@ -378,7 +378,83 @@ void CParticleSystemSceneNode::render()
 
 		if ( IsNoBillboardParticle == true )
 		{
-			// no billboard
+			// no billboard for trail explosion
+
+		}
+		else if ( IsPlaneParticle == true )
+		{
+			// plane billboard for explosion
+			if (IsRandomSprite)
+			{			
+				float x = 0.0f;
+				float y = 0.0f;
+
+				switch( particle.spriteID )
+				{
+				case 1:
+					x = 0.5f;
+					break;
+				case 2:
+					y = 0.5f;
+					break;
+				case 3:
+					x = 0.5f;
+					y = 0.5f;
+					break;
+				default:
+					x = 0.0f;
+					y = 0.0f;
+				};
+				Buffer->Vertices[0+idx].TCoords.set(x,		y);
+				Buffer->Vertices[1+idx].TCoords.set(x,		y+0.5f);
+				Buffer->Vertices[2+idx].TCoords.set(x+0.5f,	y+0.5f);
+				Buffer->Vertices[3+idx].TCoords.set(x+0.5f, y);
+			}
+			else
+			{
+				// fill remaining vertices		
+				Buffer->Vertices[0+idx].TCoords.set(0.0f, 0.0f);
+				Buffer->Vertices[1+idx].TCoords.set(0.0f, 1.0f);
+				Buffer->Vertices[2+idx].TCoords.set(1.0f, 1.0f);
+				Buffer->Vertices[3+idx].TCoords.set(1.0f, 0.0f);		
+			}	
+
+			// calc plane position
+			f32 f = 0.5f * particle.size.Width;
+			core::vector3df horizontal ( f, 0, 0 );
+
+			f = -0.5f * particle.size.Height;
+			core::vector3df vertical ( 0, 0, f );
+
+			// rotate plane
+			if ( particle.vector.X != 0 || particle.vector.Y != 0 || particle.vector.Z != 0 )
+			{
+				core::quaternion quaternion; 			
+				quaternion.rotationFromTo( core::vector3df(0.0f,1.0f,0.0f), particle.vector );
+
+				core::matrix4 matrix = quaternion.getMatrix(); 
+				matrix.rotateVect(horizontal); 
+				matrix.rotateVect(vertical); 
+			}
+
+			// update buffer position
+			Buffer->Vertices[0+idx].Pos = particle.pos + horizontal + vertical;
+			Buffer->Vertices[0+idx].Color = particle.color;
+			Buffer->Vertices[0+idx].Normal = particle.vector;
+
+			Buffer->Vertices[1+idx].Pos = particle.pos + horizontal - vertical;
+			Buffer->Vertices[1+idx].Color = particle.color;
+			Buffer->Vertices[1+idx].Normal = particle.vector;
+
+			Buffer->Vertices[2+idx].Pos = particle.pos - horizontal - vertical;
+			Buffer->Vertices[2+idx].Color = particle.color;
+			Buffer->Vertices[2+idx].Normal = particle.vector;
+
+			Buffer->Vertices[3+idx].Pos = particle.pos - horizontal + vertical;
+			Buffer->Vertices[3+idx].Color = particle.color;
+			Buffer->Vertices[3+idx].Normal = particle.vector;
+
+			idx += 4;
 		}
 		else
 		{
@@ -553,7 +629,8 @@ void CParticleSystemSceneNode::doParticleSystem(u32 time)
 		else
 		{
 			// update particle position
-			Particles[i].pos += (Particles[i].vector * scale);
+			if ( IsPlaneParticle == false )
+				Particles[i].pos += (Particles[i].vector * scale);
 
 			if ( IsRotateParticle )
 			{
@@ -667,7 +744,8 @@ void CParticleSystemSceneNode::serializeAttributes(io::IAttributes* out, io::SAt
 	out->addFloat("ParticleHeight", ParticleSize.Height);
 	
 	out->addBool("NoBillboardParticle", IsNoBillboardParticle);
-
+	out->addBool("PlaneParticle", IsPlaneParticle);
+	 
 	out->addBool("RotateParticle", IsRotateParticle);
 	out->addInt("RotateParticleType", (int)ParticleRotate);
 	out->addFloat("RotateParticleSpeed", ParticleRotateSpeed);
@@ -716,6 +794,7 @@ void CParticleSystemSceneNode::deserializeAttributes(io::IAttributes* in, io::SA
 	ParticleSize.Height = in->getAttributeAsFloat("ParticleHeight");
 
 	IsNoBillboardParticle	= in->getAttributeAsBool("NoBillboardParticle");
+	IsPlaneParticle = in->getAttributeAsBool("PlaneParticle");
 
 	IsRotateParticle	= in->getAttributeAsBool("RotateParticle");
 	ParticleRotate		= (E_PARTICLE_ROTATE)in->getAttributeAsInt("RotateParticleType");

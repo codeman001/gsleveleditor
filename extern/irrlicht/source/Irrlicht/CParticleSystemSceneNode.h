@@ -233,6 +233,8 @@ private:
 	
 	bool IsNoBillboardParticle;
 
+	bool IsPlaneParticle;
+
 	enum E_PARTICLE_ROTATE
 	{
 		EPR_LEFT,

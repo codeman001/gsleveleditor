@@ -272,7 +272,7 @@ namespace video
 
 			for ( size_t i = 0; i < cnt; ++i )
 			{
-				if ( nLightDirection < kDirectionLight || nLightPoint < nLightPoint )
+				if ( nLightDirection < kDirectionLight || nLightPoint < kPointLight )
 				{
 					if ( Driver->isLightTurnOn(i) == false )
 						continue;

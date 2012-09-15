@@ -35,8 +35,8 @@ bool CGameCameraFollowAnimator::OnEvent(const SEvent& evt)
 		break;
 
 	case EET_MOUSE_INPUT_EVENT:
-
-#ifdef GSGAMEPLAY
+    {
+#ifdef GSGAMEPLAY            
 		if ( CGameControl::getInstance()->isTouchOnScreen( evt.EventControlID ) == false )
 			return false;
 #endif
@@ -61,6 +61,7 @@ bool CGameCameraFollowAnimator::OnEvent(const SEvent& evt)
 			}
 		}		
 		break;
+    }
 	default:
 		break;
 	}
@@ -84,13 +85,13 @@ void CGameCameraFollowAnimator::animateNode(ISceneNode* node, u32 timeMs)
 
 	if(!camera->isInputReceiverEnabled())
 		return;
-
+    
 	// get time	
 	f32 timeDiff = (f32) ( timeMs - m_lastAnimationTime );
 	m_lastAnimationTime = timeMs;
 	
-	const float MaxVerticalAngle = 60;
-	
+	const float MaxVerticalAngle = 60;	
+    
 	if ( m_cursorPos != m_centerCursor && m_leftMousePress )
 	{
 		// rotate X

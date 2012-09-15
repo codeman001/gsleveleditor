@@ -68,7 +68,10 @@ tu_file* CGameUI::_fileOpen( const char *lpPath )
 		file = getIView()->getFileSystem()->createAndOpenFile( getIView()->getPath(lpPath) );
 
 		if ( file == NULL )
-			NULL;
+        {
+            printf("Can not open %s\n", lpPath);
+			return NULL;
+        }
 	}
 
 	return new tu_file(

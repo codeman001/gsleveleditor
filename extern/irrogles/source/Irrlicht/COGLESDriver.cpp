@@ -1463,8 +1463,9 @@ void COGLES1Driver::draw2DImageBatch(const video::ITexture* texture,
 		return;
 	setRenderStates2DMode(color.getAlpha()<255, true, useAlphaChannelOfTexture);
 
-	core::array<S3DVertex> vertices;
-	core::array<u16> quadIndices;
+	static core::array<S3DVertex> vertices;
+	static core::array<u16> quadIndices;
+    
 	vertices.reallocate(drawCount*4);
 	quadIndices.reallocate(drawCount*6);
 

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CTouchManager.h"
+#include "CGameControl.h"
 #include "IView.h"
 
 CTouchManager::CTouchManager()
@@ -36,11 +37,10 @@ void CTouchManager::update()
 		event.MouseInput.Shift = false;
 		event.MouseInput.Control = false;
 
-        // touch 0 is UI touch
 #if defined(IOS) || defined(ANDROID)
-        if ( i == 0 )
+        if ( m_touch[i].touchEvent != CTouchManager::TouchNone && CGameControl::getInstance()->isTouchOnScreen(i) == true )
         {
-            device->getCursorControl()->setPosition(m_touch[0].x, m_touch[0].y);
+            device->getCursorControl()->setPosition(m_touch[i].x, m_touch[i].y);
         }
 #endif
 

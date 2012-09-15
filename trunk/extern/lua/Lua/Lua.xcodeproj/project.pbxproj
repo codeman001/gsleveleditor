@@ -432,7 +432,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9822550011C3985A004FEDA3 /* release-libLua.xcconfig */;
 			buildSettings = {
-				OTHER_CFLAGS = "-fno-regmove";
+				OTHER_CFLAGS = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};

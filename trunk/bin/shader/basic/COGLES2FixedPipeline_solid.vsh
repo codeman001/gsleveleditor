@@ -1,9 +1,9 @@
-attribute mediump vec4 inVertexPosition;
-attribute mediump vec4 inVertexColor;
+attribute highp vec4 inVertexPosition;
+attribute highp vec4 inVertexColor;
 
-uniform mediump mat4 uMvpMatrix;
+uniform highp mat4 uMvpMatrix;
 
-varying mediump vec4 varVertexColor;
+varying highp vec4 varVertexColor;
 
 void main(void)
 {

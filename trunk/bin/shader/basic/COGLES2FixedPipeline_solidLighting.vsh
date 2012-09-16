@@ -1,60 +1,60 @@
 #define MAX_LIGHTS 2
 #define MAX_POINTLIGHTS 4
 
-attribute mediump vec4 inVertexPosition;
-attribute mediump vec4 inVertexColor;
-attribute mediump vec3 inVertexNormal;
-attribute mediump vec2 inTexCoord0;
+attribute highp vec4 inVertexPosition;
+attribute highp vec4 inVertexColor;
+attribute highp vec3 inVertexNormal;
+attribute highp vec2 inTexCoord0;
 
-uniform mediump mat4  uMvpMatrix;
+uniform highp mat4  uMvpMatrix;
 
-uniform mediump vec4  uAmbientColor;
+uniform highp vec4  uAmbientColor;
 
-uniform mediump vec4  uLightDirection1;
-uniform mediump vec4  uLightDiffuse1;
-uniform mediump vec4  uLightSpecular1;
+uniform highp vec4  uLightDirection1;
+uniform highp vec4  uLightDiffuse1;
+uniform highp vec4  uLightSpecular1;
 
-uniform mediump vec4  uLightDirection2;
-uniform mediump vec4  uLightDiffuse2;
-uniform mediump vec4  uLightSpecular2;
+uniform highp vec4  uLightDirection2;
+uniform highp vec4  uLightDiffuse2;
+uniform highp vec4  uLightSpecular2;
 
-uniform mediump vec4  uPointLightPosition1;
-uniform mediump vec4  uPointLightDiffuse1;
-uniform mediump vec4  uPointLightSpecular1;
-uniform mediump vec3  uPointLightAttenuation1;
+uniform highp vec4  uPointLightPosition1;
+uniform highp vec4  uPointLightDiffuse1;
+uniform highp vec4  uPointLightSpecular1;
+uniform highp vec3  uPointLightAttenuation1;
 
-uniform mediump vec4  uPointLightPosition2;
-uniform mediump vec4  uPointLightDiffuse2;
-uniform mediump vec4  uPointLightSpecular2;
-uniform mediump vec3  uPointLightAttenuation2;
+uniform highp vec4  uPointLightPosition2;
+uniform highp vec4  uPointLightDiffuse2;
+uniform highp vec4  uPointLightSpecular2;
+uniform highp vec3  uPointLightAttenuation2;
 
-uniform mediump vec4  uPointLightPosition3;
-uniform mediump vec4  uPointLightDiffuse3;
-uniform mediump vec4  uPointLightSpecular3;
-uniform mediump vec3  uPointLightAttenuation3;
+uniform highp vec4  uPointLightPosition3;
+uniform highp vec4  uPointLightDiffuse3;
+uniform highp vec4  uPointLightSpecular3;
+uniform highp vec3  uPointLightAttenuation3;
 
-uniform mediump vec4  uMaterialAmbient;
-uniform mediump vec4  uMaterialEmission;
-uniform mediump vec4  uMaterialDiffuse;
-uniform mediump vec4  uMaterialSpecular;
-uniform mediump float uMaterialShininess;
+uniform highp vec4  uMaterialAmbient;
+uniform highp vec4  uMaterialEmission;
+uniform highp vec4  uMaterialDiffuse;
+uniform highp vec4  uMaterialSpecular;
+uniform highp float uMaterialShininess;
 
-varying mediump vec4 varVertexColor;
-varying mediump vec2 varTexCoord0;
+varying highp vec4 varVertexColor;
+varying highp vec2 varTexCoord0;
 
 void main(void)
 {	
 	// calc light color
-	mediump vec4 lightColor = uMaterialEmission + uMaterialAmbient*uAmbientColor;
+	highp vec4 lightColor = uMaterialEmission + uMaterialAmbient*uAmbientColor;
 	
 	// ---------------------------------
 	// DIRECTION LIGHT
 	// ---------------------------------
 	// calc light direction 1	
-	mediump vec3 lightDir = -uLightDirection1.xyz;			
+	highp vec3 lightDir = -uLightDirection1.xyz;			
 		
 	// compute cos(Light, Normal)
-	mediump float NdotL = max(dot(normalize(inVertexNormal.xyz), lightDir), 0.0);
+	highp float NdotL = max(dot(normalize(inVertexNormal.xyz), lightDir), 0.0);
 	lightColor += NdotL * uLightDiffuse1 * uMaterialDiffuse;
 	
 	
@@ -63,9 +63,9 @@ void main(void)
 	//highp vec3 eyeDirection = normalize(eyeDir);
 	//highp vec3 halfAngle = normalize(lightDir + eyeDirection);
 		
-	//mediump float NdotH = dot(normalize(inVertexNormal.xyz), halfAngle);
-	//mediump float spec = pow(max(NdotH, 0.0), max(uMaterialShininess, 1.0));
-	//mediump vec4 specColor = uLightSpecular1 * spec * uMaterialSpecular;
+	//highp float NdotH = dot(normalize(inVertexNormal.xyz), halfAngle);
+	//highp float spec = pow(max(NdotH, 0.0), max(uMaterialShininess, 1.0));
+	//highp vec4 specColor = uLightSpecular1 * spec * uMaterialSpecular;
 	//lightColor += specColor;
 	
 	

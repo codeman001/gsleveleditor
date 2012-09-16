@@ -37,6 +37,11 @@ public:
 	// render flash at viewport x,y,w,h
 	void render(int x, int y, int w, int h);
 	
+    // getFxSize
+    // get size of flash
+    void getFxSize(int *w, int *h);
+    void getFxScaleRatio(float *fw, float *fh);
+    
 	// updateMouseState
 	// update mouse event to flash
 	void updateMouseState( int x, int y, bool pressed );

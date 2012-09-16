@@ -74,6 +74,9 @@ CGameCamera::~CGameCamera()
 	m_cameraMesh->drop();
 #endif
 	
+    if ( getIView()->getActiveCamera() == this )
+        getIView()->setActiveCamera(NULL);
+    
 	ISceneManager *smgr = getIView()->getSceneMgr();
 
 	// set null camera on scenenode

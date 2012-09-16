@@ -27,10 +27,19 @@ void CGameControl::setNameFx( const std::string& nameDpadTouch, const std::strin
     if ( dpadTouch )
     {
         int x,y,w,h;
-        dpadTouch->getBound(&x, &y, &w, &h);        
+        float fw, fh;
         
-        m_touchDpad.UpperLeftCorner = core::vector2di(x,y);
-        m_touchDpad.LowerRightCorner = core::vector2di(x+w, y+h);
+        dpadTouch->getBound(&x, &y, &w, &h);        
+        menuFx->getFxScaleRatio(&fw, &fh);
+        
+        float realX, realY, realW, realH;
+        realX = (float)x / fw;
+        realY = (float)y / fh;
+        realW = (float)w / fw;
+        realH = (float)h / fh;
+        
+        m_touchDpad.UpperLeftCorner = core::vector2di( (int)realX, (int)realY);
+        m_touchDpad.LowerRightCorner = core::vector2di( (int)(realX+realW), (int)(realY+realH) );
         
         dpadTouch->drop();
     }
@@ -93,7 +102,15 @@ bool CGameControl::OnEvent(const SEvent& event)
 bool CGameControl::isTouchOnScreen( int touchID )
 {
 	if ( touchID == m_moveDpad.getControlID() )
-		return false;
-
+		return false;    
+    
 	return true;
+}
+
+// isTouchOnDPad
+// check touch on dpad
+bool CGameControl::isTouchOnDPad( int x, int y )
+{
+    core::vector2di mousePos(x, y);
+    return m_touchDpad.isPointInside( mousePos );
 }

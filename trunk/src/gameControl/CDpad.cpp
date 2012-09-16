@@ -55,7 +55,11 @@ void CDpad::update()
 		core::position2di delta = m_touchPos - m_dpadPos;
 		core::position2df moveVec((float)delta.X, (float)delta.Y);
 
-		const float k_maxMove = 100.0f;
+        float fw, fh;
+        CMenuFx *menuFx = CGameUI::getInstance()->getFlash("uiGameHud");
+        menuFx->getFxScaleRatio( &fw, &fh );
+        
+		const float k_maxMove = 100.0f / fw;
 
 		float length = moveVec.getLength();
 		if ( length > k_maxMove )
@@ -79,17 +83,17 @@ void CDpad::update()
 		// recalc touch pos to render
 		moveVec *= length;
 		m_dpadMovePos = m_dpadPos + core::position2di((int)moveVec.X, (int)moveVec.Y);
-
+        
 		if ( m_fxDpad )
 		{
 			m_fxDpad->setVisible(true);
-			m_fxDpad->setPosition( m_dpadPos.X, m_dpadPos.Y );
+			m_fxDpad->setPosition( m_dpadPos.X * fw, m_dpadPos.Y * fh );
 		}
 
 		if ( m_fxDpadMove )
 		{
 			m_fxDpadMove->setVisible(true);
-			m_fxDpadMove->setPosition( m_dpadMovePos.X, m_dpadMovePos.Y );
+			m_fxDpadMove->setPosition( m_dpadMovePos.X * fw, m_dpadMovePos.Y * fh );
 		}
     }
 }

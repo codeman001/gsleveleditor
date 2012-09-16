@@ -38,7 +38,8 @@ void CTouchManager::update()
 		event.MouseInput.Control = false;
 
 #if defined(IOS) || defined(ANDROID)
-        if ( m_touch[i].touchEvent != CTouchManager::TouchNone && CGameControl::getInstance()->isTouchOnScreen(i) == true )
+        if ( m_touch[i].touchEvent != CTouchManager::TouchNone && 
+            CGameControl::getInstance()->isTouchOnScreen(i) == true )
         {
             device->getCursorControl()->setPosition(m_touch[i].x, m_touch[i].y);
         }
@@ -47,9 +48,7 @@ void CTouchManager::update()
 		if ( m_touch[i].touchEvent == CTouchManager::TouchDown )
 		{			
 			event.MouseInput.Event = irr::EMIE_LMOUSE_PRESSED_DOWN;
-			device->postEventFromUser(event);
-            
-            //printf("touch down: %d %d\n", m_touch[i].x, m_touch[i].y);
+			device->postEventFromUser(event);        
 		}
 		else if ( m_touch[i].touchEvent == CTouchManager::TouchMove )
 		{

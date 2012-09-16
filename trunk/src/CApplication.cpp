@@ -62,11 +62,10 @@ void CApplication::initApplication( IrrlichtDevice* device )
 	m_device->setWindowCaption( STR_APP_TITLE );
 	
 	core::recti viewport = m_driver->getViewPort();
-	setCameraAspectRatio( viewport.getWidth()/(float)viewport.getHeight() );
 
     m_width = viewport.getWidth();
     m_height = viewport.getHeight();
-    
+        
 	// set light manager
 	CLightManager *lightMgr = new CLightManager();
 	m_smgr->setLightManager( lightMgr );
@@ -129,19 +128,8 @@ void CApplication::mainLoop()
 	m_lastUpdateTime = now;
 	
 	// update camera aspect
-#ifndef WIN32
-	if ( m_resizeWin )
-#endif
-	{
-        ICameraSceneNode *activeCamera = m_device->getSceneManager()->getActiveCamera();
-		if ( activeCamera )
-		{ 
-			f32 fAspect = (f32)m_driver->getCurrentRenderTargetSize().Width / (f32)m_driver->getCurrentRenderTargetSize().Height;
-			activeCamera->setAspectRatio( fAspect );
-
-			m_resizeWin = false;
-		}		
-	}
+    f32 fAspect = (f32)m_driver->getCurrentRenderTargetSize().Width / (f32)m_driver->getCurrentRenderTargetSize().Height;
+    setCameraAspectRatio( fAspect );
 	
 	// update touch event
 	m_touchMgr.update();

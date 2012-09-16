@@ -53,6 +53,11 @@ public:
 	// isTouchOnScreen
 	// check a null touch on screen
 	bool isTouchOnScreen( int touchID );
+    
+    // isTouchOnDPad
+    // check touch on dpad
+    bool isTouchOnDPad( int x, int y );
+    
 };
 
 #endif

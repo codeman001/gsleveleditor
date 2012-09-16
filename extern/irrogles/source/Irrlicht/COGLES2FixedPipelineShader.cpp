@@ -221,9 +221,12 @@ namespace video
 		//core::matrix4 world = Driver->getTransform(ETS_WORLD);
 		//mat->setUniform(WORLD_MATRIX, world.pointer());
 
-		/* Textures Upload */		
-		mat->setUniform(TEXTURE_UNIT0, &TextureUnits[0]);
-		//mat->setUniform(TEXTURE_UNIT1, &TextureUnits[1]);
+		/* Textures Upload */
+        if ( nTexture > 0 )
+        {
+            mat->setUniform(TEXTURE_UNIT0, &TextureUnits[0]);
+            //mat->setUniform(TEXTURE_UNIT1, &TextureUnits[1]);
+        }
 						
 		if ( Lighting )
 		{

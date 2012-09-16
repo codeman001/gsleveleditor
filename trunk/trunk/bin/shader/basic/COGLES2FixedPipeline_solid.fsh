@@ -1,4 +1,4 @@
-varying mediump vec4 varVertexColor;
+varying highp vec4 varVertexColor;
 
 void main (void)
 {	

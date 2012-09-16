@@ -58,7 +58,7 @@ public:
 
 	// handle event
 	virtual bool OnEvent(const SEvent& irrEvent);
-
+    
 public:
 	static tu_file* _fileOpen( const char *lpPath );
 	static void _fsCallback( gameswf::character *movie, const char *lpCommand, const char *lpParams );

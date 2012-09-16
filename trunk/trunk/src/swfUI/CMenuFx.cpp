@@ -97,16 +97,38 @@ void CMenuFx::render(int x, int y, int w, int h)
 	}
 }
 
+// getFxSize
+// get size of flash
+void CMenuFx::getFxSize(int *w, int *h)
+{
+    *w = m_root->get_movie_width();
+    *h = m_root->get_movie_height();
+}
+
+void CMenuFx::getFxScaleRatio(float *fw, float *fh)
+{
+    if ( getIView()->getDriver()->getOrientation() == video::EOO_0 )
+    {
+        *fw = (float)m_root->get_movie_width()/(float)m_viewportw;
+        *fh = (float)m_root->get_movie_height()/(float)m_viewporth;
+    }
+    else 
+    {
+        *fw = (float)m_root->get_movie_width()/(float)m_viewporth;
+        *fh = (float)m_root->get_movie_height()/(float)m_viewportw;
+    }
+}
+
 void CMenuFx::updateMouseState( int x, int y, bool pressed )
 {
 	if ( m_visible && m_root && m_viewportw != 0 && m_viewporth != 0 )
 	{
-		float fx = m_root->get_movie_width()/(float)m_viewportw;
-		float fy = m_root->get_movie_height()/(float)m_viewporth;
+        float fx, fy;
+        getFxScaleRatio(&fx, &fy);
 
 		float mouseX = m_viewportx + x*fx;
 		float mouseY = m_viewporty + y*fy;
-
+        
 		m_root->notify_mouse_state ( (int)mouseX, (int)mouseY, pressed ? 1 : 0 );
 	}
 }

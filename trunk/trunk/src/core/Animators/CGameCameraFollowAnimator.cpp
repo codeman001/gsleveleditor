@@ -41,7 +41,8 @@ bool CGameCameraFollowAnimator::OnEvent(const SEvent& evt)
 			return false;
 #endif
 
-		if (evt.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN)
+		if (evt.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN && 
+            CGameControl::getInstance()->isTouchOnDPad( evt.MouseInput.X, evt.MouseInput.Y) == false)
 		{
 			m_leftMousePress = true;
 			

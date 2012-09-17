@@ -18,7 +18,7 @@ CGameCameraFollowAnimator::CGameCameraFollowAnimator(	gui::ICursorControl* curso
 	m_followNode = NULL;
 
 	m_leftMousePress = false;
-	m_cursorControl = cursorControl;
+	m_cursorControl = cursorControl;    
 }
 
 //! Destructor
@@ -38,29 +38,30 @@ bool CGameCameraFollowAnimator::OnEvent(const SEvent& evt)
     {
 #ifdef GSGAMEPLAY            
 		if ( CGameControl::getInstance()->isTouchOnScreen( evt.EventControlID ) == false )
+        {
 			return false;
+        }
 #endif
 
-		if (evt.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN && 
-            CGameControl::getInstance()->isTouchOnDPad( evt.MouseInput.X, evt.MouseInput.Y) == false)
+		if (evt.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN)
 		{
 			m_leftMousePress = true;
-			
+
 			m_centerCursor = m_cursorControl->getRelativePosition();
-			m_cursorPos = m_centerCursor;
+			m_cursorPos = m_centerCursor; 
 		}
-		else if ( evt.MouseInput.Event == EMIE_LMOUSE_LEFT_UP )
-		{
-			m_leftMousePress = false;
-		}		
 		else if ( evt.MouseInput.Event == EMIE_MOUSE_MOVED )
-		{
+		{         
 			if ( m_leftMousePress )
 			{
-				m_cursorPos = m_cursorControl->getRelativePosition();
+				m_cursorPos = m_cursorControl->getRelativePosition();                            
 				return true;
 			}
-		}		
+		}
+        else if ( evt.MouseInput.Event == EMIE_LMOUSE_LEFT_UP )
+		{
+			m_leftMousePress = false;
+		}
 		break;
     }
 	default:
@@ -100,7 +101,7 @@ void CGameCameraFollowAnimator::animateNode(ISceneNode* node, u32 timeMs)
 
 		// rotate Y
 		m_rotate.X += (m_centerCursor.Y - m_cursorPos.Y) * m_rotateSpeed * timeDiff;
-
+        
 		if ( m_rotate.X < -MaxVerticalAngle )
 			m_rotate.X = -MaxVerticalAngle;
 		if ( m_rotate.X > MaxVerticalAngle )

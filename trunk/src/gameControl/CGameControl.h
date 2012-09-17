@@ -20,6 +20,9 @@ protected:
     
     std::string m_fxnameDpad;
     std::string m_fxnameDpadMove;
+    
+    int         m_screenTouchID;
+    
 public:
 	CGameControl();
 	virtual ~CGameControl();
@@ -41,6 +44,8 @@ public:
     inline void setEnable(bool b)
     {
         m_isEnable = b;
+        if ( b == false )
+            m_screenTouchID = -1;
     }
     
     // isEnable

@@ -97,20 +97,24 @@ void getDeviceFirmware()
 int getDeviceOrientation()
 {
 	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    
+
+    int ret = 0;
     switch (orientation)
     {
         case UIDeviceOrientationLandscapeLeft:
             // left
+            ret = 1;
             break;
         case UIDeviceOrientationLandscapeRight:
             // right
+            ret = 2;
             break;
         default:
 			// portal
+            ret = -1;
             break;
     };
-	return 0;
+	return ret;
 }
 
 // getDeviceWidthHeight

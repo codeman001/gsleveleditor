@@ -4,6 +4,8 @@
 #include "IEventReceiver.h"
 #include "ISceneNodeAnimator.h"
 
+#include "stdafx.h"
+
 class CGameCameraFollowAnimator: public ISceneNodeAnimator
 {
 protected:
@@ -19,7 +21,7 @@ protected:
 
 		bool				m_leftMousePress;
 		core::position2d<f32> m_centerCursor, m_cursorPos;
-
+    
 		core::vector3df		m_currentPos;
 		core::vector3df		m_currentTarget;
 		core::vector3df		m_toPos;

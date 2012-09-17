@@ -37,22 +37,24 @@ void CTouchManager::update()
 		event.MouseInput.Shift = false;
 		event.MouseInput.Control = false;
 
-#if defined(IOS) || defined(ANDROID)
-        if ( m_touch[i].touchEvent != CTouchManager::TouchNone && 
-            CGameControl::getInstance()->isTouchOnScreen(i) == true )
-        {
-            device->getCursorControl()->setPosition(m_touch[i].x, m_touch[i].y);
-        }
-#endif
-
 		if ( m_touch[i].touchEvent == CTouchManager::TouchDown )
-		{			
+		{            
+            m_touch[i].doTouchDown = false;
 			event.MouseInput.Event = irr::EMIE_LMOUSE_PRESSED_DOWN;
-			device->postEventFromUser(event);        
+			device->postEventFromUser(event);  
 		}
 		else if ( m_touch[i].touchEvent == CTouchManager::TouchMove )
 		{
-			event.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
+            if ( m_touch[i].doTouchDown == true )
+            {
+                // we fix if lost a touchdown event
+                event.MouseInput.Event = irr::EMIE_LMOUSE_PRESSED_DOWN;
+                m_touch[i].doTouchDown = false;
+            }
+            else
+            {
+                event.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
+            }
 			device->postEventFromUser(event);
 		}
 		else if ( m_touch[i].touchEvent == CTouchManager::TouchUp )
@@ -72,6 +74,11 @@ void CTouchManager::update()
 			m_touch[i].y			= 0;
 			m_touchID[i]			= -1;
 		}
+        else if ( m_touch[i].touchEvent == CTouchManager::TouchDown )
+        {
+            // switch to touch move event for next update
+            m_touch[i].touchEvent = CTouchManager::TouchMove;
+        }
 	}
 }
 
@@ -108,10 +115,15 @@ void CTouchManager::touchEvent(TouchEvent touchEvent, int x, int y, int id)
 {
 	int touchID = getTouchID( id );
 	if ( touchID == -1 )
-		return;
-	
+		return;   
+    
 	m_touch[touchID].touchEvent	= touchEvent;
 	m_touch[touchID].x			= x;
 	m_touch[touchID].y			= y;
-	m_touchID[touchID]			= id;
+
+    // make sure we allway call TouchDown one time
+    if ( touchEvent == CTouchManager::TouchDown )
+        m_touch[touchID].doTouchDown = true;
+    
+	m_touchID[touchID]			= id;    
 }

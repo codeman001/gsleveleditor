@@ -21,6 +21,7 @@ public:
 		TouchEvent	touchEvent;		
 		int			x;
 		int			y;
+        bool        doTouchDown;
 	};
 
 protected:

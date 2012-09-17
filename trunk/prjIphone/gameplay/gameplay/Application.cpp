@@ -80,4 +80,8 @@ void appicationTouchUp(int touchID, int x, int y)
 {
     g_myApp.notifyTouchEvent(CTouchManager::TouchUp, x, y, touchID);
 }
-    
+
+void applicationChangeOrientation(int orientation)
+{
+    g_myApp.notifyChangeOrientation( orientation );
+}

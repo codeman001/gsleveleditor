@@ -57,6 +57,10 @@ public:
 	// notifyTouchEvent
 	// touch on device
 	void notifyTouchEvent(CTouchManager::TouchEvent touchEvent, int x, int y, int id);
+    
+    // notifyChangeOrientation
+    // change orientation
+    void notifyChangeOrientation( int id );
 };
 
 

@@ -84,7 +84,8 @@ IImageWriter* createImageWriterPPM();
 CNullDriver::CNullDriver(io::IFileSystem* io, const core::dimension2d<u32>& screenSize)
 : FileSystem(io), MeshManipulator(0), ViewPort(0,0,0,0), ScreenSize(screenSize),
 	PrimitivesDrawn(0), BindTextureCount(0), MinVertexCountForVBO(500), TextureCreationFlags(0),
-	OverrideMaterial2DEnabled(false), AllowZWriteOnTransparent(false),EnableChangeProjectionMatrixWhenSetRenderMode(true)
+	OverrideMaterial2DEnabled(false), AllowZWriteOnTransparent(false),EnableChangeProjectionMatrixWhenSetRenderMode(true),
+	Orientation( EOO_0 )
 {
 	#ifdef _DEBUG
 	setDebugName("CNullDriver");

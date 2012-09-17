@@ -1,9 +1,12 @@
 #include "stdafx.h"
 #include "CGameControl.h"
+#include "IView.h"
 
 CGameControl::CGameControl()
 {
     m_isEnable = false;
+    
+    m_screenTouchID = -1;
 }
 
 CGameControl::~CGameControl()
@@ -62,6 +65,10 @@ bool CGameControl::OnEvent(const SEvent& event)
     if ( m_isEnable == false )
         return true;
     
+#if defined (IOS) || defined (ANDROID)    
+    IrrlichtDevice *device = getIView()->getDevice();
+#endif
+    
     if ( event.EventType == EET_MOUSE_INPUT_EVENT )
     {
         s32 controlID = event.EventControlID;
@@ -75,23 +82,48 @@ bool CGameControl::OnEvent(const SEvent& event)
                 if ( m_moveDpad.getControlID() == -1 )
                 {
                     m_moveDpad.setControlID( controlID );
-                    m_moveDpad.setDpadPos( event.MouseInput.X, event.MouseInput.Y );
+                    m_moveDpad.setDpadPos( event.MouseInput.X, event.MouseInput.Y );                    
                 }
-            }          
-            
+            }  
+            else if ( m_screenTouchID == -1 )
+            {
+#if defined (IOS) || defined (ANDROID)
+                device->getCursorControl()->setPosition( event.MouseInput.X, event.MouseInput.Y);
+#endif
+                m_screenTouchID = controlID;
+            }
         }
         else if ( event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP )
         {
             // release dpad move
             if ( m_moveDpad.getControlID() == controlID )
+            {
                 m_moveDpad.setControlID( -1 );
+            }
+            else if ( m_screenTouchID == controlID )
+            {
 
+#if defined (IOS) || defined (ANDROID)
+                device->getCursorControl()->setPosition( event.MouseInput.X, event.MouseInput.Y);
+                
+                ISceneManager *smgr = getIView()->getSceneMgr();
+                if ( smgr->getActiveCamera() )
+                    smgr->getActiveCamera()->OnEvent( event );
+#endif                                    
+                m_screenTouchID = -1;
+            }
         }
         else if ( event.MouseInput.Event == EMIE_MOUSE_MOVED )
-        {
+        {            
             // move dpad
             if ( m_moveDpad.getControlID() == controlID )
                 m_moveDpad.setTouchPos( event.MouseInput.X, event.MouseInput.Y );
+            else if ( m_screenTouchID == controlID )
+            {
+#if defined (IOS) || defined (ANDROID)
+                device->getCursorControl()->setPosition( event.MouseInput.X, event.MouseInput.Y);
+#endif
+            }
         }
     }
     return true;
@@ -101,10 +133,10 @@ bool CGameControl::OnEvent(const SEvent& event)
 // check a null touch on screen
 bool CGameControl::isTouchOnScreen( int touchID )
 {
-	if ( touchID == m_moveDpad.getControlID() )
-		return false;    
+	if ( touchID == m_screenTouchID )
+        return true;
     
-	return true;
+	return false;
 }
 
 // isTouchOnDPad

@@ -21,6 +21,7 @@ extern void appicationTouchDown(int touchID, int x, int y);
 extern void appicationTouchMove(int touchID, int x, int y);
 extern void appicationTouchUp(int touchID, int x, int y);
 
+extern void applicationChangeOrientation(int orientation);
 
 @implementation CEAGLView
 
@@ -51,6 +52,14 @@ extern void appicationTouchUp(int touchID, int x, int y);
 	
     RunGame = false;
     
+    
+    // add orientation
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didRotate:)
+                                                 name:@"UIDeviceOrientationDidChangeNotification" object:nil];
+    
 	return self;
 }
 
@@ -58,6 +67,29 @@ extern void appicationTouchUp(int touchID, int x, int y);
 {
     [self destroyFramebuffer];
 }
+
+
+- (void) didRotate:(NSNotification *)notification
+{	
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    
+    if (orientation == UIDeviceOrientationLandscapeLeft)
+    {
+        NSLog(@"Landscape Left!");
+        applicationChangeOrientation(1);
+    }
+    else if ( orientation == UIDeviceOrientationLandscapeRight )
+    {
+        NSLog(@"Landscape Right!");
+        applicationChangeOrientation(2);        
+    }
+    else 
+    {
+        NSLog(@"Portrait!");
+        applicationChangeOrientation(0);        
+    }
+}
+
 
 - (void) layoutSubviews
 {

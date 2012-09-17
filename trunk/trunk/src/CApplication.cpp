@@ -94,10 +94,6 @@ void CApplication::initApplication( IrrlichtDevice* device )
     
 	// push gamestate
 	CGameStateMgr::getInstance()->pushState( new CStateInit() );
-    
-#ifdef IOS
-    m_driver->setOrientation(video::EOO_90);
-#endif
 }
 
 void CApplication::destroyApplication()
@@ -125,8 +121,8 @@ void CApplication::mainLoop()
 	m_timeStep = (f32)(now - m_lastUpdateTime);
 	if ( m_timeStep == 0.0f )
 		m_timeStep = 1.0f;
-	m_lastUpdateTime = now;
-	
+	m_lastUpdateTime = now;    
+    
 	// update camera aspect
     f32 fAspect = (f32)m_driver->getCurrentRenderTargetSize().Width / (f32)m_driver->getCurrentRenderTargetSize().Height;
     setCameraAspectRatio( fAspect );
@@ -219,6 +215,31 @@ void CApplication::notifyTouchEvent(CTouchManager::TouchEvent touchEvent, int x,
         core::swap<int>(x,y);
         x = m_height - x;
     }
+    else if ( orientation == video::EOO_270)
+    {
+        core::swap<int>(x,y);
+        y = m_width - y;    
+    }
 
 	m_touchMgr.touchEvent( touchEvent, x, y, id );
+}
+
+void CApplication::notifyChangeOrientation( int id )
+{
+    if ( id == 1 )
+    {
+        // left
+        m_driver->setOrientation(video::EOO_270);
+    }
+    else if ( id == 2 )
+    {
+        // right
+        m_driver->setOrientation(video::EOO_90);
+    }
+    else
+    {
+        // portrail   
+        // m_driver->setOrientation(video::EOO_0);
+        m_driver->setOrientation(video::EOO_270);
+    }
 }

@@ -66,9 +66,11 @@
 #define _IRR_WINDOWS_API_
 #define _IRR_COMPILE_WITH_WINDOWS_DEVICE_
 //#define _IRR_COMPILE_WITH_OGLES1_
-#define _IRR_COMPILE_WITH_OGLES2_
-//#define _IRR_COMPILE_WITH_OPENGL_
+//#define _IRR_COMPILE_WITH_OGLES2_
+#define _IRR_COMPILE_WITH_OPENGL_
 
+// Build with windowsdk6 if use direct3d9
+//#define _IRR_COMPILE_WITH_DIRECT3D_9_
 #endif
 
 //! WINCE is a very restricted environment for mobile devices

@@ -87,13 +87,13 @@ void CDpad::update()
 		if ( m_fxDpad )
 		{
 			m_fxDpad->setVisible(true);
-			m_fxDpad->setPosition( m_dpadPos.X * fw, m_dpadPos.Y * fh );
+			m_fxDpad->setPosition( (int)(m_dpadPos.X * fw), (int)(m_dpadPos.Y * fh) );
 		}
 
 		if ( m_fxDpadMove )
 		{
 			m_fxDpadMove->setVisible(true);
-			m_fxDpadMove->setPosition( m_dpadMovePos.X * fw, m_dpadMovePos.Y * fh );
+			m_fxDpadMove->setPosition( (int)(m_dpadMovePos.X * fw), (int)(m_dpadMovePos.Y * fh) );
 		}
     }
 }

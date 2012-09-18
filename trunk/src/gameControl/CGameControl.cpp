@@ -65,9 +65,7 @@ bool CGameControl::OnEvent(const SEvent& event)
     if ( m_isEnable == false )
         return true;
     
-#if defined (IOS) || defined (ANDROID)    
     IrrlichtDevice *device = getIView()->getDevice();
-#endif
     
     if ( event.EventType == EET_MOUSE_INPUT_EVENT )
     {
@@ -90,7 +88,26 @@ bool CGameControl::OnEvent(const SEvent& event)
 #if defined (IOS) || defined (ANDROID)
                 device->getCursorControl()->setPosition( event.MouseInput.X, event.MouseInput.Y);
 #endif
-                m_screenTouchID = controlID;
+				m_screenTouchID = controlID;
+
+				ISceneManager *smgr = getIView()->getSceneMgr();
+                if ( smgr->getActiveCamera() )
+                    smgr->getActiveCamera()->OnEvent( event );                
+            }
+        }
+        else if ( event.MouseInput.Event == EMIE_MOUSE_MOVED )
+        {            
+            // move dpad
+            if ( m_moveDpad.getControlID() == controlID )
+                m_moveDpad.setTouchPos( event.MouseInput.X, event.MouseInput.Y );
+            else if ( m_screenTouchID == controlID )
+            {
+#if defined (IOS) || defined (ANDROID)
+                device->getCursorControl()->setPosition( event.MouseInput.X, event.MouseInput.Y);
+#endif
+				ISceneManager *smgr = getIView()->getSceneMgr();
+                if ( smgr->getActiveCamera() )
+                    smgr->getActiveCamera()->OnEvent( event );
             }
         }
         else if ( event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP )
@@ -105,24 +122,12 @@ bool CGameControl::OnEvent(const SEvent& event)
 
 #if defined (IOS) || defined (ANDROID)
                 device->getCursorControl()->setPosition( event.MouseInput.X, event.MouseInput.Y);
-                
+#endif                
                 ISceneManager *smgr = getIView()->getSceneMgr();
                 if ( smgr->getActiveCamera() )
                     smgr->getActiveCamera()->OnEvent( event );
-#endif                                    
+
                 m_screenTouchID = -1;
-            }
-        }
-        else if ( event.MouseInput.Event == EMIE_MOUSE_MOVED )
-        {            
-            // move dpad
-            if ( m_moveDpad.getControlID() == controlID )
-                m_moveDpad.setTouchPos( event.MouseInput.X, event.MouseInput.Y );
-            else if ( m_screenTouchID == controlID )
-            {
-#if defined (IOS) || defined (ANDROID)
-                device->getCursorControl()->setPosition( event.MouseInput.X, event.MouseInput.Y);
-#endif
             }
         }
     }

@@ -31,10 +31,6 @@ bool CApplication::OnEvent(const SEvent& event)
 		i++;
 	}
 
-	// camera event
-	if ( m_smgr && m_smgr->getActiveCamera() )
-		m_smgr->getActiveCamera()->OnEvent( event );
-
 	if ( event.EventType == EET_LOG_TEXT_EVENT )
 	{
 #ifdef ANDROID

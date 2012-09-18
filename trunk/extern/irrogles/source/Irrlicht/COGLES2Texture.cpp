@@ -26,6 +26,14 @@
 #include <OpenGLES/ES2/glext.h>
 #endif
 
+namespace
+{
+#ifndef GL_BGRA
+// we need to do this for the IMG_BGRA8888 extension
+int GL_BGRA = GL_RGBA;
+#endif
+}
+
 namespace irr
 {
 namespace video
@@ -149,7 +157,15 @@ namespace video
 
 	//! copies the texture into an opengl-es2 texture.
 	void COGLES2Texture::copyTexture( bool newTexture )
-	{     
+	{
+#ifndef GL_BGRA
+		// whoa, pretty badly implemented extension...
+		if (Driver->queryOpenGLFeature(COGLES2ExtensionHandler::IRR_IMG_texture_format_BGRA8888) ||
+			Driver->queryOpenGLFeature(COGLES2ExtensionHandler::IRR_EXT_texture_format_BGRA8888))
+			GL_BGRA = 0x80E1;
+		else
+			GL_BGRA = GL_RGBA;
+#endif
 		if ( !Image )
 		{
 			os::Printer::log( "No image for OGLES2 texture to upload", ELL_ERROR );
@@ -177,10 +193,22 @@ namespace video
 				convert = CColorConverter::convert_R8G8B8toB8G8R8;
 				break;
 			case ECF_A8R8G8B8:
-				PixelType = GL_UNSIGNED_BYTE; 
-                convert = CColorConverter::convert_A8R8G8B8toA8B8G8R8;
-                InternalFormat = GL_RGBA;
-                PixelFormat = GL_RGBA;
+				PixelType = GL_UNSIGNED_BYTE;
+
+#if !defined(_IRR_COMPILE_WITH_ANDROID_DEVICE_) && !defined(_IRR_COMPILE_WITH_IPHONE_DEVICE_)
+				if (Driver->queryOpenGLFeature(COGLES2ExtensionHandler::IRR_IMG_texture_format_BGRA8888) ||
+					Driver->queryOpenGLFeature(COGLES2ExtensionHandler::IRR_EXT_texture_format_BGRA8888))
+				{
+					InternalFormat = GL_BGRA;
+					PixelFormat = GL_BGRA;
+				}
+				else
+#endif
+				{
+					convert = CColorConverter::convert_A8R8G8B8toA8B8G8R8;
+					InternalFormat = GL_RGBA;
+					PixelFormat = GL_RGBA;
+				}
 				break;
 			default:
 				os::Printer::log( "Unsupported texture format", ELL_ERROR );

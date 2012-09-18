@@ -1841,17 +1841,21 @@ void CD3D8Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChan
 			pID3DDevice->SetRenderState( D3DRS_STENCILENABLE, FALSE );
 
 		}
-		pID3DDevice->SetTransform(D3DTS_WORLD, &UnitMatrixD3D8);
-		core::matrix4 m;
-		m.setTranslation(core::vector3df(-0.5f,-0.5f,0));
-		pID3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)((void*)m.pointer()));
 
-		const core::dimension2d<u32>& renderTargetSize = getCurrentRenderTargetSize();
-		m.buildProjectionMatrixOrthoLH(f32(renderTargetSize.Width), f32(-(s32)(renderTargetSize.Height)), -1.0, 1.0);
-		m.setTranslation(core::vector3df(-1,1,0));
-		pID3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)((void*)m.pointer()));
+		if ( EnableChangeProjectionMatrixWhenSetRenderMode == true )
+		{
+			pID3DDevice->SetTransform(D3DTS_WORLD, &UnitMatrixD3D8);
+			core::matrix4 m;
+			m.setTranslation(core::vector3df(-0.5f,-0.5f,0));
+			pID3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)((void*)m.pointer()));
 
-		Transformation3DChanged = false;
+			const core::dimension2d<u32>& renderTargetSize = getCurrentRenderTargetSize();
+			m.buildProjectionMatrixOrthoLH(f32(renderTargetSize.Width), f32(-(s32)(renderTargetSize.Height)), -1.0, 1.0);
+			m.setTranslation(core::vector3df(-1,1,0));
+			pID3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)((void*)m.pointer()));
+
+			Transformation3DChanged = false;
+		}
 	}
 	if (OverrideMaterial2DEnabled)
 	{
@@ -1910,7 +1914,8 @@ void CD3D8Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChan
 		}
 	}
 
-	CurrentRenderMode = ERM_2D;
+	if ( EnableChangeProjectionMatrixWhenSetRenderMode == true )
+		CurrentRenderMode = ERM_2D;
 }
 
 

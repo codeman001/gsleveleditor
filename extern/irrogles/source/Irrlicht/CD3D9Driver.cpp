@@ -2573,28 +2573,33 @@ void CD3D9Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChan
 
 			pID3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
 		}
-		core::matrix4 m;
-// this fixes some problems with pixel exact rendering, but also breaks nice texturing
-// moreover, it would have to be tested in each call, as the texture flag can change each time
-//		if (!texture)
-//			m.setTranslation(core::vector3df(0.5f,0.5f,0));
-		pID3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)((void*)m.pointer()));
 
-		// adjust the view such that pixel center aligns with texels
-		// Otherwise, subpixel artifacts will occur
-		m.setTranslation(core::vector3df(-0.5f,-0.5f,0));
-		pID3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)((void*)m.pointer()));
+		if ( EnableChangeProjectionMatrixWhenSetRenderMode == true )
+		{
+			core::matrix4 m;
+	// this fixes some problems with pixel exact rendering, but also breaks nice texturing
+	// moreover, it would have to be tested in each call, as the texture flag can change each time
+	//		if (!texture)
+	//			m.setTranslation(core::vector3df(0.5f,0.5f,0));
+			pID3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)((void*)m.pointer()));
 
-		const core::dimension2d<u32>& renderTargetSize = getCurrentRenderTargetSize();
-		m.buildProjectionMatrixOrthoLH(f32(renderTargetSize.Width), f32(-(s32)(renderTargetSize.Height)), -1.0, 1.0);
-		m.setTranslation(core::vector3df(-1,1,0));
-		pID3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)((void*)m.pointer()));
+			// adjust the view such that pixel center aligns with texels
+			// Otherwise, subpixel artifacts will occur
+			m.setTranslation(core::vector3df(-0.5f,-0.5f,0));
+			pID3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)((void*)m.pointer()));
 
-		// 2d elements are clipped in software
-		pID3DDevice->SetRenderState(D3DRS_CLIPPING, FALSE);
+			const core::dimension2d<u32>& renderTargetSize = getCurrentRenderTargetSize();
+			m.buildProjectionMatrixOrthoLH(f32(renderTargetSize.Width), f32(-(s32)(renderTargetSize.Height)), -1.0, 1.0);
+			m.setTranslation(core::vector3df(-1,1,0));
+			pID3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)((void*)m.pointer()));
 
-		Transformation3DChanged = false;
+			// 2d elements are clipped in software
+			pID3DDevice->SetRenderState(D3DRS_CLIPPING, FALSE);
+
+			Transformation3DChanged = false;
+		}
 	}
+
 	if (OverrideMaterial2DEnabled)
 	{
 		OverrideMaterial2D.Lighting=false;
@@ -2651,7 +2656,8 @@ void CD3D9Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChan
 		}
 	}
 
-	CurrentRenderMode = ERM_2D;
+	if ( EnableChangeProjectionMatrixWhenSetRenderMode == true )
+		CurrentRenderMode = ERM_2D;
 }
 
 

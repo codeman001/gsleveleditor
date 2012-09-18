@@ -16,7 +16,7 @@ function triggerInitLevel_enable(triggerID)
 	setCameraFollowObject(cameraID, playerID, 350)
 	
 	-- default ambient light
-	setLevelAmbientLight(50,50,50)
+	setLevelAmbientLight(100,100,100)
 	
 	-- add shotgun to inventory
 	addItemToInventory( playerID, "weaponShotGun" )

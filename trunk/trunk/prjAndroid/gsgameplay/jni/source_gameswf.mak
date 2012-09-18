@@ -5,7 +5,8 @@ LOCAL_C_INCLUDES := ../../../../extern/gameswf \
 
 LOCAL_CFLAGS := -DANDROID \
 -D_LIB \
--DFT2_BUILD_LIBRARY 
+-DFT2_BUILD_LIBRARY \
+-DFT_CONFIG_OPTION_NO_ASSEMBLER 
 
 LOCAL_SRC_FILES := ../../../../extern/gameswf/base/component_hackery.cpp \
 ../../../../extern/gameswf/base/configvars.cpp \

@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\..\extern\gameswf;..\..\..\..\extern\freetype\include;..\..\..\..\extern\irrogles\include;..\..\..\..\extern\irrogles\source\Irrlicht"
-				PreprocessorDefinitions="ANDROID;_LIB;FT2_BUILD_LIBRARY"
+				PreprocessorDefinitions="ANDROID;_LIB;FT2_BUILD_LIBRARY;FT_CONFIG_OPTION_NO_ASSEMBLER"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

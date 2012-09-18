@@ -579,6 +579,7 @@ void CPlayerComponent::updateStateRun()
 		{
 			m_lastRotation = rot;
 
+#ifdef WIN32            
 			// debug line
 			CGameDebug *debug = CGameDebug::getInstance();
 			core::line3df line;
@@ -587,7 +588,8 @@ void CPlayerComponent::updateStateRun()
 			debug->addDrawLine(line, SColor(255,255,0,0) ); 
 			line.end	= m_gameObject->getPosition() + v0 * 400.0f;
 			debug->addDrawLine(line, SColor(255,0,255,0) );
-
+#endif
+            
 			// step to turn camera vector
 			if ( m_runCommand )
 			{

@@ -702,7 +702,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	m_renderRotate = 0;
 	m_isHardwareSkinning = false;
 #else	
-	#ifdef _IRR_COMPILE_WITH_OGLES1_
+	#if defined(_IRR_COMPILE_WITH_OGLES1_) || defined(_IRR_COMPILE_WITH_DIRECT3D_9_)
 		m_isHardwareSkinning = false;
 	#else
 		m_isHardwareSkinning = hardwareSkinning;

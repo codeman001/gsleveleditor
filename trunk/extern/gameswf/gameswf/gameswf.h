@@ -137,6 +137,9 @@ namespace gameswf
 	typedef bool ( *fsgetfont_callback) ( const char *font_name, tu_string &file_name, bool is_bold, bool is_italic );
 	exported_module void	register_getfont_callback ( fsgetfont_callback handler );
 
+	typedef bool ( *fsgetfontsize_callback) ( const char *font_name, int &size );
+	exported_module void	register_getfontsize_callback ( fsgetfontsize_callback handler );
+
 	// Use this to control how finely curves are subdivided.  1.0
 	// is the default; it's a pretty good value.  Larger values
 	// result in coarser, more angular curves with fewer vertices.

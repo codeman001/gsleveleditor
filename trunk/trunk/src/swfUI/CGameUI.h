@@ -63,6 +63,7 @@ public:
 	static tu_file* _fileOpen( const char *lpPath );
 	static void _fsCallback( gameswf::character *movie, const char *lpCommand, const char *lpParams );
 	static bool _getFont( const char *font_name, tu_string &file_name, bool is_bold, bool is_italic );
+	static bool _getFontSize( const char *font_name, int &fontSize );
 };
 
 #endif

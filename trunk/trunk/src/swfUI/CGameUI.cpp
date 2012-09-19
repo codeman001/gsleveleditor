@@ -120,6 +120,16 @@ bool CGameUI::_getFont( const char *font_name, tu_string &file_name, bool is_bol
 	return true;
 }
 
+bool CGameUI::_getFontSize( const char *font_name, int &fontSize )
+{
+#if _DEBUG
+	char string[512] ={0};
+	sprintf(string,"Query font '%s' size: %d", font_name, fontSize);
+	os::Printer::log( string );
+#endif
+	return false;
+}
+
 ////////////////////////////////////////////
 // CGameUI implement
 ////////////////////////////////////////////
@@ -131,6 +141,7 @@ CGameUI::CGameUI()
 	gameswf::register_file_opener_callback	( CGameUI::_fileOpen );
 	gameswf::register_fscommand_callback	( CGameUI::_fsCallback );
 	gameswf::register_getfont_callback		( CGameUI::_getFont );
+	gameswf::register_getfontsize_callback	( CGameUI::_getFontSize );
 
 	gameswf::set_render_handler ( m_render );
 	gameswf::set_glyph_provider ( gameswf::create_glyph_provider_freetype() );

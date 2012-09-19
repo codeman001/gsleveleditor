@@ -21,12 +21,23 @@ IObjectComponent* CGameComponent::loadComponent( CGameObject *pObj, char *compon
 {
 	IObjectComponent* pComp = NULL;
 	
-	if ( strcmp( componentName, stringOfComponent(CGameComponent::PlayerComponent) ) == 0 )	
-		pComp = new CPlayerComponent( pObj );
-	if ( strcmp( componentName, stringOfComponent(CGameComponent::InventoryComponent) ) == 0 )	
-		pComp = new CInventoryComponent( pObj );
-	if ( strcmp( componentName, stringOfComponent(CGameComponent::WeaponComponent) ) == 0 )	
-		pComp = new CWeaponComponent( pObj );
+	// declare init component
+	static SComponentCreation s_gameComponentCreation[] = {
+		{ stringOfComponent(CGameComponent::PlayerComponent),		newComponent<CPlayerComponent> },		
+		{ stringOfComponent(CGameComponent::InventoryComponent),	newComponent<CInventoryComponent> },
+		{ stringOfComponent(CGameComponent::WeaponComponent),		newComponent<CWeaponComponent> },
+	};
+
+	// search all game component
+	const unsigned  int numComponent = sizeof(s_gameComponentCreation)/sizeof(SComponentCreation);
+	for ( int i = 0; i < numComponent; i++ )
+	{
+		if ( strcmp(s_gameComponentCreation[i].componentTypeName, componentName) == 0 )
+		{
+			pComp = s_gameComponentCreation[i].spawnFn( pObj );
+			break;
+		}
+	}
 
 	return pComp;
 }

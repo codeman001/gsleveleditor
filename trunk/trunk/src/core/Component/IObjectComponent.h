@@ -70,4 +70,21 @@ public:
 
 };
 
+template <class T>
+IObjectComponent* newComponent( CGameObject *pObj ) 
+{
+	return new T(pObj); 
+}
+
+// declare pointer function
+typedef IObjectComponent* (*newComponentFn)( CGameObject *pObj );
+
+// declare struct
+struct SComponentCreation
+{
+	const char*		componentTypeName;
+	newComponentFn	spawnFn;
+};
+
+
 #endif

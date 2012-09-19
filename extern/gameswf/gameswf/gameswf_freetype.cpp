@@ -23,6 +23,8 @@
 namespace gameswf
 {
 
+#if TU_CONFIG_LINK_TO_FREETYPE == 1
+
 	static fsgetfont_callback	s_getfont_handler = NULL;
 
 	void	register_getfont_callback ( fsgetfont_callback handler )
@@ -31,7 +33,13 @@ namespace gameswf
 	}
 	
 
-#if TU_CONFIG_LINK_TO_FREETYPE == 1
+	static fsgetfontsize_callback	s_getfontsize_handler = NULL;
+
+	void	register_getfontsize_callback ( fsgetfontsize_callback handler )
+	{
+		s_getfontsize_handler = handler;
+	}
+
 
 	static FT_Library	m_lib;
 
@@ -211,6 +219,14 @@ namespace gameswf
 		if ( fe == NULL )
 		{
 			return NULL;
+		}
+
+		if ( gameswf::s_getfontsize_handler != NULL )
+		{
+			int currentFontSize = fontsize;
+			// modify font size
+			if ( gameswf::s_getfontsize_handler( fontname.c_str(), currentFontSize ) )
+				fontsize = currentFontSize;
 		}
 
 		// form hash key

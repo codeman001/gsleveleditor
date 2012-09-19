@@ -611,7 +611,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="swfUI"
+				Name="gameswfUI"
 				>
 				<File
 					RelativePath="..\..\src\swfUI\CGameUI.cpp"

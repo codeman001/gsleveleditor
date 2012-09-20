@@ -115,13 +115,26 @@ void CTouchManager::touchEvent(TouchEvent touchEvent, int x, int y, int id)
 {
 	int touchID = getTouchID( id );
 	if ( touchID == -1 )
-		return;   
-    
+	{
+		os::Printer::log("***** Error touchID!!! \n");
+		return;
+	}
+
+	if ( touchEvent == CTouchManager::TouchDown )
+	{
+		// makesure we alway call TouchDown one time (double event on android)
+		if (	m_touch[touchID].touchEvent == CTouchManager::TouchDown ||
+				m_touch[touchID].touchEvent == CTouchManager::TouchMove )
+		{
+			touchEvent = CTouchManager::TouchMove;
+		}
+	}
+
 	m_touch[touchID].touchEvent	= touchEvent;
 	m_touch[touchID].x			= x;
 	m_touch[touchID].y			= y;
 
-    // make sure we allway call TouchDown one time
+    // make sure we alway call TouchDown one time (lost event if touch quickly)
     if ( touchEvent == CTouchManager::TouchDown )
         m_touch[touchID].doTouchDown = true;
     

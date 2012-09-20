@@ -41,6 +41,10 @@ void CGameControl::setNameFx( const std::string& nameDpadTouch, const std::strin
         realW = (float)w / fw;
         realH = (float)h / fh;
         
+		char string[512] = {0};
+		sprintf(string,"dpadRect:{%f, %f, %f, %f}: %f, %f", realX, realY, realW, realH, fw, fh);
+		os::Printer::log(string);
+
         m_touchDpad.UpperLeftCorner = core::vector2di( (int)realX, (int)realY);
         m_touchDpad.LowerRightCorner = core::vector2di( (int)(realX+realW), (int)(realY+realH) );
         
@@ -90,6 +94,11 @@ bool CGameControl::OnEvent(const SEvent& event)
 #endif
 				m_screenTouchID = controlID;
 
+				// debug code
+				//char string[512] = {0};
+				//sprintf(string, "*** Touch screen detected, touchID = %d", controlID);
+				//os::Printer::log(string);
+
 				ISceneManager *smgr = getIView()->getSceneMgr();
                 if ( smgr->getActiveCamera() )
                     smgr->getActiveCamera()->OnEvent( event );                
@@ -128,6 +137,11 @@ bool CGameControl::OnEvent(const SEvent& event)
                     smgr->getActiveCamera()->OnEvent( event );
 
                 m_screenTouchID = -1;
+				
+				// debug code
+				//char string[512] = {0};
+				//sprintf(string, "***** Touch screen release, touchID = %d", controlID);
+				//os::Printer::log(string);
             }
         }
     }

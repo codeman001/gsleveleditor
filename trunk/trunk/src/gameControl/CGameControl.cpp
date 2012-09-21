@@ -63,6 +63,9 @@ void CGameControl::setNameFx( const std::string& nameDpadTouch, const std::strin
 // main loop update
 void CGameControl::update()
 {
+    if ( m_isEnable == false )
+        return;
+
     m_moveDpad.update();
 }
 
@@ -266,9 +269,9 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	
 	// send event to player component
 	if ( runCommand )		
-		m_moveDpad.sendRunEvent( 1.0f, rot );		
+		sendPlayerRunEvent( 1.0f, rot );		
 	else		
-		m_moveDpad.sendStopEvent();
+		sendPlayerStopEvent();
 
 	return true;
 }
@@ -290,4 +293,38 @@ bool CGameControl::isTouchOnDPad( int x, int y )
 {
     core::vector2di mousePos(x, y);
     return m_touchDpad.isPointInside( mousePos );
+}
+
+void CGameControl::sendPlayerStopEvent()
+{
+    if ( m_isEnable == false )
+        return;
+
+	SEvent	playerStop;
+	SEventPlayerMove stopEvent;
+	stopEvent.rotate = 0.0f;
+	stopEvent.strength = 0.0f;
+	stopEvent.run = false;
+
+	playerStop.EventType = EET_USER_EVENT;
+	playerStop.UserEvent.UserData1 = (s32)EvtPlayerMove;
+	playerStop.UserEvent.UserData2 = (s32)&stopEvent;
+	getIView()->getDevice()->postEventFromUser( playerStop );
+}
+
+void CGameControl::sendPlayerRunEvent(float f, float rotate)
+{
+    if ( m_isEnable == false )
+        return;
+
+	SEvent	playerMove;
+	SEventPlayerMove moveEvent;
+	moveEvent.rotate = rotate;
+	moveEvent.strength = f;
+	moveEvent.run = true;
+
+	playerMove.EventType = EET_USER_EVENT;
+	playerMove.UserEvent.UserData1 = (s32)EvtPlayerMove;
+	playerMove.UserEvent.UserData2 = (s32)&moveEvent;
+	getIView()->getDevice()->postEventFromUser( playerMove );
 }

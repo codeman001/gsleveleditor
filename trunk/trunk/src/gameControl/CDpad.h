@@ -60,12 +60,7 @@ public:
     inline int getControlID()
     {
         return m_controlID;
-    }
-    
-	// sendStopEvent
-	// send event to player stop run
-	void sendStopEvent();    
-	void sendRunEvent(float f, float rotate);
+    }   	
 };
 
 #endif

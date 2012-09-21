@@ -9,6 +9,8 @@
 #include "stdafx.h"
 #include "CDpad.h"
 
+#include "CGameControl.h"
+
 #include "gameEvent.h"
 #include "IView.h"
 
@@ -44,7 +46,7 @@ void CDpad::update()
 
 		if ( m_active )
 		{
-			sendStopEvent();
+			CGameControl::getInstance()->sendPlayerStopEvent();
 			m_active = false;
 		}
     }
@@ -72,11 +74,11 @@ void CDpad::update()
 		float f = length/k_maxMove;
 		if ( f >= 0.3f )
 		{
-			sendRunEvent( f, (float)moveVec.getAngle() - 90.0f );
+			CGameControl::getInstance()->sendPlayerRunEvent( f, (float)moveVec.getAngle() - 90.0f );
 		}
 		else
 		{
-			sendStopEvent();
+			CGameControl::getInstance()->sendPlayerStopEvent();
 		}
 
 
@@ -136,32 +138,4 @@ void CDpad::setDpadFxName( const std::string& name, const std::string& move )
     
     m_fxDpad = menuFx->findObj( (char*)name.c_str());
     m_fxDpadMove = menuFx->findObj( (char*)move.c_str()); 
-}
-
-void CDpad::sendStopEvent()
-{
-	SEvent	playerStop;
-	SEventPlayerMove stopEvent;
-	stopEvent.rotate = 0.0f;
-	stopEvent.strength = 0.0f;
-	stopEvent.run = false;
-
-	playerStop.EventType = EET_USER_EVENT;
-	playerStop.UserEvent.UserData1 = (s32)EvtPlayerMove;
-	playerStop.UserEvent.UserData2 = (s32)&stopEvent;
-	getIView()->getDevice()->postEventFromUser( playerStop );
-}
-
-void CDpad::sendRunEvent(float f, float rotate)
-{
-	SEvent	playerMove;
-	SEventPlayerMove moveEvent;
-	moveEvent.rotate = rotate;
-	moveEvent.strength = f;
-	moveEvent.run = true;
-
-	playerMove.EventType = EET_USER_EVENT;
-	playerMove.UserEvent.UserData1 = (s32)EvtPlayerMove;
-	playerMove.UserEvent.UserData2 = (s32)&moveEvent;
-	getIView()->getDevice()->postEventFromUser( playerMove );
 }

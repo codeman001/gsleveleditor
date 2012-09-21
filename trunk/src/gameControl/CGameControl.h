@@ -63,6 +63,12 @@ public:
     // check touch on dpad
     bool isTouchOnDPad( int x, int y );
 
+
+	// sendPlayerStopEvent
+	// send event to player stop run
+	void sendPlayerStopEvent();
+	void sendPlayerRunEvent(float f, float rotate);
+
 protected:
 
 	// handleTouchEvent

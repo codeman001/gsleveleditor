@@ -7,8 +7,6 @@
 
 #include "gameEvent.h"
 
-#define SHIFTBIT(x)	(1<<x)
-
 class CWeaponComponent;
 class CInventoryComponent;
 class CColladaMeshComponent;
@@ -40,16 +38,6 @@ public:
 		SubStateEnd,
 	};
 
-	enum EKeyActionBit
-	{
-		KeyNone		= 0,
-		KeyUp		= SHIFTBIT(1),
-		KeyLeft		= SHIFTBIT(2),
-		KeyRight	= SHIFTBIT(3),
-		KeyBack		= SHIFTBIT(4),
-		KeyFire		= SHIFTBIT(5)
-	};
-
 protected:
 	EPlayerSubState			m_subState;
 	EPlayerState			m_state;
@@ -60,13 +48,7 @@ protected:
 	float					m_runNoGunSpeed;
 	float					m_runBackSpeed;
 	
-	bool					m_runUp;
-	bool					m_runBack;
-	bool					m_runLeft;
-	bool					m_runRight;
 	bool					m_runCommand;
-
-	bool					m_dpadMove;
 	SEventPlayerMove		m_playerMoveEvt;
 
 	bool					m_runNoGun;
@@ -108,9 +90,7 @@ protected:
 	std::string						m_animShootUp;
 	std::string						m_animShootStraight;
 	// end anim name declare
-
-	int						m_keyActionBit;
-
+	
 	bool					m_noGun;
 
 	float					m_runFactor;

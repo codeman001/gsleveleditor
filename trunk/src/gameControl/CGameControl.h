@@ -11,18 +11,18 @@ class CGameControl:
 {
 protected:
     bool        m_isEnable;
-    
-    CDpad       m_moveDpad;
-    
-    core::recti m_touchDpad;
-    
+                    
     std::string m_fxnameDpadTouch;
     
     std::string m_fxnameDpad;
     std::string m_fxnameDpadMove;
     
     int         m_screenTouchID;
-    
+	
+	CDpad       m_moveDpad;
+	core::recti m_touchDpad;
+
+	int			m_keyActionBit;
 public:
 	CGameControl();
 	virtual ~CGameControl();
@@ -62,7 +62,16 @@ public:
     // isTouchOnDPad
     // check touch on dpad
     bool isTouchOnDPad( int x, int y );
-    
+
+protected:
+
+	// handleTouchEvent
+	// when player touch on screen
+	bool handleTouchEvent(const SEvent& event);
+
+	// handleKeyEvent
+	// when player press a key
+	bool handleKeyEvent(const SEvent& event);
 };
 
 #endif

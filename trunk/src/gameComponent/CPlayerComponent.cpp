@@ -35,21 +35,13 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_lastState		= CPlayerComponent::PlayerNone;
 	m_nextState		= CPlayerComponent::PlayerNone;
 
-	m_keyActionBit	= CPlayerComponent::KeyNone;
-
+	
 	// init run const
 	m_runSpeed				= 4.0f;
 	m_runBackSpeed			= 3.0f;
 	m_runNoGunSpeed			= 6.0f;
 
-	m_runUp			= false;
-	m_runBack		= false;
-	m_runLeft		= false;
-	m_runRight		= false;
-	m_runNoGun		= true;
-	m_runCommand	= false;
-	
-	m_dpadMove		= false;
+	m_runCommand	= false;			
 
 	m_runFactor = 1.0f;
 	m_runAccel	= 0.002f;
@@ -186,88 +178,14 @@ void CPlayerComponent::loadData( CSerializable* pObj )
 // cache event
 bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 {
-	// if key press
-	if ( irrEvent.EventType == EET_KEY_INPUT_EVENT )
-	{
-		// key input
-		EKEY_CODE key = irrEvent.KeyInput.Key;
-		
-		// run flag
-		bool updateRunState = false;
-
-		if ( irrEvent.KeyInput.PressedDown )
-		{
-			if (  key == irr::KEY_UP || key == irr::KEY_KEY_W )
-				m_keyActionBit |= CPlayerComponent::KeyUp;
-			else if (  key == irr::KEY_DOWN || key == irr::KEY_KEY_S )
-				m_keyActionBit |= CPlayerComponent::KeyBack;
-			else if (  key == irr::KEY_LEFT || key == irr::KEY_KEY_A )
-				m_keyActionBit |= CPlayerComponent::KeyLeft;
-			else if (  key == irr::KEY_RIGHT || key == irr::KEY_KEY_D )
-				m_keyActionBit |= CPlayerComponent::KeyRight;
-			else if (  key == irr::KEY_SPACE )
-				m_keyActionBit |= CPlayerComponent::KeyFire;
-		}		
-		else
-		{
-			if (  key == irr::KEY_UP || key == irr::KEY_KEY_W )
-				m_keyActionBit &= ~CPlayerComponent::KeyUp;
-			else if (  key == irr::KEY_DOWN || key == irr::KEY_KEY_S )
-				m_keyActionBit &= ~CPlayerComponent::KeyBack;
-			else if (  key == irr::KEY_LEFT || key == irr::KEY_KEY_A )
-				m_keyActionBit &= ~CPlayerComponent::KeyLeft;
-			else if (  key == irr::KEY_RIGHT || key == irr::KEY_KEY_D )
-				m_keyActionBit &= ~CPlayerComponent::KeyRight;
-			else if (  key == irr::KEY_SPACE )
-				m_keyActionBit &= ~CPlayerComponent::KeyFire;
-		}
-
-		// update move
-		m_runUp			= false;
-		m_runBack		= false;
-		m_runLeft		= false;
-		m_runRight		= false;
-
-		// calc rotation
-		if ( (m_keyActionBit & CPlayerComponent::KeyLeft) != 0 )
-		{
-			if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
-				m_runBack = true;
-			else if ( (m_keyActionBit & CPlayerComponent::KeyUp) != 0 )
-				m_runUp = true;
-			
-			m_runLeft = true;
-		}
-		else if ( (m_keyActionBit & CPlayerComponent::KeyRight) != 0 )
-		{
-			if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
-				m_runBack = true;
-			else if ( (m_keyActionBit & CPlayerComponent::KeyUp) != 0 )
-				m_runUp = true;
-			m_runRight = true;
-		}
-		else if ( (m_keyActionBit & CPlayerComponent::KeyBack) != 0 )
-		{
-			m_runBack = true;
-		}
-		else if ( (m_keyActionBit & CPlayerComponent::KeyUp) != 0 )
-			m_runUp = true;
-
-		m_runCommand = m_runUp || m_runBack || m_runLeft || m_runRight;
-	}
-	else if ( irrEvent.EventType == EET_USER_EVENT )
+	if ( irrEvent.EventType == EET_USER_EVENT )
 	{
 		if ( irrEvent.UserEvent.UserData1 == EvtPlayerMove )
 		{
 			m_playerMoveEvt = *((SEventPlayerMove*)irrEvent.UserEvent.UserData2);
-			
-			// setting run command			
+
+			// check run command
 			m_runCommand	= m_playerMoveEvt.run;
-
-			m_dpadMove		= false;
-			if ( m_runCommand )
-				m_dpadMove = true;
-
 		}
 	}
 
@@ -365,35 +283,8 @@ void CPlayerComponent::updateStateTurn()
 		v1 = getCameraFrontVector();
 		
 		float rot = 0.0f;
-		if ( m_dpadMove )
-		{
-			rot = m_playerMoveEvt.rotate;
-		}
-		else
-		{
-			if ( m_runLeft )
-			{
-				if ( m_runUp )
-					rot = 43.0f;
-				else if ( m_runBack )
-					rot = 133.0f;
-				else
-					rot = 88.0f;
-			}
-			else if ( m_runRight )
-			{
-				if ( m_runUp )
-					rot = -43.0f;
-				else if ( m_runBack )
-					rot = -133.0f;
-				else
-					rot = -88.0f;
-			}
-			else if ( m_runBack )
-			{
-				rot = -178.0f;
-			}
-		}
+		if ( m_runCommand )		
+			rot = m_playerMoveEvt.rotate;		
 
 		core::quaternion q;
 		q.fromAngleAxis( core::degToRad(rot), core::vector3df(0,1,0) );
@@ -535,36 +426,9 @@ void CPlayerComponent::updateStateRun()
 		core::quaternion q;
 		float rot = 0.0f;
 
-		if ( m_dpadMove )
-		{
-			rot = m_playerMoveEvt.rotate;
-		}
-		else
-		{
-			if ( m_runLeft )
-			{
-				if ( m_runUp )
-					rot = 43.0f;
-				else if ( m_runBack )
-					rot = 133.0f;
-				else
-					rot = 88.0f;
-			}
-			else if ( m_runRight )
-			{
-				if ( m_runUp )
-					rot = -43.0f;
-				else if ( m_runBack )
-					rot = -133.0f;
-				else
-					rot = -88.0f;
-			}
-			else if ( m_runBack )
-			{
-				rot = -178.0f;
-			}
-		}
-				
+		if ( m_runCommand )		
+			rot = m_playerMoveEvt.rotate;		
+
 		q.fromAngleAxis( core::degToRad(rot), core::vector3df(0,1,0) );
 		q.getMatrix().rotateVect(v1);
 		v1.normalize();

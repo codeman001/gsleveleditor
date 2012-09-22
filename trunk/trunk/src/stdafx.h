@@ -23,7 +23,7 @@
 		#include <stdlib.h>
 	#endif
 
-	#if defined(LINUX) || defined(IPHONE) || defined(ANDROID)
+	#if defined(LINUX) || defined(IOS) || defined(ANDROID)
 		#include <unistd.h>
 		#include <netinet/in.h>
 		#include <net/if.h>
@@ -36,6 +36,10 @@
 		#include <sys/select.h>
 		#include <sys/socket.h>
 		#include <netdb.h>
+
+        #define SOCKET  int
+        #define INVALID_SOCKET  -1
+        #define SOCKET_ERROR -1
 	#endif
 
 	#if defined(LINUX)

@@ -95,6 +95,8 @@
 		7FE6C72B15F47C2D00E07797 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE6C72A15F47C2D00E07797 /* main.m */; };
 		7FEF4F5E15FB376500D2894C /* CGameControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FEF4F5A15FB376500D2894C /* CGameControl.cpp */; };
 		7FEF4F5F15FB376500D2894C /* CTouchManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FEF4F5C15FB376500D2894C /* CTouchManager.cpp */; };
+		7FFA24DD160DA7F90066E646 /* CComms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFA24D9160DA7F90066E646 /* CComms.cpp */; };
+		7FFA24DE160DA7F90066E646 /* CMultiplayerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFA24DB160DA7F90066E646 /* CMultiplayerManager.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -289,6 +291,10 @@
 		7FEF4F5B15FB376500D2894C /* CGameControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGameControl.h; sourceTree = "<group>"; };
 		7FEF4F5C15FB376500D2894C /* CTouchManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CTouchManager.cpp; sourceTree = "<group>"; };
 		7FEF4F5D15FB376500D2894C /* CTouchManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTouchManager.h; sourceTree = "<group>"; };
+		7FFA24D9160DA7F90066E646 /* CComms.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CComms.cpp; path = Network/CComms.cpp; sourceTree = "<group>"; };
+		7FFA24DA160DA7F90066E646 /* CComms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CComms.h; path = Network/CComms.h; sourceTree = "<group>"; };
+		7FFA24DB160DA7F90066E646 /* CMultiplayerManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CMultiplayerManager.cpp; path = Network/CMultiplayerManager.cpp; sourceTree = "<group>"; };
+		7FFA24DC160DA7F90066E646 /* CMultiplayerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CMultiplayerManager.h; path = Network/CMultiplayerManager.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -389,6 +395,7 @@
 				7FD0BF5315F4F34400626D90 /* Animators */,
 				7FD0BF5815F4F34400626D90 /* Component */,
 				7FD0BF7D15F4F34400626D90 /* GameObject */,
+				7FFA24D8160DA7D50066E646 /* Network */,
 				7FD0BF8A15F4F34400626D90 /* ObjectTemplate */,
 				7FD0BF8F15F4F34400626D90 /* SceneNode */,
 				7FD0BFA615F4F34400626D90 /* Serializable */,
@@ -679,6 +686,17 @@
 			path = gameControl;
 			sourceTree = "<group>";
 		};
+		7FFA24D8160DA7D50066E646 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				7FFA24D9160DA7F90066E646 /* CComms.cpp */,
+				7FFA24DA160DA7F90066E646 /* CComms.h */,
+				7FFA24DB160DA7F90066E646 /* CMultiplayerManager.cpp */,
+				7FFA24DC160DA7F90066E646 /* CMultiplayerManager.h */,
+			);
+			name = Network;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -867,6 +885,8 @@
 				7FEF4F5F15FB376500D2894C /* CTouchManager.cpp in Sources */,
 				7FE43AD915FB99E600676177 /* CDpad.cpp in Sources */,
 				7F62FBA91600C9EC0022D697 /* CEAGLView.mm in Sources */,
+				7FFA24DD160DA7F90066E646 /* CComms.cpp in Sources */,
+				7FFA24DE160DA7F90066E646 /* CMultiplayerManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -949,7 +969,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "AB43DA72-84D4-42C5-87D2-1AB19ACC2314";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src";
+				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/Network ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -972,7 +992,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "AB43DA72-84D4-42C5-87D2-1AB19ACC2314";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src";
+				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/Network ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

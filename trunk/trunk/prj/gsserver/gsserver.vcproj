@@ -219,6 +219,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\Network\CDataPacket.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Network\CDataPacket.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\Network\CMultiplayerManager.cpp"
 					>
 				</File>

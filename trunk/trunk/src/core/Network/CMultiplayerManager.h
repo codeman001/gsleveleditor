@@ -13,6 +13,18 @@ protected:
 	bool	m_isOnline;
 
 	CComms	*m_comm;
+
+public:
+	enum EMPPacketType
+	{
+		Discovery = 0,
+		Connect,
+		Reconnect,
+		PlayerQuit,
+		Kick,
+		Chat,
+		GamePackaget,
+	};
 public:
 	CMultiplayerManager(bool isServer, bool isOnline);
 	virtual ~CMultiplayerManager();

@@ -78,7 +78,8 @@ void CComms::removeDevice( CDeviceDetails* dev )
 
 void CComms::removeDevice( int id )
 {
-	delete m_devices[ id ];
+	if ( m_devices[ id ] )
+		delete m_devices[ id ];
 	m_devices[ id ] = NULL;
 }
 
@@ -101,7 +102,7 @@ int CComms::getDeviceIdFromAdress( void *addr )
 
 	for (int i = 0; i < MP_DEVICES; i++)
 	{
-		if(memcmp(m_devices[i]->m_address, addr, addrLength) == 0)
+		if( m_devices[i] &&  memcmp(m_devices[i]->m_address, addr, addrLength) == 0 )
 		{
 			return i;
 		}
@@ -150,7 +151,7 @@ bool CComms::updateRevcData()
 			continue;
 		}
 
-		if ( onRevcData( m_dataBuff, iResult, clId) < 0 )
+		if ( onRevcData( m_dataBuff, iResult, clId) == false )
 		{
 			return false;
 		}
@@ -163,6 +164,7 @@ bool CComms::updateRevcData()
 // process when revc data
 bool CComms::onRevcData( unsigned char *buffer, int size, int devID )
 {
+	printf("onRevc %d bytes\n", size);
 	return true;
 }
 
@@ -170,6 +172,7 @@ bool CComms::onRevcData( unsigned char *buffer, int size, int devID )
 // accept connection
 bool CComms::onAcceptConnection( unsigned char *buffer, int size, int devID )
 {
+	printf("onAccept %d bytes\n", size);
 	return true;
 }
 
@@ -261,7 +264,7 @@ bool CComms::initServer()
 
 // sendDiscoveryPacket
 // send a packet to find server
-bool CComms::sendDiscoveryPacket()
+bool CComms::sendDiscoveryPacket(void *data, int size)
 {
 	if ( m_isServer )
 		return false;
@@ -277,7 +280,7 @@ bool CComms::sendDiscoveryPacket()
 	if( m_isOnline == false )
 	{
 		// local multiplayer
-		addrBroadcast.sin_addr.s_addr = htonl(INADDR_BROADCAST);	
+		addrBroadcast.sin_addr.s_addr = htonl(INADDR_BROADCAST);
 	}
 	else
 	{
@@ -285,14 +288,13 @@ bool CComms::sendDiscoveryPacket()
 		return false;
 	}
 
-	const int kUIdApp = MP_APPLICATION_ID;
-
 	// send broadcast
-	if (sendto(m_dataSocket, (const char*)&kUIdApp, sizeof(kUIdApp), 0, (struct sockaddr *)&addrBroadcast, sizeof(addrBroadcast)) == SOCKET_ERROR)
+	if (sendto(m_dataSocket, (const char*)data, sizeof(size), 0, (struct sockaddr *)&addrBroadcast, sizeof(addrBroadcast)) == SOCKET_ERROR)
 	{
 		return false;
 	}
 
+	printf("Send discovery packet: %d bytes \n", size);
 	return true;
 }
 

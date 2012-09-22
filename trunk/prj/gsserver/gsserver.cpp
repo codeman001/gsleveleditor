@@ -4,12 +4,18 @@
 #include "stdafx.h"
 #include "CMultiplayerManager.h" 
 
-int _tmain(int argc, _TCHAR* argv[])
+void runServer()
 {
 	CMultiplayerManager *mpManager = new CMultiplayerManager(true, false);
 
 	if ( mpManager->init() == false )
+	{
 		printf("Init multiplayer error! \n");
+		delete mpManager;
+		return;
+	}
+
+	printf("Start server !!!\n");
 
 	while (1)
 	{
@@ -18,6 +24,45 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	delete mpManager;
+}
+
+void runTestClient()
+{
+	CMultiplayerManager *mpManager = new CMultiplayerManager(false, false);
+
+	if ( mpManager->init() == false )
+	{
+		printf("Init client multiplayer error! \n");
+		delete mpManager;
+		return;
+	}
+
+	printf("Start client!!!\n");
+
+	while (1)
+	{
+		mpManager->sendDiscoveryPacket();
+		Sleep(1);
+	}
+
+	delete mpManager;
+}
+
+int main(int argc, char* argv[])
+{
+	bool isClient = true;
+
+	if ( argc == 2 )
+	{
+		if ( strcmp(argv[1],"server") == 0 )
+			isClient = false;
+	}
+
+	if ( isClient )
+		runTestClient();
+	else
+		runServer();
+	
 	return 0;
 }
 

@@ -39,7 +39,11 @@ bool CMultiplayerManager::sendDiscoveryPacket()
 	if ( m_isServer == true )
 		return false;
 
-	return m_comm->sendDiscoveryPacket();
+	CDataPacket packet(10);
+	packet.addByte( (unsigned char) CMultiplayerManager::Discovery );
+	packet.addShort( MP_APPLICATION_ID );
+
+	return m_comm->sendDiscoveryPacket( packet.getMessageData(), packet.getMessageSize() );
 }
 
 #endif

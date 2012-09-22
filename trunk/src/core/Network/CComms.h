@@ -2,6 +2,7 @@
 #define _CCOMMS_H
 
 #include "stdafx.h"
+#include "CDataPacket.h"
 
 #ifdef HAS_MULTIPLAYER
 
@@ -111,7 +112,7 @@ public:
 
 	// sendDiscoveryPacket
 	// send a packet to find server
-	bool sendDiscoveryPacket();
+	bool sendDiscoveryPacket(void *data, int size);
 
 	// cleanSocket
 	// clean up socket data

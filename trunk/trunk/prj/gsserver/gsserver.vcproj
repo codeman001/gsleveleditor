@@ -41,7 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="..\..\src\;..\..\src\core\Network;..\..\..\extern\irrlicht\include;..\..\..\extern\irrlicht\source\Irrlicht"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;GSSERVER"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -175,7 +176,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\stdafx.cpp"
+				RelativePath="..\..\src\stdafx.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -194,14 +195,8 @@
 					/>
 				</FileConfiguration>
 			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-			>
 			<File
-				RelativePath=".\stdafx.h"
+				RelativePath="..\..\src\stdafx.h"
 				>
 			</File>
 			<File
@@ -210,10 +205,28 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			Name="core"
 			>
+			<Filter
+				Name="Network"
+				>
+				<File
+					RelativePath="..\..\src\core\Network\CComms.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Network\CComms.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Network\CMultiplayerManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Network\CMultiplayerManager.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

@@ -17,11 +17,13 @@ using namespace irr::scene;
 using namespace irr::video;
 
 
+#if defined(GSEDITOR) && defined(GSGAMEPLAY)
 // SPARK lib
 #include <SPK.h>
 #include <SPK_IRR.h>
 using namespace SPK;
 using namespace SPK::IRR;
+#endif 
 
 #include <algorithm>
 #include <vector>

@@ -223,8 +223,9 @@ char* IView::getPhysicPath(	const std::string& path )
         uiString::copy<char,const char>( g_tempPathA, rootPath );
         uiString::cat<char,const char>( g_tempPathA, "/" );
         uiString::cat<char,const char>( g_tempPathA, path.c_str() );
+    #elif defined (MACOSX)
+		uiString::copy<char,const char>( g_tempPathA, path.c_str() );    
 	#else
-		// default win32
 		uiString::copy<char,const char>( g_tempPathA, path.c_str() );
 	#endif
 #else

@@ -39,7 +39,7 @@ using namespace std;
 #endif
 
 #ifdef GSGAMEPLAY
-	#if defined(ANDROID) || defined (IOS)
+	#if defined(ANDROID) || defined (IOS) || defined (MACOSX)
 		#define USE_ZIPPACKAGE
 	#endif
 #endif

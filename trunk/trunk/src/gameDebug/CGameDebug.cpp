@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "IView.h"
 #include "CGameDebug.h"
-#include "SceneNode/CGameDebugSceneNode.h"
+#include "CGameDebugSceneNode.h"
 
 CGameDebug::CGameDebug()
 {

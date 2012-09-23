@@ -16,6 +16,7 @@
 		7F1AEEE315F78CFB00DF8EA0 /* zrnic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEEDD15F78CFB00DF8EA0 /* zrnic.ttf */; };
 		7F1AEF0D15F7A02700DF8EA0 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEF0C15F7A02700DF8EA0 /* Application.cpp */; };
 		7F1AEF1015F7A2C500DF8EA0 /* CAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */; };
+		7F39584F160EF17700EEB3A2 /* CDataPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */; };
 		7F62FBA91600C9EC0022D697 /* CEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F62FBA81600C9EC0022D697 /* CEAGLView.mm */; };
 		7F62FBAB1600D6620022D697 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F62FBAA1600D6620022D697 /* QuartzCore.framework */; };
 		7FCBD3E115F4B41700C432A7 /* libirrlicht.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBD12D15F4B13400C432A7 /* libirrlicht.a */; };
@@ -140,6 +141,8 @@
 		7F1AEEDD15F78CFB00DF8EA0 /* zrnic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = zrnic.ttf; path = ../../bin/zrnic.ttf; sourceTree = "<group>"; };
 		7F1AEF0C15F7A02700DF8EA0 /* Application.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Application.cpp; sourceTree = "<group>"; };
 		7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CAppDelegate.mm; sourceTree = "<group>"; };
+		7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CDataPacket.cpp; path = Network/CDataPacket.cpp; sourceTree = "<group>"; };
+		7F39584E160EF17700EEB3A2 /* CDataPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDataPacket.h; path = Network/CDataPacket.h; sourceTree = "<group>"; };
 		7F62FBA71600C9BB0022D697 /* CEAGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CEAGLView.h; sourceTree = "<group>"; };
 		7F62FBA81600C9EC0022D697 /* CEAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CEAGLView.mm; sourceTree = "<group>"; };
 		7F62FBAA1600D6620022D697 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -689,6 +692,8 @@
 		7FFA24D8160DA7D50066E646 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */,
+				7F39584E160EF17700EEB3A2 /* CDataPacket.h */,
 				7FFA24D9160DA7F90066E646 /* CComms.cpp */,
 				7FFA24DA160DA7F90066E646 /* CComms.h */,
 				7FFA24DB160DA7F90066E646 /* CMultiplayerManager.cpp */,
@@ -887,6 +892,7 @@
 				7F62FBA91600C9EC0022D697 /* CEAGLView.mm in Sources */,
 				7FFA24DD160DA7F90066E646 /* CComms.cpp in Sources */,
 				7FFA24DE160DA7F90066E646 /* CMultiplayerManager.cpp in Sources */,
+				7F39584F160EF17700EEB3A2 /* CDataPacket.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

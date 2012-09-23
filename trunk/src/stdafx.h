@@ -23,7 +23,7 @@
 		#include <stdlib.h>
 	#endif
 
-	#if defined(LINUX) || defined(IOS) || defined(ANDROID)
+	#if defined(LINUX) || defined(IOS) || defined(ANDROID) || defined (MACOSX)
 		#include <unistd.h>
 		#include <netinet/in.h>
 		#include <net/if.h>
@@ -65,7 +65,7 @@
 // C RunTime Header Files
 #include <stdlib.h>
 
-#ifndef IOS
+#if !defined(IOS) && !defined(MACOSX)
 #include <malloc.h>
 #endif
 

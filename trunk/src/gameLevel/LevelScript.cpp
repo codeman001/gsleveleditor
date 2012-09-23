@@ -17,8 +17,9 @@ int getObjectByName(lua_State* state)
 	const char* objName = lua_tostring(state,1);
 	
 	CGameObject* p = getLevel()->searchObject( objName );
+    unsigned long ptr = (unsigned long)p; 
 	if ( p )
-		lua_pushinteger( state, (int)p );
+		lua_pushinteger( state, (int)ptr );
 	else
 		lua_pushinteger( state, 0 );
 	return 1;

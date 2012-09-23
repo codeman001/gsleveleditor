@@ -8,20 +8,33 @@
 
 #import <Cocoa/Cocoa.h>
 
-#include "irrlicht.h"
+#include "stdafx.h"
+#include "IView.h"
+#include "CApplication.h"
 
 int main(int argc, char *argv[])
 {	
-    irr::IrrlichtDevice* device = NULL;
+    CApplication myApp;
+	
+	IrrlichtDevice* device = NULL;
 	
 	// add zip data
 	const char *dataPak = NULL;
     
-	device = irr::createDevice( irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(800, 600), 16, false, false, false, dataPak, NULL );
+#ifdef USE_ZIPPACKAGE
+	dataPak = getIView()->getPhysicPath("_common.zip");
+#endif
+
+	device = createDevice( irr::video::EDT_OPENGL, core::dimension2d<u32>(800, 600), 16, false, false, false, dataPak, &myApp );
 
     
 	if ( device == NULL )
 		return 1;
+    
+	// set orient tation
+	//device->getVideoDriver()->setOrientation( video::EOO_270 );
+    
+	myApp.initApplication( device );
     
 	// enable resize windows
 	device->setResizable(true);
@@ -29,10 +42,10 @@ int main(int argc, char *argv[])
 	// run application
 	while(device->run())
 	{
-        device->getVideoDriver()->beginScene();
-        device->getVideoDriver()->endScene();
+        myApp.mainLoop();		
 	}
     
+	myApp.destroyApplication();
 	device->drop();
     
 	return 0;

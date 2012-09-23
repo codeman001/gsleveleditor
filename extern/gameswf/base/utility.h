@@ -60,7 +60,7 @@
 
 // Compile-time assert.  Thanks to Jon Jagger
 // (http://www.jaggersoft.com) for this trick.
-#define compiler_assert(x)	switch(0){case 0: case x:;}
+#define compiler_assert(x)
 
 
 //

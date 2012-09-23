@@ -308,7 +308,7 @@ void CGameControl::sendPlayerStopEvent()
 
 	playerStop.EventType = EET_USER_EVENT;
 	playerStop.UserEvent.UserData1 = (s32)EvtPlayerMove;
-	playerStop.UserEvent.UserData2 = (s32)&stopEvent;
+	playerStop.UserEvent.UserData2 = (s32)((unsigned long)&stopEvent);
 	getIView()->getDevice()->postEventFromUser( playerStop );
 }
 
@@ -325,6 +325,6 @@ void CGameControl::sendPlayerRunEvent(float f, float rotate)
 
 	playerMove.EventType = EET_USER_EVENT;
 	playerMove.UserEvent.UserData1 = (s32)EvtPlayerMove;
-	playerMove.UserEvent.UserData2 = (s32)&moveEvent;
+	playerMove.UserEvent.UserData2 = (s32)((unsigned long)&moveEvent);
 	getIView()->getDevice()->postEventFromUser( playerMove );
 }

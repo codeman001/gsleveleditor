@@ -30,7 +30,7 @@ namespace irr
 	public:
 
 		//! constructor
-		CIrrDeviceMacOSX(const SIrrlichtCreationParameters& params);
+		CIrrDeviceMacOSX(const SIrrlichtCreationParameters& params, const char *dataPak);
 
 		//! destructor
 		virtual ~CIrrDeviceMacOSX();

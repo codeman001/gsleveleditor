@@ -335,8 +335,8 @@ static bool firstLaunch = true;
 namespace irr
 {
 //! constructor
-CIrrDeviceMacOSX::CIrrDeviceMacOSX(const SIrrlichtCreationParameters& param)
-	: CIrrDeviceStub(param), Window(NULL), IsActive(true), OGLContext(NULL), CGLContext(NULL),
+CIrrDeviceMacOSX::CIrrDeviceMacOSX(const SIrrlichtCreationParameters& param, const char *dataPak)
+	: CIrrDeviceStub(param, dataPak), Window(NULL), IsActive(true), OGLContext(NULL), CGLContext(NULL),
 	SoftwareDriverTarget(0), IsSoftwareRenderer(false), IsResizable(false),
 	IsShiftDown(false), IsControlDown(false), MouseButtonStates(0)
 {

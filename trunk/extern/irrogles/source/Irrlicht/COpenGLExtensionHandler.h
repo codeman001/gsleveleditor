@@ -38,6 +38,7 @@
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#include "glext.h"
 	#endif
+
 #elif defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 	#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
 		#define GL_GLEXT_LEGACY 1
@@ -1888,10 +1889,10 @@ inline void COpenGLExtensionHandler::extGlBindFramebuffer(GLenum target, GLuint 
 		pGlBindFramebuffer(target, framebuffer);
 	else if (pGlBindFramebufferEXT)
 		pGlBindFramebufferEXT(target, framebuffer);
+#elif defined(GL_EXT_framebuffer_object)
+	glBindFramebufferEXT(target, framebuffer);    
 #elif defined(GL_ARB_framebuffer_object)
 	glBindFramebufferARB(target, framebuffer);
-#elif defined(GL_EXT_framebuffer_object)
-	glBindFramebufferEXT(target, framebuffer);
 #else
 	os::Printer::log("glBindFramebuffer not supported", ELL_ERROR);
 #endif
@@ -1904,10 +1905,10 @@ inline void COpenGLExtensionHandler::extGlDeleteFramebuffers(GLsizei n, const GL
 		pGlDeleteFramebuffers(n, framebuffers);
 	else if (pGlDeleteFramebuffersEXT)
 		pGlDeleteFramebuffersEXT(n, framebuffers);
+#elif defined(GL_EXT_framebuffer_object)
+	glDeleteFramebuffersEXT(n, framebuffers);    
 #elif defined(GL_ARB_framebuffer_object)
 	glDeleteFramebuffersARB(n, framebuffers);
-#elif defined(GL_EXT_framebuffer_object)
-	glDeleteFramebuffersEXT(n, framebuffers);
 #else
 	os::Printer::log("glDeleteFramebuffers not supported", ELL_ERROR);
 #endif
@@ -1920,10 +1921,10 @@ inline void COpenGLExtensionHandler::extGlGenFramebuffers(GLsizei n, GLuint *fra
 		pGlGenFramebuffers(n, framebuffers);
 	else if (pGlGenFramebuffersEXT)
 		pGlGenFramebuffersEXT(n, framebuffers);
+#elif defined(GL_EXT_framebuffer_object)
+	glGenFramebuffersEXT(n, framebuffers);    
 #elif defined(GL_ARB_framebuffer_object)
 	glGenFramebuffersARB(n, framebuffers);
-#elif defined(GL_EXT_framebuffer_object)
-	glGenFramebuffersEXT(n, framebuffers);
 #else
 	os::Printer::log("glGenFramebuffers not supported", ELL_ERROR);
 #endif
@@ -1938,10 +1939,10 @@ inline GLenum COpenGLExtensionHandler::extGlCheckFramebufferStatus(GLenum target
 		return pGlCheckFramebufferStatusEXT(target);
 	else
 		return 0;
+#elif defined(GL_EXT_framebuffer_object)
+	return glCheckFramebufferStatusEXT(target);    
 #elif defined(GL_ARB_framebuffer_object)
 	return glCheckFramebufferStatusARB(target);
-#elif defined(GL_EXT_framebuffer_object)
-	return glCheckFramebufferStatusEXT(target);
 #else
 	os::Printer::log("glCheckFramebufferStatus not supported", ELL_ERROR);
 	return 0;
@@ -1955,10 +1956,10 @@ inline void COpenGLExtensionHandler::extGlFramebufferTexture2D(GLenum target, GL
 		pGlFramebufferTexture2D(target, attachment, textarget, texture, level);
 	else if (pGlFramebufferTexture2DEXT)
 		pGlFramebufferTexture2DEXT(target, attachment, textarget, texture, level);
+#elif defined(GL_EXT_framebuffer_object)
+	glFramebufferTexture2DEXT(target, attachment, textarget, texture, level);    
 #elif defined(GL_ARB_framebuffer_object)
 	glFramebufferTexture2DARB(target, attachment, textarget, texture, level);
-#elif defined(GL_EXT_framebuffer_object)
-	glFramebufferTexture2DEXT(target, attachment, textarget, texture, level);
 #else
 	os::Printer::log("glFramebufferTexture2D not supported", ELL_ERROR);
 #endif
@@ -1971,10 +1972,10 @@ inline void COpenGLExtensionHandler::extGlBindRenderbuffer(GLenum target, GLuint
 		pGlBindRenderbuffer(target, renderbuffer);
 	else if (pGlBindRenderbufferEXT)
 		pGlBindRenderbufferEXT(target, renderbuffer);
+#elif defined(GL_EXT_framebuffer_object)
+	glBindRenderbufferEXT(target, renderbuffer);    
 #elif defined(GL_ARB_framebuffer_object)
 	glBindRenderbufferARB(target, renderbuffer);
-#elif defined(GL_EXT_framebuffer_object)
-	glBindRenderbufferEXT(target, renderbuffer);
 #else
 	os::Printer::log("glBindRenderbuffer not supported", ELL_ERROR);
 #endif
@@ -1987,10 +1988,10 @@ inline void COpenGLExtensionHandler::extGlDeleteRenderbuffers(GLsizei n, const G
 		pGlDeleteRenderbuffers(n, renderbuffers);
 	else if (pGlDeleteRenderbuffersEXT)
 		pGlDeleteRenderbuffersEXT(n, renderbuffers);
+#elif defined(GL_EXT_framebuffer_object)
+	glDeleteRenderbuffersEXT(n, renderbuffers);    
 #elif defined(GL_ARB_framebuffer_object)
 	glDeleteRenderbuffersARB(n, renderbuffers);
-#elif defined(GL_EXT_framebuffer_object)
-	glDeleteRenderbuffersEXT(n, renderbuffers);
 #else
 	os::Printer::log("glDeleteRenderbuffers not supported", ELL_ERROR);
 #endif
@@ -2003,10 +2004,10 @@ inline void COpenGLExtensionHandler::extGlGenRenderbuffers(GLsizei n, GLuint *re
 		pGlGenRenderbuffers(n, renderbuffers);
 	else if (pGlGenRenderbuffersEXT)
 		pGlGenRenderbuffersEXT(n, renderbuffers);
+#elif defined(GL_EXT_framebuffer_object)
+	glGenRenderbuffersEXT(n, renderbuffers);    
 #elif defined(GL_ARB_framebuffer_object)
 	glGenRenderbuffersARB(n, renderbuffers);
-#elif defined(GL_EXT_framebuffer_object)
-	glGenRenderbuffersEXT(n, renderbuffers);
 #else
 	os::Printer::log("glGenRenderbuffers not supported", ELL_ERROR);
 #endif
@@ -2019,10 +2020,10 @@ inline void COpenGLExtensionHandler::extGlRenderbufferStorage(GLenum target, GLe
 		pGlRenderbufferStorage(target, internalformat, width, height);
 	else if (pGlRenderbufferStorageEXT)
 		pGlRenderbufferStorageEXT(target, internalformat, width, height);
+#elif defined(GL_EXT_framebuffer_object)
+	glRenderbufferStorageEXT(target, internalformat, width, height);    
 #elif defined(GL_ARB_framebuffer_object)
 	glRenderbufferStorageARB(target, internalformat, width, height);
-#elif defined(GL_EXT_framebuffer_object)
-	glRenderbufferStorageEXT(target, internalformat, width, height);
 #else
 	os::Printer::log("glRenderbufferStorage not supported", ELL_ERROR);
 #endif
@@ -2035,10 +2036,10 @@ inline void COpenGLExtensionHandler::extGlFramebufferRenderbuffer(GLenum target,
 		pGlFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
 	else if (pGlFramebufferRenderbufferEXT)
 		pGlFramebufferRenderbufferEXT(target, attachment, renderbuffertarget, renderbuffer);
+#elif defined(GL_EXT_framebuffer_object)
+	glFramebufferRenderbufferEXT(target, attachment, renderbuffertarget, renderbuffer);    
 #elif defined(GL_ARB_framebuffer_object)
 	glFramebufferRenderbufferARB(target, attachment, renderbuffertarget, renderbuffer);
-#elif defined(GL_EXT_framebuffer_object)
-	glFramebufferRenderbufferEXT(target, attachment, renderbuffertarget, renderbuffer);
 #else
 	os::Printer::log("glFramebufferRenderbuffer not supported", ELL_ERROR);
 #endif
@@ -2315,7 +2316,8 @@ inline void COpenGLExtensionHandler::extGlProgramParameteri(GLhandleARB program,
 #elif defined(GL_ARB_geometry_shader4)
 	glProgramParameteriARB(program, pname, value);
 #elif defined(GL_EXT_geometry_shader4)
-	glProgramParameteriEXT(program, pname, value);
+    unsigned long prgValue = (unsigned long) program;
+	glProgramParameteriEXT( (GLuint)prgValue, pname, value);
 #elif defined(GL_NV_geometry_program4) || defined(GL_NV_geometry_shader4)
 	glProgramParameteriNV(program, pname, value);
 #else
@@ -2509,22 +2511,38 @@ inline void COpenGLExtensionHandler::extGlBlendEquation(GLenum mode)
 
 inline void COpenGLExtensionHandler::extGlBindAttribLocation(GLuint program, GLuint index, const GLchar *name)
 {
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_    
 	pGlBindAttribLocation(program, index, name);
+#else
+    glBindAttribLocation(program, index, name);
+#endif
 }
 
 inline void COpenGLExtensionHandler::extGlDisableVertexAttribArray(GLuint index)
 {
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_    
 	pGlDisableVertexAttribArray(index);
+#else
+    glDisableVertexAttribArray(index);
+#endif
 }
 
 inline void COpenGLExtensionHandler::extGlEnableVertexAttribArray(GLuint index)
 {
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_    
 	pGlEnableVertexAttribArray(index);
+#else
+    glEnableVertexAttribArray(index);
+#endif
 }
 
 inline void COpenGLExtensionHandler::extGlVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer)
 {
+#ifdef _IRR_OPENGL_USE_EXTPOINTER_
 	pGlVertexAttribPointer(index, size, type, normalized, stride, pointer);
+#else
+    glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+#endif
 }
 
 }

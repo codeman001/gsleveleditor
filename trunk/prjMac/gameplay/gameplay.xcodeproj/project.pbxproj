@@ -1,0 +1,341 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7F395802160ED88000EEB3A2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F395801160ED88000EEB3A2 /* Cocoa.framework */; };
+		7F39580C160ED88000EEB3A2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7F39580A160ED88000EEB3A2 /* InfoPlist.strings */; };
+		7F39580E160ED88000EEB3A2 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F39580D160ED88000EEB3A2 /* main.mm */; };
+		7F395812160ED88000EEB3A2 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 7F395810160ED88000EEB3A2 /* Credits.rtf */; };
+		7F39582C160EDA5D00EEB3A2 /* libIrrlicht.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F39582B160EDA5200EEB3A2 /* libIrrlicht.a */; };
+		7F39582F160EDD4F00EEB3A2 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F39582E160EDD4F00EEB3A2 /* IOKit.framework */; };
+		7F395831160EDD5800EEB3A2 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F395830160EDD5800EEB3A2 /* Carbon.framework */; };
+		7F395833160EDD6900EEB3A2 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F395832160EDD6900EEB3A2 /* OpenGL.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		7F39582A160EDA5200EEB3A2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7F395823160EDA5100EEB3A2 /* MacOSX.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4C53E24D0A4850120014E966;
+			remoteInfo = libIrrlicht.a;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		7F3957FD160ED88000EEB3A2 /* gameplay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gameplay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F395801160ED88000EEB3A2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		7F395804160ED88000EEB3A2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		7F395805160ED88000EEB3A2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		7F395806160ED88000EEB3A2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		7F395809160ED88000EEB3A2 /* gameplay-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "gameplay-Info.plist"; sourceTree = "<group>"; };
+		7F39580B160ED88000EEB3A2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		7F39580D160ED88000EEB3A2 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
+		7F39580F160ED88000EEB3A2 /* gameplay-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "gameplay-Prefix.pch"; sourceTree = "<group>"; };
+		7F395811160ED88000EEB3A2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		7F395823160EDA5100EEB3A2 /* MacOSX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MacOSX.xcodeproj; path = ../../../extern/irrogles/source/Irrlicht/MacOSX/MacOSX.xcodeproj; sourceTree = "<group>"; };
+		7F39582E160EDD4F00EEB3A2 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		7F395830160EDD5800EEB3A2 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		7F395832160EDD6900EEB3A2 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7F3957FA160ED88000EEB3A2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F395833160EDD6900EEB3A2 /* OpenGL.framework in Frameworks */,
+				7F395831160EDD5800EEB3A2 /* Carbon.framework in Frameworks */,
+				7F39582F160EDD4F00EEB3A2 /* IOKit.framework in Frameworks */,
+				7F39582C160EDA5D00EEB3A2 /* libIrrlicht.a in Frameworks */,
+				7F395802160ED88000EEB3A2 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7F3957F2160ED87F00EEB3A2 = {
+			isa = PBXGroup;
+			children = (
+				7F395823160EDA5100EEB3A2 /* MacOSX.xcodeproj */,
+				7F395807160ED88000EEB3A2 /* gameplay */,
+				7F395800160ED88000EEB3A2 /* Frameworks */,
+				7F3957FE160ED88000EEB3A2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7F3957FE160ED88000EEB3A2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7F3957FD160ED88000EEB3A2 /* gameplay.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7F395800160ED88000EEB3A2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7F395832160EDD6900EEB3A2 /* OpenGL.framework */,
+				7F395830160EDD5800EEB3A2 /* Carbon.framework */,
+				7F39582E160EDD4F00EEB3A2 /* IOKit.framework */,
+				7F395801160ED88000EEB3A2 /* Cocoa.framework */,
+				7F395803160ED88000EEB3A2 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7F395803160ED88000EEB3A2 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7F395804160ED88000EEB3A2 /* AppKit.framework */,
+				7F395805160ED88000EEB3A2 /* CoreData.framework */,
+				7F395806160ED88000EEB3A2 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		7F395807160ED88000EEB3A2 /* gameplay */ = {
+			isa = PBXGroup;
+			children = (
+				7F39580D160ED88000EEB3A2 /* main.mm */,
+				7F395808160ED88000EEB3A2 /* Supporting Files */,
+			);
+			path = gameplay;
+			sourceTree = "<group>";
+		};
+		7F395808160ED88000EEB3A2 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				7F395809160ED88000EEB3A2 /* gameplay-Info.plist */,
+				7F39580A160ED88000EEB3A2 /* InfoPlist.strings */,
+				7F39580F160ED88000EEB3A2 /* gameplay-Prefix.pch */,
+				7F395810160ED88000EEB3A2 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7F395824160EDA5100EEB3A2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7F39582B160EDA5200EEB3A2 /* libIrrlicht.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7F3957FC160ED88000EEB3A2 /* gameplay */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7F39581B160ED88000EEB3A2 /* Build configuration list for PBXNativeTarget "gameplay" */;
+			buildPhases = (
+				7F3957F9160ED88000EEB3A2 /* Sources */,
+				7F3957FA160ED88000EEB3A2 /* Frameworks */,
+				7F3957FB160ED88000EEB3A2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = gameplay;
+			productName = gameplay;
+			productReference = 7F3957FD160ED88000EEB3A2 /* gameplay.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7F3957F4160ED87F00EEB3A2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = C;
+				LastUpgradeCheck = 0430;
+			};
+			buildConfigurationList = 7F3957F7160ED87F00EEB3A2 /* Build configuration list for PBXProject "gameplay" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 7F3957F2160ED87F00EEB3A2;
+			productRefGroup = 7F3957FE160ED88000EEB3A2 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 7F395824160EDA5100EEB3A2 /* Products */;
+					ProjectRef = 7F395823160EDA5100EEB3A2 /* MacOSX.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				7F3957FC160ED88000EEB3A2 /* gameplay */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		7F39582B160EDA5200EEB3A2 /* libIrrlicht.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libIrrlicht.a;
+			remoteRef = 7F39582A160EDA5200EEB3A2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7F3957FB160ED88000EEB3A2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F39580C160ED88000EEB3A2 /* InfoPlist.strings in Resources */,
+				7F395812160ED88000EEB3A2 /* Credits.rtf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7F3957F9160ED88000EEB3A2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F39580E160ED88000EEB3A2 /* main.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		7F39580A160ED88000EEB3A2 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7F39580B160ED88000EEB3A2 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		7F395810160ED88000EEB3A2 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7F395811160ED88000EEB3A2 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		7F395819160ED88000EEB3A2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		7F39581A160ED88000EEB3A2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		7F39581C160ED88000EEB3A2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "gameplay/gameplay-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = (
+					../../../extern/irrogles/source/Irrlicht,
+					../../../extern/irrogles/include,
+				);
+				INFOPLIST_FILE = "gameplay/gameplay-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		7F39581D160ED88000EEB3A2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "gameplay/gameplay-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = (
+					../../../extern/irrogles/source/Irrlicht,
+					../../../extern/irrogles/include,
+				);
+				INFOPLIST_FILE = "gameplay/gameplay-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7F3957F7160ED87F00EEB3A2 /* Build configuration list for PBXProject "gameplay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7F395819160ED88000EEB3A2 /* Debug */,
+				7F39581A160ED88000EEB3A2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7F39581B160ED88000EEB3A2 /* Build configuration list for PBXNativeTarget "gameplay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7F39581C160ED88000EEB3A2 /* Debug */,
+				7F39581D160ED88000EEB3A2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7F3957F4160ED87F00EEB3A2 /* Project object */;
+}

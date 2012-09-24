@@ -30,7 +30,7 @@ struct SBinaryChunk
 {
 	int				sign;	
 	char			type;
-	unsigned long	size;
+	unsigned int	size;
 	int				data[CHUNK_DATASLOT];
 
 
@@ -42,7 +42,7 @@ struct SBinaryChunk
 		memset(data, 0, sizeof(int)*CHUNK_DATASLOT);
 	}
 
-};
+}__attribute__((aligned(4)));
 
 //////////////////////////////////////////////
 // CBinaryUtils implement
@@ -196,12 +196,12 @@ void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode
 	float	floatArray[3];
 
 	// identity id
-	unsigned long pointerID = (unsigned long) node;
-	memStream.writeData( &pointerID, sizeof(unsigned long) );
+	unsigned int pointerID = (unsigned int) ((unsigned long)node);
+	memStream.writeData( &pointerID, sizeof(unsigned int) );
 
 	// parent identity id
-	pointerID = (unsigned long) node->getParent();
-	memStream.writeData( &pointerID, sizeof(unsigned long) );
+	pointerID = (unsigned int) ((unsigned long)node->getParent());
+	memStream.writeData( &pointerID, sizeof(unsigned int) );
 
 	// name
 	strcpy( stringc, node->getName() );
@@ -256,8 +256,8 @@ void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode
 	if ( haveMesh )
 	{		
 		// mesh id
-		unsigned long meshID = (unsigned long) node->ColladaMesh;
-		memStream.writeData( &meshID, sizeof(unsigned long) );
+		unsigned int meshID = (unsigned int)((unsigned long)node->ColladaMesh);
+		memStream.writeData( &meshID, sizeof(unsigned int) );
 		listMesh.push_back( node->ColladaMesh );
 	}
 
@@ -297,7 +297,7 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 	char stringc[STRING_BUFFER_SIZE];
 
 	// write meshID
-	unsigned long meshID = (unsigned long)mesh;
+	unsigned int meshID = (unsigned int)((unsigned long)mesh);
 	memStream.writeData( &meshID, sizeof(int) );
 
 	// static mesh
@@ -349,8 +349,8 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 		int indexCount = buffer->getIndexCount();
 
 		// write meshbuffer ID
-		unsigned long bufferID = (unsigned long) buffer;		
-		memStream.writeData( &bufferID, sizeof(unsigned long) );
+		unsigned int bufferID = (unsigned int)((unsigned long) buffer);
+		memStream.writeData( &bufferID, sizeof(unsigned int) );
 
 		// write buffer type
 		memStream.writeData( &vertexType, sizeof(int) );
@@ -359,8 +359,8 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 
 		// write material id
 		SMaterial& mat = buffer->getMaterial();
-		unsigned long matID = (unsigned long)&mat;
-		memStream.writeData( &matID, sizeof(unsigned long) );
+		unsigned int matID = (unsigned int)((unsigned long)&mat);
+		memStream.writeData( &matID, sizeof(unsigned int) );
 
 
 		int bufferSize = 0;
@@ -424,7 +424,7 @@ void CBinaryUtils::saveMaterial( io::IWriteFile *file, SMaterial* mat )
 	CMemoryReadWrite	memStream( 1024*1024*1 );
 
 	// write matID
-	unsigned long matID = (unsigned long)mat;
+	unsigned int matID = (unsigned int)((unsigned long)mat);
 	memStream.writeData( &matID, sizeof(int) );
 
 	int matType = mat->MaterialType;
@@ -509,7 +509,7 @@ void CBinaryUtils::loadAnim( io::IReadFile *file, CColladaAnimation* anim )
 	SBinaryChunk chunk;	
 	
 	
-	unsigned long maxChunkSize = 1024*1024*4;
+	unsigned int maxChunkSize = 1024*1024*4;
 	unsigned char *chunkData = new unsigned char[maxChunkSize];
 
 	// read all chunk
@@ -529,7 +529,7 @@ void CBinaryUtils::loadAnim( io::IReadFile *file, CColladaAnimation* anim )
 	delete chunkData;
 }
 
-void CBinaryUtils::readAnimClip( unsigned char *data, unsigned long size, CColladaAnimation *anim )
+void CBinaryUtils::readAnimClip( unsigned char *data, unsigned int size, CColladaAnimation *anim )
 {
 	CMemoryReadWrite	memStream(data, size);
 
@@ -634,10 +634,8 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 	m_constructSceneMesh.clear();
 	m_constructMeshMaterial.clear();
 
-	unsigned long maxChunkSize = 1024*1024*4;
+	unsigned int maxChunkSize = 1024*1024*4;
 	unsigned char *chunkData = new unsigned char[maxChunkSize];
-    
-    unsigned char chunkInfo[32];
     
 	// read all chunk
 	while ( file->read( &chunk, sizeof(SBinaryChunk) ) > 0 )
@@ -674,8 +672,8 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 	std::vector< SPairID >::iterator it = m_constructSceneMesh.begin(), end = m_constructSceneMesh.end();
 	while ( it != end )
 	{
-		unsigned long nodeID = (*it).first;
-		unsigned long meshID = (*it).second;
+		unsigned int nodeID = (*it).first;
+		unsigned int meshID = (*it).second;
 
 		CGameColladaSceneNode *node = m_listSceneNode[ nodeID ];
 		
@@ -695,12 +693,12 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 			for ( int i = 0; i < nBufferCount; i++ )
 			{
 				IMeshBuffer* buffer = mesh->getMeshBuffer(i);
-				unsigned long meshbufferID = m_constructMeshBufferID[buffer];
+				unsigned int meshbufferID = m_constructMeshBufferID[buffer];
 
 				if ( meshbufferID != 0 )
 				{
 					// get material of mesh
-					unsigned long matID = m_constructMeshMaterial[meshbufferID];
+					unsigned int matID = m_constructMeshMaterial[meshbufferID];
 					
 					SMaterial *mat = m_listMaterial[matID];
 					if ( mat )
@@ -718,7 +716,7 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 	m_constructSceneMesh.clear();
 	
 	// update component to mesh & drop ref of mesh
-	std::map<unsigned long, CGameColladaMesh*>::iterator iMesh =	m_listMesh.begin(), iEnd = m_listMesh.end();
+	std::map<unsigned int, CGameColladaMesh*>::iterator iMesh =	m_listMesh.begin(), iEnd = m_listMesh.end();
 	while ( iMesh != iEnd )
 	{
 		CGameColladaMesh *mesh = (*iMesh).second;
@@ -735,7 +733,7 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 	m_listMesh.clear();
 
 	// release material
-	std::map<unsigned long, SMaterial*>::iterator iMat = m_listMaterial.begin(), iEndMat = m_listMaterial.end();
+	std::map<unsigned int, SMaterial*>::iterator iMat = m_listMaterial.begin(), iEndMat = m_listMaterial.end();
 	while ( iMat != iEndMat )
 	{
 		delete (*iMat).second;
@@ -744,7 +742,7 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 	m_listMaterial.clear();
 }
 
-void CBinaryUtils::readColladaScene( unsigned char *data, unsigned long size, CGameObject* obj )
+void CBinaryUtils::readColladaScene( unsigned char *data, unsigned int size, CGameObject* obj )
 {
 	CMemoryReadWrite memStream( data, size );
 
@@ -753,12 +751,12 @@ void CBinaryUtils::readColladaScene( unsigned char *data, unsigned long size, CG
 	float	matrix[16];
 
 	// identity id
-	unsigned long nodeID = 0;
-	memStream.readData( &nodeID, sizeof(unsigned long) );
+	unsigned int nodeID = 0;
+	memStream.readData( &nodeID, sizeof(unsigned int) );
 
 	// parent identity id
-	unsigned long parentID = 0;
-	memStream.readData( &parentID, sizeof(unsigned long) );
+	unsigned int parentID = 0;
+	memStream.readData( &parentID, sizeof(unsigned int) );
 
 	// find parent
 	ISceneNode *parent = obj->getSceneNode();
@@ -834,8 +832,8 @@ void CBinaryUtils::readColladaScene( unsigned char *data, unsigned long size, CG
 	if ( haveMesh )
 	{		
 		// mesh id
-		unsigned long meshID = 0;
-		memStream.readData( &meshID, sizeof(unsigned long) );	
+		unsigned int meshID = 0;
+		memStream.readData( &meshID, sizeof(unsigned int) );	
 
 		// push to list scenenode need construct mesh
 		SPairID pairScene;
@@ -868,7 +866,7 @@ void CBinaryUtils::readColladaScene( unsigned char *data, unsigned long size, CG
 	newNode->drop();
 }
 
-void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
+void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned int size )
 {
 	CMemoryReadWrite memStream( data, size );
 	float floatArray[3];	
@@ -878,7 +876,7 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 	CGameColladaMesh *newMesh = new CGameColladaMesh();
 
 	// read meshID
-	unsigned long meshID = 0;
+	unsigned int meshID = 0;
 	memStream.readData( &meshID, sizeof(int) );
 	m_listMesh[ meshID ] = newMesh;
 
@@ -935,8 +933,8 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 
 
 		// write meshbuffer ID
-		unsigned long bufferID = 0;
-		memStream.readData( &bufferID, sizeof(unsigned long) );
+		unsigned int bufferID = 0;
+		memStream.readData( &bufferID, sizeof(unsigned int) );
 
 		// save mesh buffer id
 		m_constructMeshBufferID[meshBuffer] = bufferID;
@@ -950,8 +948,8 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 		memStream.readData( &vertexCount, sizeof(int) );
 		memStream.readData( &indexCount, sizeof(int) );
 
-		unsigned long matID = 0;
-		memStream.readData( &matID, sizeof(unsigned long) );
+		unsigned int matID = 0;
+		memStream.readData( &matID, sizeof(unsigned int) );
 
 		int bufferSize = 0;
 
@@ -1010,7 +1008,7 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned long size )
 
 }
 
-void CBinaryUtils::readMaterial( unsigned char *data, unsigned long size, std::string currentPath )
+void CBinaryUtils::readMaterial( unsigned char *data, unsigned int size, std::string currentPath )
 {
 	CMemoryReadWrite memStream( data, size );
 	
@@ -1019,7 +1017,7 @@ void CBinaryUtils::readMaterial( unsigned char *data, unsigned long size, std::s
 	char stringc[STRING_BUFFER_SIZE];
 	
 	// write matID
-	unsigned long matID = 0;
+	unsigned int matID = 0;
 	memStream.readData( &matID, sizeof(int) );	
 	m_listMaterial[matID] = mat;
 
@@ -1114,7 +1112,7 @@ void CBinaryUtils::readMaterial( unsigned char *data, unsigned long size, std::s
 // CBinaryUtils implement
 //////////////////////////////////////////////
 
-CMemoryReadWrite::CMemoryReadWrite(unsigned long initMem)
+CMemoryReadWrite::CMemoryReadWrite(unsigned int initMem)
 {
 	m_memory = new unsigned char[initMem];
 	m_size = 0;
@@ -1122,7 +1120,7 @@ CMemoryReadWrite::CMemoryReadWrite(unsigned long initMem)
 	m_fromMemory = false;
 }
 
-CMemoryReadWrite::CMemoryReadWrite(unsigned char *fromMem, unsigned long size)
+CMemoryReadWrite::CMemoryReadWrite(unsigned char *fromMem, unsigned int size)
 {
 	m_memory = fromMem;
 	m_size = size;
@@ -1136,15 +1134,15 @@ CMemoryReadWrite::~CMemoryReadWrite()
 		delete m_memory;
 }
 	
-void CMemoryReadWrite::writeData( const void* data, unsigned long size )
+void CMemoryReadWrite::writeData( const void* data, unsigned int size )
 {
 	memcpy( &m_memory[m_size], data, size );
 	m_size += size;
 }
 
-unsigned long CMemoryReadWrite::readData( void* data, unsigned long size )
+unsigned int CMemoryReadWrite::readData( void* data, unsigned int size )
 {
-	unsigned long maxSize = m_size - m_pos;
+	unsigned int maxSize = m_size - m_pos;
 	if ( size > maxSize  )
 		size = maxSize;
 

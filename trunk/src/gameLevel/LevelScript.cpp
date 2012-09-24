@@ -19,7 +19,7 @@ int getObjectByName(lua_State* state)
 	CGameObject* p = getLevel()->searchObject( objName );
     unsigned long ptr = (unsigned long)p; 
 	if ( p )
-		lua_pushinteger( state, (int)ptr );
+		lua_pushinteger( state, (lua_Integer)ptr );
 	else
 		lua_pushinteger( state, 0 );
 	return 1;
@@ -30,7 +30,7 @@ int getObjectByName(lua_State* state)
 // param: objectID
 int disableObject(lua_State* state)
 {
-	int objID = lua_tointeger(state,1);
+	lua_Integer objID = lua_tointeger(state,1);
 	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 		obj->setEnable(false);
@@ -42,7 +42,7 @@ int disableObject(lua_State* state)
 // param: objectID
 int enableObject(lua_State* state)
 {
-	int objID = lua_tointeger(state,1);
+	lua_Integer objID = lua_tointeger(state,1);
 	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 		obj->setEnable(true);
@@ -53,7 +53,7 @@ int enableObject(lua_State* state)
 // get x,y,z of object
 int getObjectPosition(lua_State* state)
 {
-	int objID = lua_tointeger(state,1);
+	lua_Integer objID = lua_tointeger(state,1);
 	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 	{
@@ -75,7 +75,7 @@ int getObjectPosition(lua_State* state)
 // param: objectID, x, y, z
 int setObjectPosition(lua_State* state)
 {
-	int objID	= lua_tointeger(state,1);
+	lua_Integer objID	= lua_tointeger(state,1);
 	float x		= (float)lua_tonumber(state,2);
 	float y		= (float)lua_tonumber(state,3);
 	float z		= (float)lua_tonumber(state,4);
@@ -94,7 +94,7 @@ int setObjectPosition(lua_State* state)
 // get x,y,z of rotation vector
 int getObjectRotation(lua_State* state)
 {
-	int objID = lua_tointeger(state,1);
+	lua_Integer objID = lua_tointeger(state,1);
 	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
 	{
@@ -116,7 +116,7 @@ int getObjectRotation(lua_State* state)
 // param: objectID, x, y, z
 int setObjectRotation(lua_State* state)
 {
-	int objID	= lua_tointeger(state,1);
+	lua_Integer objID	= lua_tointeger(state,1);
 	float x		= (float)lua_tonumber(state,2);
 	float y		= (float)lua_tonumber(state,3);
 	float z		= (float)lua_tonumber(state,4);
@@ -135,8 +135,8 @@ int setObjectRotation(lua_State* state)
 // param: objectID, objectTargetID
 int setObjectLookAtObject(lua_State* state)
 {
-	int objID		= lua_tointeger(state,1);
-	int objTargetID	= lua_tointeger(state,2);
+	lua_Integer objID		= lua_tointeger(state,1);
+	lua_Integer objTargetID	= lua_tointeger(state,2);
 
 	CGameObject* obj		= (CGameObject*)objID;
 	CGameObject* objTarget	= (CGameObject*)objTargetID;
@@ -151,8 +151,8 @@ int setObjectLookAtObject(lua_State* state)
 // param: objectID, objectTargetID
 int setObjectOrientation(lua_State* state)
 {
-	int objID		= lua_tointeger(state,1);
-	int objTargetID	= lua_tointeger(state,2);
+	lua_Integer objID		= lua_tointeger(state,1);
+	lua_Integer objTargetID	= lua_tointeger(state,2);
 
 	CGameObject* obj		= (CGameObject*)objID;
 	CGameObject* objTarget	= (CGameObject*)objTargetID;
@@ -172,8 +172,8 @@ int setObjectOrientation(lua_State* state)
 // param: objectID, waypointID, loop
 int setAnimatorMoveToWayPoint(lua_State* state)
 {
-	int objID = lua_tointeger(state,1);
-	int wayID = lua_tointeger(state,2);	
+	lua_Integer objID = lua_tointeger(state,1);
+	lua_Integer wayID = lua_tointeger(state,2);	
 	float speed = (float)lua_tonumber(state,3);
 	int loop = lua_toboolean(state,4);
 
@@ -191,7 +191,7 @@ int setAnimatorMoveToWayPoint(lua_State* state)
 // param: objectID, distance, node
 int addObjectLod(lua_State* state)
 {
-	int objID = lua_tointeger(state,1);
+	lua_Integer objID = lua_tointeger(state,1);
 	float dis = (float)lua_tonumber(state,2);
 	const char* node = lua_tostring(state,3);
 
@@ -212,7 +212,7 @@ int addObjectLod(lua_State* state)
 // clear lod data, return default collada node
 int clearObjectLod(lua_State* state)
 {
-	int objID = lua_tointeger(state,1);
+	lua_Integer objID = lua_tointeger(state,1);
 	CGameObject* obj = (CGameObject*)objID;
 	
 	// clear all lod data
@@ -233,7 +233,7 @@ int clearObjectLod(lua_State* state)
 // param: cameraID
 int setLevelCamera(lua_State* state)
 {
-	int camID = lua_tointeger(state,1);
+	lua_Integer camID = lua_tointeger(state,1);
 	CGameObject* cam = (CGameObject*)camID;
 	if ( cam && cam->getObjectType() == CGameObject::CameraObject )
 		getLevel()->setCamera((CGameCamera*)cam);
@@ -245,7 +245,7 @@ int setLevelCamera(lua_State* state)
 // set farvalue for camera
 int setCameraFarValue(lua_State* state)
 {
-	int camID = lua_tointeger(state,1);
+	lua_Integer camID = lua_tointeger(state,1);
 	double farValue = lua_tonumber(state,2);
 
 	CGameObject* obj = (CGameObject*)camID;
@@ -261,8 +261,8 @@ int setCameraFarValue(lua_State* state)
 // set camera look at to object position
 int setCameraLookAtObj(lua_State* state)
 {
-	int camID = lua_tointeger(state,1);
-	int objID = lua_tointeger(state,2);
+	lua_Integer camID = lua_tointeger(state,1);
+	lua_Integer objID = lua_tointeger(state,2);
 
 	CGameObject* cam = (CGameObject*)camID;
 	CGameObject* obj = (CGameObject*)objID;
@@ -278,8 +278,8 @@ int setCameraLookAtObj(lua_State* state)
 // set camera allway follow obj
 int setCameraFollowObject(lua_State* state)
 {
-	int camID = lua_tointeger(state,1);
-	int objID = lua_tointeger(state,2);
+	lua_Integer camID = lua_tointeger(state,1);
+	lua_Integer objID = lua_tointeger(state,2);
 	float radius  = (float)lua_tonumber(state,3);
 
 	CGameObject* cam = (CGameObject*)camID;
@@ -323,7 +323,7 @@ int getCurrentCameraPosition(lua_State* state)
 // params: objectID, sceneNodeName, x,y,z
 int setSceneNodePosition(lua_State* state)
 {
-	int objID	= lua_tointeger(state,1);
+	lua_Integer objID	= lua_tointeger(state,1);
 	const char* sceneNodeName = lua_tostring(state,2);
 	float x		= (float)lua_tonumber(state,3);
 	float y		= (float)lua_tonumber(state,4);
@@ -352,7 +352,7 @@ int setSceneNodePosition(lua_State* state)
 // set sky box
 int setSceneNodeIsSkydome(lua_State* state)
 {
-	int objID	= lua_tointeger(state,1);
+	lua_Integer objID	= lua_tointeger(state,1);
 	const char* sceneNodeName = lua_tostring(state,2);	
 
 	CGameObject* obj = (CGameObject*)objID;
@@ -377,7 +377,7 @@ int setSceneNodeIsSkydome(lua_State* state)
 // set sky box
 int setSceneNodeVisible(lua_State* state)
 {
-	int objID	= lua_tointeger(state,1);
+	lua_Integer objID	= lua_tointeger(state,1);
 	const char* sceneNodeName = lua_tostring(state,2);
 	bool b		= lua_toboolean(state,3) == 1;
 
@@ -424,7 +424,7 @@ int setLevelAmbientLight(lua_State* state)
 // param2: itemTemplate
 int addItemToInventory(lua_State* state)
 {
-	int objID = lua_tointeger(state,1);
+	lua_Integer objID = lua_tointeger(state,1);
 	const char* itemTemplate = lua_tostring(state,2);
 
 	CGameObject* obj = (CGameObject*)objID;
@@ -444,7 +444,7 @@ int addItemToInventory(lua_State* state)
 // param2: itemTemplate
 int setActiveItemOnInventory(lua_State* state)
 {
-	int objID = lua_tointeger(state,1);
+	lua_Integer objID = lua_tointeger(state,1);
 	const char* itemTemplate = lua_tostring(state,2);
 
 	CGameObject* obj = (CGameObject*)objID;

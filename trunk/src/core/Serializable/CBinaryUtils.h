@@ -11,53 +11,53 @@ class CMemoryReadWrite
 {
 protected:
 	unsigned char *m_memory;
-	unsigned long m_size;
-	unsigned long m_pos;
+	unsigned int m_size;
+	unsigned int m_pos;
 	bool m_fromMemory;
 public:
-	CMemoryReadWrite(unsigned long initMem);
+	CMemoryReadWrite(unsigned int initMem);
 	
-	CMemoryReadWrite(unsigned char *fromMem, unsigned long size);
+	CMemoryReadWrite(unsigned char *fromMem, unsigned int size);
 
 	virtual ~CMemoryReadWrite();
 	
-	void writeData( const void* data, unsigned long size );
+	void writeData( const void* data, unsigned int size );
 
-	unsigned long readData( void* data, unsigned long size );
+	unsigned int readData( void* data, unsigned int size );
 
 	const unsigned char *getData()
 	{
 		return m_memory;
 	}
 
-	unsigned long getSize()
+	unsigned int getSize()
 	{
 		return m_size;
 	}
 
-	unsigned long getPos()
+	unsigned int getPos()
 	{
 		return m_pos;
 	}
 
-	void setPos( unsigned long pos )
+	void setPos( unsigned int pos )
 	{
 		m_pos = pos;
 	}
 };
 
-typedef std::pair<unsigned long, unsigned long>	SPairID;
+typedef std::pair<unsigned int, unsigned int>	SPairID;
 
 class CBinaryUtils: public uiSingleton<CBinaryUtils>
 {
 protected:
-	std::map<unsigned long, CGameColladaSceneNode*>		m_listSceneNode;
-	std::map<unsigned long, CGameColladaMesh*>			m_listMesh;
-	std::map<unsigned long, SMaterial*>					m_listMaterial;
+	std::map<unsigned int, CGameColladaSceneNode*>		m_listSceneNode;
+	std::map<unsigned int, CGameColladaMesh*>			m_listMesh;
+	std::map<unsigned int, SMaterial*>					m_listMaterial;
 
 	std::vector< SPairID >								m_constructSceneMesh;
-	std::map<unsigned long, unsigned long>				m_constructMeshMaterial;
-	std::map<IMeshBuffer*, unsigned long>				m_constructMeshBufferID;
+	std::map<unsigned int, unsigned int>				m_constructMeshMaterial;
+	std::map<IMeshBuffer*, unsigned int>				m_constructMeshBufferID;
 
 	CColladaMeshComponent*							m_component;
 public:
@@ -81,10 +81,10 @@ public:
 	void loadAnim( io::IReadFile *file, CColladaAnimation* anim );
 
 protected:
-	void readAnimClip( unsigned char *data, unsigned long size, CColladaAnimation *anim );
-	void readColladaScene( unsigned char *data, unsigned long size, CGameObject* obj );
-	void readColladaMesh( unsigned char *data, unsigned long size );
-	void readMaterial( unsigned char *data, unsigned long size, std::string currentPath );
+	void readAnimClip( unsigned char *data, unsigned int size, CColladaAnimation *anim );
+	void readColladaScene( unsigned char *data, unsigned int size, CGameObject* obj );
+	void readColladaMesh( unsigned char *data, unsigned int size );
+	void readMaterial( unsigned char *data, unsigned int size, std::string currentPath );
 };
 
 #endif

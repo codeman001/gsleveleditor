@@ -32,7 +32,7 @@ class fixed_size_hash
 	// Computes a hash of an object's representation.
 {
 	public:
-		size_t	operator() ( const T &data ) const
+		unsigned int operator() ( const T &data ) const
 		{
 			unsigned char	*p = ( unsigned char * ) &data;
 			int	size = sizeof ( T );
@@ -46,9 +46,9 @@ class identity_hash
 	// Hash is just the input value; can use this for integer-indexed hash tables.
 {
 	public:
-		size_t	operator() ( const T &data ) const
+		unsigned int operator() ( const T &data ) const
 		{
-			return ( size_t ) data;
+			return ( unsigned int ) data;
 		}
 };
 
@@ -1402,7 +1402,7 @@ class hash
 	private:
 		// A value of m_hash_value that marks an entry as a
 		// "tombstone" -- i.e. a placeholder entry.
-		static const size_t TOMBSTONE_HASH = ( size_t ) -1;
+		static const unsigned int TOMBSTONE_HASH = ( unsigned int ) -1;
 
 		int	find_index ( const T &key ) const
 		// Find the index of the matching entry.  If no match, then return -1.
@@ -1456,9 +1456,9 @@ class hash
 			return -1;
 		}
 
-		size_t compute_hash ( const T &key ) const
+		unsigned int compute_hash ( const T &key ) const
 		{
-			size_t hash_value = hash_functor() ( key );
+			unsigned int hash_value = hash_functor() ( key );
 
 			if ( hash_value == TOMBSTONE_HASH )
 			{

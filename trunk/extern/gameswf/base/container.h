@@ -1127,7 +1127,7 @@ class hash
 		struct entry
 		{
 			int	m_next_in_chain;	// internal chaining for collisions
-			size_t	m_hash_value;		// avoids recomputing.  Worthwhile?
+			unsigned int m_hash_value;		// avoids recomputing.  Worthwhile?
 			T	first;
 			U	second;
 
@@ -1136,7 +1136,7 @@ class hash
 				: m_next_in_chain ( e.m_next_in_chain ), m_hash_value ( e.m_hash_value ), first ( e.first ), second ( e.second )
 			{
 			}
-			entry ( const T &key, const U &value, int next_in_chain, int hash_value )
+			entry ( const T &key, const U &value, int next_in_chain, unsigned int hash_value )
 				: m_next_in_chain ( next_in_chain ), m_hash_value ( hash_value ), first ( key ), second ( value )
 			{
 			}

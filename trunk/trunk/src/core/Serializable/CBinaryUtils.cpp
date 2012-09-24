@@ -636,7 +636,9 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 
 	unsigned long maxChunkSize = 1024*1024*4;
 	unsigned char *chunkData = new unsigned char[maxChunkSize];
-
+    
+    unsigned char chunkInfo[32];
+    
 	// read all chunk
 	while ( file->read( &chunk, sizeof(SBinaryChunk) ) > 0 )
 	{

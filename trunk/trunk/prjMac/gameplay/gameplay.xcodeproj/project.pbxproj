@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F1EC6011610985F008D61A2 /* macosxapi.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F1EC6001610985F008D61A2 /* macosxapi.mm */; };
 		7F395802160ED88000EEB3A2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F395801160ED88000EEB3A2 /* Cocoa.framework */; };
 		7F39580C160ED88000EEB3A2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7F39580A160ED88000EEB3A2 /* InfoPlist.strings */; };
 		7F39580E160ED88000EEB3A2 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F39580D160ED88000EEB3A2 /* main.mm */; };
@@ -126,6 +127,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7F1EC6001610985F008D61A2 /* macosxapi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = macosxapi.mm; sourceTree = "<group>"; };
 		7F3957FD160ED88000EEB3A2 /* gameplay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gameplay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F395801160ED88000EEB3A2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7F395804160ED88000EEB3A2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -359,6 +361,7 @@
 			children = (
 				7F39580D160ED88000EEB3A2 /* main.mm */,
 				7F395808160ED88000EEB3A2 /* Supporting Files */,
+				7F1EC6001610985F008D61A2 /* macosxapi.mm */,
 			);
 			path = gameplay;
 			sourceTree = "<group>";
@@ -889,6 +892,7 @@
 				7F3A6BC9160F5E8000B31F81 /* CGameUI.cpp in Sources */,
 				7F3A6BCA160F5E8000B31F81 /* CMenuFx.cpp in Sources */,
 				7F3A6BCB160F5E8000B31F81 /* CMenuFxObj.cpp in Sources */,
+				7F1EC6011610985F008D61A2 /* macosxapi.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -930,7 +934,7 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -951,7 +955,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -970,6 +974,8 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					MACOSX,
 					GSGAMEPLAY,
+					_LIB,
+					FT2_BUILD_LIBRARY,
 				);
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
@@ -1003,6 +1009,8 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					MACOSX,
 					GSGAMEPLAY,
+					_LIB,
+					FT2_BUILD_LIBRARY,
 				);
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (

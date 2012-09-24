@@ -204,7 +204,7 @@ void IView::unRegisterEvent( IEventReceiver *pEvent )
 wchar_t g_tempPathW[1024];
 char	g_tempPathA[1024];
 
-#if defined(IOS)
+#if defined(IOS) || defined (MACOSX)
 // get iphone resource path
 extern void getResourcePath(char* cBuffer, int iLength);
 #endif
@@ -216,15 +216,13 @@ char* IView::getPhysicPath(	const std::string& path )
 		// android
 		uiString::copy<char,const char>( g_tempPathA, "/mnt/sdcard/gsgameplay/" );
 		uiString::cat<char,const char>( g_tempPathA, path.c_str() );
-	#elif defined(IOS)
+	#elif defined(IOS) || defined (MACOSX)
 		// iphone os
         char rootPath[512];
         getResourcePath(rootPath, 512);
         uiString::copy<char,const char>( g_tempPathA, rootPath );
         uiString::cat<char,const char>( g_tempPathA, "/" );
         uiString::cat<char,const char>( g_tempPathA, path.c_str() );
-    #elif defined (MACOSX)
-		uiString::copy<char,const char>( g_tempPathA, path.c_str() );    
 	#else
 		uiString::copy<char,const char>( g_tempPathA, path.c_str() );
 	#endif

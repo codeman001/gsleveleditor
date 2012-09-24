@@ -16,12 +16,12 @@
 		7F1AEEE315F78CFB00DF8EA0 /* zrnic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEEDD15F78CFB00DF8EA0 /* zrnic.ttf */; };
 		7F1AEF0D15F7A02700DF8EA0 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEF0C15F7A02700DF8EA0 /* Application.cpp */; };
 		7F1AEF1015F7A2C500DF8EA0 /* CAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */; };
+		7F1EC5E616109767008D61A2 /* libLua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F1EC5E516109756008D61A2 /* libLua.a */; };
 		7F39584F160EF17700EEB3A2 /* CDataPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */; };
 		7F62FBA91600C9EC0022D697 /* CEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F62FBA81600C9EC0022D697 /* CEAGLView.mm */; };
 		7F62FBAB1600D6620022D697 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F62FBAA1600D6620022D697 /* QuartzCore.framework */; };
 		7FCBD3E115F4B41700C432A7 /* libirrlicht.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBD12D15F4B13400C432A7 /* libirrlicht.a */; };
 		7FCBDE3D15F4C3E200C432A7 /* libgameswf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBDE3315F4C3A800C432A7 /* libgameswf.a */; };
-		7FCBDE3E15F4C3E200C432A7 /* libLua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBDE3C15F4C3CF00C432A7 /* libLua.a */; };
 		7FCBDE4B15F4C4C100C432A7 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBDE4A15F4C4A500C432A7 /* libfreetype.a */; };
 		7FD0BFDA15F4F34400626D90 /* CApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FD0BF5015F4F34400626D90 /* CApplication.cpp */; };
 		7FD0BFDB15F4F34400626D90 /* CGameCameraFollowAnimator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FD0BF5415F4F34400626D90 /* CGameCameraFollowAnimator.cpp */; };
@@ -101,6 +101,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		7F1EC5E416109756008D61A2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7F1EC5DD16109755008D61A2 /* Lua.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC07E0554694100DB518D;
+			remoteInfo = Lua;
+		};
 		7FCBD12C15F4B13400C432A7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7FCBD12815F4B13300C432A7 /* irrlicht.xcodeproj */;
@@ -114,13 +121,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = D2AAC07E0554694100DB518D;
 			remoteInfo = gameswf;
-		};
-		7FCBDE3B15F4C3CF00C432A7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7FCBDE3415F4C3CE00C432A7 /* Lua.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC07E0554694100DB518D;
-			remoteInfo = Lua;
 		};
 		7FCBDE4915F4C4A500C432A7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -141,6 +141,7 @@
 		7F1AEEDD15F78CFB00DF8EA0 /* zrnic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = zrnic.ttf; path = ../../bin/zrnic.ttf; sourceTree = "<group>"; };
 		7F1AEF0C15F7A02700DF8EA0 /* Application.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Application.cpp; sourceTree = "<group>"; };
 		7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CAppDelegate.mm; sourceTree = "<group>"; };
+		7F1EC5DD16109755008D61A2 /* Lua.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lua.xcodeproj; path = ../../../extern/lua/ios/Lua.xcodeproj; sourceTree = "<group>"; };
 		7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CDataPacket.cpp; path = Network/CDataPacket.cpp; sourceTree = "<group>"; };
 		7F39584E160EF17700EEB3A2 /* CDataPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDataPacket.h; path = Network/CDataPacket.h; sourceTree = "<group>"; };
 		7F62FBA71600C9BB0022D697 /* CEAGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CEAGLView.h; sourceTree = "<group>"; };
@@ -148,7 +149,6 @@
 		7F62FBAA1600D6620022D697 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		7FCBD12815F4B13300C432A7 /* irrlicht.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = irrlicht.xcodeproj; path = ../../../extern/irrogles/source/Irrlicht/IOS/irrlicht/irrlicht.xcodeproj; sourceTree = "<group>"; };
 		7FCBDE2B15F4C3A800C432A7 /* gameswf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = gameswf.xcodeproj; path = ../../../extern/gameswf/projects/iphone/gameswf.xcodeproj; sourceTree = "<group>"; };
-		7FCBDE3415F4C3CE00C432A7 /* Lua.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lua.xcodeproj; path = ../../../extern/lua/Lua/Lua.xcodeproj; sourceTree = "<group>"; };
 		7FCBDE4215F4C4A400C432A7 /* freetype.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = freetype.xcodeproj; path = ../../../extern/freetype/builds/iphone/freetype.xcodeproj; sourceTree = "<group>"; };
 		7FD0BF4F15F4F34400626D90 /* AppInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppInclude.h; sourceTree = "<group>"; };
 		7FD0BF5015F4F34400626D90 /* CApplication.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CApplication.cpp; sourceTree = "<group>"; };
@@ -305,10 +305,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7F1EC5E616109767008D61A2 /* libLua.a in Frameworks */,
 				7F62FBAB1600D6620022D697 /* QuartzCore.framework in Frameworks */,
 				7FCBDE4B15F4C4C100C432A7 /* libfreetype.a in Frameworks */,
 				7FCBDE3D15F4C3E200C432A7 /* libgameswf.a in Frameworks */,
-				7FCBDE3E15F4C3E200C432A7 /* libLua.a in Frameworks */,
 				7FCBD3E115F4B41700C432A7 /* libirrlicht.a in Frameworks */,
 				7FE6C71B15F47C2D00E07797 /* UIKit.framework in Frameworks */,
 				7FE6C71D15F47C2D00E07797 /* Foundation.framework in Frameworks */,
@@ -334,6 +334,14 @@
 			name = Resource;
 			sourceTree = "<group>";
 		};
+		7F1EC5DE16109755008D61A2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7F1EC5E516109756008D61A2 /* libLua.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		7FCBD12915F4B13300C432A7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -346,14 +354,6 @@
 			isa = PBXGroup;
 			children = (
 				7FCBDE3315F4C3A800C432A7 /* libgameswf.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		7FCBDE3515F4C3CE00C432A7 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				7FCBDE3C15F4C3CF00C432A7 /* libLua.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -618,10 +618,10 @@
 		7FE6C70B15F47C2D00E07797 = {
 			isa = PBXGroup;
 			children = (
+				7F1EC5DD16109755008D61A2 /* Lua.xcodeproj */,
 				7FCBDE4215F4C4A400C432A7 /* freetype.xcodeproj */,
 				7FCBDE2B15F4C3A800C432A7 /* gameswf.xcodeproj */,
 				7FCBD12815F4B13300C432A7 /* irrlicht.xcodeproj */,
-				7FCBDE3415F4C3CE00C432A7 /* Lua.xcodeproj */,
 				7FE6C71915F47C2D00E07797 /* Frameworks */,
 				7FE6C72415F47C2D00E07797 /* gameplay */,
 				7FE6C71715F47C2D00E07797 /* Products */,
@@ -755,8 +755,8 @@
 					ProjectRef = 7FCBD12815F4B13300C432A7 /* irrlicht.xcodeproj */;
 				},
 				{
-					ProductGroup = 7FCBDE3515F4C3CE00C432A7 /* Products */;
-					ProjectRef = 7FCBDE3415F4C3CE00C432A7 /* Lua.xcodeproj */;
+					ProductGroup = 7F1EC5DE16109755008D61A2 /* Products */;
+					ProjectRef = 7F1EC5DD16109755008D61A2 /* Lua.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -767,6 +767,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		7F1EC5E516109756008D61A2 /* libLua.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libLua.a;
+			remoteRef = 7F1EC5E416109756008D61A2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		7FCBD12D15F4B13400C432A7 /* libirrlicht.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -779,13 +786,6 @@
 			fileType = archive.ar;
 			path = libgameswf.a;
 			remoteRef = 7FCBDE3215F4C3A800C432A7 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7FCBDE3C15F4C3CF00C432A7 /* libLua.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libLua.a;
-			remoteRef = 7FCBDE3B15F4C3CF00C432A7 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		7FCBDE4A15F4C4A500C432A7 /* libfreetype.a */ = {

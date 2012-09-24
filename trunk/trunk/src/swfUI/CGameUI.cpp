@@ -94,6 +94,12 @@ void CGameUI::_fsCallback( gameswf::character *movie, const char *lpCommand, con
 	flashEvent.EventType = EET_FSCOMMAND_EVENT;
 	strcpy(flashEvent.FSEvent.Command, lpCommand);
 	strcpy(flashEvent.FSEvent.Param, lpParams);
+	
+#if _DEBUG	
+	char string[512] ={0};
+	sprintf(string,"gameswf fscommand '%s' '%s'", lpCommand, lpParams);
+	os::Printer::log( string );
+#endif
 
 	// post event to device
 	irr::IrrlichtDevice *device = getIView()->getDevice();
@@ -123,9 +129,9 @@ bool CGameUI::_getFont( const char *font_name, tu_string &file_name, bool is_bol
 bool CGameUI::_getFontSize( const char *font_name, int &fontSize )
 {
 #if _DEBUG
-	char string[512] ={0};
-	sprintf(string,"Query font '%s' size: %d", font_name, fontSize);
-	os::Printer::log( string );
+	//char string[512] ={0};
+	//sprintf(string,"query font '%s' size: %d", font_name, fontSize);
+	//os::Printer::log( string );
 #endif
 	return false;
 }
@@ -159,6 +165,9 @@ CGameUI::~CGameUI()
 // load swf file
 CMenuFx* CGameUI::openFlash( const char *name, const char *url )
 {
+	if ( m_flash[ name ] != NULL )
+		return m_flash[ name ];
+
 	CMenuFx* flash = new CMenuFx();
 	m_flash[ name ] = flash;
 	flash->loadFlash( url );

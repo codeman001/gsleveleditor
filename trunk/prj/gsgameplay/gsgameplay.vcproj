@@ -585,6 +585,34 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Network"
+					>
+					<File
+						RelativePath="..\..\src\core\Network\CComms.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Network\CComms.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Network\CDataPacket.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Network\CDataPacket.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Network\CMultiplayerManager.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Network\CMultiplayerManager.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="uiClass"

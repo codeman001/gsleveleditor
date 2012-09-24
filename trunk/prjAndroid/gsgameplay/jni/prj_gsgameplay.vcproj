@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\src;..\..\..\..\extern\irrogles\include;..\..\..\..\extern\irrogles\source\Irrlicht;..\..\..\src\core;..\..\..\src\core\Animators;..\..\..\src\core\Component;..\..\..\src\core\GameObject;..\..\..\src\core\ObjectTemplate;..\..\..\src\core\SceneNode;..\..\..\src\core\Serializable;..\..\..\..\extern\spark\include;..\..\..\..\extern\gameswf;..\..\..\..\extern\freetype\include;..\..\..\..\extern\lua\src;..\..\..\..\extern\vld\include"
+				AdditionalIncludeDirectories="..\..\..\src;..\..\..\..\extern\irrogles\include;..\..\..\..\extern\irrogles\source\Irrlicht;..\..\..\src\core;..\..\..\src\core\Animators;..\..\..\src\core\Component;..\..\..\src\core\GameObject;..\..\..\src\core\ObjectTemplate;..\..\..\src\core\SceneNode;..\..\..\src\core\Network;..\..\..\src\core\Serializable;..\..\..\..\extern\spark\include;..\..\..\..\extern\gameswf;..\..\..\..\extern\freetype\include;..\..\..\..\extern\lua\src;..\..\..\..\extern\vld\include"
 				PreprocessorDefinitions="GSGAMEPLAY;ANDROID"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -551,6 +551,34 @@
 					</File>
 					<File
 						RelativePath="..\..\..\src\core\Serializable\CSerializable.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Network"
+					>
+					<File
+						RelativePath="..\..\..\src\core\Network\CComms.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\core\Network\CComms.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\core\Network\CDataPacket.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\core\Network\CDataPacket.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\core\Network\CMultiplayerManager.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\core\Network\CMultiplayerManager.h"
 						>
 					</File>
 				</Filter>

@@ -243,7 +243,7 @@ inline size_t	bernstein_hash ( const void *data_in, int size, unsigned int seed 
 }
 
 
-inline size_t	sdbm_hash ( const void *data_in, int size, unsigned int seed = 5381 )
+inline unsigned int	sdbm_hash ( const void *data_in, int size, unsigned int seed = 5381 )
 // Alternative: "sdbm" hash function, suggested at same web page
 // above, http::/www.cs.yorku.ca/~oz/hash.html
 //

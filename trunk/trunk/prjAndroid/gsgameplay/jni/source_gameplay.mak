@@ -7,6 +7,7 @@ LOCAL_C_INCLUDES := ../../../src \
 ../../../src/core/GameObject \
 ../../../src/core/ObjectTemplate \
 ../../../src/core/SceneNode \
+../../../src/core/Network \
 ../../../src/core/Serializable \
 ../../../../extern/spark/include \
 ../../../../extern/gameswf \
@@ -58,6 +59,9 @@ LOCAL_SRC_FILES := ../../../src/core/Animators/CGameCameraFollowAnimator.cpp \
 ../../../src/core/SceneNode/CGameWaterSceneNode.cpp \
 ../../../src/core/Serializable/CBinaryUtils.cpp \
 ../../../src/core/Serializable/CSerializable.cpp \
+../../../src/core/Network/CComms.cpp \
+../../../src/core/Network/CDataPacket.cpp \
+../../../src/core/Network/CMultiplayerManager.cpp \
 ../../../src/gameComponent/CGameComponent.cpp \
 ../../../src/gameComponent/CInventoryComponent.cpp \
 ../../../src/gameComponent/CPlayerComponent.cpp \

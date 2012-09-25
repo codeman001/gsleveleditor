@@ -178,11 +178,11 @@ void CPlayerComponent::loadData( CSerializable* pObj )
 // cache event
 bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 {
-	if ( irrEvent.EventType == EET_USER_EVENT )
+	if ( irrEvent.EventType == EET_GAME_EVENT )
 	{
-		if ( irrEvent.UserEvent.UserData1 == EvtPlayerMove )
+		if ( irrEvent.GameEvent.EventID == EvtPlayerMove )
 		{
-			m_playerMoveEvt = *((SEventPlayerMove*)irrEvent.UserEvent.UserData2);
+			m_playerMoveEvt = *((SEventPlayerMove*)irrEvent.GameEvent.EventData);
 
 			// check run command
 			m_runCommand	= m_playerMoveEvt.run;

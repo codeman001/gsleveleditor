@@ -41,9 +41,11 @@ struct SBinaryChunk
 		type = 0;
 		memset(data, 0, sizeof(int)*CHUNK_DATASLOT);
 	}
-
+#if defined(_MSC_VER)
+};
+#else
 }__attribute__((aligned(4)));
-
+#endif
 //////////////////////////////////////////////
 // CBinaryUtils implement
 //////////////////////////////////////////////

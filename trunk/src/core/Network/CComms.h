@@ -52,6 +52,8 @@ public:
 	}
 };
 
+class CMultiplayerManager;
+
 // CComms
 // object will send/revc data to networks
 class CComms
@@ -70,8 +72,20 @@ protected:
 	CDeviceDetails*		m_devices[MP_DEVICES];
 
 	unsigned char		m_dataBuff[MP_DATA_BUFFER];
+    
+    CMultiplayerManager *m_owner;
+    
+    struct SDataSend
+    {
+        void *data;
+        int size;
+        void *addr;
+    };
+        
+    std::vector<SDataSend>  m_queueSendData;
+    
 public:
-	CComms(bool isServer, bool isOnline);
+	CComms(CMultiplayerManager* owner, bool isServer, bool isOnline);
 	virtual ~CComms();
 
 	// findDeviceSlot
@@ -93,16 +107,12 @@ public:
 
 	// updateRevcData
 	// update per frame to revc data
-	bool updateRevcData();
-
-	// acceptConnection
-	// accept connection
-	bool onAcceptConnection( unsigned char *buffer, int size, int devID );
-
-	// onRevcData
-	// process when revc data
-	bool onRevcData( unsigned char *buffer, int size, int devID );
-
+	bool updateRevcData();	
+	
+    // updateSendData
+    // update per frame to send data
+    bool updateSendData();
+    
 	// initDiscoveryWifi
 	bool initDiscoveryWifi();
 
@@ -112,8 +122,11 @@ public:
 
 	// sendDiscoveryPacket
 	// send a packet to find server
-	bool sendDiscoveryPacket(void *data, int size);
+	bool sendDiscoveryPacket(const void *data, int size);
 
+    bool sendData(const void *data, int size, int id);
+    bool sendData(const void *data, int size, const sockaddr_in& addr);
+    
 	// cleanSocket
 	// clean up socket data
 	void cleanSocket();

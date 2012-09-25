@@ -1,6 +1,8 @@
 #ifndef _DATAPACKET_H_
 #define _DATAPACKET_H_
 
+#ifdef HAS_MULTIPLAYER
+
 #include "stdafx.h"
 
 class CDataPacket
@@ -17,7 +19,7 @@ public:
 
 	// addData
 	// push data to packet
-	inline void addData( void* data, int size )
+	inline void addData( const void* data, int size )
 	{
 		memcpy( (void*)(m_messageBody + m_pos), data, size );
 		m_pos += size;
@@ -53,5 +55,7 @@ public:
 		return m_pos;
 	}
 };
+
+#endif
 
 #endif

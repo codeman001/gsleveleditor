@@ -3,7 +3,9 @@
 
 #ifdef HAS_MULTIPLAYER
 
-CComms::CComms(bool isServer, bool isOnline)
+#include "CMultiplayerManager.h"
+
+CComms::CComms(CMultiplayerManager* owner, bool isServer, bool isOnline)
 {
 #if defined(WIN32)
 	WSAStartup(MAKEWORD(2,2), &m_wsaData);
@@ -16,6 +18,8 @@ CComms::CComms(bool isServer, bool isOnline)
 
 	m_isOnline = isOnline;
 	m_isServer = isServer;
+    
+    m_owner = owner;
 }
 
 CComms::~CComms()
@@ -128,7 +132,7 @@ bool CComms::updateRevcData()
 		struct sockaddr_in addr;
 		socklen_t addrLen  = sizeof( addr );
 
-		iResult = recvfrom(m_dataSocket, (char *)m_dataBuff, MP_DATA_BUFFER, 0,(struct sockaddr*)&addr,&addrLen);
+		iResult = recvfrom(m_dataSocket, (char *)m_dataBuff, MP_DATA_BUFFER, 0,(struct sockaddr*)&addr, &addrLen);
 
 		if( (iResult == SOCKET_ERROR) || (addrLen != sizeof(struct sockaddr)) )
 		{
@@ -143,38 +147,66 @@ bool CComms::updateRevcData()
 
 		int clId = getDeviceIdFromAdress(&addr);
 
-		if(clId == -1 && m_isServer)
-		{
-			onAcceptConnection( m_dataBuff, iResult, clId );
-
-			// continue read data
-			continue;
-		}
-
-		if ( onRevcData( m_dataBuff, iResult, clId) == false )
-		{
-			return false;
-		}
-
+		if ( m_owner )
+            m_owner->onRevcData( m_dataBuff, iResult, clId, addr);
+		
 	}
 	return true;
 }
 
-// onRevcData
-// process when revc data
-bool CComms::onRevcData( unsigned char *buffer, int size, int devID )
+
+// updateSendData
+// update per frame to send data
+bool CComms::updateSendData()
 {
-	printf("onRevc %d bytes\n", size);
-	return true;
+    if ( m_queueSendData.size() == 0 )
+        return true;
+    
+    timeval tval = {1, 0};
+    
+    fd_set setW;
+    FD_ZERO(&setW);
+    FD_SET(m_dataSocket, &setW);
+    
+    int iResult = select(m_dataSocket + 1, NULL, &setW, NULL, &tval);
+    if (iResult == SOCKET_ERROR)
+    {
+        return false;
+    }
+    
+    if (iResult == 0) //this means in 1 second no socket was free for writing
+    {
+        //if after 1 second the socket is not free, it means the network has a problem, so disconnect      
+        return false;
+    }
+    
+    int addrLen  = sizeof(struct sockaddr);
+    
+    for ( int i = 0, n = m_queueSendData.size(); i < n; i++ )
+    {
+        SDataSend &dataPak = m_queueSendData[i];
+        
+        // send data...
+        iResult = sendto(m_dataSocket, (const char *)dataPak.data, dataPak.size, 0,(struct sockaddr*)dataPak.addr, addrLen);		
+        if (iResult == SOCKET_ERROR)
+        {
+            int devID = getDeviceIdFromAdress( dataPak.addr );
+
+            if ( devID != -1 )
+            {
+                removeDevice(devID);                
+            }
+        }
+        
+        delete dataPak.data;
+        delete dataPak.addr;
+        
+    }
+
+    m_queueSendData.clear();    
+    return true;
 }
 
-// onAcceptConnection
-// accept connection
-bool CComms::onAcceptConnection( unsigned char *buffer, int size, int devID )
-{
-	printf("onAccept %d bytes\n", size);
-	return true;
-}
 
 // initDiscoveryWifi
 bool CComms::initDiscoveryWifi()
@@ -264,7 +296,7 @@ bool CComms::initServer()
 
 // sendDiscoveryPacket
 // send a packet to find server
-bool CComms::sendDiscoveryPacket(void *data, int size)
+bool CComms::sendDiscoveryPacket(const void *data, int size)
 {
 	if ( m_isServer )
 		return false;
@@ -298,5 +330,29 @@ bool CComms::sendDiscoveryPacket(void *data, int size)
 	return true;
 }
 
+// sendData
+// push data to send queue
+bool CComms::sendData(const void *data, int size, int id)
+{
+    if ( id == -1 )
+        return false;
+    
+    return sendData(data, size, *((sockaddr_in*)m_devices[id]->m_address));
+}
+
+// sendData
+// push data to send queue
+bool CComms::sendData(const void *data, int size, const sockaddr_in& addr)
+{
+    SDataSend dataPak;
+    
+    dataPak.data = new unsigned char[size];
+    memcpy(dataPak.data, data, size);
+    dataPak.size = size;
+    dataPak.addr = new sockaddr_in(addr);
+    
+    m_queueSendData.push_back( dataPak );
+    return true;
+}
 
 #endif

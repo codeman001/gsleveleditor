@@ -3,7 +3,8 @@
 #include "CStateGameLoading.h"
 #include "CGameStateManager.h"
 
-const int k_btnPlayGame = 0;
+const int k_btnCreateGame = 0;
+const int k_btnJointGame = 1;
 
 CStateMainMenu::CStateMainMenu()
 	:CGameState( CGameState::GSStateMainMenu )
@@ -51,7 +52,7 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 	{		
 		switch ( m_menuChoice )
 		{
-		case k_btnPlayGame:
+		case k_btnCreateGame:
 			CGameLevel::setLevelLoad("data/level/levelGameM1.lv");
 			CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );			
 			break;
@@ -64,7 +65,7 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 	}
 	else if ( strcmp("buttonStatus",  command) == 0 )
 	{
-		if ( strcmp("playGame", param) == 0 )
-			m_menuChoice = k_btnPlayGame;
+		if ( strcmp("createGame", param) == 0 )
+			m_menuChoice = k_btnCreateGame;
 	}
 }

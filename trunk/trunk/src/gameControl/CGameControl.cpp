@@ -301,7 +301,7 @@ void CGameControl::sendPlayerStopEvent()
         return;
 
 	static SEvent playerStop;
-	SEventPlayerMove stopEvent;
+	static SEventPlayerMove stopEvent;
 	stopEvent.rotate = 0.0f;
 	stopEvent.strength = 0.0f;
 	stopEvent.run = false;
@@ -318,7 +318,7 @@ void CGameControl::sendPlayerRunEvent(float f, float rotate)
         return;
 
 	static SEvent playerMove;
-	SEventPlayerMove moveEvent;
+	static SEventPlayerMove moveEvent;
 	moveEvent.rotate = rotate;
 	moveEvent.strength = f;
 	moveEvent.run = true;

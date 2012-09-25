@@ -5,7 +5,7 @@
 	#include <android/log.h>
 #endif
 
-//#define LIMIT_FPS	30.0f
+#define LIMIT_FPS	80.0f
 
 IView* g_view = NULL;
 

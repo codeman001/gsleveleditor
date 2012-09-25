@@ -52,6 +52,9 @@ namespace irr
 		// flash event
 		EET_FSCOMMAND_EVENT,
 
+		// game event
+		EET_GAME_EVENT,
+
 		//! A user event with user data.
 		/** This is not used by Irrlicht and can be used to send user
 		specific data though the system. The Irrlicht 'window handle'
@@ -410,6 +413,12 @@ struct SEvent
 		char Param[512];
 	};
 
+	struct SGameEvent
+	{
+		s32		EventID;
+		void*	EventData;
+	};
+
 	//! Any kind of user event.
 	struct SUserEvent
 	{
@@ -431,7 +440,8 @@ struct SEvent
 		struct SJoystickEvent JoystickEvent;
 		struct SLogEvent LogEvent;
 		struct SUserEvent UserEvent;
-		struct SFSCommandEvent FSEvent;	
+		struct SFSCommandEvent FSEvent;
+		struct SGameEvent	GameEvent;
 	};
 
 };

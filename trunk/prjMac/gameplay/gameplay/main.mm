@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 	dataPak = getIView()->getPhysicPath("_common.zip");
 #endif
 
-	device = createDevice( irr::video::EDT_OPENGL, core::dimension2d<u32>(800, 600), 16, false, false, false, dataPak, &myApp );
+	device = createDevice( irr::video::EDT_OPENGL, core::dimension2d<u32>(800, 600), 32, false, false, false, dataPak, &myApp );
 
     
 	if ( device == NULL )

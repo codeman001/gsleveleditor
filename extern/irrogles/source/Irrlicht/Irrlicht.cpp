@@ -63,6 +63,7 @@ namespace irr
 		p.DriverType = driverType;
 		p.WindowSize = windowSize;
 		p.Bits = (u8)bits;
+        p.ZBufferBits = 32;
 		p.Fullscreen = fullscreen;
 		p.Stencilbuffer = stencilbuffer;
 		p.Vsync = vsync;

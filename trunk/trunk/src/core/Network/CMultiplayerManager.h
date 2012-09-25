@@ -2,9 +2,11 @@
 #define _CMPMANAGER_H_
 
 #include "stdafx.h"
-#include "CComms.h"
 
 #ifdef HAS_MULTIPLAYER
+
+#include "CComms.h"
+#include "CDataPacket.h"
 
 class CMultiplayerManager
 {
@@ -14,10 +16,12 @@ protected:
 
 	CComms	*m_comm;
 
+    std::string m_name;
 public:
 	enum EMPPacketType
 	{
 		Discovery = 0,
+        ResponseDiscovery,
 		Connect,
 		Reconnect,
 		PlayerQuit,
@@ -29,10 +33,17 @@ public:
 	CMultiplayerManager(bool isServer, bool isOnline);
 	virtual ~CMultiplayerManager();
 
-	// init
+    // setName
+    // set name on device
+    inline void setName( const char *name )
+    {
+        m_name = name;
+    }
+    
+	// reInit
 	// init discovery on client
 	// init server
-	bool init();
+	bool reInit(bool isServer, bool isOnline);
 
 	// update
 	// update networking per frame
@@ -41,6 +52,14 @@ public:
 	// sendDiscoveryPacket
 	// send a packet to find server
 	bool sendDiscoveryPacket();
+    
+    // onRevcData
+	// process when revc data
+	bool onRevcData( unsigned char *buffer, int size, int devID, const sockaddr_in& addr );
+
+    // doMsgServerDiscovery
+    // response discovery
+    bool doMsgServerDiscovery( CDataPacket& packet, const sockaddr_in& addr );
 };
 
 #endif

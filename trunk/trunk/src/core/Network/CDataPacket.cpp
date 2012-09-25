@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CDataPacket.h"
 
+#ifdef HAS_MULTIPLAYER
+
 CDataPacket::CDataPacket( int size )
 {
 	m_messageBody = new unsigned char[size];
@@ -91,3 +93,5 @@ float CDataPacket::getFloat()
 
 	return data;
 }
+
+#endif

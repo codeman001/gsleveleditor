@@ -45,6 +45,7 @@ bool CMultiplayerManager::reInit(bool isServer, bool isOnline)
 void CMultiplayerManager::update()
 {
 	m_comm->updateRevcData();
+	m_comm->updateSendData();
 }
 
 // sendDiscoveryPacket
@@ -73,18 +74,26 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
         switch ( msgType ) 
         {
             case CMultiplayerManager::Discovery:
-            {
-                if ( m_isServer == false )
-                    return false;
+				{
+					if ( m_isServer == false )
+						return false;
 
-                // Response to client
-                return doMsgServerDiscovery( packet, addr);
-            }
+					// Response to client
+					return doMsgDiscovery(packet, addr);
+				}
+			case CMultiplayerManager::ResponseDiscovery:
+				{
+					if ( m_isServer == true )
+						return false;
+					
+					// Add server
+					return doMsgResponseDiscovery(packet, addr);
+				}
             break;
             default:
-            {
-                return false;
-            }
+				{
+					return false;
+				}
             break;
         }
     }
@@ -98,12 +107,19 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
 
 // doMsgServerDiscovery
 // response discovery
-bool CMultiplayerManager::doMsgServerDiscovery( CDataPacket& packet, const sockaddr_in& addr)
+bool CMultiplayerManager::doMsgDiscovery( CDataPacket& packet, const sockaddr_in& addr)
 {
     int appID = packet.getInt();
+	char *lpIp = inet_ntoa(addr.sin_addr);
+
     if ( appID != MP_APPLICATION_ID )
+	{
+		printf("Network warning: %s doMsgServerDiscovery false...\n", lpIp);
         return false;
-    
+	}
+
+	printf("- Network: doMsgDiscovery, response to client %s\n", lpIp);
+
     CDataPacket response(64);
     response.addByte( (unsigned char) CMultiplayerManager::ResponseDiscovery );
     response.addShort( (unsigned short) m_name.length() );
@@ -112,5 +128,15 @@ bool CMultiplayerManager::doMsgServerDiscovery( CDataPacket& packet, const socka
     return m_comm->sendData( response.getMessageData(), response.getMessageSize(), addr);
 }
 
+// doMsgResponseDiscovery
+// response discovery
+bool CMultiplayerManager::doMsgResponseDiscovery( CDataPacket& packet, const sockaddr_in& addr )
+{
+	char *lpIp = inet_ntoa(addr.sin_addr);
+	printf("- Network: doMsgResponseDiscovery, add server %s\n", lpIp);
+	
+
+	return true;
+}
 
 #endif

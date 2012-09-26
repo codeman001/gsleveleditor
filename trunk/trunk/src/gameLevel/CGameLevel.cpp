@@ -3,8 +3,12 @@
 #include "LevelScript.h"
 #include "IView.h"
 
+/////////////////////////////////////////////////////////
+// CGameLevel static function implement
+/////////////////////////////////////////////////////////
+
 CGameLevel* g_currentLevel = NULL;
-std::string	g_levelLoadFile;
+std::map<std::string, std::string>	g_levelProperty;
 
 // getCurrentLevel
 // get current level
@@ -13,26 +17,34 @@ CGameLevel* CGameLevel::getCurrentLevel()
 	return g_currentLevel;
 }
 
-// setLevelLoad
-// set level will load
-void CGameLevel::setLevelLoad(const char *lvFile )
-{
-	g_levelLoadFile = lvFile;
-}
-
-// getLevelLoadFile
-// get level load file
-const char* CGameLevel::getLevelFileToLoad()
-{
-	return g_levelLoadFile.c_str();
-}
-
 // setCurrentLevel
 // set current level
 void CGameLevel::setCurrentLevel(CGameLevel* lv)
 {
 	g_currentLevel = lv;
 }
+
+// setLevelProperty
+// set level tag property
+void CGameLevel::setLevelProperty(const char *lpProperty, const char *lpValue)
+{
+	g_levelProperty[ lpProperty ] = lpValue;
+}
+
+// getLevelProperty
+// get proprety tag
+const char* CGameLevel::getLevelProperty(const char *lpProperty)
+{	
+	if ( g_levelProperty.find( std::string(lpProperty) ) == g_levelProperty.end() )
+		return NULL;
+
+	return g_levelProperty[lpProperty].c_str();
+}
+
+
+/////////////////////////////////////////////////////////
+// CGameLevel implement
+/////////////////////////////////////////////////////////
 
 CGameLevel::CGameLevel()
 {

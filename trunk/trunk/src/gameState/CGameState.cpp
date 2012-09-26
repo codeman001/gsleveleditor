@@ -8,10 +8,17 @@ CGameState::CGameState( EGameState state )
 
 	// get game menu flash
 	m_menuFx = CGameUI::getInstance()->getFlash("uiGameMenu");
+
+#ifdef HAS_MULTIPLAYER
+	m_mpMgr = NULL;
+#endif
 }
 
 CGameState::~CGameState()
 {
+#ifdef HAS_MULTIPLAYER
+	delete m_mpMgr;
+#endif
 }
 
 // getStateName

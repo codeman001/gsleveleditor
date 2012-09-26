@@ -17,6 +17,7 @@
 		7F1AEF0D15F7A02700DF8EA0 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEF0C15F7A02700DF8EA0 /* Application.cpp */; };
 		7F1AEF1015F7A2C500DF8EA0 /* CAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */; };
 		7F1EC5E616109767008D61A2 /* libLua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F1EC5E516109756008D61A2 /* libLua.a */; };
+		7F3743F51613552C0006762B /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3743F31613552C0006762B /* md5.cpp */; };
 		7F39584F160EF17700EEB3A2 /* CDataPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */; };
 		7F62FBA91600C9EC0022D697 /* CEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F62FBA81600C9EC0022D697 /* CEAGLView.mm */; };
 		7F62FBAB1600D6620022D697 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F62FBAA1600D6620022D697 /* QuartzCore.framework */; };
@@ -142,6 +143,8 @@
 		7F1AEF0C15F7A02700DF8EA0 /* Application.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Application.cpp; sourceTree = "<group>"; };
 		7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CAppDelegate.mm; sourceTree = "<group>"; };
 		7F1EC5DD16109755008D61A2 /* Lua.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lua.xcodeproj; path = ../../../extern/lua/ios/Lua.xcodeproj; sourceTree = "<group>"; };
+		7F3743F31613552C0006762B /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = md5.cpp; path = Network/md5.cpp; sourceTree = "<group>"; };
+		7F3743F41613552C0006762B /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = md5.h; path = Network/md5.h; sourceTree = "<group>"; };
 		7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CDataPacket.cpp; path = Network/CDataPacket.cpp; sourceTree = "<group>"; };
 		7F39584E160EF17700EEB3A2 /* CDataPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDataPacket.h; path = Network/CDataPacket.h; sourceTree = "<group>"; };
 		7F62FBA71600C9BB0022D697 /* CEAGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CEAGLView.h; sourceTree = "<group>"; };
@@ -692,6 +695,8 @@
 		7FFA24D8160DA7D50066E646 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				7F3743F31613552C0006762B /* md5.cpp */,
+				7F3743F41613552C0006762B /* md5.h */,
 				7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */,
 				7F39584E160EF17700EEB3A2 /* CDataPacket.h */,
 				7FFA24D9160DA7F90066E646 /* CComms.cpp */,
@@ -893,6 +898,7 @@
 				7FFA24DD160DA7F90066E646 /* CComms.cpp in Sources */,
 				7FFA24DE160DA7F90066E646 /* CMultiplayerManager.cpp in Sources */,
 				7F39584F160EF17700EEB3A2 /* CDataPacket.cpp in Sources */,
+				7F3743F51613552C0006762B /* md5.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

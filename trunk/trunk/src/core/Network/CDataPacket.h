@@ -45,6 +45,9 @@ public:
 	void	addFloat(float data);
 	float	getFloat();
 
+	void	packData();
+	bool	checkData();
+
 	inline void* getMessageData()
 	{
 		return m_messageBody;

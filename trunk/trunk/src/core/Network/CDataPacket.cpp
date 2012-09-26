@@ -8,7 +8,8 @@ CDataPacket::CDataPacket( int size )
 	m_messageBody = new unsigned char[size];
 	memset( m_messageBody, 0, size );
 
-	m_pos = 0;
+	// need 8 bytes(64bit) at head for checksum
+	m_pos = 8;	
 	m_size = size;
 }
 
@@ -16,8 +17,9 @@ CDataPacket::CDataPacket( unsigned char *data, int size )
 {
 	m_messageBody = new unsigned char[size];
 	memcpy( m_messageBody, data, size );
-
-	m_pos = 0;
+	
+	// need 8 bytes(64bit) at head for checksum
+	m_pos = 8;
 	m_size = size;
 }
 
@@ -92,6 +94,16 @@ float CDataPacket::getFloat()
 	*(p+3)	= m_messageBody[m_pos++];
 
 	return data;
+}
+
+
+void CDataPacket::packData()
+{
+}
+
+bool CDataPacket::checkData()
+{
+	return true;
 }
 
 #endif

@@ -55,7 +55,21 @@ void CStateMainMenu::onUpdate()
 		m_mpMgr->sendDiscoveryPacket();
 		interval = constInterval;
 	}
+    // remove host do not response in 3s
+    m_mpMgr->removeAllDeviceNotResponse( 3000 );
 	m_mpMgr->update();
+    
+    std::vector<CDeviceDetails*>    listServer;
+    m_mpMgr->getAllActiveDevice(listServer);
+    
+    if ( listServer.size() == 0 )
+    {
+        // do not found server
+    }
+    else 
+    {
+        // founded sever
+    }
 #endif
 
 	m_level->update();

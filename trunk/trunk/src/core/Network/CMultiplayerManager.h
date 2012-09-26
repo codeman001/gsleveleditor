@@ -10,13 +10,6 @@
 
 class CMultiplayerManager
 {
-protected:
-	bool	m_isServer;
-	bool	m_isOnline;
-
-	CComms	*m_comm;
-
-    std::string m_name;
 public:
 	enum EMPPacketType
 	{
@@ -29,6 +22,15 @@ public:
 		Chat,
 		GamePackaget,
 	};
+    
+protected:
+	bool	m_isServer;
+	bool	m_isOnline;
+
+	CComms	*m_comm;
+
+    std::string m_name;
+    
 public:
 	CMultiplayerManager(bool isServer, bool isOnline);
 	virtual ~CMultiplayerManager();
@@ -49,6 +51,17 @@ public:
 	// update networking per frame
 	void update();
 
+    // removeAllDeviceNotResponse
+    // remove device do not response on (time) ms
+    inline void removeAllDeviceNotResponse(int time)
+    {
+        m_comm->removeAllDeviceNotResponse(time);
+    }
+    
+    // getAllActiveDevice
+    // get all device
+    void getAllActiveDevice( std::vector<CDeviceDetails*>& listDevices );
+    
 	// sendDiscoveryPacket
 	// send a packet to find server
 	bool sendDiscoveryPacket();
@@ -64,6 +77,7 @@ public:
 	// doMsgResponseDiscovery
     // response discovery
     bool doMsgResponseDiscovery( CDataPacket& packet, const sockaddr_in& addr );
+    
 };
 
 #endif

@@ -48,6 +48,21 @@ void CMultiplayerManager::update()
 	m_comm->updateSendData();
 }
 
+// getAllActiveDevice
+// get all device
+void CMultiplayerManager::getAllActiveDevice( std::vector<CDeviceDetails*>& listDevices )
+{
+    listDevices.clear();
+    
+    for (int i = 0; i < MP_DEVICES; i++ )
+    {
+        CDeviceDetails *dev = m_comm->getDevice(i);
+        if ( dev )
+            listDevices.push_back(dev);
+    }
+}
+
+
 // sendDiscoveryPacket
 // send a packet to find server
 bool CMultiplayerManager::sendDiscoveryPacket()
@@ -71,7 +86,11 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
 	if ( packet.checkData() == false )
 	{
 		char *lpIp = inet_ntoa(addr.sin_addr);
-		printf("- Network warning: %s send data error\n", lpIp);
+
+        char string[512];
+		sprintf(string,"- Network warning: %s send data error\n", lpIp);
+        os::Printer::log(string);
+        
 		return false;
 	}
 
@@ -121,11 +140,12 @@ bool CMultiplayerManager::doMsgDiscovery( CDataPacket& packet, const sockaddr_in
 
     if ( appID != MP_APPLICATION_ID )
 	{
-		printf("- Network warning: %s doMsgServerDiscovery false...\n", lpIp);
+        char string[512];
+        sprintf(string,"- Network warning: %s doMsgServerDiscovery false...\n", lpIp);
+        os::Printer::log(string);
+        
         return false;
 	}
-
-	printf("- Network: doMsgDiscovery, response to client %s\n", lpIp);
 
     CDataPacket response(64);
     response.addByte( (unsigned char) CMultiplayerManager::ResponseDiscovery );
@@ -141,9 +161,23 @@ bool CMultiplayerManager::doMsgDiscovery( CDataPacket& packet, const sockaddr_in
 bool CMultiplayerManager::doMsgResponseDiscovery( CDataPacket& packet, const sockaddr_in& addr )
 {
 	char *lpIp = inet_ntoa(addr.sin_addr);
-	printf("- Network: doMsgResponseDiscovery, add server %s\n", lpIp);
-	
 
+    char serverName[512] = {0};
+	unsigned short lenName = packet.getShort();
+    packet.getData(serverName, lenName);
+    
+    if ( m_comm->getDeviceIdFromAdress( &addr ) == -1 )
+    {
+        char string[512];
+        sprintf(string,"- Network warning: detected server %s ...\n", lpIp);
+        os::Printer::log(string);
+        
+        CDeviceDetails *dev = new CDeviceDetails();
+        dev->m_name = serverName;
+        dev->m_address = new sockaddr_in(addr);
+        m_comm->addDevice( dev );
+    }
+    
 	return true;
 }
 

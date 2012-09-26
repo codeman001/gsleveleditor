@@ -13,6 +13,8 @@
 #define MP_DEVICES			16
 #define MP_DATA_BUFFER		10240
 
+#define MP_DEVICE_TIMEOUT   10000
+
 // CDeviceDetails
 // object store device infomation
 class CDeviceDetails
@@ -31,13 +33,14 @@ public:
 	void*			m_deviceData;
 	void*			m_address;
 	EDeviceState	m_state;
-
+    unsigned int    m_lastTimeRespone;
+    
 	CDeviceDetails()
 	{
 		m_id = -1;
 		m_deviceData = NULL;
 		m_address = NULL;
-		m_state = stateAskConnection;
+		m_state = stateNotConnect;
 	}
 
 	void setAddress(sockaddr *addr)
@@ -91,20 +94,27 @@ public:
 	// findDeviceSlot
 	int findDeviceSlot();
 
-	// add device
+	// adddevice
 	int addDevice( CDeviceDetails* dev );
 
+    // getDevice
+    inline CDeviceDetails* getDevice( int i )
+    {
+        return m_devices[i];
+    }
+    
 	// remove device
 	void removeDevice( CDeviceDetails* dev );
 	void removeDevice( int id );
 
 	// remove all device
 	void removeAllDevice();
-
+    void removeAllDeviceNotResponse( unsigned int time );
+    
 	// getDeviceIdFromAdress
 	// return id device
-	int getDeviceIdFromAdress( void *addr );
-
+	int getDeviceIdFromAdress( const void *addr );
+    
 	// updateRevcData
 	// update per frame to revc data
 	bool updateRevcData();	
@@ -126,6 +136,7 @@ public:
 
     bool sendData(const void *data, int size, int id);
     bool sendData(const void *data, int size, const sockaddr_in& addr);
+    bool sendDataToAll(const void *data, int size);
     
 	// cleanSocket
 	// clean up socket data

@@ -62,6 +62,7 @@ LOCAL_SRC_FILES := ../../../src/core/Animators/CGameCameraFollowAnimator.cpp \
 ../../../src/core/Network/CComms.cpp \
 ../../../src/core/Network/CDataPacket.cpp \
 ../../../src/core/Network/CMultiplayerManager.cpp \
+../../../src/core/Network/md5.cpp \
 ../../../src/gameComponent/CGameComponent.cpp \
 ../../../src/gameComponent/CInventoryComponent.cpp \
 ../../../src/gameComponent/CPlayerComponent.cpp \

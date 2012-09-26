@@ -3,13 +3,16 @@
 
 #ifdef HAS_MULTIPLAYER
 
+#include "md5.h"
+
+#define	CHECKSUMBYTE	16
+
 CDataPacket::CDataPacket( int size )
 {
 	m_messageBody = new unsigned char[size];
 	memset( m_messageBody, 0, size );
-
-	// need 8 bytes(64bit) at head for checksum
-	m_pos = 8;	
+	
+	m_pos = CHECKSUMBYTE;	
 	m_size = size;
 }
 
@@ -17,9 +20,8 @@ CDataPacket::CDataPacket( unsigned char *data, int size )
 {
 	m_messageBody = new unsigned char[size];
 	memcpy( m_messageBody, data, size );
-	
-	// need 8 bytes(64bit) at head for checksum
-	m_pos = 8;
+		
+	m_pos = CHECKSUMBYTE;
 	m_size = size;
 }
 
@@ -101,6 +103,8 @@ float CDataPacket::getFloat()
 // calc checksum before send data
 void CDataPacket::packData()
 {
+	unsigned char *sum = calcDataChecksum();
+	memcpy(m_messageBody, sum, CHECKSUMBYTE);
 }
 
 
@@ -108,7 +112,37 @@ void CDataPacket::packData()
 // check data revc
 bool CDataPacket::checkData()
 {
-	return true;
+	static unsigned char ret[CHECKSUMBYTE];
+
+	// get checksum from data
+	memcpy(ret, m_messageBody, CHECKSUMBYTE);
+
+	// calc data checksum
+	memset(m_messageBody, 0, CHECKSUMBYTE);
+	unsigned char *sum = calcDataChecksum();
+
+	// check checksum
+	if ( memcmp(ret, sum,CHECKSUMBYTE) == 0 )
+		return true;
+
+	return false;
+}
+
+// calcDataChecksum
+unsigned char* CDataPacket::calcDataChecksum()
+{
+	static unsigned char ret[CHECKSUMBYTE];
+	memset(ret, 0, CHECKSUMBYTE);
+
+	// clear checksum data
+	memset(m_messageBody, 0, CHECKSUMBYTE);
+
+	// calc md5 checksum
+	MD5_CTX	md5Contex;
+	MD5_Init( &md5Contex );
+	MD5_Update( &md5Contex, m_messageBody, (unsigned long)m_pos );
+	MD5_Final( ret, &md5Contex );
+	return ret;
 }
 
 #endif

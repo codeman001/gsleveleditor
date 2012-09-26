@@ -56,6 +56,9 @@ public:
 	// check data revc
 	bool	checkData();
 
+	// calcDataChecksum
+	unsigned char* calcDataChecksum();
+
 	// getMessageData
 	// get data as bytes
 	inline void* getMessageData()

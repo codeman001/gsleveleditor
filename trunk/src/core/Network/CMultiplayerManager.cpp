@@ -55,9 +55,10 @@ bool CMultiplayerManager::sendDiscoveryPacket()
 	if ( m_isServer == true )
 		return false;
 
-	CDataPacket packet(10);
+	CDataPacket packet(64);
 	packet.addByte( (unsigned char) CMultiplayerManager::Discovery );
 	packet.addInt( MP_APPLICATION_ID );
+	packet.packData();
 
 	return m_comm->sendDiscoveryPacket( packet.getMessageData(), packet.getMessageSize() );
 }
@@ -67,7 +68,13 @@ bool CMultiplayerManager::sendDiscoveryPacket()
 bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID, const sockaddr_in& addr)
 {
     CDataPacket packet(buffer, size);
-    
+	if ( packet.checkData() == false )
+	{
+		char *lpIp = inet_ntoa(addr.sin_addr);
+		printf("- Network warning: %s send data error\n", lpIp);
+		return false;
+	}
+
     if ( devID == -1 )
     {
         unsigned char msgType = packet.getByte();
@@ -114,7 +121,7 @@ bool CMultiplayerManager::doMsgDiscovery( CDataPacket& packet, const sockaddr_in
 
     if ( appID != MP_APPLICATION_ID )
 	{
-		printf("Network warning: %s doMsgServerDiscovery false...\n", lpIp);
+		printf("- Network warning: %s doMsgServerDiscovery false...\n", lpIp);
         return false;
 	}
 
@@ -124,7 +131,8 @@ bool CMultiplayerManager::doMsgDiscovery( CDataPacket& packet, const sockaddr_in
     response.addByte( (unsigned char) CMultiplayerManager::ResponseDiscovery );
     response.addShort( (unsigned short) m_name.length() );
     response.addData( m_name.c_str(), (int)m_name.length() );
- 
+	response.packData();
+
     return m_comm->sendData( response.getMessageData(), response.getMessageSize(), addr);
 }
 

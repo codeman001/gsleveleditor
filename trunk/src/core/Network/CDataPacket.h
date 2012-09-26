@@ -33,6 +33,8 @@ public:
 		m_pos += size;
 	}
 
+	// add data
+	// ----------------------
 	void	addByte(unsigned char c);
 	unsigned char getByte();
 
@@ -45,14 +47,24 @@ public:
 	void	addFloat(float data);
 	float	getFloat();
 
+	
+	// packData
+	// calc checksum before send data
 	void	packData();
+
+	// checkData
+	// check data revc
 	bool	checkData();
 
+	// getMessageData
+	// get data as bytes
 	inline void* getMessageData()
 	{
 		return m_messageBody;
 	}
 
+	// getMessageSize
+	// get data size
 	inline int getMessageSize()
 	{
 		return m_pos;

@@ -69,7 +69,8 @@ int CComms::addDevice( CDeviceDetails* dev )
 
 	m_devices[id] = dev;
 	m_devices[id]->m_id = id;
-
+    m_devices[id]->m_lastTimeRespone = os::Timer::getRealTime();
+    
 	return id;
 }
 
@@ -98,9 +99,28 @@ void CComms::removeAllDevice()
 	}
 }
 
+// removeAllDeviceNotResponse
+// remove all device if not response
+void CComms::removeAllDeviceNotResponse( unsigned int time )
+{
+    unsigned int currentTime = os::Timer::getRealTime();
+    for ( int i = 0; i < MP_DEVICES; i++ )
+	{
+		if ( m_devices[i] != NULL && currentTime - m_devices[i]->m_lastTimeRespone > time )
+        {
+			delete m_devices[i];
+            m_devices[i] = NULL;
+            
+            char string[512];
+            sprintf(string, "- Network warning: remove device id: %d because donot response in %d ms\n",i, time);
+            os::Printer::log(string);
+        }
+	}
+}
+
 // getIdFromAdress
 // return id device
-int CComms::getDeviceIdFromAdress( void *addr )
+int CComms::getDeviceIdFromAdress( const void *addr )
 {
 	const int addrLength = sizeof(struct sockaddr_in);
 
@@ -146,7 +166,11 @@ bool CComms::updateRevcData()
 		}
 
 		int clId = getDeviceIdFromAdress(&addr);
-
+        
+        // add lasttime response
+        if ( clId >= 0 )
+            m_devices[clId]->m_lastTimeRespone = os::Timer::getRealTime();
+        
 		if ( m_owner )
             m_owner->onRevcData( m_dataBuff, iResult, clId, addr);
 		
@@ -186,20 +210,41 @@ bool CComms::updateSendData()
     {
         SDataSend &dataPak = m_queueSendData[i];
         
-        // send data...
-        iResult = sendto(m_dataSocket, (const char *)dataPak.data, dataPak.size, 0,(struct sockaddr*)dataPak.addr, addrLen);		
-        if (iResult == SOCKET_ERROR)
+        if ( dataPak.addr == NULL )
         {
-            int devID = getDeviceIdFromAdress( dataPak.addr );
-
-            if ( devID != -1 )
-            {
-                removeDevice(devID);                
+            // send data to all...
+            for ( int j = 0; j < MP_DEVICES; j++ )
+            {                
+                if ( m_devices[j] != NULL )
+                {
+                    // send data...
+                    iResult = sendto(m_dataSocket, (const char *)dataPak.data, dataPak.size, 0,(struct sockaddr*)m_devices[j]->m_address, addrLen);		
+                    if (iResult == SOCKET_ERROR)
+                    {
+                        removeDevice(j);
+                    }
+                }
             }
         }
-        
+        else
+        {
+            // send data...
+            iResult = sendto(m_dataSocket, (const char *)dataPak.data, dataPak.size, 0,(struct sockaddr*)dataPak.addr, addrLen);		
+            if (iResult == SOCKET_ERROR)
+            {
+                int devID = getDeviceIdFromAdress( dataPak.addr );
+
+                if ( devID != -1 )
+                {
+                    removeDevice(devID);                
+                }
+            }
+        }
+                
         delete dataPak.data;
-        delete dataPak.addr;
+        
+        if ( dataPak.addr != NULL )
+            delete dataPak.addr;
         
     }
 
@@ -285,11 +330,7 @@ bool CComms::initServer()
 		freeaddrinfo(result);
 		return false;
 	}
-	
-	// add myself at slot 0
-	CDeviceDetails* dd = new CDeviceDetails();
-	dd->setAddress( result->ai_addr );
-	addDevice(dd);
+    
 	return true;
 }
 
@@ -353,6 +394,19 @@ bool CComms::sendData(const void *data, int size, const sockaddr_in& addr)
     
     m_queueSendData.push_back( dataPak );
     return true;
+}
+
+bool CComms::sendDataToAll(const void *data, int size)
+{
+    SDataSend dataPak;
+    
+    dataPak.data = new unsigned char[size];
+    memcpy(dataPak.data, data, size);
+    dataPak.size = size;
+    dataPak.addr = NULL;
+    
+    m_queueSendData.push_back( dataPak );
+    return true; 
 }
 
 #endif

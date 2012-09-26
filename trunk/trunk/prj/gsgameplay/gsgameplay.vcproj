@@ -612,6 +612,14 @@
 						RelativePath="..\..\src\core\Network\CMultiplayerManager.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\src\core\Network\md5.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Network\md5.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter

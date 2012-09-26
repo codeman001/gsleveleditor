@@ -97,10 +97,15 @@ float CDataPacket::getFloat()
 }
 
 
+// packData
+// calc checksum before send data
 void CDataPacket::packData()
 {
 }
 
+
+// checkData
+// check data revc
 bool CDataPacket::checkData()
 {
 	return true;

@@ -4,6 +4,10 @@
 #include "stdafx.h"
 #include "gameLevel/CGameLevel.h"
 
+#ifdef HAS_MULTIPLAYER
+#include "CMultiplayerManager.h"
+#endif
+
 #include "swfUI/CGameUI.h"
 #include "swfUI/CMenuFx.h"
 #include "swfUI/CMenuFxObj.h"
@@ -23,6 +27,10 @@ public:
 protected:
 	CMenuFx		*m_menuFx;
 	EGameState	m_state;
+
+#ifdef HAS_MULTIPLAYER
+	CMultiplayerManager	*m_mpMgr;
+#endif
 
 public:
 	CGameState(EGameState state);

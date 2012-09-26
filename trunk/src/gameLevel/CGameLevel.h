@@ -53,13 +53,13 @@ public:
 	// get current level
 	static CGameLevel* getCurrentLevel();
 
-	// setLevelLoad
-	// set level will load
-	static void setLevelLoad(const char *lvFile );
+	// setLevelProperty
+	// set level tag property
+	static void setLevelProperty(const char *lpProperty, const char *lpValue);
 
-	// getLevelLoadFile
-	// get level load file
-	static const char* getLevelFileToLoad();
+	// getLevelProperty
+	// get proprety tag
+	static const char* getLevelProperty(const char *lpProperty);
 
 	// setCurrentLevel
 	// set current level

@@ -214,7 +214,6 @@ bool CComms::initDiscoveryWifi()
 	if ( m_isServer )
 		return false;
 
-
 	int iResult;
 	struct addrinfo *result = NULL, hints;
 
@@ -316,12 +315,13 @@ bool CComms::sendDiscoveryPacket(const void *data, int size)
 	}
 	else
 	{
-		// online multiplayer		
+		// online multiplayer
+		// todo later
 		return false;
 	}
 
 	// send broadcast
-	if (sendto(m_dataSocket, (const char*)data, sizeof(size), 0, (struct sockaddr *)&addrBroadcast, sizeof(addrBroadcast)) == SOCKET_ERROR)
+	if (sendto(m_dataSocket, (const char*)data, size, 0, (struct sockaddr *)&addrBroadcast, sizeof(addrBroadcast)) == SOCKET_ERROR)
 	{
 		return false;
 	}

@@ -57,9 +57,13 @@ public:
 	// process when revc data
 	bool onRevcData( unsigned char *buffer, int size, int devID, const sockaddr_in& addr );
 
-    // doMsgServerDiscovery
+    // doMsgDiscovery
     // response discovery
-    bool doMsgServerDiscovery( CDataPacket& packet, const sockaddr_in& addr );
+    bool doMsgDiscovery( CDataPacket& packet, const sockaddr_in& addr );
+
+	// doMsgResponseDiscovery
+    // response discovery
+    bool doMsgResponseDiscovery( CDataPacket& packet, const sockaddr_in& addr );
 };
 
 #endif

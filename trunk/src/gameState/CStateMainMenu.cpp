@@ -3,6 +3,8 @@
 #include "CStateGameLoading.h"
 #include "CGameStateManager.h"
 
+#include "IView.h"
+
 const int k_btnCreateGame = 0;
 const int k_btnJointGame = 1;
 
@@ -29,6 +31,11 @@ void CStateMainMenu::onCreate()
 
 	// register current level
 	CGameLevel::setCurrentLevel( m_level );
+
+#ifdef HAS_MULTIPLAYER
+	// init client mp
+	m_mpMgr = new CMultiplayerManager(false, false);
+#endif
 }
 
 void CStateMainMenu::onDestroy()
@@ -38,6 +45,19 @@ void CStateMainMenu::onDestroy()
 
 void CStateMainMenu::onUpdate()
 {
+#ifdef HAS_MULTIPLAYER		
+	const float constInterval = 2000.f;
+	static float interval = constInterval;
+	interval = interval - getIView()->getTimeStep();
+	if ( interval < 0 )
+	{
+		// send discovery packet to find server
+		m_mpMgr->sendDiscoveryPacket();
+		interval = constInterval;
+	}
+	m_mpMgr->update();
+#endif
+
 	m_level->update();
 }
 
@@ -53,8 +73,16 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 		switch ( m_menuChoice )
 		{
 		case k_btnCreateGame:
-			CGameLevel::setLevelLoad("data/level/levelGameM1.lv");
-			CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );			
+			CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
+			CGameLevel::setLevelProperty("isHost","true");
+
+			CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );
+			break;
+		case k_btnJointGame:
+			CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
+			CGameLevel::setLevelProperty("isHost","false");
+
+			CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );
 			break;
 		default:
 			{
@@ -67,5 +95,7 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 	{
 		if ( strcmp("createGame", param) == 0 )
 			m_menuChoice = k_btnCreateGame;
+		else if ( strcmp("jointGame", param) == 0 )
+			m_menuChoice = k_btnJointGame;
 	}
 }

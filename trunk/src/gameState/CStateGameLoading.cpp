@@ -12,8 +12,8 @@ CStateGameLoading::CStateGameLoading()
 
 	CStateGameplay *gameplay = new CStateGameplay();
 	
-	m_levelLoad = gameplay->getLevel();		
-	m_levelLoad->loadLevel( CGameLevel::getLevelFileToLoad() );
+	m_levelLoad = gameplay->getLevel();
+	m_levelLoad->loadLevel( CGameLevel::getLevelProperty("levelLoad") );
 
 	m_nextState = gameplay;
 }

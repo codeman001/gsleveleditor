@@ -43,6 +43,16 @@ void CStateGameplay::onCreate()
     // enable gamecontrol
     CGameControl::getInstance()->setEnable(true);
     CGameControl::getInstance()->setNameFx("mcDpadTouch", "mcDpadBase", "mcDpadMove");
+	
+#ifdef HAS_MULTIPLAYER
+	const char *isHost = CGameLevel::getLevelProperty("isHost");
+	if ( strcmp(isHost, "true") == 0 )
+		m_mpMgr = new CMultiplayerManager(true, false);
+	else
+		m_mpMgr = new CMultiplayerManager(false, false);
+
+#endif
+
 }
 
 void CStateGameplay::onDestroy()
@@ -57,6 +67,9 @@ void CStateGameplay::onFsCommand( const char *command, const char *param )
 
 void CStateGameplay::onUpdate()
 {
+#ifdef HAS_MULTIPLAYER
+	m_mpMgr->update();
+#endif
 	m_level->update();
 }
 

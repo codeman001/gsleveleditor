@@ -9,6 +9,9 @@ protected:
 	int				m_menuChoice;
 
 	CGameLevel		*m_level;
+
+	CMenuFxObj		*m_txtServerName;
+	CMenuFxObj		*m_btnJointButton;
 public:
 	CStateMainMenu();
 	virtual ~CStateMainMenu();

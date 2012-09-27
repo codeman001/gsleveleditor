@@ -103,6 +103,8 @@ float CDataPacket::getFloat()
 // calc checksum before send data
 void CDataPacket::packData()
 {
+	m_size = m_pos;
+
 	unsigned char *sum = calcDataChecksum();
 	memcpy(m_messageBody, sum, CHECKSUMBYTE);
 }
@@ -140,7 +142,7 @@ unsigned char* CDataPacket::calcDataChecksum()
 	// calc md5 checksum
 	MD5_CTX	md5Contex;
 	MD5_Init( &md5Contex );
-	MD5_Update( &md5Contex, m_messageBody, (unsigned long)m_pos );
+	MD5_Update( &md5Contex, m_messageBody, (unsigned long)m_size );
 	MD5_Final( ret, &md5Contex );
 	return ret;
 }

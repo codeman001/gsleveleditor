@@ -13,7 +13,8 @@
 #define MP_DEVICES			16
 #define MP_DATA_BUFFER		10240
 
-#define MP_DEVICE_TIMEOUT   10000
+#define MP_GAME_TIMEOUT   10000
+#define MP_WAITCONNECT_TIMEOUT   10000
 
 // CDeviceDetails
 // object store device infomation
@@ -22,7 +23,7 @@ class CDeviceDetails
 public:
 	enum EDeviceState
 	{
-		stateNotConnect = 0,
+		stateUnknown = 0,
 		stateAskConnection,
 		stateConnected,
 		stateWaitReconect,
@@ -40,7 +41,7 @@ public:
 		m_id = -1;
 		m_deviceData = NULL;
 		m_address = NULL;
-		m_state = stateNotConnect;
+		m_state = stateUnknown;
 	}
 
 	void setAddress(sockaddr *addr)
@@ -115,6 +116,10 @@ public:
 	// return id device
 	int getDeviceIdFromAdress( const void *addr );
     
+    // updateDevices
+    // update devices connected
+    void updateDevices();
+    
 	// updateRevcData
 	// update per frame to revc data
 	bool updateRevcData();	
@@ -129,13 +134,14 @@ public:
 	// initServer
 	// init server
 	bool initServer();
-
+    bool initClient(const char *ipServer);
+    
 	// sendDiscoveryPacket
 	// send a packet to find server
 	bool sendDiscoveryPacket(const void *data, int size);
 
     bool sendData(const void *data, int size, int id);
-    bool sendData(const void *data, int size, const sockaddr_in& addr);
+    bool sendData(const void *data, int size, void* addr);
     bool sendDataToAll(const void *data, int size);
     
 	// cleanSocket

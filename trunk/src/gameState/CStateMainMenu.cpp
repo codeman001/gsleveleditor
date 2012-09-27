@@ -3,6 +3,7 @@
 #include "CStateGameLoading.h"
 #include "CGameStateManager.h"
 
+#include "gameEvent.h"
 #include "IView.h"
 
 const int k_btnCreateGame = 0;
@@ -40,11 +41,18 @@ void CStateMainMenu::onCreate()
 	// init client mp
 	m_mpMgr = new CMultiplayerManager(false, false);
 #endif
+    
+    // register event for catch networking message
+    getIView()->registerEvent("stateMainMenu", this);
 }
 
 void CStateMainMenu::onDestroy()
 {	
+    // hide fx state
 	setFxStateVisible( m_state, false );
+    
+    // release event
+    getIView()->unRegisterEvent(this);
 }
 
 void CStateMainMenu::onUpdate()
@@ -125,23 +133,43 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 		if ( strcmp("createGame", param) == 0 )
 			m_menuChoice = k_btnCreateGame;
 		else if ( strcmp("jointGame", param) == 0 )
-		{
-			bool canJoint = false;
-
+		{            
 #ifdef HAS_MULTIPLAYER
-			std::vector<CDeviceDetails*>    listServer;
+			std::vector<CDeviceDetails*> listServer;
 			m_mpMgr->getAllActiveDevice(listServer);
 
 			if ( listServer.size() > 0 )
-				canJoint = true;
+            {
+                // send joint game to server
+                m_mpMgr->sendJointGamePacket( listServer[0]->m_address );
+            }
 #endif
-
-			// joint to server
-			if ( canJoint )
-			{				
-				m_btnJointButton.gotoFrame("release", true);
-				m_menuChoice = k_btnJointGame;
-			}
 		}
 	}
 }
+
+bool CStateMainMenu::OnEvent(const SEvent& event)
+{
+    if ( event.EventType == EET_GAME_EVENT && event.GameEvent.EventID == (s32)EvtNetworking )
+    {
+        SEventNetworking *networkEvent = ((SEventNetworking*)event.GameEvent.EventData);
+
+#ifdef HAS_MULTIPLAYER
+        if ( networkEvent->eventID == CMultiplayerManager::AcceptJointGame )
+        {
+            const char *serverIP = m_mpMgr->getDeviceIp( networkEvent->deviceID ) ;
+            if ( serverIP )
+            {
+                // set server info
+                CGameLevel::setLevelProperty("serverIp", serverIP);
+            
+                m_btnJointButton.gotoFrame("release", true);
+                m_menuChoice = k_btnJointGame;
+            }
+        }
+#endif
+        
+    }
+    return true;
+}
+

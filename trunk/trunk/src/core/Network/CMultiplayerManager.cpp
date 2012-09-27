@@ -15,7 +15,10 @@ CMultiplayerManager::CMultiplayerManager(bool isServer, bool isOnline)
 	m_isServer = isServer;
 	m_isOnline = isOnline;
     
-    m_name = "noName";
+	// get default name
+	char lpName[512];
+	gethostname( lpName, 512 );
+    m_name = lpName;
 }
 
 CMultiplayerManager::~CMultiplayerManager()
@@ -88,7 +91,7 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
 		char *lpIp = inet_ntoa(addr.sin_addr);
 
         char string[512];
-		sprintf(string,"- Network warning: %s send data error\n", lpIp);
+		sprintf(string,"- Network warning: %s send data error", lpIp);
         os::Printer::log(string);
         
 		return false;
@@ -141,7 +144,7 @@ bool CMultiplayerManager::doMsgDiscovery( CDataPacket& packet, const sockaddr_in
     if ( appID != MP_APPLICATION_ID )
 	{
         char string[512];
-        sprintf(string,"- Network warning: %s doMsgServerDiscovery false...\n", lpIp);
+        sprintf(string,"- Network warning: %s doMsgServerDiscovery false...", lpIp);
         os::Printer::log(string);
         
         return false;
@@ -169,7 +172,7 @@ bool CMultiplayerManager::doMsgResponseDiscovery( CDataPacket& packet, const soc
     if ( m_comm->getDeviceIdFromAdress( &addr ) == -1 )
     {
         char string[512];
-        sprintf(string,"- Network warning: detected server %s ...\n", lpIp);
+        sprintf(string,"- Network warning: detected server %s ...", lpIp);
         os::Printer::log(string);
         
         CDeviceDetails *dev = new CDeviceDetails();

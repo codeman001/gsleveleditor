@@ -23,7 +23,9 @@ void CStateGameplay::onCreate()
 
 	// show ui
 	m_menuFx = CGameUI::getInstance()->getFlash("uiGameHud");
+	
 	setFxStateVisible( m_state, true );
+	setFxAllStateVisible( m_state, false );
 
 	// hide dpad touch
 	CMenuFxObj *dpadTouch = m_menuFx->findObj("mcDpadTouch");

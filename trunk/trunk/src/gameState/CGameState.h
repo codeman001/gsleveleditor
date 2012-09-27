@@ -73,6 +73,7 @@ public:
 	// setFxStateVisible
 	// show/hide state on flash
 	virtual void setFxStateVisible( EGameState state, bool b );
+	virtual void setFxAllStateVisible( EGameState ignoreState, bool b );
 
 	// getStateName
 	// get state name

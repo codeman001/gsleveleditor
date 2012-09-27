@@ -13,10 +13,19 @@ CStateMainMenu::CStateMainMenu()
 {
 	m_menuChoice = -1;
 	m_level = new CGameLevel();	
+
+	m_txtServerName = NULL;
+	m_btnJointButton = NULL;
 }
 
 CStateMainMenu::~CStateMainMenu()
 {
+	if ( m_txtServerName )
+		m_txtServerName->drop();
+	
+	if ( m_btnJointButton )
+		m_btnJointButton->drop();
+
 	delete m_level;	
 	CGameLevel::setCurrentLevel( NULL );
 }
@@ -28,6 +37,7 @@ void CStateMainMenu::onCreate()
 
 	// show mainmenu state
 	setFxStateVisible( m_state, true );
+	setFxAllStateVisible( m_state, false );
 
 	// register current level
 	CGameLevel::setCurrentLevel( m_level );
@@ -46,7 +56,7 @@ void CStateMainMenu::onDestroy()
 void CStateMainMenu::onUpdate()
 {
 #ifdef HAS_MULTIPLAYER		
-	const float constInterval = 2000.f;
+	const float constInterval = 1000.f;
 	static float interval = constInterval;
 	interval = interval - getIView()->getTimeStep();
 	if ( interval < 0 )
@@ -56,7 +66,7 @@ void CStateMainMenu::onUpdate()
 		interval = constInterval;
 	}
     // remove host do not response in 3s
-    m_mpMgr->removeAllDeviceNotResponse( 3000 );
+    m_mpMgr->removeAllDeviceNotResponse( 2000 );
 	m_mpMgr->update();
     
     std::vector<CDeviceDetails*>    listServer;
@@ -65,10 +75,14 @@ void CStateMainMenu::onUpdate()
     if ( listServer.size() == 0 )
     {
         // do not found server
+		if ( m_txtServerName )
+			m_txtServerName->setText("find server...");
     }
     else 
     {
         // founded sever
+		if ( m_txtServerName )
+			m_txtServerName->setText( listServer[0]->m_name.c_str() );
     }
 #endif
 
@@ -82,27 +96,37 @@ void CStateMainMenu::onRender()
 
 void CStateMainMenu::onFsCommand( const char *command, const char *param )
 {
-	if ( strcmp("stateStatus", command) == 0 && strcmp("close",param) == 0 )
-	{		
-		switch ( m_menuChoice )
+	if ( strcmp("stateStatus", command) == 0 )
+	{	
+		if ( strcmp("state",param) == 0 )
 		{
-		case k_btnCreateGame:
-			CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
-			CGameLevel::setLevelProperty("isHost","true");
-
-			CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );
-			break;
-		case k_btnJointGame:
-			CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
-			CGameLevel::setLevelProperty("isHost","false");
-
-			CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );
-			break;
-		default:
+			m_txtServerName = m_menuFx->findObj("txtServername");
+			m_btnJointButton = m_menuFx->findObj("btnJoinGame");
+			
+			m_txtServerName->setText("find server...");
+		}
+		else if ( strcmp("close",param) == 0 )
+		{
+			switch ( m_menuChoice )
 			{
-				printf("unknownState\n");
+			case k_btnCreateGame:
+				CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
+				CGameLevel::setLevelProperty("isHost","true");
+
+				CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );
+				break;
+			case k_btnJointGame:
+				CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
+				CGameLevel::setLevelProperty("isHost","false");
+
+				CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );
+				break;
+			default:
+				{
+					printf("unknownState\n");
+				}
+				break;
 			}
-			break;
 		}
 	}
 	else if ( strcmp("buttonStatus",  command) == 0 )
@@ -110,6 +134,25 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 		if ( strcmp("createGame", param) == 0 )
 			m_menuChoice = k_btnCreateGame;
 		else if ( strcmp("jointGame", param) == 0 )
-			m_menuChoice = k_btnJointGame;
+		{
+			bool canJoint = false;
+
+#ifdef HAS_MULTIPLAYER
+			std::vector<CDeviceDetails*>    listServer;
+			m_mpMgr->getAllActiveDevice(listServer);
+
+			if ( listServer.size() > 0 )
+				canJoint = true;
+#endif
+
+			// joint to server
+			if ( canJoint )
+			{
+				if ( m_btnJointButton )
+					m_btnJointButton->gotoFrame("release", true);
+
+				m_menuChoice = k_btnJointGame;
+			}
+		}
 	}
 }

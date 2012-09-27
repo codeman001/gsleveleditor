@@ -135,10 +135,10 @@ void CMenuFx::updateMouseState( int x, int y, bool pressed )
 
 // getMenuObj
 // get obj on flash menu
-CMenuFxObj* CMenuFx::getObj( const char *path )
+CMenuFxObj CMenuFx::getObj( const char *path )
 {
 	if ( m_movie == NULL )
-		return NULL;
+		return CMenuFxObj(NULL);
 	
 	std::vector<std::string>	folder;
 
@@ -196,7 +196,7 @@ CMenuFxObj* CMenuFx::getObj( const char *path )
 			// found the obj
 			if ( folderDepth == folder.size() )
 			{				
-				return new CMenuFxObj(ch);
+				return CMenuFxObj(ch);
 			}
 		}
 		
@@ -215,12 +215,12 @@ CMenuFxObj* CMenuFx::getObj( const char *path )
 	}
 
 
-	return NULL;
+	return CMenuFxObj(NULL);
 }
 	
 // findObj
 // find obj on flash menu
-CMenuFxObj* CMenuFx::findObj( char *name )
+CMenuFxObj CMenuFx::findObj( char *name )
 {
 	std::queue<gameswf::character*>	queueObj;
 
@@ -243,7 +243,7 @@ CMenuFxObj* CMenuFx::findObj( char *name )
 		
 		if ( strcmp(name, chName) == 0  )
 		{
-			return new CMenuFxObj(ch);
+			return CMenuFxObj(ch);
 		}
 		
 		
@@ -258,5 +258,5 @@ CMenuFxObj* CMenuFx::findObj( char *name )
 		}
 
 	}
-	return NULL;
+	return CMenuFxObj(NULL);
 }

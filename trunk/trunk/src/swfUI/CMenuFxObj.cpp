@@ -10,6 +10,52 @@ CMenuFxObj::~CMenuFxObj()
 {
 }
 
+// findObj
+// find obj on flash menu
+CMenuFxObj CMenuFxObj::findObj( char *name )
+{
+	if ( m_character == NULL )
+		return CMenuFxObj(NULL);
+
+	std::queue<gameswf::character*>	queueObj;
+
+	gameswf::display_list* displayList = m_character->get_display_list();
+	if ( displayList )
+	{
+		int childCount = displayList->size();
+		for ( int j = 0; j < childCount; j++ )
+		{
+			queueObj.push( displayList->get_character(j) );
+		}
+	}
+	
+	while ( queueObj.size() )
+	{
+		gameswf::character* ch = queueObj.front();
+		queueObj.pop();
+
+		const char *chName = ch->get_name().c_str();
+		
+		if ( strcmp(name, chName) == 0  )
+		{
+			return CMenuFxObj(ch);
+		}
+		
+		
+		gameswf::display_list* displayList = ch->get_display_list();
+		if ( displayList )
+		{
+			int childCount = displayList->size();
+			for ( int j = 0; j < childCount; j++ )
+			{
+				queueObj.push( displayList->get_character(j) );
+			}
+		}
+
+	}
+	return CMenuFxObj(NULL);
+}
+
 // setpos xy
 void CMenuFxObj::setPosition( int x, int y )
 {
@@ -62,7 +108,7 @@ void CMenuFxObj::setVisible( bool b )
 // set text on edit
 void CMenuFxObj::setText( const char *lpString )
 {
-	if(m_character && m_character->is(gameswf::AS_EDIT_TEXT))
+	if (m_character && m_character->is(gameswf::AS_EDIT_TEXT))
 	{
 		gameswf::edit_text_character* edit_text = (gameswf::edit_text_character*)m_character;
 		edit_text->set_text_value( tu_string(lpString) );
@@ -73,7 +119,7 @@ void CMenuFxObj::setText( const char *lpString )
 // set tex with unicode
 void CMenuFxObj::setText( const wchar_t *lpString )
 {
-	if(m_character && m_character->is(gameswf::AS_EDIT_TEXT))
+	if (m_character && m_character->is(gameswf::AS_EDIT_TEXT))
 	{
 		gameswf::edit_text_character* edit_text = (gameswf::edit_text_character*)m_character;
 
@@ -87,7 +133,7 @@ void CMenuFxObj::setText( const wchar_t *lpString )
 // get current text on edit
 const char *CMenuFxObj::getText()
 {
-	if(m_character && m_character->is(gameswf::AS_EDIT_TEXT))
+	if (m_character && m_character->is(gameswf::AS_EDIT_TEXT))
 	{
 		gameswf::edit_text_character* edit_text = (gameswf::edit_text_character*)m_character;
 		return edit_text->m_text.c_str();
@@ -99,7 +145,7 @@ const char *CMenuFxObj::getText()
 // goto frame
 void CMenuFxObj::gotoFrame( const char *label, bool play )
 {
-	if(m_character && m_character->is(gameswf::AS_SPRITE))
+	if (m_character && m_character->is(gameswf::AS_SPRITE))
 	{
 		gameswf::sprite_instance* si = (gameswf::sprite_instance*)m_character;		
 		si->goto_labeled_frame(label);
@@ -109,7 +155,7 @@ void CMenuFxObj::gotoFrame( const char *label, bool play )
 
 void CMenuFxObj::gotoFrame( int frame, bool play )
 {
-	if(m_character && m_character->is(gameswf::AS_SPRITE))
+	if (m_character && m_character->is(gameswf::AS_SPRITE))
 	{
 		gameswf::sprite_instance* si = (gameswf::sprite_instance*)m_character;		
 		si->goto_frame(frame);		
@@ -121,7 +167,7 @@ void CMenuFxObj::gotoFrame( int frame, bool play )
 // get number of frame
 int CMenuFxObj::getFrameCount()
 {
-	if(m_character && m_character->is(gameswf::AS_SPRITE))
+	if (m_character && m_character->is(gameswf::AS_SPRITE))
 	{
 		gameswf::sprite_instance* si = (gameswf::sprite_instance*)m_character;		
 		return si->get_frame_count();
@@ -133,7 +179,7 @@ int CMenuFxObj::getFrameCount()
 // call action script func
 void CMenuFxObj::invokeASCallback( const char* funcName, const gameswf::as_value* arguments, int argumentCount )
 {
-	if(m_character && m_character->is(gameswf::AS_SPRITE))
+	if (m_character && m_character->is(gameswf::AS_SPRITE))
 	{
 		gameswf::sprite_instance* si = (gameswf::sprite_instance*)m_character;		
 		

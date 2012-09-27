@@ -10,8 +10,8 @@ protected:
 
 	CGameLevel		*m_level;
 
-	CMenuFxObj		*m_txtServerName;
-	CMenuFxObj		*m_btnJointButton;
+	CMenuFxObj		m_txtServerName;
+	CMenuFxObj		m_btnJointButton;
 public:
 	CStateMainMenu();
 	virtual ~CStateMainMenu();

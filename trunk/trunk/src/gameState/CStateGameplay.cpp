@@ -28,19 +28,12 @@ void CStateGameplay::onCreate()
 	setFxAllStateVisible( m_state, false );
 
 	// hide dpad touch
-	CMenuFxObj *dpadTouch = m_menuFx->findObj("mcDpadTouch");
-	if ( dpadTouch )
-	{
-		dpadTouch->setVisible(false);
-		dpadTouch->drop();
-	}
+	CMenuFxObj dpadTouch = m_menuFx->findObj("mcDpadTouch");
+	dpadTouch.setVisible(false);
+
     
-	CMenuFxObj *dPadBase = m_menuFx->findObj("mcDpadBase");
-	if ( dPadBase )
-	{
-		dPadBase->setVisible(false);
-		dPadBase->drop();
-	}	
+	CMenuFxObj dPadBase = m_menuFx->findObj("mcDpadBase");
+	dPadBase.setVisible(false);	
 
     // enable gamecontrol
     CGameControl::getInstance()->setEnable(true);

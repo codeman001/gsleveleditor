@@ -19,8 +19,8 @@ protected:
 
     core::position2di   m_renderTouchPos;
     
-    CMenuFxObj*         m_fxDpad;
-    CMenuFxObj*         m_fxDpadMove;
+    CMenuFxObj			m_fxDpad;
+    CMenuFxObj			m_fxDpadMove;
     
     int                 m_controlID;
 	bool				m_active;

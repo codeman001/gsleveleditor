@@ -1,16 +1,25 @@
 #include "stdafx.h"
 #include "CMultiplayerManager.h"
+#include "gameEvent.h"
+#include "IView.h"
 
 #ifdef HAS_MULTIPLAYER
 
-CMultiplayerManager::CMultiplayerManager(bool isServer, bool isOnline)
+CMultiplayerManager::CMultiplayerManager(bool isServer, bool isOnline, const char *connectIP)
 {
 	m_comm = new CComms(this, isServer, isOnline);
     
     if ( isServer )
         m_comm->initServer();
     else
-        m_comm->initDiscoveryWifi();
+    {
+        if ( connectIP == NULL )
+            m_comm->initDiscoveryWifi();
+        else 
+        {
+            m_comm->initClient(connectIP);     
+        }
+    }
     
 	m_isServer = isServer;
 	m_isOnline = isOnline;
@@ -26,29 +35,13 @@ CMultiplayerManager::~CMultiplayerManager()
 	delete m_comm; 
 }
 
-
-bool CMultiplayerManager::reInit(bool isServer, bool isOnline)
-{
-    if ( m_comm )
-        delete m_comm;
-    
-    m_isServer = isServer;
-    m_isOnline = isOnline;
-    
-    m_comm = new CComms(this, isServer, isOnline);
-    
-	if ( isServer )
-		return m_comm->initServer();
-
-	return m_comm->initDiscoveryWifi();
-}
-
 // update
 // update networking per frame
 void CMultiplayerManager::update()
 {
 	m_comm->updateRevcData();
 	m_comm->updateSendData();
+    m_comm->updateDevices();
 }
 
 // getAllActiveDevice
@@ -65,6 +58,32 @@ void CMultiplayerManager::getAllActiveDevice( std::vector<CDeviceDetails*>& list
     }
 }
 
+// getDeviceName
+// get device infomation
+const char *CMultiplayerManager::getDeviceName( int devID )
+{
+    CDeviceDetails *dev = m_comm->getDevice(devID);
+    if ( dev == NULL )
+        return NULL;
+    
+    return dev->m_name.c_str();
+}
+
+// getDeviceIp
+// get ip of device
+const char *CMultiplayerManager::getDeviceIp( int devID )
+{
+    CDeviceDetails *dev = m_comm->getDevice(devID);
+    if ( dev == NULL )
+        return NULL;
+    
+    return inet_ntoa( ((sockaddr_in*)dev->m_address)->sin_addr );
+}
+
+const char *CMultiplayerManager::getDeviceIp( void *addr )
+{
+    return inet_ntoa( ((sockaddr_in*)addr)->sin_addr );    
+}
 
 // sendDiscoveryPacket
 // send a packet to find server
@@ -81,14 +100,60 @@ bool CMultiplayerManager::sendDiscoveryPacket()
 	return m_comm->sendDiscoveryPacket( packet.getMessageData(), packet.getMessageSize() );
 }
 
+
+// sendJointGamePacket
+// send a packet to joint game
+bool CMultiplayerManager::sendJointGamePacket( void *addr )
+{
+    if ( m_isServer == true )
+		return false;
+    
+	CDataPacket packet(64);
+	packet.addByte( (unsigned char) CMultiplayerManager::JointGame );
+    packet.addShort( (unsigned short) m_name.length() );
+    packet.addData( m_name.c_str(), (int)m_name.length() );    
+	packet.packData();
+    
+	return m_comm->sendData( packet.getMessageData(), packet.getMessageSize(), addr );
+}
+
+// sendPingMessage
+// send a ping packet to keep connection
+bool CMultiplayerManager::sendPingMessage()
+{
+    CDataPacket packet(64);
+	packet.addByte( (unsigned char) CMultiplayerManager::Ping );
+	packet.packData();    
+	return m_comm->sendData( packet.getMessageData(), packet.getMessageSize(), 0 );
+}
+
+// sendReadyGameMessage
+bool CMultiplayerManager::sendReadyGameMessage()
+{
+    CDataPacket packet(64);
+	packet.addByte( (unsigned char) CMultiplayerManager::ReadyGame );
+	packet.packData();
+	return m_comm->sendData( packet.getMessageData(), packet.getMessageSize(), 0 );
+}
+
+// sendGetNameMessage
+// send get name
+bool CMultiplayerManager::sendGetNameMessage()
+{
+    CDataPacket packet(64);
+	packet.addByte( (unsigned char) CMultiplayerManager::GetName );
+	packet.packData();    
+	return m_comm->sendData( packet.getMessageData(), packet.getMessageSize(), 0 );    
+}
+
 // onRevcData
 // process when revc data
-bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID, const sockaddr_in& addr)
+bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID, void *addr)
 {
     CDataPacket packet(buffer, size);
 	if ( packet.checkData() == false )
 	{
-		char *lpIp = inet_ntoa(addr.sin_addr);
+		const char *lpIp = getDeviceIp(addr);
 
         char string[512];
 		sprintf(string,"- Network warning: %s send data error", lpIp);
@@ -100,6 +165,21 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
     if ( devID == -1 )
     {
         unsigned char msgType = packet.getByte();
+                
+        // send event to revc
+        static SEvent event;        
+        static SEventNetworking eventNetwork;
+        
+        eventNetwork.eventID    = (int)msgType;
+        eventNetwork.deviceID   = devID;
+        eventNetwork.data       = &packet;
+        
+        event.EventType = EET_GAME_EVENT;
+        event.GameEvent.EventID = (s32)EvtNetworking;
+        event.GameEvent.EventData = &eventNetwork;
+        
+        getIView()->getDevice()->postEventFromUser( event );
+        
         switch ( msgType ) 
         {
             case CMultiplayerManager::Discovery:
@@ -119,6 +199,21 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
 					return doMsgResponseDiscovery(packet, addr);
 				}
             break;
+            case CMultiplayerManager::JointGame:
+                {
+					if ( m_isServer == false )
+						return false;
+                    
+                    // Response joint game
+                    return doMsgJointGame(packet, addr);
+                }
+                break;
+            case CMultiplayerManager::AcceptJointGame:
+            case CMultiplayerManager::DeclineJointGame:                          
+                {
+                    // do nothing...
+                }
+                break;
             default:
 				{
 					return false;
@@ -128,7 +223,53 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
     }
     else
     {
-        // update data revc
+        unsigned char msgType = packet.getByte();
+        
+        // send event to revc
+        static SEvent event;        
+        static SEventNetworking eventNetwork;
+        
+        eventNetwork.eventID    = (int)msgType;
+        eventNetwork.deviceID   = devID;
+        eventNetwork.data       = &packet;
+        
+        event.EventType = EET_GAME_EVENT;
+        event.GameEvent.EventID = (s32)EvtNetworking;
+        event.GameEvent.EventData = &eventNetwork;
+        
+        getIView()->getDevice()->postEventFromUser( event );
+        
+        switch ( msgType ) 
+        {
+            case CMultiplayerManager::ReadyGame:
+                {
+                    if ( m_isServer == false )
+                        return false;
+                    
+                    return doMsgClientReadyGame(packet, addr, devID);
+                }
+                break;
+            case CMultiplayerManager::GetName:
+                {
+                    return doMsgGetName(packet, addr, devID);
+                }
+                break;
+            case CMultiplayerManager::ResponseName:
+                {
+                    return doMsgResponseName(packet, addr, devID);
+                }
+                break;                
+            case CMultiplayerManager::Ping:
+                {
+                    // todo nothing
+                }
+                break;    
+            default:
+                {
+                    return false;
+                }
+                break;
+        };
     }
     
 	return true;
@@ -136,10 +277,10 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
 
 // doMsgServerDiscovery
 // response discovery
-bool CMultiplayerManager::doMsgDiscovery( CDataPacket& packet, const sockaddr_in& addr)
+bool CMultiplayerManager::doMsgDiscovery( CDataPacket& packet, void *addr)
 {
     int appID = packet.getInt();
-	char *lpIp = inet_ntoa(addr.sin_addr);
+    const char *lpIp = getDeviceIp(addr);
 
     if ( appID != MP_APPLICATION_ID )
 	{
@@ -161,9 +302,9 @@ bool CMultiplayerManager::doMsgDiscovery( CDataPacket& packet, const sockaddr_in
 
 // doMsgResponseDiscovery
 // response discovery
-bool CMultiplayerManager::doMsgResponseDiscovery( CDataPacket& packet, const sockaddr_in& addr )
+bool CMultiplayerManager::doMsgResponseDiscovery( CDataPacket& packet, void* addr )
 {
-	char *lpIp = inet_ntoa(addr.sin_addr);
+    const char *lpIp = getDeviceIp(addr);
 
     char serverName[512] = {0};
 	unsigned short lenName = packet.getShort();
@@ -177,11 +318,89 @@ bool CMultiplayerManager::doMsgResponseDiscovery( CDataPacket& packet, const soc
         
         CDeviceDetails *dev = new CDeviceDetails();
         dev->m_name = serverName;
-        dev->m_address = new sockaddr_in(addr);
+        dev->m_address = new sockaddr_in( *((sockaddr_in*)addr));
         m_comm->addDevice( dev );
     }
     
 	return true;
+}
+
+// doMsgJointGame
+// response joint game to client
+bool CMultiplayerManager::doMsgJointGame( CDataPacket& packet, void* addr )
+{
+    const char *lpIp = getDeviceIp(addr);
+    
+    if ( m_comm->getDeviceIdFromAdress( &addr ) == -1 )
+    {
+        int id = m_comm->findDeviceSlot();
+        CDataPacket response(64);
+
+        if ( id == -1 )
+            response.addByte( (unsigned char) CMultiplayerManager::DeclineJointGame );
+        else
+        {
+            response.addByte( (unsigned char) CMultiplayerManager::AcceptJointGame );
+            
+            // get name from packet
+            char clientName[512] = {0};
+            unsigned short lenName = packet.getShort();
+            packet.getData(clientName, lenName);
+            
+            // add packet
+            CDeviceDetails *dev = new CDeviceDetails();
+            dev->m_name = clientName;
+            dev->m_address = new sockaddr_in( *((sockaddr_in*)addr));
+            dev->m_state = CDeviceDetails::stateAskConnection;
+            
+            m_comm->addDevice( dev );
+
+            char string[512];
+            sprintf(string,"- Network warning: client %s will joint game ...", lpIp);
+            os::Printer::log(string);
+        }
+        
+        response.packData();
+        return m_comm->sendData( response.getMessageData(), response.getMessageSize(), addr);        
+    }
+    return false;
+}
+
+// doMsgReadyGame
+bool CMultiplayerManager::doMsgClientReadyGame( CDataPacket& packet, void* addr, int devID )
+{
+    // change state
+    m_comm->getDevice(devID)->m_state = CDeviceDetails::stateConnected;
+
+    char string[512];
+    sprintf(string,"- Network warning: client id %d ready game ...", devID);
+    os::Printer::log(string);    
+    return true;
+}
+
+// doMsgGetName    
+bool CMultiplayerManager::doMsgGetName( CDataPacket& packet, void* addr, int devID )
+{
+    CDataPacket response(64);
+    response.addByte( (unsigned char) CMultiplayerManager::ResponseName );
+    response.addShort( (unsigned short) m_name.length() );
+    response.addData( m_name.c_str(), (int)m_name.length() );
+	response.packData();
+    
+    return m_comm->sendData( response.getMessageData(), response.getMessageSize(), addr);
+}
+
+// doMsgResponseName    
+bool CMultiplayerManager::doMsgResponseName( CDataPacket& packet, void* addr, int devID )
+{
+    // get name from packet
+    char responseName[512] = {0};
+    unsigned short lenName = packet.getShort();
+    packet.getData(responseName, lenName);
+    
+    // set name on device
+    m_comm->getDevice(devID)->m_name = responseName;
+    return true;
 }
 
 #endif

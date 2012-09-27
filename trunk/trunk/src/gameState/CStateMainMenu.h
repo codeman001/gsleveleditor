@@ -3,7 +3,7 @@
 
 #include "CGameState.h"
 
-class CStateMainMenu: public CGameState
+class CStateMainMenu: public CGameState, public IEventReceiver
 {
 protected:
 	int				m_menuChoice;
@@ -23,6 +23,8 @@ public:
 	virtual void onRender();
 	virtual void onUpdate();
 
+    virtual bool OnEvent(const SEvent& event);
+    
 	// getLevel
 	// get 3d level
 	CGameLevel* getLevel()

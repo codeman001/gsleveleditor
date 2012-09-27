@@ -15,12 +15,18 @@ public:
 	{
 		Discovery = 0,
         ResponseDiscovery,
-		Connect,
+        Ping,
+		JointGame,
+        AcceptJointGame,
+        DeclineJointGame,
+        ReadyGame,
+        GetName,
+        ResponseName,
 		Reconnect,
 		PlayerQuit,
 		Kick,
 		Chat,
-		GamePackaget,
+		GameData
 	};
     
 protected:
@@ -32,7 +38,7 @@ protected:
     std::string m_name;
     
 public:
-	CMultiplayerManager(bool isServer, bool isOnline);
+	CMultiplayerManager(bool isServer, bool isOnline, const char *connectIP = NULL);
 	virtual ~CMultiplayerManager();
 
     // setName
@@ -41,11 +47,6 @@ public:
     {
         m_name = name;
     }
-    
-	// reInit
-	// init discovery on client
-	// init server
-	bool reInit(bool isServer, bool isOnline);
 
 	// update
 	// update networking per frame
@@ -58,26 +59,64 @@ public:
         m_comm->removeAllDeviceNotResponse(time);
     }
     
+    // getDeviceName
+    // get device infomation
+    const char *getDeviceName( int devID );
+    const char *getDeviceIp( int devID );
+    const char *getDeviceIp( void *addr );
+    
     // getAllActiveDevice
     // get all device
     void getAllActiveDevice( std::vector<CDeviceDetails*>& listDevices );
+    
+public:
     
 	// sendDiscoveryPacket
 	// send a packet to find server
 	bool sendDiscoveryPacket();
     
+    // sendJointGamePacket
+    // send a packet to joint game
+    bool sendJointGamePacket( void *addr );
+    
+    // sendPingMessage
+    // send a ping packet to keep connection
+    bool sendPingMessage();
+    
+    // sendReadyGameMessage
+    // send a message begin game
+    bool sendReadyGameMessage();
+    
+    // sendGetNameMessage
+    // send get name
+    bool sendGetNameMessage();        
+    
     // onRevcData
 	// process when revc data
-	bool onRevcData( unsigned char *buffer, int size, int devID, const sockaddr_in& addr );
+	bool onRevcData( unsigned char *buffer, int size, int devID, void *addr );
 
+protected:    
+    
     // doMsgDiscovery
     // response discovery
-    bool doMsgDiscovery( CDataPacket& packet, const sockaddr_in& addr );
+    bool doMsgDiscovery( CDataPacket& packet, void *addr );
 
 	// doMsgResponseDiscovery
     // response discovery
-    bool doMsgResponseDiscovery( CDataPacket& packet, const sockaddr_in& addr );
+    bool doMsgResponseDiscovery( CDataPacket& packet, void *addr );
     
+    // doMsgJointGame
+    // response joint game to client
+    bool doMsgJointGame( CDataPacket& packet, void* addr );
+    
+    // doMsgReadyGame
+    bool doMsgClientReadyGame( CDataPacket& packet, void* addr, int devID );
+    
+    // doMsgGetName    
+    bool doMsgGetName( CDataPacket& packet, void* addr, int devID );
+
+    // doMsgResponseName    
+    bool doMsgResponseName( CDataPacket& packet, void* addr, int devID );
 };
 
 #endif

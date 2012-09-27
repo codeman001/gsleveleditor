@@ -44,8 +44,11 @@ void CStateGameplay::onCreate()
 	if ( strcmp(isHost, "true") == 0 )
 		m_mpMgr = new CMultiplayerManager(true, false);
 	else
-		m_mpMgr = new CMultiplayerManager(false, false);
-
+    {
+        const char *connectIP = CGameLevel::getLevelProperty("serverIp");
+		m_mpMgr = new CMultiplayerManager(false, false, connectIP);
+        m_mpMgr->sendReadyGameMessage();
+    }
 #endif
 
 }

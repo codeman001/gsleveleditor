@@ -112,7 +112,7 @@ void CComms::removeAllDeviceNotResponse( unsigned int time )
             m_devices[i] = NULL;
             
             char string[512];
-            sprintf(string, "- Network warning: remove device id: %d because donot response in %d ms\n",i, time);
+            sprintf(string, "- Network warning: remove device id: %d because donot response in %d ms",i, time);
             os::Printer::log(string);
         }
 	}
@@ -133,6 +133,29 @@ int CComms::getDeviceIdFromAdress( const void *addr )
 	}
 
 	return -1;
+}
+
+// updateDevices
+// update devices connected
+void CComms::updateDevices()
+{
+    unsigned int currentTime = os::Timer::getRealTime();
+    
+    for ( int j = 0; j < MP_DEVICES; j++ )
+    {                
+        if ( m_devices[j] != NULL )
+        {
+            if ( m_devices[j]->m_state == CDeviceDetails::stateAskConnection && currentTime - m_devices[j]->m_lastTimeRespone > MP_WAITCONNECT_TIMEOUT )
+            {
+                delete m_devices[j];
+                m_devices[j] = NULL;
+                
+                char string[512];
+                sprintf(string, "- Network warning: remove device id: %d because do not joint game", j);
+                os::Printer::log(string);                
+            }
+        }
+    }
 }
 
 // updateRevcData
@@ -172,7 +195,7 @@ bool CComms::updateRevcData()
             m_devices[clId]->m_lastTimeRespone = os::Timer::getRealTime();
         
 		if ( m_owner )
-            m_owner->onRevcData( m_dataBuff, iResult, clId, addr);
+            m_owner->onRevcData( m_dataBuff, iResult, clId, &addr);
 		
 	}
 	return true;
@@ -215,7 +238,7 @@ bool CComms::updateSendData()
             // send data to all...
             for ( int j = 0; j < MP_DEVICES; j++ )
             {                
-                if ( m_devices[j] != NULL )
+                if ( m_devices[j] != NULL && m_devices[j]->m_state == CDeviceDetails::stateConnected )
                 {
                     // send data...
                     iResult = sendto(m_dataSocket, (const char *)dataPak.data, dataPak.size, 0,(struct sockaddr*)m_devices[j]->m_address, addrLen);		
@@ -235,9 +258,13 @@ bool CComms::updateSendData()
                 int devID = getDeviceIdFromAdress( dataPak.addr );
 
                 if ( devID != -1 )
-                {
+                {                                       
                     removeDevice(devID);                
                 }
+                
+                char string[512];
+                sprintf(string, "- Network warning: send data to device %d error", devID);
+                os::Printer::log(string); 
             }
         }
                 
@@ -291,6 +318,52 @@ bool CComms::initDiscoveryWifi()
 
 	freeaddrinfo(result);
 	return true;
+}
+
+bool CComms::initClient(const char *ipServer)
+{
+    if ( m_isServer )
+        return false;
+    
+    int iResult;
+	struct addrinfo *result = NULL, hints;
+    
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family		=	AF_INET;
+	hints.ai_socktype	=	SOCK_DGRAM;
+	hints.ai_protocol	=	IPPROTO_UDP;
+	hints.ai_flags		=	AI_PASSIVE;
+    
+	iResult = getaddrinfo(NULL, MP_CLIENT_PORT, &hints, &result);
+	if (iResult != 0)
+	{
+		return false;
+	}
+    
+	m_dataSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+    
+	if (m_dataSocket == INVALID_SOCKET)
+	{
+		freeaddrinfo(result);
+		return false;
+	}
+    
+    freeaddrinfo(result);
+    
+    sockaddr_in* connectAddress = new sockaddr_in();
+    memset(connectAddress, 0, sizeof(sockaddr_in));
+    
+    connectAddress->sin_family      = AF_INET;
+    connectAddress->sin_port        = htons(atoi(MP_SERVER_PORT));                    
+    connectAddress->sin_addr.s_addr = inet_addr(ipServer);
+    
+    // add server at slot 0
+    CDeviceDetails *device = new CDeviceDetails();
+    device->m_state = CDeviceDetails::stateConnected;
+    device->m_address = connectAddress;
+    addDevice( device );
+    
+    return true;
 }
 
 // initServer
@@ -375,27 +448,29 @@ bool CComms::sendDiscoveryPacket(const void *data, int size)
 // push data to send queue
 bool CComms::sendData(const void *data, int size, int id)
 {
-    if ( id == -1 )
+    if ( id < 0 || id >= MP_DEVICES || m_devices[id] == NULL )
         return false;
     
-    return sendData(data, size, *((sockaddr_in*)m_devices[id]->m_address));
+    return sendData(data, size, m_devices[id]->m_address);
 }
 
 // sendData
 // push data to send queue
-bool CComms::sendData(const void *data, int size, const sockaddr_in& addr)
+bool CComms::sendData(const void *data, int size, void* addr)
 {
     SDataSend dataPak;
     
     dataPak.data = new unsigned char[size];
     memcpy(dataPak.data, data, size);
     dataPak.size = size;
-    dataPak.addr = new sockaddr_in(addr);
+    dataPak.addr = new sockaddr_in( *((sockaddr_in*)addr) );
     
     m_queueSendData.push_back( dataPak );
     return true;
 }
 
+// sendDataToAll
+// push data to send queue
 bool CComms::sendDataToAll(const void *data, int size)
 {
     SDataSend dataPak;

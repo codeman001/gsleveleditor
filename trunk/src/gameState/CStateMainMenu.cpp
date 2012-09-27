@@ -19,13 +19,7 @@ CStateMainMenu::CStateMainMenu()
 }
 
 CStateMainMenu::~CStateMainMenu()
-{
-	if ( m_txtServerName )
-		m_txtServerName->drop();
-	
-	if ( m_btnJointButton )
-		m_btnJointButton->drop();
-
+{	
 	delete m_level;	
 	CGameLevel::setCurrentLevel( NULL );
 }
@@ -74,15 +68,12 @@ void CStateMainMenu::onUpdate()
     
     if ( listServer.size() == 0 )
     {
-        // do not found server
-		if ( m_txtServerName )
-			m_txtServerName->setText("find server...");
+        // do not found server		
+		m_txtServerName.setText("find server...");
     }
     else 
-    {
-        // founded sever
-		if ( m_txtServerName )
-			m_txtServerName->setText( listServer[0]->m_name.c_str() );
+    {        
+		m_txtServerName.setText( listServer[0]->m_name.c_str() );
     }
 #endif
 
@@ -103,7 +94,7 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 			m_txtServerName = m_menuFx->findObj("txtServername");
 			m_btnJointButton = m_menuFx->findObj("btnJoinGame");
 			
-			m_txtServerName->setText("find server...");
+			m_txtServerName.setText("find server...");
 		}
 		else if ( strcmp("close",param) == 0 )
 		{
@@ -147,10 +138,8 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 
 			// joint to server
 			if ( canJoint )
-			{
-				if ( m_btnJointButton )
-					m_btnJointButton->gotoFrame("release", true);
-
+			{				
+				m_btnJointButton.gotoFrame("release", true);
 				m_menuChoice = k_btnJointGame;
 			}
 		}

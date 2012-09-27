@@ -64,11 +64,11 @@ public:
 
 	// getMenuObj
 	// get obj on flash menu
-	CMenuFxObj* getObj( const char *path );
+	CMenuFxObj getObj( const char *path );
 	
 	// findObj
 	// find obj on flash menu
-	CMenuFxObj* findObj( char *name );
+	CMenuFxObj findObj( char *name );
 
 };
 

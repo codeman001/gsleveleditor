@@ -3,13 +3,22 @@
 
 #include "CGameUI.h"
 
-class CMenuFxObj: public irr::IReferenceCounted
+class CMenuFxObj
 {
 protected:
 	gameswf::character	*m_character;
 public:
+	CMenuFxObj()
+	{
+		m_character = NULL;
+	}
+
 	CMenuFxObj( gameswf::character* ch );		
 	virtual ~CMenuFxObj();	
+
+	// findObj
+	// find obj on flash menu
+	CMenuFxObj findObj( char *name );
 
 	// setpos xy
 	void setPosition( int x, int y );

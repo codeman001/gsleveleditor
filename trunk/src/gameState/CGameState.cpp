@@ -95,13 +95,9 @@ void CGameState::setFxStateVisible( EGameState state, bool b )
 {
 	if ( m_menuFx )
 	{
-		CMenuFxObj *menuObj = m_menuFx->getObj( getStateName(state) );
-		if ( menuObj )
-		{
-			menuObj->setVisible( b );
-			menuObj->gotoFrame(1, true);
-			menuObj->drop();
-		}
+		CMenuFxObj menuObj = m_menuFx->getObj( getStateName(state) );
+		menuObj.setVisible( b );
+		menuObj.gotoFrame(1, true);
 	}
 }
 
@@ -114,13 +110,9 @@ void CGameState::setFxAllStateVisible( EGameState ignoreState, bool b )
 			if ( i == ignoreState )
 				continue;
 
-			CMenuFxObj *menuObj = m_menuFx->getObj( getStateName( (EGameState)i) );
-			if ( menuObj )
-			{				
-				menuObj->setVisible( b );				
-				menuObj->gotoFrame(1, b);				
-				menuObj->drop();
-			}
+			CMenuFxObj menuObj = m_menuFx->getObj( getStateName( (EGameState)i) );			
+			menuObj.setVisible( b );				
+			menuObj.gotoFrame(1, b);				
 		}
 	}
 }

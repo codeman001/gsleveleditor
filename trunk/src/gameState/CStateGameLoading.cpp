@@ -6,8 +6,7 @@
 
 CStateGameLoading::CStateGameLoading()
 	:CGameState( CGameState::GSStateGameLoading )
-{
-	m_loadingBar = NULL;
+{	
 	m_beginLoading = false;
 
 	CStateGameplay *gameplay = new CStateGameplay();
@@ -33,9 +32,6 @@ void CStateGameLoading::onCreate()
 
 void CStateGameLoading::onDestroy()
 {
-	if ( m_loadingBar )
-		m_loadingBar->drop();
-
 	setFxStateVisible( m_state, false );
 }
 
@@ -58,12 +54,12 @@ void CStateGameLoading::onFsCommand( const char *command, const char *param )
 
 void CStateGameLoading::onUpdate()
 {
-	if ( m_loadingBar && m_beginLoading )
+	if ( m_beginLoading )
 	{
 		bool loadFinish = m_levelLoad->loadStep();
 
 		// show percent
-		m_loadingBar->gotoFrame( m_levelLoad->getLoadingPercent(), false );
+		m_loadingBar.gotoFrame( m_levelLoad->getLoadingPercent(), false );
 
 		if ( loadFinish )
 		{			
@@ -75,21 +71,14 @@ void CStateGameLoading::onUpdate()
 			for ( int state = (int)CGameState::GSStateGameplay; state < (int)CGameState::StateCount; state++ )
 			{
 				// create flash mainmenu ui			
-				CMenuFxObj *menuObj = menu->getObj( CGameState::getStateName( (CGameState::EGameState)state ) );
-				if ( menuObj )
-				{
-					menuObj->setVisible( false );
-					menuObj->drop();
-				}			
+				CMenuFxObj menuObj = menu->getObj( CGameState::getStateName( (CGameState::EGameState)state ) );			
+				menuObj.setVisible( false );									
 			}
 
 			// play animation
-			CMenuFxObj *menuObj = m_menuFx->getObj( getStateName(m_state) );
-			if ( menuObj )
-			{				
-				menuObj->gotoFrame("hide", true);
-				menuObj->drop();
-			}
+			CMenuFxObj menuObj = m_menuFx->getObj( getStateName(m_state) );				
+			menuObj.gotoFrame("hide", true);			
+
 			m_beginLoading = false;			
 		}
 

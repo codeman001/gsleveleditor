@@ -25,10 +25,7 @@ CDpad::CDpad()
 
 CDpad::~CDpad()
 {
-    if ( m_fxDpad )
-        m_fxDpad->drop();
-    if ( m_fxDpadMove )
-        m_fxDpadMove->drop();
+
 }
 
 // update
@@ -37,12 +34,9 @@ void CDpad::update()
 {
     if ( m_controlID == -1 )
     {
-        // need hide dpad
-        if ( m_fxDpad )
-            m_fxDpad->setVisible(false);
-
-		if ( m_fxDpadMove )
-			m_fxDpadMove->setVisible(false);
+        
+        m_fxDpad.setVisible(false);
+		m_fxDpadMove.setVisible(false);
 
 		if ( m_active )
 		{
@@ -85,18 +79,13 @@ void CDpad::update()
 		// recalc touch pos to render
 		moveVec *= length;
 		m_dpadMovePos = m_dpadPos + core::position2di((int)moveVec.X, (int)moveVec.Y);
-        
-		if ( m_fxDpad )
-		{
-			m_fxDpad->setVisible(true);
-			m_fxDpad->setPosition( (int)(m_dpadPos.X * fw), (int)(m_dpadPos.Y * fh) );
-		}
+       
+		m_fxDpad.setVisible(true);
+		m_fxDpad.setPosition( (int)(m_dpadPos.X * fw), (int)(m_dpadPos.Y * fh) );
 
-		if ( m_fxDpadMove )
-		{
-			m_fxDpadMove->setVisible(true);
-			m_fxDpadMove->setPosition( (int)(m_dpadMovePos.X * fw), (int)(m_dpadMovePos.Y * fh) );
-		}
+		m_fxDpadMove.setVisible(true);
+		m_fxDpadMove.setPosition( (int)(m_dpadMovePos.X * fw), (int)(m_dpadMovePos.Y * fh) );
+
     }
 }
 
@@ -129,11 +118,6 @@ void CDpad::setTouchPos( int x, int y )
 // setDpadFxName
 void CDpad::setDpadFxName( const std::string& name, const std::string& move )
 {
-    if ( m_fxDpad )
-        m_fxDpad->drop();
-    if ( m_fxDpadMove )
-        m_fxDpadMove->drop();
-    
     CMenuFx *menuFx = CGameUI::getInstance()->getFlash("uiGameHud");
     
     m_fxDpad = menuFx->findObj( (char*)name.c_str());

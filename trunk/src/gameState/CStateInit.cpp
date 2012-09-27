@@ -52,12 +52,8 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 		for ( int state = (int)CGameState::GSStateMainMenu; state <= (int)CGameState::GSStateGameLoading; state++ )
 		{
 			// create flash mainmenu ui			
-			CMenuFxObj *menuObj = menu->getObj( CGameState::getStateName( (CGameState::EGameState)state ) );
-			if ( menuObj )
-			{
-				menuObj->setVisible( false );
-				menuObj->drop();
-			}			
+			CMenuFxObj menuObj = menu->getObj( CGameState::getStateName( (CGameState::EGameState)state ) );
+			menuObj.setVisible( false );			
 		}
 
 		// hide the menu
@@ -123,12 +119,8 @@ void CStateInit::onUpdate()
 			m_loadFinish = false;
 
 			// play state hide
-			CMenuFxObj *obj = m_menuFx->findObj("gsGameInit");
-			if ( obj )
-			{
-				obj->gotoFrame("hide", true);
-				obj->drop();
-			}
+			CMenuFxObj obj = m_menuFx->findObj("gsGameInit");
+			obj.gotoFrame("hide", true);
 		}
 	}
 }

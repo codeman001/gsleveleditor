@@ -30,30 +30,28 @@ void CGameControl::setNameFx( const std::string& nameDpadTouch, const std::strin
     CMenuFx *menuFx = CGameUI::getInstance()->getFlash("uiGameHud");
     
     // get touch touch dpad
-    CMenuFxObj *dpadTouch = menuFx->findObj((char*) nameDpadTouch.c_str());
-    if ( dpadTouch )
-    {
-        int x,y,w,h;
-        float fw, fh;
-        
-        dpadTouch->getBound(&x, &y, &w, &h);        
-        menuFx->getFxScaleRatio(&fw, &fh);
-        
-        float realX, realY, realW, realH;
-        realX = (float)x / fw;
-        realY = (float)y / fh;
-        realW = (float)w / fw;
-        realH = (float)h / fh;
-        
-		char string[512] = {0};
-		sprintf(string,"dpadRect:{%f, %f, %f, %f}: %f, %f", realX, realY, realW, realH, fw, fh);
-		os::Printer::log(string);
+    CMenuFxObj dpadTouch = menuFx->findObj((char*) nameDpadTouch.c_str());
 
-        m_touchDpad.UpperLeftCorner = core::vector2di( (int)realX, (int)realY);
-        m_touchDpad.LowerRightCorner = core::vector2di( (int)(realX+realW), (int)(realY+realH) );
-        
-        dpadTouch->drop();
-    }
+    int x,y,w,h;
+    float fw, fh;
+    
+    dpadTouch.getBound(&x, &y, &w, &h);
+
+    menuFx->getFxScaleRatio(&fw, &fh);
+    
+    float realX, realY, realW, realH;
+    realX = (float)x / fw;
+    realY = (float)y / fh;
+    realW = (float)w / fw;
+    realH = (float)h / fh;
+    
+	char string[512] = {0};
+	sprintf(string,"dpadRect:{%f, %f, %f, %f}: %f, %f", realX, realY, realW, realH, fw, fh);
+	os::Printer::log(string);
+
+    m_touchDpad.UpperLeftCorner = core::vector2di( (int)realX, (int)realY);
+    m_touchDpad.LowerRightCorner = core::vector2di( (int)(realX+realW), (int)(realY+realH) );
+
     
     // set fx for dpad
     m_moveDpad.setDpadFxName(nameDPad, nameDpadMove);

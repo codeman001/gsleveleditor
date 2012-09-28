@@ -46,7 +46,10 @@ void CStateGameplay::onCreate()
 	else
     {
         const char *connectIP = CGameLevel::getLevelProperty("serverIp");
+		short keyID = (short)( atoi(CGameLevel::getLevelProperty("keyID")) );
+		
 		m_mpMgr = new CMultiplayerManager(false, false, connectIP);
+		m_mpMgr->setKeyID(keyID);
         m_mpMgr->sendReadyGameMessage();
     }
 #endif

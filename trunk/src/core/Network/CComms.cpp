@@ -349,14 +349,15 @@ bool CComms::initClient(const char *ipServer)
 	}
     
     freeaddrinfo(result);
-    
+    	
     sockaddr_in* connectAddress = new sockaddr_in();
     memset(connectAddress, 0, sizeof(sockaddr_in));
     
     connectAddress->sin_family      = AF_INET;
     connectAddress->sin_port        = htons(atoi(MP_SERVER_PORT));                    
     connectAddress->sin_addr.s_addr = inet_addr(ipServer);
-    
+	memset(connectAddress->sin_zero, 0, sizeof(connectAddress->sin_zero));
+	
     // add server at slot 0
     CDeviceDetails *device = new CDeviceDetails();
     device->m_state = CDeviceDetails::stateConnected;

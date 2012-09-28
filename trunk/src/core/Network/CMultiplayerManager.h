@@ -37,6 +37,7 @@ protected:
 
     std::string m_name;
     
+	short	m_keyID;
 public:
 	CMultiplayerManager(bool isServer, bool isOnline, const char *connectIP = NULL);
 	virtual ~CMultiplayerManager();
@@ -69,6 +70,19 @@ public:
     // get all device
     void getAllActiveDevice( std::vector<CDeviceDetails*>& listDevices );
     
+	// getKeyID
+	// get key to connect
+	inline short getKeyID()
+	{
+		return m_keyID;
+	}
+
+	// setKeyID
+	// set server connect key
+	inline void setKeyID(short id)
+	{
+		m_keyID = id;
+	}
 public:
     
 	// sendDiscoveryPacket
@@ -110,7 +124,7 @@ protected:
     bool doMsgJointGame( CDataPacket& packet, void* addr );
     
     // doMsgReadyGame
-    bool doMsgClientReadyGame( CDataPacket& packet, void* addr, int devID );
+    bool doMsgClientReadyGame( CDataPacket& packet, void* addr );
     
     // doMsgGetName    
     bool doMsgGetName( CDataPacket& packet, void* addr, int devID );

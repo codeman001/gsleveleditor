@@ -24,7 +24,11 @@ CApplication::CApplication()
 
 bool CApplication::OnEvent(const SEvent& event)
 {
-	std::vector<eventType>::iterator i = m_eventReceivers.begin(), end = m_eventReceivers.end();
+	// need copy to another array.
+	// because the game will crash if registerEvent
+	std::vector<eventType> eventWillProcess = m_eventReceivers;
+
+	std::vector<eventType>::iterator i = eventWillProcess.begin(), end = eventWillProcess.end();
 	while ( i != end )
 	{
 		(*i).second->OnEvent( event );

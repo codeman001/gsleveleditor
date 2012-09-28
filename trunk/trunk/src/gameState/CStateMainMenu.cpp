@@ -116,7 +116,14 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 				break;
 			case k_btnJointGame:
 				CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
-				CGameLevel::setLevelProperty("isHost","false");
+				CGameLevel::setLevelProperty("isHost","false");				
+                CGameLevel::setLevelProperty("serverIp", m_serverIP.c_str());
+
+#ifdef HAS_MULTIPLAYER
+				char keyID[512];
+				sprintf(keyID,"%d", m_mpMgr->getKeyID());
+				CGameLevel::setLevelProperty("keyID",keyID);
+#endif
 
 				CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );
 				break;
@@ -159,10 +166,9 @@ bool CStateMainMenu::OnEvent(const SEvent& event)
         {
             const char *serverIP = m_mpMgr->getDeviceIp( networkEvent->deviceID ) ;
             if ( serverIP )
-            {
-                // set server info
-                CGameLevel::setLevelProperty("serverIp", serverIP);
-            
+            {                            
+				m_serverIP = serverIP;
+
                 m_btnJointButton.gotoFrame("release", true);
                 m_menuChoice = k_btnJointGame;
             }

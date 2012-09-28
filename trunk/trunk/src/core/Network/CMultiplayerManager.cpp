@@ -28,6 +28,8 @@ CMultiplayerManager::CMultiplayerManager(bool isServer, bool isOnline, const cha
 	char lpName[512];
 	gethostname( lpName, 512 );
     m_name = lpName;
+
+	m_keyID = -1;
 }
 
 CMultiplayerManager::~CMultiplayerManager()
@@ -132,6 +134,7 @@ bool CMultiplayerManager::sendReadyGameMessage()
 {
     CDataPacket packet(64);
 	packet.addByte( (unsigned char) CMultiplayerManager::ReadyGame );
+	packet.addShort((unsigned short) m_keyID );
 	packet.packData();
 	return m_comm->sendData( packet.getMessageData(), packet.getMessageSize(), 0 );
 }
@@ -208,12 +211,14 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
                     return doMsgJointGame(packet, addr);
                 }
                 break;
-            case CMultiplayerManager::AcceptJointGame:
-            case CMultiplayerManager::DeclineJointGame:                          
+			case CMultiplayerManager::ReadyGame:
                 {
-                    // do nothing...
+                    if ( m_isServer == false )
+                        return false;
+                    
+                    return doMsgClientReadyGame(packet, addr);
                 }
-                break;
+                break;           
             default:
 				{
 					return false;
@@ -240,13 +245,19 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
         getIView()->getDevice()->postEventFromUser( event );
         
         switch ( msgType ) 
-        {
-            case CMultiplayerManager::ReadyGame:
-                {
-                    if ( m_isServer == false )
+        {            
+			case CMultiplayerManager::AcceptJointGame:
+				{
+					if ( m_isServer == true )
                         return false;
-                    
-                    return doMsgClientReadyGame(packet, addr, devID);
+
+					// get key from server
+					m_keyID = packet.getShort();
+				}
+				break;
+            case CMultiplayerManager::DeclineJointGame:                          
+                {
+                    // do nothing...
                 }
                 break;
             case CMultiplayerManager::GetName:
@@ -341,18 +352,24 @@ bool CMultiplayerManager::doMsgJointGame( CDataPacket& packet, void* addr )
         else
         {
             response.addByte( (unsigned char) CMultiplayerManager::AcceptJointGame );
-            
+            			
             // get name from packet
             char clientName[512] = {0};
             unsigned short lenName = packet.getShort();
             packet.getData(clientName, lenName);
-            
+			
+			// add keyID
+			static unsigned short keyID = 0;
+			keyID++;
+			response.addShort(keyID);
+
             // add packet
             CDeviceDetails *dev = new CDeviceDetails();
             dev->m_name = clientName;
             dev->m_address = new sockaddr_in( *((sockaddr_in*)addr));
             dev->m_state = CDeviceDetails::stateAskConnection;
-            
+			dev->m_deviceData = (void*)((unsigned long)keyID);
+
             m_comm->addDevice( dev );
 
             char string[512];
@@ -367,15 +384,40 @@ bool CMultiplayerManager::doMsgJointGame( CDataPacket& packet, void* addr )
 }
 
 // doMsgReadyGame
-bool CMultiplayerManager::doMsgClientReadyGame( CDataPacket& packet, void* addr, int devID )
-{
-    // change state
-    m_comm->getDevice(devID)->m_state = CDeviceDetails::stateConnected;
+bool CMultiplayerManager::doMsgClientReadyGame( CDataPacket& packet, void* addr )
+{    
+	unsigned short keyID = packet.getShort();
+	sockaddr_in* address = (sockaddr_in*)addr;
+	
+	for ( int i = 0; i < MP_DEVICES; i++ )
+	{
+		CDeviceDetails* device = m_comm->getDevice(i);
 
-    char string[512];
-    sprintf(string,"- Network warning: client id %d ready game ...", devID);
-    os::Printer::log(string);    
-    return true;
+		if ( device && device->m_state == CDeviceDetails::stateAskConnection )
+		{
+			sockaddr_in* deviceAddress = (sockaddr_in*)device->m_address;
+			
+			if ( (unsigned long)device->m_deviceData == (unsigned long) keyID && memcmp( &(address->sin_addr), &(deviceAddress->sin_addr), sizeof(deviceAddress->sin_addr) ) == 0 )
+			{
+				device->m_state = CDeviceDetails::stateConnected;
+				
+				// change client port
+				delete device->m_address;
+				device->m_address = new sockaddr_in( *address );
+
+				char string[512];
+				sprintf(string,"- Network warning: client id %d ready game ...", i);
+				os::Printer::log(string);
+				return true;
+			}
+		}
+	}
+   
+	char string[512];
+	sprintf(string,"- Network warning: client connect game game error with keyID: %d...", keyID);
+	os::Printer::log(string);
+
+    return false;
 }
 
 // doMsgGetName    

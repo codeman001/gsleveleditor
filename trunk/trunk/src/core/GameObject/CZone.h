@@ -115,7 +115,7 @@ public:
     
     // unPackDataMultiplayer
     // unpack data on multiplayer
-    virtual void unpackDataMultiplayer(CDataPacket *packet);
+    virtual void unpackDataMultiplayer(CDataPacket *packet, int hostKeyId);
     
 	// getChilds
 	// get list child

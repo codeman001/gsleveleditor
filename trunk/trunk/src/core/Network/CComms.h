@@ -87,6 +87,7 @@ protected:
         void *data;
         int size;
         void *addr;
+        int idIgnore;
     };
         
     std::vector<SDataSend>  m_queueSendData;
@@ -145,7 +146,7 @@ public:
 
     bool sendData(const void *data, int size, int id);
     bool sendData(const void *data, int size, void* addr);
-    bool sendDataToAll(const void *data, int size);
+    bool sendDataToAll(const void *data, int size, int idIgnore = -1);
     
 	// cleanSocket
 	// clean up socket data

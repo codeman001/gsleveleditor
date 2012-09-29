@@ -52,6 +52,14 @@ public:
 	// get template
 	static CObjectTemplate* getTemplate( wchar_t* templateName );
 
+    // getTemplateId
+    // get template id for networking transfer
+    static int getTemplateId( wchar_t* templateName );
+    
+    // getTemplateName
+    // template name by id
+    static wchar_t* getTemplateName( int id );
+    
 #ifdef GSEDITOR
 	// getGameObject
 	// get a template object

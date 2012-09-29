@@ -30,10 +30,12 @@ CMultiplayerManager::CMultiplayerManager(bool isServer, bool isOnline, const cha
     m_name = lpName;
 
 	m_keyID = -1;
+    m_gamePacket = new CDataPacket( 1024*1024 );
 }
 
 CMultiplayerManager::~CMultiplayerManager()
 {
+    delete m_gamePacket;
 	delete m_comm; 
 }
 
@@ -145,9 +147,29 @@ bool CMultiplayerManager::sendGetNameMessage()
 {
     CDataPacket packet(64);
 	packet.addByte( (unsigned char) CMultiplayerManager::GetName );
-	packet.packData();    
-	return m_comm->sendData( packet.getMessageData(), packet.getMessageSize(), 0 );    
+	packet.packData();
+	return m_comm->sendData( packet.getMessageData(), packet.getMessageSize(), 0 );
 }
+
+// sendGameDataMessage
+// send game data
+bool CMultiplayerManager::sendGameDataMessage(CGameLevel *level)
+{
+    m_gamePacket->resetPacket();
+    m_gamePacket->addByte(CMultiplayerManager::GameData);
+    m_gamePacket->addShort(m_keyID);
+    level->packDataMultiplayer(m_gamePacket);    
+    m_gamePacket->packData();    
+    
+    bool ret = false;
+    if ( m_isServer )
+        ret = m_comm->sendDataToAll(m_gamePacket->getMessageData(), m_gamePacket->getMessageSize());
+    else
+        ret = m_comm->sendData( m_gamePacket->getMessageData(), m_gamePacket->getMessageSize(), 0 );
+    
+    return ret;
+}
+
 
 // onRevcData
 // process when revc data
@@ -274,7 +296,21 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
                 {
                     // todo nothing
                 }
-                break;    
+                break; 
+            case CMultiplayerManager::GameData:
+                {
+                    // forward data to all client
+                    if ( m_isServer == true )
+                    {
+                        for ( int i = 0; i < MP_DEVICES; i++ )
+                        {
+                            CDeviceDetails *dev = m_comm->getDevice(i);
+                            if ( dev->m_state == CDeviceDetails::stateConnected && i != devID )
+                                m_comm->sendData(buffer, size, dev->m_address);
+                        }
+                    }
+                }
+                break;
             default:
                 {
                     return false;

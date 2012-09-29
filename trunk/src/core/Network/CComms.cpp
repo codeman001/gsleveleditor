@@ -145,15 +145,31 @@ void CComms::updateDevices()
     {                
         if ( m_devices[j] != NULL )
         {
-            if ( m_devices[j]->m_state == CDeviceDetails::stateAskConnection && currentTime - m_devices[j]->m_lastTimeRespone > MP_WAITCONNECT_TIMEOUT )
+            unsigned int lastResponse = currentTime - m_devices[j]->m_lastTimeRespone;
+            
+            if ( m_devices[j]->m_state == CDeviceDetails::stateAskConnection && lastResponse > MP_WAITCONNECT_TIMEOUT )
             {
                 delete m_devices[j];
                 m_devices[j] = NULL;
                 
                 char string[512];
-                sprintf(string, "- Network warning: remove device id: %d because do not joint game", j);
+                sprintf(string, "- Network warning: remove device id %d because do not joint game", j);
                 os::Printer::log(string);                
+            }            
+            else if ( m_devices[j]->m_state == CDeviceDetails::stateConnected &lastResponse > MP_GAMELAG_TIMEOUT )
+            {
+                m_devices[j]->m_state = CDeviceDetails::stateLag;
             }
+            else if ( lastResponse > MP_GAME_TIMEOUT )
+            {
+                delete m_devices[j];
+                m_devices[j] = NULL;
+                
+                char string[512];
+                sprintf(string, "- Network warning: device id %d disconected", j);
+                os::Printer::log(string);  
+            }
+
         }
     }
 }

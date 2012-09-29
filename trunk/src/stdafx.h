@@ -9,7 +9,9 @@
 #include "targetver.h"
 #endif
 
-#define HAS_MULTIPLAYER
+#ifdef GSGAMEPLAY
+    #define HAS_MULTIPLAYER
+#endif
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 

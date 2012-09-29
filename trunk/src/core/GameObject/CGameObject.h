@@ -5,6 +5,7 @@
 #include "CSerializable.h"
 #include "IObjectComponent.h"
 #include "CObjectTemplate.h"
+#include "CDataPacket.h"
 
 // prototype class declare
 class CWayPoint;
@@ -426,11 +427,11 @@ public:
 	virtual void remove();
 
 	// saveData
-	// save data to serializable ( use for save in game .sav )
+	// save data to serializable ( use for save level .lv )
 	virtual void saveData( CSerializable* pObj );
 
 	// loadData
-	// load data to serializable ( use for load in game .sav )
+	// load data to serializable ( use for load level .lv )
 	virtual void loadData( CSerializable* pObj );
 
 	// getData
@@ -441,6 +442,14 @@ public:
 	// update data
 	virtual void updateData( CSerializable* pObj );
 
+    // packDataMultiplayer
+    // pack data multiplayer
+    virtual void packDataMultiplayer(CDataPacket *packet);
+    
+    // unPackDataMultiplayer
+    // unpack data on multiplayer
+    virtual void unpackDataMultiplayer(CDataPacket *packet);
+    
 	// releaseAllComponent
 	// delete all component on object
 	virtual void releaseAllComponent();

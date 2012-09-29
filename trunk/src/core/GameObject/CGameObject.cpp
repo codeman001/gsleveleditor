@@ -525,6 +525,38 @@ void CGameObject::updateData( CSerializable* pObj )
 	updateNodeScale();
 }
 
+
+// packDataMultiplayer
+// pack data multiplayer
+void CGameObject::packDataMultiplayer(CDataPacket *packet)
+{
+    
+    
+    // pack component
+	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
+	while ( iComp != iEnd )
+	{
+		(*iComp)->packDataMultiplayer( packet );
+		iComp++;
+	}
+}
+
+// unpackDataMultiplayer
+// unpack data on multiplayer
+void CGameObject::unpackDataMultiplayer(CDataPacket *packet)
+{
+    
+    
+    // unpack component
+	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
+	while ( iComp != iEnd )
+	{
+		(*iComp)->unpackDataMultiplayer( packet );
+		iComp++;
+	}   
+}
+
+
 void CGameObject::setLighting( bool b )
 {
 	m_lighting = b;

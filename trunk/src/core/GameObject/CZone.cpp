@@ -462,6 +462,30 @@ void CZone::updateData( CSerializable* pObj )
 }
 
 
+// packDataMultiplayer
+// pack data multiplayer
+void CZone::packDataMultiplayer(CDataPacket *packet)
+{
+	ArrayGameObjectIter it = m_childs.begin(), end = m_childs.end();
+	while ( it != end )
+	{
+		CGameObject *pObject = (CGameObject*) (*it);
+        
+		if ( pObject->isEnable() )
+			pObject->packDataMultiplayer(packet);
+        
+		it++;
+	}
+}
+
+// unPackDataMultiplayer
+// unpack data on multiplayer
+void CZone::unpackDataMultiplayer(CDataPacket *packet)
+{
+    // to do later
+    
+}
+
 #if defined(GSEDITOR) || defined(GSGAMEPLAY)
 // registerTerrainObj
 // add obj to terrain list

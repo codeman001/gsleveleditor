@@ -586,9 +586,7 @@ void CGameObject::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId )
     // unpack gameobject infomation
     bool enable = (bool)packet->getByte();
     bool visible = (bool)packet->getByte();
-    bool lighting = (bool)packet->getByte();
-    
-    printf("unpack enable %d visible %d\n", m_enable, m_visible);
+    bool lighting = (bool)packet->getByte();    
     
     m_position.X = packet->getFloat();
     m_position.Y = packet->getFloat();

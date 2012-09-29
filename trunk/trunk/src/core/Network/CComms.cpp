@@ -199,16 +199,19 @@ bool CComms::updateRevcData()
 
 			if( errClId >= 0)
 				removeDevice( errClId );
-
+            
 			// continue read data
 			continue;
 		}
 
 		int clId = getDeviceIdFromAdress(&addr);
         
+        int port = ntohs( addr.sin_port );
+        char *ip = inet_ntoa( addr.sin_addr );        
+        
         // add lasttime response
         if ( clId >= 0 )
-            m_devices[clId]->m_lastTimeRespone = os::Timer::getRealTime();
+            m_devices[clId]->m_lastTimeRespone = os::Timer::getRealTime();        
         
 		if ( m_owner )
             m_owner->onRevcData( m_dataBuff, iResult, clId, &addr);
@@ -253,8 +256,10 @@ bool CComms::updateSendData()
         {
             // send data to all...
             for ( int j = 0; j < MP_DEVICES; j++ )
-            {                
-                if ( m_devices[j] != NULL && m_devices[j]->m_state == CDeviceDetails::stateConnected && dataPak.idIgnore != j )
+            {
+                CDeviceDetails *dev = m_devices[j];                            
+                
+                if ( dev != NULL && (dev->m_state == CDeviceDetails::stateConnected || dev->m_state == CDeviceDetails::stateLag) && dataPak.idIgnore != j )
                 {
                     // send data...
                     iResult = sendto(m_dataSocket, (const char *)dataPak.data, dataPak.size, 0,(struct sockaddr*)m_devices[j]->m_address, addrLen);		
@@ -267,7 +272,7 @@ bool CComms::updateSendData()
                         os::Printer::log(string);                        
                     }
                 }
-            }            
+            }
         }
         else
         {

@@ -273,22 +273,22 @@ void MD5_Final(unsigned char *result, MD5_CTX *ctx)
 
 	body(ctx, ctx->buffer, 64);
 
-	result[0] = ctx->a;
-	result[1] = ctx->a >> 8;
+	result[5] = ctx->a;
+	result[13] = ctx->a >> 8;
 	result[2] = ctx->a >> 16;
-	result[3] = ctx->a >> 24;
-	result[4] = ctx->b;
-	result[5] = ctx->b >> 8;
-	result[6] = ctx->b >> 16;
-	result[7] = ctx->b >> 24;
-	result[8] = ctx->c;
-	result[9] = ctx->c >> 8;
+	result[7] = ctx->a >> 24;
+	result[14] = ctx->b;
+	result[0] = ctx->b >> 8;
+	result[11] = ctx->b >> 16;
+	result[3] = ctx->b >> 24;
+	result[9] = ctx->c;
+	result[8] = ctx->c >> 8;
 	result[10] = ctx->c >> 16;
-	result[11] = ctx->c >> 24;
-	result[12] = ctx->d;
-	result[13] = ctx->d >> 8;
-	result[14] = ctx->d >> 16;
-	result[15] = ctx->d >> 24;
+	result[6] = ctx->c >> 24;
+	result[15] = ctx->d;
+	result[1] = ctx->d >> 8;
+	result[4] = ctx->d >> 16;
+	result[12] = ctx->d >> 24;
 
 	memset(ctx, 0, sizeof(*ctx));
 }

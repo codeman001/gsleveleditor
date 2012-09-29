@@ -4,8 +4,6 @@
 #include "stdafx.h"
 #include "CDataPacket.h"
 
-#ifdef HAS_MULTIPLAYER
-
 #define MP_SERVER_PORT	"7564"
 #define MP_CLIENT_PORT	"6564"
 
@@ -13,8 +11,13 @@
 #define MP_DEVICES			16
 #define MP_DATA_BUFFER		10240
 
-#define MP_GAME_TIMEOUT   10000
-#define MP_WAITCONNECT_TIMEOUT   10000
+#define MP_GAME_TIMEOUT     15000
+#define MP_GAMELAG_TIMEOUT  1000
+#define MP_GAMEFPS_SYNC     20
+#define MP_WAITCONNECT_TIMEOUT  10000
+
+
+#ifdef HAS_MULTIPLAYER
 
 // CDeviceDetails
 // object store device infomation
@@ -26,7 +29,7 @@ public:
 		stateUnknown = 0,
 		stateAskConnection,
 		stateConnected,
-		stateWaitReconect,
+		stateLag,
 	};
 public:
 	std::string		m_name;

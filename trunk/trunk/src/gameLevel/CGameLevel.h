@@ -115,6 +115,14 @@ public:
 	// update per frame
 	virtual void update();
 
+    // packDataMultiplayer
+    // pack data multiplayer
+    virtual void packDataMultiplayer(CDataPacket *packet);
+    
+    // unPackDataMultiplayer
+    // unpack data on multiplayer
+    virtual void unpackDataMultiplayer(CDataPacket *packet);
+    
 	// render
 	// render level per frame
 	virtual void render();

@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "CDataPacket.h"
 
-#ifdef HAS_MULTIPLAYER
-
 #include "md5.h"
 
 #define	CHECKSUMBYTE	16
@@ -14,6 +12,7 @@ CDataPacket::CDataPacket( int size )
 	
 	m_pos = CHECKSUMBYTE;	
 	m_size = size;
+    m_cacheSize = size;
 }
 
 CDataPacket::CDataPacket( unsigned char *data, int size )
@@ -23,6 +22,13 @@ CDataPacket::CDataPacket( unsigned char *data, int size )
 		
 	m_pos = CHECKSUMBYTE;
 	m_size = size;
+    m_cacheSize = size;
+}
+
+void CDataPacket::resetPacket()
+{
+	memset( m_messageBody, 0, m_cacheSize );	
+	m_pos = CHECKSUMBYTE;    
 }
 
 CDataPacket::~CDataPacket()
@@ -146,5 +152,3 @@ unsigned char* CDataPacket::calcDataChecksum()
 	MD5_Final( ret, &md5Contex );
 	return ret;
 }
-
-#endif

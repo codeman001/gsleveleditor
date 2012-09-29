@@ -4,6 +4,7 @@
 class CGameObject;
 
 #include "CSerializable.h"
+#include "CDataPacket.h"
 
 class IObjectComponent
 {
@@ -60,6 +61,20 @@ public:
 	// load data to serializable
 	virtual void loadData( CSerializable* pObj ) = 0;
 
+    // packDataMultiplayer
+    // pack data multiplayer
+    virtual void packDataMultiplayer(CDataPacket *packet)
+    {
+        
+    }
+    
+    // unPackDataMultiplayer
+    // unpack data on multiplayer
+    virtual void unpackDataMultiplayer(CDataPacket *packet)
+    {
+        
+    }
+    
 	// isPhysicComponent
 	// check is physic component
 	virtual bool isPhysicComponent()

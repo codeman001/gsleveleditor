@@ -452,6 +452,26 @@ void CGameLevel::update()
 	CScriptManager::getInstance()->update();
 }
 
+// packDataMultiplayer
+// pack data multiplayer
+void CGameLevel::packDataMultiplayer(CDataPacket *packet)
+{
+    ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
+	while ( iZone != iEnd )
+	{		
+		(*iZone)->packDataMultiplayer(packet);
+		iZone++;
+	}
+}
+
+// unPackDataMultiplayer
+// unpack data on multiplayer
+void CGameLevel::unpackDataMultiplayer(CDataPacket *packet)
+{
+    // to do later
+    
+}
+
 // render
 // render level per frame
 void CGameLevel::render()

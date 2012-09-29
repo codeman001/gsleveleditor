@@ -1,8 +1,6 @@
 #ifndef _DATAPACKET_H_
 #define _DATAPACKET_H_
 
-#ifdef HAS_MULTIPLAYER
-
 #include "stdafx.h"
 
 class CDataPacket
@@ -11,10 +9,13 @@ protected:
 	unsigned char	*m_messageBody;
 	int				m_pos;
 	int				m_size;
+    int             m_cacheSize;
 public:
 	CDataPacket( int size );
 	CDataPacket( unsigned char *data, int size );
-
+    
+    void resetPacket();
+    
 	virtual ~CDataPacket();
 
 	// addData
@@ -73,7 +74,5 @@ public:
 		return m_pos;
 	}
 };
-
-#endif
 
 #endif

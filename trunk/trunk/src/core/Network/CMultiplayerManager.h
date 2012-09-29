@@ -7,6 +7,7 @@
 
 #include "CComms.h"
 #include "CDataPacket.h"
+#include "CGameLevel.h"
 
 class CMultiplayerManager
 {
@@ -37,7 +38,8 @@ protected:
 
     std::string m_name;
     
-	short	m_keyID;
+	short           m_keyID;
+    CDataPacket*    m_gamePacket;    
 public:
 	CMultiplayerManager(bool isServer, bool isOnline, const char *connectIP = NULL);
 	virtual ~CMultiplayerManager();
@@ -103,7 +105,11 @@ public:
     
     // sendGetNameMessage
     // send get name
-    bool sendGetNameMessage();        
+    bool sendGetNameMessage();
+    
+    // sendGameDataMessage
+    // send game data
+    bool sendGameDataMessage(CGameLevel *level);
     
     // onRevcData
 	// process when revc data

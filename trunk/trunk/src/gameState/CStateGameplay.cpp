@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "IView.h"
+#include "gameEvent.h"
 #include "CStateGameplay.h"
 #include "CGameCameraFollowAnimator.h"
 
@@ -8,7 +9,7 @@
 CStateGameplay::CStateGameplay()
 	:CGameState(CGameState::GSStateGameplay)
 {
-	m_level = new CGameLevel();
+	m_level = new CGameLevel();    
 }
 
 CStateGameplay::~CStateGameplay()
@@ -52,6 +53,8 @@ void CStateGameplay::onCreate()
 		m_mpMgr->setKeyID(keyID);
         m_mpMgr->sendReadyGameMessage();
     }
+    
+    m_syncGameInterval = 1000.0f/(float)MP_GAMEFPS_SYNC;
 #endif
 
 }
@@ -70,6 +73,13 @@ void CStateGameplay::onUpdate()
 {
 #ifdef HAS_MULTIPLAYER
 	m_mpMgr->update();
+    
+    m_syncGameInterval = m_syncGameInterval - getIView()->getTimeStep();
+    if ( m_syncGameInterval < 0 )
+    {
+        m_mpMgr->sendGameDataMessage(m_level);
+        m_syncGameInterval = 1000.0f/(float)MP_GAMEFPS_SYNC;        
+    }
 #endif
 	m_level->update();
 }
@@ -77,4 +87,23 @@ void CStateGameplay::onUpdate()
 void CStateGameplay::onRender()
 {
 	m_level->render();
+}
+
+bool CStateGameplay::OnEvent(const SEvent& event)
+{
+    if ( event.EventType == EET_GAME_EVENT && event.GameEvent.EventID == (s32)EvtNetworking )
+    {
+        SEventNetworking *networkEvent = ((SEventNetworking*)event.GameEvent.EventData);
+        
+#ifdef HAS_MULTIPLAYER
+        // todo unpack data
+        if ( networkEvent->eventID == CMultiplayerManager::GameData )
+        {
+            CDataPacket *gamePacket = (CDataPacket*)networkEvent->data;
+            m_level->unpackDataMultiplayer(gamePacket);
+        }
+#endif
+        
+    }    
+    return true;
 }

@@ -109,6 +109,14 @@ public:
 	// update data
 	virtual void updateData( CSerializable* pObj );
 
+    // packDataMultiplayer
+    // pack data multiplayer
+    virtual void packDataMultiplayer(CDataPacket *packet);
+    
+    // unPackDataMultiplayer
+    // unpack data on multiplayer
+    virtual void unpackDataMultiplayer(CDataPacket *packet);
+    
 	// getChilds
 	// get list child
 	inline ArrayGameObject* getChilds()

@@ -14,6 +14,7 @@ protected:
 	CMenuFxObj		m_btnJointButton;
 
 	std::string		m_serverIP;
+
 public:
 	CStateMainMenu();
 	virtual ~CStateMainMenu();

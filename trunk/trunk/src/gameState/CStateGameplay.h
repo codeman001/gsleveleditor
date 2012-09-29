@@ -1,14 +1,18 @@
 #ifndef STATE_GAMEPLAY_
 #define STATE_GAMEPLAY_
 
-
+#include "stdafx.h"
 #include "CGameState.h"
 
-class CStateGameplay: public CGameState
+class CStateGameplay: public CGameState, public IEventReceiver
 {
-protected:
-	
+protected:	
 	CGameLevel		*m_level;
+    
+#ifdef HAS_MULTIPLAYER
+    float           m_syncGameInterval;
+#endif
+    
 public:
 	CStateGameplay();
 	virtual ~CStateGameplay();
@@ -19,6 +23,8 @@ public:
 	virtual void onUpdate();
 	virtual void onRender();
 
+    virtual bool OnEvent(const SEvent& event);    
+    
 	// getLevel
 	// get 3d level
 	CGameLevel* getLevel()

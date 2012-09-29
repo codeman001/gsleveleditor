@@ -215,7 +215,7 @@ bool CGameLevel::loadStep( int nStep )
 	char	lpStringA[1024];
 	wchar_t	lpString[1024];
 
-	while ( *p != NULL )
+	while ( *p != 0 )
 	{
 		if ( *p == '{' )
 		{
@@ -456,21 +456,87 @@ void CGameLevel::update()
 // pack data multiplayer
 void CGameLevel::packDataMultiplayer(CDataPacket *packet)
 {
+#ifdef HAS_MULTIPLAYER    
+    // add number zone
+    packet->addInt( (int)m_zones.size() );
+    
+    // pack data all zone
     ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
 	while ( iZone != iEnd )
 	{		
 		(*iZone)->packDataMultiplayer(packet);
 		iZone++;
 	}
+#endif
 }
 
 // unPackDataMultiplayer
 // unpack data on multiplayer
-void CGameLevel::unpackDataMultiplayer(CDataPacket *packet)
+void CGameLevel::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
 {
-    // to do later
+#ifdef HAS_MULTIPLAYER
+    int nZone = packet->getInt();
+    if ( nZone < 0 || nZone > m_zones.size() )
+    {
+        // sync error
+        return;
+    }
     
+    // loop in all zone
+    for (int i = 0; i < nZone; i++)
+    {
+        // read zone infomation
+        int zoneType = packet->getByte();
+        if ( zoneType != CGameObject::ZoneObject )
+        {
+            // sync error
+            return;
+        }
+        
+        int zoneid = packet->getInt();
+        int zoneParentId = packet->getInt();
+        
+        CZone *zone = m_zones[i];        
+        if ( zone->getID() != zoneid )
+        {
+            // sync error
+            return;
+        }
+        
+        long parentId = -1;
+        if ( zone->getParent() )
+            parentId = zone->getParent()->getID();
+        
+        if ( zoneParentId != parentId )
+        {
+            // sync error
+            return;
+        }
+        
+        // unpack zone game data
+        zone->unpackDataMultiplayer( packet, hostKeyId );        
+    }
+#endif
 }
+
+long CGameLevel::getNetworkObjID( SNetworkObjID& networkID )
+{
+    if ( m_mapNetworkObjID.find(networkID) == m_mapNetworkObjID.end() )
+        return  -1;
+    
+    return m_mapNetworkObjID[networkID];
+}
+
+void CGameLevel::registerNetworkObjID( SNetworkObjID& networkID, long objectID )
+{
+    m_mapNetworkObjID[networkID] = objectID;
+}
+
+void CGameLevel::unRegisterNetworkObjID( SNetworkObjID& networkID )
+{
+    m_mapNetworkObjID.erase(networkID);
+}
+
 
 // render
 // render level per frame

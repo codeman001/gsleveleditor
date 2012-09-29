@@ -85,7 +85,9 @@ protected:
 	bool				m_lockObject;
 
 	bool				m_needSortComponent;
-
+    bool                m_needSyncNetwork;
+    bool                m_isNetworkController;
+    
 	CGameObject			*m_parent;
 
 #ifdef GSEDITOR	
@@ -395,7 +397,7 @@ public:
 
 	// setLockObject
 	// set lock object
-	void setLockObject( bool b )
+	inline void setLockObject( bool b )
 	{
 		m_lockObject = b;
 	}
@@ -407,6 +409,34 @@ public:
 		return m_lockObject;
 	}
 
+    // setSyncNetwork
+    // mark to sync network
+    inline void setSyncNetwork( bool b )
+    {
+        m_needSyncNetwork = b;
+    }
+    
+    // isSyncNetwork
+    // check to sync network
+    bool isSyncNetwork()
+    {
+        return m_needSyncNetwork;
+    }
+    
+    // setNetworkController
+    // set network controller object
+    inline void setNetworkController( bool b )
+    {
+        m_isNetworkController = b;
+    }
+    
+    // isNetworkController
+    // check the network controller
+    inline bool isNetworkController()
+    {
+        return m_isNetworkController;
+    }    
+    
 	virtual void setLighting( bool b );
 
 	virtual bool isLighting()
@@ -448,7 +478,7 @@ public:
     
     // unPackDataMultiplayer
     // unpack data on multiplayer
-    virtual void unpackDataMultiplayer(CDataPacket *packet);
+    virtual void unpackDataMultiplayer(CDataPacket *packet, int hostKeyId);
     
 	// releaseAllComponent
 	// delete all component on object
@@ -541,7 +571,22 @@ typedef std::vector<CGameObject*>			ArrayGameObject;
 typedef std::vector<CGameObject*>::iterator	ArrayGameObjectIter;
 
 // typedef for array component
-typedef std::vector<IObjectComponent*>			ArrayComponent;
+typedef std::vector<IObjectComponent*>              ArrayComponent;
 typedef std::vector<IObjectComponent*>::iterator	ArrayComponentIter;
+
+// struct network id
+struct SNetworkObjID
+{
+    short   hostID;
+    long    objectID;
+    
+    bool operator < (const SNetworkObjID& other) const
+    {
+        if ( hostID != other.hostID )
+            return hostID < other.hostID;
+        else 
+            return objectID < other.objectID;    
+    }
+};
 
 #endif

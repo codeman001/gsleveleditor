@@ -192,7 +192,7 @@ bool CComms::updateRevcData()
 		socklen_t addrLen  = sizeof( addr );
 
 		iResult = recvfrom(m_dataSocket, (char *)m_dataBuff, MP_DATA_BUFFER, 0,(struct sockaddr*)&addr, &addrLen);
-
+        
 		if( (iResult == SOCKET_ERROR) || (addrLen != sizeof(struct sockaddr)) )
 		{
 			int errClId = getDeviceIdFromAdress(&addr);
@@ -254,16 +254,20 @@ bool CComms::updateSendData()
             // send data to all...
             for ( int j = 0; j < MP_DEVICES; j++ )
             {                
-                if ( m_devices[j] != NULL && m_devices[j]->m_state == CDeviceDetails::stateConnected )
+                if ( m_devices[j] != NULL && m_devices[j]->m_state == CDeviceDetails::stateConnected && dataPak.idIgnore != j )
                 {
                     // send data...
                     iResult = sendto(m_dataSocket, (const char *)dataPak.data, dataPak.size, 0,(struct sockaddr*)m_devices[j]->m_address, addrLen);		
                     if (iResult == SOCKET_ERROR)
                     {
                         removeDevice(j);
+
+                        char string[512];
+                        sprintf(string, "- Network warning: send data to device %d error", j);
+                        os::Printer::log(string);                        
                     }
                 }
-            }
+            }            
         }
         else
         {
@@ -488,7 +492,7 @@ bool CComms::sendData(const void *data, int size, void* addr)
 
 // sendDataToAll
 // push data to send queue
-bool CComms::sendDataToAll(const void *data, int size)
+bool CComms::sendDataToAll(const void *data, int size, int idIgnore)
 {
     SDataSend dataPak;
     
@@ -496,6 +500,7 @@ bool CComms::sendDataToAll(const void *data, int size)
     memcpy(dataPak.data, data, size);
     dataPak.size = size;
     dataPak.addr = NULL;
+    dataPak.idIgnore = idIgnore;
     
     m_queueSendData.push_back( dataPak );
     return true; 

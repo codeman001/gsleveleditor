@@ -12,6 +12,10 @@
 
 #include "CTerrainComponent.h"
 
+#ifdef GSGAMEPLAY
+#include "CGameLevel.h"
+#endif
+
 CZone::CZone()
 {
 	m_needSortObject = true;
@@ -466,24 +470,126 @@ void CZone::updateData( CSerializable* pObj )
 // pack data multiplayer
 void CZone::packDataMultiplayer(CDataPacket *packet)
 {
+#ifdef HAS_MULTIPLAYER    
+    // obj type
+    packet->addByte( (unsigned char) m_objectType );
+    packet->addInt( (int)m_objectID );    
+    if ( m_parent )
+        packet->addInt( (int)m_parent->getID() );
+    else
+        packet->addInt( -1 );
+    
+    
+    // find object need sync game data
+    ArrayGameObject listObjectSync;    
 	ArrayGameObjectIter it = m_childs.begin(), end = m_childs.end();
 	while ( it != end )
 	{
 		CGameObject *pObject = (CGameObject*) (*it);
         
-		if ( pObject->isEnable() )
-			pObject->packDataMultiplayer(packet);
+		if ( pObject->isEnable() && pObject->isSyncNetwork() && pObject->isNetworkController() == false )
+            listObjectSync.push_back(pObject);
         
 		it++;
 	}
+    
+    // sync object game data to packet
+    packet->addInt( (int)listObjectSync.size() );
+    it = listObjectSync.begin(), end = listObjectSync.end();
+	while ( it != end )
+	{
+		CGameObject *pObject = (CGameObject*) (*it);
+        pObject->packDataMultiplayer(packet);        
+        it++;
+    }
+#endif   
 }
 
 // unPackDataMultiplayer
 // unpack data on multiplayer
-void CZone::unpackDataMultiplayer(CDataPacket *packet)
+void CZone::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
 {
-    // to do later
+#ifdef HAS_MULTIPLAYER
+    int nObjectSync = packet->getInt();
     
+    for (int i = 0; i < nObjectSync; i++)
+    {
+        // sync object game data
+        // obj type
+        int     objType = packet->getByte();
+        if ( objType != CGameObject::GameObject )
+        {
+            // sync data error
+            return;
+        }
+        
+        long    networkObjectID = packet->getInt();
+        long    networkParentID = packet->getInt();
+        short   templateID = packet->getShort();
+        
+        wchar_t *templateName = CObjTemplateFactory::getTemplateName(templateID);
+        if ( templateName == NULL )
+        {
+            // sync data error
+            return;
+        }
+     
+        CGameObject *obj = NULL;
+        
+        SNetworkObjID networkObjID;
+        networkObjID.hostID = hostKeyId;
+        networkObjID.objectID = networkObjectID;
+
+        CGameLevel *level = CGameLevel::getCurrentLevel();
+        
+        // search network object id
+        long objectID = level->getNetworkObjID(networkObjID);
+        
+        if ( objectID == -1 )
+        {
+            // need spawn object
+            obj = createObject( templateName );
+            
+            char string[512] = {0};
+            char temp[512] = {0};
+            uiString::convertUnicodeToUTF8( (const unsigned short*)templateName, temp);
+            
+            if ( obj == NULL )
+            {
+                // sync error                
+                sprintf(string, "- Network warning: can not create obj template:'%s' from host id: %d", temp, hostKeyId);
+                os::Printer::log( string );
+                return;
+            }
+            
+            // set object is create from host
+            obj->setNetworkController(true);
+            
+            // register network object id
+            level->registerNetworkObjID(networkObjID, obj->getID());            
+            sprintf(string, "- Network warning: create obj template:'%s' with id: %ld from host id: %d", temp, obj->getID(), hostKeyId);
+            os::Printer::log( string );
+            
+        }
+        else
+        {
+            obj = level->searchObject(objectID);
+            if ( obj == NULL )
+            {
+                char string[512] = {0}; 
+                sprintf(string, "- Network warning: cannot get object %ld, hostid: %d", objectID, hostKeyId);
+                os::Printer::log( string );
+                
+                // sync error
+                return;
+            }
+        }
+        
+        // unpack object data
+        obj->unpackDataMultiplayer( packet, hostKeyId );
+        
+    }
+#endif
 }
 
 #if defined(GSEDITOR) || defined(GSGAMEPLAY)

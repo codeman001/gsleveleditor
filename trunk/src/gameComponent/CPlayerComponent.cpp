@@ -147,6 +147,10 @@ void CPlayerComponent::updateComponent()
 	if ( m_collada == NULL )
 		return;	
 
+    // allway sync
+    m_gameObject->setSyncNetwork(true);
+    
+    // update player
 	updateState();
 	updateWeaponPosition();
 }
@@ -178,7 +182,7 @@ void CPlayerComponent::loadData( CSerializable* pObj )
 // cache event
 bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 {
-	if ( irrEvent.EventType == EET_GAME_EVENT )
+	if ( irrEvent.EventType == EET_GAME_EVENT && m_gameObject->isNetworkController() == false )
 	{
 		if ( irrEvent.GameEvent.EventID == EvtPlayerMove )
 		{

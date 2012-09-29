@@ -117,7 +117,7 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 			case k_btnJointGame:
 				CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
 				CGameLevel::setLevelProperty("isHost","false");				
-                CGameLevel::setLevelProperty("serverIp", m_serverIP.c_str());
+                CGameLevel::setLevelProperty("serverIP", m_serverIP.c_str());
 
 #ifdef HAS_MULTIPLAYER
 				char keyID[512];

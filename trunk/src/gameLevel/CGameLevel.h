@@ -36,6 +36,8 @@ protected:
 	std::vector<std::string>	m_listScriptFile;
 	int				m_numObjects;
 	int				m_numObjectsLoaded;
+    
+    std::map<SNetworkObjID, long>   m_mapNetworkObjID;    
 protected:
 	// addScriptFile
 	// add file script to compile
@@ -121,12 +123,18 @@ public:
     
     // unPackDataMultiplayer
     // unpack data on multiplayer
-    virtual void unpackDataMultiplayer(CDataPacket *packet);
+    virtual void unpackDataMultiplayer(CDataPacket *packet, int hostKeyId);
     
 	// render
 	// render level per frame
 	virtual void render();
-
+    
+    // getNetworkObjID
+    // reference network objectid to my game objectid
+    long getNetworkObjID( SNetworkObjID& networkID );    
+    void registerNetworkObjID( SNetworkObjID& networkID, long objectID );    
+    void unRegisterNetworkObjID( SNetworkObjID& networkID );
+    
 	// setCamera
 	// set current camera
 	void setCamera( CGameCamera* cam );

@@ -5,6 +5,7 @@
 #include "IView.h"
 
 #include "CGameColladaSceneNode.h"
+#include "CObjTemplateFactory.h"
 
 #ifdef GSGAMEPLAY
 #include "CWayPoint.h"
@@ -67,7 +68,9 @@ void CGameObject::initNull()
 	m_parent		= NULL;
 
 	m_needSortComponent	= true;
-
+    m_needSyncNetwork   = false;
+    m_isNetworkController = false;
+    
 #ifdef GSEDITOR
 	m_treeItem		= NULL;
 	m_uiVisible		= true;
@@ -530,7 +533,37 @@ void CGameObject::updateData( CSerializable* pObj )
 // pack data multiplayer
 void CGameObject::packDataMultiplayer(CDataPacket *packet)
 {
+#ifdef HAS_MULTIPLAYER    
+    // obj type
+    packet->addByte( (unsigned char) m_objectType );
     
+    // obj id
+    packet->addInt( (int)m_objectID );
+    packet->addInt( (int)m_parent->getID() );
+    
+    // template
+    packet->addShort( (unsigned short) CObjTemplateFactory::getTemplateId( (wchar_t*)m_objectTemplate.c_str()));
+    
+    // gameobject sync infomation
+    // obj info
+    packet->addByte((unsigned char)m_enable);
+    packet->addByte((unsigned char)m_visible);
+    packet->addByte((unsigned char)m_lighting);    
+    
+    // obj position
+    packet->addFloat( m_position.X );
+    packet->addFloat( m_position.Y );
+    packet->addFloat( m_position.Z );
+
+    // obj rotation
+    packet->addFloat( m_rotation.X );
+    packet->addFloat( m_rotation.Y );
+    packet->addFloat( m_rotation.Z );
+
+    // obj scale
+    packet->addFloat( m_scale.X );
+    packet->addFloat( m_scale.Y );
+    packet->addFloat( m_scale.Z );    
     
     // pack component
 	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
@@ -539,13 +572,35 @@ void CGameObject::packDataMultiplayer(CDataPacket *packet)
 		(*iComp)->packDataMultiplayer( packet );
 		iComp++;
 	}
+
+    // set flag to sync = false to next update
+    setSyncNetwork(false);
+#endif
 }
 
 // unpackDataMultiplayer
 // unpack data on multiplayer
-void CGameObject::unpackDataMultiplayer(CDataPacket *packet)
+void CGameObject::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId )
 {
+#ifdef HAS_MULTIPLAYER    
+    // unpack gameobject infomation
+    bool enable = (bool)packet->getByte();
+    bool visible = (bool)packet->getByte();
+    bool lighting = (bool)packet->getByte();
     
+    printf("unpack enable %d visible %d\n", m_enable, m_visible);
+    
+    m_position.X = packet->getFloat();
+    m_position.Y = packet->getFloat();
+    m_position.Z = packet->getFloat();
+
+    m_rotation.X = packet->getFloat();
+    m_rotation.Y = packet->getFloat();
+    m_rotation.Z = packet->getFloat();
+    
+    m_scale.X = packet->getFloat();
+    m_scale.Y = packet->getFloat();
+    m_scale.Z = packet->getFloat();    
     
     // unpack component
 	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
@@ -553,7 +608,17 @@ void CGameObject::unpackDataMultiplayer(CDataPacket *packet)
 	{
 		(*iComp)->unpackDataMultiplayer( packet );
 		iComp++;
-	}   
+	}
+    
+    setEnable(enable);
+    setVisible(visible);
+    setLighting(lighting);
+    
+    updateNodePosition();
+    updateNodeRotation();
+    updateNodeScale();
+    
+#endif
 }
 
 

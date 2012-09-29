@@ -5,12 +5,19 @@
 
 #ifdef HAS_MULTIPLAYER
 
+static unsigned short s_keyID = 0;
+
 CMultiplayerManager::CMultiplayerManager(bool isServer, bool isOnline, const char *connectIP)
 {
 	m_comm = new CComms(this, isServer, isOnline);
     
     if ( isServer )
+    {
         m_comm->initServer();
+        
+        // need request from server
+        m_keyID = s_keyID++;        
+    }
     else
     {
         if ( connectIP == NULL )
@@ -19,6 +26,9 @@ CMultiplayerManager::CMultiplayerManager(bool isServer, bool isOnline, const cha
         {
             m_comm->initClient(connectIP);     
         }
+        
+        // need request from server
+        m_keyID = -1;
     }
     
 	m_isServer = isServer;
@@ -29,7 +39,6 @@ CMultiplayerManager::CMultiplayerManager(bool isServer, bool isOnline, const cha
 	gethostname( lpName, 512 );
     m_name = lpName;
 
-	m_keyID = -1;
     m_gamePacket = new CDataPacket( 1024*1024 );
 }
 
@@ -174,7 +183,7 @@ bool CMultiplayerManager::sendGameDataMessage(CGameLevel *level)
 // onRevcData
 // process when revc data
 bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID, void *addr)
-{
+{    
     CDataPacket packet(buffer, size);
 	if ( packet.checkData() == false )
 	{
@@ -301,14 +310,7 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
                 {
                     // forward data to all client
                     if ( m_isServer == true )
-                    {
-                        for ( int i = 0; i < MP_DEVICES; i++ )
-                        {
-                            CDeviceDetails *dev = m_comm->getDevice(i);
-                            if ( dev->m_state == CDeviceDetails::stateConnected && i != devID )
-                                m_comm->sendData(buffer, size, dev->m_address);
-                        }
-                    }
+                        m_comm->sendDataToAll(buffer, size, devID);
                 }
                 break;
             default:
@@ -395,16 +397,14 @@ bool CMultiplayerManager::doMsgJointGame( CDataPacket& packet, void* addr )
             packet.getData(clientName, lenName);
 			
 			// add keyID
-			static unsigned short keyID = 0;
-			keyID++;
-			response.addShort(keyID);
+			response.addShort(s_keyID++);
 
             // add packet
             CDeviceDetails *dev = new CDeviceDetails();
             dev->m_name = clientName;
             dev->m_address = new sockaddr_in( *((sockaddr_in*)addr));
             dev->m_state = CDeviceDetails::stateAskConnection;
-			dev->m_deviceData = (void*)((unsigned long)keyID);
+			dev->m_deviceData = (void*)((unsigned long)s_keyID - 1);
 
             m_comm->addDevice( dev );
 

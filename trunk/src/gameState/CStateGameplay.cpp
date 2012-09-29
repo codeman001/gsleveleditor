@@ -46,7 +46,7 @@ void CStateGameplay::onCreate()
 		m_mpMgr = new CMultiplayerManager(true, false);
 	else
     {
-        const char *connectIP = CGameLevel::getLevelProperty("serverIp");
+        const char *connectIP = CGameLevel::getLevelProperty("serverIP");
 		short keyID = (short)( atoi(CGameLevel::getLevelProperty("keyID")) );
 		
 		m_mpMgr = new CMultiplayerManager(false, false, connectIP);
@@ -57,12 +57,16 @@ void CStateGameplay::onCreate()
     m_syncGameInterval = 1000.0f/(float)MP_GAMEFPS_SYNC;
 #endif
 
+    // register event for catch networking message
+    getIView()->registerEvent("stateGameplay", this);
 }
 
 void CStateGameplay::onDestroy()
 {
     // enable gamecontrol
     CGameControl::getInstance()->setEnable(false);
+    
+    getIView()->unRegisterEvent(this);
 }
 
 void CStateGameplay::onFsCommand( const char *command, const char *param )
@@ -93,14 +97,16 @@ bool CStateGameplay::OnEvent(const SEvent& event)
 {
     if ( event.EventType == EET_GAME_EVENT && event.GameEvent.EventID == (s32)EvtNetworking )
     {
-        SEventNetworking *networkEvent = ((SEventNetworking*)event.GameEvent.EventData);
+        SEventNetworking *networkEvent = ((SEventNetworking*)event.GameEvent.EventData);                
         
 #ifdef HAS_MULTIPLAYER
         // todo unpack data
         if ( networkEvent->eventID == CMultiplayerManager::GameData )
         {
             CDataPacket *gamePacket = (CDataPacket*)networkEvent->data;
-            m_level->unpackDataMultiplayer(gamePacket);
+
+            int hostKeyID = (int)gamePacket->getShort();
+            m_level->unpackDataMultiplayer(gamePacket, hostKeyID);
         }
 #endif
         

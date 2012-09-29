@@ -3642,7 +3642,7 @@ void CColladaMeshComponent::initFromNode( CGameColladaContainerSceneNode* node )
 	
 	while ( queueNode.size() )
 	{
-		SGroupNode& groupNode = queueNode.front();
+		SGroupNode groupNode = queueNode.front();
 		queueNode.pop();
 
 		// clone new node
@@ -3653,7 +3653,7 @@ void CColladaMeshComponent::initFromNode( CGameColladaContainerSceneNode* node )
 		std::string name = groupNode.initChild->getName();
 		if ( name.length() > 0 )
 			m_mapNode[ name ] = newNode;
-
+        
 		// store sid this node
 		name = ((CGameColladaSceneNode*)groupNode.initChild)->getSIDName();
 		if ( name.length() > 0 )

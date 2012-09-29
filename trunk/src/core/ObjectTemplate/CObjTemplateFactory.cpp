@@ -132,6 +132,45 @@ CObjectTemplate* CObjTemplateFactory::getTemplate( wchar_t* templateName )
 	return NULL;
 }
 
+// getTemplateId
+// get template id for networking transfer
+int CObjTemplateFactory::getTemplateId( wchar_t* templateName )
+{
+	ArrayTemplateIter i = s_objectTemplate.begin(), end = s_objectTemplate.end();
+    
+	static char lpNameA[1024];	
+	static char templateNameA[1024];
+    
+	uiString::convertUnicodeToUTF8( (unsigned short*) templateName, templateNameA );
+
+    int id = 0;
+	while ( i != end )
+	{
+		CObjectTemplate *p = &(*i);
+        
+		uiString::convertUnicodeToUTF8( (unsigned short*) p->getObjectTemplateName(), lpNameA );
+        
+		if ( strcmp( lpNameA, templateNameA) == 0 )
+		{
+			return id;
+		}
+        id++;
+		i++;
+	}
+	return -1;    
+}
+
+// getTemplateName
+// template name by id
+wchar_t* CObjTemplateFactory::getTemplateName( int id )
+{
+    if ( id < 0 || id > s_objectTemplate.size() )
+        return NULL;
+    
+    return s_objectTemplate[id].getObjectTemplateName();    
+}
+
+
 // spawnObject
 // create a object on template
 CGameObject* CObjTemplateFactory::spawnObject( wchar_t* templateName )

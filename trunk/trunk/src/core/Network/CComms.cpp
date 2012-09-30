@@ -123,12 +123,21 @@ void CComms::removeAllDeviceNotResponse( unsigned int time )
 int CComms::getDeviceIdFromAdress( const void *addr )
 {
 	const int addrLength = sizeof(struct sockaddr_in);
+    sockaddr_in *hostAddr = (sockaddr_in*)addr;
 
+    
 	for (int i = 0; i < MP_DEVICES; i++)
 	{
-		if( m_devices[i] &&  memcmp(m_devices[i]->m_address, addr, addrLength) == 0 )
-		{
-			return i;
+		if( m_devices[i] )
+        {
+            sockaddr_in *devAddr = (sockaddr_in*)m_devices[i]->m_address;
+            
+            // compare port && address
+            if ( devAddr->sin_port == hostAddr->sin_port && 
+                memcmp(&(devAddr->sin_addr), &(hostAddr->sin_addr), sizeof(hostAddr->sin_addr)) == 0 )
+            {
+                return i;
+            }
 		}
 	}
 
@@ -207,7 +216,7 @@ bool CComms::updateRevcData()
 		int clId = getDeviceIdFromAdress(&addr);
         
         int port = ntohs( addr.sin_port );
-        char *ip = inet_ntoa( addr.sin_addr );        
+        char *ip = inet_ntoa( addr.sin_addr );
         
         // add lasttime response
         if ( clId >= 0 )
@@ -381,7 +390,6 @@ bool CComms::initClient(const char *ipServer)
     connectAddress->sin_family      = AF_INET;
     connectAddress->sin_port        = htons(atoi(MP_SERVER_PORT));                    
     connectAddress->sin_addr.s_addr = inet_addr(ipServer);
-	memset(connectAddress->sin_zero, 0, sizeof(connectAddress->sin_zero));
 	
     // add server at slot 0
     CDeviceDetails *device = new CDeviceDetails();

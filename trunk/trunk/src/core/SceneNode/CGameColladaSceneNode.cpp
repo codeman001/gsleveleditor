@@ -550,7 +550,7 @@ public:
 		
 		// projection
 		services->setVertexShaderConstant("uMvpMatrix", worldViewProj.pointer(), 16);
-
+		
 		// bone
 		if ( services->setVertexShaderConstant("uBoneMatrix", s_sceneNodeRendering->BoneMatrix, 16*MAX_BONEMATRIX ) == false )
 			services->setVertexShaderConstant("uBoneMatrix[0]", s_sceneNodeRendering->BoneMatrix, 16*MAX_BONEMATRIX );		
@@ -950,7 +950,7 @@ void CGameColladaSceneNode::skin()
 			core::matrix4	netMatrix;
 
 			// skinning
-			for ( int i = 0, numVertex = meshBuffer->getVertexCount(); i <= numVertex; i++, vertex++ )
+			for ( int i = 0, numVertex = meshBuffer->getVertexCount(); i < numVertex; i++, vertex++ )
 			{
 				/*
 				pJoint = &arrayJoint[ (int)vertex->BoneIndex.X ];

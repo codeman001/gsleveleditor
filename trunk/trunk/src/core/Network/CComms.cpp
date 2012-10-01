@@ -165,7 +165,7 @@ void CComms::updateDevices()
                 sprintf(string, "- Network warning: remove device id %d because do not joint game", j);
                 os::Printer::log(string);                
             }            
-            else if ( m_devices[j]->m_state == CDeviceDetails::stateConnected &lastResponse > MP_GAMELAG_TIMEOUT )
+            else if ( m_devices[j]->m_state == CDeviceDetails::stateConnected && lastResponse > MP_GAMELAG_TIMEOUT )
             {
                 m_devices[j]->m_state = CDeviceDetails::stateLag;
             }
@@ -212,16 +212,22 @@ bool CComms::updateRevcData()
 			// continue read data
 			continue;
 		}
-
-		int clId = getDeviceIdFromAdress(&addr);
-        
-        int port = ntohs( addr.sin_port );
-        char *ip = inet_ntoa( addr.sin_addr );
+		
+		int clId = getDeviceIdFromAdress(&addr);        
+        //int port = ntohs( addr.sin_port );
+        //char *ip = inet_ntoa( addr.sin_addr );
         
         // add lasttime response
         if ( clId >= 0 )
-            m_devices[clId]->m_lastTimeRespone = os::Timer::getRealTime();        
-        
+		{
+			// update last time
+            m_devices[clId]->m_lastTimeRespone = os::Timer::getRealTime();
+			
+			// change state if is lagging
+			if ( m_devices[clId]->m_state == CDeviceDetails::stateLag )
+				m_devices[clId]->m_state = CDeviceDetails::stateConnected;
+		}
+
 		if ( m_owner )
             m_owner->onRevcData( m_dataBuff, iResult, clId, &addr);
 		

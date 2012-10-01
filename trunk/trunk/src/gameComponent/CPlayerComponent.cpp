@@ -66,9 +66,7 @@ CPlayerComponent::~CPlayerComponent()
 // init
 // run when init object
 void CPlayerComponent::initComponent()
-{
-	m_gameObject->setLighting( false );
-
+{	
 	m_collada = (CColladaMeshComponent*) m_gameObject->getComponent( IObjectComponent::ColladaMesh );
 	m_collada->setAnimationPackage( m_animationPackage );
 
@@ -147,7 +145,7 @@ void CPlayerComponent::updateComponent()
 	if ( m_collada == NULL )
 		return;	
 
-    // allway sync
+    // alway sync this object
     m_gameObject->setSyncNetwork(true);
     
     // update player
@@ -606,7 +604,12 @@ core::vector3df CPlayerComponent::getCameraFrontVector()
 // turnToDir
 bool CPlayerComponent::turnToDir(core::vector3df& dir, const core::vector3df& turnTo, float speed )
 {
-	speed = getRatioWithAngle(dir, turnTo, speed);	
+	// get speed need
+	speed = getRatioWithAngle(dir, turnTo, speed);
+
+	// hack if speed is too small
+	if ( speed < 0.02f )
+		speed = 0.02f;
 
 	// rotate front vec
 	float f = speed*0.1f*getIView()->getTimeStep();	

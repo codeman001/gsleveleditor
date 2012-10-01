@@ -1570,21 +1570,12 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 			newNode->ColladaMesh->grab();
 		}
 		else
-		{
-			if ( m_isHardwareSkinning == true && newNode->m_isHardwareSkinning == true )
-			{
-				// static mesh
-				newNode->ColladaMesh = ColladaMesh;
-				newNode->ColladaMesh->grab();
-			}
-			else
-			{
-				// dynamic mesh
-				CGameColladaMesh *mesh = ColladaMesh->clone();
+		{			
+			// dynamic mesh
+			CGameColladaMesh *mesh = ColladaMesh->clone();
 				
-				// update hardware skinning
-				newNode->setColladaMesh( mesh );
-			}
+			// update hardware skinning
+			newNode->setColladaMesh( mesh );			
 		}
 	}
 

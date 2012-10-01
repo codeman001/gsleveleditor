@@ -51,7 +51,6 @@ protected:
 	bool					m_runCommand;
 	SEventPlayerMove		m_playerMoveEvt;
 
-	bool					m_runNoGun;
 
 	float					m_animShotCurrentTime;
 	float					m_animCurrentTime;
@@ -91,7 +90,7 @@ protected:
 	std::string						m_animShootStraight;
 	// end anim name declare
 	
-	bool					m_noGun;
+	bool					m_gunOn;
 
 	float					m_runFactor;
 	float					m_runAccel;

@@ -4301,6 +4301,18 @@ void CColladaMeshComponent::setAnimWeight(float w, int trackChannel)
 	}
 }
 
+// setAnimWeight
+// set anim weight on list bone node
+void CColladaMeshComponent::setAnimWeight(std::vector<CGameColladaSceneNode*>& listNodes, float w, int trackChannel)
+{
+    std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
+    while ( i != end )
+    {
+        (*i)->getAnimation()->getTrack(trackChannel)->setAnimWeight(w);
+        i++;
+    }
+}
+
 // setAnimSpeed
 void CColladaMeshComponent::setAnimSpeed(float s, int trackChannel)
 {
@@ -4312,6 +4324,18 @@ void CColladaMeshComponent::setAnimSpeed(float s, int trackChannel)
 			j->getAnimation()->getTrack(trackChannel)->setSpeedRatio(s);
 		i++;
 	}
+}
+
+// setAnimSpeed
+// set anim speed on list bone node
+void CColladaMeshComponent::setAnimSpeed(std::vector<CGameColladaSceneNode*>& listNodes, float s, int trackChannel)
+{
+    std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
+    while ( i != end )
+    {
+        (*i)->getAnimation()->getTrack(trackChannel)->setSpeedRatio(s);
+        i++;
+    }
 }
 
 void CColladaMeshComponent::enableAnimTrackChanel( int trackChannel, bool b)
@@ -4326,6 +4350,17 @@ void CColladaMeshComponent::enableAnimTrackChanel( int trackChannel, bool b)
 	}
 }
 
+
+void CColladaMeshComponent::enableAnimTrackChanel( std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, bool b)
+{
+    std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
+    while ( i != end )
+    {
+        (*i)->getAnimation()->getTrack(trackChannel)->setEnable(b);
+        i++;
+    }    
+}
+
 void CColladaMeshComponent::onlyEnableAnimTrackChannel( int trackChannel )
 {
 	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
@@ -4336,6 +4371,16 @@ void CColladaMeshComponent::onlyEnableAnimTrackChannel( int trackChannel )
 			j->getAnimation()->onlyEnableTrack( trackChannel );
 		i++;
 	}
+}
+
+void CColladaMeshComponent::onlyEnableAnimTrackChannel( std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel )
+{
+    std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
+    while ( i != end )
+    {
+        (*i)->getAnimation()->onlyEnableTrack(trackChannel);
+        i++;
+    }    
 }
 
 

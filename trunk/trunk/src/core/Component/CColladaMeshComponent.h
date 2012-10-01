@@ -637,17 +637,28 @@ public:
 	// setAnimWeight
 	void setAnimWeight(float w, int trackChannel = 0);
 
+    // setAnimWeight
+    // set anim weight on list bone node
+    void setAnimWeight(std::vector<CGameColladaSceneNode*>& listNodes, float w, int trackChannel);
+    
 	// setAnimSpeed
 	void setAnimSpeed(float s, int trackChannel = 0);
 
+    // setAnimSpeed
+    // set anim speed on list bone node
+    void setAnimSpeed(std::vector<CGameColladaSceneNode*>& listNode, float s, int trackChannel);
+    
 	// resumeAnim
 	// resume animation
 	void resumeAnim(int trackChannel = 0);
 
 	// enableAnimTrackChanel
 	void enableAnimTrackChanel( int trackChannel, bool b);
+	void enableAnimTrackChanel( std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, bool b);
+    
 	void onlyEnableAnimTrackChannel( int trackChannel );
-
+    void onlyEnableAnimTrackChannel( std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel );
+    
 	// isPauseAnim
 	// check anim is pause??
 	inline bool isPauseAnim(int trackChanel = 0)

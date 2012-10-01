@@ -52,7 +52,7 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_animShotCurrentTime	= 0.0f;
 	m_animCurrentTime		= 0.0f;
 
-	m_noGun = true;	
+	m_gunOn = true;	
 	m_spineRotation = 0.0f;
 	m_lastRotation = 0.0f;
 }
@@ -229,13 +229,23 @@ void CPlayerComponent::updateStateIdle()
 
 	if ( m_subState == SubStateInit )
 	{
-		IrrlichtDevice* device = getIView()->getDevice();
-		int r = device->getRandomizer()->rand() % m_animIdle.size();		
-		const char *anim = m_animIdle[r].c_str();
+        
+        if ( m_gunOn == true )
+        {
+            // idle animation with gun on hand            
+            IrrlichtDevice* device = getIView()->getDevice();
+            int r = device->getRandomizer()->rand() % m_animIdle.size();		
+            const char *anim = m_animIdle[r].c_str();
 
-		m_collada->setCrossFadeAnimation( anim, 0, 10.0f, false );
-		m_animCurrentTime = m_collada->getCurrentAnimTimeLength();
-
+            m_collada->setCrossFadeAnimation( anim, 0, 10.0f, false );
+            m_animCurrentTime = m_collada->getCurrentAnimTimeLength();
+        }
+        else 
+        {
+            // idle animation without gun on hand
+            // todo later...            
+        }
+        
 		m_subState = SubStateActive;
 	}
 	else if ( m_subState == SubStateEnd )
@@ -250,11 +260,11 @@ void CPlayerComponent::updateStateIdle()
 	
 		if ( m_runCommand )
 		{
-			if ( m_noGun )
-				setState( CPlayerComponent::PlayerTurn );							
+            // change to rotate
+            setState( CPlayerComponent::PlayerTurn );							
 		}
 
-
+        // reinit state
 		if ( m_animCurrentTime <= 0 )
 			m_subState = SubStateInit;
 	}
@@ -267,9 +277,8 @@ void CPlayerComponent::updateStateTurn()
 	if ( m_subState == SubStateInit )
 	{
 		m_subState = SubStateActive;
-
-		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str() );
-
+        
+		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str(), m_nodesFoot );        
 		m_animCurrentTime	= m_collada->getCurrentAnimTimeLength();
 	}
 	else if ( m_subState == SubStateEnd )
@@ -285,9 +294,17 @@ void CPlayerComponent::updateStateTurn()
 		v1 = getCameraFrontVector();
 		
 		float rot = 0.0f;
-		if ( m_runCommand )		
-			rot = m_playerMoveEvt.rotate;		
-
+		if ( m_runCommand )
+        {
+            // rotate to player control direction
+			rot = m_playerMoveEvt.rotate;
+        }
+        else
+        {
+            // user cancel run command
+            setState( CPlayerComponent::PlayerIdle );
+        }   
+            
 		core::quaternion q;
 		q.fromAngleAxis( core::degToRad(rot), core::vector3df(0,1,0) );
 		q.getMatrix().rotateVect(v1);
@@ -301,10 +318,7 @@ void CPlayerComponent::updateStateTurn()
 				
 		if ( turnFinish )
 		{
-			if ( m_noGun )
-				setState( CPlayerComponent::PlayerRun );
-			else
-				setState( CPlayerComponent::PlayerIdle );
+            setState( CPlayerComponent::PlayerRun );
 		}
 	}
 }
@@ -367,13 +381,13 @@ void CPlayerComponent::updateStateRun()
 {	
 	if ( m_subState == SubStateInit )
 	{		
-		m_collada->enableAnimTrackChanel(0, true);
-		m_collada->enableAnimTrackChanel(1, true);
+		m_collada->enableAnimTrackChanel(m_nodesFoot, 0, true);
+		m_collada->enableAnimTrackChanel(m_nodesFoot, 1, true);
 
 		m_runFactor = 1.0f;
 
-		m_collada->setAnimation( m_animRunNoGun.c_str(), 1, true );
-		m_collada->setAnimWeight(m_runFactor, 1);
+		m_collada->setAnimation(m_animRunNoGun.c_str(), m_nodesFoot, 1, true );
+		m_collada->setAnimWeight(m_nodesFoot, m_runFactor, 1);
 		m_collada->synchronizedByTimeScale();
 
 		m_subState = SubStateActive;
@@ -405,7 +419,7 @@ void CPlayerComponent::updateStateRun()
 				setState( CPlayerComponent::PlayerIdle );
 			}
 
-			m_collada->setAnimWeight(m_runFactor, 1);
+			m_collada->setAnimWeight(m_nodesFoot, m_runFactor, 1);
 			m_collada->synchronizedByTimeScale();
 		}
 		else if ( m_runFactor > 0.0f )
@@ -414,7 +428,7 @@ void CPlayerComponent::updateStateRun()
 			if ( m_runFactor < 0.0f )
 				m_runFactor = 0.0f;
 
-			m_collada->setAnimWeight(m_runFactor, 1);
+			m_collada->setAnimWeight(m_nodesFoot, m_runFactor, 1);
 			m_collada->synchronizedByTimeScale();
 		}
 		

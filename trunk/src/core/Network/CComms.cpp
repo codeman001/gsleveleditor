@@ -24,6 +24,16 @@ CComms::CComms(CMultiplayerManager* owner, bool isServer, bool isOnline)
 
 CComms::~CComms()
 {
+	// clean data on send queue
+	for ( int i = 0, n = m_queueSendData.size(); i < n; i++ )
+	{
+		if ( m_queueSendData[i].addr )
+			delete m_queueSendData[i].addr;
+
+		delete m_queueSendData[i].data;
+	}
+	m_queueSendData.clear();
+
 	cleanSocket();
 
 #if defined(WIN32)

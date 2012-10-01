@@ -13,7 +13,7 @@
 #include "CTerrainComponent.h"
 
 #ifdef GSGAMEPLAY
-#include "CGameLevel.h"
+#include "gameLevel/CGameLevel.h"
 #endif
 
 CZone::CZone()
@@ -564,7 +564,8 @@ void CZone::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
             
             // set object is create from host
             obj->setNetworkController(true);
-            
+            obj->setNetworkObjID(networkObjID);
+
             // register network object id
             level->registerNetworkObjID(networkObjID, obj->getID());            
             sprintf(string, "- Network warning: create obj template:'%s' with id: %ld from host id: %d", temp, obj->getID(), hostKeyId);

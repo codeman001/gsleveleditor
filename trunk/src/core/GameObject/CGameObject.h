@@ -10,6 +10,30 @@
 // prototype class declare
 class CWayPoint;
 
+
+// struct network id
+// store host, id of object
+struct SNetworkObjID
+{
+    short   hostID;
+    long    objectID;
+    
+	SNetworkObjID()
+	{
+		hostID = -1;
+		objectID = -1;
+	}
+
+    bool operator < (const SNetworkObjID& other) const
+    {
+        if ( hostID != other.hostID )
+            return hostID < other.hostID;
+        else 
+            return objectID < other.objectID;    
+    }
+};
+
+
 // CGameObject
 // Base class for object3d
 //  y
@@ -87,7 +111,8 @@ protected:
 	bool				m_needSortComponent;
     bool                m_needSyncNetwork;
     bool                m_isNetworkController;
-    
+	SNetworkObjID		m_networkObjID;
+
 	CGameObject			*m_parent;
 
 #ifdef GSEDITOR	
@@ -435,7 +460,21 @@ public:
     inline bool isNetworkController()
     {
         return m_isNetworkController;
-    }    
+    }
+
+	// getNetworkObjID
+	// get host, id
+	inline SNetworkObjID getNetworkObjID()
+	{
+		return m_networkObjID;
+	}
+
+	// setNetworkObjID
+	// set host, id
+	inline void setNetworkObjID( const SNetworkObjID& networkID )
+	{
+		m_networkObjID = networkID;
+	}
     
 	virtual void setLighting( bool b );
 
@@ -573,20 +612,5 @@ typedef std::vector<CGameObject*>::iterator	ArrayGameObjectIter;
 // typedef for array component
 typedef std::vector<IObjectComponent*>              ArrayComponent;
 typedef std::vector<IObjectComponent*>::iterator	ArrayComponentIter;
-
-// struct network id
-struct SNetworkObjID
-{
-    short   hostID;
-    long    objectID;
-    
-    bool operator < (const SNetworkObjID& other) const
-    {
-        if ( hostID != other.hostID )
-            return hostID < other.hostID;
-        else 
-            return objectID < other.objectID;    
-    }
-};
 
 #endif

@@ -7,7 +7,7 @@
 
 #include "CComms.h"
 #include "CDataPacket.h"
-#include "CGameLevel.h"
+#include "gameLevel/CGameLevel.h"
 
 class CMultiplayerManager
 {

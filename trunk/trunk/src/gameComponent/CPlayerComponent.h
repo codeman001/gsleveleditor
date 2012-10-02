@@ -62,6 +62,8 @@ protected:
 	std::vector<CGameColladaSceneNode*>	m_nodesHandsAndHead;
 	std::vector<CGameColladaSceneNode*>	m_nodesChest;
 	std::vector<CGameColladaSceneNode*>	m_nodesFoot;
+	std::vector<CGameColladaSceneNode*>	m_nodesLeftShoulder;
+	std::vector<CGameColladaSceneNode*>	m_nodesRightShoulder;
 	CGameColladaSceneNode*			m_nodeNeck;
 
 	// begin anim name declare

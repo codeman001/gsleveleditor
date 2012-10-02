@@ -73,11 +73,22 @@ void CPlayerComponent::initComponent()
 	// foot nodes
 	m_nodesFoot.push_back( m_collada->getSceneNode("Reference") );
 	m_nodesFoot.push_back( m_collada->getSceneNode("LeftGun") );
+	m_nodesFoot.push_back( m_collada->getSceneNode("RightGun") );
 	m_nodesFoot.push_back( m_collada->getSceneNode("Hips") );		
 	m_nodesFoot.push_back( m_collada->getSceneNode("LeftUpLeg") );
 	m_nodesFoot.push_back( m_collada->getSceneNode("RightUpLeg") );
 	m_collada->getChildsOfSceneNode("LeftUpLeg",	m_nodesFoot);
 	m_collada->getChildsOfSceneNode("RightUpLeg",	m_nodesFoot);
+
+	// left & right hand with gun
+	m_collada->getChildsOfSceneNode("LeftShoulder",		m_nodesLeftShoulder);
+	m_nodesLeftShoulder.push_back( m_collada->getSceneNode("LeftGun") );
+	m_nodesLeftShoulder.push_back( m_collada->getSceneNode("LeftGunTip") );	
+
+	m_collada->getChildsOfSceneNode("RightShoulder",	m_nodesRightShoulder);
+	m_collada->getChildsOfSceneNode("RightGun",			m_nodesRightShoulder);
+	m_nodesRightShoulder.push_back( m_collada->getSceneNode("RightGun") );
+	m_nodesRightShoulder.push_back( m_collada->getSceneNode("RightGunTip") );
 
 	// chest nodes
 	CGameColladaSceneNode *spine = m_collada->getSceneNode("Spine");
@@ -278,7 +289,7 @@ void CPlayerComponent::updateStateTurn()
 	{
 		m_subState = SubStateActive;
         
-		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str(), m_nodesFoot );        
+		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str() );
 		m_animCurrentTime	= m_collada->getCurrentAnimTimeLength();
 	}
 	else if ( m_subState == SubStateEnd )
@@ -381,14 +392,27 @@ void CPlayerComponent::updateStateRun()
 {	
 	if ( m_subState == SubStateInit )
 	{		
-		m_collada->enableAnimTrackChanel(m_nodesFoot, 0, true);
-		m_collada->enableAnimTrackChanel(m_nodesFoot, 1, true);
+		m_collada->enableAnimTrackChanel(0, true);
+		m_collada->enableAnimTrackChanel(1, true);
 
 		m_runFactor = 1.0f;
 
-		m_collada->setAnimation(m_animRunNoGun.c_str(), m_nodesFoot, 1, true );
-		m_collada->setAnimWeight(m_nodesFoot, m_runFactor, 1);
+		m_collada->setAnimation(m_animRunNoGun.c_str(), 1, true );
+		m_collada->setAnimWeight(m_runFactor, 1);
 		m_collada->synchronizedByTimeScale();
+
+		if ( m_gunOn )
+		{
+			// play anim gun off on right hand
+			m_collada->enableAnimTrackChanel( m_nodesRightShoulder, 1, false);
+
+			// reset timescale on right hand
+			m_collada->setAnimSpeed(m_nodesRightShoulder, 1.0f, 0);
+			m_collada->setAnimWeight(m_nodesRightShoulder, 1.0f, 0);
+
+			// play anim on right hand
+			m_collada->setCrossFadeAnimation( m_animGunOff, m_nodesRightShoulder, 0, 10.0f, false );
+		}
 
 		m_subState = SubStateActive;
 	}
@@ -419,7 +443,7 @@ void CPlayerComponent::updateStateRun()
 				setState( CPlayerComponent::PlayerIdle );
 			}
 
-			m_collada->setAnimWeight(m_nodesFoot, m_runFactor, 1);
+			m_collada->setAnimWeight(m_runFactor, 1);
 			m_collada->synchronizedByTimeScale();
 		}
 		else if ( m_runFactor > 0.0f )
@@ -428,8 +452,16 @@ void CPlayerComponent::updateStateRun()
 			if ( m_runFactor < 0.0f )
 				m_runFactor = 0.0f;
 
-			m_collada->setAnimWeight(m_nodesFoot, m_runFactor, 1);
+			m_collada->setAnimWeight(m_runFactor, 1);
 			m_collada->synchronizedByTimeScale();
+			
+			if ( m_gunOn )
+			{
+				// we need reset timescale on right hand
+				m_collada->setAnimSpeed(m_nodesRightShoulder, 1.0f, 0);
+				m_collada->setAnimWeight(m_nodesRightShoulder, 1.0f, 0);
+			}
+
 		}
 		
 
@@ -449,6 +481,7 @@ void CPlayerComponent::updateStateRun()
 		q.getMatrix().rotateVect(v1);
 		v1.normalize();
 
+		// do not need run turn state
 		if ( fabs( getAngle(v0,v1) ) >= 150.0f && m_runCommand )
 		{			
 			setState( CPlayerComponent::PlayerRunTurn );			
@@ -477,9 +510,9 @@ void CPlayerComponent::updateStateRun()
 				m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 
 				// calc spine rotation
-				if ( m_runFactor <= 0.1f )
+				if ( m_runFactor <= 0.1f && m_gunOn == false )
 				{
-					core::vector3df lookPos = m_gameObject->getPosition() + getCameraFrontVector();
+					core::vector3df lookPos = m_gameObject->getPosition() + getCameraFrontVector();					
 					setSpineLookAt( lookPos );
 				}
 			}

@@ -55,7 +55,7 @@
 	// Windows Header Files:
 	#include <windows.h>
 
-	#if defined(GSEDITOR) || defined(PARTICLE_EDITOR) || defined(GSANIMATION)
+	#if defined(GSEDITOR) || defined(GSPARTICLE) || defined(GSANIMATION)
 		// Windows Header Files:
 		#include <windows.h>
 		#include <uxtheme.h>

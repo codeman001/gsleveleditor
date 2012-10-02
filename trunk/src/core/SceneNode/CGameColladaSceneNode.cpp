@@ -344,7 +344,8 @@ void CGameAnimationTrack::crossAnimation()
 
 		// reset value
 		m_isCrossAnim = false;
-		m_crossAnimationLoop = false;
+		m_endTrack = false;
+		m_crossAnimationLoop = false;		
 	}
 }
 

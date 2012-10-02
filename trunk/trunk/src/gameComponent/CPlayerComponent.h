@@ -93,6 +93,8 @@ protected:
 	// end anim name declare
 	
 	bool					m_gunOn;
+	bool					m_gunOffAnimState;
+	bool					m_gunOnAnimState;
 
 	float					m_runFactor;
 	float					m_runAccel;
@@ -166,6 +168,9 @@ protected:
 	void updateStateRunBackward();
 	void updateStateRunLeft();
 	void updateStateRunRight();
+
+	// isFinishedAnim	
+	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0 );
 
 	// stepAnimationTime	
 	void stepAnimationTime();

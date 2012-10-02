@@ -53,8 +53,12 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_animCurrentTime		= 0.0f;
 
 	m_gunOn = true;	
+	m_gunOffAnimState = false;
+	m_gunOnAnimState = false;
+
 	m_spineRotation = 0.0f;
 	m_lastRotation = 0.0f;
+	
 }
 
 CPlayerComponent::~CPlayerComponent()
@@ -240,7 +244,8 @@ void CPlayerComponent::updateStateIdle()
 
 	if ( m_subState == SubStateInit )
 	{
-        
+        m_gunOn = true;
+
         if ( m_gunOn == true )
         {
             // idle animation with gun on hand            
@@ -412,6 +417,9 @@ void CPlayerComponent::updateStateRun()
 
 			// play anim on right hand
 			m_collada->setCrossFadeAnimation( m_animGunOff, m_nodesRightShoulder, 0, 10.0f, false );
+
+			// anim state
+			m_gunOffAnimState = true;
 		}
 
 		m_subState = SubStateActive;
@@ -454,16 +462,24 @@ void CPlayerComponent::updateStateRun()
 
 			m_collada->setAnimWeight(m_runFactor, 1);
 			m_collada->synchronizedByTimeScale();
-			
-			if ( m_gunOn )
-			{
-				// we need reset timescale on right hand
-				m_collada->setAnimSpeed(m_nodesRightShoulder, 1.0f, 0);
-				m_collada->setAnimWeight(m_nodesRightShoulder, 1.0f, 0);
-			}
-
 		}
 		
+		if ( m_gunOn )
+		{
+			// we need reset timescale on right hand
+			m_collada->setAnimSpeed(m_nodesRightShoulder, 1.0f, 0);
+			m_collada->setAnimWeight(m_nodesRightShoulder, 1.0f, 0);
+
+			if ( isFinishedAnim( m_nodesRightShoulder ) == true )
+			{
+				m_collada->enableAnimTrackChanel(1, true);
+
+				m_collada->setAnimWeight(m_runFactor, 1);
+				m_collada->synchronizedByTimeScale();
+				m_gunOn = false;
+			}
+		}
+
 
 		core::vector3df v0, v1;
 
@@ -577,6 +593,24 @@ void CPlayerComponent::stepAnimationTime()
 	
 	if ( m_animCurrentTime < 0 )
 		m_animCurrentTime = 0;
+}
+
+// isFinishedAnim	
+bool CPlayerComponent::isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel )
+{
+	for ( int i = 0, n = (int)nodes.size(); i < n; i++ )
+	{		
+		CGameAnimationTrack* track = nodes[i]->getAnimation()->getTrack(trackChannel);
+
+		if ( track->getTotalFrame() == 0 || track->isEnable() == false || track->isPause() == true )
+			continue;
+
+		if ( track->isEndTrack() == false || track->isCrossAnim() )
+			return false;
+	}
+
+
+	return true;
 }
 
 // updateWeaponPosition

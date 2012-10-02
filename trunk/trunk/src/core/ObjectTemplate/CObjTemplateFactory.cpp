@@ -164,7 +164,7 @@ int CObjTemplateFactory::getTemplateId( wchar_t* templateName )
 // template name by id
 wchar_t* CObjTemplateFactory::getTemplateName( int id )
 {
-    if ( id < 0 || id > s_objectTemplate.size() )
+    if ( id < 0 || id > (int)s_objectTemplate.size() )
         return NULL;
     
     return s_objectTemplate[id].getObjectTemplateName();    

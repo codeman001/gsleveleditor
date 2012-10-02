@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrlicht\include;..\..\..\extern\uiClass;..\..\..\extern\irrlicht\source\Irrlicht;&quot;$(ProjectDir)\source&quot;;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Serializable;..\..\..\extern\spark\include"
+				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrlicht\include;..\..\..\extern\uiClass;..\..\..\extern\irrlicht\source\Irrlicht;&quot;$(ProjectDir)\source&quot;;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Serializable;..\..\src\core\Network;..\..\..\extern\spark\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_USRDLL;IRRLICHT_EXPORTS;GSEDITOR"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

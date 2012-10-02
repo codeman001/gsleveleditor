@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\core\ObjectTemplate;..\..\src\core\GameObject;..\..\src\core\Component;..\..\src\core\Serializable;..\..\src\core\SceneNode;..\..\src\core\Animators;..\..\src\core;..\..\..\extern\uiClass;..\..\..\extern\irrlicht\source\Irrlicht;..\..\..\extern\irrlicht\include;..\..\src;..\..\..\extern\spark\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;PARTICLE_EDITOR"
+				AdditionalIncludeDirectories="..\..\src\core\ObjectTemplate;..\..\src\core\GameObject;..\..\src\core\Component;..\..\src\core\Serializable;..\..\src\core\SceneNode;..\..\src\core\Animators;..\..\src\core\Network;..\..\src\core;..\..\..\extern\uiClass;..\..\..\extern\irrlicht\source\Irrlicht;..\..\..\extern\irrlicht\include;..\..\src;..\..\..\extern\spark\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;GSPARTICLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

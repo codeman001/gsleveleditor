@@ -660,7 +660,7 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 	backward = 0.0f;
 	left = 0.0f;
 	right = 0.0f;
-		
+			
 	if ( -90.0f <= rot && rot <= 90.0f )
 	{
 		// move forward		
@@ -669,11 +669,23 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 		{
 			// right
 			left = 0.0f;
+
+			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
+			float dForward	= fabs(sinf(fixAngle));
+			float dRight	= fabs(cosf(fixAngle));
+
+			printf("%f %f - %f\n", dForward, dRight, rot);
 		}
 		else
 		{
 			// left
 			right = 0.0f;
+
+			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
+			float dForward	= fabs(sinf(fixAngle));
+			float dLeft		= fabs(cosf(fixAngle));
+
+			printf("%f %f - %f\n", dForward, dLeft, rot);
 		}
 	}
 	else
@@ -684,11 +696,23 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 		{
 			// left
 			right = 0.0f;
+
+			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
+			float dBackward	= fabs(sinf(fixAngle));
+			float dLeft		= fabs(cosf(fixAngle));
+
+			printf("%f %f - %f\n", dBackward, dLeft, rot);
 		}
 		else
 		{
 			// right
 			left = 0.0f;
+
+			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
+			float dBackward	= fabs(sinf(fixAngle));
+			float dRight	= fabs(cosf(fixAngle));
+
+			printf("%f %f - %f\n", dBackward, dRight, rot);
 		}
 	}
 }

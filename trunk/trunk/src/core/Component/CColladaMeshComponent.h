@@ -604,6 +604,7 @@ public:
 	// synchronizedByTimeScale
 	// sync n animation
 	void synchronizedByTimeScale();
+	void synchronizedByTimeScale(std::vector<CGameColladaSceneNode*>& listNodes);	
 
 	// getCurrentAnim
 	// get current anim
@@ -630,22 +631,22 @@ public:
 	// getCurrentFrame
 	// get current frame of anim
 	float getCurrentFrame(int trackChannel = 0);	
+	float getCurrentFrame(std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel = 0);
+
+	// getAnimSpeed
+	// get current anim speed
+	float getAnimSpeed(int trackChannel = 0);
+	float getAnimSpeed(std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel = 0);
 
 	// setCurrentFrame	
 	void setCurrentFrame(float f, int trackChannel = 0);
 
 	// setAnimWeight
 	void setAnimWeight(float w, int trackChannel = 0);
-
-    // setAnimWeight
-    // set anim weight on list bone node
     void setAnimWeight(std::vector<CGameColladaSceneNode*>& listNodes, float w, int trackChannel);
     
 	// setAnimSpeed
-	void setAnimSpeed(float s, int trackChannel = 0);
-
-    // setAnimSpeed
-    // set anim speed on list bone node
+	void setAnimSpeed(float s, int trackChannel = 0);    
     void setAnimSpeed(std::vector<CGameColladaSceneNode*>& listNode, float s, int trackChannel);
     
 	// resumeAnim
@@ -653,8 +654,8 @@ public:
 	void resumeAnim(int trackChannel = 0);
 
 	// enableAnimTrackChanel
-	void enableAnimTrackChanel( int trackChannel, bool b);
-	void enableAnimTrackChanel( std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, bool b);
+	void enableAnimTrackChannel( int trackChannel, bool b);
+	void enableAnimTrackChannel( std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, bool b);
     
 	void onlyEnableAnimTrackChannel( int trackChannel );
     void onlyEnableAnimTrackChannel( std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel );

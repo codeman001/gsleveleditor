@@ -24,10 +24,7 @@ public:
 		PlayerTurn,
 		PlayerRunTurn,
 		PlayerRun,
-		PlayerRunBackward,
-		PlayerRunLeft,
-		PlayerRunRight,
-
+		PlayerRunFast,
 		NumStateCount
 	};
 
@@ -90,14 +87,11 @@ protected:
 	std::string						m_animShootRight;
 	std::string						m_animShootUp;
 	std::string						m_animShootStraight;
-	// end anim name declare
-	
-	bool					m_gunOn;
-	bool					m_gunOffAnimState;
-	bool					m_gunOnAnimState;
+	// end anim name declare	
 
 	float					m_runFactor;
 	float					m_runAccel;
+	float					m_gunOnOffAccel;
 
 	float					m_spineRotation;
 	float					m_lastRotation;
@@ -156,6 +150,7 @@ protected:
 
 	// call back frame update on scenenode
 	virtual void _onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation );
+	virtual void _onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel );
 
 protected:
 	// updateState	
@@ -165,9 +160,7 @@ protected:
 	void updateStateTurn();
 	void updateStateRunTurn();
 	void updateStateRun();
-	void updateStateRunBackward();
-	void updateStateRunLeft();
-	void updateStateRunRight();
+	void updateStateRunFast();
 
 	// isFinishedAnim	
 	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0 );

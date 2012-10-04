@@ -29,6 +29,16 @@ struct SColladaSkinMeshBuffer: public SMeshBufferSkin
 	}
 };
 
+
+// IGameAnimationCallback
+// interface for modify animation data
+class IGameAnimationCallback
+{
+public:
+	virtual void _onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation ) = 0;
+	virtual void _onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel ) = 0;
+};
+
 // CGameColladaMesh
 // Collada mesh
 class CGameColladaMesh: public IMesh
@@ -376,7 +386,7 @@ public:
 
 	// getFrameData
 	// get anim at frame
-	void getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix);
+	void getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix, IGameAnimationCallback* callback, ISceneNode *parent);
 
 	// synchronizedTimeScale
 	// sync speed of 2 track
@@ -386,14 +396,6 @@ public:
 	// update
 	// update per frame
 	void update(float timeStep);
-};
-
-// IGameAnimationCallback
-// interface for modify animation data
-class IGameAnimationCallback
-{
-public:
-	virtual void _onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation ) = 0;
 };
 
 // CGameColladaSceneNode

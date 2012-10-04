@@ -263,9 +263,8 @@ void CPlayerComponent::updateStateIdle()
 		setSpineLookAt( lookPos, 1.0f );
 	
 		if ( m_runCommand )
-		{
-            // change to rotate
-            setState( CPlayerComponent::PlayerTurn );
+		{	
+			setState( CPlayerComponent::PlayerRun );			
 		}
 
         // reinit state
@@ -353,7 +352,42 @@ void CPlayerComponent::updateStateRun()
 		doNextState();
 	}
 	else
-	{
+	{		
+		core::vector3df v0, v1, runDir;
+
+		// get vector rotate & speed
+		v0 = m_gameObject->getFront();
+		v1 = getCameraFrontVector();
+		runDir = v0;
+
+		core::quaternion q;
+		float rot = 0.0f;
+
+		if ( m_runCommand )		
+			rot = m_playerMoveEvt.rotate;		
+
+		// rotate rundir
+		q.fromAngleAxis( core::degToRad(rot), core::vector3df(0,1,0) );
+		q.getMatrix().rotateVect(runDir);
+		runDir.normalize();
+		
+		// calc animation blending
+		float a,b,c,d;
+		calcRunAnimationBlend(rot, a,b,c,d);
+
+#ifdef WIN32            
+		// debug line
+		CGameDebug *debug = CGameDebug::getInstance();
+		core::line3df line;
+		line.start	= m_gameObject->getPosition();
+		line.end	= m_gameObject->getPosition() + v1 * 400.0f;
+		debug->addDrawLine(line, SColor(255,255,0,0) ); 
+
+		line.end	= m_gameObject->getPosition() + runDir * 400.0f;
+		debug->addDrawLine(line, SColor(255,0,255,0) );
+#endif
+		
+
 		float step = m_runAccel*getIView()->getTimeStep();
 
 		if ( m_runCommand == false )
@@ -377,63 +411,15 @@ void CPlayerComponent::updateStateRun()
 			m_collada->setAnimWeight(m_runFactor, 1);
 			m_collada->synchronizedByTimeScale();
 		}
-	}
-}
 
 
-void CPlayerComponent::updateStateRunTurn()
-{
-	stepAnimationTime();
-
-	if ( m_subState == SubStateInit )
-	{
-		m_collada->enableAnimTrackChannel(0, true);
-		m_collada->enableAnimTrackChannel(1, true);
-
-		m_collada->setAnimWeight(m_runFactor, 1);
-		m_collada->synchronizedByTimeScale();
-
-		m_subState = SubStateActive;		
-	}
-	else if ( m_subState == SubStateEnd )
-	{		
-		doNextState();		
-	}
-	else
-	{		
-		core::vector3df v0, v1;
-
-		// get vector rotate & speed
-		v0 = m_gameObject->getFront();
-		v1 = m_runCurrentVector + m_runTurnVector;
-		v1.normalize();
-		
-		// step to turn camera vector
-		bool turnFinish  = turnToDir( v0, v1, 1.0f );
-
-		// rotate object
-		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
-
-		// calc spine rotation
-		core::vector3df lookPos = m_gameObject->getPosition() + getCameraFrontVector();
-		setSpineLookAt( lookPos );
-
-
-		// synch animation to idle
-		float step = m_runAccel*getIView()->getTimeStep()*0.8f;
-		m_runFactor = m_runFactor - step;
-		if ( m_runFactor < 0.0f )
+		if ( m_runCommand )
 		{
-			m_runFactor = 0.0f;
-			setState( CPlayerComponent::PlayerRunFast );
+			// rotate character
+			bool turnFinish  = turnToDir( v0, v1, 2.0f );
+			m_gameObject->lookAt( m_gameObject->getPosition() + v0 );			
 		}
-		m_collada->setAnimWeight(m_runFactor, 1);
-		m_collada->synchronizedByTimeScale();
-		
-		// update run position
-		float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep() * 0.1f;
-		core::vector3df newPos = m_gameObject->getPosition() + m_runCurrentVector * runSpeed;
-		m_gameObject->setPosition( newPos );
+
 	}
 }
 
@@ -533,6 +519,7 @@ void CPlayerComponent::updateStateRunFast()
 			// step to turn camera vector
 			if ( m_runCommand )
 			{
+				// rotate character
 				bool turnFinish  = turnToDir( v0, v1, 2.0f );
 				m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 
@@ -549,6 +536,62 @@ void CPlayerComponent::updateStateRunFast()
 			core::vector3df newPos = m_gameObject->getPosition() + v0 * runSpeed;
 			m_gameObject->setPosition( newPos );
 		}
+	}
+}
+
+void CPlayerComponent::updateStateRunTurn()
+{
+	stepAnimationTime();
+
+	if ( m_subState == SubStateInit )
+	{
+		m_collada->enableAnimTrackChannel(0, true);
+		m_collada->enableAnimTrackChannel(1, true);
+
+		m_collada->setAnimWeight(m_runFactor, 1);
+		m_collada->synchronizedByTimeScale();
+
+		m_subState = SubStateActive;		
+	}
+	else if ( m_subState == SubStateEnd )
+	{		
+		doNextState();		
+	}
+	else
+	{		
+		core::vector3df v0, v1;
+
+		// get vector rotate & speed
+		v0 = m_gameObject->getFront();
+		v1 = m_runCurrentVector + m_runTurnVector;
+		v1.normalize();
+		
+		// step to turn camera vector
+		bool turnFinish  = turnToDir( v0, v1, 1.0f );
+
+		// rotate object
+		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+
+		// calc spine rotation
+		core::vector3df lookPos = m_gameObject->getPosition() + getCameraFrontVector();
+		setSpineLookAt( lookPos );
+
+
+		// synch animation to idle
+		float step = m_runAccel*getIView()->getTimeStep()*0.8f;
+		m_runFactor = m_runFactor - step;
+		if ( m_runFactor < 0.0f )
+		{
+			m_runFactor = 0.0f;
+			setState( CPlayerComponent::PlayerRunFast );
+		}
+		m_collada->setAnimWeight(m_runFactor, 1);
+		m_collada->synchronizedByTimeScale();
+		
+		// update run position
+		float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep() * 0.1f;
+		core::vector3df newPos = m_gameObject->getPosition() + m_runCurrentVector * runSpeed;
+		m_gameObject->setPosition( newPos );
 	}
 }
 
@@ -607,6 +650,47 @@ void CPlayerComponent::stepAnimationTime()
 	
 	if ( m_animCurrentTime < 0 )
 		m_animCurrentTime = 0;
+}
+
+// calcRunAnimationBlend
+// calc animation
+void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &backward, float &left, float &right)
+{
+	forward = 0.0f;
+	backward = 0.0f;
+	left = 0.0f;
+	right = 0.0f;
+		
+	if ( -90.0f <= rot && rot <= 90.0f )
+	{
+		// move forward		
+		backward = 0.0f;
+		if ( rot <= 0.0f && rot <= 90.0f )
+		{
+			// right
+			left = 0.0f;
+		}
+		else
+		{
+			// left
+			right = 0.0f;
+		}
+	}
+	else
+	{
+		// move back
+		forward = 0.0f;
+		if ( 90.0f <= rot && rot <= 180.0f )
+		{
+			// left
+			right = 0.0f;
+		}
+		else
+		{
+			// right
+			left = 0.0f;
+		}
+	}
 }
 
 // isFinishedAnim	

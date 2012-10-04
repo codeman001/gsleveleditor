@@ -45,16 +45,12 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 
 	m_runFactor = 1.0f;
 	m_runAccel	= 0.002f;
-
+	
 	m_collada	= NULL;
 	m_inventory = NULL;
 
 	m_animShotCurrentTime	= 0.0f;
-	m_animCurrentTime		= 0.0f;
-
-	m_gunOn = true;	
-	m_gunOffAnimState = false;
-	m_gunOnAnimState = false;
+	m_animCurrentTime		= 0.0f;	
 
 	m_spineRotation = 0.0f;
 	m_lastRotation = 0.0f;
@@ -229,7 +225,10 @@ void CPlayerComponent::updateState()
 		updateStateRunTurn();
 		break;
 	case CPlayerComponent::PlayerRun:
-		updateStateRun();		
+		updateStateRun();
+		break;
+	case CPlayerComponent::PlayerRunFast:
+		updateStateRunFast();
 		break;
 	}
 }
@@ -244,24 +243,13 @@ void CPlayerComponent::updateStateIdle()
 
 	if ( m_subState == SubStateInit )
 	{
-        m_gunOn = true;
+        IrrlichtDevice* device = getIView()->getDevice();
+        int r = device->getRandomizer()->rand() % m_animIdle.size();		
+        const char *anim = m_animIdle[r].c_str();
 
-        if ( m_gunOn == true )
-        {
-            // idle animation with gun on hand            
-            IrrlichtDevice* device = getIView()->getDevice();
-            int r = device->getRandomizer()->rand() % m_animIdle.size();		
-            const char *anim = m_animIdle[r].c_str();
-
-            m_collada->setCrossFadeAnimation( anim, 0, 10.0f, false );
-            m_animCurrentTime = m_collada->getCurrentAnimTimeLength();
-        }
-        else 
-        {
-            // idle animation without gun on hand
-            // todo later...            
-        }
-        
+        m_collada->setCrossFadeAnimation( anim, 0, 10.0f, false );
+        m_animCurrentTime = m_collada->getCurrentAnimTimeLength();
+           
 		m_subState = SubStateActive;
 	}
 	else if ( m_subState == SubStateEnd )
@@ -277,7 +265,7 @@ void CPlayerComponent::updateStateIdle()
 		if ( m_runCommand )
 		{
             // change to rotate
-            setState( CPlayerComponent::PlayerTurn );							
+            setState( CPlayerComponent::PlayerTurn );
 		}
 
         // reinit state
@@ -339,13 +327,69 @@ void CPlayerComponent::updateStateTurn()
 	}
 }
 
+void CPlayerComponent::updateStateRun()
+{
+	if ( m_subState == SubStateInit )
+	{
+		m_collada->enableAnimTrackChannel(0, true);
+		m_collada->enableAnimTrackChannel(1, true);
+
+		m_runFactor = 0.0f;
+
+		m_collada->setAnimation(m_animRunForward.c_str(), 1, true );
+		m_collada->setAnimWeight(m_runFactor, 1);
+		m_collada->synchronizedByTimeScale();		
+
+		m_subState = SubStateActive;
+	}
+	else if ( m_subState == SubStateEnd )
+	{
+		if ( m_nextState == CPlayerComponent::PlayerIdle )
+		{
+			m_collada->setAnimWeight(1.0f, 0);
+			m_collada->setAnimSpeed(1.0f, 0);
+			m_collada->onlyEnableAnimTrackChannel(0);
+		}
+		doNextState();
+	}
+	else
+	{
+		float step = m_runAccel*getIView()->getTimeStep();
+
+		if ( m_runCommand == false )
+		{
+			m_runFactor = m_runFactor - step;
+			if ( m_runFactor < 0.0f )
+			{
+				m_runFactor = 0.0f;
+				setState( CPlayerComponent::PlayerIdle );
+			}
+
+			m_collada->setAnimWeight(m_runFactor, 1);
+			m_collada->synchronizedByTimeScale();
+		}
+		else if ( m_runFactor < 1.0f )
+		{		
+			m_runFactor = m_runFactor + step;
+			if ( m_runFactor > 1.0f )
+				m_runFactor = 1.0f;
+
+			m_collada->setAnimWeight(m_runFactor, 1);
+			m_collada->synchronizedByTimeScale();
+		}
+	}
+}
+
+
 void CPlayerComponent::updateStateRunTurn()
 {
 	stepAnimationTime();
 
 	if ( m_subState == SubStateInit )
 	{
-		m_collada->enableAnimTrackChanel(1, true);
+		m_collada->enableAnimTrackChannel(0, true);
+		m_collada->enableAnimTrackChannel(1, true);
+
 		m_collada->setAnimWeight(m_runFactor, 1);
 		m_collada->synchronizedByTimeScale();
 
@@ -377,50 +421,34 @@ void CPlayerComponent::updateStateRunTurn()
 
 		// synch animation to idle
 		float step = m_runAccel*getIView()->getTimeStep()*0.8f;
-		m_runFactor = m_runFactor + step;
-		if ( m_runFactor > 1.0f )
+		m_runFactor = m_runFactor - step;
+		if ( m_runFactor < 0.0f )
 		{
-			m_runFactor = 1.0f;
-			setState( CPlayerComponent::PlayerRun );
+			m_runFactor = 0.0f;
+			setState( CPlayerComponent::PlayerRunFast );
 		}
 		m_collada->setAnimWeight(m_runFactor, 1);
 		m_collada->synchronizedByTimeScale();
 		
 		// update run position
-		float runSpeed = m_runSpeed * (1.0f - m_runFactor) * getIView()->getTimeStep() * 0.1f;
+		float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep() * 0.1f;
 		core::vector3df newPos = m_gameObject->getPosition() + m_runCurrentVector * runSpeed;
 		m_gameObject->setPosition( newPos );
 	}
 }
 
-void CPlayerComponent::updateStateRun()
+void CPlayerComponent::updateStateRunFast()
 {	
 	if ( m_subState == SubStateInit )
 	{		
-		m_collada->enableAnimTrackChanel(0, true);
-		m_collada->enableAnimTrackChanel(1, true);
+		m_collada->enableAnimTrackChannel(0, true);
+		m_collada->enableAnimTrackChannel(1, true);
 
-		m_runFactor = 1.0f;
+		m_runFactor = 0.0f;
 
 		m_collada->setAnimation(m_animRunNoGun.c_str(), 1, true );
 		m_collada->setAnimWeight(m_runFactor, 1);
-		m_collada->synchronizedByTimeScale();
-
-		if ( m_gunOn )
-		{
-			// play anim gun off on right hand
-			m_collada->enableAnimTrackChanel( m_nodesRightShoulder, 1, false);
-
-			// reset timescale on right hand
-			m_collada->setAnimSpeed(m_nodesRightShoulder, 1.0f, 0);
-			m_collada->setAnimWeight(m_nodesRightShoulder, 1.0f, 0);
-
-			// play anim on right hand
-			m_collada->setCrossFadeAnimation( m_animGunOff, m_nodesRightShoulder, 0, 10.0f, false );
-
-			// anim state
-			m_gunOffAnimState = true;
-		}
+		m_collada->synchronizedByTimeScale();		
 
 		m_subState = SubStateActive;
 	}
@@ -444,42 +472,25 @@ void CPlayerComponent::updateStateRun()
 			core::vector3df lookPos = m_gameObject->getPosition() + m_gameObject->getFront();
 			setSpineLookAt( lookPos, 1.0f );
 
-			m_runFactor = m_runFactor + step;
-			if ( m_runFactor > 1.0f )
+			m_runFactor = m_runFactor - step;
+			if ( m_runFactor < 0.0f )
 			{
-				m_runFactor = 1.0f;
+				m_runFactor = 0.0f;
 				setState( CPlayerComponent::PlayerIdle );
 			}
 
 			m_collada->setAnimWeight(m_runFactor, 1);
 			m_collada->synchronizedByTimeScale();
 		}
-		else if ( m_runFactor > 0.0f )
+		else if ( m_runFactor < 1.0f )
 		{		
-			m_runFactor = m_runFactor - step;
-			if ( m_runFactor < 0.0f )
-				m_runFactor = 0.0f;
+			m_runFactor = m_runFactor + step;
+			if ( m_runFactor > 1.0f )
+				m_runFactor = 1.0f;
 
 			m_collada->setAnimWeight(m_runFactor, 1);
 			m_collada->synchronizedByTimeScale();
-		}
-		
-		if ( m_gunOn )
-		{
-			// we need reset timescale on right hand
-			m_collada->setAnimSpeed(m_nodesRightShoulder, 1.0f, 0);
-			m_collada->setAnimWeight(m_nodesRightShoulder, 1.0f, 0);
-
-			if ( isFinishedAnim( m_nodesRightShoulder ) == true )
-			{
-				m_collada->enableAnimTrackChanel(1, true);
-
-				m_collada->setAnimWeight(m_runFactor, 1);
-				m_collada->synchronizedByTimeScale();
-				m_gunOn = false;
-			}
-		}
-
+		}		
 
 		core::vector3df v0, v1;
 
@@ -496,7 +507,7 @@ void CPlayerComponent::updateStateRun()
 		q.fromAngleAxis( core::degToRad(rot), core::vector3df(0,1,0) );
 		q.getMatrix().rotateVect(v1);
 		v1.normalize();
-
+		
 		// do not need run turn state
 		if ( fabs( getAngle(v0,v1) ) >= 150.0f && m_runCommand )
 		{			
@@ -526,7 +537,7 @@ void CPlayerComponent::updateStateRun()
 				m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 
 				// calc spine rotation
-				if ( m_runFactor <= 0.1f && m_gunOn == false )
+				if ( m_runFactor > 0.1f )
 				{
 					core::vector3df lookPos = m_gameObject->getPosition() + getCameraFrontVector();					
 					setSpineLookAt( lookPos );
@@ -534,7 +545,7 @@ void CPlayerComponent::updateStateRun()
 			}
 			
 			// update run position
-			float runSpeed = m_runSpeed * (1.0f - m_runFactor) * getIView()->getTimeStep() * 0.1f;
+			float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep() * 0.1f;
 			core::vector3df newPos = m_gameObject->getPosition() + v0 * runSpeed;
 			m_gameObject->setPosition( newPos );
 		}
@@ -580,6 +591,9 @@ void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& po
 	}
 }
 
+void CPlayerComponent::_onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel )
+{
+}
 
 ///////////////////////////////////////////////////////////////////////
 // Player component end update state function

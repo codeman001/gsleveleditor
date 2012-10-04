@@ -369,7 +369,7 @@ CGameAnimation::~CGameAnimation()
 
 // getFrameData
 // get anim at frame
-void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix)
+void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix, IGameAnimationCallback* callback, ISceneNode *parent)
 {
 	position.set(0.0f, 0.0f, 0.0f);
 	scale.set(1.0f,1.0f,1.0f);
@@ -394,6 +394,11 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 					localMatrix 
 				);
 
+			// implement callback
+			if ( callback )
+				callback->_onUpdateFrameDataChannel(parent, posTrack, scaleTrack, rotTrack, i);
+
+			// blending animation
 			if ( first == true )
 			{
 				currentPosTrack		= posTrack;
@@ -453,6 +458,7 @@ void CGameAnimation::synchronizedByTimeScale()
 			
 			float weight = m_animTrack[i].getAnimWeight();
 			weight = core::clamp<float>(weight, 0.0f, 1.0f);
+			float invWeight = 1.0f - weight;
 
 			// sync frame
 			float frame1 = m_animTrack[0].getCurrentFrame();
@@ -460,21 +466,21 @@ void CGameAnimation::synchronizedByTimeScale()
 			m_animTrack[i].setCurrentFrame( frame2 );
 						
 			// interpolate speed ratio 2 channel
-			float ratio = time2 + ( (time1 - time2) * weight );
+			float ratio = time2 + ( (time1 - time2) * invWeight );
 
 			// sync speed
 			for (int j = 0, n = listTrackSync.size(); j < n; j++ )
 			{
 				float animTime		= m_animTrack[j].getTotalFrame();
-				float animRatio		= time2 + ( (animTime - time2) * weight );
+				float animRatio		= time2 + ( (animTime - time2) * invWeight );
 				float animWeight	= m_animTrack[j].getAnimWeight();
 
 				m_animTrack[j].setSpeedRatio( animTime/animRatio );
-				m_animTrack[j].setAnimWeight( animWeight*weight );
+				m_animTrack[j].setAnimWeight( animWeight*invWeight );
 			}
 
 			m_animTrack[i].setSpeedRatio( time2/ratio );
-			m_animTrack[i].setAnimWeight( 1.0f - weight );
+			m_animTrack[i].setAnimWeight( weight );
 
 			// add track i
 			listTrackSync.push_back(i);
@@ -1043,7 +1049,7 @@ void CGameColladaSceneNode::skin()
 // get current frame
 void CGameColladaSceneNode::getCurrentFrameData( core::vector3df& position, core::quaternion& rotation, core::vector3df& scale )
 {
-	m_gameAnimation.getFrameData( position, scale, rotation, LocalMatrix );
+	m_gameAnimation.getFrameData( position, scale, rotation, LocalMatrix, NULL, NULL );
 }
 
 // updateAnimation
@@ -1054,7 +1060,7 @@ void CGameColladaSceneNode::updateAnimation()
 	core::vector3df scale;
 	core::quaternion rotation;
 	
-	m_gameAnimation.getFrameData( position, scale, rotation, LocalMatrix );
+	m_gameAnimation.getFrameData( position, scale, rotation, LocalMatrix, m_animationCallback, this );
 
 	// run callback
 	if ( m_animationCallback )

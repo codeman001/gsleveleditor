@@ -168,6 +168,10 @@ protected:
 	// stepAnimationTime	
 	void stepAnimationTime();
 
+	// calcRunAnimationBlend
+	// calc animation
+	void calcRunAnimationBlend(float rot, float &forward, float &backward, float &left, float &right);
+
 	// updateActionShotWeapon
 	// shoot weapon action
 	void updateActionShotWeapon();

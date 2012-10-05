@@ -402,12 +402,12 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 			if ( callback )
 				callback->_onUpdateFrameDataChannel(parent, posTrack, scaleTrack, rotTrack, i);
 						
-#if 0
+#if 1
 			float animWeight	= m_animTrack[i].getAnimWeight();
 
 			currentPosTrack		= posTrack * animWeight;
 			currentScaleTrack	= scaleTrack * animWeight;
-			currentRotTrack		= rotTrack;
+			currentRotTrack		= rotTrack * animWeight;
 
 			if ( first == true )
 			{
@@ -421,7 +421,7 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 			{
 				position	+= currentPosTrack;
 				scale		+= currentScaleTrack;
-				rotation	= currentRotTrack;
+				rotation	= rotation + currentRotTrack;
 			}
 #else
 			// blending animation

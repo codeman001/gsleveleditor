@@ -336,7 +336,10 @@ void CPlayerComponent::updateStateRun()
 		m_runFactor = 0.0f;
 
 		m_collada->setAnimation(m_animRunForward.c_str(), 1, true );
+		
+		m_collada->setAnimWeight(1.0f - m_runFactor, 0);
 		m_collada->setAnimWeight(m_runFactor, 1);
+
 		m_collada->synchronizedByTimeScale();		
 
 		m_subState = SubStateActive;
@@ -346,6 +349,8 @@ void CPlayerComponent::updateStateRun()
 		if ( m_nextState == CPlayerComponent::PlayerIdle )
 		{
 			m_collada->setAnimWeight(1.0f, 0);
+			m_collada->setAnimWeight(0.0f, 1);
+
 			m_collada->setAnimSpeed(1.0f, 0);
 			m_collada->onlyEnableAnimTrackChannel(0);
 		}
@@ -399,16 +404,20 @@ void CPlayerComponent::updateStateRun()
 				setState( CPlayerComponent::PlayerIdle );
 			}
 
-			m_collada->setAnimWeight(m_runFactor, 1);
+			m_collada->setAnimWeight(1.0f - m_runFactor, 0);
+			m_collada->setAnimWeight(m_runFactor, 1);			
+
 			m_collada->synchronizedByTimeScale();
 		}
-		else if ( m_runFactor < 1.0f )
+		else
 		{		
 			m_runFactor = m_runFactor + step;
 			if ( m_runFactor > 1.0f )
 				m_runFactor = 1.0f;
 
+			m_collada->setAnimWeight(1.0f - m_runFactor, 0);
 			m_collada->setAnimWeight(m_runFactor, 1);
+
 			m_collada->synchronizedByTimeScale();
 		}
 
@@ -433,7 +442,10 @@ void CPlayerComponent::updateStateRunFast()
 		m_runFactor = 0.0f;
 
 		m_collada->setAnimation(m_animRunNoGun.c_str(), 1, true );
+		
+		m_collada->setAnimWeight(1.0f - m_runFactor, 0);
 		m_collada->setAnimWeight(m_runFactor, 1);
+
 		m_collada->synchronizedByTimeScale();		
 
 		m_subState = SubStateActive;
@@ -441,8 +453,10 @@ void CPlayerComponent::updateStateRunFast()
 	else if ( m_subState == SubStateEnd )
 	{
 		if ( m_nextState == CPlayerComponent::PlayerIdle )
-		{
+		{			
 			m_collada->setAnimWeight(1.0f, 0);
+			m_collada->setAnimWeight(0.0f, 1);
+
 			m_collada->setAnimSpeed(1.0f, 0);
 			m_collada->onlyEnableAnimTrackChannel(0);
 		}
@@ -465,7 +479,9 @@ void CPlayerComponent::updateStateRunFast()
 				setState( CPlayerComponent::PlayerIdle );
 			}
 
+			m_collada->setAnimWeight(1.0f - m_runFactor, 0);
 			m_collada->setAnimWeight(m_runFactor, 1);
+
 			m_collada->synchronizedByTimeScale();
 		}
 		else if ( m_runFactor < 1.0f )
@@ -474,7 +490,9 @@ void CPlayerComponent::updateStateRunFast()
 			if ( m_runFactor > 1.0f )
 				m_runFactor = 1.0f;
 
+			m_collada->setAnimWeight(1.0f - m_runFactor, 0);
 			m_collada->setAnimWeight(m_runFactor, 1);
+
 			m_collada->synchronizedByTimeScale();
 		}		
 
@@ -548,7 +566,9 @@ void CPlayerComponent::updateStateRunTurn()
 		m_collada->enableAnimTrackChannel(0, true);
 		m_collada->enableAnimTrackChannel(1, true);
 
+		m_collada->setAnimWeight(1.0f - m_runFactor, 0);
 		m_collada->setAnimWeight(m_runFactor, 1);
+
 		m_collada->synchronizedByTimeScale();
 
 		m_subState = SubStateActive;		
@@ -585,7 +605,10 @@ void CPlayerComponent::updateStateRunTurn()
 			m_runFactor = 0.0f;
 			setState( CPlayerComponent::PlayerRunFast );
 		}
+		
+		m_collada->setAnimWeight(1.0f - m_runFactor, 0);
 		m_collada->setAnimWeight(m_runFactor, 1);
+
 		m_collada->synchronizedByTimeScale();
 		
 		// update run position
@@ -674,7 +697,6 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 			float dForward	= fabs(sinf(fixAngle));
 			float dRight	= fabs(cosf(fixAngle));
 
-			printf("%f %f - %f\n", dForward, dRight, rot);
 		}
 		else
 		{
@@ -685,7 +707,6 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 			float dForward	= fabs(sinf(fixAngle));
 			float dLeft		= fabs(cosf(fixAngle));
 
-			printf("%f %f - %f\n", dForward, dLeft, rot);
 		}
 	}
 	else
@@ -701,7 +722,6 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 			float dBackward	= fabs(sinf(fixAngle));
 			float dLeft		= fabs(cosf(fixAngle));
 
-			printf("%f %f - %f\n", dBackward, dLeft, rot);
 		}
 		else
 		{
@@ -712,7 +732,6 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 			float dBackward	= fabs(sinf(fixAngle));
 			float dRight	= fabs(cosf(fixAngle));
 
-			printf("%f %f - %f\n", dBackward, dRight, rot);
 		}
 	}
 }

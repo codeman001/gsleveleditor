@@ -402,38 +402,6 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 			if ( callback )
 				callback->_onUpdateFrameDataChannel(parent, posTrack, scaleTrack, rotTrack, i);
 						
-#if 1
-			float animWeight	= m_animTrack[i].getAnimWeight();
-
-			currentPosTrack		= posTrack		* animWeight;
-			currentScaleTrack	= scaleTrack	* animWeight;
-			currentRotTrack		= rotTrack		* animWeight;
-
-			if ( first == true )
-			{
-				position	= currentPosTrack;
-				scale		= currentScaleTrack;
-				rotation	= currentRotTrack;
-
-				first = false;
-			}
-			else
-			{
-				position	+= currentPosTrack;
-				scale		+= currentScaleTrack;				
-
-				// make sure we use the short rotation
-				f32 angle = rotation.dotProduct(currentRotTrack);
-				if (angle < 0.0f)
-				{
-					rotation *= -1.0f;
-					angle *= -1.0f;
-				}
-
-				// blend rotation
-				rotation	= rotation + currentRotTrack;
-			}
-#else
 			// blending animation
 			if ( first == true )
 			{
@@ -460,7 +428,6 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 				currentScaleTrack	= scale;
 				currentRotTrack		= rotation;
 			}
-#endif
 
 		}
 	}
@@ -482,23 +449,42 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 void CGameAnimation::synchronizedByTimeScale()
 {
 	float syncFrame = 0;
-	
+    
+	int     baseChannel = -1;
+    float   maxWeight = -1;
+    float   frameRatio;
+    
 	for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 	{
 		if ( m_animTrack[i].isEnable() == true && m_animTrack[i].getTotalFrame() != 0 )
 		{
 			syncFrame = syncFrame + m_animTrack[i].getTotalFrame() * m_animTrack[i].getAnimWeight();
+            
+            // find frame ratio
+            if ( maxWeight < m_animTrack[i].getAnimWeight() )
+            {
+                maxWeight = m_animTrack[i].getAnimWeight();
+                frameRatio = m_animTrack[i].getCurrentFrame()/m_animTrack[i].getTotalFrame();
+                baseChannel = i;
+            }
 		}
 	}
-		
+
+    if ( syncFrame == 0.0f || baseChannel == -1 )
+        return;
+    
 	for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 	{
 		if ( m_animTrack[i].isEnable() == true && m_animTrack[i].getTotalFrame() != 0 )
 		{
-			float speedRatio = m_animTrack[i].getTotalFrame()/syncFrame;			
+			float speedRatio = m_animTrack[i].getTotalFrame()/syncFrame;
 			m_animTrack[i].setSpeedRatio( speedRatio );
+            
+            if ( i != baseChannel )
+                m_animTrack[i].setCurrentFrame( frameRatio*m_animTrack[i].getTotalFrame() );
 		}
 	}
+    
 }
 
 // update
@@ -506,7 +492,8 @@ void CGameAnimation::synchronizedByTimeScale()
 void CGameAnimation::update(float timeStep)
 {
 	bool startNewLoop = true;
-
+    bool haveAnim = false;
+    
 	for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 	{
 		if ( m_animTrack[i].isEnable() )
@@ -516,11 +503,16 @@ void CGameAnimation::update(float timeStep)
 			// the new track need wait another end track
 			if ( m_animTrack[i].isEndTrack() == false )
 				startNewLoop = false;
+            
+            if ( m_animTrack[i].getTotalFrame() != 0 )
+            {
+                haveAnim = true;
+            }
 		}
 	}
 
 	// we will synchronized all animation loop
-	if ( startNewLoop )
+	if ( startNewLoop && haveAnim )
 	{
 		for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 		{

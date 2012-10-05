@@ -405,9 +405,9 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 #if 1
 			float animWeight	= m_animTrack[i].getAnimWeight();
 
-			currentPosTrack		= posTrack * animWeight;
-			currentScaleTrack	= scaleTrack * animWeight;
-			currentRotTrack		= rotTrack * animWeight;
+			currentPosTrack		= posTrack		* animWeight;
+			currentScaleTrack	= scaleTrack	* animWeight;
+			currentRotTrack		= rotTrack		* animWeight;
 
 			if ( first == true )
 			{
@@ -420,7 +420,17 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 			else
 			{
 				position	+= currentPosTrack;
-				scale		+= currentScaleTrack;
+				scale		+= currentScaleTrack;				
+
+				// make sure we use the short rotation
+				f32 angle = rotation.dotProduct(currentRotTrack);
+				if (angle < 0.0f)
+				{
+					rotation *= -1.0f;
+					angle *= -1.0f;
+				}
+
+				// blend rotation
 				rotation	= rotation + currentRotTrack;
 			}
 #else

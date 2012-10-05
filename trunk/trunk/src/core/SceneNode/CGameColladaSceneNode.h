@@ -389,8 +389,7 @@ public:
 	void getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix, IGameAnimationCallback* callback, ISceneNode *parent);
 
 	// synchronizedTimeScale
-	// sync speed of 2 track
-	// w: weight of track 1,  value domain: 0.0f -> 1.0f
+	// sync speed of n track	
 	void synchronizedByTimeScale();
 
 	// update

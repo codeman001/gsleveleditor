@@ -321,7 +321,7 @@ void CPlayerComponent::updateStateTurn()
 				
 		if ( turnFinish )
 		{
-            setState( CPlayerComponent::PlayerRun );
+            setState( CPlayerComponent::PlayerRunFast );
 		}
 	}
 }
@@ -330,15 +330,29 @@ void CPlayerComponent::updateStateRun()
 {
 	if ( m_subState == SubStateInit )
 	{
+        // enable multi animation blending
 		m_collada->enableAnimTrackChannel(0, true);
 		m_collada->enableAnimTrackChannel(1, true);
+		m_collada->enableAnimTrackChannel(2, true);
+		m_collada->enableAnimTrackChannel(3, true);
+		m_collada->enableAnimTrackChannel(4, true);
+		m_collada->enableAnimTrackChannel(5, true);        
 
 		m_runFactor = 0.0f;
 
-		m_collada->setAnimation(m_animRunForward.c_str(), 1, true );
-		
-		m_collada->setAnimWeight(1.0f - m_runFactor, 0);
-		m_collada->setAnimWeight(m_runFactor, 1);
+		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str(),0 );        
+		m_collada->setAnimation(m_animRunForward.c_str(),       2, true );
+		m_collada->setAnimation(m_animRunBackward.c_str(),      3, true );
+		m_collada->setAnimation(m_animRunStrafeRight.c_str(),   4, true );
+		m_collada->setAnimation(m_animRunStrafeLeft.c_str(),    5, true );        
+        
+        // set weight run anim = zero
+		m_collada->setAnimWeight(1.0f, 1);        
+		m_collada->setAnimWeight(0.0f, 1);
+		m_collada->setAnimWeight(0.0f, 2);
+		m_collada->setAnimWeight(0.0f, 3);
+		m_collada->setAnimWeight(0.0f, 4);
+		m_collada->setAnimWeight(0.0f, 5);                
 
 		m_collada->synchronizedByTimeScale();		
 
@@ -348,6 +362,7 @@ void CPlayerComponent::updateStateRun()
 	{
 		if ( m_nextState == CPlayerComponent::PlayerIdle )
 		{
+            // turn off multi anim
 			m_collada->setAnimWeight(1.0f, 0);
 			m_collada->setAnimWeight(0.0f, 1);
 
@@ -377,8 +392,8 @@ void CPlayerComponent::updateStateRun()
 		runDir.normalize();
 		
 		// calc animation blending
-		float a,b,c,d;
-		calcRunAnimationBlend(rot, a,b,c,d);
+		float forward, backward, left, right;
+		calcRunAnimationBlend(rot, forward, backward, left, right);
 
 #ifdef WIN32            
 		// debug line
@@ -390,11 +405,10 @@ void CPlayerComponent::updateStateRun()
 
 		line.end	= m_gameObject->getPosition() + runDir * 400.0f;
 		debug->addDrawLine(line, SColor(255,0,255,0) );
-#endif
-		
+#endif    
 
 		float step = m_runAccel*getIView()->getTimeStep();
-
+        
 		if ( m_runCommand == false )
 		{
 			m_runFactor = m_runFactor - step;
@@ -403,22 +417,30 @@ void CPlayerComponent::updateStateRun()
 				m_runFactor = 0.0f;
 				setState( CPlayerComponent::PlayerIdle );
 			}
+            
+			m_collada->setAnimWeight(1.0f - m_runFactor, 0);            
 
-			m_collada->setAnimWeight(1.0f - m_runFactor, 0);
-			m_collada->setAnimWeight(m_runFactor, 1);			
-
-			m_collada->synchronizedByTimeScale();
+			m_collada->setAnimWeight(m_runFactor*forward,   2);
+			m_collada->setAnimWeight(m_runFactor*backward,  3);
+			m_collada->setAnimWeight(m_runFactor*left,      4);
+			m_collada->setAnimWeight(m_runFactor*right,     5);
+            
+            m_collada->synchronizedByTimeScale();            
 		}
 		else
-		{		
+		{	
 			m_runFactor = m_runFactor + step;
 			if ( m_runFactor > 1.0f )
 				m_runFactor = 1.0f;
 
 			m_collada->setAnimWeight(1.0f - m_runFactor, 0);
-			m_collada->setAnimWeight(m_runFactor, 1);
 
-			m_collada->synchronizedByTimeScale();
+			m_collada->setAnimWeight(m_runFactor*forward,   2);
+			m_collada->setAnimWeight(m_runFactor*backward,  3);
+			m_collada->setAnimWeight(m_runFactor*left,      4);
+			m_collada->setAnimWeight(m_runFactor*right,     5);
+            
+            m_collada->synchronizedByTimeScale();            
 		}
 
 
@@ -493,8 +515,8 @@ void CPlayerComponent::updateStateRunFast()
 			m_collada->setAnimWeight(1.0f - m_runFactor, 0);
 			m_collada->setAnimWeight(m_runFactor, 1);
 
-			m_collada->synchronizedByTimeScale();
-		}		
+			m_collada->synchronizedByTimeScale();            
+		}
 
 		core::vector3df v0, v1;
 
@@ -696,7 +718,10 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
 			float dForward	= fabs(sinf(fixAngle));
 			float dRight	= fabs(cosf(fixAngle));
-
+            // we have sin2 + cos2 = 1
+            // it mean dforward2 + dright2 = 1.0f
+            forward = dForward*dForward;
+            right   = dRight*dRight;
 		}
 		else
 		{
@@ -707,6 +732,8 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 			float dForward	= fabs(sinf(fixAngle));
 			float dLeft		= fabs(cosf(fixAngle));
 
+            forward = dForward*dForward;
+            left = dLeft*dLeft;
 		}
 	}
 	else
@@ -722,6 +749,8 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 			float dBackward	= fabs(sinf(fixAngle));
 			float dLeft		= fabs(cosf(fixAngle));
 
+            backward    = dBackward*dBackward;
+            left        = dLeft*dLeft;
 		}
 		else
 		{
@@ -732,8 +761,11 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 			float dBackward	= fabs(sinf(fixAngle));
 			float dRight	= fabs(cosf(fixAngle));
 
+            backward    = dBackward*dBackward;
+            right       = dRight*dRight;
 		}
 	}
+    
 }
 
 // isFinishedAnim	

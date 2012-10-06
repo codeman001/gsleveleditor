@@ -399,10 +399,8 @@ void CPlayerComponent::updateStateRun()
 
 		// calc animation rotate
 		m_controlRotate.normalize();		
-		float realRot = core::radToDeg(acosf(m_controlRotate.dotProduct(v0)));
-		if ( rot < 0.0f )
-			realRot = -realRot;
-		
+		float realRot = -getAngle(m_controlRotate, v0);		
+
 		// calc animation blending
 		float forward, backward, left, right;
 		calcRunAnimationBlend(realRot, forward, backward, left, right);
@@ -435,7 +433,7 @@ void CPlayerComponent::updateStateRun()
 			}
             
 			m_collada->setAnimWeight(1.0f - m_runFactor, 0);            
-
+			m_collada->setAnimWeight(0.0f,					1);	
 			m_collada->setAnimWeight(m_runFactor*forward,   2);
 			m_collada->setAnimWeight(m_runFactor*backward,  3);
 			m_collada->setAnimWeight(m_runFactor*left,      4);
@@ -450,7 +448,7 @@ void CPlayerComponent::updateStateRun()
 				m_runFactor = 1.0f;
 
 			m_collada->setAnimWeight(1.0f - m_runFactor, 0);
-
+			m_collada->setAnimWeight(0.0f,					1);
 			m_collada->setAnimWeight(m_runFactor*forward,   2);
 			m_collada->setAnimWeight(m_runFactor*backward,  3);
 			m_collada->setAnimWeight(m_runFactor*left,      4);
@@ -733,11 +731,11 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 
 			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
 			float dForward	= fabs(sinf(fixAngle));
-			float dRight	= fabs(cosf(fixAngle));
-            // we have sin2 + cos2 = 1
+   
+			// we have sin2 + cos2 = 1
             // it mean dforward2 + dright2 = 1.0f
             forward = dForward*dForward;
-            right   = dRight*dRight;
+			right   = 1.0f - forward;
 		}
 		else
 		{
@@ -746,10 +744,9 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 
 			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
 			float dForward	= fabs(sinf(fixAngle));
-			float dLeft		= fabs(cosf(fixAngle));
-
+			
             forward = dForward*dForward;
-            left = dLeft*dLeft;
+            left = 1.0f - forward;
 		}
 	}
 	else
@@ -762,11 +759,10 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 			right = 0.0f;
 
 			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
-			float dBackward	= fabs(sinf(fixAngle));
-			float dLeft		= fabs(cosf(fixAngle));
+			float dBackward	= fabs(sinf(fixAngle));			
 
             backward    = dBackward*dBackward;
-            left        = dLeft*dLeft;
+            left        = 1.0f - backward;
 		}
 		else
 		{
@@ -775,10 +771,9 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 
 			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
 			float dBackward	= fabs(sinf(fixAngle));
-			float dRight	= fabs(cosf(fixAngle));
-
+			
             backward    = dBackward*dBackward;
-            right       = dRight*dRight;
+            right       = 1.0f - backward;
 		}
 	}
     

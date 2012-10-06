@@ -37,9 +37,8 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 
 	
 	// init run const
-	m_runSpeed				= 4.0f;
-	m_runBackSpeed			= 3.0f;
-	m_runNoGunSpeed			= 6.0f;
+	m_runSpeed				= 3.0f;
+	m_runFastSpeed			= 4.0f;
 
 	m_runCommand	= false;			
 
@@ -264,7 +263,7 @@ void CPlayerComponent::updateStateIdle()
 	
 		if ( m_runCommand )
 		{	
-			setState( CPlayerComponent::PlayerRun );			
+			setState( CPlayerComponent::PlayerTurn );			
 		}
 
         // reinit state
@@ -321,7 +320,7 @@ void CPlayerComponent::updateStateTurn()
 				
 		if ( turnFinish )
 		{
-            setState( CPlayerComponent::PlayerRunFast );
+            setState( CPlayerComponent::PlayerRun );
 		}
 	}
 }
@@ -396,16 +395,7 @@ void CPlayerComponent::updateStateRun()
 		
 		// rotate step runDir
 		turnToDir( m_controlRotate, runDir, 2.0f );
-
-		// calc animation rotate
-		m_controlRotate.normalize();		
-		float realRot = -getAngle(m_controlRotate, v0);		
-
-		// calc animation blending
-		float forward, backward, left, right;
-		calcRunAnimationBlend(realRot, forward, backward, left, right);
-
-
+		
 #ifdef WIN32            
 		// debug line
 		CGameDebug *debug = CGameDebug::getInstance();
@@ -432,27 +422,38 @@ void CPlayerComponent::updateStateRun()
 				setState( CPlayerComponent::PlayerIdle );
 			}
             
-			m_collada->setAnimWeight(1.0f - m_runFactor, 0);            
-			m_collada->setAnimWeight(0.0f,					1);	
-			m_collada->setAnimWeight(m_runFactor*forward,   2);
-			m_collada->setAnimWeight(m_runFactor*backward,  3);
-			m_collada->setAnimWeight(m_runFactor*left,      4);
-			m_collada->setAnimWeight(m_runFactor*right,     5);
+			m_collada->setAnimWeight(1.0f - m_runFactor,				0);            
+			m_collada->setAnimWeight(0.0f,								1);	
+			m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,   2);
+			m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,  3);
+			m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,      4);
+			m_collada->setAnimWeight(m_runFactor*m_animRightFactor,     5);
             
             m_collada->synchronizedByTimeScale();            
 		}
 		else
 		{	
+			// calc animation rotate
+			m_controlRotate.normalize();		
+			float realRot = -getAngle(m_controlRotate, v0);		
+
+			// calc animation blending			
+			calcRunAnimationBlend(realRot, 
+				m_animForwardFactor, 
+				m_animBackwardFactor, 
+				m_animLeftFactor, 
+				m_animRightFactor);
+
 			m_runFactor = m_runFactor + step;
 			if ( m_runFactor > 1.0f )
 				m_runFactor = 1.0f;
 
 			m_collada->setAnimWeight(1.0f - m_runFactor, 0);
 			m_collada->setAnimWeight(0.0f,					1);
-			m_collada->setAnimWeight(m_runFactor*forward,   2);
-			m_collada->setAnimWeight(m_runFactor*backward,  3);
-			m_collada->setAnimWeight(m_runFactor*left,      4);
-			m_collada->setAnimWeight(m_runFactor*right,     5);
+			m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,   2);
+			m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,  3);
+			m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,      4);
+			m_collada->setAnimWeight(m_runFactor*m_animRightFactor,     5);
             
             m_collada->synchronizedByTimeScale();            
 		}
@@ -464,6 +465,11 @@ void CPlayerComponent::updateStateRun()
 			bool turnFinish  = turnToDir( v0, v1, 2.0f );
 			m_gameObject->lookAt( m_gameObject->getPosition() + v0 );			
 		}
+
+		// update run position
+		float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep() * 0.1f;
+		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate * runSpeed;
+		m_gameObject->setPosition( newPos );
 
 	}
 }
@@ -586,7 +592,7 @@ void CPlayerComponent::updateStateRunFast()
 			}
 			
 			// update run position
-			float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep() * 0.1f;
+			float runSpeed = m_runFastSpeed * m_runFactor * getIView()->getTimeStep() * 0.1f;
 			core::vector3df newPos = m_gameObject->getPosition() + v0 * runSpeed;
 			m_gameObject->setPosition( newPos );
 		}

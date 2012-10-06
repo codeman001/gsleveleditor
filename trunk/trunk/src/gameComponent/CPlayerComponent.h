@@ -42,9 +42,8 @@ protected:
 	EPlayerState			m_lastState;
 
 	float					m_runSpeed;
-	float					m_runNoGunSpeed;
-	float					m_runBackSpeed;
-	
+	float					m_runFastSpeed;
+
 	bool					m_runCommand;
 	SEventPlayerMove		m_playerMoveEvt;
 	core::vector3df			m_controlRotate;
@@ -92,6 +91,11 @@ protected:
 	float					m_runFactor;
 	float					m_runAccel;
 	float					m_gunOnOffAccel;
+
+	float					m_animForwardFactor;
+	float					m_animBackwardFactor;
+	float					m_animLeftFactor;
+	float					m_animRightFactor;
 
 	float					m_spineRotation;
 	float					m_lastRotation;

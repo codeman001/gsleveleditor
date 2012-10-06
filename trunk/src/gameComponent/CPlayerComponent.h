@@ -47,7 +47,7 @@ protected:
 	
 	bool					m_runCommand;
 	SEventPlayerMove		m_playerMoveEvt;
-
+	core::vector3df			m_controlRotate;
 
 	float					m_animShotCurrentTime;
 	float					m_animCurrentTime;

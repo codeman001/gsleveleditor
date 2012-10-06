@@ -354,7 +354,10 @@ void CPlayerComponent::updateStateRun()
 		m_collada->setAnimWeight(0.0f, 4);
 		m_collada->setAnimWeight(0.0f, 5);                
 
-		m_collada->synchronizedByTimeScale();		
+		m_collada->synchronizedByTimeScale();	
+
+		// default control rotate
+		m_controlRotate = m_gameObject->getFront();
 
 		m_subState = SubStateActive;
 	}
@@ -378,7 +381,7 @@ void CPlayerComponent::updateStateRun()
 		// get vector rotate & speed
 		v0 = m_gameObject->getFront();
 		v1 = getCameraFrontVector();
-		runDir = v0;
+		runDir = v0;		
 
 		core::quaternion q;
 		float rot = 0.0f;
@@ -391,9 +394,19 @@ void CPlayerComponent::updateStateRun()
 		q.getMatrix().rotateVect(runDir);
 		runDir.normalize();
 		
+		// rotate step runDir
+		turnToDir( m_controlRotate, runDir, 2.0f );
+
+		// calc animation rotate
+		m_controlRotate.normalize();		
+		float realRot = core::radToDeg(acosf(m_controlRotate.dotProduct(v0)));
+		if ( rot < 0.0f )
+			realRot = -realRot;
+		
 		// calc animation blending
 		float forward, backward, left, right;
-		calcRunAnimationBlend(rot, forward, backward, left, right);
+		calcRunAnimationBlend(realRot, forward, backward, left, right);
+
 
 #ifdef WIN32            
 		// debug line
@@ -405,6 +418,9 @@ void CPlayerComponent::updateStateRun()
 
 		line.end	= m_gameObject->getPosition() + runDir * 400.0f;
 		debug->addDrawLine(line, SColor(255,0,255,0) );
+
+		line.end	= m_gameObject->getPosition() + m_controlRotate * 400.0f;
+		debug->addDrawLine(line, SColor(255,0,0,255) );
 #endif    
 
 		float step = m_runAccel*getIView()->getTimeStep();

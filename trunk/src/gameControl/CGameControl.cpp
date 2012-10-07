@@ -176,7 +176,8 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	const int KeyRight	= SHIFTBIT(3);
 	const int KeyBack	= SHIFTBIT(4);
 	const int KeyFire	= SHIFTBIT(5);
-
+    const int KeyRunFast= SHIFTBIT(6);
+    
 	// run flag
 	bool updateRunState = false;
 
@@ -192,6 +193,8 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 			m_keyActionBit |= KeyRight;
 		else if (  key == irr::KEY_SPACE )
 			m_keyActionBit |= KeyFire;
+        else if (  key == irr::KEY_LSHIFT || key == irr::KEY_RSHIFT || key == irr::KEY_SHIFT )
+            m_keyActionBit |= KeyRunFast;
 	}		
 	else
 	{
@@ -205,6 +208,8 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 			m_keyActionBit &= ~KeyRight;
 		else if (  key == irr::KEY_SPACE )
 			m_keyActionBit &= ~KeyFire;
+        else if (  key == irr::KEY_LSHIFT || key == irr::KEY_RSHIFT || key == irr::KEY_SHIFT )
+            m_keyActionBit &= ~KeyRunFast;        
 	}
 
 	// update move
@@ -212,7 +217,8 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	bool runBack	= false;
 	bool runLeft	= false;
 	bool runRight	= false;
-
+    bool runFast    = false;
+    
 	// calc rotation
 	if ( (m_keyActionBit & KeyLeft) != 0 )
 	{
@@ -238,6 +244,9 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	else if ( (m_keyActionBit & KeyUp) != 0 )
 		runUp = true;
 
+    if ( (m_keyActionBit & KeyRunFast) != 0 )
+        runFast = true;
+    
 	// calc player rotation
 	float rot = 0.0f;
 	if ( runLeft )
@@ -267,7 +276,7 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	
 	// send event to player component
 	if ( runCommand )		
-		sendPlayerRunEvent( 1.0f, rot );		
+		sendPlayerRunEvent( 1.0f, rot, runFast );		
 	else		
 		sendPlayerStopEvent();
 
@@ -303,14 +312,15 @@ void CGameControl::sendPlayerStopEvent()
 	stopEvent.rotate = 0.0f;
 	stopEvent.strength = 0.0f;
 	stopEvent.run = false;
-
+    stopEvent.runFast = false;
+    
 	playerStop.EventType = EET_GAME_EVENT;
 	playerStop.GameEvent.EventID = (s32)EvtPlayerMove;
 	playerStop.GameEvent.EventData = &stopEvent;
 	getIView()->getDevice()->postEventFromUser( playerStop );
 }
 
-void CGameControl::sendPlayerRunEvent(float f, float rotate)
+void CGameControl::sendPlayerRunEvent(float f, float rotate, bool runFast)
 {
     if ( m_isEnable == false )
         return;
@@ -320,7 +330,8 @@ void CGameControl::sendPlayerRunEvent(float f, float rotate)
 	moveEvent.rotate = rotate;
 	moveEvent.strength = f;
 	moveEvent.run = true;
-
+    moveEvent.runFast = runFast;
+    
 	playerMove.EventType = EET_GAME_EVENT;
 	playerMove.GameEvent.EventID = (s32)EvtPlayerMove;
 	playerMove.GameEvent.EventData = &moveEvent;

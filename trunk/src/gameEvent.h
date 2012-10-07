@@ -13,12 +13,14 @@ struct SEventPlayerMove
 	float	rotate;
 	float	strength;
 	bool	run;
-
+    bool    runFast;
+    
 	SEventPlayerMove()
 	{
 		rotate		= 0.0f;
 		strength	= 0.0f;
 		run			= false;
+        runFast     = false;
 	}
 };
 

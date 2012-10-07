@@ -26,6 +26,8 @@ public:
 		PlayerRun,
         PlayerRunFastTurn,
 		PlayerRunFast,
+        PlayerRunToRunFast,
+        PlayerRunFastToRun,
 		NumStateCount
 	};
 
@@ -167,7 +169,9 @@ protected:
 	void updateStateRun();
 	void updateStateRunFastTurn();    
 	void updateStateRunFast();
-
+    void updateStateRunToRunFast();
+    void updateStateRunFastToRun();
+    
 	// isFinishedAnim	
 	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0 );
 

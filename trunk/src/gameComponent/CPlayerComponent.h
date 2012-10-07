@@ -24,6 +24,7 @@ public:
 		PlayerTurn,
 		PlayerRunTurn,
 		PlayerRun,
+        PlayerRunFastTurn,
 		PlayerRunFast,
 		NumStateCount
 	};
@@ -164,6 +165,7 @@ protected:
 	void updateStateTurn();
 	void updateStateRunTurn();
 	void updateStateRun();
+	void updateStateRunFastTurn();    
 	void updateStateRunFast();
 
 	// isFinishedAnim	

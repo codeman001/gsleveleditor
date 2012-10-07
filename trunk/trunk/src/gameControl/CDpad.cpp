@@ -68,7 +68,7 @@ void CDpad::update()
 		float f = length/k_maxMove;
 		if ( f >= 0.3f )
 		{
-			CGameControl::getInstance()->sendPlayerRunEvent( f, (float)moveVec.getAngle() - 90.0f );
+			CGameControl::getInstance()->sendPlayerRunEvent( f, (float)moveVec.getAngle() - 90.0f, false );
 		}
 		else
 		{

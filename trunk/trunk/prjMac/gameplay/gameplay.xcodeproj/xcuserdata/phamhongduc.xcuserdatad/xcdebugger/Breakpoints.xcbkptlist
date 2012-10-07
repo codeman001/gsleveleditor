@@ -16,18 +16,5 @@
          landmarkName = "add ( const T &amp;key, const U &amp;value )"
          landmarkType = "5">
       </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../../src/gameComponent/CPlayerComponent.cpp"
-         timestampString = "370792881.557975"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "205"
-         endingLineNumber = "205"
-         landmarkName = "CPlayerComponent::OnEvent(const SEvent&amp; irrEvent)"
-         landmarkType = "5">
-      </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

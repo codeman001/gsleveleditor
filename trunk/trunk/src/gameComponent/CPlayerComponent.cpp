@@ -494,7 +494,11 @@ void CPlayerComponent::updateStateRun()
 		{
 			// rotate character
             turnToDir( v0, v1, 2.0f );
-			m_gameObject->lookAt( m_gameObject->getPosition() + v0 );			
+			m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+
+			// calc spine rotation
+			core::vector3df lookPos = m_gameObject->getPosition() + m_gameObject->getFront();
+			setSpineLookAt( lookPos, 1.0f );
 		}
 
 		// update run position
@@ -847,6 +851,9 @@ void CPlayerComponent::updateStateRunToRunFast()
         else
         {
             s_runFastFactor = s_runFastFactor + step;
+			if ( s_runFastFactor >= 1.0f )
+				s_runFastFactor = 1.0f;
+
             invRun = 1.0f - s_runFastFactor;
             
             if ( s_runFastFactor >= 1.0f )
@@ -884,17 +891,132 @@ void CPlayerComponent::updateStateRunToRunFast()
 
 void CPlayerComponent::updateStateRunFastToRun()
 {
+	static float s_runFastToRunFactor = 0.0f;
+	static float s_runRotate = 0.0f;
+
     if ( m_subState == SubStateInit )
-	{        
+	{
+		// enable multi animation blending
+		m_collada->enableAnimTrackChannel(0, true);
+		m_collada->enableAnimTrackChannel(1, true);
+		m_collada->enableAnimTrackChannel(2, true);
+		m_collada->enableAnimTrackChannel(3, true);
+		m_collada->enableAnimTrackChannel(4, true);
+		m_collada->enableAnimTrackChannel(5, true);
+
+		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str(),0 );
+		m_collada->setAnimation(m_animRunForward.c_str(),       2, true );
+		m_collada->setAnimation(m_animRunBackward.c_str(),      3, true );
+		m_collada->setAnimation(m_animRunStrafeRight.c_str(),   4, true );
+		m_collada->setAnimation(m_animRunStrafeLeft.c_str(),    5, true );        
+        
+        // set weight run anim = zero
+		m_collada->setAnimWeight(1.0f - m_runFactor, 0);        
+		m_collada->setAnimWeight(m_runFactor, 1);
+		m_collada->setAnimWeight(0.0f, 2);
+		m_collada->setAnimWeight(0.0f, 3);
+		m_collada->setAnimWeight(0.0f, 4);
+		m_collada->setAnimWeight(0.0f, 5);                
+
+		m_collada->synchronizedByTimeScale();	
+
+		s_runFastToRunFactor = 0.0f;
+		s_runRotate = m_playerMoveEvt.rotate;
+
 		m_subState = SubStateActive;		
 	}
 	else if ( m_subState == SubStateEnd )
 	{
-		doNextState();		
+		bool runState = false;
+		if ( m_nextState == CPlayerComponent::PlayerRun )        
+            runState = true;
+
+        // change state
+		doNextState();
+        
+        // do not need init run
+        if ( runState )
+            m_subState = SubStateActive;
 	}
 	else
 	{
-        setState(CPlayerComponent::PlayerRun);
+		float step = m_runAccel*getIView()->getTimeStep();
+        
+        if ( m_runCommand == false )
+		{
+			m_runFactor = m_runFactor - step;
+			if ( m_runFactor < 0.0f )
+			{
+				m_runFactor = 0.0f;
+				setState( CPlayerComponent::PlayerIdle );
+			}                   
+		}
+        else
+        {
+            s_runFastToRunFactor = s_runFastToRunFactor + step;
+			if ( s_runFastToRunFactor >= 1.0f )
+				s_runFastToRunFactor = 1.0f;
+            
+            if ( s_runFastToRunFactor >= 1.0f )
+            {            
+                m_collada->enableAnimTrackChannel(0, true);
+                m_collada->enableAnimTrackChannel(1, false);
+
+				setState(CPlayerComponent::PlayerRun);
+            }
+        }
+        
+		core::vector3df v0, v1, runDir;
+
+		// get vector rotate & speed
+		v0 = m_gameObject->getFront();
+		v1 = getCameraFrontVector();
+		runDir = v0;		
+
+		core::quaternion q;				
+
+		// rotate rundir
+		q.fromAngleAxis( core::degToRad(s_runRotate), core::vector3df(0,1,0) );
+		q.getMatrix().rotateVect(runDir);
+		runDir.normalize();		
+        
+		// fix rotate
+		m_controlRotate = runDir;
+		
+		// calc animation blending			
+		calcRunAnimationBlend(s_runRotate, 
+			m_animForwardFactor, 
+			m_animBackwardFactor, 
+			m_animLeftFactor, 
+			m_animRightFactor);
+
+        float runFast       = (1.0f - s_runFastToRunFactor)*m_runFactor;
+        float runForward    = s_runFastToRunFactor*m_animForwardFactor*m_runFactor;
+        float runBackward   = s_runFastToRunFactor*m_animBackwardFactor*m_runFactor;
+        float runLeft       = s_runFastToRunFactor*m_animLeftFactor*m_runFactor;
+        float runRight      = s_runFastToRunFactor*m_animRightFactor*m_runFactor;
+        
+        m_collada->setAnimWeight(1.0f - m_runFactor,   0);
+        m_collada->setAnimWeight(runFast,       1);
+        m_collada->setAnimWeight(runForward,    2);
+        m_collada->setAnimWeight(runBackward,   3);
+        m_collada->setAnimWeight(runLeft,       4);
+        m_collada->setAnimWeight(runRight,      5);
+        
+        m_collada->synchronizedByTimeScale();        
+        
+		// rotate character to front
+        turnToDir( v0, v1, 2.0f );
+		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+
+		// calc spine rotation to look front
+		core::vector3df lookPos = m_gameObject->getPosition() + m_gameObject->getFront();
+		setSpineLookAt( lookPos, 4.0f );
+        
+        // update run position
+		float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep();
+		core::vector3df newPos = m_gameObject->getPosition() + runDir * runSpeed;
+		m_gameObject->setPosition( newPos );
     }    
 }
 

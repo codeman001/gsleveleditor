@@ -868,18 +868,23 @@ void CPlayerComponent::updateStateRunToRunFast()
                 
 				// rotate object to control dir
 				m_gameObject->lookAt( m_gameObject->getPosition() + m_controlRotate );
-				
-				setSpineRotation(0.0f);
-				m_rootRotation = 0.0f;
+								
+				float spineRotation = getAngle( m_gameObject->getFront(), getCameraFrontVector());
+				setSpineRotation(spineRotation);
 
 				// run fast state
                 setState(CPlayerComponent::PlayerRunFast);
             }
         }
 
-		// calc rotate anim
-		m_rootRotation = -getAngle( m_controlRotate, m_gameObject->getFront() );
-		
+		// calc rotate anim (see callback function: _onUpdateFrameDataChannel)
+		m_spineBlendRotation = getAngle( m_controlRotate, m_gameObject->getFront() );
+		m_rootBlendRotation	 = -m_spineBlendRotation;
+				
+		const float maxSpineAngle = 110.0f;
+		m_spineBlendRotation = core::clamp<float>(m_spineBlendRotation, -maxSpineAngle, maxSpineAngle);
+
+
 		// calc animation blending
         float runFast       = s_runFastFactor*m_runFactor;
         float runForward    = invRun*m_animForwardFactor*m_runFactor;
@@ -894,15 +899,14 @@ void CPlayerComponent::updateStateRunToRunFast()
         m_collada->setAnimWeight(runLeft,       4);
         m_collada->setAnimWeight(runRight,      5);
         
-        m_collada->synchronizedByTimeScale();        
-        
+        m_collada->synchronizedByTimeScale();
         
         // update run position
-		float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep();
+		float runSpeed = m_runSpeed*m_runFactor* getIView()->getTimeStep();
 		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate * runSpeed;
-		m_gameObject->setPosition( newPos );
-        
+		m_gameObject->setPosition( newPos );        
     }
+
 }
 
 void CPlayerComponent::updateStateRunFastToRun()
@@ -1103,17 +1107,52 @@ void CPlayerComponent::_onUpdateFrameDataChannel( ISceneNode* node, core::vector
 	{
 		ISceneNode *root = m_collada->getSceneNode("Reference");
 
+		
+		// todo modify rotation, position of anim    
+		const core::vector3df rotAxis = core::vector3df(0,0,1);
+
+		const float maxSpine = 70.0f;
+		float spineAngle = core::clamp<float>(m_spineBlendRotation, -maxSpine, maxSpine);
+		float neckAngle = m_spineBlendRotation - spineAngle;
+		float r = spineAngle/3.0f;
+
 		// we need rotate the animation channel
 		if ( node == root )
 		{
 			core::quaternion q;
 			const core::vector3df rotAxis = core::vector3df(0,1,0);
 
-			q.fromAngleAxis( core::degToRad( m_rootRotation ), rotAxis );
+			q.fromAngleAxis( core::degToRad( m_rootBlendRotation ), rotAxis );
+			rotation = rotation * q;
+		}	
+		else if ( node == m_nodesChest[0] )
+		{
+			core::quaternion q;
+			q.fromAngleAxis( core::degToRad(r), rotAxis  );
 			rotation = rotation * q;
 		}
-
+		else if ( node == m_nodesChest[1] )
+		{
+			core::quaternion q;
+			q.fromAngleAxis( core::degToRad(r), rotAxis );
+			rotation = rotation * q;
+		}
+		else if ( node == m_nodesChest[2] )
+		{
+			core::quaternion q;
+			q.fromAngleAxis( core::degToRad(r), rotAxis );
+			rotation = rotation * q;
+		}
+		else if ( node == m_nodeNeck )
+		{
+			core::quaternion q;
+			core::vector3df neckAxis = core::vector3df(0.0f,-0.8f,1.0f);
+			neckAxis.normalize();
+			q.fromAngleAxis( core::degToRad( neckAngle ), neckAxis );
+			rotation = rotation * q;
+		}
 	}
+
 }
 
 

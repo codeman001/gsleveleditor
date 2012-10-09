@@ -102,6 +102,7 @@ protected:
 
 	float					m_spineRotation;
 	float					m_lastRotation;
+	float					m_rootRotation;
 
 	core::vector3df			m_runTurnVector;
 	core::vector3df			m_runCurrentVector;

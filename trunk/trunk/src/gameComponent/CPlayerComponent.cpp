@@ -102,6 +102,11 @@ void CPlayerComponent::initComponent()
 	spine->setAnimationCallback(this);
 	m_nodesChest.push_back( spine );
 
+	// set callback of root node
+	CGameColladaSceneNode *root = m_collada->getSceneNode("Reference");
+	root->setAnimationCallback(this);
+
+
 	// hand, head
 	m_nodesHandsAndHead.push_back( m_collada->getSceneNode("RightGun") );		
 	m_collada->getChildsOfSceneNode("Spine3",m_nodesHandsAndHead);
@@ -861,10 +866,21 @@ void CPlayerComponent::updateStateRunToRunFast()
                 m_collada->enableAnimTrackChannel(0, true);
                 m_collada->enableAnimTrackChannel(1, true);
                 
+				// rotate object to control dir
+				m_gameObject->lookAt( m_gameObject->getPosition() + m_controlRotate );
+				
+				setSpineRotation(0.0f);
+				m_rootRotation = 0.0f;
+
+				// run fast state
                 setState(CPlayerComponent::PlayerRunFast);
             }
         }
-        
+
+		// calc rotate anim
+		m_rootRotation = -getAngle( m_controlRotate, m_gameObject->getFront() );
+		
+		// calc animation blending
         float runFast       = s_runFastFactor*m_runFactor;
         float runForward    = invRun*m_animForwardFactor*m_runFactor;
         float runBackward   = invRun*m_animBackwardFactor*m_runFactor;
@@ -883,7 +899,7 @@ void CPlayerComponent::updateStateRunToRunFast()
         
         // update run position
 		float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep();
-		core::vector3df newPos = m_gameObject->getPosition() + m_gameObject->getFront() * runSpeed;
+		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate * runSpeed;
 		m_gameObject->setPosition( newPos );
         
     }
@@ -1083,7 +1099,21 @@ void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& po
 
 void CPlayerComponent::_onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel )
 {
-    // todo modify rotation, position of anim
+	if ( m_state == CPlayerComponent::PlayerRunToRunFast && channel == 1 )
+	{
+		ISceneNode *root = m_collada->getSceneNode("Reference");
+
+		// we need rotate the animation channel
+		if ( node == root )
+		{
+			core::quaternion q;
+			const core::vector3df rotAxis = core::vector3df(0,1,0);
+
+			q.fromAngleAxis( core::degToRad( m_rootRotation ), rotAxis );
+			rotation = rotation * q;
+		}
+
+	}
 }
 
 

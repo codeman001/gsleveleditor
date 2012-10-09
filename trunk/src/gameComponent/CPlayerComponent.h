@@ -102,7 +102,9 @@ protected:
 
 	float					m_spineRotation;
 	float					m_lastRotation;
-	float					m_rootRotation;
+
+	float					m_rootBlendRotation;
+	float					m_spineBlendRotation;
 
 	core::vector3df			m_runTurnVector;
 	core::vector3df			m_runCurrentVector;
@@ -213,7 +215,7 @@ public:
 	{
 		const float maxAngle = 110.0f;
 		m_spineRotation = r;
-		m_spineRotation = core::clamp<float>(m_spineRotation, -maxAngle, maxAngle);		
+		m_spineRotation = core::clamp<float>(m_spineRotation, -maxAngle, maxAngle);
 	}
 
 	// setSpineLookAt

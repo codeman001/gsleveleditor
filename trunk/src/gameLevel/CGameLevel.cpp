@@ -476,7 +476,7 @@ void CGameLevel::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
 {
 #ifdef HAS_MULTIPLAYER
     int nZone = packet->getInt();
-    if ( nZone < 0 || nZone > m_zones.size() )
+    if ( nZone < 0 || nZone > (int)m_zones.size() )
     {
         // sync error
         return;

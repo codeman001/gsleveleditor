@@ -395,6 +395,16 @@ public:
 	// update
 	// update per frame
 	void update(float timeStep);
+
+protected:
+	
+	struct SAnimWeight
+	{
+		int		animID;
+		float	animWeight;
+	};
+
+	void sortWeightTrack( SAnimWeight *arrayTrack, int &num );
 };
 
 // CGameColladaSceneNode

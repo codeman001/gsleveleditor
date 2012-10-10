@@ -906,7 +906,8 @@ void CPlayerComponent::updateStateRunToRunFast()
         m_collada->synchronizedByTimeScale();
         
         // update run position
-		float runSpeed = m_runSpeed*m_runFactor* getIView()->getTimeStep();
+		float deltaSpeed = (m_runFastSpeed - m_runSpeed)*s_runFastFactor;
+		float runSpeed = (m_runSpeed + deltaSpeed)*m_runFactor* getIView()->getTimeStep();
 		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate * runSpeed;
 		m_gameObject->setPosition( newPos );        
     }
@@ -1038,11 +1039,12 @@ void CPlayerComponent::updateStateRunFastToRun()
         m_collada->setAnimWeight(runLeft,       4);
         m_collada->setAnimWeight(runRight,      5);
         
-        m_collada->synchronizedByTimeScale();        
+        m_collada->synchronizedByTimeScale();
         
         
         // update run position
-		float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep();
+		float deltaSpeed = (m_runFastSpeed - m_runSpeed)*s_runFastToRunFactor;
+		float runSpeed = (m_runFastSpeed - deltaSpeed)* m_runFactor * getIView()->getTimeStep();
 		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate*runSpeed;
 		m_gameObject->setPosition( newPos );
     }    

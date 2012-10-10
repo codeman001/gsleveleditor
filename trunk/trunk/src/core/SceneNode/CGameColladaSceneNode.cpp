@@ -354,6 +354,7 @@ void CGameAnimationTrack::crossAnimation()
 
 #pragma region COLLADAANIMATION
 
+
 //////////////////////////////////////////////////////////
 // CGameAnimation implement
 //////////////////////////////////////////////////////////
@@ -367,74 +368,104 @@ CGameAnimation::~CGameAnimation()
 {
 }
 
+void CGameAnimation::sortWeightTrack( SAnimWeight *arrayTrack, int &num )
+{
+	// we need sort for priority the largest weight if track anim track	
+	SAnimWeight animWeightInfo;
+	num = 0;
+
+	for ( int i = 0; i < MAX_ANIMTRACK; i++ )
+	{
+		if ( m_animTrack[i].isEnable() == true && 
+			m_animTrack[i].getAnimWeight() != 0.0f &&
+			m_animTrack[i].getTotalFrame() != 0 )
+		{		
+			animWeightInfo.animID = i;
+			animWeightInfo.animWeight = m_animTrack[i].getAnimWeight();
+			
+			int j = num++;
+			
+			while ( j > 0 )
+			{
+				if ( arrayTrack[j - 1].animWeight > animWeightInfo.animWeight )
+					arrayTrack[j] = arrayTrack[j - 1];
+				else
+					break;
+
+				j--;
+			}
+
+			arrayTrack[j] = animWeightInfo;
+		}
+	}
+}
+
 // getFrameData
 // get anim at frame
 void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix, IGameAnimationCallback* callback, ISceneNode *parent)
 {
-	position.set(0.0f, 0.0f, 0.0f);
-	scale.set(1.0f,1.0f,1.0f);
-	rotation.set(0.0f, 0.0f, 0.0f, 1.0f);	
+	SAnimWeight sortWeight[MAX_ANIMTRACK];
+	memset(sortWeight, 0, sizeof(sortWeight));
+	int nTrack = 0;
 
+	// sort track by weight
+	sortWeightTrack( sortWeight, nTrack );
 
+	// and we blending animation
 	core::vector3df		currentPosTrack,	posTrack;
 	core::vector3df		currentScaleTrack,	scaleTrack;
 	core::quaternion	currentRotTrack,	rotTrack;
 	bool first = true;
 
-	for ( int i = 0; i < MAX_ANIMTRACK; i++ )
-	{		
-		if ( 
-			m_animTrack[i].isEnable() == true && 
-			m_animTrack[i].getAnimWeight() != 0.0f &&
-			m_animTrack[i].getTotalFrame() != 0
-			)
-		{
-			m_animTrack[i].getFrameData
-				(
-					m_animTrack[i].getCurrentFrame(), 
-					posTrack, 
-					scaleTrack, 
-					rotTrack, 
-					localMatrix 
-				);
-
-			// implement callback
-			if ( callback )
-				callback->_onUpdateFrameDataChannel(parent, posTrack, scaleTrack, rotTrack, i);
-						
-			// blending animation
-			if ( first == true )
-			{
-				currentPosTrack		= posTrack;
-				currentScaleTrack	= scaleTrack;
-				currentRotTrack		= rotTrack;
-
-				position	= currentPosTrack;
-				scale		= currentScaleTrack;
-				rotation	= currentRotTrack;
-
-				first = false;
-			}
-			else
-			{
-				float w = m_animTrack[i].getAnimWeight();
-				w = core::clamp<float>(w, 0.0f, 1.0f);
-				
-				position.interpolate( posTrack, currentPosTrack, w );
-				scale.interpolate( scaleTrack, currentScaleTrack, w );
-				rotation.slerp( currentRotTrack, rotTrack, w );
-
-				currentPosTrack		= position;
-				currentScaleTrack	= scale;
-				currentRotTrack		= rotation;
-			}
-
-		}
-	}
-
-	if ( first )
+	for ( int track = (int)nTrack - 1; track >= 0; track-- )
 	{
-		// no enable animation
+		int i = sortWeight[track].animID;
+	
+		m_animTrack[i].getFrameData
+			(
+				m_animTrack[i].getCurrentFrame(), 
+				posTrack, 
+				scaleTrack, 
+				rotTrack, 
+				localMatrix 
+			);
+
+		// implement callback
+		if ( callback )
+			callback->_onUpdateFrameDataChannel(parent, posTrack, scaleTrack, rotTrack, i);
+					
+		// blending animation
+		if ( first == true )
+		{
+			currentPosTrack		= posTrack;
+			currentScaleTrack	= scaleTrack;
+			currentRotTrack		= rotTrack;
+
+			position	= currentPosTrack;
+			scale		= currentScaleTrack;
+			rotation	= currentRotTrack;
+
+			first = false;
+		}
+		else
+		{
+			float w = m_animTrack[i].getAnimWeight();
+			w = core::clamp<float>(w, 0.0f, 1.0f);
+			
+			position.interpolate( posTrack, currentPosTrack, w );
+			scale.interpolate( scaleTrack, currentScaleTrack, w );
+			rotation.slerp( currentRotTrack, rotTrack, w );
+
+			currentPosTrack		= position;
+			currentScaleTrack	= scale;
+			currentRotTrack		= rotation;
+		}
+
+	}
+	
+	// if not have animation
+	if ( first == true )
+	{		
 		// we need use default matrix
 		position	= core::vector3df();
 		localMatrix.transformVect( position );

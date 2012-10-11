@@ -93,6 +93,7 @@ protected:
 
 	float					m_runFactor;
 	float					m_runAccel;
+	float					m_runToRunFastAccel;
 	float					m_gunOnOffAccel;
 
 	float					m_animForwardFactor;

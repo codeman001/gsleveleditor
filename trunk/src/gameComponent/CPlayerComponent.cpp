@@ -44,7 +44,8 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 
 	m_runFactor = 0.0f;
 	m_runAccel	= 0.002f;
-	
+	m_runToRunFastAccel = 0.003f;
+
 	m_collada	= NULL;
 	m_inventory = NULL;
 
@@ -842,7 +843,7 @@ void CPlayerComponent::updateStateRunToRunFast()
 	}
 	else
 	{	
-        float step = m_runAccel*getIView()->getTimeStep();
+        float step = m_runToRunFastAccel*getIView()->getTimeStep();
         
         if ( m_runCommand == false )
 		{
@@ -876,6 +877,10 @@ void CPlayerComponent::updateStateRunToRunFast()
 				float spineRotation = getAngle( m_gameObject->getFront(), getCameraFrontVector());
 				setSpineRotation(spineRotation);
 
+				// if run back (we do not rotate spine)
+				if ( fabsf(m_playerMoveEvt.rotate) >= 150.0f )
+					setSpineRotation(0.0f);
+
 				// run fast state
                 setState(CPlayerComponent::PlayerRunFast);
             }
@@ -884,7 +889,11 @@ void CPlayerComponent::updateStateRunToRunFast()
 		// calc rotate anim (see callback function: _onUpdateFrameDataChannel)
 		m_spineBlendRotation = getAngle( m_controlRotate, m_gameObject->getFront() );
 		m_rootBlendRotation	 = -m_spineBlendRotation;
-				
+		
+		// if run back (we do not rotate spine)
+		if ( fabsf(m_playerMoveEvt.rotate) >= 150.0f )
+			m_spineBlendRotation = 0.0f;
+
 		const float maxSpineAngle = 110.0f;
 		m_spineBlendRotation = core::clamp<float>(m_spineBlendRotation, -maxSpineAngle, maxSpineAngle);
 
@@ -999,7 +1008,7 @@ void CPlayerComponent::updateStateRunFastToRun()
 	}
 	else
 	{
-		float step = m_runAccel*getIView()->getTimeStep();
+		float step = m_runToRunFastAccel*getIView()->getTimeStep();
         
         if ( m_runCommand == false )
 		{

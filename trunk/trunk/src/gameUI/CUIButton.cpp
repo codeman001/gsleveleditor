@@ -30,6 +30,19 @@ void CUIButton::update()
 	}
 }
 
+// setText
+// set string
+void CUIButton::setText( const char *fxName, const char *string )
+{
+	CMenuFxObj textEdit = m_flashObj.findObj(fxName);
+	textEdit.setText( string );
+}
+void CUIButton::setText( const char *fxName, const wchar_t *string )
+{
+	CMenuFxObj textEdit = m_flashObj.findObj(fxName);
+	textEdit.setText( string );
+}
+
 // onTouchEvent
 // update touch event
 bool CUIButton::onEvent( const SEvent& gameEvent)

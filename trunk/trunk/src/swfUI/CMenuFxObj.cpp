@@ -13,7 +13,7 @@ CMenuFxObj::~CMenuFxObj()
 
 // findObj
 // find obj on flash menu
-CMenuFxObj CMenuFxObj::findObj( char *name )
+CMenuFxObj CMenuFxObj::findObj( const char *name )
 {
 	if ( m_character == NULL )
 		return CMenuFxObj();

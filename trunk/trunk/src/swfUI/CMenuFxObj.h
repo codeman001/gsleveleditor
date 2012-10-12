@@ -20,7 +20,7 @@ public:
 
 	// findObj
 	// find obj on flash menu
-	CMenuFxObj findObj( char *name );
+	CMenuFxObj findObj( const char *name );
 
 	// setpos xy
 	void setPosition( int x, int y );

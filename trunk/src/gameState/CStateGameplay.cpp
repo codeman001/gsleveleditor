@@ -75,6 +75,8 @@ void CStateGameplay::onFsCommand( const char *command, const char *param )
 
 void CStateGameplay::onUpdate()
 {
+	CGameState::onUpdate();
+
 #ifdef HAS_MULTIPLAYER
 	m_mpMgr->update();
     

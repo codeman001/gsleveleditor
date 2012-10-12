@@ -14,9 +14,6 @@ CStateMainMenu::CStateMainMenu()
 {
 	m_menuChoice = -1;
 	m_level = new CGameLevel();	
-
-	m_txtServerName = NULL;
-	m_btnJointButton = NULL;
 }
 
 CStateMainMenu::~CStateMainMenu()
@@ -57,6 +54,8 @@ void CStateMainMenu::onDestroy()
 
 void CStateMainMenu::onUpdate()
 {
+	CGameState::onUpdate();
+
 #ifdef HAS_MULTIPLAYER		
 	const float constInterval = 1000.f;
 	static float interval = constInterval;

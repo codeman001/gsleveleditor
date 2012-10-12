@@ -12,6 +12,8 @@
 #include "swfUI/CMenuFx.h"
 #include "swfUI/CMenuFxObj.h"
 
+#include "gameUI/CUIWidget.h"
+
 class CGameState
 {
 public:
@@ -26,6 +28,7 @@ public:
 
 protected:
 	CMenuFx		*m_menuFx;
+	CUIWidget	*m_rootWidget;
 	EGameState	m_state;
 
 #ifdef HAS_MULTIPLAYER
@@ -78,6 +81,20 @@ public:
 	// getStateName
 	// get state name
 	static const char* getStateName( EGameState state );
+
+	// getRootWidget
+	// return the root control
+	inline CUIWidget* getRootWidget()
+	{
+		return m_rootWidget;
+	}
+
+	// getMenuFx
+	// return menu fx
+	inline CMenuFx* getMenuFx()
+	{
+		return m_menuFx;
+	}
 };
 
 #endif

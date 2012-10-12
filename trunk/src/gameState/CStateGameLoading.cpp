@@ -54,6 +54,8 @@ void CStateGameLoading::onFsCommand( const char *command, const char *param )
 
 void CStateGameLoading::onUpdate()
 {
+	CGameState::onUpdate();
+
 	if ( m_beginLoading )
 	{
 		bool loadFinish = m_levelLoad->loadStep();

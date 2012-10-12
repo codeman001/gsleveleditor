@@ -108,6 +108,8 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 
 void CStateInit::onUpdate()
 {
+	CGameState::onUpdate();
+
 	if ( m_loadFinish == true )
 	{
 		m_logoTime = m_logoTime - getIView()->getTimeStep();

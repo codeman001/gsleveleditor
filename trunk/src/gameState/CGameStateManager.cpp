@@ -141,13 +141,15 @@ void CGameStateMgr::destroyAllState()
 // OnEvent
 bool CGameStateMgr::OnEvent(const SEvent& irrEvent)
 {
-	if ( irrEvent.EventType == EET_FSCOMMAND_EVENT )
+	int nState = m_stackState.size();
+	if ( nState > 0 )
 	{
-		int nState = m_stackState.size();
-		if ( nState > 0 )
-		{
+		// send event to root widget
+		m_stackState[0]->getRootWidget()->onEvent( irrEvent );
+
+		// send flash fx event
+		if ( irrEvent.EventType == EET_FSCOMMAND_EVENT )	
 			m_stackState[0]->onFsCommand( irrEvent.FSEvent.Command , irrEvent.FSEvent.Param );
-		}
 	}
 	return true;
 }

@@ -8,6 +8,8 @@ CGameState::CGameState( EGameState state )
 
 	// get game menu flash
 	m_menuFx = CGameUI::getInstance()->getFlash("uiGameMenu");
+	
+	m_rootWidget = new CUIWidget();
 
 #ifdef HAS_MULTIPLAYER
 	m_mpMgr = NULL;
@@ -16,6 +18,8 @@ CGameState::CGameState( EGameState state )
 
 CGameState::~CGameState()
 {
+	delete m_rootWidget;
+
 #ifdef HAS_MULTIPLAYER
 	delete m_mpMgr;
 #endif
@@ -81,6 +85,7 @@ void CGameState::onFsCommand( const char *command, const char *param )
 // Update UI
 void CGameState::onUpdate()
 {
+	m_rootWidget->update();
 }
 
 // paintWindow

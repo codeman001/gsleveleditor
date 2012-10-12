@@ -15,10 +15,7 @@
 #include "IView.h"
 
 CDpad::CDpad()
-{
-    m_fxDpad = NULL;
-    m_fxDpadMove = NULL;
-    
+{        
     m_controlID = -1;
 	m_active = false;
 }

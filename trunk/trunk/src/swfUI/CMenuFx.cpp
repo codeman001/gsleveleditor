@@ -138,7 +138,7 @@ void CMenuFx::updateMouseState( int x, int y, bool pressed )
 CMenuFxObj CMenuFx::getObj( const char *path )
 {
 	if ( m_movie == NULL )
-		return CMenuFxObj(NULL);
+		return CMenuFxObj();
 	
 	std::vector<std::string>	folder;
 
@@ -196,7 +196,7 @@ CMenuFxObj CMenuFx::getObj( const char *path )
 			// found the obj
 			if ( folderDepth == folder.size() )
 			{				
-				return CMenuFxObj(ch);
+				return CMenuFxObj(this, ch);
 			}
 		}
 		
@@ -215,7 +215,7 @@ CMenuFxObj CMenuFx::getObj( const char *path )
 	}
 
 
-	return CMenuFxObj(NULL);
+	return CMenuFxObj();
 }
 	
 // findObj
@@ -243,7 +243,7 @@ CMenuFxObj CMenuFx::findObj( char *name )
 		
 		if ( strcmp(name, chName) == 0  )
 		{
-			return CMenuFxObj(ch);
+			return CMenuFxObj(this, ch);
 		}
 		
 		
@@ -258,5 +258,5 @@ CMenuFxObj CMenuFx::findObj( char *name )
 		}
 
 	}
-	return CMenuFxObj(NULL);
+	return CMenuFxObj();
 }

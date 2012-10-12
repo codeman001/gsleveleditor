@@ -7,13 +7,15 @@ class CMenuFxObj
 {
 protected:
 	gameswf::character	*m_character;
+	CMenuFx				*m_menu;
 public:
 	CMenuFxObj()
 	{
 		m_character = NULL;
+		m_menu = NULL;
 	}
 
-	CMenuFxObj( gameswf::character* ch );		
+	CMenuFxObj(	CMenuFx* menufx, gameswf::character* ch );		
 	virtual ~CMenuFxObj();	
 
 	// findObj
@@ -51,6 +53,13 @@ public:
 	// getFrameCount
 	// get number of frame
 	int getFrameCount();
+	
+	// getMenu
+	// get flash file manage this obj
+	inline CMenuFx* getMenu()
+	{
+		return m_menu;
+	}
 
 	// invokeASCallback
 	// call action script func

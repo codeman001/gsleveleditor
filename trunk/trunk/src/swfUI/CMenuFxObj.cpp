@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "CMenuFxObj.h"
 
-CMenuFxObj::CMenuFxObj( gameswf::character* ch )
+CMenuFxObj::CMenuFxObj( CMenuFx* menufx, gameswf::character* ch )
 {
 	m_character = ch;
+	m_menu = menufx;
 }
 
 CMenuFxObj::~CMenuFxObj()
@@ -15,7 +16,7 @@ CMenuFxObj::~CMenuFxObj()
 CMenuFxObj CMenuFxObj::findObj( char *name )
 {
 	if ( m_character == NULL )
-		return CMenuFxObj(NULL);
+		return CMenuFxObj();
 
 	std::queue<gameswf::character*>	queueObj;
 
@@ -38,7 +39,7 @@ CMenuFxObj CMenuFxObj::findObj( char *name )
 		
 		if ( strcmp(name, chName) == 0  )
 		{
-			return CMenuFxObj(ch);
+			return CMenuFxObj(m_menu, ch);
 		}
 		
 		
@@ -53,7 +54,7 @@ CMenuFxObj CMenuFxObj::findObj( char *name )
 		}
 
 	}
-	return CMenuFxObj(NULL);
+	return CMenuFxObj();
 }
 
 // setpos xy

@@ -45,6 +45,11 @@ public:
 	{
 		m_buttonState = state;
 	}
+
+	// setText
+	// set string
+	void setText( const char *fxName, const char *string );
+	void setText( const char *fxName, const wchar_t *string );
 };
 
 #endif

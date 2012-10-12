@@ -19,7 +19,7 @@ CTrigger::CTrigger()
 	m_boxSize = 20.0f;
 
 	// create node
-	m_node = new CGameBoxSceneNode(this, m_boxSize, smgr->getRootSceneNode(), smgr, m_objectID);
+	m_node = new CGameBoxSceneNode(this, m_boxSize, smgr->getRootSceneNode(), smgr, (s32)m_objectID);
 
 #ifdef GSEDITOR
 	video::SMaterial& mat = m_node->getMaterial(0);	
@@ -62,7 +62,7 @@ CTrigger::CTrigger(CGameObject *parent)
 		parentNode = parent->getSceneNode();
 
 	// create node
-	m_node = new CGameBoxSceneNode(this, m_boxSize, parentNode, smgr, m_objectID);
+	m_node = new CGameBoxSceneNode(this, m_boxSize, parentNode, smgr, (s32)m_objectID);
 
 #ifdef GSEDITOR
 	video::SMaterial& mat = m_node->getMaterial(0);	

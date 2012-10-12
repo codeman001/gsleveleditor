@@ -83,7 +83,7 @@ bool CInventoryComponent::addItemToInventory( const char *objectTemplate )
 // get index of item on inventory
 int CInventoryComponent::getItemSlot( const char *objectTemplate )
 {
-	for ( int i = 0, n = m_inventory.size(); i < n; i++ )
+	for ( int i = 0, n = (int)m_inventory.size(); i < n; i++ )
 	{
 		if ( m_inventory[i].m_nameItem == objectTemplate )
 		{

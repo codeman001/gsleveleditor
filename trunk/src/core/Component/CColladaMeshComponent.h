@@ -244,7 +244,7 @@ struct SColladaAnimClip
 	// return number node with animation
 	int getNodeAnimCount()
 	{
-		return animInfo.size();
+		return (int)animInfo.size();
 	}
 
 	// getAnimOfSceneNode
@@ -308,15 +308,15 @@ protected:
 	// clip a long clip to many clip
 	void clipDaeAnim();
 
-	void loadDae( char *lpFileName );
-	void loadDotAnim( char *lpFileName );
+	void loadDae( const char *lpFileName );
+	void loadDotAnim( const char *lpFileName );
 
 public:
 	CColladaAnimation();
 
 	virtual ~CColladaAnimation();
 
-	void loadFile( char *lpFileName );
+	void loadFile( const char *lpFileName );
 
 	SColladaAnimClip* getAnim( const char *lpAnimName )
 	{
@@ -330,7 +330,7 @@ public:
 
 	int getAnimCount()
 	{
-		return m_colladaAnim.size();
+		return (int)m_colladaAnim.size();
 	}
 
 	void addClip( SColladaAnimClip* clip )
@@ -359,11 +359,11 @@ public:
 
 	// loadAnimation
 	// load package animation
-	CColladaAnimation* loadAnimation( char *name, char *lpFileName );
+	CColladaAnimation* loadAnimation( const char *name, const char *lpFileName );
 
 	// getAnimation
 	// get package animation
-	inline CColladaAnimation* getAnimation( char *name )
+	inline CColladaAnimation* getAnimation( const char *name )
 	{
 		return m_animPackage[ name ];
 	}
@@ -449,7 +449,7 @@ public:
 	// get default node
 	CGameColladaSceneNode* getDefaultNode(int i)
 	{
-		int numDefaultNode = m_defaultNode.size();
+		int numDefaultNode = (int)m_defaultNode.size();
 
 		if ( numDefaultNode == 0 || i >= numDefaultNode || i < 0 )
 			return NULL;
@@ -467,7 +467,7 @@ public:
 	// check the node is default node or not
 	bool isDefaultNode( ISceneNode* node )
 	{
-		int numDefaultNode = m_defaultNode.size();
+		int numDefaultNode = (int)m_defaultNode.size();
 		for ( int i = 0; i < numDefaultNode; i++ )
 		{
 			if ( m_defaultNode[i] == node )

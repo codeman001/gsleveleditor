@@ -35,7 +35,7 @@ void readTemplateFromData( char *lpData )
 	char	lpStringA[1024];
 	wchar_t	lpString[1024];
 
-	while ( *p != NULL )
+	while ( *p != 0 )
 	{
 		if ( *p == '{' )
 		{
@@ -87,14 +87,14 @@ void CObjTemplateFactory::loadAllObjectTemplate()
 
 	if ( file )
 	{	
-		unsigned long length = file->getSize();
+		unsigned int length = (unsigned int)file->getSize();
 		
 		if ( length > 0 )
 		{
 			char *lpBuffer = new char[length];
 			memset( lpBuffer, 0, length );
 
-			file->read(lpBuffer,length);			
+			file->read(lpBuffer, length);			
 
 			readTemplateFromData( lpBuffer );
 
@@ -226,9 +226,6 @@ CGameObject* CObjTemplateFactory::spawnObject( wchar_t* templateName, CGameObjec
 // save obj template to file
 void CObjTemplateFactory::saveAllObjectTemplate()
 {
-	wchar_t path[512] = {0};
-	wchar_t fileName[512] = {0};
-
 	std::ofstream file( getIView()->getPath("objectTemplate.css") );
 	
 	ArrayTemplateIter it = s_objectTemplate.begin(), end = s_objectTemplate.end();

@@ -106,7 +106,7 @@ CGameObject* CZone::searchObject( long objectID )
 	if ( m_needSortObject )
 		sortObjectByID();
 
-	int first = 0, last = m_childs.size() - 1;
+	int first = 0, last = (int)m_childs.size() - 1;
 	int mid = 0;
 	
 	while (first <= last) 
@@ -128,7 +128,7 @@ CGameObject* CZone::searchObject( long objectID )
 // get num object
 int CZone::getNumberObjects()
 {
-	return m_childs.size();
+	return (int)m_childs.size();
 }
 
 #ifdef GSGAMEPLAY
@@ -523,8 +523,8 @@ void CZone::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
             return;
         }
         
-        long    networkObjectID = packet->getInt();
-        long    networkParentID = packet->getInt();
+        long    networkObjectID = (long)packet->getInt();
+        long    networkParentID = (long)packet->getInt();
         short   templateID = packet->getShort();
         
         wchar_t *templateName = CObjTemplateFactory::getTemplateName(templateID);

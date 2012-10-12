@@ -184,7 +184,7 @@ void CGameLevel::loadLevel( const char *lpLevel )
 			m_loadPos = m_loadLevelBuffer;
 
 			// read level data
-			file->read(m_loadLevelBuffer, length);
+			file->read(m_loadLevelBuffer, (u32)length);
 
 			// end buffer
 			m_loadLevelBuffer[length] = NULL;
@@ -366,7 +366,7 @@ bool CGameLevel::loadStep( int nStep )
 // add file script to compile
 void CGameLevel::addScriptFile(const std::string& path)
 {
-	int numScriptFile = m_listScriptFile.size();
+	int numScriptFile = (int)m_listScriptFile.size();
 	for ( int i = 0; i < numScriptFile; i++ )
 	{
 		if ( path == m_listScriptFile[i] )
@@ -397,9 +397,9 @@ void CGameLevel::compileGameScript()
 	char folderPath[1024];
 	char fullPath[1024];
 	uiString::getFolderPath<const char, char>( m_levelFile.c_str(), folderPath );
-	uiString::cat<char,char>(folderPath,"/");
+	uiString::cat<char, const char>(folderPath,"/");
 	
-	int numScriptFile = m_listScriptFile.size();
+	int numScriptFile = (int)m_listScriptFile.size();
 	for ( int i = 0; i < numScriptFile; i++ )
 	{
 		uiString::copy<char,char>(fullPath,folderPath);
@@ -413,7 +413,7 @@ void CGameLevel::compileGameScript()
 			if ( length > 0 )
 			{				
 				// read level data
-				file->read(m_loadPos, length);
+				file->read(m_loadPos, (u32)length);
 			}
 
 			m_loadPos[length++] = '\n';
@@ -425,7 +425,7 @@ void CGameLevel::compileGameScript()
 	}
 
 	// compile lua source
-	CScriptManager::getInstance()->compileLuaSource( m_loadLevelBuffer, m_loadPos - m_loadLevelBuffer );
+	CScriptManager::getInstance()->compileLuaSource( m_loadLevelBuffer, (int)(m_loadPos - m_loadLevelBuffer) );
 
 	// implement function
 	registerCFunction();

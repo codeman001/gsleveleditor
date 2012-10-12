@@ -220,7 +220,7 @@ CMenuFxObj CMenuFx::getObj( const char *path )
 	
 // findObj
 // find obj on flash menu
-CMenuFxObj CMenuFx::findObj( char *name )
+CMenuFxObj CMenuFx::findObj( const char *name )
 {
 	std::queue<gameswf::character*>	queueObj;
 

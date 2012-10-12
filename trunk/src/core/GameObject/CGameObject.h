@@ -148,7 +148,7 @@ public:
 	{
 		m_objectID = id;
 		if ( m_node )
-			m_node->setID( id );
+			m_node->setID( (s32) id );
 	}
 
 	// getID

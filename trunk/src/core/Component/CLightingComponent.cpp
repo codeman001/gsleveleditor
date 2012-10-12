@@ -126,7 +126,6 @@ std::string CLightingComponent::getColorString( const SColor& color )
 // get SColor from string hexa name
 SColor CLightingComponent::setColorString( const std::string& stringColor )
 {
-	unsigned int rgbColor = 0;
 	unsigned int _r = 0, _g = 0, _b = 0;
 
 	char strColor[512];

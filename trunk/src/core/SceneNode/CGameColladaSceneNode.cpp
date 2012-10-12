@@ -642,7 +642,7 @@ public:
 		core::vector3df pointLightAttenuation[MAX_POINTLIGHTS];
 		SColorf			ambientColor;
 
-		for ( size_t i = 0; i < 8; ++i )
+		for ( int i = 0; i < 8; ++i )
 		{
 			if ( i < cnt )
 			{
@@ -1628,8 +1628,6 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 	newNode->m_isSkydome		= m_isSkydome;
 	newNode->m_terrainNode		= m_terrainNode;
 	newNode->m_hideTerrainNode	= m_hideTerrainNode;	
-
-	int ref = newNode->getReferenceCount();
 	
 	return newNode;
 }

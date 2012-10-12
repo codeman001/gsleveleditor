@@ -68,7 +68,7 @@ public:
 	
 	// findObj
 	// find obj on flash menu
-	CMenuFxObj findObj( char *name );
+	CMenuFxObj findObj( const char *name );
 
 };
 

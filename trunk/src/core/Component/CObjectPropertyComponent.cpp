@@ -30,9 +30,7 @@ void CObjectPropertyComponent::initComponent()
 	// enable/disable point light & direction light
 	//////////////////////////////////////////////////////////////
 
-	IMesh *pMesh = NULL;
 	ISceneNode		*node	= m_gameObject->getSceneNode();
-	ISceneManager	*smgr	= getIView()->getSceneMgr();
 	
 	std::vector<ISceneNode*>		listNodesHaveMesh;
 
@@ -50,11 +48,11 @@ void CObjectPropertyComponent::initComponent()
 		CGameColladaContainerSceneNode* colladaNode = (CGameColladaContainerSceneNode*)comp->getColladaNode();
 		
 		std::vector<ISceneNode*>* listMeshNode = colladaNode->getBoundingMeshNode();
-		for ( int i = 0, n = listMeshNode->size(); i < n; i++ )
+		for ( int i = 0, n = (int)listMeshNode->size(); i < n; i++ )
 			listNodesHaveMesh.push_back( listMeshNode->at(i) );
 	}
 
-	for ( int i = 0, n = listNodesHaveMesh.size(); i < n; i++ )
+	for ( int i = 0, n = (int)listNodesHaveMesh.size(); i < n; i++ )
 	{
 		ISceneNode* node = listNodesHaveMesh[i];
 		node->enablePointLight(m_enablePointLight);

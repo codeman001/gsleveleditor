@@ -362,7 +362,7 @@ core::matrix4 readMatrixNode(io::IXMLReader* reader, bool flip)
 
 std::wstring getImageWithId( const std::wstring& id, const ArrayImages& listImages )
 {
-	int n = listImages.size();
+	int n = (int)listImages.size();
 	for ( int i = 0; i < n; i++ )
 	{
 		if ( listImages[i].id == id )
@@ -377,7 +377,7 @@ video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& id, c
 	
 	std::string path = basePath;
 
-	int i = basePath.length() - 1;
+	int i = (int)basePath.length() - 1;
 	while ( i > 0 )
 	{
 		if ( basePath[i] == '\\' || basePath[i] == '/' )
@@ -418,7 +418,7 @@ video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& id, c
 
 video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& uri, ArrayEffectParams& listEffectParam, ArrayImages& listImages)
 {	
-	int n = listEffectParam.size();
+	int n = (int)listEffectParam.size();
 	for ( int i = 0; i < n; i++ )
 	{
 		if ( listEffectParam[i].Name == uri )
@@ -429,7 +429,7 @@ video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& uri, 
 				
 				std::string path = basePath;
 
-				int i = basePath.length() - 1;
+				int i = (int)basePath.length() - 1;
 				while ( i > 0 )
 				{
 					if ( basePath[i] == '\\' || basePath[i] == '/' )
@@ -479,7 +479,7 @@ video::ITexture* getTextureFromImage( std::string& basePath, std::wstring& uri, 
 
 int getBufferWithUri( std::wstring& uri, SMeshParam* mesh )
 {
-	int n = mesh->Buffers.size();
+	int n = (int)mesh->Buffers.size();
 	for ( int i =0; i < n; i++ )
 	{
 		if ( mesh->Buffers[i].Name == uri )
@@ -492,7 +492,7 @@ int getBufferWithUri( std::wstring& uri, SMeshParam* mesh )
 
 int getVerticesWithUri( std::wstring& uri, SMeshParam* mesh )
 {
-	int n = mesh->Vertices.size();
+	int n = (int)mesh->Vertices.size();
 	for ( int i = 0; i < n; i++ )
 	{
 		if ( mesh->Vertices[i].Name == uri )
@@ -508,7 +508,7 @@ int getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam, ArrayEff
 {
 	// search in effect list
 	std::wstring fxName = uri + L"-fx";	
-	int n = listEffectParam.size();
+	int n = (int)listEffectParam.size();
 	for ( int i = 0; i < n; i++ )
 	{
 		if ( listEffectParam[i].Id == fxName )
@@ -518,7 +518,7 @@ int getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam, ArrayEff
 	}	
 
 	// try search in material list
-	n = listMaterial.size();
+	n = (int)listMaterial.size();
 	for ( int i = 0; i < n; i++ )
 	{
 		if ( listMaterial[i].Id == uri )
@@ -530,7 +530,7 @@ int getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam, ArrayEff
 			SEffect &effect = listEffectParam.back();
 			effect.Id = uri + L"-fx";
 
-			return listEffectParam.size() - 1;
+			return (int)listEffectParam.size() - 1;
 		}
 	}	
 
@@ -539,7 +539,7 @@ int getEffectWithUri( std::wstring& uri, ArrayEffects& listEffectParam, ArrayEff
 
 int	getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam )
 {
-	int n = listMeshParam.size();
+	int n = (int)listMeshParam.size();
 	for ( int i = 0; i < n; i++ )
 	{
 		if ( listMeshParam[i].Name == uri )
@@ -553,7 +553,7 @@ int	getMeshWithUri( std::wstring& uri, ArrayMeshParams& listMeshParam )
 
 int getMeshWithControllerName( std::wstring& controllerName, ArrayMeshParams& listMeshParam )
 {
-	int n = listMeshParam.size();
+	int n = (int)listMeshParam.size();
 	for ( int i = 0; i < n; i++ )
 	{
 		if ( listMeshParam[i].ControllerName == controllerName )
@@ -1040,7 +1040,7 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 	bool isScale = false;
 	bool isMatrix = false;
 
-	int pos = idNodeName.find( L"-rotation" );
+	int pos = (int)idNodeName.find( L"-rotation" );
 	if ( pos > 0 )
 	{
 		isRotation = true;
@@ -1048,7 +1048,7 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 	}
 	else
 	{
-		pos = idNodeName.find( L"-translation" );
+		pos = (int)idNodeName.find( L"-translation" );
 		if ( pos > 0 )
 		{
 			isTranslate = true;
@@ -1056,7 +1056,7 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 		}
 		else
 		{
-			pos = idNodeName.find( L"-scale" );
+			pos = (int)idNodeName.find( L"-scale" );
 			if ( pos > 0 )
 			{
 				isScale = true;
@@ -1064,7 +1064,7 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 			}
 			else
 			{
-				pos = idNodeName.find( L"-anim" );
+				pos = (int)idNodeName.find( L"-anim" );
 				if ( pos > 0 )
 				{
 					isMatrix = true;
@@ -1096,8 +1096,6 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 	int		readState = 0;
 	
 	float	*arrayTime = NULL;
-	int		numArrayTime = 0;
-
 	float	*arrayFloat = NULL;
 
 	std::wstring arrayID;
@@ -1338,10 +1336,9 @@ void CColladaAnimation::parseAnimationNode( io::IXMLReader *xmlRead )
 
 }
 
-void CColladaAnimation::loadDae( char *lpFileName )
+void CColladaAnimation::loadDae( const char *lpFileName )
 {
 	IrrlichtDevice	*device = getIView()->getDevice();
-	IVideoDriver	*driver = getIView()->getDriver();
 	io::IFileSystem *fs = device->getFileSystem();
 
 	m_animFileName = lpFileName;
@@ -1415,14 +1412,14 @@ void CColladaAnimation::loadDae( char *lpFileName )
 	m_animWithName.clear();
 	
 	m_colladaAnim.insert( m_colladaAnim.begin(), oldAnim.begin(), oldAnim.end() );
-	for ( int i = 0, n = m_colladaAnim.size(); i < n; i++ )
+	for ( int i = 0, n = (int)m_colladaAnim.size(); i < n; i++ )
 	{
 		SColladaAnimClip *clip = m_colladaAnim[i];
 		m_animWithName[ clip->animName ] = clip;
 	}
 }
 
-void CColladaAnimation::loadDotAnim( char *lpFileName )
+void CColladaAnimation::loadDotAnim( const char *lpFileName )
 {
 	// todo load file
 	io::IReadFile *file = getIView()->getFileSystem()->createAndOpenFile( lpFileName );
@@ -1443,10 +1440,10 @@ void CColladaAnimation::loadDotAnim( char *lpFileName )
 	file->drop();
 }
 
-void CColladaAnimation::loadFile( char *lpFileName )
+void CColladaAnimation::loadFile( const char *lpFileName )
 {
 	char ext[10] = {0};
-	uiString::getFileNameExt<char, char>( lpFileName, ext );
+	uiString::getFileNameExt<const char, char>( lpFileName, ext );
 	uiString::toLower( ext );
 	
 	if ( strcmp(ext, "dae") == 0 )
@@ -1487,7 +1484,7 @@ void CColladaAnimation::cloneAnim( const char *lpAnimName, const char *lpNewAnim
 	newClip->duration	= clip->duration;
 	newClip->loop		= clip->loop;
 
-	for ( int i = 0, nNodeAnims = clip->animInfo.size(); i < nNodeAnims; i++ )
+	for ( int i = 0, nNodeAnims = (int)clip->animInfo.size(); i < nNodeAnims; i++ )
 	{
 		SColladaNodeAnim* nodeAnim = new SColladaNodeAnim();
 		*nodeAnim = *clip->animInfo[i];
@@ -1518,7 +1515,7 @@ void CColladaAnimation::createSynchronizedAnim( const char *lpNewName, const cha
 	newClip->duration	= time;
 	newClip->loop		= true;
 
-	for ( int i = 0, n = clip1->animInfo.size(); i < n; i++ )
+	for ( int i = 0, n = (int)clip1->animInfo.size(); i < n; i++ )
 	{
 		SColladaNodeAnim* nodeAnim1 = clip1->animInfo[i];
 		SColladaNodeAnim* nodeAnim2 = clip2->getAnimOfSceneNode( nodeAnim1->sceneNodeName.c_str() );
@@ -1619,7 +1616,7 @@ CColladaAnimationFactory::~CColladaAnimationFactory()
 	freeAllAnimationPackage();
 }
 
-CColladaAnimation* CColladaAnimationFactory::loadAnimation( char *name, char *lpFileName )
+CColladaAnimation* CColladaAnimationFactory::loadAnimation( const char *name, const char *lpFileName )
 {
 	CColladaAnimation *colladaAnim = m_animPackage[name];
 	
@@ -1771,7 +1768,6 @@ void CColladaMeshComponent::loadFromFile( const char *lpFilename )
 void CColladaMeshComponent::loadDae( const char *lpFilename )
 {
 	IrrlichtDevice	*device = getIView()->getDevice();
-	IVideoDriver	*driver = getIView()->getDriver();
 	io::IFileSystem *fs = device->getFileSystem();
 
 	io::IXMLReader *xmlRead = fs->createXMLReader( lpFilename );
@@ -2161,7 +2157,6 @@ SMeshParam* CColladaMeshComponent::parseSkinNode( io::IXMLReader *xmlRead )
 	std::vector<std::wstring>	nameArray;
 
 	int						numArray = 0;
-	float					*jointArray = NULL;
 	float					*transformArray = NULL;
 	float					*weightArray = NULL;
 	
@@ -2562,7 +2557,6 @@ void CColladaMeshComponent::parseEffectNode( io::IXMLReader *xmlRead, SEffect* e
 	const std::wstring initFromNode(L"init_from");
 	const std::wstring sourceNode(L"source");
 
-	bool hasBumpMapping = false;
 
 	bool hasLoadedDiffuseTex = false;
 
@@ -3175,7 +3169,7 @@ void CColladaMeshComponent::constructSkinMesh( SMeshParam *meshParam, CGameColla
 {		
 	char sidName[1024];
 
-	int nJoint = meshParam->Joints.size();
+	int nJoint = (int)meshParam->Joints.size();
 	
 	// set up joint
 	// --------------------------
@@ -3315,7 +3309,7 @@ void CColladaMeshComponent::constructScene()
 			m_gameObject, 
 			m_gameObject->getParentSceneNode(),
 			smgr,
-			m_gameObject->getID() 
+			(s32)m_gameObject->getID() 
 		);
 	
 
@@ -3326,7 +3320,7 @@ void CColladaMeshComponent::constructScene()
 	std::list<SNodeParam*>	stackScene;
 	std::list<SNodeParam*>	listScene;
 
-	int nNode = m_listNode.size();
+	int nNode = (int)m_listNode.size();
 	for ( int i = 0; i < nNode; i++ )
 	{
 		SNodeParam* root = m_listNode[i];
@@ -3397,7 +3391,7 @@ void CColladaMeshComponent::constructScene()
 				pColladaMesh->BindShapeMatrix = pMesh->BindShapeMatrix;
 
 				// add mesh buffer to skin mesh
-				int nBuffer = pMesh->Triangles.size();
+				int nBuffer = (int)pMesh->Triangles.size();
 
 
 				for ( int i = 0; i < nBuffer; i++ )
@@ -3411,13 +3405,13 @@ void CColladaMeshComponent::constructScene()
 					{
 						meshBuffer = new SColladaSkinMeshBuffer();
 						constructSkinMeshBuffer( pMesh, &tri, meshBuffer, m_needFlip );
-						SColladaSkinMeshBuffer *mesh = (SColladaSkinMeshBuffer*)meshBuffer;						
+						//SColladaSkinMeshBuffer *mesh = (SColladaSkinMeshBuffer*)meshBuffer;			
 					}
 					else
 					{
 						meshBuffer = new SColladaMeshBuffer();
 						constructMeshBuffer( pMesh, &tri, meshBuffer, m_needFlip );
-						SColladaMeshBuffer *mesh = (SColladaMeshBuffer*)meshBuffer;						
+						//SColladaMeshBuffer *mesh = (SColladaMeshBuffer*)meshBuffer;	
 					}
 
 					// add mesh buffer								
@@ -3567,7 +3561,7 @@ void CColladaMeshComponent::loadScene( const char *lpFilename )
 			m_gameObject,
 			m_gameObject->getParentSceneNode(),
 			smgr,
-			m_gameObject->getID()
+			(s32)m_gameObject->getID()
 		);
 	
 	m_gameObject->m_node = m_colladaNode;
@@ -3624,7 +3618,7 @@ void CColladaMeshComponent::initFromNode( CGameColladaContainerSceneNode* node )
 			m_gameObject,
 			m_gameObject->getParentSceneNode(),
 			smgr,
-			m_gameObject->getID()
+			(s32)m_gameObject->getID()
 		);
 	
 	m_gameObject->m_node = m_colladaNode;
@@ -4169,7 +4163,6 @@ void CColladaMeshComponent::synchronizedByTimeScale()
 	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
-		const std::string& nodeName = (*i).first;
 		CGameColladaSceneNode* j = (*i).second;
 				
 		if ( j == NULL )
@@ -4206,7 +4199,6 @@ void CColladaMeshComponent::pauseAtFrame( float frame, int trackChannel)
 	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
-		const std::string& nodeName = (*i).first;
 		CGameColladaSceneNode* j = (*i).second;
 				
 		if ( j == NULL )
@@ -4232,7 +4224,6 @@ float CColladaMeshComponent::getCurrentFrame(int trackChannel)
 	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
-		const std::string& nodeName = (*i).first;
 		CGameColladaSceneNode* j = (*i).second;
 				
 		if ( j == NULL )
@@ -4283,7 +4274,6 @@ float CColladaMeshComponent::getAnimSpeed(int trackChannel)
 	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
-		const std::string& nodeName = (*i).first;
 		CGameColladaSceneNode* j = (*i).second;
 				
 		if ( j == NULL )
@@ -4333,7 +4323,6 @@ void CColladaMeshComponent::setCurrentFrame(float f, int trackChannel)
 	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
-		const std::string& nodeName = (*i).first;
 		CGameColladaSceneNode* j = (*i).second;
 				
 		if ( j == NULL )
@@ -4358,7 +4347,6 @@ void CColladaMeshComponent::resumeAnim(int trackChannel)
 	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
 	{
-		const std::string& nodeName = (*i).first;
 		CGameColladaSceneNode* j = (*i).second;
 				
 		if ( j == NULL )
@@ -4553,7 +4541,7 @@ void CColladaMeshComponent::clearLodData()
 	
 	if ( collada != NULL )
 	{
-		for ( int i = 0, nLod = m_colladaLodNode.size(); i < nLod; i++ )
+		for ( int i = 0, nLod = (int)m_colladaLodNode.size(); i < nLod; i++ )
 		{
 			SColladaLodNode& lod = m_colladaLodNode[i];
 			CGameColladaSceneNode* node = collada->getSceneNode( lod.node.c_str() );
@@ -4595,7 +4583,7 @@ void CColladaMeshComponent::updateLod()
 	float distance = m_gameObject->getPosition().getDistanceFrom( cam->getPosition() );
 	bool hasLod = false;
 
-	for ( int nLod = m_colladaLodNode.size(), i = 0; i < nLod; i++ )
+	for ( int nLod = (int)m_colladaLodNode.size(), i = 0; i < nLod; i++ )
 	{
 		SColladaLodNode& lod = m_colladaLodNode[i];
 		CGameColladaSceneNode* node = getSceneNode( lod.node.c_str() );

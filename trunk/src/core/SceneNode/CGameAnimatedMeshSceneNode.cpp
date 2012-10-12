@@ -13,7 +13,7 @@ CGameAnimatedMeshSceneNode::CGameAnimatedMeshSceneNode
 		const core::vector3df& position,
 		const core::vector3df& rotation,
 		const core::vector3df& scale
-	):CAnimatedMeshSceneNode(mesh, parent, mgr, owner->getID(), position, rotation, scale)
+	):CAnimatedMeshSceneNode(mesh, parent, mgr, (s32)owner->getID(), position, rotation, scale)
 {
 	m_owner = owner;
 }

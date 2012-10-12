@@ -13,14 +13,14 @@ CGameStateMgr::~CGameStateMgr()
 void CGameStateMgr::update()
 {		
 	// update current state
-	int nState = m_stackState.size();
+	int nState = (int)m_stackState.size();
 	if ( nState > 0 )
 	{
 		m_stackState[0]->onUpdate();
 	}
 
 	// delete change, pop state
-	nState = m_willDeleteState.size();
+	nState = (int)m_willDeleteState.size();
 	if ( nState > 0 )
 	{
 		for ( int i = 0; i < nState; i++ )
@@ -32,7 +32,7 @@ void CGameStateMgr::update()
 void CGameStateMgr::render()
 {
 	// render current state
-	int nState = m_stackState.size();
+	int nState = (int)m_stackState.size();
 	if ( nState > 0 )
 	{
 		m_stackState[0]->onRender();
@@ -42,7 +42,7 @@ void CGameStateMgr::render()
 // on resume from interupt
 void CGameStateMgr::onResume()
 {
-	int nState = m_stackState.size();
+	int nState = (int)m_stackState.size();
 	for ( int i = 0; i < nState; i++ )
 	{
 		m_stackState[i]->onResume();
@@ -52,7 +52,7 @@ void CGameStateMgr::onResume()
 // on pause from interupt
 void CGameStateMgr::onPause()
 {
-	int nState = m_stackState.size();
+	int nState = (int)m_stackState.size();
 	for ( int i = 0; i < nState; i++ )
 	{
 		m_stackState[i]->onPause();
@@ -112,7 +112,7 @@ CGameState* CGameStateMgr::getCurrentState()
 // get a state before
 CGameState* CGameStateMgr::getStateBefore(CGameState* state)
 {
-	int nState = m_stackState.size();
+	int nState = (int)m_stackState.size();
 	for ( int i = 0; i < nState; i++ )
 	{
 		if ( m_stackState[i] == state )
@@ -129,7 +129,7 @@ CGameState* CGameStateMgr::getStateBefore(CGameState* state)
 // destroyAllState
 void CGameStateMgr::destroyAllState()
 {
-	int nState = m_stackState.size();
+	int nState = (int)m_stackState.size();
 	for ( int i = 0; i < nState; i++ )
 	{
 		m_stackState[i]->onDestroy();
@@ -141,7 +141,7 @@ void CGameStateMgr::destroyAllState()
 // OnEvent
 bool CGameStateMgr::OnEvent(const SEvent& irrEvent)
 {
-	int nState = m_stackState.size();
+	int nState = (int)m_stackState.size();
 	if ( nState > 0 )
 	{
 		// send event to root widget

@@ -365,7 +365,7 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 		memStream.writeData( &matID, sizeof(unsigned int) );
 
 
-		int bufferSize = 0;
+		long bufferSize = 0;
 
 		if ( vertexType == video::EVT_STANDARD )
 		{
@@ -392,10 +392,10 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 			}
 		}
 
-		memStream.writeData( buffer->getVertices(), bufferSize );
+		memStream.writeData( buffer->getVertices(), (unsigned int)bufferSize );
 
 		u16* indices = buffer->getIndices();
-		memStream.writeData( indices, sizeof(u16)*indexCount );
+		memStream.writeData( indices, (unsigned int)(sizeof(u16)*indexCount) );
 
 		// save list material
 		listMaterial.push_back(  &mat );

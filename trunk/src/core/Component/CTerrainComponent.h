@@ -49,7 +49,7 @@ public:
 	// get number node has collision data
 	inline int getNumTerrainNode()
 	{
-		return m_listCollisionNode.size();
+		return (int)m_listCollisionNode.size();
 	}
 
 	// getMeshCollisionNode	

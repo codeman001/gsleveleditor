@@ -17,7 +17,7 @@ int irrReadFunc( void *dst, int bytes, void *appdata )
 
 int irrWriteFunc( const void *src, int bytes, void *appdata )
 {
-	io::IReadFile *file = (io::IReadFile*)appdata;
+	//io::IReadFile *file = (io::IReadFile*)appdata;
 	return 0;
 }
 
@@ -37,7 +37,7 @@ int irrSeekToEndFunc( void *appdata )
 int irrTellFunc( const void *appdata )
 {
 	io::IReadFile *file = (io::IReadFile*)appdata;
-	return file->getPos();
+	return (int)file->getPos();
 }
 
 bool irrEOFFunc( void *appdata )

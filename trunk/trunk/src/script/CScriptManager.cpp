@@ -12,7 +12,7 @@ using namespace NSScriptManager;
 
 int luaWait(lua_State* state)
 {
-	const int time = lua_tointeger(state, 1);
+	const int time = (int)lua_tointeger(state, 1);
 
 	lua_pushinteger(state, NSScriptManager::FuncWaitDelay );
 	lua_pushinteger(state, time);
@@ -107,7 +107,7 @@ void CLuaThread::handleYield()
 	if (type == FuncWaitDelay)
 	{
 		// get paramater 2 from function "lua_yield"
-		m_delay = lua_tointeger(m_thread, 2);
+		m_delay = (int)lua_tointeger(m_thread, 2);
 		setStatus(type);
 	}
 }
@@ -284,7 +284,7 @@ int CScriptManager::startFunc( const char *funcName )
 //  + s: string
 // example:
 // startFunc("function","is",10,"helloWorld")
-int CScriptManager::startFunc( const char *func, char *sig, ... )
+int CScriptManager::startFunc( const char *func, const char *sig, ... )
 {
 	// call function
 	int idx = startFunc(func);
@@ -295,7 +295,7 @@ int CScriptManager::startFunc( const char *func, char *sig, ... )
 	int narg, nres;
 	va_start(vl, sig);
 
-	nres = strlen(sig);
+	nres = (int)strlen(sig);
 	
 	double d = 0.0f;
 	int i = 0;

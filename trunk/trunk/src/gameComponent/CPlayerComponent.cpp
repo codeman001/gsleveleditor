@@ -1209,7 +1209,7 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 			left = 0.0f;
 
 			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
-			float dForward	= fabs(sinf(fixAngle));
+			float dForward	= fabsf(sinf(fixAngle));
    
 			// we have sin2 + cos2 = 1
             // it mean dforward2 + dright2 = 1.0f
@@ -1222,7 +1222,7 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 			right = 0.0f;
 
 			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
-			float dForward	= fabs(sinf(fixAngle));
+			float dForward	= fabsf(sinf(fixAngle));
 			
             forward = dForward*dForward;
             left = 1.0f - forward;
@@ -1238,7 +1238,7 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 			right = 0.0f;
 
 			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
-			float dBackward	= fabs(sinf(fixAngle));			
+			float dBackward	= fabsf(sinf(fixAngle));			
 
             backward    = dBackward*dBackward;
             left        = 1.0f - backward;
@@ -1249,7 +1249,7 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 			left = 0.0f;
 
 			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
-			float dBackward	= fabs(sinf(fixAngle));
+			float dBackward	= fabsf(sinf(fixAngle));
 			
             backward    = dBackward*dBackward;
             right       = 1.0f - backward;
@@ -1382,7 +1382,7 @@ core::vector3df CPlayerComponent::interpolateTurnToDir( const core::vector3df& t
 	// calc angle
 	float angle = turnTo.dotProduct( turnFrom );
 	angle = fixAngle(angle);
-	angle = acos(angle);
+	angle = acosf(angle);
 	
 	// interpolate	
 	core::quaternion q, q1,q2;
@@ -1403,7 +1403,7 @@ float CPlayerComponent::getRatioWithAngle( const core::vector3df& turnFrom, cons
 {
 	float angleVec = turnTo.dotProduct( turnFrom );		
 	angleVec = fixAngle(angleVec);
-	angleVec = core::radToDeg( acos(angleVec) );
+	angleVec = core::radToDeg( acosf(angleVec) );
 	
 	if ( realIsZero(angleVec) )
 		return 1.0f;
@@ -1418,7 +1418,7 @@ float CPlayerComponent::getAngle( const core::vector3df& v1, const core::vector3
 	float angleVec = v2.dotProduct( v1 );
 	
 	angleVec = fixAngle(angleVec);
-	angleVec = core::radToDeg( acos(angleVec) );
+	angleVec = core::radToDeg( acosf(angleVec) );
 
 	if ( normal.Y < 0 )
 		angleVec = -angleVec;

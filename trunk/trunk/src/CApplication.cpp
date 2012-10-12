@@ -186,7 +186,7 @@ void CApplication::mainLoop()
 	long  frameTime = m_device->getTimer()->getTime() - m_lastUpdateTime;
 	long sleepTime = (long)limitTime - frameTime;
 	if ( sleepTime > 0 )
-		m_device->sleep( sleepTime );
+		m_device->sleep( (u32)sleepTime );
 #else
 	m_device->yield();
 #endif				

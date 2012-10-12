@@ -107,7 +107,7 @@ void CTerrainComponent::initComponent()
 
 	}
 	
-	int nColNode = m_listCollisionNode.size();
+	int nColNode = (int)m_listCollisionNode.size();
 
 	for ( int i = 0; i < nColNode; i++ )
 	{
@@ -161,7 +161,7 @@ void CTerrainComponent::loadData( CSerializable* pObj )
 // get collision from the ray
 bool CTerrainComponent::getCollisionFromRay( core::line3df &ray, f32 &outBestDistanceSquared, core::vector3df &outBestCollisionPoint, core::triangle3df &outBestTriangle)
 {
-	int nColNode = m_listCollisionNode.size();
+	int nColNode = (int)m_listCollisionNode.size();
 
 	for ( int i = 0; i < nColNode; i++ )
 	{

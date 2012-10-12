@@ -23,7 +23,7 @@ CWayPoint::CWayPoint()
 	//setLighting( false );
 	
 
-	m_node = new CGameBoxSceneNode(this, 5, smgr->getRootSceneNode(), smgr, m_objectID);
+	m_node = new CGameBoxSceneNode(this, 5, smgr->getRootSceneNode(), smgr, (s32)m_objectID);
 	m_node->getMaterial(0).Lighting = true;
 
 #ifdef GSEDITOR
@@ -60,7 +60,7 @@ CWayPoint::CWayPoint(CGameObject *parent)
 	//addComponenet( comp );
 	//setLighting( false );
 
-	m_node = new CGameBoxSceneNode(this, 5, parentNode, smgr, m_objectID);
+	m_node = new CGameBoxSceneNode(this, 5, parentNode, smgr, (s32)m_objectID);
 	m_node->getMaterial(0).Lighting = true;
 
 #ifdef GSEDITOR

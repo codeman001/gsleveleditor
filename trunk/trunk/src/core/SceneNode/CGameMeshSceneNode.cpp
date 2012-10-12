@@ -9,7 +9,7 @@ CGameMeshSceneNode::CGameMeshSceneNode(
 				const core::vector3df& rotation,
 				const core::vector3df& scale
 			)
-	:CMeshSceneNode(mesh, parent, mgr, owner->getID(), position, rotation, scale)
+	:CMeshSceneNode(mesh, parent, mgr, (s32)owner->getID(), position, rotation, scale)
 {
 	m_owner = owner;
 }

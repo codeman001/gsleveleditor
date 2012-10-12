@@ -79,7 +79,7 @@ public:
 	// return number of zone
 	int getZoneCount()
 	{
-		return m_zones.size();
+		return (int)m_zones.size();
 	}
 
 	// getZone

@@ -129,7 +129,7 @@ void CParticleComponent::initParticle()
 			m_gameObject, 
 			m_gameObject->getParentSceneNode(), 
 			smgr, 
-			m_gameObject->getID() 
+			(s32)m_gameObject->getID() 
 		);
 
 	m_gameObject->setLighting( false );
@@ -289,12 +289,12 @@ void CParticleComponent::saveXML( const char *lpFileName )
 		propertyValue.push_back( core::stringw(lpTemp) );
 
 		// time start
-		uiString::format<wchar_t>( lpTemp, L"%d", p.startTime);
+		uiString::format<wchar_t>( lpTemp, L"%ld", p.startTime);
 		propertyName.push_back( L"startTime" );
 		propertyValue.push_back( core::stringw(lpTemp) );
 
 		// life time
-		uiString::format<wchar_t>( lpTemp, L"%d", p.lifeTime);
+		uiString::format<wchar_t>( lpTemp, L"%ld", p.lifeTime);
 		propertyName.push_back( L"lifeTime" );
 		propertyValue.push_back( core::stringw(lpTemp) );
 
@@ -393,12 +393,12 @@ void CParticleComponent::loadXML( const char *lpFileName )
 							// set start time
 							attribValue = xmlRead->getAttributeValue(L"startTime");							
 							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );	
-							sscanf(attribValueA, "%d", &particleInfo->startTime );
+							sscanf(attribValueA, "%ld", &particleInfo->startTime );
 
 							// set life time
 							attribValue = xmlRead->getAttributeValue(L"lifeTime");							
 							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );
-							sscanf(attribValueA, "%d", &particleInfo->lifeTime );							
+							sscanf(attribValueA, "%ld", &particleInfo->lifeTime );							
 
 						}
 						else if (core::stringw(L"attributes") == xmlRead->getNodeName())

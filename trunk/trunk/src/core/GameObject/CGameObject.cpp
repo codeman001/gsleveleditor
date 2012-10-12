@@ -740,7 +740,7 @@ IObjectComponent *CGameObject::getComponent( int componentID )
 	if ( m_needSortComponent == true )
 		sortComponentById();
 
-	int first = 0, last = m_components.size() - 1;
+	int first = 0, last = (int)m_components.size() - 1;
 	int mid = 0;
 	
 	while (first <= last) 
@@ -805,7 +805,7 @@ void CGameObject::setAnimatorMoveToWayPoint( CWayPoint *wayPoint, float speed, b
 
 	// convert to irrlich array
 	core::array<core::vector3df>	spline;
-	int nPoint = listPoint.size();
+	int nPoint = (int)listPoint.size();
 	for ( int i = 0; i < nPoint; i++ )
 		spline.push_back( listPoint[i] );
 	
@@ -1018,14 +1018,14 @@ void CGameObject::drawCircleAroundObject()
 	for ( int i = 0; i < step; i++ )
 	{
 		point1.Y = height;
-		point1.X = radius * sin( rad );
-		point1.Z = radius * cos( rad );
+		point1.X = radius * sinf( rad );
+		point1.Z = radius * cosf( rad );
 
 		rad = rad + radInc;
 
 		point2.Y = height;
-		point2.X = radius * sin( rad );
-		point2.Z = radius * cos( rad );
+		point2.X = radius * sinf( rad );
+		point2.Z = radius * cosf( rad );
 
 		driver->draw3DLine
 			( 

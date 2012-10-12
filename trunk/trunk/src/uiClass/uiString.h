@@ -85,7 +85,7 @@ namespace uiClass
 			if (len == 0)
 				return;
 
-			while (  pString[0] != NULL && (pString[0] == ' ' || pString[0] == '\r' || pString[0] == '\n' || pString[0] == '\t' )  )
+			while (  pString[0] != 0 && (pString[0] == ' ' || pString[0] == '\r' || pString[0] == '\n' || pString[0] == '\t' )  )
 			{
 				len--;
 				if (len == 0)
@@ -257,8 +257,8 @@ namespace uiClass
 		template <class T>
 		static int comp(T* pString1, T* pString2)
 		{
-			DWORD len1 = uiString::length<T>(pString1) * sizeof(T);
-			DWORD len2 = uiString::length<T>(pString2) * sizeof(T);
+			DWORD len1 = (DWORD)(uiString::length<T>(pString1) * sizeof(T));
+			DWORD len2 = (DWORD)(uiString::length<T>(pString2) * sizeof(T));
 			DWORD len = len1<len2?len1:len2;
 			
 			int r = memcmp(pString1, pString2, len);
@@ -491,7 +491,7 @@ namespace uiClass
 		// format
 		// Dinh dang string
 		template<class T>
-		static bool format(T* lpString, T* lpFormat, ... )
+		static bool format(T* lpString, const T* lpFormat, ... )
 		{
 			// Khoi tao danh sach tham so
 			va_list listArgs;
@@ -501,7 +501,7 @@ namespace uiClass
 			WCHAR lpWResult[400];
 
 			// Chuyen format sang Unicode
-			uiString::copy<WCHAR,T>(lpWFormat, lpFormat);
+			uiString::copy<WCHAR,const T>(lpWFormat, lpFormat);
 			
 			// Dinh dang sang Unicode			
 			int i = vswprintf(lpWResult,400,lpWFormat,listArgs);
@@ -576,7 +576,7 @@ namespace uiClass
 		static void toLower(T *lpString)
 		{
 			DWORD i = 0;
-			while (lpString[i] != NULL)
+			while (lpString[i] != 0)
 			{	
 				lpString[i] = (int)towlower( lpString[i] );
 				i++;
@@ -589,7 +589,7 @@ namespace uiClass
 		static void toUpper(T *lpString)
 		{
 			DWORD i = 0;
-			while (lpString[i] != NULL)
+			while (lpString[i] != 0)
 			{	
 				lpString[i] = (int)towupper( lpString[i] );
 				i++;

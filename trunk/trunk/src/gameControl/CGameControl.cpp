@@ -170,16 +170,12 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	// key input
 	EKEY_CODE key = event.KeyInput.Key;		
 
-	const int KeyNone	= 0;
 	const int KeyUp		= SHIFTBIT(1);
 	const int KeyLeft	= SHIFTBIT(2);
 	const int KeyRight	= SHIFTBIT(3);
 	const int KeyBack	= SHIFTBIT(4);
 	const int KeyFire	= SHIFTBIT(5);
-    const int KeyRunFast= SHIFTBIT(6);
-    
-	// run flag
-	bool updateRunState = false;
+    const int KeyRunFast= SHIFTBIT(6);    
 
 	if ( event.KeyInput.PressedDown )
 	{

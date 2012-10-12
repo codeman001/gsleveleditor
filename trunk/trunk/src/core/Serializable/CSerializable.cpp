@@ -40,7 +40,7 @@ CSerializable::~CSerializable()
 
 // addRow
 // add a property
-void CSerializable::addRow(char *name, void* value, dataType type, bool readOnly)
+void CSerializable::addRow(const char *name, void* value, dataType type, bool readOnly)
 {
 	SSerializableRec rec(name, value, type, readOnly);
 	m_data.push_back( rec );
@@ -48,7 +48,7 @@ void CSerializable::addRow(char *name, void* value, dataType type, bool readOnly
 
 // addArrayByte
 // add array byte to record
-void CSerializable::addArrayByte(char *name, char *value, int size, bool readOnly )
+void CSerializable::addArrayByte(const char *name, char *value, int size, bool readOnly )
 {	 
 	m_data.push_back( SSerializableRec() );
 
@@ -171,9 +171,9 @@ void CSerializable::readArrayByte( char* data, int *size )
 
 // getProperty
 // get property
-SSerializableRec* CSerializable::getProperty( char *name )
+SSerializableRec* CSerializable::getProperty( const char *name )
 {
-	int i = 0, n = m_data.size();
+	int i = 0, n = (int)m_data.size();
 	for ( i = 0; i < n; i++ )
 	{
 		SSerializableRec *pRec = &m_data[i];
@@ -252,7 +252,7 @@ void CSerializable::saveData( std::ofstream& f, int nTab )
 
 void getBufferString( char *lpBuffer, char *from, char *to )
 {
-	int len = to - from;
+	int len = (int)(to - from);
 	
 	uiString::mid(lpBuffer, from, 0, len);
 	uiString::trim(lpBuffer);

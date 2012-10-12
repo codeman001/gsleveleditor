@@ -97,7 +97,7 @@ bool IView::getScreenCoordinatesFrom3DPosition(const core::vector3df& pos3d, int
 	float scaleH = 1.0f;
 
 	dim.Width	= (int)( (dim.Width  * (1.0f/scaleW))/ 2);
-	dim.Height	= (int)( (dim.Height * (1.0f/scaleW))/ 2);
+	dim.Height	= (int)( (dim.Height * (1.0f/scaleH))/ 2);
 	
 	core::matrix4 trans = camera->getProjectionMatrix();
 	trans *= camera->getViewMatrix();

@@ -28,7 +28,7 @@ void CBillboardComponent::createBillboard()
 	IVideoDriver *driver = getIView()->getDriver();
 
 	// create box
-	ISceneNode *node = new CGameBillboardSceneNode( m_gameObject, m_gameObject->getParentSceneNode(), smgr, m_gameObject->getID(), core::vector3df(0,0,0), m_billboardSize );
+	ISceneNode *node = new CGameBillboardSceneNode( m_gameObject, m_gameObject->getParentSceneNode(), smgr, (s32)m_gameObject->getID(), core::vector3df(0,0,0), m_billboardSize );
 	
 	ITexture *pTex = driver->getTexture( getIView()->getPath(m_textureFile) );
 

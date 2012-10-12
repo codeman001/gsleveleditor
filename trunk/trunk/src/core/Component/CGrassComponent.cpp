@@ -120,7 +120,7 @@ void CGrassComponent::initGrassNode()
 			m_gameObject->getParentSceneNode(), 
 			getIView()->getSceneMgr(), 
 			m_gameObject->getPosition(), 
-			m_gameObject->getID() 
+			(s32)m_gameObject->getID() 
 		);
 
 	m_gameObject->m_node = m_grassNode;

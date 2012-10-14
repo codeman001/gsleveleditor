@@ -61,6 +61,11 @@ public:
 		return m_menu;
 	}
 
+    bool isNull()
+    {
+        return m_character == NULL;
+    }
+    
 	// invokeASCallback
 	// call action script func
 	void invokeASCallback( const char* funcName, const gameswf::as_value* arguments, int argumentCount );

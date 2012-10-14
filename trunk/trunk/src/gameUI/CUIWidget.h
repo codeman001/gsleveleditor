@@ -9,20 +9,34 @@
 #include "swfUI/CMenuFxObj.h"
 
 #include "gameControl/CTouchManager.h"
+#include "gameDebug/CGameDebug.h"
 
 class CUIWidget
 {
+public:
+    struct SButtonLabel
+    {
+        std::string     label;
+        std::string     text;
+        std::wstring    textw;
+    };
+    
 protected:
 	CUIWidget				*m_parent;
 	std::vector<CUIWidget*>	m_childs;
-	
+    std::string             m_widgetName;
+    
 	core::recti				m_rect;
 	int						m_controlID;
 	bool					m_visible;
-
+    
+    bool                    m_lockActionOnChild;
+    
+    std::vector<SButtonLabel>   m_labels;    
+    CMenuFxObj                  m_flashObj;
 public:
 	CUIWidget();
-	CUIWidget(CUIWidget* parent);
+	CUIWidget(const char *name, CUIWidget* parent);
 
 	virtual ~CUIWidget();
 
@@ -77,6 +91,31 @@ public:
 		m_visible = b;
 	}
 
+    // setName
+    // set name for button
+    inline void setName( const char *name )
+    {
+        m_widgetName = name;
+    }
+    
+    // lockActionOnChilld
+    inline void lockActionOnChilld( bool b )
+    {
+        m_lockActionOnChild = b;
+    }
+    
+    inline bool isLockActionOnChild()
+    {
+        return m_lockActionOnChild;
+    }
+    
+    // getName
+    // get name of widget
+    const char* getName()
+    {
+        return m_widgetName.c_str();
+    }
+    
 	// getRectByFxObj
 	// get rect from flash obj
 	static void getRectByFxObj( CMenuFxObj fxObj, core::recti& rect );
@@ -88,6 +127,19 @@ public:
 	// onTouchEvent
 	// update touch event
 	virtual bool onEvent( const SEvent& gameEvent);
+    
+	// setText
+	// set string
+	void setText( const char *fxName, const char *string );
+	void setText( const char *fxName, const wchar_t *string );
+    
+    // getRootWidget
+    // get root
+    CUIWidget* getRootWidget();
+    
+protected:
+    void registerLabel(const SButtonLabel &label);
+    void replaceTextOnLabel();
 
 };
 

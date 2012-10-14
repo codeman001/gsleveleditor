@@ -9,7 +9,7 @@ CGameState::CGameState( EGameState state )
 	// get game menu flash
 	m_menuFx = CGameUI::getInstance()->getFlash("uiGameMenu");
 	
-	m_rootWidget = new CUIWidget();
+	m_rootWidget = new CUICanvas("root",NULL);
 
 #ifdef HAS_MULTIPLAYER
 	m_mpMgr = NULL;

@@ -137,7 +137,8 @@ void CApplication::mainLoop()
 	// clear debug
 	CGameDebug::getInstance()->clearLines();
 	CGameDebug::getInstance()->clearBoxs();
-
+    CGameDebug::getInstance()->clear2DRects();
+    
 	// update state
 	CGameUI::getInstance()->update();
 	CGameStateMgr::getInstance()->update();
@@ -152,6 +153,9 @@ void CApplication::mainLoop()
 	core::recti viewport = m_driver->getViewPort();
 	CGameUI::getInstance()->render( 0, 0, viewport.getWidth(), viewport.getHeight(), false );	
 
+    // draw debug
+    CGameDebug::getInstance()->draw2D();
+    
 	// draw debug fps string
 	int fps = m_driver->getFPS();
 	

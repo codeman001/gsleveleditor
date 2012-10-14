@@ -56,5 +56,4 @@ void CGameDebugSceneNode::render()
 	{		
 		driver->draw3DBox( debug->getBox(i).box, debug->getBox(i).color );
 	}
-
 }

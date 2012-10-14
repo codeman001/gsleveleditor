@@ -8,7 +8,7 @@ class CUICanvas: public CUIWidget
 protected:
 
 public:
-	CUICanvas(CUIWidget *parent);
+	CUICanvas(const char *name, CUIWidget *parent);
 	virtual ~CUICanvas();
 };
 

@@ -14,6 +14,10 @@ CStateMainMenu::CStateMainMenu()
 {
 	m_menuChoice = -1;
 	m_level = new CGameLevel();	
+    
+    // ui button
+    m_btnCreateGame = NULL;
+    m_btnJointGame = NULL;
 }
 
 CStateMainMenu::~CStateMainMenu()
@@ -75,12 +79,11 @@ void CStateMainMenu::onUpdate()
     
     if ( listServer.size() == 0 )
     {
-        // do not found server		
-		m_txtServerName.setText("find server...");
+        // do not found hosts
     }
     else 
     {        
-		m_txtServerName.setText( listServer[0]->m_name.c_str() );
+        // found hosts
     }
 #endif
 
@@ -98,13 +101,18 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 	{	
 		if ( strcmp("state",param) == 0 )
 		{
-			m_txtServerName = m_menuFx->findObj("txtServername");
-			m_btnJointButton = m_menuFx->findObj("btnJoinGame");
-			
-			m_txtServerName.setText("find server...");
+            // finish show animation            
+            m_btnCreateGame = new CUIButton("createGame", m_rootWidget, m_menuFx->findObj("btnCreateGame"));
+            m_btnCreateGame->setText("txtLabel",        "CREATE GAME");
+            m_btnCreateGame->setText("txtDescription",  "HOST A GAME SERVER");
+            
+            m_btnJointGame  = new CUIButton("jointGame", m_rootWidget, m_menuFx->findObj("btnJointGame"));  
+            m_btnJointGame->setText("txtLabel",        "JOINT");
+            m_btnJointGame->setText("txtDescription",  "JOINT GAME ON LAN");
 		}
 		else if ( strcmp("close",param) == 0 )
 		{
+            // finish hide animation            
 			switch ( m_menuChoice )
 			{
 			case k_btnCreateGame:
@@ -126,53 +134,61 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 
 				CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );
 				break;
-			default:
-				{
-					printf("unknownState\n");
-				}
+			default:			
 				break;
 			}
-		}
-	}
-	else if ( strcmp("buttonStatus",  command) == 0 )
-	{
-		if ( strcmp("createGame", param) == 0 )
-			m_menuChoice = k_btnCreateGame;
-		else if ( strcmp("jointGame", param) == 0 )
-		{            
-#ifdef HAS_MULTIPLAYER
-			std::vector<CDeviceDetails*> listServer;
-			m_mpMgr->getAllActiveDevice(listServer);
-
-			if ( listServer.size() > 0 )
-            {
-                // send joint game to server
-                m_mpMgr->sendJointGamePacket( listServer[0]->m_address );
-            }
-#endif
 		}
 	}
 }
 
 bool CStateMainMenu::OnEvent(const SEvent& event)
 {
-    if ( event.EventType == EET_GAME_EVENT && event.GameEvent.EventID == (s32)EvtNetworking )
+    if ( event.EventType == EET_GAME_EVENT )
     {
-        SEventNetworking *networkEvent = ((SEventNetworking*)event.GameEvent.EventData);
+        if ( event.GameEvent.EventID == (s32)EvtNetworking )
+        {
+            SEventNetworking *networkEvent = ((SEventNetworking*)event.GameEvent.EventData);
 
 #ifdef HAS_MULTIPLAYER
-        if ( networkEvent->eventID == CMultiplayerManager::AcceptJointGame )
-        {
-            const char *serverIP = m_mpMgr->getDeviceIp( networkEvent->deviceID ) ;
-            if ( serverIP )
-            {                            
-				m_serverIP = serverIP;
-
-                m_btnJointButton.gotoFrame("release", true);
-                m_menuChoice = k_btnJointGame;
+            if ( networkEvent->eventID == CMultiplayerManager::AcceptJointGame )
+            {
+                const char *serverIP = m_mpMgr->getDeviceIp( networkEvent->deviceID ) ;
+                if ( serverIP )
+                {                            
+                    m_serverIP = serverIP;
+                    m_menuChoice = k_btnJointGame;
+                }
             }
-        }
 #endif
+        }
+        else if ( event.GameEvent.EventID == (s32)EvtButtonPress )
+        {
+            SEventButtonPress *buttonEvent = ((SEventButtonPress*)event.GameEvent.EventData);
+
+            if ( buttonEvent->data == m_btnCreateGame )
+            {
+                // press create game
+                m_menuChoice = k_btnCreateGame;
+            }
+            else if ( buttonEvent->data == m_btnJointGame )
+            {
+                // press joint game
+#ifdef HAS_MULTIPLAYER
+                std::vector<CDeviceDetails*> listServer;
+                m_mpMgr->getAllActiveDevice(listServer);
+
+                if ( listServer.size() > 0 )
+                {
+                    // send joint game to server
+                    m_mpMgr->sendJointGamePacket( listServer[0]->m_address );
+                }
+                m_menuChoice = k_btnJointGame;
+#endif     
+            }
+            
+            // animation state
+            m_menuFx->findObj("stateMainMenu").gotoFrame("hide", true);
+        }
         
     }
     return true;

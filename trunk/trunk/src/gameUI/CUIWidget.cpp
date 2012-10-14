@@ -7,22 +7,24 @@ CUIWidget::CUIWidget()
 	m_parent = NULL;
 	m_controlID = -1;
 	m_visible = true;
+    m_lockActionOnChild = false;
 }
 
-CUIWidget::CUIWidget(CUIWidget* parent)
+CUIWidget::CUIWidget(const char *name, CUIWidget* parent)
 {
 	m_parent = NULL;	
 	m_controlID = -1;
 	m_visible = true;
-
-	parent->addChild( this );
+    m_lockActionOnChild = false;
+    
+    m_widgetName = name;
+    
+    if ( parent )
+        parent->addChild( this );
 }
 
 CUIWidget::~CUIWidget()
 {
-	// remove from parent
-	remove();
-
 	// destroy all child
 	destroyChild();
 }
@@ -75,6 +77,18 @@ void CUIWidget::remove()
 		m_parent->removeChild( this );
 }
 
+// getRootWidget
+// get root
+CUIWidget* CUIWidget::getRootWidget()
+{
+    CUIWidget* current = this;
+    
+    while ( current->m_parent != NULL)
+        current = current->m_parent;
+    
+    return current;
+}
+
 // update
 // update per frame
 void CUIWidget::update()
@@ -98,15 +112,16 @@ void CUIWidget::update()
 // update touch event
 bool CUIWidget::onEvent(const SEvent& gameEvent)
 {
+    bool ret = false;
 	std::vector<CUIWidget*>::iterator i = m_childs.begin(), end = m_childs.end();
 	while ( i != end )
 	{
 		// delivery touch event to all child
-		if ( (*i)->onEvent(gameEvent) == true )
-			return true;
+        if ( (*i)->onEvent(gameEvent) == true )
+            ret = true;
 		i++;
 	}
-	return false;
+	return ret;
 }
 
 // getRectByFxObj (static function)
@@ -136,6 +151,56 @@ void CUIWidget::getRectByFxObj( CMenuFxObj fxObj, core::recti& rect )
     realH = (float)h / fh;
 
 	// result
-	rect.UpperLeftCorner	= core::position2di((int)x,(int)y);
-	rect.LowerRightCorner	= core::position2di((int)(x+w),(int)(y+h));
+	rect.UpperLeftCorner	= core::position2di((int)realX,(int)realY);
+	rect.LowerRightCorner	= core::position2di((int)(realX+realW),(int)(realY+realH));
+}
+
+
+// setText
+// set string
+void CUIWidget::setText( const char *fxName, const char *string )
+{
+	CMenuFxObj textEdit = m_flashObj.findObj(fxName);
+    textEdit.setText( string );
+    
+    SButtonLabel    label;
+    label.label = fxName;
+    label.text = string;        
+    registerLabel( label );
+}
+void CUIWidget::setText( const char *fxName, const wchar_t *string )
+{
+	CMenuFxObj textEdit = m_flashObj.findObj(fxName);
+    textEdit.setText( string );
+    
+    SButtonLabel    label;
+    label.label = fxName;
+    label.textw = string;        
+    registerLabel( label );
+}
+
+void CUIWidget::registerLabel(const SButtonLabel &label)
+{
+    for ( int i = 0; i < (int)m_labels.size(); i++ )
+    {
+        if ( m_labels[i].label == label.label )
+        {
+            m_labels[i] = label;
+            return;
+        }
+    }
+    m_labels.push_back( label );
+}
+
+void CUIWidget::replaceTextOnLabel()
+{
+    for ( int i = 0; i < (int)m_labels.size(); i++ )
+    {
+        CMenuFxObj textEdit = m_flashObj.findObj( m_labels[i].label.c_str() );
+        
+        if ( m_labels[i].text.size() > 0 )
+            textEdit.setText( m_labels[i].text.c_str() );
+        else
+            textEdit.setText( m_labels[i].textw.c_str() );
+    }
 }

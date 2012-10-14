@@ -7,12 +7,11 @@ class CStateMainMenu: public CGameState, public IEventReceiver
 {
 protected:
 	int				m_menuChoice;
+	CGameLevel		*m_level;    
 
-	CGameLevel		*m_level;
-
-	CMenuFxObj		m_txtServerName;
-	CMenuFxObj		m_btnJointButton;
-
+    CUIButton       *m_btnCreateGame;
+    CUIButton       *m_btnJointGame;
+    
 	std::string		m_serverIP;
 
 public:

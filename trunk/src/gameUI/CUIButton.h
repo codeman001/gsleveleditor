@@ -13,15 +13,17 @@ public:
 		ButtonInvisible,
 		ButtonDisable,
 		ButtonFocus,
+        ButtonPress,
 	};
-
+    
 protected:
-	CMenuFxObj	m_flashObj;
 	ButtonState m_buttonState;
-
+	ButtonState m_buttonLastState;
+    bool        m_mouseOver;
+    
 public:
 
-	CUIButton( CUIWidget* parent, CMenuFxObj flashObj );
+	CUIButton( const char *name, CUIWidget* parent, CMenuFxObj flashObj );
 	virtual ~CUIButton();
 
 	// update
@@ -45,11 +47,7 @@ public:
 	{
 		m_buttonState = state;
 	}
-
-	// setText
-	// set string
-	void setText( const char *fxName, const char *string );
-	void setText( const char *fxName, const wchar_t *string );
+    
 };
 
 #endif

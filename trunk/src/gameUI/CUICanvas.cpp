@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "CUICanvas.h"
 
-CUICanvas::CUICanvas(CUIWidget *parent)
-	:CUIWidget(parent)
+CUICanvas::CUICanvas(const char *name, CUIWidget *parent)
+	:CUIWidget(name, parent)
 {
 }
 

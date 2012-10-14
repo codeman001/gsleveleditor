@@ -5,6 +5,7 @@ enum GameUserEvent
 {
 	EvtPlayerMove = 0,
     EvtNetworking,
+    EvtButtonPress,
 	EvtCount
 };
 
@@ -28,6 +29,12 @@ struct SEventNetworking
 {
     int     eventID;
     int     deviceID;    
+    void    *data;
+};
+
+struct SEventButtonPress
+{
+    std::string buttonName;
     void    *data;
 };
 

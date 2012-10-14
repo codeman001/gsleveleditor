@@ -13,6 +13,8 @@
 #include "swfUI/CMenuFxObj.h"
 
 #include "gameUI/CUIWidget.h"
+#include "gameUI/CUICanvas.h"
+#include "gameUI/CUIButton.h"
 
 class CGameState
 {
@@ -28,7 +30,7 @@ public:
 
 protected:
 	CMenuFx		*m_menuFx;
-	CUIWidget	*m_rootWidget;
+	CUICanvas	*m_rootWidget;
 	EGameState	m_state;
 
 #ifdef HAS_MULTIPLAYER

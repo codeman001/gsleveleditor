@@ -32,8 +32,7 @@ void CStateMainMenu::onCreate()
 	m_menuFx->setBackgroundTransparent(true);
 
 	// show mainmenu state
-	setFxStateVisible( m_state, true );
-	setFxAllStateVisible( m_state, false );
+	showFxThisState();
 
 	// register current level
 	CGameLevel::setCurrentLevel( m_level );
@@ -99,16 +98,23 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 {
 	if ( strcmp("stateStatus", command) == 0 )
 	{	
-		if ( strcmp("show",param) == 0 )
+		if ( strcmp("show",param) == 0 && m_needInitState == true )
 		{
             // finish show animation            
-            m_btnCreateGame = new CUIButton("createGame", m_rootWidget, m_menuFx->findObj("btnCreateGame"));
+            m_btnCreateGame = new CUIButton("createGame", m_rootWidget, getStateObjFx().findObj("btnCreateGame"));
             m_btnCreateGame->setText("txtLabel",        "CREATE GAME");
             m_btnCreateGame->setText("txtDescription",  "HOST A GAME SERVER");
             
-            m_btnJoinGame  = new CUIButton("jointGame", m_rootWidget, m_menuFx->findObj("btnJoinGame"));  
+            m_btnJoinGame  = new CUIButton("jointGame", m_rootWidget, getStateObjFx().findObj("btnJoinGame"));  
             m_btnJoinGame->setText("txtLabel",        "JOIN");
             m_btnJoinGame->setText("txtDescription",  "JOIN GAME ON LAN");
+
+			m_needInitState = false;
+		}
+		else if ( strcmp("active",param) == 0 )
+		{
+			// todo
+			// finish play show anim
 		}
 		else if ( strcmp("close",param) == 0 )
 		{
@@ -151,7 +157,7 @@ bool CStateMainMenu::OnEvent(const SEvent& event)
 
 #ifdef HAS_MULTIPLAYER
 			// check to joint game msg from server
-            if ( networkEvent->eventID == CMultiplayerManager::AcceptJointGame )
+            if ( networkEvent->eventID == CMultiplayerManager::AcceptJoinGame )
             {
                 const char *serverIP = m_mpMgr->getDeviceIp( networkEvent->deviceID ) ;
                 if ( serverIP )
@@ -188,7 +194,7 @@ bool CStateMainMenu::OnEvent(const SEvent& event)
             }
             
             // animation state
-            m_menuFx->findObj("stateMainMenu").gotoFrame("hide", true);
+            getStateObjFx().gotoFrame("hide", true);
         }
         
     }

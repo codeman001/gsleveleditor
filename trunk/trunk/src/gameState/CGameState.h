@@ -23,6 +23,7 @@ public:
 	{
 		GSStateInit = 0,
 		GSStateMainMenu,
+		GSStateJoinGame,
 		GSStateGameLoading,
 		GSStateGameplay,
 		StateCount
@@ -32,6 +33,8 @@ protected:
 	CMenuFx		*m_menuFx;
 	CUICanvas	*m_rootWidget;
 	EGameState	m_state;
+
+	bool		m_needInitState;
 
 #ifdef HAS_MULTIPLAYER
 	CMultiplayerManager	*m_mpMgr;
@@ -80,6 +83,14 @@ public:
 	virtual void setFxStateVisible( EGameState state, bool b );
 	virtual void setFxAllStateVisible( EGameState ignoreState, bool b );
 
+	// showFxThisState
+	// show this flash obj
+	inline void showFxThisState()
+	{
+		setFxStateVisible( m_state, true );
+		setFxAllStateVisible( m_state, false );
+	}
+
 	// getStateName
 	// get state name
 	static const char* getStateName( EGameState state );
@@ -97,6 +108,10 @@ public:
 	{
 		return m_menuFx;
 	}
+
+	// getStateObjFx
+	CMenuFxObj getStateObjFx();
+
 };
 
 #endif

@@ -53,6 +53,7 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 		{
 			// create flash mainmenu ui			
 			CMenuFxObj menuObj = menu->getObj( CGameState::getStateName( (CGameState::EGameState)state ) );
+			menuObj.gotoFrame( 0, false );
 			menuObj.setVisible( false );			
 		}
 

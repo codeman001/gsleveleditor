@@ -741,6 +741,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="CStateJoinGame"
+					>
+					<File
+						RelativePath="..\..\src\gameState\CStateJoinGame.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\gameState\CStateJoinGame.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="gameLevel"

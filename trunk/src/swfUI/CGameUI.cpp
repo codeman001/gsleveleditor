@@ -113,6 +113,17 @@ bool CGameUI::_getFont( const char *font_name, tu_string &file_name, bool is_bol
 		file_name = getIView()->getPhysicPath("killerants.ttf");
 	else if ( strcmp("Verdana",font_name) == 0 )
 		file_name = getIView()->getPhysicPath("zrnic.ttf");
+	else if ( strcmp("Corbel",font_name) == 0 )
+	{
+		if ( is_bold && is_italic )
+			file_name = getIView()->getPhysicPath("corbelz.ttf");
+		else if ( is_bold )
+			file_name = getIView()->getPhysicPath("corbelb.ttf");
+		else if ( is_italic )
+			file_name = getIView()->getPhysicPath("corbeli.ttf");
+		else
+			file_name = getIView()->getPhysicPath("corbel.ttf");
+	}
 	else
 		file_name = getIView()->getPhysicPath("arial.ttf");
 #else
@@ -120,6 +131,17 @@ bool CGameUI::_getFont( const char *font_name, tu_string &file_name, bool is_bol
 		file_name = getIView()->getPath("data/font/killerants.ttf");
 	else if ( strcmp("Verdana",font_name) == 0 )
 		file_name = getIView()->getPath("data/font/zrnic.ttf");
+	else if ( strcmp("Corbel",font_name) == 0 )
+	{
+		if ( is_bold && is_italic )
+			file_name = getIView()->getPath("data/font/corbelz.ttf");
+		else if ( is_bold )
+			file_name = getIView()->getPath("data/font/corbelb.ttf");
+		else if ( is_italic )
+			file_name = getIView()->getPath("data/font/corbeli.ttf");
+		else
+			file_name = getIView()->getPath("data/font/corbel.ttf");
+	}
 	else
 		file_name = getIView()->getPath("data/font/arial.ttf");
 #endif

@@ -99,7 +99,7 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 {
 	if ( strcmp("stateStatus", command) == 0 )
 	{	
-		if ( strcmp("state",param) == 0 )
+		if ( strcmp("show",param) == 0 )
 		{
             // finish show animation            
             m_btnCreateGame = new CUIButton("createGame", m_rootWidget, m_menuFx->findObj("btnCreateGame"));
@@ -150,6 +150,7 @@ bool CStateMainMenu::OnEvent(const SEvent& event)
             SEventNetworking *networkEvent = ((SEventNetworking*)event.GameEvent.EventData);
 
 #ifdef HAS_MULTIPLAYER
+			// check to joint game msg from server
             if ( networkEvent->eventID == CMultiplayerManager::AcceptJointGame )
             {
                 const char *serverIP = m_mpMgr->getDeviceIp( networkEvent->deviceID ) ;
@@ -160,6 +161,7 @@ bool CStateMainMenu::OnEvent(const SEvent& event)
                 }
             }
 #endif
+
         }
         else if ( event.GameEvent.EventID == (s32)EvtButtonPress )
         {
@@ -182,8 +184,7 @@ bool CStateMainMenu::OnEvent(const SEvent& event)
                     // send joint game to server
                     m_mpMgr->sendJointGamePacket( listServer[0]->m_address );
                 }
-                m_menuChoice = k_btnJointGame;
-#endif     
+#endif
             }
             
             // animation state

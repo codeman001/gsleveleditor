@@ -24,15 +24,7 @@ void CUIButton::update()
 	CUIWidget::update();
 
     // update rect
-	getRectByFxObj( m_flashObj, m_rect );    
-
-//    if ( IsDebug )
-//    {
-//        SColor color(255,255,0,0);
-//        if ( m_buttonState == ButtonFocus )
-//            color = SColor(255,0,255,0);    
-//        CGameDebug::getInstance()->add2DRect( m_rect, color );
-//    }
+	getRectByFxObj( m_flashObj, m_rect );
     
     // update text for button
     if ( m_buttonLastState != m_buttonState )

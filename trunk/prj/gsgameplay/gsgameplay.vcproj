@@ -850,6 +850,34 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="gameUI"
+				>
+				<File
+					RelativePath="..\..\src\gameUI\CUIButton.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameUI\CUIButton.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameUI\CUICanvas.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameUI\CUICanvas.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameUI\CUIWidget.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameUI\CUIWidget.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\gsgameplay.cpp"

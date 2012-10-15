@@ -277,7 +277,7 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
         
         switch ( msgType ) 
         {            
-			case CMultiplayerManager::AcceptJointGame:
+			case CMultiplayerManager::AcceptJoinGame:
 				{
 					if ( m_isServer == true )
                         return false;
@@ -286,7 +286,7 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
 					m_keyID = packet.getShort();
 				}
 				break;
-            case CMultiplayerManager::DeclineJointGame:                          
+            case CMultiplayerManager::DeclineJoinGame:                          
                 {
                     // do nothing...
                 }
@@ -386,10 +386,10 @@ bool CMultiplayerManager::doMsgJointGame( CDataPacket& packet, void* addr )
         CDataPacket response(64);
 
         if ( id == -1 )
-            response.addByte( (unsigned char) CMultiplayerManager::DeclineJointGame );
+            response.addByte( (unsigned char) CMultiplayerManager::DeclineJoinGame );
         else
         {
-            response.addByte( (unsigned char) CMultiplayerManager::AcceptJointGame );
+            response.addByte( (unsigned char) CMultiplayerManager::AcceptJoinGame );
             			
             // get name from packet
             char clientName[512] = {0};

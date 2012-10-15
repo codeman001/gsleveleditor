@@ -5,12 +5,12 @@ CGameState::CGameState( EGameState state )
 {
 	m_menuFx = NULL;
 	m_state = state;
+	m_needInitState = true;
 
 	// get game menu flash
-	m_menuFx = CGameUI::getInstance()->getFlash("uiGameMenu");
-	
+	m_menuFx = CGameUI::getInstance()->getFlash("uiGameMenu");	
 	m_rootWidget = new CUICanvas("root",NULL);
-
+		
 #ifdef HAS_MULTIPLAYER
 	m_mpMgr = NULL;
 #endif
@@ -32,6 +32,7 @@ const char* CGameState::getStateName( EGameState state )
 	static const char* s_stateName[] = {
 		"stateInit",
 		"stateMainMenu",
+		"stateJoinGame",
 		"stateGameLoading",
 		"stateGameHud",
 		"stateCount"
@@ -120,4 +121,14 @@ void CGameState::setFxAllStateVisible( EGameState ignoreState, bool b )
 			menuObj.gotoFrame(0, b);				
 		}
 	}
+}
+
+// getStateObjFx
+CMenuFxObj CGameState::getStateObjFx()
+{
+	if ( m_menuFx )
+	{
+		return m_menuFx->getObj( getStateName(m_state) );
+	}
+	return CMenuFxObj();
 }

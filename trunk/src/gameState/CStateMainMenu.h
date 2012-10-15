@@ -7,7 +7,7 @@ class CStateMainMenu: public CGameState, public IEventReceiver
 {
 protected:
 	int				m_menuChoice;
-	CGameLevel		*m_level;    
+	CGameLevel		*m_level;
 
     CUIButton       *m_btnCreateGame;
     CUIButton       *m_btnJoinGame;

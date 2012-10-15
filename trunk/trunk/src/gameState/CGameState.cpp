@@ -102,7 +102,7 @@ void CGameState::setFxStateVisible( EGameState state, bool b )
 	{
 		CMenuFxObj menuObj = m_menuFx->getObj( getStateName(state) );
 		menuObj.setVisible( b );
-		menuObj.gotoFrame(1, true);
+		menuObj.gotoFrame(0, true);
 	}
 }
 
@@ -117,7 +117,7 @@ void CGameState::setFxAllStateVisible( EGameState ignoreState, bool b )
 
 			CMenuFxObj menuObj = m_menuFx->getObj( getStateName( (EGameState)i) );			
 			menuObj.setVisible( b );				
-			menuObj.gotoFrame(1, b);				
+			menuObj.gotoFrame(0, b);				
 		}
 	}
 }

@@ -642,7 +642,7 @@ public:
 		core::vector3df pointLightAttenuation[MAX_POINTLIGHTS];
 		SColorf			ambientColor;
 
-		for ( int i = 0; i < 8; ++i )
+		for ( u32 i = 0; i < 8; ++i )
 		{
 			if ( i < cnt )
 			{

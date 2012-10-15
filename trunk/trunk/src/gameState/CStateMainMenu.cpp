@@ -74,7 +74,7 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
             m_btnCreateGame->setText("txtLabel",        "CREATE GAME");
             m_btnCreateGame->setText("txtDescription",  "HOST A GAME SERVER");
             
-            m_btnJoinGame  = new CUIButton("jointGame", m_rootWidget, getStateObjFx().findObj("btnJoinGame"));  
+            m_btnJoinGame  = new CUIButton("joinGame", m_rootWidget, getStateObjFx().findObj("btnJoinGame"));  
             m_btnJoinGame->setText("txtLabel",        "JOIN");
             m_btnJoinGame->setText("txtDescription",  "JOIN GAME ON LAN");
 

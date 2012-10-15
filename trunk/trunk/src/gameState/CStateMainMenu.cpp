@@ -17,7 +17,7 @@ CStateMainMenu::CStateMainMenu()
     
     // ui button
     m_btnCreateGame = NULL;
-    m_btnJointGame = NULL;
+    m_btnJoinGame = NULL;
 }
 
 CStateMainMenu::~CStateMainMenu()
@@ -106,9 +106,9 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
             m_btnCreateGame->setText("txtLabel",        "CREATE GAME");
             m_btnCreateGame->setText("txtDescription",  "HOST A GAME SERVER");
             
-            m_btnJointGame  = new CUIButton("jointGame", m_rootWidget, m_menuFx->findObj("btnJointGame"));  
-            m_btnJointGame->setText("txtLabel",        "JOINT");
-            m_btnJointGame->setText("txtDescription",  "JOINT GAME ON LAN");
+            m_btnJoinGame  = new CUIButton("jointGame", m_rootWidget, m_menuFx->findObj("btnJoinGame"));  
+            m_btnJoinGame->setText("txtLabel",        "JOIN");
+            m_btnJoinGame->setText("txtDescription",  "JOIN GAME ON LAN");
 		}
 		else if ( strcmp("close",param) == 0 )
 		{
@@ -172,7 +172,7 @@ bool CStateMainMenu::OnEvent(const SEvent& event)
                 // press create game
                 m_menuChoice = k_btnCreateGame;
             }
-            else if ( buttonEvent->data == m_btnJointGame )
+            else if ( buttonEvent->data == m_btnJoinGame )
             {
                 // press joint game
 #ifdef HAS_MULTIPLAYER

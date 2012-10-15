@@ -6,6 +6,7 @@
 class CStateJoinGame: public CGameState, public IEventReceiver
 {
 protected:
+	std::string		m_serverIP;
 
 public:
 	CStateJoinGame();

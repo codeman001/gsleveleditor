@@ -10,9 +10,7 @@ protected:
 	CGameLevel		*m_level;
 
     CUIButton       *m_btnCreateGame;
-    CUIButton       *m_btnJoinGame;
-    
-	std::string		m_serverIP;
+    CUIButton       *m_btnJoinGame;   	
 
 public:
 	CStateMainMenu();

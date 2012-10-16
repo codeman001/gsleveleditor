@@ -10,7 +10,9 @@ protected:
 	CGameLevel		*m_level;
 
     CUIButton       *m_btnCreateGame;
-    CUIButton       *m_btnJoinGame;   	
+    CUIButton       *m_btnJoinGame;
+	CUIButton       *m_btnOption;
+	CUIButton       *m_btnAbout;
 
 public:
 	CStateMainMenu();

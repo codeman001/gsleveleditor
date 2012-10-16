@@ -107,26 +107,20 @@ void CMenuFxObj::getAbsoluteBound(int *x, int *y, int *w, int *h)
 	{		
 		gameswf::rect rect;
 		m_character->get_bound(&rect);
-		
+				
+		gameswf::character *parent = m_character->get_parent();
+		while ( parent )
+		{
+			parent->get_matrix().transform( &rect );
+			parent = parent->get_parent();
+		}
+
 		rect.twips_to_pixels();
 
 		*x = (int)rect.m_x_min;
 		*y = (int)rect.m_y_min;
 		*w = (int)rect.width();
 		*h = (int)rect.height();
-
-		//gameswf::character *parent = m_character->get_parent();
-		//while ( parent )
-		//{
-		//	parent->get_bound(&rect);
-		//	rect.twips_to_pixels();
-
-		//	*x += (int)rect.m_x_min;
-		//	*y += (int)rect.m_y_min;
-
-		//	parent = parent->get_parent();
-		//}
-
 	}
 }
 

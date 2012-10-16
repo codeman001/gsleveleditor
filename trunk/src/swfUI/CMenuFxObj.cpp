@@ -95,6 +95,42 @@ void CMenuFxObj::getBound(int *x, int *y, int *w, int *h)
 	}
 }
 
+// getAbsoluteBound
+void CMenuFxObj::getAbsoluteBound(int *x, int *y, int *w, int *h)
+{
+	*x = 0;
+	*y = 0;
+	*w = 0;
+	*h = 0;
+
+	if ( m_character )
+	{		
+		gameswf::rect rect;
+		m_character->get_bound(&rect);
+		
+		rect.twips_to_pixels();
+
+		*x = (int)rect.m_x_min;
+		*y = (int)rect.m_y_min;
+		*w = (int)rect.width();
+		*h = (int)rect.height();
+
+		//gameswf::character *parent = m_character->get_parent();
+		//while ( parent )
+		//{
+		//	parent->get_bound(&rect);
+		//	rect.twips_to_pixels();
+
+		//	*x += (int)rect.m_x_min;
+		//	*y += (int)rect.m_y_min;
+
+		//	parent = parent->get_parent();
+		//}
+
+	}
+}
+
+
 // setVisible
 // set visible
 void CMenuFxObj::setVisible( bool b )

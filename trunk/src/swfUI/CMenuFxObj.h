@@ -29,6 +29,9 @@ public:
 	// get bound
 	void getBound(int *x, int *y, int *w, int *h);
 
+	// getAbsoluteBound
+	void getAbsoluteBound(int *x, int *y, int *w, int *h);
+
 	// setVisible
 	// set visible
 	void setVisible( bool b );

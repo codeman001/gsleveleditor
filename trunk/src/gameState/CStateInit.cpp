@@ -12,29 +12,15 @@
 CStateInit::CStateInit()
 	:CGameState( CGameState::GSStateInit )
 {
-	m_loadFinish = false;
-
-#ifdef OPEN_GAMEPLAY
-	m_logoTime = 0.f;
-#else
-	m_logoTime = 2000.f;
-#endif
-
-	m_mainMenuState = NULL;
+	m_loadMainMenu	= false;
 }
 
 CStateInit::~CStateInit()
 {
-	if ( m_mainMenuState )
-		delete m_mainMenuState;
-
-	CGameUI::getInstance()->releaseFlash("uiGameInit");
 }
 
 void CStateInit::onCreate()
-{	
-	// init flash ui
-	m_menuFx =	CGameUI::getInstance()->openFlash("uiGameInit", getIView()->getPath("data/flashui/uiGameInit.swf") );
+{		
 }
 
 void CStateInit::onDestroy()
@@ -43,7 +29,18 @@ void CStateInit::onDestroy()
 
 void CStateInit::onFsCommand(const char *command, const char *param)
 {
-	if ( strcmp( command, "animationStatus") == 0 && strcmp( param, "finish") == 0 )
+}
+
+void CStateInit::onRender()
+{
+	m_loadMainMenu = true;
+}
+
+void CStateInit::onUpdate()
+{
+	CGameState::onUpdate();
+
+	if ( m_loadMainMenu )
 	{
 		// todo load menu state
 		CMenuFx *menu =	CGameUI::getInstance()->openFlash("uiGameMenu", getIView()->getPath("data/flashui/uiGameMenu.swf"));
@@ -78,21 +75,10 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 		level->loadLevel( getIView()->getPath( "data/level/levelMainMenu.lv" ) );			
 		while ( level->loadStep() == false )
 		{
+			// todo loading level
 		}
-
-		// set gamestate
-		// create main menu level		
-		m_mainMenuState = mainMenuState;
 #endif
-
-		// notify load finish
-		m_loadFinish = true;
-	}
-	else if ( strcmp( command, "stateStatus" ) == 0 && strcmp( param, "close" ) == 0 )
-	{
-		// change state main menu
-		m_menuFx->setVisible( false );
-
+	
 #ifdef OPEN_GAMEPLAY
 		m_menuFx = CGameUI::getInstance()->getFlash("uiGameMenu");	
 		m_menuFx->setVisible( true );
@@ -101,29 +87,8 @@ void CStateInit::onFsCommand(const char *command, const char *param)
 		CGameLevel::setLevelLoad( OPEN_GAMEPLAY );
 		CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );
 #else
-		CGameStateMgr::getInstance()->changeState( m_mainMenuState );
-		m_mainMenuState = NULL;
+		CGameStateMgr::getInstance()->changeState( mainMenuState );
 #endif
 	}
-}
 
-void CStateInit::onUpdate()
-{
-	CGameState::onUpdate();
-
-	if ( m_loadFinish == true )
-	{
-		m_logoTime = m_logoTime - getIView()->getTimeStep();
-
-		// wait logo time %d second
-		if ( m_logoTime < 0 )
-		{
-			m_logoTime = 0.0f;
-			m_loadFinish = false;
-
-			// play state hide
-			CMenuFxObj obj = m_menuFx->findObj("gsGameInit");
-			obj.gotoFrame("hide", true);
-		}
-	}
 }

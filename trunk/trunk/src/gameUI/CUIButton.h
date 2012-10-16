@@ -13,7 +13,7 @@ public:
 		ButtonInvisible,
 		ButtonDisable,
 		ButtonFocus,
-        ButtonPress,
+        ButtonRelease
 	};
     
 protected:

@@ -120,9 +120,9 @@ bool CStateMainMenu::OnEvent(const SEvent& event)
 {
     if ( event.EventType == EET_GAME_EVENT )
     {
-		if ( event.GameEvent.EventID == (s32)EvtButtonPress )
+		if ( event.GameEvent.EventID == (s32)EvtButtonRelease )
         {
-            SEventButtonPress *buttonEvent = ((SEventButtonPress*)event.GameEvent.EventData);
+            SEventButtonRelease *buttonEvent = ((SEventButtonRelease*)event.GameEvent.EventData);
 
             if ( buttonEvent->data == m_btnCreateGame )
             {

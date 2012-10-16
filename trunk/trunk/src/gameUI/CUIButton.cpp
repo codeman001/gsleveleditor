@@ -76,7 +76,7 @@ bool CUIButton::onEvent( const SEvent& gameEvent)
 		if ( m_mouseOver == false )
 		{
 			// mouse out
-			if ( m_buttonState == ButtonFocus )
+			if ( m_buttonState == ButtonFocus || m_buttonState == ButtonRelease )
                 m_flashObj.gotoFrame("normal", true);
 
 			m_buttonState = ButtonNormal;
@@ -99,8 +99,8 @@ bool CUIButton::onEvent( const SEvent& gameEvent)
                     root->lockActionOnChilld( true );
                     
                     // play anim
-                    m_flashObj.gotoFrame("press", true);
-					m_buttonState = ButtonPress;
+                    m_flashObj.gotoFrame("release", true);
+					m_buttonState = ButtonRelease;
 				}
 			}
 
@@ -115,13 +115,13 @@ bool CUIButton::onEvent( const SEvent& gameEvent)
         
         if ( strcmp("buttonStatus",  command) == 0 )
         {
-            if ( strcmp("press", param) == 0 && m_buttonState == ButtonPress )
+            if ( strcmp("release", param) == 0 && m_buttonState == ButtonRelease )
             {                
                 // unlock
                 root->lockActionOnChilld( false );
                 
                 // hack for update text
-                m_buttonLastState = ButtonPress;
+                m_buttonLastState = ButtonRelease;
                 if ( m_mouseOver )
                     m_buttonState = ButtonFocus;
                 else
@@ -129,10 +129,10 @@ bool CUIButton::onEvent( const SEvent& gameEvent)
                 
                 // post press button event
                 SEvent event;
-                SEventButtonPress button;
+                SEventButtonRelease button;
                 
                 event.EventType = EET_GAME_EVENT;
-                event.GameEvent.EventID = (s32)EvtButtonPress;
+                event.GameEvent.EventID = (s32)EvtButtonRelease;
                 
                 button.buttonName = m_widgetName;
                 button.data = this;
@@ -140,6 +140,9 @@ bool CUIButton::onEvent( const SEvent& gameEvent)
                 
                 getIView()->getDevice()->postEventFromUser( event );
             }
+
+			// update text
+			replaceTextOnLabel();
         }       
     }
 

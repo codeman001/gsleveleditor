@@ -98,6 +98,8 @@ void CUIWidget::update()
 	// update bouding rect
 	if ( m_parent == NULL )	
 		m_rect = driver->getViewPort();
+	else		
+		getRectByFxObj( m_flashObj, m_rect );
 
 	//update childs
 	std::vector<CUIWidget*>::iterator i = m_childs.begin(), end = m_childs.end();

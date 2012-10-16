@@ -22,10 +22,7 @@ CUIButton::~CUIButton()
 void CUIButton::update()
 {
 	CUIWidget::update();
-
-    // update rect
-	getRectByFxObj( m_flashObj, m_rect );
-    
+        
     // update text for button
     if ( m_buttonLastState != m_buttonState )
     {

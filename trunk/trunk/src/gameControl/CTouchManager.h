@@ -3,8 +3,6 @@
 
 #include "stdafx.h"
 
-#define MAX_TOUCH	4
-
 class CTouchManager
 {
 public:
@@ -25,8 +23,8 @@ public:
 	};
 
 protected:
-	STouchStatus	m_touch		[ MAX_TOUCH ];
-	int				m_touchID	[ MAX_TOUCH ];
+	STouchStatus	m_touch		[ MAX_MULTITOUCH ];
+	int				m_touchID	[ MAX_MULTITOUCH ];
 
 public:
 	CTouchManager();

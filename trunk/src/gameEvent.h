@@ -5,7 +5,7 @@ enum GameUserEvent
 {
 	EvtPlayerMove = 0,
     EvtNetworking,
-    EvtButtonPress,
+    EvtButtonRelease,
 	EvtCount
 };
 
@@ -32,7 +32,7 @@ struct SEventNetworking
     void    *data;
 };
 
-struct SEventButtonPress
+struct SEventButtonRelease
 {
     std::string buttonName;
     void    *data;

@@ -78,6 +78,14 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
             m_btnJoinGame->setText("txtLabel",        "JOIN");
             m_btnJoinGame->setText("txtDescription",  "JOIN GAME ON LAN");
 
+			m_btnOption = new CUIButton("option", m_rootWidget, getStateObjFx().findObj("btnOption"));
+			m_btnOption->setText("txtLabel",        "OPTION");
+            m_btnOption->setText("txtDescription",  "CUSTOMIZE YOUR GAME");
+
+			m_btnAbout	= new CUIButton("about", m_rootWidget, getStateObjFx().findObj("btnAbout"));
+			m_btnAbout->setText("txtLabel",        "ABOUT US");
+            m_btnAbout->setText("txtDescription",  "DEVELOPED TEAM INFOMATION");
+
 			m_needInitState = false;
 		}
 		else if ( strcmp("active",param) == 0 )

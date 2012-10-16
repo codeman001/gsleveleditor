@@ -6,7 +6,7 @@
 CTouchManager::CTouchManager()
 {
 	// reset to touchEvent
-	for ( int i = 0; i < MAX_TOUCH; i++ )
+	for ( int i = 0; i < MAX_MULTITOUCH; i++ )
 	{
 		m_touch[i].touchEvent	= CTouchManager::TouchNone;
 		m_touch[i].x			= 0;
@@ -27,7 +27,7 @@ void CTouchManager::update()
 	IrrlichtDevice *device = getIView()->getDevice();
 
 	// notify event to irrlicht device
-	for ( int i = 0; i < MAX_TOUCH; i++ )
+	for ( int i = 0; i < MAX_MULTITOUCH; i++ )
 	{
 		// set touch variable
 		event.EventType = irr::EET_MOUSE_INPUT_EVENT;
@@ -65,7 +65,7 @@ void CTouchManager::update()
 	}
 
 	// reset to touchEvent
-	for ( int i = 0; i < MAX_TOUCH; i++ )
+	for ( int i = 0; i < MAX_MULTITOUCH; i++ )
 	{
 		if ( m_touch[i].touchEvent == CTouchManager::TouchUp )
 		{
@@ -89,7 +89,7 @@ int CTouchManager::getTouchID(int deviceID)
 	int i = 0;
 
 	// search deviceID
-	for ( i = 0; i < MAX_TOUCH; i++ )
+	for ( i = 0; i < MAX_MULTITOUCH; i++ )
 	{
 		if ( m_touchID[i] == deviceID )
 		{
@@ -98,7 +98,7 @@ int CTouchManager::getTouchID(int deviceID)
 	}
 		
 	// new touch ID
-	for ( i = 0; i < MAX_TOUCH; i++ )
+	for ( i = 0; i < MAX_MULTITOUCH; i++ )
 	{
 		if ( m_touchID[i] == -1 )
 		{

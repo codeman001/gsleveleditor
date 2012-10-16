@@ -15,6 +15,7 @@
 #include "gameUI/CUIWidget.h"
 #include "gameUI/CUICanvas.h"
 #include "gameUI/CUIButton.h"
+#include "gameUI/CUIDPad.h"
 
 class CGameState
 {

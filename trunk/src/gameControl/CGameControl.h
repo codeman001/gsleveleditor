@@ -2,7 +2,6 @@
 #define _GAMECONTROL_H_
 
 #include "stdafx.h"
-#include "CDpad.h"
 #include "swfUI/CMenuFxObj.h"
 
 class CGameControl: 
@@ -10,26 +9,15 @@ class CGameControl:
     public IEventReceiver
 {
 protected:
-    bool        m_isEnable;
-                    
-    std::string m_fxnameDpadTouch;
-    
-    std::string m_fxnameDpad;
-    std::string m_fxnameDpadMove;
-    
+    bool        m_isEnable;                           
     int         m_screenTouchID;
-	
-	CDpad       m_moveDpad;
-	core::recti m_touchDpad;
-
+		
 	int			m_keyActionBit;
+
+	int			m_touchIDStatus[ MAX_MULTITOUCH ];
 public:
 	CGameControl();
 	virtual ~CGameControl();
-
-    // setNameFx
-    // set name of flash obj
-    void setNameFx( const std::string& nameDpadTouch, const std::string& nameDPad,const std::string& nameDpadMove );
     
     // update
     // main loop update
@@ -46,6 +34,8 @@ public:
         m_isEnable = b;
         if ( b == false )
             m_screenTouchID = -1;
+
+		resetTouchIDStatus();
     }
     
     // isEnable
@@ -59,15 +49,26 @@ public:
 	// check a null touch on screen
 	bool isTouchOnScreen( int touchID );
     
-    // isTouchOnDPad
-    // check touch on dpad
-    bool isTouchOnDPad( int x, int y );
-
 
 	// sendPlayerStopEvent
 	// send event to player stop run
 	void sendPlayerStopEvent();
 	void sendPlayerRunEvent(float f, float rotate, bool runFast);
+
+	// setTouchIDStatus
+	// set touch
+	inline void setTouchIDStatus(int id, int status)
+	{
+		m_touchIDStatus[id] = status;
+	}
+
+	// getTouchIDStatus
+	inline int getTouchIDStatus(int id)
+	{
+		return m_touchIDStatus[id];
+	}
+
+	void resetTouchIDStatus();
 
 protected:
 

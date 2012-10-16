@@ -11,6 +11,7 @@
 
 #ifdef GSGAMEPLAY
     #define HAS_MULTIPLAYER
+	#define MAX_MULTITOUCH		4
 #endif
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers

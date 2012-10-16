@@ -87,11 +87,14 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
             m_btnAbout->setText("txtDescription",  "DEVELOPED TEAM INFOMATION");
 
 			m_needInitState = false;
+			
+			m_rootWidget->lockActionOnChilld(true);
 		}
 		else if ( strcmp("active",param) == 0 )
 		{
 			// todo
 			// finish play show anim
+			m_rootWidget->lockActionOnChilld(false);
 		}
 		else if ( strcmp("close",param) == 0 )
 		{

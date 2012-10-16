@@ -2,8 +2,6 @@
 #include "IView.h"
 #include "gameEvent.h"
 #include "CStateGameplay.h"
-#include "CGameCameraFollowAnimator.h"
-
 #include "gameControl/CGameControl.h"
 
 CStateGameplay::CStateGameplay()
@@ -27,18 +25,12 @@ void CStateGameplay::onCreate()
 	
 	setFxStateVisible( m_state, true );
 	setFxAllStateVisible( m_state, false );
-
-	// hide dpad touch
-	CMenuFxObj dpadTouch = m_menuFx->findObj("mcDpadTouch");
-	dpadTouch.setVisible(false);
-
-    
-	CMenuFxObj dPadBase = m_menuFx->findObj("mcDpadBase");
-	dPadBase.setVisible(false);	
-
+	
     // enable gamecontrol
     CGameControl::getInstance()->setEnable(true);
-    CGameControl::getInstance()->setNameFx("mcDpadTouch", "mcDpadBase", "mcDpadMove");
+    
+	// create dpad control
+	CUIDPad* dpad = new CUIDPad("dpad", m_rootWidget, getStateObjFx().findObj("mcDPadTouch"));
 	
 #ifdef HAS_MULTIPLAYER
 	const char *isHost = CGameLevel::getLevelProperty("isHost");

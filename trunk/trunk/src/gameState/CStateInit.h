@@ -6,10 +6,8 @@
 class CStateInit: public CGameState
 {
 protected:
-	bool	m_loadFinish;	
-	float	m_logoTime;
+	bool		m_loadMainMenu;
 
-	CGameState	*m_mainMenuState;
 public:
 	CStateInit();
 	virtual ~CStateInit();
@@ -17,6 +15,7 @@ public:
 	virtual void onCreate();
 	virtual void onDestroy();
 	virtual void onFsCommand( const char *command, const char *param );
+	virtual void onRender();
 	virtual void onUpdate();
 };
 

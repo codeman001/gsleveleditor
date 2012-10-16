@@ -132,7 +132,7 @@ void CUIWidget::getRectByFxObj( CMenuFxObj fxObj, core::recti& rect )
     float fw, fh;
     
 	// get size (pixel) on flash
-    fxObj.getBound(&x, &y, &w, &h);
+    fxObj.getAbsoluteBound(&x, &y, &w, &h);
 
 	// get ratio from flash to screen game
 	if ( fxObj.getMenu() == NULL )

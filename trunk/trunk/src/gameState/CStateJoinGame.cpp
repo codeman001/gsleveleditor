@@ -24,6 +24,22 @@ void CStateJoinGame::onCreate()
 	// init client mp
 	m_mpMgr = new CMultiplayerManager(false, false);
 #endif
+
+	// add for test actionscript 2.0
+	// begin test
+	CMenuFxObj listPanel = getStateObjFx().findObj("panelList");
+	for ( int i = 0; i < 4; i++ )
+	{
+		char name[62];
+		sprintf(name,"item%d",i);
+
+		gameswf::as_value param(name);	
+		listPanel.invokeASCallback("addListItem", &param, 1);
+
+		CMenuFxObj list = listPanel.findObj(name);
+		list.setPosition( 0, i*40 );
+	}
+	// end test
 }
 
 void CStateJoinGame::onDestroy()

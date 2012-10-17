@@ -69,7 +69,6 @@
 		7F3A6BB7160F5E8000B31F81 /* CInventoryComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B55160F5E8000B31F81 /* CInventoryComponent.cpp */; };
 		7F3A6BB8160F5E8000B31F81 /* CPlayerComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B57160F5E8000B31F81 /* CPlayerComponent.cpp */; };
 		7F3A6BB9160F5E8000B31F81 /* CWeaponComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B59160F5E8000B31F81 /* CWeaponComponent.cpp */; };
-		7F3A6BBA160F5E8000B31F81 /* CDpad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B5C160F5E8000B31F81 /* CDpad.cpp */; };
 		7F3A6BBB160F5E8000B31F81 /* CGameControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B5E160F5E8000B31F81 /* CGameControl.cpp */; };
 		7F3A6BBC160F5E8000B31F81 /* CTouchManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B60160F5E8000B31F81 /* CTouchManager.cpp */; };
 		7F3A6BBD160F5E8000B31F81 /* CGameDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B63160F5E8000B31F81 /* CGameDebug.cpp */; };
@@ -97,6 +96,7 @@
 		7F42768416284F300003D8E6 /* CUIButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F42767E16284F300003D8E6 /* CUIButton.cpp */; };
 		7F42768516284F300003D8E6 /* CUICanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F42768016284F300003D8E6 /* CUICanvas.cpp */; };
 		7F42768616284F300003D8E6 /* CUIWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F42768216284F300003D8E6 /* CUIWidget.cpp */; };
+		7F60980C162F0AF30085D3FF /* CUIDPad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F60980A162F0AF30085D3FF /* CUIDPad.cpp */; };
 		7FCB58AB162C69DD00349381 /* CStateJoinGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FCB58A9162C69DD00349381 /* CStateJoinGame.cpp */; };
 		7FCB58C9162C6CC200349381 /* corbel.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7FCB58C5162C6CC200349381 /* corbel.ttf */; };
 		7FCB58CA162C6CC200349381 /* corbelb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7FCB58C6162C6CC200349381 /* corbelb.ttf */; };
@@ -255,8 +255,6 @@
 		7F3A6B58160F5E8000B31F81 /* CPlayerComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPlayerComponent.h; sourceTree = "<group>"; };
 		7F3A6B59160F5E8000B31F81 /* CWeaponComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CWeaponComponent.cpp; sourceTree = "<group>"; };
 		7F3A6B5A160F5E8000B31F81 /* CWeaponComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWeaponComponent.h; sourceTree = "<group>"; };
-		7F3A6B5C160F5E8000B31F81 /* CDpad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDpad.cpp; sourceTree = "<group>"; };
-		7F3A6B5D160F5E8000B31F81 /* CDpad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDpad.h; sourceTree = "<group>"; };
 		7F3A6B5E160F5E8000B31F81 /* CGameControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGameControl.cpp; sourceTree = "<group>"; };
 		7F3A6B5F160F5E8000B31F81 /* CGameControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGameControl.h; sourceTree = "<group>"; };
 		7F3A6B60160F5E8000B31F81 /* CTouchManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CTouchManager.cpp; sourceTree = "<group>"; };
@@ -307,6 +305,8 @@
 		7F42768116284F300003D8E6 /* CUICanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUICanvas.h; sourceTree = "<group>"; };
 		7F42768216284F300003D8E6 /* CUIWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIWidget.cpp; sourceTree = "<group>"; };
 		7F42768316284F300003D8E6 /* CUIWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIWidget.h; sourceTree = "<group>"; };
+		7F60980A162F0AF30085D3FF /* CUIDPad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIDPad.cpp; sourceTree = "<group>"; };
+		7F60980B162F0AF30085D3FF /* CUIDPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIDPad.h; sourceTree = "<group>"; };
 		7FCB58A9162C69DD00349381 /* CStateJoinGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CStateJoinGame.cpp; sourceTree = "<group>"; };
 		7FCB58AA162C69DD00349381 /* CStateJoinGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CStateJoinGame.h; sourceTree = "<group>"; };
 		7FCB58C5162C6CC200349381 /* corbel.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = corbel.ttf; path = ../../bin/corbel.ttf; sourceTree = "<group>"; };
@@ -605,8 +605,6 @@
 		7F3A6B5B160F5E8000B31F81 /* gameControl */ = {
 			isa = PBXGroup;
 			children = (
-				7F3A6B5C160F5E8000B31F81 /* CDpad.cpp */,
-				7F3A6B5D160F5E8000B31F81 /* CDpad.h */,
 				7F3A6B5E160F5E8000B31F81 /* CGameControl.cpp */,
 				7F3A6B5F160F5E8000B31F81 /* CGameControl.h */,
 				7F3A6B60160F5E8000B31F81 /* CTouchManager.cpp */,
@@ -740,6 +738,8 @@
 		7F42767D16284F300003D8E6 /* gameUI */ = {
 			isa = PBXGroup;
 			children = (
+				7F60980A162F0AF30085D3FF /* CUIDPad.cpp */,
+				7F60980B162F0AF30085D3FF /* CUIDPad.h */,
 				7F42767E16284F300003D8E6 /* CUIButton.cpp */,
 				7F42767F16284F300003D8E6 /* CUIButton.h */,
 				7F42768016284F300003D8E6 /* CUICanvas.cpp */,
@@ -924,7 +924,6 @@
 				7F3A6BB7160F5E8000B31F81 /* CInventoryComponent.cpp in Sources */,
 				7F3A6BB8160F5E8000B31F81 /* CPlayerComponent.cpp in Sources */,
 				7F3A6BB9160F5E8000B31F81 /* CWeaponComponent.cpp in Sources */,
-				7F3A6BBA160F5E8000B31F81 /* CDpad.cpp in Sources */,
 				7F3A6BBB160F5E8000B31F81 /* CGameControl.cpp in Sources */,
 				7F3A6BBC160F5E8000B31F81 /* CTouchManager.cpp in Sources */,
 				7F3A6BBD160F5E8000B31F81 /* CGameDebug.cpp in Sources */,
@@ -948,6 +947,7 @@
 				7F42768516284F300003D8E6 /* CUICanvas.cpp in Sources */,
 				7F42768616284F300003D8E6 /* CUIWidget.cpp in Sources */,
 				7FCB58AB162C69DD00349381 /* CStateJoinGame.cpp in Sources */,
+				7F60980C162F0AF30085D3FF /* CUIDPad.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

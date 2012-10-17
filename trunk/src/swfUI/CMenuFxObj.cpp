@@ -235,6 +235,22 @@ int CMenuFxObj::getFrameCount()
 // call action script func
 void CMenuFxObj::invokeASCallback( const char* funcName, const gameswf::as_value* arguments, int argumentCount )
 {
+	//***Implement at actionscript 2.0f
+	//onClipEvent(load)
+	//{	
+	//	this.sayHi = function(a:String, b:String)
+	//	{
+	//		fscommand(a,b);
+	//	}
+	//}
+
+	//***Call implement at code C++
+	//CMenuFxObj panel = getStateObjFx().findObj("panelList");	
+	//gameswf::as_value params[2];
+	//params[0] = gameswf::as_value("CStateJoinGame");
+	//params[1] = gameswf::as_value("update");
+	//panel.invokeASCallback("sayHi",params, 2);
+
 	if (m_character && m_character->is(gameswf::AS_SPRITE))
 	{
 		gameswf::sprite_instance* si = (gameswf::sprite_instance*)m_character;		

@@ -147,10 +147,10 @@ void CUIWidget::getRectByFxObj( CMenuFxObj fxObj, core::recti& rect )
     
 	// calc size
     float realX, realY, realW, realH;
-    realX = (float)x / fw;
-    realY = (float)y / fh;
-    realW = (float)w / fw;
-    realH = (float)h / fh;
+    realX = (float)x * fw;
+    realY = (float)y * fh;
+    realW = (float)w * fw;
+    realH = (float)h * fh;
 
 	// result
 	rect.UpperLeftCorner	= core::position2di((int)realX,(int)realY);

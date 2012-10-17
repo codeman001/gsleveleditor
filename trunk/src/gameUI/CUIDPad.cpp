@@ -46,7 +46,7 @@ bool CUIDPad::onEvent( const SEvent& gameEvent)
 		menuFx->getFxScaleRatio( &fw, &fh );
 		
 		// delta drag
-		const float k_maxMove = 100.0f / fw;
+		const float k_maxMove = 100.0f*fw;
 
 		if (gameEvent.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN && m_mouseOver == true )				
 		{			
@@ -65,7 +65,7 @@ bool CUIDPad::onEvent( const SEvent& gameEvent)
 			m_dpadMove.setVisible( true );
 
 			// position ref to flash
-			core::position2df flashMousePos(gameEvent.MouseInput.X/fw, gameEvent.MouseInput.Y/fh);
+			core::position2df flashMousePos(mousePos.X/fw, mousePos.Y/fh);
 
 			m_dpadBase.setAbsolutePosition( (int)flashMousePos.X, (int)flashMousePos.Y );
 			m_dpadMove.setAbsolutePosition( (int)flashMousePos.X, (int)flashMousePos.Y );

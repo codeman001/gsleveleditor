@@ -24,6 +24,7 @@ public:
 
 	// setpos xy
 	void setPosition( int x, int y );
+	void setAbsolutePosition( int x, int y );
 
 	// getBound
 	// get bound

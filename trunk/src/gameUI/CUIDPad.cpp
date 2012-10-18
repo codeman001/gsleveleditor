@@ -3,11 +3,10 @@
 #include "gameControl/CGameControl.h"
 
 CUIDPad::CUIDPad( const char *name, CUIWidget* parent, CMenuFxObj flashObj )
-	:CUIWidget(name, parent)
+	:CUIWidget(name, parent, flashObj)
 {
 	m_mouseOver = false;
-
-	m_flashObj = flashObj;
+	
 	m_dpadBase = flashObj.findObj("mcDPadBase");
 	m_dpadMove = flashObj.findObj("mcDPadMove");	
 

@@ -37,6 +37,7 @@ protected:
 public:
 	CUIWidget();
 	CUIWidget(const char *name, CUIWidget* parent);
+	CUIWidget(const char *name, CUIWidget* parent, CMenuFxObj flashObj);
 
 	virtual ~CUIWidget();
 
@@ -137,6 +138,20 @@ public:
     // get root
     CUIWidget* getRootWidget();
     
+	// setPosition
+	// set pos
+	void setPosition(int x, int y);
+	
+	inline int getHeight()
+	{
+		return m_rect.getHeight();
+	}
+
+	inline int getWidth()
+	{
+		return m_rect.getWidth();
+	}
+
 protected:
     void registerLabel(const SButtonLabel &label);
     void replaceTextOnLabel();

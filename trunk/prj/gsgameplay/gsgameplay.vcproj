@@ -882,6 +882,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\gameUI\CUIListview.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameUI\CUIListview.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\gameUI\CUIWidget.cpp"
 					>
 				</File>

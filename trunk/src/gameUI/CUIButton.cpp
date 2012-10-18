@@ -4,10 +4,8 @@
 #include "IView.h"
 
 CUIButton::CUIButton( const char *name, CUIWidget* parent, CMenuFxObj flashObj )
-	:CUIWidget(name, parent)
+	:CUIWidget(name, parent, flashObj)
 {
-	m_flashObj = flashObj;
-    
     m_buttonState       = ButtonNormal;
     m_buttonLastState   = m_buttonState;
     m_mouseOver         = false;

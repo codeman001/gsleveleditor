@@ -12,13 +12,27 @@ CUIWidget::CUIWidget()
 
 CUIWidget::CUIWidget(const char *name, CUIWidget* parent)
 {
-	m_parent = NULL;	
+	m_parent = parent;	
 	m_controlID = -1;
 	m_visible = true;
     m_lockActionOnChild = false;
     
     m_widgetName = name;
     
+    if ( parent )
+        parent->addChild( this );
+}
+
+CUIWidget::CUIWidget(const char *name, CUIWidget* parent, CMenuFxObj flashObj)
+{
+	m_parent = parent;	
+	m_controlID = -1;
+	m_visible = true;
+    m_lockActionOnChild = false;
+    
+    m_widgetName = name;
+	m_flashObj = flashObj;
+
     if ( parent )
         parent->addChild( this );
 }
@@ -155,6 +169,22 @@ void CUIWidget::getRectByFxObj( CMenuFxObj fxObj, core::recti& rect )
 	// result
 	rect.UpperLeftCorner	= core::position2di((int)realX,(int)realY);
 	rect.LowerRightCorner	= core::position2di((int)(realX+realW),(int)(realY+realH));
+}
+
+// setPosition
+// set pos
+void CUIWidget::setPosition(int x, int y)
+{
+	float fw, fh;
+	if ( m_flashObj.getMenu() == NULL )
+	{
+		fw = 1.0f;
+		fh = 1.0f;
+	}
+	else
+		m_flashObj.getMenu()->getFxScaleRatio(&fw, &fh);
+
+	m_flashObj.setPosition( x/fw, y/fh );
 }
 
 

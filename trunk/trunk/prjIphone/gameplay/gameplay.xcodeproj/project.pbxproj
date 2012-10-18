@@ -19,6 +19,7 @@
 		7F1EC5E616109767008D61A2 /* libLua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F1EC5E516109756008D61A2 /* libLua.a */; };
 		7F3743F51613552C0006762B /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3743F31613552C0006762B /* md5.cpp */; };
 		7F39584F160EF17700EEB3A2 /* CDataPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */; };
+		7F4D163F1630552A009F066A /* CUIListview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4D163D1630552A009F066A /* CUIListview.cpp */; };
 		7F60982F162F0B860085D3FF /* CUIButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F609827162F0B860085D3FF /* CUIButton.cpp */; };
 		7F609830162F0B860085D3FF /* CUICanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F609829162F0B860085D3FF /* CUICanvas.cpp */; };
 		7F609831162F0B860085D3FF /* CUIDPad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F60982B162F0B860085D3FF /* CUIDPad.cpp */; };
@@ -155,6 +156,8 @@
 		7F3743F41613552C0006762B /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = md5.h; path = Network/md5.h; sourceTree = "<group>"; };
 		7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CDataPacket.cpp; path = Network/CDataPacket.cpp; sourceTree = "<group>"; };
 		7F39584E160EF17700EEB3A2 /* CDataPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDataPacket.h; path = Network/CDataPacket.h; sourceTree = "<group>"; };
+		7F4D163D1630552A009F066A /* CUIListview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIListview.cpp; sourceTree = "<group>"; };
+		7F4D163E1630552A009F066A /* CUIListview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIListview.h; sourceTree = "<group>"; };
 		7F609827162F0B860085D3FF /* CUIButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIButton.cpp; sourceTree = "<group>"; };
 		7F609828162F0B860085D3FF /* CUIButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIButton.h; sourceTree = "<group>"; };
 		7F609829162F0B860085D3FF /* CUICanvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUICanvas.cpp; sourceTree = "<group>"; };
@@ -372,6 +375,8 @@
 		7F609826162F0B860085D3FF /* gameUI */ = {
 			isa = PBXGroup;
 			children = (
+				7F4D163D1630552A009F066A /* CUIListview.cpp */,
+				7F4D163E1630552A009F066A /* CUIListview.h */,
 				7F609827162F0B860085D3FF /* CUIButton.cpp */,
 				7F609828162F0B860085D3FF /* CUIButton.h */,
 				7F609829162F0B860085D3FF /* CUICanvas.cpp */,
@@ -947,6 +952,7 @@
 				7F609831162F0B860085D3FF /* CUIDPad.cpp in Sources */,
 				7F609832162F0B860085D3FF /* CUIWidget.cpp in Sources */,
 				7F609835162F0BE60085D3FF /* CStateJoinGame.cpp in Sources */,
+				7F4D163F1630552A009F066A /* CUIListview.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

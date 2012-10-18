@@ -185,7 +185,7 @@ bool CUIListview::onEvent( const SEvent& gameEvent)
 			}
 			else
 			{
-				m_fSpeed = (float)( mousePos.Y - m_lastTouchY)*frameTime*0.001f;
+				m_fSpeed = (float)( mousePos.Y - m_lastTouchY)*0.06f;
 				m_lastTouchY = mousePos.Y;
 
 				// move offset of list items
@@ -305,7 +305,7 @@ void CUIListview::removeAllItems()
 // updateItemMovement	
 void CUIListview::updateItemMovement()
 {
-	const float FRICTION_COEF       = 0.001f;
+	const float FRICTION_COEF       = 0.007f;
     const float ELASTIC_COEF        = 0.0001f;
     const float RET_FR_COEF         = 0.014f;              
 

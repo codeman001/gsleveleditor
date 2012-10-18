@@ -95,7 +95,7 @@ void CStateJoinGame::onUpdate()
 
 bool CStateJoinGame::OnEvent(const SEvent& event)
 {
-	if ( event.GameEvent.EventID == (s32)EvtNetworking )
+	if ( event.EventType == EET_GAME_EVENT && event.GameEvent.EventID == (s32)EvtNetworking )
     {
         SEventNetworking *networkEvent = ((SEventNetworking*)event.GameEvent.EventData);
 

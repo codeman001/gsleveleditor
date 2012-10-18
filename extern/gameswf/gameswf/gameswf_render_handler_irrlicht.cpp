@@ -995,6 +995,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 
 	void begin_submit_mask()
 	{		
+		m_driver->clearZBuffer();
+
 		m_isRenderMask = true;
 
 		// write only write depth, disable color

@@ -209,6 +209,22 @@ void CMenuFxObj::gotoFrame( const char *label, bool play )
 	}
 }
 
+// setMaskClip
+// set mask clip
+void CMenuFxObj::setMaskClip( CMenuFxObj clip )
+{
+	gameswf::character *maskCharacter = clip.m_character;
+
+	if (m_character && m_character->is(gameswf::AS_SPRITE) &&
+		maskCharacter && maskCharacter->is(gameswf::AS_SPRITE) )
+	{
+		gameswf::sprite_instance* si		= (gameswf::sprite_instance*)m_character;
+		gameswf::sprite_instance* siMask	= (gameswf::sprite_instance*)maskCharacter;
+
+		si->m_mask_clip = weak_ptr<gameswf::sprite_instance>(siMask);
+	}
+}
+
 void CMenuFxObj::gotoFrame( int frame, bool play )
 {
 	if (m_character && m_character->is(gameswf::AS_SPRITE))

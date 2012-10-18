@@ -218,7 +218,7 @@ int CUIListview::addItem()
 	gameswf::as_value param(name);	
 	m_flashObj.invokeASCallback("addListItem", &param, 1);
 
-	CMenuFxObj list = m_flashObj.findObj(name);
+	CMenuFxObj	list = m_flashObj.findObj(name);	
 
 	// add error
 	if ( list.isNull() == true )
@@ -228,6 +228,10 @@ int CUIListview::addItem()
 		os::Printer::log(text, ELL_ERROR);		
 		return -1;
 	}
+
+	// set mask clip
+	CMenuFxObj	mask = m_flashObj.findObj("listZone");
+	list.setMaskClip( mask );
 
 	// add item
 	CUIListviewItem *item = new CUIListviewItem(name, this, list);

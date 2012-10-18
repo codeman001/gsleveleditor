@@ -49,6 +49,10 @@ public:
 	// get current text on edit
 	const char *getText();
 
+	// setMaskClip
+	// set mask clip
+	void setMaskClip( CMenuFxObj clip );
+
 	// gotoFrame
 	// goto frame
 	void gotoFrame( const char *label, bool play );

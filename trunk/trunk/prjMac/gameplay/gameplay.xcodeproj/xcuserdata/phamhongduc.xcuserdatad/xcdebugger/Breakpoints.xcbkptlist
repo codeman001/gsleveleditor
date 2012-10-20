@@ -16,5 +16,31 @@
          landmarkName = "add ( const T &amp;key, const U &amp;value )"
          landmarkType = "5">
       </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../../../extern/gameswf/gameswf/gameswf_text.cpp"
+         timestampString = "372420417.866412"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "435"
+         endingLineNumber = "435"
+         landmarkName = "text_character_def::display ( character *inst )"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../../../extern/gameswf/gameswf/gameswf_text.cpp"
+         timestampString = "372420908.525482"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "1864"
+         endingLineNumber = "1864"
+         landmarkName = "edit_text_character::format_plain_text ( const tu_string &amp;text, text_glyph_record &amp;rec )"
+         landmarkType = "5">
+      </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

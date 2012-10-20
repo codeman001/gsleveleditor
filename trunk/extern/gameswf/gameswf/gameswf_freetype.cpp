@@ -190,11 +190,19 @@ namespace gameswf
 
 	glyph_freetype_provider::glyph_freetype_provider() :
 		m_scale ( 0 )
-	{
+	{        
+        m_texSize = 512;
+        int size = m_texSize*m_texSize;
+        
+        unsigned char *data = new unsigned char[size];
+        m_fontTexture = render::create_bitmap_info_alpha(m_texSize, m_texSize, data);
+        delete data;
+        
+        reset_provider();
 	}
 
 	glyph_freetype_provider::~glyph_freetype_provider()
-	{
+	{        
 		m_face_entity.clear();
 		int error = FT_Done_FreeType ( m_lib );
 
@@ -212,7 +220,7 @@ namespace gameswf
 
 	bitmap_info *glyph_freetype_provider::get_char_image ( character_def *shape_glyph, Uint16 code,
 	        const tu_string &fontname, bool is_bold,
-	        bool is_italic, int fontsize, rect *bounds, float *advance )
+	        bool is_italic, int fontsize, rect *bounds, float *advance, float *uvX, float *uvY)
 	{
 		face_entity *fe = get_face_entity ( fontname, is_bold, is_italic );
 
@@ -243,16 +251,10 @@ namespace gameswf
 				return NULL;
 			}
 
-			ge = new glyph_entity();
-			image::alpha *im = draw_bitmap ( fe->m_face->glyph->bitmap );
-			ge->m_bi = render::create_bitmap_info_alpha ( im->m_width, im->m_height, im->m_data );
-			delete im;
-			ge->m_bounds.m_x_max = float ( fe->m_face->glyph->bitmap.width ) /float ( ge->m_bi->get_width() );
-			ge->m_bounds.m_y_max = float ( fe->m_face->glyph->bitmap.rows ) / float ( ge->m_bi->get_height() );
-			ge->m_bounds.m_x_min = float ( fe->m_face->glyph->metrics.horiBearingX ) / float ( fe->m_face->glyph->metrics.width );
-			ge->m_bounds.m_y_min = float ( fe->m_face->glyph->metrics.horiBearingY ) / float ( fe->m_face->glyph->metrics.height );
-			ge->m_bounds.m_x_min *= -ge->m_bounds.m_x_max;
-			ge->m_bounds.m_y_min *= ge->m_bounds.m_y_max;
+			ge = new glyph_entity();                                   
+            put_glyph_to_texture( fe->m_face->glyph, &ge->m_bounds, &ge->m_uvX, &ge->m_uvY);
+            ge->m_bi = m_fontTexture;
+            
 			float scale = 16.0f / fontsize;	// hack
 			ge->m_advance = ( float ) fe->m_face->glyph->metrics.horiAdvance * scale;
 			// keep image of character
@@ -262,6 +264,8 @@ namespace gameswf
 		if ( bounds )
 		{
 			*bounds = ge->m_bounds;
+            *uvX = ge->m_uvX;
+            *uvY = ge->m_uvY;
 		}
 
 		if ( advance )
@@ -271,7 +275,222 @@ namespace gameswf
 
 		return ge->m_bi.get_ptr();
 	}
+    
+    void glyph_freetype_provider::reset_provider()
+    {
+        m_rects.clear();
 
+        rect r;
+        r.m_x_min = 0;
+        r.m_y_min = 0;
+        r.m_x_max = m_texSize;
+        r.m_y_max = m_texSize;
+        
+        glyph_region region;
+        region.m_rect = r;
+        
+        m_rects.push_back(region);
+        
+        // clear all cache font
+        m_face_entity.clear();
+    }
+    
+    image::alpha *glyph_freetype_provider::draw_bitmap ( const FT_Bitmap &bitmap )
+	{
+		// You must use power-of-two dimensions!!
+		int	w = 1;
+        
+		while ( w <= bitmap.width )
+		{
+			w <<= 1;
+		}
+        
+		int	h = 1;
+        
+		while ( h <= bitmap.rows )
+		{
+			h <<= 1;
+		}
+        
+		image::alpha *alpha = image::create_alpha ( w, h );
+		memset ( alpha->m_data, 0,  w * h );
+        
+		for ( int j = 0; j < bitmap.rows; ++j )
+		{
+			Uint8 *dst = alpha->m_data + j * w;
+			const Uint8 *src = bitmap.buffer + j * bitmap.width;
+            
+			for ( int i = 0; i < bitmap.width; ++i )
+			{
+				//since w and h have a good chance of getting larger than the bitmaps height and/or width
+				*dst++ = *src++;
+			}
+		}
+        
+		return alpha;
+	}
+    
+    bool glyph_freetype_provider::put_glyph_to_texture( const FT_GlyphSlot &glyph, rect *bounds, float *uvx, float *uvy )
+    {
+        int glyphW = glyph->bitmap.width;
+        int glyphH = glyph->bitmap.rows;
+        int cellW = glyphW;
+        int cellH = glyphH;
+                        
+        
+        // fix cell size
+        calc_cell_size(&cellW, &cellH);
+                
+        // find a region for write character
+        glyph_region region = create_region(cellW, cellH);
+        if ( region.m_rect.width() == 0 || region.m_rect.height() == 0 )
+            return false;
+        
+        // draw character at region
+        int x = region.m_rect.m_x_min;
+        int y = region.m_rect.m_y_min;
+
+        *uvx = x/(float)m_texSize;
+        *uvy = y/(float)m_texSize;
+        
+        Uint8 *dstImg = m_fontTexture->get_data();
+               
+        // need for upload texture
+        m_fontTexture->m_dirty = true;
+        
+        // copy to image
+        const Uint8 *srcImg = glyph->bitmap.buffer;
+
+        for ( int j = 0; j < glyph->bitmap.rows; ++j )
+		{
+            Uint8 *dst = dstImg + (y+j)*m_texSize + x;            
+			const Uint8 *src = srcImg + j*glyph->bitmap.width;
+            
+			for ( int i = 0; i < glyph->bitmap.width; ++i )
+			{
+				*dst++ = *src++;
+			}
+		}              
+        
+        // calc bound
+        bounds->m_x_min = (float)glyph->metrics.horiBearingX/(float)glyph->metrics.width;
+        bounds->m_y_min = (float)glyph->metrics.horiBearingY/(float)glyph->metrics.height;
+        
+        bounds->m_x_max = glyphW/(float)m_texSize;
+        bounds->m_y_max = glyphH/(float)m_texSize;
+        
+        bounds->m_x_min *= -bounds->m_x_max;
+        bounds->m_y_min *= bounds->m_y_max;            
+        
+        return true;
+    }
+    
+    glyph_region glyph_freetype_provider::create_region(int w, int h)
+    {
+        glyph_region ret;
+        ret.m_rect.m_x_min = 0;
+        ret.m_rect.m_y_min = 0;
+        ret.m_rect.m_x_max = 0;
+        ret.m_rect.m_y_max = 0;        
+        
+        
+        for ( int i = 0, n = m_rects.size(); i < n; i++ )
+        {
+            if ( m_rects[i].m_rect.width() >= w && m_rects[i].m_rect.height() >= h )
+            {
+                // found region & devide this region
+                ret = devide_region(i, w, h);                
+                return ret;
+            }
+        }
+        
+        return ret;
+    }
+    
+    glyph_region glyph_freetype_provider::devide_region(int regionID, int w, int h)
+    {
+        glyph_region r = m_rects[regionID];
+    
+        // remove this region
+        m_rects.remove(regionID);
+        
+        // result
+        glyph_region ret = r;
+        ret.m_rect.m_x_max = r.m_rect.m_x_min + (float)w;
+        ret.m_rect.m_y_max = r.m_rect.m_y_min + (float)h;
+        
+        // divide region r
+        // more info: pham hong duc
+        //
+        // *---+-----------*
+        // | r |           |
+        // | e |   right   |
+        // | t |           |
+        // +---+-----------*
+        // |               |
+        // |     bottom    |
+        // |               |
+        // *---------------*
+        //
+        glyph_region right, bottom;
+        right.m_rect.m_x_min = ret.m_rect.m_x_max;
+        right.m_rect.m_x_max = right.m_rect.m_x_min + r.m_rect.width() - (float)w;
+        right.m_rect.m_y_min = ret.m_rect.m_y_min;
+        right.m_rect.m_y_max = ret.m_rect.m_y_max;
+        
+        bottom.m_rect.m_x_min = r.m_rect.m_x_min;
+        bottom.m_rect.m_x_max = r.m_rect.m_x_max;
+        bottom.m_rect.m_y_min = ret.m_rect.m_y_max;
+        bottom.m_rect.m_y_max = bottom.m_rect.m_y_min + r.m_rect.height() - (float)h;
+                
+        // add new region (sort by height)
+        if ( right.m_rect.width() > 0 && right.m_rect.height() > 0 )
+            insert_sort_region(right);
+        
+        if ( bottom.m_rect.width() > 0 && bottom.m_rect.height() > 0 )
+            insert_sort_region(bottom);
+        
+        return ret;
+    }
+    
+    void glyph_freetype_provider::insert_sort_region( glyph_region region )
+    {
+        bool add = false;
+        float h = region.m_rect.height();
+        
+        for ( int i = m_rects.size() - 1; i >= 0 ; i-- )
+        {
+            if ( h > m_rects[i].m_rect.height() )
+            {
+                add = true;
+                m_rects.insert(i+1, region);
+                break;
+            }
+        }
+        
+        if ( add == false )
+            m_rects.insert(0, region);
+    }
+    
+    void glyph_freetype_provider::calc_cell_size( int *w, int *h )
+    {
+        const int cellSize = 16;    // 16px
+        
+        int cellW = cellSize;
+        while ( cellW < *w ) 
+        {
+            cellW += cellSize;
+        }
+        *w = cellW;
+        
+        int cellH = cellSize;
+        while ( cellH < *h )
+        {
+            cellH += cellSize;
+        }
+        *h = cellH;
+    }
+    
 	face_entity *glyph_freetype_provider::get_face_entity ( const tu_string &fontname, bool is_bold, bool is_italic )
 	{
 		// form hash key
@@ -335,41 +554,7 @@ namespace gameswf
 
 		return fe.get_ptr();
 	}
-
-	image::alpha *glyph_freetype_provider::draw_bitmap ( const FT_Bitmap &bitmap )
-	{
-		// You must use power-of-two dimensions!!
-		int	w = 1;
-
-		while ( w <= bitmap.width )
-		{
-			w <<= 1;
-		}
-
-		int	h = 1;
-
-		while ( h <= bitmap.rows )
-		{
-			h <<= 1;
-		}
-
-		image::alpha *alpha = image::create_alpha ( w, h );
-		memset ( alpha->m_data, 0,  w * h );
-
-		for ( int j = 0; j < bitmap.rows; ++j )
-		{
-			Uint8 *dst = alpha->m_data + j * w;
-			const Uint8 *src = bitmap.buffer + j * bitmap.width;
-
-			for ( int i = 0; i < bitmap.width; ++i )
-			{
-				//since w and h have a good chance of getting larger than the bitmaps height and/or width
-				*dst++ = *src++;
-			}
-		}
-
-		return alpha;
-	}
+	
 
 	//
 	// freetype callbacks, called from freetype lib  through get_char_def()

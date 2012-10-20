@@ -327,7 +327,7 @@ namespace gameswf
 		if ( fp )
 		{
 			g->m_bitmap_info = fp->get_char_image ( g->m_shape_glyph, code, m_fontname, m_is_bold, m_is_italic,
-			                                        fontsize,	&g->m_bounds, &g->m_glyph_advance );
+			                                        fontsize,	&g->m_bounds, &g->m_glyph_advance, &g->m_uvX, &g->m_uvY );
 
 			if ( g->m_bitmap_info != NULL )
 			{

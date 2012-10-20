@@ -31,24 +31,19 @@ using namespace irr::video;
 IVideoDriver		*g_driver	= NULL;
 IrrlichtDevice		*g_device	= NULL;
 
-ITexture *create_texture( int format, int w, int h, void *data, int level )
+
+void *get_texture_data( int format, int w, int h, void *data  )
 {	
-	ECOLOR_FORMAT imageFormat = ECF_R8G8B8;
-	int sizePixel = 4;
-
 	void *imageData = data;
-
+    
 	switch( format )
 	{
-	case GL_RGBA:
-		{
-			imageFormat = ECF_A8R8G8B8;
-			sizePixel = 4;
-
+        case GL_RGBA:
+		{            
 			int totalSize = w*h;			
 			unsigned char *s = (unsigned char*)imageData;
 			unsigned char color;
-
+            
 			for ( int i = 0; i < totalSize; i++ )
 			{
 				// swap to bgr
@@ -58,18 +53,15 @@ ITexture *create_texture( int format, int w, int h, void *data, int level )
 				s+=4;
 			}
 		}
-		break;
-	case GL_ALPHA:
+            break;
+        case GL_ALPHA:
 		{
-			imageFormat = ECF_A8R8G8B8;
-			sizePixel = 4;
-
 			// we need convert 8bit to 32bit
-			imageData = new unsigned char[ w*h*sizePixel ];
+			imageData = new unsigned char[ w*h*4 ];
 			int totalSize = w*h;			
 			unsigned char *d = (unsigned char*)imageData;
 			unsigned char *s = (unsigned char*)data;
-
+            
 			for ( int i = 0; i < totalSize; i++ )
 			{
 				*d = 0xff; d++; //b
@@ -79,16 +71,13 @@ ITexture *create_texture( int format, int w, int h, void *data, int level )
 				s++;
 			}
 		}
-		break;
-	default:
+            break;
+        default:
 		{
-			imageFormat = ECF_R8G8B8;
-			sizePixel = 3;
-
 			int totalSize = w*h;			
 			unsigned char *s = (unsigned char*)imageData;
 			unsigned char color;
-
+            
 			for ( int i = 0; i < totalSize; i++ )
 			{
 				// swap to bgr
@@ -98,13 +87,48 @@ ITexture *create_texture( int format, int w, int h, void *data, int level )
 				s+=3;
 			}
 		}
+        break;
+	}
+    
+	return imageData;
+}
+
+
+ITexture *create_texture( int format, int w, int h, void *data, int level )
+{	
+	ECOLOR_FORMAT imageFormat = ECF_R8G8B8;
+	int sizePixel = 4;
+
+    void *imageData = get_texture_data(format, w, h, data);
+    
+	switch( format )
+	{
+	case GL_RGBA:
+		{
+			imageFormat = ECF_A8R8G8B8;
+			sizePixel = 4;
+		}
+		break;
+	case GL_ALPHA:
+		{
+			imageFormat = ECF_A8R8G8B8;
+			sizePixel = 4;
+		}
+		break;
+	default:
+		{
+			imageFormat = ECF_R8G8B8;
+			sizePixel = 3;
+		}
 		break;
 	}
 
 	video::IImage *img = g_driver->createImage( imageFormat , irr::core::dimension2du(w,h) );
 	memcpy(img->lock(), imageData, w*h*sizePixel);
 
-	ITexture *tex = g_driver->addTexture( io::path("gameswf"), img );
+    char name[512];
+    sprintf(name, "gameswf_0x%x", (unsigned long)img);
+	ITexture *tex = g_driver->addTexture( io::path(name), img );
 
 	img->drop();
 	
@@ -113,6 +137,7 @@ ITexture *create_texture( int format, int w, int h, void *data, int level )
 
 	return tex;
 }
+
 
 // choose the resampling method:
 // 1 = hardware (experimental, should be fast, somewhat buggy)
@@ -184,7 +209,8 @@ struct bitmap_info_irrlicht : public gameswf::bitmap_info
 			m_texture = NULL;
 		}
 
-		delete m_suspended_image;
+        if ( m_suspended_image )
+            delete m_suspended_image;
 	}
 
 	virtual int get_width() const
@@ -720,9 +746,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 			m_driver->draw2DRectangle(
 					SColor(background_color.m_a, background_color.m_r, background_color.m_g, background_color.m_b),
 					rectViewport
-				);
+				);            
 		}
-
 	}
 
 	void	end_display()
@@ -733,9 +758,9 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		g_driver->setTransform(ETS_PROJECTION, m_defaultProjectionMatrix);
 		g_driver->setTransform(ETS_WORLD, m_defaultWorldMatrix);
 		g_driver->setTransform(ETS_VIEW, m_defaultViewMatrix);	
-
+        
 		// enable material 2d
-		m_driver->enableMaterial2D(false);
+		m_driver->enableMaterial2D(false);        
 	}
 
 
@@ -941,28 +966,28 @@ struct render_handler_irrlicht : public gameswf::render_handler
 
 		vertices[0].Pos.X = a.m_x;
 		vertices[0].Pos.Y = a.m_y;
-		vertices[0].Pos.Z = 0.0;
+		vertices[0].Pos.Z = 0.0f;
 		vertices[0].TCoords.X = uv_coords.m_x_min;
 		vertices[0].TCoords.Y = uv_coords.m_y_min;
 		vertices[0].Color = m_color;
 
 		vertices[1].Pos.X = b.m_x;
 		vertices[1].Pos.Y = b.m_y;
-		vertices[1].Pos.Z = 0.0;
+		vertices[1].Pos.Z = 0.0f;
 		vertices[1].TCoords.X = uv_coords.m_x_max;
 		vertices[1].TCoords.Y = uv_coords.m_y_min;
 		vertices[1].Color = m_color;
 
 		vertices[2].Pos.X = c.m_x;
 		vertices[2].Pos.Y = c.m_y;
-		vertices[2].Pos.Z = 0.0;
+		vertices[2].Pos.Z = 0.0f;
 		vertices[2].TCoords.X = uv_coords.m_x_min;
 		vertices[2].TCoords.Y = uv_coords.m_y_max;
 		vertices[2].Color = m_color;
 
 		vertices[3].Pos.X = d.m_x;
 		vertices[3].Pos.Y = d.m_y;
-		vertices[3].Pos.Z = 0.0;
+		vertices[3].Pos.Z = 0.0f;
 		vertices[3].TCoords.X = uv_coords.m_x_max;
 		vertices[3].TCoords.Y = uv_coords.m_y_max;
 		vertices[3].Color = m_color;
@@ -1189,6 +1214,7 @@ void bitmap_info_irrlicht::layout()
 		// need create texture
 		assert ( m_suspended_image );
 		
+        m_dirty = false;
 		m_width = m_suspended_image->m_width;
 		m_height = m_suspended_image->m_height;
 		int bpp = 4;
@@ -1239,10 +1265,42 @@ void bitmap_info_irrlicht::layout()
 			default:
 				assert ( 0 );
 		}
-
-		delete m_suspended_image;
-		m_suspended_image = NULL;
-	}	
+	}
+	else 
+    {
+        if ( m_dirty )
+        {            
+            int format = GL_RGBA;
+            int totalSize = m_width*m_height;
+            
+            switch ( m_suspended_image->m_type )
+            {
+                case image::image_base::RGB:
+                    format = GL_RGB;
+                    totalSize *= 3;
+                    break;
+                case image::image_base::RGBA:
+                    format = GL_RGBA;
+                    totalSize *= 4;                    
+                    break;
+                case image::image_base::ALPHA:
+					format = GL_ALPHA;                    
+                    break;
+            }
+            
+            void *imageData = get_texture_data(format, m_width, m_height, m_suspended_image->m_data);
+            
+            void *data = m_texture->lock();            
+            memcpy(data, imageData, totalSize);
+            m_texture->unlock();
+            
+            if (format == GL_ALPHA)
+                delete imageData;
+            
+            m_dirty = false;
+        }
+    }
+    
 }
 
 namespace gameswf

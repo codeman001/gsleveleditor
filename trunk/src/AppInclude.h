@@ -45,9 +45,9 @@ using namespace std;
 #endif
 
 #ifdef GSEDITOR
-	#define STR_APP_TITLE "gseditor"
+	#define STR_APP_TITLE "gseditor - developer: hongduc.dev@gmail.com"
 #else
-	#define STR_APP_TITLE L"game"
+	#define STR_APP_TITLE L"game - developer: hongduc.dev@gmail.com"
 #endif
 
 #endif

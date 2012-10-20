@@ -202,17 +202,18 @@ namespace gameswf
 				{
 					// device font
 					rect uv_bounds;
-					uv_bounds.m_x_min = 0;
-					uv_bounds.m_y_min = 0;
-					uv_bounds.m_x_max = g.m_bounds.m_x_max;
-					uv_bounds.m_y_max = g.m_bounds.m_y_max;
+					uv_bounds.m_x_min = g.m_uvX;
+					uv_bounds.m_y_min = g.m_uvY;
+					uv_bounds.m_x_max = g.m_uvX + g.m_bounds.m_x_max;
+					uv_bounds.m_y_max = g.m_uvY + g.m_bounds.m_y_max;
+                    
 					rect bounds;
 					bounds.m_x_max = g.m_bounds.m_x_max - g.m_bounds.m_x_min;
 					bounds.m_y_max = g.m_bounds.m_y_max - g.m_bounds.m_y_min;
 					bounds.m_x_min = - g.m_bounds.m_x_min;
 					bounds.m_y_min = - g.m_bounds.m_y_min;
 					float s_EM_scale = 1024.0f / g.m_fontsize;
-					float	xscale = g.m_bitmap_info->get_width() * s_EM_scale;
+					float xscale = g.m_bitmap_info->get_width() * s_EM_scale;
 					float yscale = g.m_bitmap_info->get_height() * s_EM_scale;
 
 					if ( fnt->is_define_font3() )
@@ -424,8 +425,7 @@ namespace gameswf
 								g.m_fontsize = 96;
 							}
 
-							g.m_bitmap_info = fp->get_char_image ( g.m_shape_glyph, char_code, fnt->get_name(), fnt->is_bold(), fnt->is_italic(),
-							                                       g.m_fontsize,	&g.m_bounds, NULL );
+							g.m_bitmap_info = fp->get_char_image ( g.m_shape_glyph, char_code, fnt->get_name(), fnt->is_bold(), fnt->is_italic(), g.m_fontsize,	&g.m_bounds, NULL, &g.m_uvX, &g.m_uvY);
 						}
 					}
 				}
@@ -875,15 +875,18 @@ namespace gameswf
 		}
 
 		//  text should not exceed the bounds of the box
-		render::begin_submit_mask();
-		render::fill_style_color ( 0,	m_background_color );
-		render::draw_mesh_strip ( &icoords[0], 4 );
-		render::end_submit_mask();
+        
+        //  pham hong duc (remove mask when draw text)
+		//  render::begin_submit_mask();
+		//  render::fill_style_color ( 0,	m_background_color );
+		//  render::draw_mesh_strip ( &icoords[0], 4 );
+		//  render::end_submit_mask();
+
 		// Draw our actual text.
 		display_glyph_records ( matrix::identity, this, m_text_glyph_records,
 		                        m_def->m_root_def );
 		// turn off mask
-		render::disable_mask();
+		// render::disable_mask();
 
 		if ( m_has_focus )
 		{

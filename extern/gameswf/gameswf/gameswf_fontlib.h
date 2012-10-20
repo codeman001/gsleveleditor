@@ -24,7 +24,7 @@ namespace gameswf
 
 			virtual bitmap_info *get_char_image ( character_def *shape_glyph, Uint16 code,
 			                                      const tu_string &fontname, bool is_bold, bool is_italic, int fontsize,
-			                                      rect *bounds, float *advance );
+			                                      rect *bounds, float *advance, float *uvX, float *uvY);
 
 		private:
 			stringi_hash< glyph_array * > m_glyph;	// fontame-glyphs-glyph

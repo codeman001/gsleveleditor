@@ -432,7 +432,7 @@ namespace gameswf
 
 	bitmap_info *glyph_provider_tu::get_char_image ( character_def *shape_glyph, Uint16 xcode,
 	                                                 const tu_string &fontname, bool is_bold, bool is_italic, int fontsize,
-	                                                 rect *bounds, float *advance )
+	                                                 rect *bounds, float *advance, float *uvX, float *uvY)
 	{
 		shape_character_def	*sh = cast_to<shape_character_def> ( shape_glyph );
 
@@ -441,6 +441,9 @@ namespace gameswf
 			return NULL;
 		}
 
+        *uvX = 0.0f;
+        *uvY = 0.0f;
+        
 		int flags = is_bold ? 2 : 0;
 		flags |= is_italic ? 1 : 0;
 		int glyph_code = ( Uint8 ) fontsize << 24 | ( Uint8 ) flags << 16 | xcode;

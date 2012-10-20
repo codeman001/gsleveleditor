@@ -771,7 +771,15 @@ namespace gameswf
 	{
 		// dm
 		int		m_srcWidth, m_srcHeight;
-
+        bool    m_dirty;
+        
+        bitmap_info()
+        {
+            m_srcWidth = 0;
+            m_srcHeight = 0;
+            m_dirty = false;
+        }
+        
 		virtual void layout() {};
 		virtual void activate() {};
 		virtual int get_width() const
@@ -932,6 +940,8 @@ namespace gameswf
 		gc_ptr<bitmap_info> m_bi;
 		float m_advance;
 		rect m_bounds;
+        float m_uvX;
+        float m_uvY;
 	};
 
 	struct glyph_provider : public ref_counted
@@ -941,7 +951,9 @@ namespace gameswf
 
 		virtual bitmap_info *get_char_image ( character_def *shape_glyph, Uint16 code,
 		                                      const tu_string &fontname, bool is_bold, bool is_italic, int fontsize,
-		                                      rect *bounds, float *advance ) = 0;
+		                                      rect *bounds, float *advance, float *uvX, float *uvY) = 0;
+        
+        virtual void reset_provider() {}
 
 	};
 

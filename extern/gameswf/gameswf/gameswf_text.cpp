@@ -1362,8 +1362,15 @@ namespace gameswf
 		rec.m_style.m_leading += m_font->get_leading() * rec.m_style.m_scale;
 		rec.m_style.m_font = m_font.get_ptr();
 		rec.m_style.m_color = m_color;
-		rec.m_style.m_x_offset = fmax ( 0, m_left_margin + m_indent );
-		rec.m_style.m_y_offset = m_text_height + ( m_font->get_leading() - m_font->get_descent() ) * rec.m_style.m_scale;
+		
+        // pham hong duc
+        rec.m_style.m_x_offset = fmax ( 0, m_left_margin + m_indent );
+        
+        // pham hong duc
+        // remove leading (wrong position when export on MacOS)
+        //rec.m_style.m_y_offset = m_text_height + ( m_font->get_leading() - m_font->get_descent() ) * rec.m_style.m_scale;
+        rec.m_style.m_y_offset = m_text_height;
+        
 		rec.m_style.m_x_offset += m_def->m_rect.m_x_min;
 		rec.m_style.m_y_offset += m_def->m_rect.m_y_min;
 		rec.m_style.m_text_height = m_text_height;

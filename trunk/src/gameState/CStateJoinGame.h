@@ -3,11 +3,13 @@
 
 #include "CGameState.h"
 
-class CStateJoinGame: public CGameState, public IEventReceiver
+class CStateJoinGame: public CGameState
 {
 protected:
 	std::string		m_serverIP;
 
+    CUIButton       *m_btnMainMenu;
+    CUIButton       *m_btnJoinGame;
 public:
 	CStateJoinGame();
 	virtual ~CStateJoinGame();
@@ -19,7 +21,7 @@ public:
 	virtual void onRender();
 	virtual void onUpdate();
 
-    virtual bool OnEvent(const SEvent& event);
+    virtual void onEvent(const SEvent& event);
 };
 
 #endif

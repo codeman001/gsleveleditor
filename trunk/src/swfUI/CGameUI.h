@@ -24,7 +24,8 @@ class CGameUI:
 {
 protected:
 	gameswf::render_handler				*m_render;
-	std::map<std::string, CMenuFx*>			m_flash;
+	std::map<std::string, CMenuFx*>		m_flash;
+    gameswf::glyph_provider             *m_glyphProvider;
 public:
 	CGameUI();
 	virtual ~CGameUI();	
@@ -59,6 +60,13 @@ public:
 	// handle event
 	virtual bool OnEvent(const SEvent& irrEvent);
     
+    // resetGlyphProvider
+    // clean font cache
+    inline void resetGlyphProvider()
+    {
+        if ( m_glyphProvider )
+            m_glyphProvider->reset_provider();
+    }
 public:
 	static tu_file* _fileOpen( const char *lpPath );
 	static void _fsCallback( gameswf::character *movie, const char *lpCommand, const char *lpParams );

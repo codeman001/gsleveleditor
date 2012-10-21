@@ -195,6 +195,7 @@ namespace gameswf
         int size = m_texSize*m_texSize;
         
         unsigned char *data = new unsigned char[size];
+        memset(data, 0, size);
         m_fontTexture = render::create_bitmap_info_alpha(m_texSize, m_texSize, data);
         delete data;
         
@@ -290,6 +291,13 @@ namespace gameswf
         region.m_rect = r;
         
         m_rects.push_back(region);
+        
+        if ( m_fontTexture )
+        {
+            unsigned char *data = m_fontTexture->get_data();
+            memset(data, 0, m_texSize*m_texSize);
+            m_fontTexture->m_dirty = true;
+        }
         
         // clear all cache font
         m_face_entity.clear();
@@ -474,7 +482,7 @@ namespace gameswf
     
     void glyph_freetype_provider::calc_cell_size( int *w, int *h )
     {
-        const int cellSize = 16;    // 16px
+        const int cellSize = 20;    // 20px
         
         int cellW = cellSize;
         while ( cellW < *w ) 

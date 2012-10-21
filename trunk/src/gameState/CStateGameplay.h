@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "CGameState.h"
 
-class CStateGameplay: public CGameState, public IEventReceiver
+class CStateGameplay: public CGameState
 {
 protected:	
 	CGameLevel		*m_level;
@@ -23,7 +23,7 @@ public:
 	virtual void onUpdate();
 	virtual void onRender();
 
-    virtual bool OnEvent(const SEvent& event);    
+    virtual void onEvent(const SEvent& event);    
     
 	// getLevel
 	// get 3d level

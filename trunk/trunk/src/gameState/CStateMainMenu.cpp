@@ -38,18 +38,12 @@ void CStateMainMenu::onCreate()
 
 	// register current level
 	CGameLevel::setCurrentLevel( m_level );
-    
-    // register event for catch networking message
-    getIView()->registerEvent("stateMainMenu", this);
 }
 
 void CStateMainMenu::onDestroy()
 {	
     // hide fx state
 	setFxStateVisible( m_state, false );
-    
-    // release event
-    getIView()->unRegisterEvent(this);
 }
 
 void CStateMainMenu::onUpdate()
@@ -127,7 +121,7 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 	}
 }
 
-bool CStateMainMenu::OnEvent(const SEvent& event)
+void CStateMainMenu::onEvent(const SEvent& event)
 {
     if ( event.EventType == EET_GAME_EVENT )
     {
@@ -162,5 +156,4 @@ bool CStateMainMenu::OnEvent(const SEvent& event)
         }
         
     }
-    return true;
 }

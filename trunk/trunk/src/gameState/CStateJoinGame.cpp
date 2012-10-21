@@ -2,6 +2,7 @@
 #include "CStateJoinGame.h"
 #include "gameEvent.h"
 #include "IView.h"
+#include "CGameStateManager.h"
 
 CStateJoinGame::CStateJoinGame()
 	:CGameState( CGameState::GSStateJoinGame )
@@ -16,9 +17,6 @@ void CStateJoinGame::onCreate()
 {
 	// show mainmenu state
 	showFxThisState();
-
-    // register event for catch networking message
-    getIView()->registerEvent("stateJoinGame", this);
 
 #ifdef HAS_MULTIPLAYER
 	// init client mp
@@ -40,16 +38,33 @@ void CStateJoinGame::onCreate()
 	//	list.setPosition( 0, i*40 );
 	//}
 	
+    CMenuFxObj txtPanel = getStateObjFx().findObj("txtPanel");
+    txtPanel.setText("SEARCHING HOST...");
+    
+    CMenuFxObj txtHeader = getStateObjFx().findObj("txtHeader1");
+    txtHeader.setText("Host name");
+    
+    txtHeader = getStateObjFx().findObj("txtHeader2");
+    txtHeader.setText("Host IP");
+    
+    txtHeader = getStateObjFx().findObj("txtHeader3");
+    txtHeader.setText("Level");
+    
 	CUIListview *list = new CUIListview("listHostName", m_rootWidget, getStateObjFx().findObj("panelList"));
-	for ( int i = 0; i < 20; i++ )
-	{
-		list->addItem();
-	}
+    list->setRowHeight(30);
+    
+    for ( int i = 0; i < 10; i++ )
+        list->addItem();
+    
+    m_btnMainMenu = new CUIButton("btnMainMenu", m_rootWidget, getStateObjFx().findObj("btnMainMenu"));
+    m_btnMainMenu->setText("txtLabel", "Main Menu");
+    
+    m_btnJoinGame = new CUIButton("btnJoinGame", m_rootWidget, getStateObjFx().findObj("btnJoinGame"));
+    m_btnJoinGame->setText("txtLabel", "Join Game");
 }
 
 void CStateJoinGame::onDestroy()
 {
-	getIView()->unRegisterEvent(this);
 }
 
 void CStateJoinGame::onFsCommand( const char *command, const char *param )
@@ -58,6 +73,8 @@ void CStateJoinGame::onFsCommand( const char *command, const char *param )
 	
 void CStateJoinGame::onRender()
 {
+    // render parent
+    CGameStateMgr::getInstance()->getStateBefore(this)->onRender();
 }
 
 void CStateJoinGame::onUpdate()
@@ -82,34 +99,39 @@ void CStateJoinGame::onUpdate()
     std::vector<CDeviceDetails*>    listServer;
     m_mpMgr->getAllActiveDevice(listServer);
     
-    if ( listServer.size() == 0 )
-    {
-        // do not found hosts
-    }
-    else 
-    {        
-        // found hosts
+    if ( listServer.size() > 0 )
+    {    
+        
     }
 #endif
 }
 
-bool CStateJoinGame::OnEvent(const SEvent& event)
+void CStateJoinGame::onEvent(const SEvent& event)
 {
-	if ( event.EventType == EET_GAME_EVENT && event.GameEvent.EventID == (s32)EvtNetworking )
+	if ( event.EventType == EET_GAME_EVENT )
     {
-        SEventNetworking *networkEvent = ((SEventNetworking*)event.GameEvent.EventData);
-
-#ifdef HAS_MULTIPLAYER
-		// check to joint game msg from server
-        if ( networkEvent->eventID == CMultiplayerManager::AcceptJoinGame )
+        if ( event.GameEvent.EventID == (s32)EvtNetworking )
         {
-            const char *serverIP = m_mpMgr->getDeviceIp( networkEvent->deviceID ) ;
-            if ( serverIP )               
-                m_serverIP = serverIP;            
+            SEventNetworking *networkEvent = ((SEventNetworking*)event.GameEvent.EventData);
+
+    #ifdef HAS_MULTIPLAYER
+            // check to joint game msg from server
+            if ( networkEvent->eventID == CMultiplayerManager::AcceptJoinGame )
+            {
+                const char *serverIP = m_mpMgr->getDeviceIp( networkEvent->deviceID ) ;
+                if ( serverIP )               
+                    m_serverIP = serverIP;            
+            }
+    #endif
         }
-#endif
-
+        else if ( event.GameEvent.EventID == (s32)EvtButtonRelease )
+        {
+            SEventButtonRelease *buttonEvent = ((SEventButtonRelease*)event.GameEvent.EventData);
+            
+            if ( buttonEvent->data == m_btnMainMenu )
+            {
+                CGameStateMgr::getInstance()->popState();
+            }
+        }
     }
-
-	return true;
 }

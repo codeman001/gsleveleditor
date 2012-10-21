@@ -34,12 +34,25 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../../../extern/gameswf/gameswf/gameswf_text.cpp"
-         timestampString = "372420908.525482"
+         timestampString = "372502624.611765"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1864"
-         endingLineNumber = "1864"
-         landmarkName = "edit_text_character::format_plain_text ( const tu_string &amp;text, text_glyph_record &amp;rec )"
+         startingLineNumber = "1575"
+         endingLineNumber = "1575"
+         landmarkName = "edit_text_character::html_font ( const char *p, text_glyph_record &amp;rec )"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../../../extern/gameswf/gameswf/gameswf_text.cpp"
+         timestampString = "372502132.256708"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "344"
+         endingLineNumber = "344"
+         landmarkName = "text_character_def::read ( stream *in, int tag_type, movie_definition_sub *m )"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

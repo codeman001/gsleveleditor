@@ -109,11 +109,7 @@ void CGameUI::_fsCallback( gameswf::character *movie, const char *lpCommand, con
 bool CGameUI::_getFont( const char *font_name, tu_string &file_name, bool is_bold, bool is_italic )
 {	
 #ifdef USE_ZIPPACKAGE
-	if ( strcmp("Arial Black",font_name) == 0 )
-		file_name = getIView()->getPhysicPath("killerants.ttf");
-	else if ( strcmp("Verdana",font_name) == 0 )
-		file_name = getIView()->getPhysicPath("zrnic.ttf");
-	else if ( strcmp("Corbel",font_name) == 0 )
+	if ( strcmp("Corbel",font_name) == 0 )
 	{
 		if ( is_bold && is_italic )
 			file_name = getIView()->getPhysicPath("corbelz.ttf");
@@ -127,11 +123,7 @@ bool CGameUI::_getFont( const char *font_name, tu_string &file_name, bool is_bol
 	else
 		file_name = getIView()->getPhysicPath("arial.ttf");
 #else
-	if ( strcmp("Arial Black",font_name) == 0 )
-		file_name = getIView()->getPath("data/font/killerants.ttf");
-	else if ( strcmp("Verdana",font_name) == 0 )
-		file_name = getIView()->getPath("data/font/zrnic.ttf");
-	else if ( strcmp("Corbel",font_name) == 0 )
+	if ( strcmp("Corbel",font_name) == 0 )
 	{
 		if ( is_bold && is_italic )
 			file_name = getIView()->getPath("data/font/corbelz.ttf");
@@ -172,7 +164,9 @@ CGameUI::CGameUI()
 	gameswf::register_getfontsize_callback	( CGameUI::_getFontSize );
 
 	gameswf::set_render_handler ( m_render );
-	gameswf::set_glyph_provider ( gameswf::create_glyph_provider_freetype() );
+    
+    m_glyphProvider = gameswf::create_glyph_provider_freetype();
+	gameswf::set_glyph_provider ( m_glyphProvider );
 
 	m_render->open();
 }

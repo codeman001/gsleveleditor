@@ -64,6 +64,8 @@ protected:
 	bool						m_touchDown;
 
 	core::recti					m_defaultRect;
+
+    int                        m_rowHeight;
 protected:
 	
 	// updateItemMovement	
@@ -128,6 +130,11 @@ public:
 	// onItemSelect
 	// when the item is selected
 	virtual void onItemSelect( CUIListviewItem *item, bool selected );
+    
+    inline void setRowHeight(int h)
+    {
+        m_rowHeight = h;
+    }
 };
 
 #endif

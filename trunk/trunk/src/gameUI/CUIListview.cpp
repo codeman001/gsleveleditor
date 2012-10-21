@@ -64,8 +64,11 @@ bool CUIListviewItem::onEvent( const SEvent& gameEvent)
 				if ( m_listview->isMultiSelect() == true )
 					m_selected = !m_selected;
 				else
+                {
 					m_selected = true;
-
+                    m_flashObj.gotoFrame("selected", true);
+                }
+                
 				m_listview->onItemSelect( this, m_selected );
 				m_hover = false;
 			}
@@ -117,10 +120,14 @@ CUIListview::CUIListview( const char *name, CUIWidget* parent, CMenuFxObj flashO
 
 	m_beginTouchY	= -1;
 	m_lastTouchY	= -1;
-
+    m_rowHeight     = -1;
+    
 	m_touchDown = false;
 
 	getRectByFxObj(flashObj, m_defaultRect);
+    
+    CMenuFxObj	mask = m_flashObj.findObj("listZone");
+    mask.setVisible(false);
 }
 
 CUIListview::~CUIListview()
@@ -142,9 +149,6 @@ void CUIListview::update()
 // update touch event
 bool CUIListview::onEvent( const SEvent& gameEvent)
 {
-	// child event
-	CUIWidget::onEvent(gameEvent);
-
 	float frameTime = getIView()->getTimeStep();
 
 	bool ret = false;
@@ -162,6 +166,8 @@ bool CUIListview::onEvent( const SEvent& gameEvent)
 
 		if (gameEvent.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN && mouseOver == true )
 		{
+            CUIWidget::onEvent(gameEvent);
+            
 			root->lockActionOnChilld( true );
 
 			m_beginTouchY	= mousePos.Y;
@@ -202,6 +208,8 @@ bool CUIListview::onEvent( const SEvent& gameEvent)
 			m_fY = (float)m_yOffset;
 
 			ret = true;
+            
+            CUIWidget::onEvent(gameEvent);            
 		}
 	}
 
@@ -351,9 +359,17 @@ void CUIListview::updateItemPosition()
 	{
 		CUIListviewItem *item = m_listItems[i];
 		item->setPosition(0, yItem);
-
-		yItem += item->getHeight();
-		m_allRowHeight += item->getHeight();
+        
+        if ( m_rowHeight == -1 )
+        {
+            yItem += item->getHeight();
+            m_allRowHeight += item->getHeight();
+        }
+        else 
+        {
+            yItem += m_rowHeight;
+            m_allRowHeight += m_rowHeight;
+        }
 	}
 }
 

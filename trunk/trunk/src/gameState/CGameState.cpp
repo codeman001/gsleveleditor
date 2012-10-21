@@ -56,6 +56,8 @@ void CGameState::onDestroy()
 // onActive	
 void CGameState::onActive()
 {
+    showFxThisState();
+    getStateObjFx().gotoFrame(0, true);
 }
 
 // onDeactive
@@ -80,6 +82,12 @@ void CGameState::onPause()
 // flash notification
 void CGameState::onFsCommand( const char *command, const char *param )
 {
+}
+
+// onEvent
+// on event
+void CGameState::onEvent( const SEvent& event )
+{    
 }
 
 // updateWindow

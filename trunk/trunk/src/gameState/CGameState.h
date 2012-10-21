@@ -72,6 +72,10 @@ public:
 	// flash notification
 	virtual void onFsCommand( const char *command, const char *param );
 
+    // onEvent
+    // on event
+    virtual void onEvent( const SEvent& event );
+    
 	// onResume
 	// on resume
 	virtual void onResume();

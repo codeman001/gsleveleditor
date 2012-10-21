@@ -48,17 +48,13 @@ void CStateGameplay::onCreate()
     
     m_syncGameInterval = 1000.0f/(float)MP_GAMEFPS_SYNC;
 #endif
-
-    // register event for catch networking message
-    getIView()->registerEvent("stateGameplay", this);
+    
 }
 
 void CStateGameplay::onDestroy()
 {
     // enable gamecontrol
     CGameControl::getInstance()->setEnable(false);
-    
-    getIView()->unRegisterEvent(this);
 }
 
 void CStateGameplay::onFsCommand( const char *command, const char *param )
@@ -87,7 +83,7 @@ void CStateGameplay::onRender()
 	m_level->render();
 }
 
-bool CStateGameplay::OnEvent(const SEvent& event)
+void CStateGameplay::onEvent(const SEvent& event)
 {
     if ( event.EventType == EET_GAME_EVENT && event.GameEvent.EventID == (s32)EvtNetworking )
     {
@@ -104,6 +100,5 @@ bool CStateGameplay::OnEvent(const SEvent& event)
         }
 #endif
         
-    }    
-    return true;
+    }
 }

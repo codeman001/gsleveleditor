@@ -31,7 +31,6 @@ using namespace irr::video;
 IVideoDriver		*g_driver	= NULL;
 IrrlichtDevice		*g_device	= NULL;
 
-
 void *get_texture_data( int format, int w, int h, void *data  )
 {	
 	void *imageData = data;
@@ -344,6 +343,7 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		{
 			if ( m_mode == BITMAP_WRAP || m_mode == BITMAP_CLAMP )
 			{
+				// render TEXTURES
 				assert ( m_bitmap_info != NULL );
 				
 				Sint16 *vcoord = ( Sint16 * ) coords;				
@@ -389,6 +389,7 @@ struct render_handler_irrlicht : public gameswf::render_handler
 			}
             else 
             {
+				// Render SOLID
                 // set texture
                 SMaterial* mat = m_render->m_material;
                 mat->setTexture(0, NULL);
@@ -746,8 +747,19 @@ struct render_handler_irrlicht : public gameswf::render_handler
 			m_driver->draw2DRectangle(
 					SColor(background_color.m_a, background_color.m_r, background_color.m_g, background_color.m_b),
 					rectViewport
-				);            
+				);
 		}
+
+		//if ( g_fontTex )
+		//{
+		//	m_driver->draw2DImage(g_fontTex,
+		//			core::vector2di(10,10), 
+		//			core::recti(0,0,g_fontTex->getSize().Width,g_fontTex->getSize().Height), 
+		//			NULL, 
+		//			SColor(255,255,0,255), 
+		//			true
+		//		);
+		//}
 	}
 
 	void	end_display()
@@ -992,7 +1004,7 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		vertices[3].TCoords.Y = uv_coords.m_y_max;
 		vertices[3].Color = m_color;
 
-		s16 index[] = {1,3,2,0};		
+		s16 index[] = {0,1,2, 1,3,2};
 
 		m_driver->setTransform( ETS_PROJECTION, m_projectionMatrix );
 		m_driver->setTransform( ETS_WORLD,		m_worldMatrix );
@@ -1002,14 +1014,15 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		m_material->setTexture(0, ((bitmap_info_irrlicht*)bi)->m_texture );
 		m_material->MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;
 		m_driver->setMaterial( *m_material );
-
+	
 		m_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
 		m_driver->draw2DVertexPrimitiveList(
 				vertices, 4,
 				index, 2,
 				EVT_STANDARD,
-				scene::EPT_TRIANGLE_FAN 
-			);		
+				scene::EPT_TRIANGLES
+			);
+
 		m_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );
 	}
 
@@ -1281,10 +1294,11 @@ void bitmap_info_irrlicht::layout()
                     break;
                 case image::image_base::RGBA:
                     format = GL_RGBA;
-                    totalSize *= 4;                    
+                    totalSize *= 4;
                     break;
                 case image::image_base::ALPHA:
-					format = GL_ALPHA;                    
+					format = GL_ALPHA;
+					totalSize *= 4;
                     break;
             }
             

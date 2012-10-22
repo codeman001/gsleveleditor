@@ -223,12 +223,56 @@ struct bitmap_info_irrlicht : public gameswf::bitmap_info
 
 };
 
+#define BATCH_VERTEX    4000
+
+struct sprite_batch
+{
+    bitmap_info_irrlicht     *m_currentTexture;
+    video::S3DVertex    m_vertexBatch[BATCH_VERTEX];
+    s16                 m_indexBatch[BATCH_VERTEX*3];
+
+    int                 m_numVertex;
+    int                 m_numIndex;    
+    
+    sprite_batch()
+    {
+        m_currentTexture    = NULL;
+        m_numVertex         = 0;
+        m_numIndex          = 0;
+    }
+    
+    void set_texture( bitmap_info_irrlicht *tex )
+    {
+        m_currentTexture = tex;
+    }
+    
+    void add_triangles( video::S3DVertex* vertex, int vertexCount, s16 *index, int indexCount )
+    {
+        
+        for (int i = 0; i < vertexCount; i++ )
+            m_vertexBatch[m_numVertex+i] = vertex[i];
+        
+        for (int i = 0; i < indexCount; i++ )
+            m_indexBatch[m_numIndex+i] = m_numVertex + index[i];
+        
+        m_numVertex += vertexCount;
+        m_numIndex += indexCount;
+    }
+    
+    void clear()
+    {
+        m_currentTexture    = NULL;
+        m_numVertex         = 0;
+        m_numIndex          = 0;
+    }
+};
+
 struct video_handler_irrlicht : public gameswf::video_handler
 {
 	float m_scoord;
 	float m_tcoord;
-	gameswf::rgba m_background_color;
-
+	gameswf::rgba   m_background_color;    
+    
 	video_handler_irrlicht() :
 		m_scoord ( 0 ),
 		m_tcoord ( 0 ),
@@ -277,6 +321,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 
 	int m_mask_level;	// nested mask level
 
+    sprite_batch    m_spriteBatch;
+    
 	render_handler_irrlicht(irr::IrrlichtDevice	*dev) :
 		m_device( dev ),
 		m_enable_antialias ( false ),
@@ -766,6 +812,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	// Clean up after rendering a frame.  Client program is still
 	// responsible for calling glSwapBuffers() or whatever.
 	{
+        flush_spritebatch();
+        
 		// restore matrix
 		g_driver->setTransform(ETS_PROJECTION, m_defaultProjectionMatrix);
 		g_driver->setTransform(ETS_WORLD, m_defaultWorldMatrix);
@@ -862,6 +910,9 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	void	draw_mesh_primitive ( int primitive_type, const void *coords, int vertex_count )
 	// Helper for draw_mesh_strip and draw_triangle_list.
 	{
+        if ( need_flush(NULL) == true )
+            flush_spritebatch();
+        
 		// Set up current style.
 		m_current_styles[LEFT_STYLE].m_render = this;
 		m_current_styles[LEFT_STYLE].apply();
@@ -941,6 +992,9 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	void	draw_line_strip ( const void *coords, int vertex_count )
 	// Draw the line strip formed by the sequence of points.
 	{
+        if ( need_flush(NULL) == true )        
+            flush_spritebatch();
+        
 		// Set up current style.
 		m_current_styles[LINE_STYLE].apply();
 
@@ -971,7 +1025,6 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	{
 		assert ( bi );
 		
-		bi->layout();
 		apply_color ( color );		
 
 		gameswf::point a, b, c, d;
@@ -1030,33 +1083,82 @@ struct render_handler_irrlicht : public gameswf::render_handler
 
 		s16 index[] = {0,1,2, 1,3,2};
         
-        m_driver->setTransform( ETS_PROJECTION, m_projectionMatrix );
-        m_driver->setTransform( ETS_VIEW,		m_viewMatrix );
-		m_driver->setTransform( ETS_WORLD,		core::IdentityMatrix );
         
-		// set texture
-		m_material->setTexture(0, ((bitmap_info_irrlicht*)bi)->m_texture );
-		m_material->MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;
-		m_driver->setMaterial( *m_material );
-	
-		m_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
-		m_driver->draw2DVertexPrimitiveList(
-				vertices, 4,
-				index, 2,
-				EVT_STANDARD,
-				scene::EPT_TRIANGLES
-			);
-
-		m_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );
+        bitmap_info_irrlicht* tex = (bitmap_info_irrlicht*)bi;        
+        if ( need_flush( tex ) == true )
+            flush_spritebatch();
+        
+        
+        m_spriteBatch.set_texture(tex);
+        m_spriteBatch.add_triangles(vertices, 4, index, 6);                    
 	}
 
 	bool test_stencil_buffer ( const gameswf::rect &bound, Uint8 pattern )
 	{
 		return false;		
 	}
+    
+    bool need_flush( bitmap_info_irrlicht *tex )
+    {
+        int safe = 50;    
+        
+        if ( 
+                m_spriteBatch.m_numIndex >= BATCH_VERTEX*3 - safe || 
+                m_spriteBatch.m_numVertex >= BATCH_VERTEX - safe
+            )
+        {
+            return true;
+        }
+        
+        if ( m_spriteBatch.m_numVertex > 0 && m_spriteBatch.m_currentTexture != tex )
+        {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    void flush_spritebatch()
+    {
+        if ( m_spriteBatch.m_numVertex == 0 || m_spriteBatch.m_numIndex == 0 )
+            return;
+        
+        m_driver->setTransform( ETS_PROJECTION, m_projectionMatrix );
+        m_driver->setTransform( ETS_VIEW,		m_viewMatrix );
+		m_driver->setTransform( ETS_WORLD,		core::IdentityMatrix );
+        
+		// set texture
+        if ( m_spriteBatch.m_currentTexture )
+        {
+            m_spriteBatch.m_currentTexture->layout();
+            m_material->setTexture(0, m_spriteBatch.m_currentTexture->m_texture );
+        }
+        else
+            m_material->setTexture(0, NULL );
+        
+		m_material->MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;
+		m_driver->setMaterial( *m_material );
+        
+		m_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
+		m_driver->draw2DVertexPrimitiveList(
+                                            m_spriteBatch.m_vertexBatch,
+                                            m_spriteBatch.m_numVertex,
+                                            m_spriteBatch.m_indexBatch, 
+                                            m_spriteBatch.m_numIndex/3,
+                                            EVT_STANDARD,
+                                            scene::EPT_TRIANGLES
+                                            );
+        
+		m_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );
+        
+        // clear sprite batch
+        m_spriteBatch.clear();
+    }
 
 	void begin_submit_mask()
 	{		
+        flush_spritebatch();
+        
 		m_driver->clearZBuffer();
 
 		m_isRenderMask = true;
@@ -1070,6 +1172,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 	// called after begin_submit_mask and the drawing of mask polygons
 	void end_submit_mask()
 	{
+        flush_spritebatch();
+        
 		m_isRenderMask = false;
 
 		// enable depth test, enable full color
@@ -1080,6 +1184,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 
 	void disable_mask()
 	{		
+        flush_spritebatch();
+        
 		m_isRenderMask = false;
 
 		m_material->ZBuffer = video::ECFN_NEVER;

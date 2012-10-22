@@ -65,9 +65,6 @@ void CGameStateMgr::pushState( CGameState* state )
 	if ( m_stackState.size() > 0 )
 		m_stackState[0]->onDeactive();
 
-    // clear font provider
-    CGameUI::getInstance()->resetGlyphProvider();
-    
 	m_stackState.insert( m_stackState.begin(), state );
 
 	// call on create
@@ -83,9 +80,6 @@ void CGameStateMgr::changeState( CGameState* state )
 		m_stackState[0]->onDestroy();
 
 		m_stackState.erase( m_stackState.begin() );
-
-        // clear font provider
-        CGameUI::getInstance()->resetGlyphProvider();
         
 		m_stackState.insert( m_stackState.begin(), state );
 		state->onCreate();
@@ -103,9 +97,6 @@ void CGameStateMgr::popState()
 		m_stackState.erase( m_stackState.begin() );
 		if ( m_stackState.size() > 0 )
 			m_stackState[0]->onActive();
-
-        // clear font provider
-        CGameUI::getInstance()->resetGlyphProvider();        
 	}
 }
 

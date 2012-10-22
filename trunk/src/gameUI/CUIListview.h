@@ -60,6 +60,7 @@ protected:
 
 	int							m_beginTouchY;
 	int							m_lastTouchY;
+	int							m_currentTouchY;
 
 	bool						m_touchDown;
 

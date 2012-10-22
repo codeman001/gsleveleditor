@@ -171,6 +171,7 @@ bool CUIListview::onEvent( const SEvent& gameEvent)
 			root->lockActionOnChilld( true );
 
 			m_beginTouchY	= mousePos.Y;
+			m_currentTouchY	= mousePos.Y;
 			m_lastTouchY	= mousePos.Y;
 
 			m_lastfYOffset	= m_yOffset;
@@ -185,17 +186,14 @@ bool CUIListview::onEvent( const SEvent& gameEvent)
 				// drag out control
 				m_touchDown = false;
 				m_beginTouchY = -1;
+				m_currentTouchY = -1;
 				m_fY = (float)m_yOffset;
 
 				root->lockActionOnChilld( false );				
 			}
 			else
 			{
-				m_fSpeed = (float)( mousePos.Y - m_lastTouchY)*0.06f;
-				m_lastTouchY = mousePos.Y;
-
-				// move offset of list items
-				m_yOffset = m_lastfYOffset + (mousePos.Y - m_beginTouchY);
+				m_currentTouchY = mousePos.Y;				
 			}
 			ret = true;
 		}
@@ -205,6 +203,7 @@ bool CUIListview::onEvent( const SEvent& gameEvent)
 			
 			m_touchDown = false;
 			m_beginTouchY = -1;
+			m_currentTouchY = -1;
 			m_fY = (float)m_yOffset;
 
 			ret = true;
@@ -312,7 +311,7 @@ void CUIListview::removeAllItems()
 
 // updateItemMovement	
 void CUIListview::updateItemMovement()
-{
+{	
 	const float FRICTION_COEF       = 0.007f;
     const float ELASTIC_COEF        = 0.0001f;
     const float RET_FR_COEF         = 0.014f;              
@@ -321,8 +320,16 @@ void CUIListview::updateItemMovement()
 	float height	= (float)m_defaultRect.getHeight();
 	float rowHeight = (float)m_allRowHeight;
 
-    // update offset scroll like iphone
-    if ( m_touchDown == false )
+
+	if ( m_touchDown == true )
+	{
+		m_fSpeed = (float)( m_currentTouchY - m_lastTouchY)*0.06f;
+		m_lastTouchY = m_currentTouchY;
+
+		// move offset of list items
+		m_yOffset = m_lastfYOffset + (m_currentTouchY - m_beginTouchY);
+	}    
+	else
     {
 		if (m_fY > 0.5f)
 		{

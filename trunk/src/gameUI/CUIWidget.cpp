@@ -184,7 +184,7 @@ void CUIWidget::setPosition(int x, int y)
 	else
 		m_flashObj.getMenu()->getFxScaleRatio(&fw, &fh);
 
-	m_flashObj.setPosition( x/fw, y/fh );
+	m_flashObj.setPosition( (int)(x/fw), (int)(y/fh) );
 }
 
 

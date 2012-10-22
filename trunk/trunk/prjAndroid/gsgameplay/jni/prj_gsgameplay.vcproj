@@ -683,6 +683,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\src\gameState\CStateJoinGame.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gameState\CStateJoinGame.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\src\gameState\CStateMainMenu.cpp"
 					>
 				</File>
@@ -779,14 +787,6 @@
 				Name="gameControl"
 				>
 				<File
-					RelativePath="..\..\..\src\gameControl\CDpad.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\gameControl\CDpad.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\src\gameControl\CGameControl.cpp"
 					>
 				</File>
@@ -800,6 +800,50 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\gameControl\CTouchManager.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="gameUI"
+				>
+				<File
+					RelativePath="..\..\..\src\gameUI\CUIButton.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gameUI\CUIButton.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gameUI\CUICanvas.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gameUI\CUICanvas.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gameUI\CUIDPad.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gameUI\CUIDPad.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gameUI\CUIListview.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gameUI\CUIListview.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gameUI\CUIWidget.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\src\gameUI\CUIWidget.h"
 					>
 				</File>
 			</Filter>

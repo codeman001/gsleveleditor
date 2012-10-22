@@ -73,6 +73,7 @@ LOCAL_SRC_FILES := ../../../src/core/Animators/CGameCameraFollowAnimator.cpp \
 ../../../src/gameState/CStateGameLoading.cpp \
 ../../../src/gameState/CStateGameplay.cpp \
 ../../../src/gameState/CStateInit.cpp \
+../../../src/gameState/CStateJoinGame.cpp \
 ../../../src/gameState/CStateMainMenu.cpp \
 ../../../src/script/CScriptManager.cpp \
 ../../../src/swfUI/CGameUI.cpp \
@@ -81,9 +82,13 @@ LOCAL_SRC_FILES := ../../../src/core/Animators/CGameCameraFollowAnimator.cpp \
 ../../../src/IViewImp.cpp \
 ../../../src/gameLevel/CGameLevel.cpp \
 ../../../src/gameLevel/LevelScript.cpp \
-../../../src/gameControl/CDpad.cpp \
 ../../../src/gameControl/CGameControl.cpp \
 ../../../src/gameControl/CTouchManager.cpp \
+../../../src/gameUI/CUIButton.cpp \
+../../../src/gameUI/CUICanvas.cpp \
+../../../src/gameUI/CUIDPad.cpp \
+../../../src/gameUI/CUIListview.cpp \
+../../../src/gameUI/CUIWidget.cpp \
 ../native/AppInterface.cpp \
 ../../../src/CApplication.cpp \
 ../../../src/stdafx.cpp \

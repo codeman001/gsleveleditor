@@ -49,9 +49,15 @@ namespace gameswf
     
     struct glyph_region
     {
-        rect    m_rect;
-    };
-    
+		gc_ptr<bitmap_info>		m_fontTexture;
+		array<gameswf::rect>	m_rects;
+
+		~glyph_region()
+		{
+			m_fontTexture = NULL;
+		}
+    };    	
+
 	struct glyph_freetype_provider : public glyph_provider
 	{
 			glyph_freetype_provider();
@@ -60,20 +66,20 @@ namespace gameswf
 			virtual bitmap_info *get_char_image ( character_def *shape_glyph, Uint16 code,
 			                                      const tu_string &fontname, bool is_bold, bool is_italic, int fontsize,
 			                                      rect *bounds, float *advance, float *uvX, float *uvY);
-            
-            virtual void reset_provider();
-        
+                    
 		private:
 
 			face_entity *get_face_entity ( const tu_string &fontname,
 			                               bool is_bold, bool is_italic );
 
-            bool put_glyph_to_texture( const FT_GlyphSlot &glyph, rect *bounds, float *uvx, float *uvy );
+            int put_glyph_to_texture( const FT_GlyphSlot &glyph, rect *bounds, float *uvx, float *uvy );
             void calc_cell_size( int *w, int *h );
-            glyph_region create_region(int w, int h);
-            glyph_region devide_region(int regionID, int w, int h);
-            void insert_sort_region( glyph_region region );
-        
+            
+			void insert_sort_rect( int id, rect r );
+			gameswf::rect create_rect(int id, int w, int h);
+            gameswf::rect devide_rect(int id, int rectID, int w, int h);			                    
+			void add_empty_region();
+
 			// callbacks
 			static int move_to_callback ( FT_CONST FT_Vector *vec, void *ptr );
 			static int line_to_callback ( FT_CONST FT_Vector *vec, void *ptr );
@@ -87,14 +93,14 @@ namespace gameswf
 			                                    const char *fontname, bool is_bold, bool is_italic, int fontsize,
 			                                    rect *bounds, float *advance );
             int     m_texSize;
+			int		m_maxTex;
 			float   m_scale;
-        
-            array<glyph_region> m_rects;
-        
+                            
 			gc_ptr<canvas> m_canvas;
-			string_hash<gc_ptr<face_entity> > m_face_entity;
-        
-            gc_ptr<bitmap_info> m_fontTexture;
+			string_hash<gc_ptr<face_entity> >	m_face_entity;        
+            
+			
+			array<glyph_region>					m_regions;
 	};
 
 }

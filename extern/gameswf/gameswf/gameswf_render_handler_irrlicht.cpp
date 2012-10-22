@@ -874,8 +874,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		
 		// set transform
 		m_driver->setTransform( ETS_PROJECTION, m_projectionMatrix );
-		m_driver->setTransform( ETS_VIEW,		m_viewMatrix );
-		m_driver->setTransform( ETS_WORLD,		m_worldMatrix );		
+        m_driver->setTransform( ETS_VIEW,		m_viewMatrix );
+		m_driver->setTransform( ETS_WORLD,		core::IdentityMatrix );		
 
 		Sint16 *f = (Sint16*) coords;
 
@@ -888,12 +888,19 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		if ( m_isRenderMask )
 			m_color.setAlpha(255);
 
+        core::vector3df pos;
+        
 		for ( int i = 0; i < vertex_count; i++ )
 		{
-			vertices[i].Pos.X = (float)(*f);f++;
-			vertices[i].Pos.Y = (float)(*f);f++;
+            pos.X = (float)(*f);f++;
+            pos.Y = (float)(*f);f++;
+            m_worldMatrix.transformVect(pos);
+            
+			vertices[i].Pos.X = pos.X;
+			vertices[i].Pos.Y = pos.Y;
 			vertices[i].Color = m_color;
 
+            
 			index[i] = i;
 		}			
 
@@ -974,42 +981,59 @@ struct render_handler_irrlicht : public gameswf::render_handler
 		d.m_x = b.m_x + c.m_x - a.m_x;
 		d.m_y = b.m_y + c.m_y - a.m_y;		
 
+        core::vector3df     pos;
 		video::S3DVertex	vertices[4];
 
-		vertices[0].Pos.X = a.m_x;
-		vertices[0].Pos.Y = a.m_y;
+        pos.X = a.m_x;
+        pos.Y = a.m_y;
+        m_worldMatrix.transformVect(pos);
+        
+		vertices[0].Pos.X = pos.X;
+		vertices[0].Pos.Y = pos.Y;
 		vertices[0].Pos.Z = 0.0f;
 		vertices[0].TCoords.X = uv_coords.m_x_min;
 		vertices[0].TCoords.Y = uv_coords.m_y_min;
 		vertices[0].Color = m_color;
 
-		vertices[1].Pos.X = b.m_x;
-		vertices[1].Pos.Y = b.m_y;
+        pos.X = b.m_x;
+        pos.Y = b.m_y;
+        m_worldMatrix.transformVect(pos);
+        
+		vertices[1].Pos.X = pos.X;
+		vertices[1].Pos.Y = pos.Y;
 		vertices[1].Pos.Z = 0.0f;
 		vertices[1].TCoords.X = uv_coords.m_x_max;
 		vertices[1].TCoords.Y = uv_coords.m_y_min;
 		vertices[1].Color = m_color;
 
-		vertices[2].Pos.X = c.m_x;
-		vertices[2].Pos.Y = c.m_y;
+        pos.X = c.m_x;
+        pos.Y = c.m_y;
+        m_worldMatrix.transformVect(pos);
+        
+		vertices[2].Pos.X = pos.X;
+		vertices[2].Pos.Y = pos.Y;
 		vertices[2].Pos.Z = 0.0f;
 		vertices[2].TCoords.X = uv_coords.m_x_min;
 		vertices[2].TCoords.Y = uv_coords.m_y_max;
 		vertices[2].Color = m_color;
 
-		vertices[3].Pos.X = d.m_x;
-		vertices[3].Pos.Y = d.m_y;
+        pos.X = d.m_x;
+        pos.Y = d.m_y;
+        m_worldMatrix.transformVect(pos);
+        
+		vertices[3].Pos.X = pos.X;
+		vertices[3].Pos.Y = pos.Y;
 		vertices[3].Pos.Z = 0.0f;
 		vertices[3].TCoords.X = uv_coords.m_x_max;
 		vertices[3].TCoords.Y = uv_coords.m_y_max;
 		vertices[3].Color = m_color;
 
 		s16 index[] = {0,1,2, 1,3,2};
-
-		m_driver->setTransform( ETS_PROJECTION, m_projectionMatrix );
-		m_driver->setTransform( ETS_WORLD,		m_worldMatrix );
-		m_driver->setTransform( ETS_VIEW,		m_viewMatrix );
-
+        
+        m_driver->setTransform( ETS_PROJECTION, m_projectionMatrix );
+        m_driver->setTransform( ETS_VIEW,		m_viewMatrix );
+		m_driver->setTransform( ETS_WORLD,		core::IdentityMatrix );
+        
 		// set texture
 		m_material->setTexture(0, ((bitmap_info_irrlicht*)bi)->m_texture );
 		m_material->MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;

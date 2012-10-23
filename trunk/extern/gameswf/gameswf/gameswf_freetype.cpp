@@ -370,6 +370,9 @@ namespace gameswf
         int x = (int)region.m_x_min;
         int y = (int)region.m_y_min;
 
+		x += (cellW - glyphW)/2;
+		y += (cellH - glyphH)/2;
+
         *uvx = x/(float)m_texSize;
         *uvy = y/(float)m_texSize;
         

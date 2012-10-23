@@ -78,7 +78,7 @@ bool CUIListviewItem::onEvent( const SEvent& gameEvent)
 		}
 		else
 		{
-			if ( m_hover == true && m_selected == false )
+			if ( m_hover == true )
 			{
 				m_flashObj.gotoFrame("normal", true);
 				m_hover = false;
@@ -188,8 +188,13 @@ bool CUIListview::onEvent( const SEvent& gameEvent)
 				m_beginTouchY = -1;
 				m_currentTouchY = -1;
 				m_fY = (float)m_yOffset;
-
-				root->lockActionOnChilld( false );				
+				
+				root->lockActionOnChilld( false );
+				
+				// send leftup event to childs
+				SEvent leftUpEvent = gameEvent;
+				leftUpEvent.MouseInput.Event = EMIE_LMOUSE_LEFT_UP;
+				CUIWidget::onEvent(leftUpEvent);
 			}
 			else
 			{

@@ -22,21 +22,6 @@ void CStateJoinGame::onCreate()
 	// init client mp
 	m_mpMgr = new CMultiplayerManager(false, false);
 #endif
-
-	// add for test actionscript 2.0
-	// begin test
-	//CMenuFxObj listPanel = getStateObjFx().findObj("panelList");
-	//for ( int i = 0; i < 4; i++ )
-	//{
-	//	char name[62];
-	//	sprintf(name,"item%d",i);
-
-	//	gameswf::as_value param(name);	
-	//	listPanel.invokeASCallback("addListItem", &param, 1);
-
-	//	CMenuFxObj list = listPanel.findObj(name);
-	//	list.setPosition( 0, i*40 );
-	//}
 	
     CMenuFxObj txtPanel = getStateObjFx().findObj("txtPanel");
     txtPanel.setText("SEARCHING HOST...");
@@ -54,8 +39,10 @@ void CStateJoinGame::onCreate()
     list->setRowHeight(30);
     
     for ( int i = 0; i < 10; i++ )
+	{
         list->addItem();
-    
+	}
+
     m_btnMainMenu = new CUIButton("btnMainMenu", m_rootWidget, getStateObjFx().findObj("btnMainMenu"));
     m_btnMainMenu->setText("txtLabel", "Main Menu");
     

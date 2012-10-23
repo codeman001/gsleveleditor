@@ -223,7 +223,7 @@ struct bitmap_info_irrlicht : public gameswf::bitmap_info
 
 };
 
-#define BATCH_VERTEX    4000
+#define BATCH_VERTEX    2000
 
 struct sprite_batch
 {
@@ -247,8 +247,7 @@ struct sprite_batch
     }
     
     void add_triangles( video::S3DVertex* vertex, int vertexCount, s16 *index, int indexCount )
-    {
-        
+    {        
         for (int i = 0; i < vertexCount; i++ )
             m_vertexBatch[m_numVertex+i] = vertex[i];
         
@@ -387,89 +386,56 @@ struct render_handler_irrlicht : public gameswf::render_handler
 
 		void	applyTexture ( int primitive_type, video::S3DVertex *vertex, int vertex_count, s16 *index, int index_count, const void *coords ) const		
 		{
+			bitmap_info_irrlicht * tex = NULL;
+
 			if ( m_mode == BITMAP_WRAP || m_mode == BITMAP_CLAMP )
-			{
-				// render TEXTURES
-				assert ( m_bitmap_info != NULL );
-				
+			{								
 				Sint16 *vcoord = ( Sint16 * ) coords;				
 				for ( int i = 0, j = 0; i < 2 * vertex_count; i = i + 2, j++ )
 				{				
 					vertex[j].TCoords.X = vcoord[i] * pS[0] + vcoord[i+1] * pS[1] + pS[3];
 					vertex[j].TCoords.Y = vcoord[i] * pT[0] + vcoord[i+1] * pT[1] + pT[3];
 				}
-			
-				SMaterial* mat = m_render->m_material;
-				mat->setTexture(0, ((bitmap_info_irrlicht*)m_bitmap_info)->m_texture );
-
-				if ( m_render->m_isRenderMask )
-					mat->MaterialType = EMT_SOLID;
-				else
-					mat->MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;		
-
-				g_driver->setMaterial( *mat );
-				g_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
-
-				if ( primitive_type ==  GL_TRIANGLE_STRIP )		
-				{
-                    index_count = vertex_count - 2;
-					g_driver->draw2DVertexPrimitiveList(
-							vertex, vertex_count,
-							index, index_count,
-							EVT_STANDARD,
-							scene::EPT_TRIANGLE_STRIP
-						);					
-				}
-				else if ( primitive_type == GL_TRIANGLES )
-				{
-                    index_count = vertex_count/2;
-					g_driver->draw2DVertexPrimitiveList(
-							vertex, vertex_count,
-							index, index_count,
-							EVT_STANDARD,
-							scene::EPT_TRIANGLES
-						);			
-				}
-				
-				g_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );
+					
+				tex = (bitmap_info_irrlicht*)m_bitmap_info;
 			}
-            else 
-            {
-				// Render SOLID
-                // set texture
-                SMaterial* mat = m_render->m_material;
-                mat->setTexture(0, NULL);
-                 
-				if ( m_render->m_isRenderMask )
-                    mat->MaterialType = EMT_SOLID;
-                else
-                    mat->MaterialType = EMT_TRANSPARENT_VERTEX_ALPHA;
-                 
-                g_driver->setMaterial( *mat );
-				g_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
-                
-                if ( primitive_type ==  GL_TRIANGLE_STRIP )		
-				{
-                    index_count = vertex_count - 2;
-					g_driver->draw2DVertexPrimitiveList(
-                                                        vertex, vertex_count,
-                                                        index, index_count,
-                                                        EVT_STANDARD,
-                                                        scene::EPT_TRIANGLE_STRIP
-                                                        );					
+			
+			if ( m_render->need_flush(tex) == true )
+				m_render->flush_spritebatch();
+			
+			// set current texture
+			m_render->m_spriteBatch.set_texture( tex );
+
+			// add sprite batch
+			if ( primitive_type ==  GL_TRIANGLE_STRIP )
+			{
+				s16 *indexBuff = new s16[index_count*2];
+				int nIndex = 0;
+				int i = 0;
+
+				while ( i != index_count )
+				{						
+					indexBuff[nIndex]	= index[i];
+					indexBuff[nIndex+1]	= index[i+2];
+					indexBuff[nIndex+2]	= index[i+1];
+					i += 2;
+					nIndex += 3;
+
+					indexBuff[nIndex]	= index[i];
+					indexBuff[nIndex+1]	= index[i+1];
+					indexBuff[nIndex+2]	= index[i-1];
+					i += 2;
+					nIndex += 3;
 				}
-				else if ( primitive_type == GL_TRIANGLES )
-				{
-                    index_count = vertex_count/2;
-					g_driver->draw2DVertexPrimitiveList(
-                                                        vertex, vertex_count,
-                                                        index, index_count,
-                                                        EVT_STANDARD,
-                                                        scene::EPT_TRIANGLES
-                                                        );			
-				}
-                g_driver->enableChangeProjectionMatrixWhenSetRenderMode( true );
-            }
+
+				m_render->m_spriteBatch.add_triangles(vertex, vertex_count,indexBuff, nIndex);
+				delete indexBuff;
+			}
+			else
+			{
+				m_render->m_spriteBatch.add_triangles(vertex, vertex_count,index, index_count);
+			}
+
 		}
 
 		void	apply ( ) const
@@ -909,10 +875,7 @@ struct render_handler_irrlicht : public gameswf::render_handler
 
 	void	draw_mesh_primitive ( int primitive_type, const void *coords, int vertex_count )
 	// Helper for draw_mesh_strip and draw_triangle_list.
-	{
-        if ( need_flush(NULL) == true )
-            flush_spritebatch();
-        
+	{                
 		// Set up current style.
 		m_current_styles[LEFT_STYLE].m_render = this;
 		m_current_styles[LEFT_STYLE].apply();
@@ -1136,7 +1099,11 @@ struct render_handler_irrlicht : public gameswf::render_handler
         else
             m_material->setTexture(0, NULL );
         
-		m_material->MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;
+		if ( m_isRenderMask )
+			m_material->MaterialType = EMT_SOLID;
+		else
+			m_material->MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;
+
 		m_driver->setMaterial( *m_material );
         
 		m_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );

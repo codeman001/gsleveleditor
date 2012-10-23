@@ -409,12 +409,12 @@ struct render_handler_irrlicht : public gameswf::render_handler
 			// add sprite batch
 			if ( primitive_type ==  GL_TRIANGLE_STRIP )
 			{
-				s16 *indexBuff = new s16[index_count*2];
+				s16 *indexBuff = new s16[index_count*4];
 				int nIndex = 0;
 				int i = 0;
 
-				while ( i != index_count )
-				{						
+				while ( i < index_count - 2 )
+				{
 					indexBuff[nIndex]	= index[i];
 					indexBuff[nIndex+1]	= index[i+2];
 					indexBuff[nIndex+2]	= index[i+1];
@@ -424,7 +424,6 @@ struct render_handler_irrlicht : public gameswf::render_handler
 					indexBuff[nIndex]	= index[i];
 					indexBuff[nIndex+1]	= index[i+1];
 					indexBuff[nIndex+2]	= index[i-1];
-					i += 2;
 					nIndex += 3;
 				}
 
@@ -954,9 +953,8 @@ struct render_handler_irrlicht : public gameswf::render_handler
 
 	void	draw_line_strip ( const void *coords, int vertex_count )
 	// Draw the line strip formed by the sequence of points.
-	{
-        if ( need_flush(NULL) == true )        
-            flush_spritebatch();
+	{        
+		flush_spritebatch();
         
 		// Set up current style.
 		m_current_styles[LINE_STYLE].apply();

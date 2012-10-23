@@ -498,7 +498,7 @@ namespace gameswf
     
     void glyph_freetype_provider::calc_cell_size( int *w, int *h )
     {
-        const int cellSize = 4;
+        const int cellSize = 16;
         
         int cellW = cellSize;
         while ( cellW < *w ) 

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7F1EC6011610985F008D61A2 /* macosxapi.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F1EC6001610985F008D61A2 /* macosxapi.mm */; };
 		7F3743C016133C530006762B /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3743BE16133C530006762B /* md5.cpp */; };
+		7F38760116384DE300E84B98 /* CDaeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3875FF16384DE300E84B98 /* CDaeUtils.cpp */; };
 		7F395802160ED88000EEB3A2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F395801160ED88000EEB3A2 /* Cocoa.framework */; };
 		7F39580C160ED88000EEB3A2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7F39580A160ED88000EEB3A2 /* InfoPlist.strings */; };
 		7F39580E160ED88000EEB3A2 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F39580D160ED88000EEB3A2 /* main.mm */; };
@@ -140,6 +141,8 @@
 		7F1EC6001610985F008D61A2 /* macosxapi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = macosxapi.mm; sourceTree = "<group>"; };
 		7F3743BE16133C530006762B /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = md5.cpp; sourceTree = "<group>"; };
 		7F3743BF16133C530006762B /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
+		7F3875FF16384DE300E84B98 /* CDaeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDaeUtils.cpp; sourceTree = "<group>"; };
+		7F38760016384DE300E84B98 /* CDaeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDaeUtils.h; sourceTree = "<group>"; };
 		7F3957FD160ED88000EEB3A2 /* gameplay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gameplay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F395801160ED88000EEB3A2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7F395804160ED88000EEB3A2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -581,6 +584,8 @@
 		7F3A6B4D160F5E8000B31F81 /* Serializable */ = {
 			isa = PBXGroup;
 			children = (
+				7F3875FF16384DE300E84B98 /* CDaeUtils.cpp */,
+				7F38760016384DE300E84B98 /* CDaeUtils.h */,
 				7F3A6B4E160F5E8000B31F81 /* CBinaryUtils.cpp */,
 				7F3A6B4F160F5E8000B31F81 /* CBinaryUtils.h */,
 				7F3A6B50160F5E8000B31F81 /* CSerializable.cpp */,
@@ -954,6 +959,7 @@
 				7FCB58AB162C69DD00349381 /* CStateJoinGame.cpp in Sources */,
 				7F60980C162F0AF30085D3FF /* CUIDPad.cpp in Sources */,
 				7F4D165B163055A2009F066A /* CUIListview.cpp in Sources */,
+				7F38760116384DE300E84B98 /* CDaeUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

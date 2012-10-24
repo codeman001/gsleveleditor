@@ -18,6 +18,7 @@
 		7F1AEF1015F7A2C500DF8EA0 /* CAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */; };
 		7F1EC5E616109767008D61A2 /* libLua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F1EC5E516109756008D61A2 /* libLua.a */; };
 		7F3743F51613552C0006762B /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3743F31613552C0006762B /* md5.cpp */; };
+		7F3875E5163841FD00E84B98 /* CDaeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3875E3163841FD00E84B98 /* CDaeUtils.cpp */; };
 		7F39584F160EF17700EEB3A2 /* CDataPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */; };
 		7F4D163F1630552A009F066A /* CUIListview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4D163D1630552A009F066A /* CUIListview.cpp */; };
 		7F60982F162F0B860085D3FF /* CUIButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F609827162F0B860085D3FF /* CUIButton.cpp */; };
@@ -154,6 +155,8 @@
 		7F1EC5DD16109755008D61A2 /* Lua.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lua.xcodeproj; path = ../../../extern/lua/ios/Lua.xcodeproj; sourceTree = "<group>"; };
 		7F3743F31613552C0006762B /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = md5.cpp; path = Network/md5.cpp; sourceTree = "<group>"; };
 		7F3743F41613552C0006762B /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = md5.h; path = Network/md5.h; sourceTree = "<group>"; };
+		7F3875E3163841FD00E84B98 /* CDaeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDaeUtils.cpp; sourceTree = "<group>"; };
+		7F3875E4163841FD00E84B98 /* CDaeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDaeUtils.h; sourceTree = "<group>"; };
 		7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CDataPacket.cpp; path = Network/CDataPacket.cpp; sourceTree = "<group>"; };
 		7F39584E160EF17700EEB3A2 /* CDataPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDataPacket.h; path = Network/CDataPacket.h; sourceTree = "<group>"; };
 		7F4D163D1630552A009F066A /* CUIListview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIListview.cpp; sourceTree = "<group>"; };
@@ -570,6 +573,8 @@
 		7FD0BFA615F4F34400626D90 /* Serializable */ = {
 			isa = PBXGroup;
 			children = (
+				7F3875E3163841FD00E84B98 /* CDaeUtils.cpp */,
+				7F3875E4163841FD00E84B98 /* CDaeUtils.h */,
 				7FD0BFA715F4F34400626D90 /* CBinaryUtils.cpp */,
 				7FD0BFA815F4F34400626D90 /* CBinaryUtils.h */,
 				7FD0BFA915F4F34400626D90 /* CSerializable.cpp */,
@@ -953,6 +958,7 @@
 				7F609832162F0B860085D3FF /* CUIWidget.cpp in Sources */,
 				7F609835162F0BE60085D3FF /* CStateJoinGame.cpp in Sources */,
 				7F4D163F1630552A009F066A /* CUIListview.cpp in Sources */,
+				7F3875E5163841FD00E84B98 /* CDaeUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

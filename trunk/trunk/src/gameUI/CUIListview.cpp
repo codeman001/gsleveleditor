@@ -13,6 +13,8 @@ CUIListviewItem::CUIListviewItem( const char *name, CUIWidget* parent, CMenuFxOb
 	
 	m_selected	= false;
 	m_hover		= false;
+
+	m_userdata	= NULL;
 }
 
 CUIListviewItem::~CUIListviewItem()
@@ -55,7 +57,7 @@ bool CUIListviewItem::onEvent( const SEvent& gameEvent)
 			{
 				if ( m_hover == false )
 				{
-                    m_flashObj.gotoFrame("focus", true);
+                    m_flashObj.gotoFrame("focus", true);					
 					m_hover = true;
 				}
 			}
@@ -84,6 +86,8 @@ bool CUIListviewItem::onEvent( const SEvent& gameEvent)
 				m_hover = false;
 			}
 		}
+
+		replaceTextOnLabel();
 	}
 
 	return ret;
@@ -270,6 +274,17 @@ CUIListviewItem* CUIListview::getItem(int id)
 		return NULL;
 
 	return m_listItems[id];
+}
+
+// getItemWithUserData
+CUIListviewItem* CUIListview::getItemWithUserData( void *userdata )
+{
+	for ( int i = 0, n = getItemCount(); i < n; i++ )
+	{
+		if ( m_listItems[i]->getUserData() == userdata )
+			return m_listItems[i];
+	}
+	return NULL;
 }
 
 // removeItem

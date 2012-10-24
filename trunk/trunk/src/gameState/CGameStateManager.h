@@ -34,7 +34,8 @@ public:
 	void changeState( CGameState* state );
 
 	// pop a state
-	void popState();	
+	void popState();
+	void popAllState();
 
 	// get a current game state
 	CGameState* getCurrentState();

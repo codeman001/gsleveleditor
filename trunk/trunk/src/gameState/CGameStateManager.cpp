@@ -100,6 +100,17 @@ void CGameStateMgr::popState()
 	}
 }
 
+void CGameStateMgr::popAllState()
+{
+	while ( m_stackState.size() > 0 )
+	{
+		m_willDeleteState.push_back( m_stackState[0] );
+		m_stackState[0]->onDestroy();
+
+		m_stackState.erase( m_stackState.begin() );		
+	}
+}
+
 // get a current game state
 CGameState* CGameStateMgr::getCurrentState()
 {

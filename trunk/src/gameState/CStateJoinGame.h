@@ -6,8 +6,7 @@
 class CStateJoinGame: public CGameState
 {
 protected:
-	std::string		m_serverIP;
-
+	CUIListview		*m_lstServerList;
     CUIButton       *m_btnMainMenu;
     CUIButton       *m_btnJoinGame;
 public:

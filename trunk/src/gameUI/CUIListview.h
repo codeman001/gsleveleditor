@@ -14,6 +14,8 @@ protected:
 	CUIListview		*m_listview;
 	bool			m_selected;
 	bool			m_hover;
+
+	void			*m_userdata;
 public:
 	CUIListviewItem( const char *name, CUIWidget* parent, CMenuFxObj flashObj );
 	virtual ~CUIListviewItem();
@@ -35,6 +37,18 @@ public:
 	inline bool isSelected()
 	{
 		return m_selected;
+	}
+
+	// setUserData	
+	inline void setUserData( void *data )
+	{
+		m_userdata = data;
+	}
+
+	// getUserData
+	inline void* getUserData()
+	{
+		return m_userdata;
 	}
 };
 
@@ -119,6 +133,9 @@ public:
 	// getItem
 	// get item
 	CUIListviewItem* getItem(int id);
+
+	// getItemWithUserData
+	CUIListviewItem* getItemWithUserData( void *userdata );
 
 	// removeItem
 	// remove item

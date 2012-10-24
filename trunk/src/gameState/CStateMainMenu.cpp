@@ -102,16 +102,6 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 				CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );
 				break;
 			case k_btnJointGame:
-//				CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
-//				CGameLevel::setLevelProperty("isHost","false");				
-//                CGameLevel::setLevelProperty("serverIP", m_serverIP.c_str());
-//
-//#ifdef HAS_MULTIPLAYER
-//				char keyID[512];
-//				sprintf(keyID,"%d", m_mpMgr->getKeyID());
-//				CGameLevel::setLevelProperty("keyID",keyID);
-//#endif
-//
 				CGameStateMgr::getInstance()->pushState( new CStateJoinGame() );
 				break;
 			default:			
@@ -138,17 +128,6 @@ void CStateMainMenu::onEvent(const SEvent& event)
             {
                 // press joint game
 				m_menuChoice = k_btnJointGame;
-
-//#ifdef HAS_MULTIPLAYER
-//                std::vector<CDeviceDetails*> listServer;
-//                m_mpMgr->getAllActiveDevice(listServer);
-//
-//                if ( listServer.size() > 0 )
-//                {
-//                    // send joint game to server
-//                    m_mpMgr->sendJointGamePacket( listServer[0]->m_address );
-//                }
-//#endif
             }
             
             // animation state

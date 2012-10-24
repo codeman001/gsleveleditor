@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CStateJoinGame.h"
+#include "CStateGameLoading.h"
 #include "gameEvent.h"
 #include "IView.h"
 #include "CGameStateManager.h"
@@ -35,14 +36,9 @@ void CStateJoinGame::onCreate()
     txtHeader = getStateObjFx().findObj("txtHeader3");
     txtHeader.setText("Level");
     
-	CUIListview *list = new CUIListview("listHostName", m_rootWidget, getStateObjFx().findObj("panelList"));
-    list->setRowHeight(30);
+	m_lstServerList = new CUIListview("listHostName", m_rootWidget, getStateObjFx().findObj("panelList"));
+    m_lstServerList->setRowHeight(30);
     
-    for ( int i = 0; i < 10; i++ )
-	{
-        list->addItem();
-	}
-
     m_btnMainMenu = new CUIButton("btnMainMenu", m_rootWidget, getStateObjFx().findObj("btnMainMenu"));
     m_btnMainMenu->setText("txtLabel", "Main Menu");
     
@@ -85,11 +81,49 @@ void CStateJoinGame::onUpdate()
 	// get list servers founded
     std::vector<CDeviceDetails*>    listServer;
     m_mpMgr->getAllActiveDevice(listServer);
-    
-    if ( listServer.size() > 0 )
+    	
+	// add server to listview
+	int numServer = listServer.size();
+	for ( int i = 0; i < numServer; i++ )
     {    
-        
+		CDeviceDetails* dev = listServer[i];
+
+		if ( m_lstServerList->getItemWithUserData(dev) == NULL )
+		{
+			int itemID = m_lstServerList->addItem();
+			CUIListviewItem *item =	m_lstServerList->getItem(itemID);
+			item->setUserData(dev);
+
+			item->setText("txtItem1", dev->m_name.c_str() );
+			item->setText("txtItem2", m_mpMgr->getDeviceIp(dev->m_id));
+			item->setText("txtItem3", "");
+		}
     }
+
+	// remove disconected server on listview
+	for ( int i = 0; i < m_lstServerList->getItemCount(); i++ )
+	{
+		void *dev = m_lstServerList->getItem(i)->getUserData();
+
+		// check server
+		bool needRemove = true;
+
+		for (int j = 0; j < numServer; j++ )
+		{
+			if ( listServer[j] == dev )
+			{
+				needRemove = false;
+				break;
+			}
+		}
+
+		// need remove on listview
+		if ( needRemove )
+		{
+			m_lstServerList->removeItem(i);
+			i--;
+		}
+	}
 #endif
 }
 
@@ -106,8 +140,17 @@ void CStateJoinGame::onEvent(const SEvent& event)
             if ( networkEvent->eventID == CMultiplayerManager::AcceptJoinGame )
             {
                 const char *serverIP = m_mpMgr->getDeviceIp( networkEvent->deviceID ) ;
-                if ( serverIP )               
-                    m_serverIP = serverIP;            
+
+				CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
+				CGameLevel::setLevelProperty("isHost","false");				
+				CGameLevel::setLevelProperty("serverIP", serverIP);
+
+				char keyID[512];
+				sprintf(keyID,"%d", m_mpMgr->getKeyID());
+				CGameLevel::setLevelProperty("keyID",keyID);
+
+				CGameStateMgr::getInstance()->popAllState();
+				CGameStateMgr::getInstance()->pushState( new CStateGameLoading() );
             }
     #endif
         }
@@ -119,6 +162,20 @@ void CStateJoinGame::onEvent(const SEvent& event)
             {
                 CGameStateMgr::getInstance()->popState();
             }
+			else if ( buttonEvent->data == m_btnJoinGame )
+			{
+				for ( int i = 0; i < m_lstServerList->getItemCount(); i++ )
+				{
+					if ( m_lstServerList->getItem(i)->isSelected() )
+					{
+#ifdef HAS_MULTIPLAYER
+						CDeviceDetails* dev = (CDeviceDetails*)m_lstServerList->getItem(i)->getUserData();
+						m_mpMgr->sendJointGamePacket( dev->m_address );
+						break;
+#endif
+					}
+				}
+			}
         }
     }
 }

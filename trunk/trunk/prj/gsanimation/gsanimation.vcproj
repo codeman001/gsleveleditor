@@ -361,6 +361,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\Serializable\CDaeUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Serializable\CDaeUtils.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\Serializable\CSerializable.cpp"
 					>
 				</File>

@@ -76,6 +76,8 @@ void CApplication::initApplication( IrrlichtDevice* device )
 
 	// init instance for level
 	CBinaryUtils::createGetInstance();
+	CDaeUtils::createGetInstance();
+
 	CScriptManager::createGetInstance();
 	CColladaAnimationFactory::createGetInstance();
 	CGameDebug::createGetInstance();
@@ -107,6 +109,7 @@ void CApplication::destroyApplication()
 	CObjTemplateFactory::freeData();
 			
 	CBinaryUtils::releaseInstance();
+	CDaeUtils::releaseInstance();
 	CGameStateMgr::releaseInstance();
 	CScriptManager::releaseInstance();
 	CColladaAnimationFactory::releaseInstance();

@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "CMainFrame.h"
 #include "Resource.h"
+
 #include "CBinaryUtils.h"
+#include "CDaeUtils.h"
 
 CMainFrame::CMainFrame(const wchar_t* lpCmdLine)
 {
@@ -15,12 +17,16 @@ CMainFrame::CMainFrame(const wchar_t* lpCmdLine)
 
 	// init singleton
 	CBinaryUtils::createGetInstance();
+	CDaeUtils::createGetInstance();
+
 	CColladaAnimationFactory::createGetInstance();
 }
 
 CMainFrame::~CMainFrame()
 {
 	CBinaryUtils::releaseInstance();
+	CDaeUtils::releaseInstance();
+
 	CColladaAnimationFactory::releaseInstance();
 }
 	

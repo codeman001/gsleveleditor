@@ -5,6 +5,7 @@
 #include "IView.h"
 
 #include "CBinaryUtils.h"
+#include "CDaeUtils.h"
 
 #include "gameState/CStateInit.h"
 #include "gameState/CGameStateManager.h"

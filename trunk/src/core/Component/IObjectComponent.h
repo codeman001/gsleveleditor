@@ -82,7 +82,12 @@ public:
 		return false;
 	}
 
-
+	// getGameObject
+	// get owner
+	inline CGameObject* getGameObject()
+	{
+		return m_gameObject;
+	}
 };
 
 template <class T>

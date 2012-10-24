@@ -46,7 +46,7 @@ IView::~IView()
 	VLDDisable();
 #else
 
-#if !defined(GSGAMEPLAY) && defined(WIN32)
+#if defined(GSGAMEPLAY) && defined(WIN32)
 	UIDEBUG_TRACE("Debug leak memory: \n");
 	UIDEBUG_DUMPLEAK();
 #endif

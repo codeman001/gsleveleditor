@@ -144,8 +144,8 @@ void CAnimBlendingFrame::updateBlendAnim()
 	//m_colladaComponent->onlyEnableAnimTrackChannel(0);
 
 	// enable blend anim
-	m_colladaComponent->enableAnimTrackChanel( 0, true );
-	m_colladaComponent->enableAnimTrackChanel( 1, true );	
+	m_colladaComponent->enableAnimTrackChannel( 0, true );
+	m_colladaComponent->enableAnimTrackChannel( 1, true );	
 
 	// synchronized blend anim
 	float f = 1.0f - m_trackbar->getPosition()/50.0f;	

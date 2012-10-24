@@ -7,7 +7,7 @@
 #include "CGameContainerSceneNode.h"
 
 class CColladaMeshComponent;
-
+class CColladaAnimation;
 
 #pragma region DAE_ENTITY_PARSE_DECLARE
 
@@ -194,7 +194,7 @@ struct SColladaAnimClip
 	float		duration;
 	bool		loop;
 
-	std::vector<SColladaNodeAnim*>				animInfo;
+	std::vector<SColladaNodeAnim*>					animInfo;
 	std::map<std::string, SColladaNodeAnim*>		animNameToInfo;
 
 	SColladaAnimClip()
@@ -270,7 +270,6 @@ struct SColladaAnimClip
 		return duration * baseFps;
 	}
 };
-
 #pragma endregion
 
 
@@ -281,7 +280,10 @@ protected:
 	CColladaMeshComponent*		m_component;
 	
 	CGameObject					*m_gameObject;
+	CColladaAnimation			*m_animation;
+
 	std::string					m_animeshFile;
+	std::string					m_animFileName;
 
 #pragma region DAE_PARSE_OBJECTS
 	//	list of effect in collada scene
@@ -295,6 +297,14 @@ protected:
 	bool						m_needFlip;
 #pragma endregion
 	
+
+#pragma region DAE_ANIMATION_PARSE_OBJECTS
+	SColladaAnimClip		m_globalClip;
+
+	std::vector<SColladaAnimClip*>				*m_colladaAnim;
+	std::map<std::string, SColladaAnimClip*>	*m_animWithName;
+#pragma endregion
+
 public:
 	CDaeUtils();
 	virtual ~CDaeUtils();
@@ -302,9 +312,11 @@ public:
 	void setCurrentComponent( CColladaMeshComponent *comp );	
 
 	void loadFile( const char *lpFilename, CGameObject* obj );
+	void loadDaeAnim( const char *lpFileName, CColladaAnimation	*collada);
+
+protected:
 
 #pragma region DAE_PARSE_FUNCTION
-protected:
 	// constructScene
 	// create scene node
 	void constructScene();
@@ -357,6 +369,28 @@ protected:
 	// cleanData
 	// free all data from parse dae
 	void cleanData();
+
+#pragma endregion
+
+#pragma region DAE_ANIMATION_PARSE_FUNCTION
+	// getRotationFrameID
+	// get a rotation frame id at time
+	bool getRotationFrameID( SColladaNodeAnim* frames, float frame, int *frameRotID, core::quaternion *rotateData );
+	bool getPositionFrameID( SColladaNodeAnim* frames, float frame, int *framePosID, core::vector3df  *positionData );
+	bool getScaleFrameID( SColladaNodeAnim* frames, float frame, int *frameScaleID, core::vector3df  *scaleData );
+
+
+	// parseAnimationNode
+	// parse anim node
+	void parseAnimationNode( io::IXMLReader *xmlRead );
+
+	// parseClipNode
+	// parse clip time node
+	void parseClipNode( io::IXMLReader *xmlRead );
+
+	// clippingDaeAnim
+	// clip a long clip to many clip
+	void clipDaeAnim();
 #pragma endregion
 
 };

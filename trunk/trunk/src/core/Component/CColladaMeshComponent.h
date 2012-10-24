@@ -19,33 +19,11 @@ class CColladaAnimation
 {
 protected:
 	std::string									m_animFileName;
+
 	std::vector<SColladaAnimClip*>				m_colladaAnim;
 	std::map<std::string, SColladaAnimClip*>	m_animWithName;
 
-	// input need for dae parse
-	bool					m_needFlip;
-	SColladaAnimClip		m_globalClip;
-	// ----------------------------------------
-
-protected:	
-
-	// getRotationFrameID
-	// get a rotation frame id at time
-	bool getRotationFrameID( SColladaNodeAnim* frames, float frame, int *frameRotID, core::quaternion *rotateData );
-	bool getPositionFrameID( SColladaNodeAnim* frames, float frame, int *framePosID, core::vector3df  *positionData );
-	bool getScaleFrameID( SColladaNodeAnim* frames, float frame, int *frameScaleID, core::vector3df  *scaleData );
-
-	// parseAnimationNode
-	// parse anim node
-	void parseAnimationNode( io::IXMLReader *xmlRead );
-
-	// parseClipNode
-	// parse clip time node
-	void parseClipNode( io::IXMLReader *xmlRead );
-
-	// clippingDaeAnim
-	// clip a long clip to many clip
-	void clipDaeAnim();
+protected:		
 
 	void loadDae( const char *lpFileName );
 	void loadDotAnim( const char *lpFileName );
@@ -77,6 +55,18 @@ public:
 		m_colladaAnim.push_back( clip );
 		m_animWithName[ clip->animName ] = clip;
 	}
+
+	std::vector<SColladaAnimClip*>* getAllAnimClip()
+	{
+		return &m_colladaAnim;
+	}
+
+	std::map<std::string, SColladaAnimClip*>* getAllAnimNameClip()
+	{
+		return &m_animWithName;
+	}
+
+	void removeAll();
 
 	void removeClip( const std::string& clipName );
 

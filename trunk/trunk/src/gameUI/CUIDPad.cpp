@@ -100,7 +100,8 @@ bool CUIDPad::onEvent( const SEvent& gameEvent)
 		else if ( gameEvent.MouseInput.Event == EMIE_LMOUSE_LEFT_UP )
 		{						
 			// set flag
-			CGameControl::getInstance()->setTouchIDStatus(m_controlID, 0);
+			if ( m_controlID != -1 )
+				CGameControl::getInstance()->setTouchIDStatus(m_controlID, 0);
 			
 			// release
 			m_controlID = -1;

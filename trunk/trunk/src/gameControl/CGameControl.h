@@ -59,13 +59,17 @@ public:
 	// set touch
 	inline void setTouchIDStatus(int id, int status)
 	{
-		m_touchIDStatus[id] = status;
+		if ( id >= 0 && id < MAX_MULTITOUCH )
+			m_touchIDStatus[id] = status;
 	}
 
 	// getTouchIDStatus
 	inline int getTouchIDStatus(int id)
 	{
-		return m_touchIDStatus[id];
+		if ( id >= 0 && id < MAX_MULTITOUCH )
+			return m_touchIDStatus[id];
+		else
+			return 1;
 	}
 
 	void resetTouchIDStatus();

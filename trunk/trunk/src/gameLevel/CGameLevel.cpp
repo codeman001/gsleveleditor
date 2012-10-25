@@ -537,6 +537,39 @@ void CGameLevel::unRegisterNetworkObjID( SNetworkObjID& networkID )
     m_mapNetworkObjID.erase(networkID);
 }
 
+// removeDisconectedObject
+// remove all object at host is disconected
+void CGameLevel::removeDisconectedObject( int hostKeyId )
+{
+    std::map<SNetworkObjID, long>::iterator i = m_mapNetworkObjID.begin(), end = m_mapNetworkObjID.end();
+        
+    std::vector<SNetworkObjID>  listDeleted;
+    
+    // remove object
+    while ( i != end )
+    {
+        if ( i->first.hostID == hostKeyId )
+        {
+            long objectID = i->second;
+            CGameObject *obj = searchObject( objectID);
+            if ( obj )
+            {
+                // delete object
+                obj->remove();
+            }
+            listDeleted.push_back( i->first );
+        }
+        i++;
+    }
+    
+    // remove key map
+    std::vector<SNetworkObjID>::iterator it = listDeleted.begin(), endit = listDeleted.end();
+    while ( it != endit )
+    {
+        m_mapNetworkObjID.erase( (*it) );
+        it++;
+    }
+}
 
 // render
 // render level per frame

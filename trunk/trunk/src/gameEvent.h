@@ -5,6 +5,7 @@ enum GameUserEvent
 {
 	EvtPlayerMove = 0,
     EvtNetworking,
+    EvtNetworkDisconected,
     EvtButtonRelease,
 	EvtCount
 };
@@ -30,6 +31,13 @@ struct SEventNetworking
     int     eventID;
     int     deviceID;    
     void    *data;
+};
+
+struct SEventNetworkingDisconected
+{
+    int     deviceID;
+    short   hostKeyID;
+    void    *dev;
 };
 
 struct SEventButtonRelease

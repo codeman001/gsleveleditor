@@ -9,6 +9,9 @@ protected:
 	CUIListview		*m_lstServerList;
     CUIButton       *m_btnMainMenu;
     CUIButton       *m_btnJoinGame;
+
+	bool			m_joinGame;
+	std::string		m_server;
 public:
 	CStateJoinGame();
 	virtual ~CStateJoinGame();

@@ -8,6 +8,7 @@
 CStateJoinGame::CStateJoinGame()
 	:CGameState( CGameState::GSStateJoinGame )
 {
+	m_joinGame = false;
 }
 
 CStateJoinGame::~CStateJoinGame()
@@ -124,7 +125,27 @@ void CStateJoinGame::onUpdate()
 			i--;
 		}
 	}
+
+	if ( m_joinGame )
+	{
+		CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
+		CGameLevel::setLevelProperty("isHost","false");				
+		CGameLevel::setLevelProperty("serverIP", m_server.c_str());
+
+		char keyID[512];
+		sprintf(keyID,"%d", m_mpMgr->getKeyID());
+		CGameLevel::setLevelProperty("keyID", keyID);
+
+		// hide fx flash
+		setFxAllStateVisible(CGameState::StateCount, false);
+
+		CGameStateMgr::getInstance()->popAllState();
+		CGameStateMgr::getInstance()->pushState( new CStateGameLoading() );
+
+		m_joinGame = false;
+	}
 #endif
+
 }
 
 void CStateJoinGame::onEvent(const SEvent& event)
@@ -138,19 +159,10 @@ void CStateJoinGame::onEvent(const SEvent& event)
     #ifdef HAS_MULTIPLAYER
             // check to joint game msg from server
             if ( networkEvent->eventID == CMultiplayerManager::AcceptJoinGame )
-            {
+            {				
                 const char *serverIP = m_mpMgr->getDeviceIp( networkEvent->deviceID ) ;
-
-				CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
-				CGameLevel::setLevelProperty("isHost","false");				
-				CGameLevel::setLevelProperty("serverIP", serverIP);
-
-				char keyID[512];
-				sprintf(keyID,"%d", m_mpMgr->getKeyID());
-				CGameLevel::setLevelProperty("keyID",keyID);
-
-				CGameStateMgr::getInstance()->popAllState();
-				CGameStateMgr::getInstance()->pushState( new CStateGameLoading() );
+				m_server = serverIP;				
+				m_joinGame = true;				
             }
     #endif
         }

@@ -125,6 +125,10 @@ public:
     // unpack data on multiplayer
     virtual void unpackDataMultiplayer(CDataPacket *packet, int hostKeyId);
     
+    // removeDisconectedObject
+    // remove all object at host is disconected
+    virtual void removeDisconectedObject( int hostKeyId );
+    
 	// render
 	// render level per frame
 	virtual void render();

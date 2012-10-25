@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "CComms.h"
+#include "IView.h"
+#include "gameEvent.h"
 
 #ifdef HAS_MULTIPLAYER
 
@@ -181,6 +183,20 @@ void CComms::updateDevices()
             }
             else if ( lastResponse > MP_GAME_TIMEOUT )
             {
+                SEvent event;
+                
+                SEventNetworkingDisconected lostConnected;
+                lostConnected.deviceID  = m_devices[j]->m_id;
+                lostConnected.hostKeyID = (long)m_devices[j]->m_deviceData;
+                lostConnected.dev       = m_devices[j];
+                
+                event.EventType = EET_GAME_EVENT;
+                event.GameEvent.EventID = EvtNetworkDisconected;
+                event.GameEvent.EventData = &lostConnected;
+                
+                getIView()->getDevice()->postEventFromUser(event);
+                
+                
                 delete m_devices[j];
                 m_devices[j] = NULL;
                 

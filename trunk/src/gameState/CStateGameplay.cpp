@@ -85,11 +85,11 @@ void CStateGameplay::onRender()
 
 void CStateGameplay::onEvent(const SEvent& event)
 {
+#ifdef HAS_MULTIPLAYER    
     if ( event.EventType == EET_GAME_EVENT && event.GameEvent.EventID == (s32)EvtNetworking )
     {
         SEventNetworking *networkEvent = ((SEventNetworking*)event.GameEvent.EventData);                
         
-#ifdef HAS_MULTIPLAYER
         // todo unpack data
         if ( networkEvent->eventID == CMultiplayerManager::GameData )
         {
@@ -98,7 +98,12 @@ void CStateGameplay::onEvent(const SEvent& event)
             int hostKeyID = (int)gamePacket->getShort();
             m_level->unpackDataMultiplayer(gamePacket, hostKeyID);
         }
-#endif
-        
     }
+    else if ( event.EventType == EET_GAME_EVENT && event.GameEvent.EventID == (s32)EvtNetworkDisconected)
+    {
+        SEventNetworkingDisconected *networkDisconected = ((SEventNetworkingDisconected*)event.GameEvent.EventData);
+        
+        // remove disconected object
+    }
+#endif    
 }

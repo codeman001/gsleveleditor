@@ -98,12 +98,25 @@ void CStateGameplay::onEvent(const SEvent& event)
             int hostKeyID = (int)gamePacket->getShort();
             m_level->unpackDataMultiplayer(gamePacket, hostKeyID);
         }
+		else if ( networkEvent->eventID == CMultiplayerManager::PlayerQuit )
+		{
+			CDataPacket *gamePacket = (CDataPacket*)networkEvent->data;
+
+            int hostKeyID = (int)gamePacket->getShort();
+			m_level->removeDisconectedObject(hostKeyID);
+		}
+
     }
-    else if ( event.EventType == EET_GAME_EVENT && event.GameEvent.EventID == (s32)EvtNetworkDisconected)
+    else if ( event.EventType == EET_GAME_EVENT && event.GameEvent.EventID == (s32)EvtNetworkDisconected )
     {
-        SEventNetworkingDisconected *networkDisconected = ((SEventNetworkingDisconected*)event.GameEvent.EventData);
-        
-        // remove disconected object
+		SEventNetworkingDisconected *networkDisconected = ((SEventNetworkingDisconected*)event.GameEvent.EventData);
+		
+		// send player quit message to all client
+		if ( m_mpMgr->isServer() )
+			m_mpMgr->sendPlayerQuit(networkDisconected->hostKeyID);
+
+		// remove disconected objects
+		m_level->removeDisconectedObject(networkDisconected->hostKeyID);
     }
 #endif    
 }

@@ -85,6 +85,13 @@ public:
 	{
 		m_keyID = id;
 	}
+
+	// isServer
+	// check if host is server
+	inline bool isServer()
+	{
+		return m_isServer;
+	}
 public:
     
 	// sendDiscoveryPacket
@@ -111,6 +118,9 @@ public:
     // send game data
     bool sendGameDataMessage(CGameLevel *level);
     
+	// sendPlayerQuit	
+	bool sendPlayerQuit(short hostID);
+
     // onRevcData
 	// process when revc data
 	bool onRevcData( unsigned char *buffer, int size, int devID, void *addr );
@@ -136,7 +146,7 @@ protected:
     bool doMsgGetName( CDataPacket& packet, void* addr, int devID );
 
     // doMsgResponseName    
-    bool doMsgResponseName( CDataPacket& packet, void* addr, int devID );
+    bool doMsgResponseName( CDataPacket& packet, void* addr, int devID );	
 };
 
 #endif

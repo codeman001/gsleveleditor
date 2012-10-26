@@ -25,13 +25,30 @@ CApplication::CApplication()
 bool CApplication::OnEvent(const SEvent& event)
 {
 	// need copy to another array.
-	// because the game will crash if registerEvent
+	// because the game will crash if registerEvent or unregister
 	std::vector<eventType> eventWillProcess = m_eventReceivers;
 
 	std::vector<eventType>::iterator i = eventWillProcess.begin(), end = eventWillProcess.end();
 	while ( i != end )
 	{
-		(*i).second->OnEvent( event );
+		bool sendEvent = false;
+
+		// we need check
+		std::vector<eventType>::iterator j = m_eventReceivers.begin(), jend = m_eventReceivers.end();
+		while ( j != jend )
+		{
+			if ( (*i).second == (*j).second )
+			{
+				sendEvent = true;
+				break;
+			}
+			j++;
+		}
+
+		// ok send event
+		if ( sendEvent )
+			(*i).second->OnEvent( event );
+
 		i++;
 	}
 

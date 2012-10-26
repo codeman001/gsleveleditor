@@ -160,6 +160,20 @@ bool CMultiplayerManager::sendGetNameMessage()
 	return m_comm->sendData( packet.getMessageData(), packet.getMessageSize(), 0 );
 }
 
+// sendPlayerQuit	
+bool CMultiplayerManager::sendPlayerQuit(short hostID)
+{	
+	CDataPacket packet(64);
+	packet.addByte( (unsigned char) CMultiplayerManager::PlayerQuit );
+	packet.addShort(hostID);
+	packet.packData();
+	
+	if ( m_isServer )
+		return m_comm->sendDataToAll( packet.getMessageData(), packet.getMessageSize() );
+
+	return m_comm->sendData( packet.getMessageData(), packet.getMessageSize(), 0 );
+}
+
 // sendGameDataMessage
 // send game data
 bool CMultiplayerManager::sendGameDataMessage(CGameLevel *level)
@@ -305,7 +319,12 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
                 {
                     // todo nothing
                 }
-                break; 
+                break;
+			case CMultiplayerManager::PlayerQuit:
+				{
+					// todo nothing					
+				}
+				break;
             case CMultiplayerManager::GameData:
                 {
                     // forward data to all client

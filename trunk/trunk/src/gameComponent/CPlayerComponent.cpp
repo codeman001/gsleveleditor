@@ -41,7 +41,8 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_runFastSpeed			= 0.5f;
 
 	m_runCommand	= false;			
-
+    m_gunOnCommand  = false;
+    
 	m_runFactor = 0.0f;
 	m_runAccel	= 0.002f;
 	m_runToRunFastAccel = 0.003f;
@@ -205,6 +206,15 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 			// check run command
 			m_runCommand	= m_playerMoveEvt.run;
 		}
+        else if ( irrEvent.GameEvent.EventID == EvtPlayerCommand )
+        {
+            m_playerCmdEvt = *((SEventPlayerCommand*)irrEvent.GameEvent.EventData);
+            
+            if ( m_playerCmdEvt.fire || m_playerCmdEvt.aim || m_playerCmdEvt.reload )
+                m_gunOnCommand = true;
+            else
+                m_gunOnCommand = false;
+        }
 	}
 
 	return true;
@@ -244,6 +254,9 @@ void CPlayerComponent::updateState()
     case CPlayerComponent::PlayerRunFastToRun:
         updateStateRunFastToRun();
         break;
+    case CPlayerComponent::PlayerStandAim:
+        updateStateStandAim();
+        break;
 	}
 }
 
@@ -277,9 +290,9 @@ void CPlayerComponent::updateStateIdle()
 		setSpineLookAt( lookPos, 1.0f );
 	
 		if ( m_runCommand )
-		{	
 			setState( CPlayerComponent::PlayerTurn );			
-		}
+        else if ( m_gunOnCommand )
+            setState( CPlayerComponent::PlayerStandAim );
 
         // reinit state
 		if ( m_animCurrentTime <= 0 )
@@ -1059,6 +1072,41 @@ void CPlayerComponent::updateStateRunFastToRun()
     }    
 }
 
+void CPlayerComponent::updateStateStandAim()
+{
+    static float s_aimAnimFactor = 0.0f;
+    
+    if ( m_subState == SubStateInit )
+    {        
+		m_collada->setCrossFadeAnimation(m_animAimStraight.c_str(), 0, 10, true);
+        
+        s_aimAnimFactor = 0.0f;
+        m_subState = SubStateActive;        
+    }
+    else if ( m_subState == SubStateEnd )
+    {		
+        m_collada->setCrossFadeAnimation(m_animIdle[0].c_str(), 0, 10, true);        
+        doNextState();		
+    }
+    else
+    {
+        ISceneCollisionManager *colMgr = getIView()->getSceneMgr()->getSceneCollisionManager();
+        
+        core::line3df ray = getCameraRay();
+        
+        core::vector3df     outPoint;
+        core::triangle3df   outTri;
+        colMgr->getSceneNodeAndCollisionPointFromRay(ray, outPoint, outTri);
+        
+        core::line3df       line;
+        line.start = m_gameObject->getPosition();
+        line.end = outPoint;
+        CGameDebug::getInstance()->addDrawLine(line, SColor(255,255,0,0));
+        
+        if ( m_runCommand )
+            setState(CPlayerComponent::PlayerRun);
+    }    
+}
 
 //void CPlayerComponent::updateStateTEMPLATE()
 //{
@@ -1433,4 +1481,15 @@ float CPlayerComponent::fixAngle( float f )
 	else if (realIsEqual(f, -1.f, 0.001f))
 		f = -1.f;
 	return f;
+}
+
+// getCameraRay
+// get camera view ray
+core::line3df CPlayerComponent::getCameraRay()
+{
+    core::line3d<f32> ray;
+    ICameraSceneNode *camera = getIView()->getSceneMgr()->getActiveCamera();
+    ray.start = camera->getPosition();
+    ray.end = ray.start + (camera->getTarget() - ray.start).normalize() * 1000.0f;
+    return ray;
 }

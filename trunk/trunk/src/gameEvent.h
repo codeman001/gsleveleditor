@@ -4,6 +4,7 @@
 enum GameUserEvent
 {
 	EvtPlayerMove = 0,
+	EvtPlayerCommand,    
     EvtNetworking,
     EvtNetworkDisconected,
     EvtButtonRelease,
@@ -24,6 +25,20 @@ struct SEventPlayerMove
 		run			= false;
         runFast     = false;
 	}
+};
+
+struct SEventPlayerCommand
+{
+    bool    fire;
+    bool    reload;
+    bool    aim;
+    
+    SEventPlayerCommand()
+    {
+        fire    = false;
+        reload  = false;
+        aim     = false;
+    }
 };
 
 struct SEventNetworking

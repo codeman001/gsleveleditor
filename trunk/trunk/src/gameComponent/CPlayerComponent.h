@@ -28,6 +28,8 @@ public:
 		PlayerRunFast,
         PlayerRunToRunFast,
         PlayerRunFastToRun,
+        PlayerStandAim,
+        PlayerRunAim,
 		NumStateCount
 	};
 
@@ -48,7 +50,10 @@ protected:
 	float					m_runFastSpeed;
 
 	bool					m_runCommand;
+    bool                    m_gunOnCommand;
+    
 	SEventPlayerMove		m_playerMoveEvt;
+    SEventPlayerCommand     m_playerCmdEvt;
 	core::vector3df			m_controlRotate;
 
 	float					m_animShotCurrentTime;
@@ -175,6 +180,7 @@ protected:
 	void updateStateRunFast();
     void updateStateRunToRunFast();
     void updateStateRunFastToRun();
+    void updateStateStandAim();
     
 	// isFinishedAnim	
 	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0 );
@@ -240,6 +246,11 @@ public:
 
 	// fixAngle
 	float fixAngle( float f );
+    
+    // getCameraRay
+    // get camera view ray
+    core::line3df getCameraRay();
+    
 };
 
 #endif

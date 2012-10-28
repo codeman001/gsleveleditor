@@ -123,8 +123,8 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	const int KeyRight	= SHIFTBIT(3);
 	const int KeyBack	= SHIFTBIT(4);
 	const int KeyFire	= SHIFTBIT(5);
-    const int KeyRunFast= SHIFTBIT(6);    
-
+    const int KeyRunFast= SHIFTBIT(6);
+    
 	if ( event.KeyInput.PressedDown )
 	{
 		if (  key == irr::KEY_UP || key == irr::KEY_KEY_W )
@@ -162,6 +162,7 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	bool runLeft	= false;
 	bool runRight	= false;
     bool runFast    = false;
+    bool fire       = false;
     
 	// calc rotation
 	if ( (m_keyActionBit & KeyLeft) != 0 )
@@ -190,6 +191,9 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 
     if ( (m_keyActionBit & KeyRunFast) != 0 )
         runFast = true;
+    
+    if ( (m_keyActionBit & KeyFire) != 0 )
+        fire = true;
     
 	// calc player rotation
 	float rot = 0.0f;
@@ -224,6 +228,12 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	else		
 		sendPlayerStopEvent();
 
+    // send event to player component
+    if ( fire )
+        sendPlayerCommand(true, false, false);
+    else
+        sendPlayerCommand(false, false, false);
+    
 	return true;
 }
 
@@ -277,4 +287,21 @@ void CGameControl::sendPlayerRunEvent(float f, float rotate, bool runFast)
 	playerMove.GameEvent.EventID = (s32)EvtPlayerMove;
 	playerMove.GameEvent.EventData = &moveEvent;
 	getIView()->getDevice()->postEventFromUser( playerMove );
+}
+
+void CGameControl::sendPlayerCommand(bool fire, bool reload, bool aim)
+{
+    if ( m_isEnable == false )
+        return;
+    
+	static SEvent playerCommand;
+	static SEventPlayerCommand command;
+	command.fire = fire;
+    command.aim = aim;
+    command.reload = reload;
+    
+	playerCommand.EventType = EET_GAME_EVENT;
+	playerCommand.GameEvent.EventID = (s32)EvtPlayerCommand;
+	playerCommand.GameEvent.EventData = &command;
+	getIView()->getDevice()->postEventFromUser( playerCommand );
 }

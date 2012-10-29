@@ -291,11 +291,9 @@ void CPlayerComponent::updateStateIdle()
 		core::vector3df lookPos = m_gameObject->getPosition() + m_gameObject->getFront();
 		setSpineLookAt( lookPos, 1.0f );
 	
-		if ( m_runCommand )
+		if ( m_runCommand || m_gunOnCommand )
 			setState( CPlayerComponent::PlayerTurn );			
-        else if ( m_gunOnCommand )
-            setState( CPlayerComponent::PlayerStandAim );
-
+        
         // reinit state
 		if ( m_animCurrentTime <= 0 )
 			m_subState = SubStateInit;
@@ -356,10 +354,21 @@ void CPlayerComponent::updateStateTurn()
 				
 		if ( turnFinish )
 		{
-            if ( s_runFast )
-                setState( CPlayerComponent::PlayerRunFast );                
-            else
-                setState( CPlayerComponent::PlayerRun );
+			if ( m_runCommand )
+			{
+				if ( s_runFast )
+					setState( CPlayerComponent::PlayerRunFast );
+				else
+					setState( CPlayerComponent::PlayerRun );
+			}
+			else if ( m_gunOnCommand )
+			{
+				setState( CPlayerComponent::PlayerStandAim );
+			}
+			else
+			{
+				setState( CPlayerComponent::PlayerIdle );
+			}
 		}
 	}
 }
@@ -1100,12 +1109,10 @@ void CPlayerComponent::updateStateStandAim()
         //core::vector3df     outPoint;
         //core::triangle3df   outTri;
         //colMgr->getSceneNodeAndCollisionPointFromRay(ray, outPoint, outTri);
-        		
-        core::line3df       line;
-        line.start	= m_gameObject->getPosition();
-        line.end	= colPos;
-        CGameDebug::getInstance()->addDrawLine(line, SColor(255,255,0,0));
-        
+        		        
+		float a = getAimAngle(colPos);
+		printf("aim: %f\n", a);
+
         if ( m_runCommand )
             setState(CPlayerComponent::PlayerRun);
     }    
@@ -1496,6 +1503,28 @@ float CPlayerComponent::fixAngle( float f )
 	else if (realIsEqual(f, -1.f, 0.001f))
 		f = -1.f;
 	return f;
+}
+
+float CPlayerComponent::getAimAngle( const core::vector3df aimPoint )
+{
+	CGameColladaSceneNode *spine = m_collada->getSceneNode("Spine3");	
+	
+	core::vector3df aimRay = aimPoint - spine->getAbsolutePosition();
+	aimRay.normalize();
+	core::vector3df base = m_gameObject->getFront();
+
+	// add for debug
+	core::line3df       line;
+    line.start	= spine->getAbsolutePosition();
+    line.end	= spine->getAbsolutePosition() + aimRay*400;
+	CGameDebug::getInstance()->addDrawLine(line, SColor(255,0,255,0));
+
+	line.start	= spine->getAbsolutePosition();
+    line.end	= spine->getAbsolutePosition() + base*400;
+	CGameDebug::getInstance()->addDrawLine(line, SColor(255,255,0,0));
+	// end add for debug
+
+	return getAngle(aimRay, base);
 }
 
 // getCameraRay

@@ -3,6 +3,8 @@
 #include "LevelScript.h"
 #include "IView.h"
 
+#include "CTerrainComponent.h"
+
 /////////////////////////////////////////////////////////
 // CGameLevel static function implement
 /////////////////////////////////////////////////////////
@@ -591,4 +593,64 @@ void CGameLevel::setCamera( CGameCamera* cam )
 CGameCamera* CGameLevel::getCamera()
 {
 	return getIView()->getActiveCamera();
+}
+
+// checkCollide
+// check terrain collide
+bool CGameLevel::checkTerrainCollide( core::line3df& ray, core::vector3df& outPos, core::triangle3df& outTri )
+{	
+	core::aabbox3df myBox(ray.start, ray.end);	
+	myBox.repair();
+	
+	core::triangle3df	colTri;
+	core::vector3df		colPos;
+
+	bool	hasCol = false;
+
+	float	maxLength	= ray.getLengthSQ();		
+	float	minDistance = ray.getLength();
+
+	// loop for all zone
+	int nZone = getZoneCount();
+	for ( int iZone = 0; iZone < nZone; iZone++ )
+	{
+		CZone *z = getZone( iZone );
+		core::aabbox3df zoneBox = z->getSceneNode()->getTransformedBoundingBox();		
+		
+		if ( zoneBox.intersectsWithBox( myBox ) == true )
+		{
+			// loop all terrain object in zone
+			ArrayGameObject& terrains = z->getTerrainList();
+			ArrayGameObject::iterator itTerrain = terrains.begin(), itTerrainEnd = terrains.end();
+			while ( itTerrain != itTerrainEnd )
+			{
+				CGameObject *objTerrain = ((CGameObject*) *itTerrain);
+
+				// loop all scene node in a terrain object
+				CTerrainComponent* com  = (CTerrainComponent*)objTerrain->getComponent( IObjectComponent::Terrain );
+				if ( com )
+				{
+					core::line3df colRay = ray;
+
+					if ( com->getCollisionFromRay(colRay, maxLength, colPos, colTri) == true )
+					{
+						float distance = colPos.getDistanceFrom(ray.start);
+						if ( distance < minDistance ) 
+						{							
+							minDistance = distance;
+							hasCol = true;
+
+							outPos = colPos;
+							outTri = colTri;
+						}
+					}
+				}
+				
+				itTerrain++;
+			}
+		}
+
+	}
+
+	return hasCol;
 }

@@ -55,6 +55,8 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 
 	m_spineRotation = 0.0f;
 	m_lastRotation = 0.0f;
+
+	m_init = true;
 	
 }
 
@@ -151,7 +153,7 @@ void CPlayerComponent::initComponent()
 	m_inventory	= (CInventoryComponent*)m_gameObject->getComponent( CGameComponent::InventoryComponent );
 
 	// register event
-	getIView()->registerEvent("CPlayerComponent", this);
+	getIView()->registerEvent("CPlayerComponent", this);	
 }
 
 // update
@@ -265,7 +267,7 @@ void CPlayerComponent::updateState()
 ///////////////////////////////////////////////////////////////////////
 
 void CPlayerComponent::updateStateIdle()
-{
+{	
 	stepAnimationTime();
 
 	if ( m_subState == SubStateInit )
@@ -1092,15 +1094,16 @@ void CPlayerComponent::updateStateStandAim()
     {
         ISceneCollisionManager *colMgr = getIView()->getSceneMgr()->getSceneCollisionManager();
         
-        core::line3df ray = getCameraRay();
-        
-        core::vector3df     outPoint;
-        core::triangle3df   outTri;
-        colMgr->getSceneNodeAndCollisionPointFromRay(ray, outPoint, outTri);
-        
+        core::line3df	ray		= getCameraRay();
+		core::vector3df	colPos	= getCollisionPoint(ray);
+
+        //core::vector3df     outPoint;
+        //core::triangle3df   outTri;
+        //colMgr->getSceneNodeAndCollisionPointFromRay(ray, outPoint, outTri);
+        		
         core::line3df       line;
-        line.start = m_gameObject->getPosition();
-        line.end = outPoint;
+        line.start	= m_gameObject->getPosition();
+        line.end	= colPos;
         CGameDebug::getInstance()->addDrawLine(line, SColor(255,255,0,0));
         
         if ( m_runCommand )
@@ -1323,7 +1326,6 @@ bool CPlayerComponent::isFinishedAnim( std::vector<CGameColladaSceneNode*>& node
 
 	return true;
 }
-
 // updateWeaponPosition
 // update weapon
 void CPlayerComponent::updateWeaponPosition()
@@ -1390,7 +1392,20 @@ core::vector3df CPlayerComponent::getCameraFrontVector()
 	core::vector3df front = cam->getTarget() - cam->getPosition();
 	front.Y = 0;
 	front.normalize();
+
+	// rotate to right
+	core::matrix4 mat;
+	mat.setRotationDegrees( core::vector3df(0, 10, 0) );
+	mat.transformVect(front);
+
 	return front;
+
+	//core::line3df cameraRay = getCameraRay();
+	//core::vector3df point = getCollisionPoint(cameraRay);
+
+	//core::vector3df front = point - m_gameObject->getPosition();
+	//front.normalize();
+	//return front;
 }
 
 // turnToDir
@@ -1492,4 +1507,26 @@ core::line3df CPlayerComponent::getCameraRay()
     ray.start = camera->getPosition();
     ray.end = ray.start + (camera->getTarget() - ray.start).normalize() * 1000.0f;
     return ray;
+}
+
+// getCollisionPoint
+// check collision
+core::vector3df CPlayerComponent::getCollisionPoint( core::line3df ray )
+{
+	core::vector3df ret;
+	
+	core::vector3df     outPoint;
+	core::triangle3df   outTri;
+
+	CGameLevel *level =	CGameLevel::getCurrentLevel();
+	if ( level->checkTerrainCollide(ray, outPoint, outTri) == true )
+	{
+		ret = outPoint;
+	}
+	else
+	{
+		ret = ray.end;
+	}
+	 
+	return ret;
 }

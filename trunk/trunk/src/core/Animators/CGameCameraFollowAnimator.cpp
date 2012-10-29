@@ -124,7 +124,7 @@ void CGameCameraFollowAnimator::animateNode(ISceneNode* node, u32 timeMs)
 
 	// recalc target (look at right character)
 	target = target - pos;
-	mat.setRotationDegrees( core::vector3df(0, 10, 0) );
+	mat.setRotationDegrees( core::vector3df(0, 20, 0) );
 	mat.transformVect(target);
 	target = pos + target;
 
@@ -220,6 +220,7 @@ bool CGameCameraFollowAnimator::checkCollide( const core::vector3df& target, con
 				{
 					if ( com->getCollisionFromRay( ray, maxLength, colPos, colTri ) == true )
 					{
+						// we need check from <colpos> to <target> to find the farthest point
 						float distance = colPos.getDistanceFrom(target);
 						if ( distance < minDistance ) 
 						{							

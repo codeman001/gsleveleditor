@@ -147,6 +147,10 @@ public:
 	// get current camera
 	CGameCamera* getCamera();
 
+	// checkTerrainCollide
+	// check terrain collide
+	bool checkTerrainCollide( core::line3df& ray, core::vector3df& outPos, core::triangle3df& outTri );
+
 };
 
 #endif

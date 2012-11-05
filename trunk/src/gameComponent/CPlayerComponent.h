@@ -193,6 +193,8 @@ protected:
 	// calc animation
 	void calcRunAnimationBlend(float rot, float &forward, float &backward, float &left, float &right);
 
+	void calcAimAnimationBlend(core::vector2df angle, float &up, float &down, float &left, float &right);
+
 	// updateActionShotWeapon
 	// shoot weapon action
 	void updateActionShotWeapon();
@@ -244,7 +246,7 @@ public:
 	// getRatioWithAngle	
 	float getRatioWithAngle( const core::vector3df& turnFrom, const core::vector3df& turnTo, float angle );
 	float getAngle( const core::vector3df& v1, const core::vector3df& v2 );
-	float getAimAngle( const core::vector3df aimPoint );
+	core::vector2df getAimAngle( const core::vector3df aimPoint );
 
 	// fixAngle
 	float fixAngle( float f );

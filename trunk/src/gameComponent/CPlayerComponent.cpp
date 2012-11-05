@@ -291,9 +291,11 @@ void CPlayerComponent::updateStateIdle()
 		core::vector3df lookPos = m_gameObject->getPosition() + m_gameObject->getFront();
 		setSpineLookAt( lookPos, 1.0f );
 	
-		if ( m_runCommand || m_gunOnCommand )
+		if ( m_runCommand )
 			setState( CPlayerComponent::PlayerTurn );			
-        
+		else if ( m_gunOnCommand )
+			setState( CPlayerComponent::PlayerStandAim );
+
         // reinit state
 		if ( m_animCurrentTime <= 0 )
 			m_subState = SubStateInit;
@@ -360,11 +362,7 @@ void CPlayerComponent::updateStateTurn()
 					setState( CPlayerComponent::PlayerRunFast );
 				else
 					setState( CPlayerComponent::PlayerRun );
-			}
-			else if ( m_gunOnCommand )
-			{
-				setState( CPlayerComponent::PlayerStandAim );
-			}
+			}		
 			else
 			{
 				setState( CPlayerComponent::PlayerIdle );
@@ -1090,7 +1088,24 @@ void CPlayerComponent::updateStateStandAim()
     if ( m_subState == SubStateInit )
     {        
 		m_collada->setCrossFadeAnimation(m_animAimStraight.c_str(), 0, 10, true);
-        
+        m_collada->setAnimWeight(1.0f, 0);
+
+		m_collada->setAnimation(m_animAimUp.c_str(),	2, true );
+		m_collada->setAnimWeight(0.0f, 2);
+		m_collada->enableAnimTrackChannel(2, true);
+
+		m_collada->setAnimation(m_animAimDown.c_str(),	3, true );
+		m_collada->setAnimWeight(0.0f, 3);
+		m_collada->enableAnimTrackChannel(3, true);
+
+		m_collada->setAnimation(m_animAimLeft.c_str(),	4, true );
+		m_collada->setAnimWeight(0.0f, 4);
+		m_collada->enableAnimTrackChannel(4, true);
+
+		m_collada->setAnimation(m_animAimRight.c_str(),	5, true );
+		m_collada->setAnimWeight(0.0f, 5);
+		m_collada->enableAnimTrackChannel(5, true);
+
         s_aimAnimFactor = 0.0f;
         m_subState = SubStateActive;        
     }
@@ -1110,8 +1125,12 @@ void CPlayerComponent::updateStateStandAim()
         //core::triangle3df   outTri;
         //colMgr->getSceneNodeAndCollisionPointFromRay(ray, outPoint, outTri);
         		        
-		float a = getAimAngle(colPos);
-		printf("aim: %f\n", a);
+		core::vector2df ret = getAimAngle(colPos);
+
+		float wUp, wDown, wLeft, wRight;
+		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
+		
+		printf("aim: %f %f\n", ret.X, ret.Y);
 
         if ( m_runCommand )
             setState(CPlayerComponent::PlayerRun);
@@ -1316,6 +1335,10 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
     
 }
 
+void CPlayerComponent::calcAimAnimationBlend(core::vector2df angle, float &up, float &down, float &left, float &right)
+{
+}
+
 // isFinishedAnim	
 bool CPlayerComponent::isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel )
 {
@@ -1399,20 +1422,7 @@ core::vector3df CPlayerComponent::getCameraFrontVector()
 	core::vector3df front = cam->getTarget() - cam->getPosition();
 	front.Y = 0;
 	front.normalize();
-
-	// rotate to right
-	core::matrix4 mat;
-	mat.setRotationDegrees( core::vector3df(0, 10, 0) );
-	mat.transformVect(front);
-
 	return front;
-
-	//core::line3df cameraRay = getCameraRay();
-	//core::vector3df point = getCollisionPoint(cameraRay);
-
-	//core::vector3df front = point - m_gameObject->getPosition();
-	//front.normalize();
-	//return front;
 }
 
 // turnToDir
@@ -1505,26 +1515,45 @@ float CPlayerComponent::fixAngle( float f )
 	return f;
 }
 
-float CPlayerComponent::getAimAngle( const core::vector3df aimPoint )
+core::vector2df CPlayerComponent::getAimAngle( const core::vector3df aimPoint )
 {
+	core::vector2df ret;
+
 	CGameColladaSceneNode *spine = m_collada->getSceneNode("Spine3");	
-	
-	core::vector3df aimRay = aimPoint - spine->getAbsolutePosition();
+	core::vector3df spinePoint = spine->getAbsolutePosition();
+
+	core::vector3df aimRay	= aimPoint - spinePoint;
+	core::vector3df base	= m_gameObject->getFront();
+
 	aimRay.normalize();
-	core::vector3df base = m_gameObject->getFront();
 
-	// add for debug
-	core::line3df       line;
-    line.start	= spine->getAbsolutePosition();
-    line.end	= spine->getAbsolutePosition() + aimRay*400;
-	CGameDebug::getInstance()->addDrawLine(line, SColor(255,0,255,0));
+	core::plane3df plane;
+	
+	// projection to right plane
+	core::vector3df outRight;
+	plane.setPlane( spinePoint, m_gameObject->getRight() );
+	plane.getIntersectionWithLine( aimPoint, m_gameObject->getRight(), outRight );
 
-	line.start	= spine->getAbsolutePosition();
-    line.end	= spine->getAbsolutePosition() + base*400;
-	CGameDebug::getInstance()->addDrawLine(line, SColor(255,255,0,0));
-	// end add for debug
+	// projection to top plane
+	core::vector3df outTop;
+	plane.setPlane( spinePoint, m_gameObject->getUp() );
+	plane.getIntersectionWithLine( aimPoint, m_gameObject->getUp(), outTop );
 
-	return getAngle(aimRay, base);
+	// calc result
+	core::vector3df aimRayX	= outTop - spinePoint;
+	aimRayX.normalize();
+	ret.X = getAngle(aimRayX, base);
+
+	core::vector3df aimRayY	= outRight - spinePoint;
+	aimRayY.normalize();
+	ret.Y = fabsf(getAngle(aimRayY, base));
+	if ( outRight.Y < spinePoint.Y )
+		ret.Y = -ret.Y;
+
+	ret.X = core::clamp<float>(ret.X, -45.0f, 45.0f);
+	ret.Y = core::clamp<float>(ret.Y, -45.0f, 45.0f);
+
+	return ret;
 }
 
 // getCameraRay

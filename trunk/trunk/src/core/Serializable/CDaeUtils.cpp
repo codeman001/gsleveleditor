@@ -1186,7 +1186,7 @@ void CDaeUtils::parseMaterialNode( io::IXMLReader *xmlRead, SEffect* effect )
 			if ( hasTexture == false && readInitFrom == 1 )
 			{
 				std::wstring tname = xmlRead->getNodeData();
-				effect->Mat.setTexture( 0, getTextureFromImage( m_animeshFile, tname, m_listImages ) );
+				effect->Mat.setTexture( 0, getTextureFromImage( m_animeshFile, tname, m_listImages ) );				
 				hasTexture = true;
 			}
 
@@ -1506,7 +1506,7 @@ void CDaeUtils::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMe
 		return;
 
 	// position buffer
-	position = &mesh->Buffers[vertices->PositionIndex];
+	position = &mesh->Buffers[vertices->PositionIndex];	
 
 	if ( vertices->NormalIndex != -1 )
 		normal = &mesh->Buffers[vertices->NormalIndex];
@@ -1516,36 +1516,39 @@ void CDaeUtils::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMe
 
 	if ( vertices->TexCoord2Index != -1 )
 		texCoord2 =	&mesh->Buffers[vertices->TexCoord2Index];
-
-	// alloc vertex
-	int vertexCount = position->ArrayCount/3;
-	mbuffer->Vertices.reallocate(mbuffer->Vertices.size() + vertexCount);
-		
+	
+	// index buffer
 	core::array<u16> indices;
 
-	for ( int i = 0; i < vertexCount; i++ )
+	// if have the normal & texcoord
+	if ( tri->NumElementPerVertex == 1 )
 	{
-		video::S3DVertex vtx;
-		vtx.Color = SColor(0xFFFFFFFF);
+		// alloc number of vertex
+		int vertexCount = position->ArrayCount/3;
+		mbuffer->Vertices.reallocate(mbuffer->Vertices.size() + vertexCount);
 
-		int vIndex = i;
-		int idx = vIndex * position->Strike;
+		// add to vertex buffer
+		for ( int i = 0; i < vertexCount; i++ )
+		{
+			video::S3DVertexSkin vtx;
+			vtx.Color = SColor(0xFFFFFFFF);
 
-		// set position
-		vtx.Pos.X = position->FloatArray[idx+0];
-		if (flip)
-		{
-			vtx.Pos.Z = position->FloatArray[idx+1];
-			vtx.Pos.Y = position->FloatArray[idx+2];
-		}
-		else
-		{
-			vtx.Pos.Y = position->FloatArray[idx+1];
-			vtx.Pos.Z = position->FloatArray[idx+2];
-		}
+			int vIndex = i;
+			int idx = vIndex * position->Strike;
 
-		if ( tri->NumElementPerVertex == 1 )
-		{
+			// set position
+			vtx.Pos.X = position->FloatArray[idx+0];
+			if (flip)
+			{
+				vtx.Pos.Z = position->FloatArray[idx+1];
+				vtx.Pos.Y = position->FloatArray[idx+2];
+			}
+			else
+			{
+				vtx.Pos.Y = position->FloatArray[idx+1];
+				vtx.Pos.Z = position->FloatArray[idx+2];
+			}
+
 			// set normal
 			if ( normal != NULL )
 			{		
@@ -1565,7 +1568,7 @@ void CDaeUtils::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMe
 			}
 
 			// set texcoord
-			if ( texCoord1 ) 
+			if ( texCoord1 != NULL ) 
 			{
 				idx = vIndex * texCoord1->Strike;
 				if ( texCoord1 != NULL )
@@ -1574,47 +1577,116 @@ void CDaeUtils::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMe
 					vtx.TCoords.Y = texCoord1->FloatArray[idx+1];
 				}
 			}
-		}
-		mbuffer->Vertices.push_back( vtx );
-	}
-		
-	indices.set_used( tri->NumPolygon * 3 );
-	
+				
+			mbuffer->Vertices.push_back( vtx );
+		}	
 
-	int totalElement = tri->NumPolygon * tri->NumElementPerVertex * 3;	
-	int index = 0;
-	for ( int i = 0; i < totalElement; i+= tri->NumElementPerVertex)
-	{
-		indices[index] = tri->IndexBuffer[i];
-	
-		if ( tri->NumElementPerVertex != 1 )
+		// setup index buffer
+		indices.set_used( tri->NumPolygon * 3 );
+		int totalElement = tri->NumPolygon * tri->NumElementPerVertex * 3;	
+		int index = 0;
+		for ( int i = 0; i < totalElement; i+= tri->NumElementPerVertex)
 		{
-			video::S3DVertex &vtx = mbuffer->Vertices[ tri->IndexBuffer[i] ];
-			if ( normal != NULL )
+			indices[index] = tri->IndexBuffer[i];
+			index++;
+		}
+
+	}
+	else
+	{
+		m_vertexMap.clear();
+
+		indices.set_used( tri->NumPolygon * 3 );
+
+		int totalElement = tri->NumPolygon * tri->NumElementPerVertex * 3;	
+		int index = 0;
+
+		int vertexID = 0;
+		SColladaVertexIndex	vertexIndex;
+
+		for ( int i = 0; i < totalElement; i+= tri->NumElementPerVertex)
+		{		
+			// reset collada index
+			vertexIndex.vertexId	= tri->IndexBuffer[i] * position->Strike;							
+			vertexIndex.normalId	= -1;
+			vertexIndex.texcoordId	= -1;
+
+			// sync texcoord & position
+			if ( texCoord1 != NULL )
+				vertexIndex.texcoordId	= tri->IndexBuffer[i + tri->OffsetTexcoord1] * texCoord1->Strike;			
+
+			// check if this vertex have on buffer
+			if ( m_vertexMap.find(vertexIndex) == m_vertexMap.end() )
 			{
-				int idx = tri->IndexBuffer[i + tri->OffsetNormal] * normal->Strike;
-				vtx.Normal.X = normal->FloatArray[idx];
+				if ( normal != NULL )
+					vertexIndex.normalId	= tri->IndexBuffer[i + tri->OffsetNormal] * normal->Strike;
+
+				if ( texCoord1 != NULL )
+					vertexIndex.texcoordId	= tri->IndexBuffer[i + tri->OffsetTexcoord1] * texCoord1->Strike;
+
+				// new vertex infomation			
+				video::S3DVertexSkin vtx;
+				vtx.Color = SColor(0xFFFFFFFF);
+				
+				// set position
+				int idx = vertexIndex.vertexId;
+
+				vtx.Pos.X = position->FloatArray[idx];
 				if (flip)
 				{
-					vtx.Normal.Z = normal->FloatArray[idx+1];
-					vtx.Normal.Y = normal->FloatArray[idx+2];
+					vtx.Pos.Z = position->FloatArray[idx+1];
+					vtx.Pos.Y = position->FloatArray[idx+2];
 				}
 				else
 				{
-					vtx.Normal.Y = normal->FloatArray[idx+1];
-					vtx.Normal.Z = normal->FloatArray[idx+2];
+					vtx.Pos.Y = position->FloatArray[idx+1];
+					vtx.Pos.Z = position->FloatArray[idx+2];
 				}
-			}
 
-			if ( texCoord1 != NULL ) 
+				// set normal
+				if ( vertexIndex.normalId != -1 )
+				{
+					idx = vertexIndex.normalId;
+					vtx.Normal.X = normal->FloatArray[idx+0];
+					if (flip)
+					{
+						vtx.Normal.Z = normal->FloatArray[idx+1];
+						vtx.Normal.Y = normal->FloatArray[idx+2];
+					}
+					else
+					{
+						vtx.Normal.Y = normal->FloatArray[idx+1];
+						vtx.Normal.Z = normal->FloatArray[idx+2];
+					}
+				}
+
+				// set texcoord
+				if ( vertexIndex.texcoordId != -1 )
+				{
+					idx = vertexIndex.texcoordId;
+					vtx.TCoords.X = texCoord1->FloatArray[idx+0];
+					vtx.TCoords.Y = 1.0f - texCoord1->FloatArray[idx+1];
+				}
+
+				mbuffer->Vertices.push_back(vtx);
+				s32 newIndex = mbuffer->Vertices.size() - 1;
+
+				// disable normal
+				vertexIndex.normalId	= -1;
+
+				// map vertex
+				m_vertexMap[vertexIndex] = newIndex;
+				vertexID = newIndex;
+			}
+			else
 			{
-				int idx = tri->IndexBuffer[i + tri->OffsetTexcoord1] * texCoord1->Strike;
-				vtx.TCoords.X = texCoord1->FloatArray[idx];
-				vtx.TCoords.Y = 1.0f - texCoord1->FloatArray[idx+1];
+				// get vertex id
+				vertexID = m_vertexMap[vertexIndex];
 			}
-		}
 
-		index++;
+			indices[index] = vertexID;
+			index++;		
+		}
 	}
 
 
@@ -1716,36 +1788,39 @@ void CDaeUtils::constructSkinMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri,
 
 	if ( vertices->TexCoord2Index != -1 )
 		texCoord2 =	&mesh->Buffers[vertices->TexCoord2Index];
-
-	// alloc vertex
-	int vertexCount = position->ArrayCount/3;
-	mbuffer->Vertices.reallocate(mbuffer->Vertices.size() + vertexCount);
-		
+	
+	// index buffer
 	core::array<u16> indices;
 
-	for ( int i = 0; i < vertexCount; i++ )
+	// if have the normal & texcoord
+	if ( tri->NumElementPerVertex == 1 )
 	{
-		video::S3DVertexSkin vtx;
-		vtx.Color = SColor(0xFFFFFFFF);
+		// alloc number of vertex
+		int vertexCount = position->ArrayCount/3;
+		mbuffer->Vertices.reallocate(mbuffer->Vertices.size() + vertexCount);
 
-		int vIndex = i;
-		int idx = vIndex * position->Strike;
+		// add to vertex buffer
+		for ( int i = 0; i < vertexCount; i++ )
+		{
+			video::S3DVertexSkin vtx;
+			vtx.Color = SColor(0xFFFFFFFF);
 
-		// set position
-		vtx.Pos.X = position->FloatArray[idx+0];
-		if (flip)
-		{
-			vtx.Pos.Z = position->FloatArray[idx+1];
-			vtx.Pos.Y = position->FloatArray[idx+2];
-		}
-		else
-		{
-			vtx.Pos.Y = position->FloatArray[idx+1];
-			vtx.Pos.Z = position->FloatArray[idx+2];
-		}
+			int vIndex = i;
+			int idx = vIndex * position->Strike;
 
-		if ( tri->NumElementPerVertex == 1 )
-		{
+			// set position
+			vtx.Pos.X = position->FloatArray[idx+0];
+			if (flip)
+			{
+				vtx.Pos.Z = position->FloatArray[idx+1];
+				vtx.Pos.Y = position->FloatArray[idx+2];
+			}
+			else
+			{
+				vtx.Pos.Y = position->FloatArray[idx+1];
+				vtx.Pos.Z = position->FloatArray[idx+2];
+			}
+
 			// set normal
 			if ( normal != NULL )
 			{		
@@ -1765,7 +1840,7 @@ void CDaeUtils::constructSkinMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri,
 			}
 
 			// set texcoord
-			if ( texCoord1 ) 
+			if ( texCoord1 != NULL ) 
 			{
 				idx = vIndex * texCoord1->Strike;
 				if ( texCoord1 != NULL )
@@ -1774,48 +1849,133 @@ void CDaeUtils::constructSkinMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri,
 					vtx.TCoords.Y = texCoord1->FloatArray[idx+1];
 				}
 			}
-		}		
-		mbuffer->Vertices.push_back( vtx );
-	}
-		
-	indices.set_used( tri->NumPolygon * 3 );
+				
+			mbuffer->Vertices.push_back( vtx );
 
-	int totalElement = tri->NumPolygon * tri->NumElementPerVertex * 3;	
-	int index = 0;
-	for ( int i = 0; i < totalElement; i+= tri->NumElementPerVertex)
-	{
-		indices[index] = tri->IndexBuffer[i];	
+			// apply mesh map (for affect bone)
+			SColladaMeshVertexMap map;
+			map.meshId		= mesh;
+			map.meshBuffer	= buffer;
+			map.vertexId	= vIndex;
+			m_meshVertexIndex[map].push_back( mbuffer->Vertices.size() - 1 );
+		}	
 
-		if ( tri->NumElementPerVertex != 1 )
+		// setup index buffer
+		indices.set_used( tri->NumPolygon * 3 );
+		int totalElement = tri->NumPolygon * tri->NumElementPerVertex * 3;	
+		int index = 0;
+		for ( int i = 0; i < totalElement; i+= tri->NumElementPerVertex)
 		{
-			video::S3DVertexSkin &vtx = mbuffer->Vertices[ tri->IndexBuffer[i] ];
-			if ( normal != NULL )
+			indices[index] = tri->IndexBuffer[i];
+			index++;
+		}
+
+	}
+	else
+	{
+		m_vertexMap.clear();
+
+		indices.set_used( tri->NumPolygon * 3 );
+
+		int totalElement = tri->NumPolygon * tri->NumElementPerVertex * 3;	
+		int index = 0;
+
+		int vertexID = 0;
+		SColladaVertexIndex	vertexIndex;
+
+		for ( int i = 0; i < totalElement; i+= tri->NumElementPerVertex)
+		{		
+			// reset collada index
+			vertexIndex.vertexId	= tri->IndexBuffer[i] * position->Strike;							
+			vertexIndex.normalId	= -1;
+			vertexIndex.texcoordId	= -1;
+
+			// sync texcoord & position
+			if ( texCoord1 != NULL )
+				vertexIndex.texcoordId	= tri->IndexBuffer[i + tri->OffsetTexcoord1] * texCoord1->Strike;			
+
+			// check if this vertex have on buffer
+			if ( m_vertexMap.find(vertexIndex) == m_vertexMap.end() )
 			{
-				int idx = tri->IndexBuffer[i + tri->OffsetNormal] * normal->Strike;
-				vtx.Normal.X = normal->FloatArray[idx];
+				if ( normal != NULL )
+					vertexIndex.normalId	= tri->IndexBuffer[i + tri->OffsetNormal] * normal->Strike;
+
+				if ( texCoord1 != NULL )
+					vertexIndex.texcoordId	= tri->IndexBuffer[i + tri->OffsetTexcoord1] * texCoord1->Strike;
+
+				// new vertex infomation			
+				video::S3DVertexSkin vtx;
+				vtx.Color = SColor(0xFFFFFFFF);
+				
+				// set position
+				int idx = vertexIndex.vertexId;
+
+				vtx.Pos.X = position->FloatArray[idx];
 				if (flip)
 				{
-					vtx.Normal.Z = normal->FloatArray[idx+1];
-					vtx.Normal.Y = normal->FloatArray[idx+2];
+					vtx.Pos.Z = position->FloatArray[idx+1];
+					vtx.Pos.Y = position->FloatArray[idx+2];
 				}
 				else
 				{
-					vtx.Normal.Y = normal->FloatArray[idx+1];
-					vtx.Normal.Z = normal->FloatArray[idx+2];
+					vtx.Pos.Y = position->FloatArray[idx+1];
+					vtx.Pos.Z = position->FloatArray[idx+2];
 				}
-			}
 
-			if ( texCoord1 != NULL ) 
+				// set normal
+				if ( vertexIndex.normalId != -1 )
+				{
+					idx = vertexIndex.normalId;
+					vtx.Normal.X = normal->FloatArray[idx+0];
+					if (flip)
+					{
+						vtx.Normal.Z = normal->FloatArray[idx+1];
+						vtx.Normal.Y = normal->FloatArray[idx+2];
+					}
+					else
+					{
+						vtx.Normal.Y = normal->FloatArray[idx+1];
+						vtx.Normal.Z = normal->FloatArray[idx+2];
+					}
+				}
+
+				// set texcoord
+				if ( vertexIndex.texcoordId != -1 )
+				{
+					idx = vertexIndex.texcoordId;
+					vtx.TCoords.X = texCoord1->FloatArray[idx+0];
+					vtx.TCoords.Y = 1.0f - texCoord1->FloatArray[idx+1];
+				}
+
+				mbuffer->Vertices.push_back(vtx);
+				s32 newIndex = mbuffer->Vertices.size() - 1;
+
+				// disable normal
+				vertexIndex.normalId	= -1;
+
+				// map vertex
+				m_vertexMap[vertexIndex] = newIndex;
+
+				// apply mesh map (for affect bone)
+				SColladaMeshVertexMap map;
+				map.meshId		= mesh;
+				map.meshBuffer	= buffer;
+				map.vertexId	= tri->IndexBuffer[i];
+				m_meshVertexIndex[map].push_back(newIndex);
+
+				// get new vertex
+				vertexID = newIndex;
+			}
+			else
 			{
-				int idx = tri->IndexBuffer[i + tri->OffsetTexcoord1] * texCoord1->Strike;
-				vtx.TCoords.X = texCoord1->FloatArray[idx];
-				vtx.TCoords.Y = 1.0f - texCoord1->FloatArray[idx+1];
+				// get vertex id
+				vertexID = m_vertexMap[vertexIndex];
 			}
+
+			indices[index] = vertexID;
+			index++;		
 		}
-
-		index++;
 	}
-
 
 	// it's just triangles
 	u32 nPoly = indices.size()/3;
@@ -1882,12 +2042,20 @@ void CDaeUtils::constructSkinMesh( SMeshParam *meshParam, CGameColladaMesh *mesh
 
 	// setup vertex bone buffer
 	// ----------------------------
-	SMeshBufferSkin *skinBuffer = (SMeshBufferSkin*)mesh->getMeshBuffer(0);
-	int numVertex = skinBuffer->getVertexCount();
-	
+
+	// calc max num vertex
+	int numVertex = 0;
+	for ( int i = 0; i < (int)meshParam->Triangles.size(); i++)
+		numVertex += meshParam->Triangles[i].NumPolygon;
+
+	numVertex = numVertex*3;
 	int *nBoneCount = new int[numVertex];
 	memset(nBoneCount, 0, sizeof(int)*numVertex);
 
+	// use mesh map to find vertex
+	SColladaMeshVertexMap map;
+
+	// apply joint to vertex
 	for ( int i = 0, n = (int)meshParam->JointIndex.size(); i < n; i+=2 )
 	{
 		int boneID		= meshParam->JointIndex[i];
@@ -1904,39 +2072,61 @@ void CDaeUtils::constructSkinMesh( SMeshParam *meshParam, CGameColladaMesh *mesh
 			SColladaMeshBuffer *buffer = (SColladaMeshBuffer*)mesh->getMeshBuffer(i);
 			vertex = (video::S3DVertexSkin*)buffer->getVertices();
 			
-			float* boneIndex		= (float*)&(vertex[ weight.VertexID ].BoneIndex);
-			float* boneWeight		= (float*)&(vertex[ weight.VertexID ].BoneWeight);
+			// todo find realVertexIndex
+			map.meshId		= meshParam;
+			map.meshBuffer	= buffer;
+			map.vertexId	= weight.VertexID;
+			
+			if ( m_meshVertexIndex.find(map) != m_meshVertexIndex.end() )
+			{				
+				std::vector<s32>& arrayVertexId = m_meshVertexIndex[map];
+				int numVertexAffect = arrayVertexId.size();
 
-			// only support 4bones affect on 1vertex
-			if ( nBone >= 4 )
-			{
-				int		minIndex = 0;
-				float	minWeight = boneWeight[0];
-				
-				for ( int i = 1; i < 4; i++ )
+				for ( int j = 0; j < numVertexAffect; j++ )
 				{
-					if ( boneWeight[i] < minWeight )
+					s32 realVertexID = arrayVertexId[j];
+
+					float* boneIndex		= (float*)&(vertex[ realVertexID ].BoneIndex);
+					float* boneWeight		= (float*)&(vertex[ realVertexID ].BoneWeight);
+
+					// only support 4bones affect on 1vertex
+					// we need replace the smallest weight
+					if ( nBone >= 4 )
 					{
-						minIndex = i;
-						minWeight = boneWeight[i];
-						break;
-					}					
+						int		minIndex = 0;
+						float	minWeight = boneWeight[0];
+						
+						for ( int i = 1; i < 4; i++ )
+						{
+							if ( boneWeight[i] < minWeight )
+							{
+								minIndex = i;
+								minWeight = boneWeight[i];
+								break;
+							}					
+						}
+
+						if ( weight.Strength > minWeight )
+						{
+							boneIndex[minIndex]		= (float)boneID;
+							boneWeight[minIndex]	= weight.Strength;
+						}
+					}
+					else
+					{								
+						boneIndex[nBone]		= (float)boneID;
+						boneWeight[nBone]		= weight.Strength;
+					}
+
+					vertex[ realVertexID ].StaticPos	= vertex[ realVertexID ].Pos;
+					vertex[ realVertexID ].StaticNormal	= vertex[ realVertexID ].Normal;
 				}
 
-				if ( weight.Strength > minWeight )
-				{
-					boneIndex[minIndex]		= (float)boneID;
-					boneWeight[minIndex]	= weight.Strength;
-				}
 			}
 			else
-			{								
-				boneIndex[nBone]		= (float)boneID;
-				boneWeight[nBone]		= weight.Strength;
+			{
+				// todo error skin mesh				
 			}
-
-			vertex[ weight.VertexID ].StaticPos		= vertex[ weight.VertexID ].Pos;
-			vertex[ weight.VertexID ].StaticNormal	= vertex[ weight.VertexID ].Normal;
 		}
 	}
 
@@ -2060,8 +2250,8 @@ void CDaeUtils::updateJointToMesh( SMeshParam *mesh, std::vector<std::wstring>& 
 
 void CDaeUtils::constructScene()
 {
-	ISceneManager *smgr = getIView()->getSceneMgr();
-		
+	ISceneManager *smgr = getIView()->getSceneMgr();			
+
 	// create new scene node
 	CGameColladaContainerSceneNode* colladaNode = m_component->getColladaNode();		
 
@@ -2154,13 +2344,11 @@ void CDaeUtils::constructScene()
 					{
 						meshBuffer = new SColladaSkinMeshBuffer();
 						constructSkinMeshBuffer( pMesh, &tri, meshBuffer, m_needFlip );
-						//SColladaSkinMeshBuffer *mesh = (SColladaSkinMeshBuffer*)meshBuffer;			
 					}
 					else
 					{
-						meshBuffer = new SColladaMeshBuffer();
+						meshBuffer = new SColladaMeshBuffer();						
 						constructMeshBuffer( pMesh, &tri, meshBuffer, m_needFlip );
-						//SColladaMeshBuffer *mesh = (SColladaMeshBuffer*)meshBuffer;	
 					}
 
 					// add mesh buffer								
@@ -2214,7 +2402,7 @@ void CDaeUtils::constructScene()
 		}
 	}
 
-	// clear node data
+	// clear node data	
 	std::list<SNodeParam*>::iterator i = listScene.begin(), end = listScene.end();
 	while ( i != end )
 	{
@@ -2234,7 +2422,7 @@ void CDaeUtils::constructScene()
 		pNode->SceneNode = NULL;
 		i++;
 	}
-	listScene.clear();
+	listScene.clear();	
 }
 
 
@@ -2246,6 +2434,9 @@ void CDaeUtils::cleanData()
 	m_listEffects.clear();	
 	m_listImages.clear();
 	m_listMaterial.clear();
+
+	m_meshVertexIndex.clear();
+	m_vertexMap.clear();
 
 	ArrayMeshParams::iterator i = m_listMesh.begin(), end = m_listMesh.end();
 	while ( i != end )
@@ -2638,7 +2829,7 @@ void CDaeUtils::clipDaeAnim()
 					frames = nodeAnim->ScaleKeys.getLast().frame;
 			}
 
-			clip->animInfo.push_back( newNodeAnim );
+			clip->addNodeAnim(newNodeAnim );
 			iNodeAnim++;
 		}
 

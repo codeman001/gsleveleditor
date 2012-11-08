@@ -348,9 +348,11 @@ protected:
 
 	bool						m_needFlip;
 
+    typedef std::vector<s32>    ArrayShort;
+    
 	// add for map vertex from collada to mesh buffer
 	std::map<SColladaVertexIndex, s32>					m_vertexMap;
-	std::map<SColladaMeshVertexMap, std::vector<s32>>	m_meshVertexIndex;
+	std::map<SColladaMeshVertexMap, ArrayShort>	m_meshVertexIndex;
 #pragma endregion
 	
 

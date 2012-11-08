@@ -272,7 +272,59 @@ struct SColladaAnimClip
 };
 #pragma endregion
 
+struct SColladaMeshVertexMap
+{
+	SMeshParam	*meshId;
+	IMeshBuffer	*meshBuffer;
+	s32			vertexId;
 
+	bool operator<( const SColladaMeshVertexMap& another) const
+	{
+		if ( meshId == another.meshId )
+		{
+			if ( meshBuffer == another.meshBuffer)
+			{
+				if ( vertexId == another.vertexId )
+					return false;
+				else
+					return vertexId < another.vertexId;
+			}
+			else
+				return meshBuffer < another.meshBuffer;
+		}
+		else
+		{
+			return meshId < another.meshId;
+		}
+	}
+};
+
+struct SColladaVertexIndex
+{
+	s32	vertexId;
+	s32 normalId;
+	s32 texcoordId;
+
+	bool operator<( const SColladaVertexIndex& another) const
+	{
+		if ( vertexId == another.vertexId )
+		{
+			if (normalId == another.normalId)
+			{
+				if ( texcoordId == another.texcoordId )
+					return false;
+				else
+					return texcoordId < another.texcoordId;
+			}
+			else
+				return normalId < another.normalId;
+		}
+		else
+		{
+			return vertexId < another.vertexId;
+		}
+	}
+};
 
 class CDaeUtils: public uiSingleton<CDaeUtils>
 {
@@ -295,6 +347,10 @@ protected:
 	ArrayNodeParams				m_listNode;
 
 	bool						m_needFlip;
+
+	// add for map vertex from collada to mesh buffer
+	std::map<SColladaVertexIndex, s32>					m_vertexMap;
+	std::map<SColladaMeshVertexMap, std::vector<s32>>	m_meshVertexIndex;
 #pragma endregion
 	
 

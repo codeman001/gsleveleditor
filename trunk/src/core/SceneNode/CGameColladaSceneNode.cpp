@@ -965,9 +965,11 @@ void CGameColladaSceneNode::skin()
 	for ( int i = 0; i < nJoint; i++)
 	{
 		pJoint = &arrayJoint[i];
+
+		// skinMat = animMat * invMat * bindShapMat
 		core::matrix4 mat;
-		mat.setbyproduct( pJoint->node->AbsoluteAnimationMatrix, pJoint->globalInversedMatrix );
-		pJoint->skinningMatrix.setbyproduct( mat, ColladaMesh->BindShapeMatrix );	
+		mat.setbyproduct( pJoint->globalInversedMatrix, ColladaMesh->BindShapeMatrix );
+		pJoint->skinningMatrix.setbyproduct( pJoint->node->AbsoluteAnimationMatrix, mat );			
 
 		// set bone matrix
 		memcpy(BoneMatrix + i*16, pJoint->skinningMatrix.pointer(), 16*sizeof(float));

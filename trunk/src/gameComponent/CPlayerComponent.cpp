@@ -1086,10 +1086,13 @@ void CPlayerComponent::updateStateStandAim()
     static float s_aimAnimFactor = 0.0f;
     
     if ( m_subState == SubStateInit )
-    {        
-		m_collada->setCrossFadeAnimation(m_animAimStraight.c_str(), 0, 10, true);
-        m_collada->setAnimWeight(1.0f, 0);
-
+    {
+		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str(),0 );
+        
+        m_collada->setAnimation(m_animAimStraight.c_str(),	1, true );        
+        m_collada->setAnimWeight(0.0f, 1);
+		m_collada->enableAnimTrackChannel(1, true);
+        
 		m_collada->setAnimation(m_animAimUp.c_str(),	2, true );
 		m_collada->setAnimWeight(0.0f, 2);
 		m_collada->enableAnimTrackChannel(2, true);
@@ -1116,6 +1119,15 @@ void CPlayerComponent::updateStateStandAim()
     }
     else
     {
+        float step = 0.006f*getIView()->getTimeStep();
+        if ( m_runCommand )
+            s_aimAnimFactor = s_aimAnimFactor - step;
+        else
+            s_aimAnimFactor = s_aimAnimFactor + step;
+
+        // calc aim
+        s_aimAnimFactor = core::clamp<float>(s_aimAnimFactor, 0.0f, 1.0f);
+                    
         ISceneCollisionManager *colMgr = getIView()->getSceneMgr()->getSceneCollisionManager();
         
         core::line3df	ray		= getCameraRay();
@@ -1127,12 +1139,39 @@ void CPlayerComponent::updateStateStandAim()
         		        
 		core::vector2df ret = getAimAngle(colPos);
 
-		float wUp, wDown, wLeft, wRight;
+		float wUp, wDown, wLeft, wRight, wStraight;
 		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
-		
-		printf("aim: %f %f\n", ret.X, ret.Y);
 
-        if ( m_runCommand )
+        if ( wLeft > 0 )
+            wStraight = 1.0f - wLeft;
+        else 
+            wStraight = 1.0f - wRight;
+
+        //if ( wUp > 0 )
+        //    wStraight = 1.0f - wUp;
+        //else 
+        //    wStraight = 1.0f - wDown;
+        
+        // setup straight
+        wStraight = core::clamp<float>(wStraight, 0.0f, 1.0f);
+        
+        // setup anim blend factor
+        wStraight   = wStraight * s_aimAnimFactor;
+        wUp         = wUp * s_aimAnimFactor;
+        wDown       = wDown * s_aimAnimFactor;
+        wLeft       = wLeft * s_aimAnimFactor;
+        wRight      = wRight * s_aimAnimFactor;        
+
+        // blend
+        m_collada->setAnimWeight(1.0f - s_aimAnimFactor, 0);    // idle
+        m_collada->setAnimWeight(wStraight, 1);  // straight
+        m_collada->setAnimWeight(0.0f, 2);  // up
+        m_collada->setAnimWeight(0.0f, 3);  // down
+        m_collada->setAnimWeight(wLeft, 4);  // left
+        m_collada->setAnimWeight(wRight, 5);  // right
+        m_collada->synchronizedByTimeScale();
+
+        if ( m_runCommand && s_aimAnimFactor == 0.0f )
             setState(CPlayerComponent::PlayerRun);
     }    
 }
@@ -1337,6 +1376,54 @@ void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &b
 
 void CPlayerComponent::calcAimAnimationBlend(core::vector2df angle, float &up, float &down, float &left, float &right)
 {
+    
+    const float maxAngleLR = 45.0f;
+    const float maxangleUD = 45.0f;
+    
+    if ( angle.X > 0 )
+    {
+        // aim left
+        if (angle.Y < 0 )
+        {
+            // aim left down
+            left = fabsf(angle.X)/maxAngleLR;
+            down = fabsf(angle.Y)/maxangleUD;
+            
+            right = 0.0f;
+            up = 0.0f;
+        }
+        else 
+        {
+            // aim left up
+            left    = fabsf(angle.X)/maxAngleLR;
+            up      = fabsf(angle.Y)/maxangleUD;
+            
+            right = 0.0f;
+            down = 0.0f;
+        }
+    }
+    else 
+    {
+        // aim right
+        if (angle.Y < 0 )
+        {
+            // aim right down
+            right = fabsf(angle.X)/maxAngleLR;
+            down = fabsf(angle.Y)/maxangleUD;
+            
+            left = 0.0f;
+            up = 0.0f;
+        }
+        else 
+        {
+            // aim right up
+            right = fabsf(angle.X)/maxAngleLR;
+            up = fabsf(angle.Y)/maxangleUD;
+            
+            left = 0.0f;
+            down = 0.0f;
+        }
+    }
 }
 
 // isFinishedAnim	

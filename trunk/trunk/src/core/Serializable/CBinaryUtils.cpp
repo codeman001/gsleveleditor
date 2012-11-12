@@ -896,6 +896,8 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned int size )
 	float	matrix[16];
 	memStream.readData( matrix, sizeof(f32)*16 );
 	newMesh->BindShapeMatrix.setM( matrix );
+	newMesh->InvBindShapeMatrix = newMesh->BindShapeMatrix;
+	newMesh->InvBindShapeMatrix.makeInverse();
 
 	// read joint buffer (bone matrix)	
 	for (int i = 0; i < nJoint; i++ )

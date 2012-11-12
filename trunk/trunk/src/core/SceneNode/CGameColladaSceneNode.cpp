@@ -18,7 +18,9 @@ CGameColladaMesh* CGameColladaMesh::clone()
 	newMesh->Joints = Joints;	
 	newMesh->BoundingBox = BoundingBox;
 	newMesh->IsStaticMesh = IsStaticMesh;
-
+	newMesh->BindShapeMatrix = BindShapeMatrix;
+	newMesh->InvBindShapeMatrix = InvBindShapeMatrix;
+	
 	ISceneManager *smgr = getIView()->getSceneMgr();
 	SMesh *mesh = smgr->getMeshManipulator()->createMeshCopy( this );
 
@@ -362,6 +364,9 @@ void CGameAnimationTrack::crossAnimation()
 CGameAnimation::CGameAnimation()
 {
 	onlyEnableTrack(0);
+
+	// null animation
+	m_nullAnimation = true;
 }
 
 CGameAnimation::~CGameAnimation()
@@ -415,7 +420,9 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 	core::vector3df		currentPosTrack,	posTrack;
 	core::vector3df		currentScaleTrack,	scaleTrack;
 	core::quaternion	currentRotTrack,	rotTrack;
+	
 	bool first = true;
+	m_nullAnimation = true;
 
 	for ( int track = (int)nTrack - 1; track >= 0; track-- )
 	{
@@ -470,9 +477,12 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 		position	= core::vector3df();
 		localMatrix.transformVect( position );
 		scale		= core::vector3df(1,1,1);
-		rotation	= core::quaternion( localMatrix );
+		rotation	= core::quaternion( localMatrix );		
 	}
-
+	else
+	{
+		m_nullAnimation = false;
+	}
 }
 
 // synchronizedTimeScale
@@ -876,8 +886,8 @@ void CGameColladaSceneNode::OnRegisterSceneNode()
 void CGameColladaSceneNode::updateAbsolutePosition()
 {
 	core::matrix4 RelativeMatrix;
-	RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(),AnimationMatrix);
-	
+	RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(),AnimationMatrix);	
+
 	// calc absolute transform
 	AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(),RelativeMatrix);
 
@@ -1145,7 +1155,12 @@ void CGameColladaSceneNode::updateAnimation()
 
 	// update current relative matrix
 	AnimationMatrix = mat;
-
+	
+	// translate collada mesh node
+	if ( ColladaMesh && m_gameAnimation.isNullAnimation() == false )
+	{
+		AnimationMatrix *= ColladaMesh->InvBindShapeMatrix;
+	}
 }
 
 void CGameColladaSceneNode::render()

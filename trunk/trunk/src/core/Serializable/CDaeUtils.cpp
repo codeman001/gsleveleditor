@@ -2327,7 +2327,11 @@ void CDaeUtils::constructScene()
 
 				// need store component
 				pColladaMesh->Component = m_component;
-				pColladaMesh->BindShapeMatrix = pMesh->BindShapeMatrix;
+				
+				// calc bindshapematrix
+				pColladaMesh->BindShapeMatrix = pMesh->BindShapeMatrix;				
+				pColladaMesh->InvBindShapeMatrix = pMesh->BindShapeMatrix;
+				pColladaMesh->InvBindShapeMatrix.makeInverse();
 
 				// add mesh buffer to skin mesh
 				int nBuffer = (int)pMesh->Triangles.size();

@@ -162,6 +162,7 @@ public:
 
 	//! Shape matrix from dae
 	core::matrix4	BindShapeMatrix;
+	core::matrix4	InvBindShapeMatrix;
 
 	struct SJoint
 	{
@@ -344,6 +345,7 @@ class CGameAnimation
 {
 protected:
 	CGameAnimationTrack		m_animTrack[MAX_ANIMTRACK];
+	bool					m_nullAnimation;
 
 public:
 	CGameAnimation();
@@ -395,6 +397,13 @@ public:
 	// update
 	// update per frame
 	void update(float timeStep);
+
+	// isNullAnimation
+	// return true if not set animation
+	inline bool isNullAnimation()
+	{
+		return m_nullAnimation;
+	}
 
 protected:
 	

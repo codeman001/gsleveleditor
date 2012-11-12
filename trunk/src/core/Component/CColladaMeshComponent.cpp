@@ -348,11 +348,7 @@ void CColladaMeshComponent::saveData( CSerializable* pObj )
 // load data to serializable
 void CColladaMeshComponent::loadData( CSerializable* pObj )
 {		
-	pObj->nextRecord();
-
-	// release if mesh is loaded
-	if ( m_gameObject->m_node )
-		m_gameObject->destroyNode();
+	pObj->nextRecord();	
 	
 	// clear array node list
 	m_defaultNode.clear();
@@ -381,6 +377,10 @@ void CColladaMeshComponent::loadFromFile( const char *lpFilename )
 {
 	if ( m_animeshFile == lpFilename )
 		return;
+
+	// release if mesh is loaded
+	if ( m_gameObject->m_node )
+		m_gameObject->destroyNode();
 
 	m_animeshFile = lpFilename;
 

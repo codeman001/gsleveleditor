@@ -1084,9 +1084,9 @@ void CPlayerComponent::updateStateRunFastToRun()
 void CPlayerComponent::updateStateStandAim()
 {
     static float s_aimAnimFactor = 0.0f;
-    
+
     if ( m_subState == SubStateInit )
-    {
+    {		
 		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str(),0 );
         
         m_collada->setAnimation(m_animAimStraight.c_str(),	1, true );        
@@ -1100,15 +1100,7 @@ void CPlayerComponent::updateStateStandAim()
 		m_collada->setAnimation(m_animAimDown.c_str(),	3, true );
 		m_collada->setAnimWeight(0.0f, 3);
 		m_collada->enableAnimTrackChannel(3, true);
-
-		m_collada->setAnimation(m_animAimLeft.c_str(),	4, true );
-		m_collada->setAnimWeight(0.0f, 4);
-		m_collada->enableAnimTrackChannel(4, true);
-
-		m_collada->setAnimation(m_animAimRight.c_str(),	5, true );
-		m_collada->setAnimWeight(0.0f, 5);
-		m_collada->enableAnimTrackChannel(5, true);
-
+		
         s_aimAnimFactor = 0.0f;
         m_subState = SubStateActive;        
     }
@@ -1119,7 +1111,8 @@ void CPlayerComponent::updateStateStandAim()
     }
     else
     {
-        float step = 0.006f*getIView()->getTimeStep();
+        float step = 0.005f*getIView()->getTimeStep();
+
         if ( m_runCommand )
             s_aimAnimFactor = s_aimAnimFactor - step;
         else
@@ -1132,25 +1125,16 @@ void CPlayerComponent::updateStateStandAim()
         
         core::line3df	ray		= getCameraRay();
 		core::vector3df	colPos	= getCollisionPoint(ray);
-
-        //core::vector3df     outPoint;
-        //core::triangle3df   outTri;
-        //colMgr->getSceneNodeAndCollisionPointFromRay(ray, outPoint, outTri);
-        		        
+                		        
 		core::vector2df ret = getAimAngle(colPos);
 
 		float wUp, wDown, wLeft, wRight, wStraight;
 		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
 
-        if ( wLeft > 0 )
-            wStraight = 1.0f - wLeft;
+        if ( wUp > 0 )
+            wStraight = 1.0f - wUp;
         else 
-            wStraight = 1.0f - wRight;
-
-        //if ( wUp > 0 )
-        //    wStraight = 1.0f - wUp;
-        //else 
-        //    wStraight = 1.0f - wDown;
+            wStraight = 1.0f - wDown;
         
         // setup straight
         wStraight = core::clamp<float>(wStraight, 0.0f, 1.0f);
@@ -1158,18 +1142,24 @@ void CPlayerComponent::updateStateStandAim()
         // setup anim blend factor
         wStraight   = wStraight * s_aimAnimFactor;
         wUp         = wUp * s_aimAnimFactor;
-        wDown       = wDown * s_aimAnimFactor;
-        wLeft       = wLeft * s_aimAnimFactor;
-        wRight      = wRight * s_aimAnimFactor;        
+        wDown       = wDown * s_aimAnimFactor;        
+		
+		
+		// rotate main character		
+		core::vector3df v0 = m_gameObject->getFront();
+		core::vector3df lookPos = colPos - m_gameObject->getPosition();
+		lookPos.normalize();
+		turnToDir( v0, lookPos, 6.0f );		
+		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 
-        // blend
+
+        // blend anim up, down
         m_collada->setAnimWeight(1.0f - s_aimAnimFactor, 0);    // idle
-        m_collada->setAnimWeight(wStraight, 1);  // straight
-        m_collada->setAnimWeight(0.0f, 2);  // up
-        m_collada->setAnimWeight(0.0f, 3);  // down
-        m_collada->setAnimWeight(wLeft, 4);  // left
-        m_collada->setAnimWeight(wRight, 5);  // right
+        m_collada->setAnimWeight(wStraight, 1);					// straight
+		m_collada->setAnimWeight(wUp,	2);						// up
+		m_collada->setAnimWeight(wDown, 3);						// down
         m_collada->synchronizedByTimeScale();
+		
 
         if ( m_runCommand && s_aimAnimFactor == 0.0f )
             setState(CPlayerComponent::PlayerRun);

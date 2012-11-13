@@ -29,13 +29,13 @@ struct SEventPlayerMove
 
 struct SEventPlayerCommand
 {
-    bool    fire;
+    bool    shoot;
     bool    reload;
     bool    aim;
     
     SEventPlayerCommand()
     {
-        fire    = false;
+        shoot   = false;
         reload  = false;
         aim     = false;
     }

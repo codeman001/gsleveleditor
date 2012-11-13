@@ -54,7 +54,7 @@ public:
 	// send event to player stop run
 	void sendPlayerStopEvent();
 	void sendPlayerRunEvent(float f, float rotate, bool runFast);
-    void sendPlayerCommand(bool fire, bool reload, bool aim);
+    void sendPlayerCommand(bool shoot, bool reload, bool aim);
     
 	// setTouchIDStatus
 	// set touch

@@ -50,7 +50,6 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_collada	= NULL;
 	m_inventory = NULL;
 
-	m_animShotCurrentTime	= 0.0f;
 	m_animCurrentTime		= 0.0f;	
 
 	m_spineRotation = 0.0f;
@@ -58,6 +57,8 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 
 	m_init = true;
 	
+	m_aimFactor = 0.0f;
+	m_initAimFactor = true;
 }
 
 CPlayerComponent::~CPlayerComponent()
@@ -143,6 +144,7 @@ void CPlayerComponent::initComponent()
 	m_animShootLeft		= "Hero@ShootLeft";
 	m_animShootRight	= "Hero@ShootRight";
 	m_animShootUp		= "Hero@ShootUp";
+	m_animShootDown		= "Hero@ShootDown";
 	m_animShootStraight	= "Hero@ShootStraight";
 
 
@@ -212,7 +214,7 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
         {
             m_playerCmdEvt = *((SEventPlayerCommand*)irrEvent.GameEvent.EventData);
             
-            if ( m_playerCmdEvt.fire || m_playerCmdEvt.aim || m_playerCmdEvt.reload )
+            if ( m_playerCmdEvt.shoot || m_playerCmdEvt.aim || m_playerCmdEvt.reload )
                 m_gunOnCommand = true;
             else
                 m_gunOnCommand = false;
@@ -258,6 +260,9 @@ void CPlayerComponent::updateState()
         break;
     case CPlayerComponent::PlayerStandAim:
         updateStateStandAim();
+		break;
+	case CPlayerComponent::PlayerStandShooting:
+		updateStateStandShooting();
         break;
 	}
 }
@@ -1083,12 +1088,11 @@ void CPlayerComponent::updateStateRunFastToRun()
 
 void CPlayerComponent::updateStateStandAim()
 {
-    static float s_aimAnimFactor = 0.0f;
-
     if ( m_subState == SubStateInit )
     {		
 		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str(),0 );
-        
+		m_collada->setAnimWeight(1.0f, 0);
+
         m_collada->setAnimation(m_animAimStraight.c_str(),	1, true );        
         m_collada->setAnimWeight(0.0f, 1);
 		m_collada->enableAnimTrackChannel(1, true);
@@ -1101,25 +1105,36 @@ void CPlayerComponent::updateStateStandAim()
 		m_collada->setAnimWeight(0.0f, 3);
 		m_collada->enableAnimTrackChannel(3, true);
 		
-        s_aimAnimFactor = 0.0f;
-        m_subState = SubStateActive;        
+		// reset aim anim weight
+		if ( m_initAimFactor )
+			m_aimFactor = 0.0f;		
+
+		// setup player cmd state
+		m_playerCmdEvt.shoot	= false;
+		m_playerCmdEvt.aim		= true;
+		m_playerCmdEvt.reload	= false;
+
+		// change state
+        m_subState = SubStateActive;
     }
     else if ( m_subState == SubStateEnd )
     {		
-        m_collada->setCrossFadeAnimation(m_animIdle[0].c_str(), 0, 10, true);        
-        doNextState();		
+        m_collada->setCrossFadeAnimation(m_animIdle[0].c_str(), 0, 10, true);
+		m_initAimFactor = true;
+        doNextState();
     }
-    else
-    {
+    
+	// todo update
+	{
         float step = 0.005f*getIView()->getTimeStep();
 
         if ( m_runCommand )
-            s_aimAnimFactor = s_aimAnimFactor - step;
+            m_aimFactor = m_aimFactor - step;
         else
-            s_aimAnimFactor = s_aimAnimFactor + step;
+            m_aimFactor = m_aimFactor + step;
 
         // calc aim
-        s_aimAnimFactor = core::clamp<float>(s_aimAnimFactor, 0.0f, 1.0f);
+        m_aimFactor = core::clamp<float>(m_aimFactor, 0.0f, 1.0f);
                     
         ISceneCollisionManager *colMgr = getIView()->getSceneMgr()->getSceneCollisionManager();
         
@@ -1130,7 +1145,7 @@ void CPlayerComponent::updateStateStandAim()
 
 		float wUp, wDown, wLeft, wRight, wStraight;
 		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
-
+		
         if ( wUp > 0 )
             wStraight = 1.0f - wUp;
         else 
@@ -1139,10 +1154,11 @@ void CPlayerComponent::updateStateStandAim()
         // setup straight
         wStraight = core::clamp<float>(wStraight, 0.0f, 1.0f);
         
+
         // setup anim blend factor
-        wStraight   = wStraight * s_aimAnimFactor;
-        wUp         = wUp * s_aimAnimFactor;
-        wDown       = wDown * s_aimAnimFactor;        
+        wStraight   = wStraight * m_aimFactor;
+        wUp         = wUp * m_aimFactor;
+        wDown       = wDown * m_aimFactor;        
 		
 		
 		// rotate main character		
@@ -1154,21 +1170,113 @@ void CPlayerComponent::updateStateStandAim()
 
 
         // blend anim up, down
-        m_collada->setAnimWeight(1.0f - s_aimAnimFactor, 0);    // idle
+        m_collada->setAnimWeight(1.0f - m_aimFactor, 0);    // idle
         m_collada->setAnimWeight(wStraight, 1);					// straight
 		m_collada->setAnimWeight(wUp,	2);						// up
 		m_collada->setAnimWeight(wDown, 3);						// down
         m_collada->synchronizedByTimeScale();
 		
 
-        if ( m_runCommand && s_aimAnimFactor == 0.0f )
+        if ( m_runCommand && m_aimFactor == 0.0f )
             setState(CPlayerComponent::PlayerRun);
+		else if ( m_gunOnCommand )
+		{
+			if ( m_playerCmdEvt.shoot == true )
+			{
+				// todo shoot
+				setState(CPlayerComponent::PlayerStandShooting);
+			}
+			else if ( m_playerCmdEvt.reload == true )
+			{
+				// todo reload
+			}
+		}
     }    
+}
+
+void CPlayerComponent::updateStateStandShooting()
+{
+    if ( m_subState == SubStateInit )
+	{
+		m_subState = SubStateActive;
+
+		m_collada->setAnimation(m_animShootStraight.c_str(),	1, true );        
+        m_collada->setAnimWeight(0.0f, 1);
+		m_collada->enableAnimTrackChannel(1, true);
+        
+		m_collada->setAnimation(m_animShootUp.c_str(),	2, true );
+		m_collada->setAnimWeight(0.0f, 2);
+		m_collada->enableAnimTrackChannel(2, true);
+
+		m_collada->setAnimation(m_animShootDown.c_str(),	3, true );
+		m_collada->setAnimWeight(0.0f, 3);
+		m_collada->enableAnimTrackChannel(3, true);		
+
+		// anim time
+		m_animCurrentTime = m_collada->getCurrentAnimTimeLength();
+
+		// setup player state
+		m_playerCmdEvt.shoot	= true;
+		m_playerCmdEvt.aim		= false;
+		m_playerCmdEvt.reload	= false;
+	}
+	else if ( m_subState == SubStateEnd )
+	{
+		doNextState();
+
+		// do not reset aim anim weight
+		m_aimFactor = 1.0f;
+		m_initAimFactor = false;
+
+		return;
+	}
+	
+
+	// todo update
+	{
+		stepAnimationTime();
+
+		// change to aim state if end shooting
+		if ( m_animCurrentTime == 0.0f )
+			setState(CPlayerComponent::PlayerStandAim);
+		
+		ISceneCollisionManager *colMgr = getIView()->getSceneMgr()->getSceneCollisionManager();
+        
+        core::line3df	ray		= getCameraRay();
+		core::vector3df	colPos	= getCollisionPoint(ray);
+                		        
+		core::vector2df ret = getAimAngle(colPos);
+
+		float wUp, wDown, wLeft, wRight, wStraight;
+		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
+		
+        if ( wUp > 0 )
+            wStraight = 1.0f - wUp;
+        else 
+            wStraight = 1.0f - wDown;
+        
+        // setup straight
+        wStraight = core::clamp<float>(wStraight, 0.0f, 1.0f);                  		
+		
+		// rotate main character		
+		core::vector3df v0 = m_gameObject->getFront();
+		core::vector3df lookPos = colPos - m_gameObject->getPosition();
+		lookPos.normalize();
+		turnToDir( v0, lookPos, 6.0f );		
+		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+
+        // blend anim up, down
+        m_collada->setAnimWeight(0.0f,		0);		// idle
+        m_collada->setAnimWeight(wStraight, 1);		// straight
+		m_collada->setAnimWeight(wUp,		2);		// up
+		m_collada->setAnimWeight(wDown,		3);		// down
+        m_collada->synchronizedByTimeScale();
+	}
 }
 
 //void CPlayerComponent::updateStateTEMPLATE()
 //{
-//    if ( m_subState == SubStateInit )
+//	if ( m_subState == SubStateInit )
 //	{        
 //		m_subState = SubStateActive;		
 //	}

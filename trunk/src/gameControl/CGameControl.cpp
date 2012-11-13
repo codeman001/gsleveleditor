@@ -162,7 +162,7 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	bool runLeft	= false;
 	bool runRight	= false;
     bool runFast    = false;
-    bool fire       = false;
+    bool shoot		= false;
     
 	// calc rotation
 	if ( (m_keyActionBit & KeyLeft) != 0 )
@@ -193,7 +193,7 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
         runFast = true;
     
     if ( (m_keyActionBit & KeyFire) != 0 )
-        fire = true;
+        shoot = true;
     
 	// calc player rotation
 	float rot = 0.0f;
@@ -229,7 +229,7 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 		sendPlayerStopEvent();
 
     // send event to player component
-    if ( fire )
+    if ( shoot )
         sendPlayerCommand(true, false, false);
     else
         sendPlayerCommand(false, false, false);
@@ -289,14 +289,14 @@ void CGameControl::sendPlayerRunEvent(float f, float rotate, bool runFast)
 	getIView()->getDevice()->postEventFromUser( playerMove );
 }
 
-void CGameControl::sendPlayerCommand(bool fire, bool reload, bool aim)
+void CGameControl::sendPlayerCommand(bool shoot, bool reload, bool aim)
 {
     if ( m_isEnable == false )
         return;
     
 	static SEvent playerCommand;
 	static SEventPlayerCommand command;
-	command.fire = fire;
+	command.shoot = shoot;
     command.aim = aim;
     command.reload = reload;
     

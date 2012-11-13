@@ -29,6 +29,7 @@ public:
         PlayerRunToRunFast,
         PlayerRunFastToRun,
         PlayerStandAim,
+		PlayerStandShooting,
         PlayerRunAim,
 		NumStateCount
 	};
@@ -57,7 +58,6 @@ protected:
     SEventPlayerCommand     m_playerCmdEvt;
 	core::vector3df			m_controlRotate;
 
-	float					m_animShotCurrentTime;
 	float					m_animCurrentTime;
 
 	CColladaAnimation*		m_animationPackage;
@@ -69,7 +69,7 @@ protected:
 	std::vector<CGameColladaSceneNode*>	m_nodesFoot;
 	std::vector<CGameColladaSceneNode*>	m_nodesLeftShoulder;
 	std::vector<CGameColladaSceneNode*>	m_nodesRightShoulder;
-	CGameColladaSceneNode*			m_nodeNeck;
+	CGameColladaSceneNode*				m_nodeNeck;
 
 	// begin anim name declare
 	std::vector<std::string>		m_animIdle;
@@ -94,10 +94,14 @@ protected:
 	std::string						m_animShootLeft;
 	std::string						m_animShootRight;
 	std::string						m_animShootUp;
+	std::string						m_animShootDown;
 	std::string						m_animShootStraight;
 	// end anim name declare	
 
-	float					m_runFactor;
+	float					m_aimFactor;
+	bool					m_initAimFactor;
+
+	float					m_runFactor;	
 	float					m_runAccel;
 	float					m_runToRunFastAccel;
 	float					m_gunOnOffAccel;
@@ -182,7 +186,8 @@ protected:
     void updateStateRunToRunFast();
     void updateStateRunFastToRun();
     void updateStateStandAim();   	
-    
+    void updateStateStandShooting();
+
 	// isFinishedAnim	
 	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0 );
 

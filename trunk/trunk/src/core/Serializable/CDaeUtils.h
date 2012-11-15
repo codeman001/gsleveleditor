@@ -265,9 +265,9 @@ struct SColladaAnimClip
 
 	// getRealTimeLength
 	// get time by milisecond
-	float getRealTimeLength( float baseFps = 40.0f )
+	float getRealTimeLength( float baseFps = 30.0f )
 	{
-		return duration * baseFps;
+		return duration*1000.0f/baseFps;
 	}
 };
 #pragma endregion

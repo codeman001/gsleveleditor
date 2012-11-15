@@ -554,6 +554,8 @@ int getMeshWithControllerName( std::wstring& controllerName, ArrayMeshParams& li
 
 #pragma endregion
 
+float k_defaultAnimFPS = 30.0f;
+
 
 CDaeUtils::CDaeUtils()
 {
@@ -2672,9 +2674,6 @@ void CDaeUtils::loadDaeAnim( const char *lpFileName, CColladaAnimation	*collada)
 
 
 
-
-const float k_defaultAnimFPS = 40.0f;
-
 // getFrameAtTime
 // get a frame at time
 bool CDaeUtils::getRotationFrameID( SColladaNodeAnim* frames, float frame, int *frameRotID, core::quaternion *rotateData )
@@ -3091,7 +3090,7 @@ void CDaeUtils::parseClipNode( io::IXMLReader *xmlRead )
 					SColladaAnimClip *clip = new SColladaAnimClip();
 					clip->animName = charBuffer;
 					clip->time = start*k_defaultAnimFPS;
-					clip->duration = (end - start)*k_defaultAnimFPS;
+					clip->duration = end - start;
 
 					m_colladaAnim->push_back( clip );
 				}

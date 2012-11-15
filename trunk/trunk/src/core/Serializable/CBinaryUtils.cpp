@@ -50,6 +50,8 @@ struct SBinaryChunk
 // CBinaryUtils implement
 //////////////////////////////////////////////
 
+extern float k_defaultAnimFPS;
+
 CBinaryUtils::CBinaryUtils()
 {	
 }
@@ -268,7 +270,7 @@ void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode
 	memStream.writeData( &isRootNode, sizeof(int) );
 
 	// fps
-	float fps =	40.0f;//node->getFPS();
+	float fps =	k_defaultAnimFPS;
 	memStream.writeData( &fps, sizeof(float) );
 
 	
@@ -850,7 +852,7 @@ void CBinaryUtils::readColladaScene( unsigned char *data, unsigned int size, CGa
 	newNode->setRootColladaNode( isRootNode == 1 );
 
 	// fps
-	float fps =	24.0f;
+	float fps =	k_defaultAnimFPS;
 	memStream.readData( &fps, sizeof(float) );	
 	//newNode->setFPS( fps );
 

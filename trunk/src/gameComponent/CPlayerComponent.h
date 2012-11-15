@@ -65,10 +65,13 @@ protected:
 	CInventoryComponent*	m_inventory;
 
 	std::vector<CGameColladaSceneNode*>	m_nodesHandsAndHead;
-	std::vector<CGameColladaSceneNode*>	m_nodesChest;
-	std::vector<CGameColladaSceneNode*>	m_nodesFoot;
+	std::vector<CGameColladaSceneNode*>	m_nodesChest;	
 	std::vector<CGameColladaSceneNode*>	m_nodesLeftShoulder;
 	std::vector<CGameColladaSceneNode*>	m_nodesRightShoulder;
+
+	std::vector<CGameColladaSceneNode*>	m_nodesFoot;
+	std::vector<CGameColladaSceneNode*>	m_nodesUpBody;
+
 	CGameColladaSceneNode*				m_nodeNeck;
 
 	// begin anim name declare

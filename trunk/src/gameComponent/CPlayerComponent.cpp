@@ -111,10 +111,14 @@ void CPlayerComponent::initComponent()
 	CGameColladaSceneNode *root = m_collada->getSceneNode("Reference");
 	root->setAnimationCallback(this);
 
-
 	// hand, head
 	m_nodesHandsAndHead.push_back( m_collada->getSceneNode("RightGun") );		
 	m_collada->getChildsOfSceneNode("Spine3",m_nodesHandsAndHead);
+
+	// up body
+	m_nodesUpBody = m_nodesHandsAndHead;
+	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine1") );
+	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine2") );
 
 	// neck
 	m_nodeNeck = m_collada->getSceneNode("Neck");
@@ -391,13 +395,21 @@ void CPlayerComponent::updateStateRun()
 		m_runFactor = 0.0f;
 
 		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str(),0 );
+		
 		m_collada->setAnimation(m_animRunForward.c_str(),       2, true );
+		m_collada->setAnimWeight(0.0f, 2);
+
 		m_collada->setAnimation(m_animRunBackward.c_str(),      3, true );
+		m_collada->setAnimWeight(0.0f, 3);
+
 		m_collada->setAnimation(m_animRunStrafeRight.c_str(),   4, true );
-		m_collada->setAnimation(m_animRunStrafeLeft.c_str(),    5, true );        
+		m_collada->setAnimWeight(0.0f, 4);
+
+		m_collada->setAnimation(m_animRunStrafeLeft.c_str(),    5, true );
+		m_collada->setAnimWeight(0.0f, 5);
         
         // set weight run anim = zero
-		m_collada->setAnimWeight(1.0f, 1);        
+		m_collada->setAnimWeight(1.0f, 0);
 		m_collada->setAnimWeight(0.0f, 1);
 		m_collada->setAnimWeight(0.0f, 2);
 		m_collada->setAnimWeight(0.0f, 3);
@@ -460,7 +472,7 @@ void CPlayerComponent::updateStateRun()
 
 		line.end	= m_gameObject->getPosition() + m_controlRotate * 400.0f;
 		debug->addDrawLine(line, SColor(255,0,0,255) );
-#endif    
+#endif
 
 		float step = m_runAccel*getIView()->getTimeStep();
         
@@ -473,12 +485,19 @@ void CPlayerComponent::updateStateRun()
 				setState( CPlayerComponent::PlayerIdle );
 			}
             
-			m_collada->setAnimWeight(1.0f - m_runFactor,				0);            
-			m_collada->setAnimWeight(0.0f,								1);	
-			m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,   2);
-			m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,  3);
-			m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,      4);
-			m_collada->setAnimWeight(m_runFactor*m_animRightFactor,     5);
+			m_collada->setAnimWeight(1.0f - m_runFactor,							0);            
+			m_collada->setAnimWeight(0.0f,											1);	
+
+			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animForwardFactor,	2);
+			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animBackwardFactor,	3);
+			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animLeftFactor,		4);
+			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animRightFactor,	5);
+
+			m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,	2);
+			m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,	3);
+			m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,		4);
+			m_collada->setAnimWeight(m_runFactor*m_animRightFactor,	5);
+
             
             m_collada->synchronizedByTimeScale();   
 		}
@@ -499,8 +518,14 @@ void CPlayerComponent::updateStateRun()
 			if ( m_runFactor > 1.0f )
 				m_runFactor = 1.0f;
 
-			m_collada->setAnimWeight(1.0f - m_runFactor, 0);
-			m_collada->setAnimWeight(0.0f,					1);
+			m_collada->setAnimWeight(1.0f - m_runFactor,				0);
+			m_collada->setAnimWeight(0.0f,								1);
+
+			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animForwardFactor,   2);
+			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animBackwardFactor,  3);
+			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animLeftFactor,      4);
+			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animRightFactor,     5);
+
 			m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,   2);
 			m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,  3);
 			m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,      4);
@@ -622,7 +647,12 @@ void CPlayerComponent::updateStateRunTurn()
         m_collada->setAnimWeight(1.0f - m_runFactor,  0);
         m_collada->setAnimWeight(0.0f,	1);
         
-        m_collada->setAnimWeight(m_runFactor*animForward,   2);
+		//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animForward,   2);
+        //m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animBackward,  3);
+        //m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animLeft,      4);
+        //m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animRight,     5);
+
+		m_collada->setAnimWeight(m_runFactor*animForward,   2);
         m_collada->setAnimWeight(m_runFactor*animBackward,  3);
         m_collada->setAnimWeight(m_runFactor*animLeft,      4);
         m_collada->setAnimWeight(m_runFactor*animRight,     5);
@@ -932,8 +962,9 @@ void CPlayerComponent::updateStateRunToRunFast()
         float runLeft       = invRun*m_animLeftFactor*m_runFactor;
         float runRight      = invRun*m_animRightFactor*m_runFactor;
         
-        m_collada->setAnimWeight(1.0f - m_runFactor,   0);
-        m_collada->setAnimWeight(runFast,       1);
+        m_collada->setAnimWeight(1.0f - m_runFactor,	0);
+		m_collada->setAnimWeight(runFast,				1);
+
         m_collada->setAnimWeight(runForward,    2);
         m_collada->setAnimWeight(runBackward,   3);
         m_collada->setAnimWeight(runLeft,       4);
@@ -1200,15 +1231,15 @@ void CPlayerComponent::updateStateStandShooting()
 	{
 		m_subState = SubStateActive;
 
-		m_collada->setAnimation(m_animShootStraight.c_str(),	1, true );        
+		m_collada->setAnimation(m_animShootStraight.c_str(),1, false );        
         m_collada->setAnimWeight(0.0f, 1);
 		m_collada->enableAnimTrackChannel(1, true);
         
-		m_collada->setAnimation(m_animShootUp.c_str(),	2, true );
+		m_collada->setAnimation(m_animShootUp.c_str(),		2, false );
 		m_collada->setAnimWeight(0.0f, 2);
 		m_collada->enableAnimTrackChannel(2, true);
 
-		m_collada->setAnimation(m_animShootDown.c_str(),	3, true );
+		m_collada->setAnimation(m_animShootDown.c_str(),	3, false );
 		m_collada->setAnimWeight(0.0f, 3);
 		m_collada->enableAnimTrackChannel(3, true);		
 
@@ -1216,7 +1247,7 @@ void CPlayerComponent::updateStateStandShooting()
 		m_animCurrentTime = m_collada->getCurrentAnimTimeLength();
 
 		// setup player state
-		m_playerCmdEvt.shoot	= true;
+		m_playerCmdEvt.shoot	= false;
 		m_playerCmdEvt.aim		= false;
 		m_playerCmdEvt.reload	= false;
 	}
@@ -1235,11 +1266,23 @@ void CPlayerComponent::updateStateStandShooting()
 	// todo update
 	{
 		stepAnimationTime();
-
-		// change to aim state if end shooting
-		if ( m_animCurrentTime == 0.0f )
-			setState(CPlayerComponent::PlayerStandAim);
 		
+		// finish animation shoot
+		if ( m_animCurrentTime == 0.0f )
+		{
+			if ( m_playerCmdEvt.shoot == false )
+			{
+				// change to aim state if end shooting
+				setState(CPlayerComponent::PlayerStandAim);
+			}
+			else
+			{
+				// continue shoot
+				m_subState = SubStateInit;
+			}
+		}
+
+
 		ISceneCollisionManager *colMgr = getIView()->getSceneMgr()->getSceneCollisionManager();
         
         core::line3df	ray		= getCameraRay();

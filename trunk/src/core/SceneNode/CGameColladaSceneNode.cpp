@@ -60,11 +60,13 @@ void CGameColladaMesh::updateJoint()
 // CGameAnimationTrack implement
 //////////////////////////////////////////////////////////
 
+extern float k_defaultAnimFPS;
+
 CGameAnimationTrack::CGameAnimationTrack()
 {
 	m_currentFrame = 0;
 	m_totalFrame = 0;
-	m_framePerSecond = 30.0f;
+	m_framePerSecond = k_defaultAnimFPS;
 	m_speedRatio = 1.0f;
 
 	m_posHint = 0;

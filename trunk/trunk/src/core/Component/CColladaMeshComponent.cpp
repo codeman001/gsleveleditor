@@ -1016,6 +1016,27 @@ void CColladaMeshComponent::synchronizedByTimeScale(std::vector<CGameColladaScen
 	}
 }
 
+void CColladaMeshComponent::synchronizedFrameByNode(CGameColladaSceneNode *node, int channel)
+{
+    float currentFrame = node->getAnimation()->getTrack(channel)->getCurrentFrame();
+    
+    std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		CGameColladaSceneNode* j = (*i).second;
+        
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+		
+		j->getAnimation()->getTrack(channel)->setCurrentFrame(currentFrame);
+		//j->getAnimation()->synchronizedByTimeScale();
+		i++;
+	}
+}
+
 // pauseAtFrame
 // pause anim at frame id
 void CColladaMeshComponent::pauseAtFrame( float frame, int trackChannel)

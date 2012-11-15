@@ -499,7 +499,7 @@ void CGameAnimation::synchronizedByTimeScale()
     
 	for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 	{
-		if ( m_animTrack[i].isEnable() == true && m_animTrack[i].getTotalFrame() != 0 )
+		if ( m_animTrack[i].isEnable() == true && m_animTrack[i].getTotalFrame() != 0 && m_animTrack[i].getAnimWeight() > 0.0f )
 		{
 			syncFrame = syncFrame + m_animTrack[i].getTotalFrame() * m_animTrack[i].getAnimWeight();
             
@@ -518,13 +518,17 @@ void CGameAnimation::synchronizedByTimeScale()
     
 	for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 	{
-		if ( m_animTrack[i].isEnable() == true && m_animTrack[i].getTotalFrame() != 0 )
+		if ( m_animTrack[i].isEnable() == true && m_animTrack[i].getTotalFrame() != 0 && m_animTrack[i].getAnimWeight() > 0.0f)
 		{
 			float speedRatio = m_animTrack[i].getTotalFrame()/syncFrame;
+            
 			m_animTrack[i].setSpeedRatio( speedRatio );
             
             if ( i != baseChannel )
+            {
+                frameRatio = core::clamp<float>(frameRatio, 0.0f, 1.0f);
                 m_animTrack[i].setCurrentFrame( frameRatio*m_animTrack[i].getTotalFrame() );
+            }
 		}
 	}
     
@@ -544,7 +548,7 @@ void CGameAnimation::update(float timeStep)
 			m_animTrack[i].update( timeStep );
 
 			// the new track need wait another end track
-			if ( m_animTrack[i].isEndTrack() == false )
+			if ( m_animTrack[i].isEndTrack() == false && m_animTrack[i].getAnimWeight() > 0.0f )
 				startNewLoop = false;
             
             if ( m_animTrack[i].getTotalFrame() != 0 )

@@ -411,10 +411,11 @@ void CPlayerComponent::updateStateRun()
         // set weight run anim = zero
 		m_collada->setAnimWeight(1.0f, 0);
 		m_collada->setAnimWeight(0.0f, 1);
+        
 		m_collada->setAnimWeight(0.0f, 2);
 		m_collada->setAnimWeight(0.0f, 3);
 		m_collada->setAnimWeight(0.0f, 4);
-		m_collada->setAnimWeight(0.0f, 5);                
+		m_collada->setAnimWeight(0.0f, 5);
 
 		m_collada->synchronizedByTimeScale();	
 
@@ -488,15 +489,15 @@ void CPlayerComponent::updateStateRun()
 			m_collada->setAnimWeight(1.0f - m_runFactor,							0);            
 			m_collada->setAnimWeight(0.0f,											1);	
 
-			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animForwardFactor,	2);
-			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animBackwardFactor,	3);
-			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animLeftFactor,		4);
-			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animRightFactor,	5);
+			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animForwardFactor,	2);
+			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animBackwardFactor,	3);
+			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animLeftFactor,		4);
+			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animRightFactor,	5);
 
-			m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,	2);
-			m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,	3);
-			m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,		4);
-			m_collada->setAnimWeight(m_runFactor*m_animRightFactor,	5);
+			//m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,	2);
+			//m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,	3);
+			//m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,		4);
+			//m_collada->setAnimWeight(m_runFactor*m_animRightFactor,	5);
 
             
             m_collada->synchronizedByTimeScale();   
@@ -521,15 +522,15 @@ void CPlayerComponent::updateStateRun()
 			m_collada->setAnimWeight(1.0f - m_runFactor,				0);
 			m_collada->setAnimWeight(0.0f,								1);
 
-			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animForwardFactor,   2);
-			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animBackwardFactor,  3);
-			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animLeftFactor,      4);
-			//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animRightFactor,     5);
+			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animForwardFactor,   2);
+            m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animBackwardFactor,  3);
+			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animLeftFactor,      4);
+			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animRightFactor,     5);
 
-			m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,   2);
-			m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,  3);
-			m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,      4);
-			m_collada->setAnimWeight(m_runFactor*m_animRightFactor,     5);
+			//m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,   2);
+			//m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,  3);
+			//m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,      4);
+			//m_collada->setAnimWeight(m_runFactor*m_animRightFactor,     5);
                         
             m_collada->synchronizedByTimeScale();
             
@@ -647,15 +648,15 @@ void CPlayerComponent::updateStateRunTurn()
         m_collada->setAnimWeight(1.0f - m_runFactor,  0);
         m_collada->setAnimWeight(0.0f,	1);
         
-		//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animForward,   2);
-        //m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animBackward,  3);
-        //m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animLeft,      4);
-        //m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animRight,     5);
+		m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animForward,   2);
+        m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animBackward,  3);
+        m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animLeft,      4);
+        m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animRight,     5);
 
-		m_collada->setAnimWeight(m_runFactor*animForward,   2);
-        m_collada->setAnimWeight(m_runFactor*animBackward,  3);
-        m_collada->setAnimWeight(m_runFactor*animLeft,      4);
-        m_collada->setAnimWeight(m_runFactor*animRight,     5);
+		//m_collada->setAnimWeight(m_runFactor*animForward,   2);
+        //m_collada->setAnimWeight(m_runFactor*animBackward,  3);
+        //m_collada->setAnimWeight(m_runFactor*animLeft,      4);
+        //m_collada->setAnimWeight(m_runFactor*animRight,     5);
         
         m_collada->synchronizedByTimeScale();        
         
@@ -685,14 +686,14 @@ void CPlayerComponent::updateStateRunFast()
 {	
 	if ( m_subState == SubStateInit )
 	{
+        m_collada->onlyEnableAnimTrackChannel(0);
 		m_collada->enableAnimTrackChannel(0, true);
 		m_collada->enableAnimTrackChannel(1, true);
 
 		m_collada->setAnimation(m_animRunNoGun.c_str(), 1, true );
 		
 		m_collada->setAnimWeight(1.0f - m_runFactor, 0);
-		m_collada->setAnimWeight(m_runFactor, 1);
-
+		m_collada->setAnimWeight(m_runFactor, 1);        
 		m_collada->synchronizedByTimeScale();		
 
 		m_subState = SubStateActive;
@@ -712,7 +713,7 @@ void CPlayerComponent::updateStateRunFast()
 	else
 	{
 		float step = m_runAccel*getIView()->getTimeStep();
-
+        
 		if ( m_runCommand == false )
 		{
 			// calc spine rotation
@@ -737,6 +738,7 @@ void CPlayerComponent::updateStateRunFast()
 			if ( m_runFactor > 1.0f )
 				m_runFactor = 1.0f;
 
+            
 			m_collada->setAnimWeight(1.0f - m_runFactor, 0);
 			m_collada->setAnimWeight(m_runFactor, 1);
 
@@ -881,8 +883,9 @@ void CPlayerComponent::updateStateRunToRunFast()
         m_runFactor = 1.0f;
         
         m_collada->enableAnimTrackChannel(1, true);
-        m_collada->setAnimation(m_animRunNoGun.c_str(), 1, true );
+        m_collada->setAnimation(m_animRunNoGun.c_str(), 1, true );        
         
+        // change state
 		m_subState = SubStateActive;		
 	}
 	else if ( m_subState == SubStateEnd )
@@ -890,7 +893,7 @@ void CPlayerComponent::updateStateRunToRunFast()
         bool runFastState = false;
         if ( m_nextState == CPlayerComponent::PlayerRunFast )        
             runFastState = true;
-
+        
         // change state
 		doNextState();
         
@@ -969,6 +972,12 @@ void CPlayerComponent::updateStateRunToRunFast()
         m_collada->setAnimWeight(runBackward,   3);
         m_collada->setAnimWeight(runLeft,       4);
         m_collada->setAnimWeight(runRight,      5);
+        
+        // sync
+        m_collada->synchronizedFrameByNode( m_nodesFoot[0] , 2);
+        m_collada->synchronizedFrameByNode( m_nodesFoot[0] , 3);
+        m_collada->synchronizedFrameByNode( m_nodesFoot[0] , 4);
+        m_collada->synchronizedFrameByNode( m_nodesFoot[0] , 5);
         
         m_collada->synchronizedByTimeScale();
         

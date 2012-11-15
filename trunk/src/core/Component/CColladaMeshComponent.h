@@ -268,7 +268,8 @@ public:
 	// sync n animation
 	void synchronizedByTimeScale();
 	void synchronizedByTimeScale(std::vector<CGameColladaSceneNode*>& listNodes);	
-
+    void synchronizedFrameByNode(CGameColladaSceneNode *node, int channel);
+    
 	// getCurrentAnim
 	// get current anim
 	inline SColladaAnimClip* getCurrentAnim()

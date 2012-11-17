@@ -7,7 +7,7 @@
 #define MAX_LIGHTS		2
 #define MAX_POINTLIGHTS	4
 
-#define MAX_ANIMTRACK   8
+#define MAX_ANIMTRACK   10
 
 class CGameColladaSceneNode;
 class CColladaMeshComponent;

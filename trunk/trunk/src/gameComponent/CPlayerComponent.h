@@ -190,7 +190,7 @@ protected:
     void updateStateRunFastToRun();
     void updateStateStandAim();   	
     void updateStateStandShooting();
-
+    
 	// isFinishedAnim	
 	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0 );
 

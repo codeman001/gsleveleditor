@@ -77,7 +77,6 @@ void CPlayerComponent::initComponent()
 	// foot nodes
 	m_nodesFoot.push_back( m_collada->getSceneNode("Reference") );
 	m_nodesFoot.push_back( m_collada->getSceneNode("LeftGun") );
-	m_nodesFoot.push_back( m_collada->getSceneNode("RightGun") );
 	m_nodesFoot.push_back( m_collada->getSceneNode("Hips") );		
 	m_nodesFoot.push_back( m_collada->getSceneNode("LeftUpLeg") );
 	m_nodesFoot.push_back( m_collada->getSceneNode("RightUpLeg") );
@@ -117,8 +116,10 @@ void CPlayerComponent::initComponent()
 
 	// up body
 	m_nodesUpBody = m_nodesHandsAndHead;
-	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine1") );
+	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine") );
+	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine1") );    
 	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine2") );
+	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine3") );
 
 	// neck
 	m_nodeNeck = m_collada->getSceneNode("Neck");
@@ -160,6 +161,7 @@ void CPlayerComponent::initComponent()
 
 	// register event
 	getIView()->registerEvent("CPlayerComponent", this);	
+    
 }
 
 // update
@@ -519,18 +521,18 @@ void CPlayerComponent::updateStateRun()
 			if ( m_runFactor > 1.0f )
 				m_runFactor = 1.0f;
 
-			m_collada->setAnimWeight(1.0f - m_runFactor,				0);
-			m_collada->setAnimWeight(0.0f,								1);
-
+			m_collada->setAnimWeight(1.0f - m_runFactor, 0);
+            m_collada->setAnimWeight(0.0f, 1);
+            
 			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animForwardFactor,   2);
             m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animBackwardFactor,  3);
 			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animLeftFactor,      4);
 			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animRightFactor,     5);
-
-			//m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,   2);
-			//m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,  3);
-			//m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,      4);
-			//m_collada->setAnimWeight(m_runFactor*m_animRightFactor,     5);
+            
+			m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,   2);
+			m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,  3);
+			m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,      4);
+			m_collada->setAnimWeight(m_runFactor*m_animRightFactor,     5);
                         
             m_collada->synchronizedByTimeScale();
             
@@ -648,15 +650,15 @@ void CPlayerComponent::updateStateRunTurn()
         m_collada->setAnimWeight(1.0f - m_runFactor,  0);
         m_collada->setAnimWeight(0.0f,	1);
         
-		m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animForward,   2);
-        m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animBackward,  3);
-        m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animLeft,      4);
-        m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animRight,     5);
+		//m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animForward,   2);
+        //m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animBackward,  3);
+        //m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animLeft,      4);
+        //m_collada->setAnimWeight(m_nodesFoot, m_runFactor*animRight,     5);
 
-		//m_collada->setAnimWeight(m_runFactor*animForward,   2);
-        //m_collada->setAnimWeight(m_runFactor*animBackward,  3);
-        //m_collada->setAnimWeight(m_runFactor*animLeft,      4);
-        //m_collada->setAnimWeight(m_runFactor*animRight,     5);
+		m_collada->setAnimWeight(m_runFactor*animForward,   2);
+        m_collada->setAnimWeight(m_runFactor*animBackward,  3);
+        m_collada->setAnimWeight(m_runFactor*animLeft,      4);
+        m_collada->setAnimWeight(m_runFactor*animRight,     5);
         
         m_collada->synchronizedByTimeScale();        
         
@@ -971,13 +973,7 @@ void CPlayerComponent::updateStateRunToRunFast()
         m_collada->setAnimWeight(runForward,    2);
         m_collada->setAnimWeight(runBackward,   3);
         m_collada->setAnimWeight(runLeft,       4);
-        m_collada->setAnimWeight(runRight,      5);
-        
-        // sync
-        m_collada->synchronizedFrameByNode( m_nodesFoot[0] , 2);
-        m_collada->synchronizedFrameByNode( m_nodesFoot[0] , 3);
-        m_collada->synchronizedFrameByNode( m_nodesFoot[0] , 4);
-        m_collada->synchronizedFrameByNode( m_nodesFoot[0] , 5);
+        m_collada->setAnimWeight(runRight,      5);    
         
         m_collada->synchronizedByTimeScale();
         
@@ -1174,9 +1170,7 @@ void CPlayerComponent::updateStateStandAim()
             m_aimFactor = m_aimFactor + step;
 
         // calc aim
-        m_aimFactor = core::clamp<float>(m_aimFactor, 0.0f, 1.0f);
-                    
-        ISceneCollisionManager *colMgr = getIView()->getSceneMgr()->getSceneCollisionManager();
+        m_aimFactor = core::clamp<float>(m_aimFactor, 0.0f, 1.0f);                
         
         core::line3df	ray		= getCameraRay();
 		core::vector3df	colPos	= getCollisionPoint(ray);
@@ -1291,8 +1285,6 @@ void CPlayerComponent::updateStateStandShooting()
 			}
 		}
 
-
-		ISceneCollisionManager *colMgr = getIView()->getSceneMgr()->getSceneCollisionManager();
         
         core::line3df	ray		= getCameraRay();
 		core::vector3df	colPos	= getCollisionPoint(ray);
@@ -1341,6 +1333,7 @@ void CPlayerComponent::updateStateStandShooting()
 //  }
 //}
 
+
 ///////////////////////////////////////////////////////////////////////
 // Player component end update state function
 ///////////////////////////////////////////////////////////////////////
@@ -1350,18 +1343,20 @@ void CPlayerComponent::updateStateStandShooting()
 // call back frame update on scenenode
 void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation )
 {
-    // todo modify rotation, position of anim    
+    // todo modify rotation, position of anim
 	const core::vector3df rotAxis = core::vector3df(0,0,1);
+   	const core::vector3df rotAxisUp = core::vector3df(1,0,0); 
 
 	const float maxSpine = 70.0f;
 	float spineAngle = core::clamp<float>(m_spineRotation, -maxSpine, maxSpine);
 	float neckAngle = m_spineRotation - spineAngle;
-	float r = spineAngle/3.0f;
-	
+	float r = spineAngle/3.0f;	
+    
+    
 	if ( node == m_nodesChest[0] )
 	{
 		core::quaternion q;
-		q.fromAngleAxis( core::degToRad(r), rotAxis  );
+        q.fromAngleAxis( core::degToRad(r), rotAxis  );
 		rotation = rotation * q;
 	}
 	else if ( node == m_nodesChest[1] )

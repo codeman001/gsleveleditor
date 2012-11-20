@@ -1572,11 +1572,11 @@ void CPlayerComponent::calcAimAnimationBlend(core::vector2df angle, float &up, f
 }
 
 // isFinishedAnim	
-bool CPlayerComponent::isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel )
+bool CPlayerComponent::isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel, int animLayer)
 {
 	for ( int i = 0, n = (int)nodes.size(); i < n; i++ )
 	{		
-		CGameAnimationTrack* track = nodes[i]->getAnimation()->getTrack(trackChannel);
+		CGameAnimationTrack* track = nodes[i]->getAnimation(animLayer)->getTrack(trackChannel);
 
 		if ( track->getTotalFrame() == 0 || track->isEnable() == false || track->isPause() == true )
 			continue;

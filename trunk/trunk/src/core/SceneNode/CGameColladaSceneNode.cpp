@@ -369,6 +369,7 @@ CGameAnimation::CGameAnimation()
 
 	// null animation
 	m_nullAnimation = true;
+	m_isEnable = false;
 }
 
 CGameAnimation::~CGameAnimation()
@@ -771,6 +772,9 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 
 	Box.MinEdge = core::vector3df(-2, -2, -2);
 	Box.MaxEdge = core::vector3df( 2,  2,  2);
+
+	// alway enable animation layer 0
+	m_gameAnimation[0].setEnable(true);
 }
 
 CGameColladaSceneNode::~CGameColladaSceneNode()
@@ -942,9 +946,15 @@ void CGameColladaSceneNode::OnAnimate(u32 timeMs)
 		{	
 			// update anim track
 			float timeStep = (float)(timeMs - m_timer);
-			m_gameAnimation.update( timeStep );			
 
-			// update anim animation
+			// update animation layer
+			for ( int i = 0; i < MAX_ANIMLAYER; i++ )
+			{
+				if ( m_gameAnimation[i].isEnable() == true )
+					m_gameAnimation[i].update( timeStep );			
+			}
+
+			// get frame data of animation
 			updateAnimation();	
 		}
 		
@@ -1099,13 +1109,6 @@ void CGameColladaSceneNode::skin()
 	}	// if hardware	
 }
 
-// getCurrentFrameData
-// get current frame
-void CGameColladaSceneNode::getCurrentFrameData( core::vector3df& position, core::quaternion& rotation, core::vector3df& scale )
-{
-	m_gameAnimation.getFrameData( position, scale, rotation, LocalMatrix, NULL, NULL );
-}
-
 // updateAnimation
 // calc relative matrix of animation
 void CGameColladaSceneNode::updateAnimation()
@@ -1114,7 +1117,7 @@ void CGameColladaSceneNode::updateAnimation()
 	core::vector3df scale;
 	core::quaternion rotation;
 	
-	m_gameAnimation.getFrameData( position, scale, rotation, LocalMatrix, m_animationCallback, this );
+	m_gameAnimation[0].getFrameData( position, scale, rotation, LocalMatrix, m_animationCallback, this );
 
 	// run callback
 	if ( m_animationCallback )
@@ -1163,7 +1166,7 @@ void CGameColladaSceneNode::updateAnimation()
 	AnimationMatrix = mat;
 	
 	// translate collada mesh node
-	if ( ColladaMesh && m_gameAnimation.isNullAnimation() == false )
+	if ( ColladaMesh && m_gameAnimation[0].isNullAnimation() == false )
 	{
 		AnimationMatrix *= ColladaMesh->InvBindShapeMatrix;
 	}
@@ -1651,6 +1654,6 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 	newNode->m_isSkydome		= m_isSkydome;
 	newNode->m_terrainNode		= m_terrainNode;
 	newNode->m_hideTerrainNode	= m_hideTerrainNode;	
-	
+		
 	return newNode;
 }

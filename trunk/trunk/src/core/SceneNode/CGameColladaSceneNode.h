@@ -7,6 +7,7 @@
 #define MAX_LIGHTS		2
 #define MAX_POINTLIGHTS	4
 
+#define MAX_ANIMLAYER	4
 #define MAX_ANIMTRACK   10
 
 class CGameColladaSceneNode;
@@ -346,7 +347,8 @@ class CGameAnimation
 protected:
 	CGameAnimationTrack		m_animTrack[MAX_ANIMTRACK];
 	bool					m_nullAnimation;
-
+	
+	bool					m_isEnable;
 public:
 	CGameAnimation();
 	virtual ~CGameAnimation();
@@ -398,11 +400,25 @@ public:
 	// update per frame
 	void update(float timeStep);
 
+	// setEnable
+	// enable animation
+	void setEnable( bool b )
+	{
+		m_isEnable = b;
+	}
+
 	// isNullAnimation
 	// return true if not set animation
 	inline bool isNullAnimation()
 	{
 		return m_nullAnimation;
+	}
+
+	// isEnable
+	// return true if enable this animation
+	inline bool isEnable()
+	{
+		return m_isEnable;
 	}
 
 protected:
@@ -661,15 +677,11 @@ public:
 	// calc relative matrix of animation
 	void updateAnimation();
 
-	// getCurrentFrameData
-	// get current frame
-	void getCurrentFrameData( core::vector3df& position, core::quaternion& rotation, core::vector3df& scale );
-	
 	// getAnimation
 	// get animation data
-	inline CGameAnimation* getAnimation()
+	inline CGameAnimation* getAnimation(int animLayer)
 	{
-		return &m_gameAnimation;
+		return &m_gameAnimation[animLayer];
 	}
 
 protected:	
@@ -679,7 +691,11 @@ protected:
 	bool			m_terrainNode;
 	bool			m_hideTerrainNode;
 
-	CGameAnimation	m_gameAnimation;
+	// Multi layer:
+	// example:
+	//	- foot is a animation
+	//	- hand is a animation
+	CGameAnimation	m_gameAnimation[MAX_ANIMLAYER];
 
 public:		
 

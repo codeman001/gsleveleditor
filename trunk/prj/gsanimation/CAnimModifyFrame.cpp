@@ -489,7 +489,7 @@ void CAnimModifyFrame::_onChangeValue( uiObject *pSender )
 	if ( m_lastSelectNode == NULL )
 		return;
 
-	CGameAnimationTrack *track = m_lastSelectNode->getAnimation()->getTrack(0);
+	CGameAnimationTrack *track = m_lastSelectNode->getAnimation(0)->getTrack(0);
 
 	if ( pSender == m_timeControlRot )
 	{
@@ -651,7 +651,7 @@ void CAnimModifyFrame::updateTimelineToSceneNode( CTimelineControl *control )
 	if ( control == m_timeControlRot )
 	{
 		// clear old key frames
-		m_lastSelectNode->getAnimation()->getTrack(0)->RotationKeys.clear();
+		m_lastSelectNode->getAnimation(0)->getTrack(0)->RotationKeys.clear();
 		
 		// add new key frames
 		int n = m_timeControlRot->getValueCount();
@@ -669,14 +669,14 @@ void CAnimModifyFrame::updateTimelineToSceneNode( CTimelineControl *control )
 			key.frame = value.time;
 			key.rotation = quat;
 
-			m_lastSelectNode->getAnimation()->getTrack(0)->RotationKeys.push_back( key );
+			m_lastSelectNode->getAnimation(0)->getTrack(0)->RotationKeys.push_back( key );
 
 		}			
 	}
 	else if ( control == m_timeControlPos )
 	{
 		// clear old key frames		
-		m_lastSelectNode->getAnimation()->getTrack(0)->PositionKeys.clear();
+		m_lastSelectNode->getAnimation(0)->getTrack(0)->PositionKeys.clear();
 		
 		// add new key frames
 		int n = m_timeControlRot->getValueCount();
@@ -689,7 +689,7 @@ void CAnimModifyFrame::updateTimelineToSceneNode( CTimelineControl *control )
 			key.frame = value.time;
 			key.position = pos;
 
-			m_lastSelectNode->getAnimation()->getTrack(0)->PositionKeys.push_back( key );
+			m_lastSelectNode->getAnimation(0)->getTrack(0)->PositionKeys.push_back( key );
 
 		}
 	}
@@ -710,7 +710,7 @@ void CAnimModifyFrame::updateTimeLine( CGameColladaSceneNode *node )
 		return;
 	}
 
-	CGameAnimationTrack *track = node->getAnimation()->getTrack(0);
+	CGameAnimationTrack *track = node->getAnimation(0)->getTrack(0);
 
 	// ROTATION
 	{		

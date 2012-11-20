@@ -192,7 +192,7 @@ protected:
     void updateStateStandShooting();
     
 	// isFinishedAnim	
-	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0 );
+	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0, int animLayer = 0);
 
 	// stepAnimationTime	
 	void stepAnimationTime();

@@ -897,23 +897,52 @@ void CGameColladaSceneNode::OnRegisterSceneNode()
 
 void CGameColladaSceneNode::updateAbsolutePosition()
 {
-	core::matrix4 RelativeMatrix;
-	RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(), AnimationMatrix);	
-
-	// calc absolute transform
-	AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(),RelativeMatrix);
-
-	// calc absolute animation
-	if ( m_isRootColladaNode == true )
-		AbsoluteAnimationMatrix = RelativeMatrix;
-	else
-		AbsoluteAnimationMatrix.setbyproduct_nocheck(((CGameColladaSceneNode*)Parent)->AbsoluteAnimationMatrix, RelativeMatrix);	
-
-	// move to right position
-	if ( m_connectLayerAnim == true && m_isRootColladaNode == false )
-	{
-		
-	}
+    CGameColladaSceneNode *colladaParent = (CGameColladaSceneNode*)Parent;
+    
+    for (int i = 0; i < MAX_ANIMLAYER; i++)
+    {
+        if ( m_gameAnimation[i].isEnable() == false )
+            continue;
+        
+        core::matrix4 RelativeMatrix;
+        RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(), AnimationMatrixLayer[i]);	
+        
+        // calc absolute animation
+        if ( m_isRootColladaNode == true )
+            AbsoluteAnimationMatrixLayer[i] = RelativeMatrix;
+        else
+            AbsoluteAnimationMatrixLayer[i].setbyproduct_nocheck(colladaParent->AbsoluteAnimationMatrixLayer[i], RelativeMatrix);        
+        
+        // set absolute transformation
+        if ( i == m_animationLayer )
+        {            
+            // translate to right position
+            if ( m_connectLayerAnim == true && m_isRootColladaNode == false && i > 0 )
+            {
+                // calc position
+                core::vector3df parentPos = colladaParent->AbsoluteAnimationMatrix.getTranslation();                
+                core::vector3df myParentPos = colladaParent->AbsoluteAnimationMatrixLayer[i].getTranslation();                
+                core::vector3df myPos = AbsoluteAnimationMatrixLayer[i].getTranslation();
+                core::vector3df offset = myPos - myParentPos;                
+                
+                // calc rotation
+                float rotY = AbsoluteAnimationMatrixLayer[0].getRotationDegrees().Y;
+                core::vector3df myRot = AbsoluteAnimationMatrixLayer[i].getRotationDegrees();
+                myRot.Y = rotY;
+                                                
+                // change to right position
+                AbsoluteAnimationMatrixLayer[i].setTranslation(parentPos + offset);
+                AbsoluteAnimationMatrixLayer[i].setRotationDegrees(myRot);
+            }
+            
+            
+            AnimationMatrix = AnimationMatrixLayer[i];
+            AbsoluteAnimationMatrix = AbsoluteAnimationMatrixLayer[i];
+            
+            AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(), RelativeMatrix);            
+        }
+        
+    }
 }
 
 
@@ -1121,63 +1150,69 @@ void CGameColladaSceneNode::skin()
 // calc relative matrix of animation
 void CGameColladaSceneNode::updateAnimation()
 {
-	core::vector3df position;
-	core::vector3df scale;
-	core::quaternion rotation;
+    for ( int i = 0; i < MAX_ANIMLAYER; i++ )
+    {   
+        if ( m_gameAnimation[i].isEnable() == false )
+            continue;
+            
+        core::vector3df position;
+        core::vector3df scale;
+        core::quaternion rotation;
 	
-	m_gameAnimation[m_animationLayer].getFrameData( position, scale, rotation, LocalMatrix, m_animationCallback, this, m_animationLayer);
+        m_gameAnimation[i].getFrameData( position, scale, rotation, LocalMatrix, m_animationCallback, this, m_animationLayer);
 
-	// run callback
-	if ( m_animationCallback )
-		m_animationCallback->_onUpdateFrameData( this,  position, scale, rotation, m_animationLayer);
+        // run callback
+        if ( m_animationCallback )
+            m_animationCallback->_onUpdateFrameData( this,  position, scale, rotation, i);
 
-	// rotation
-	core::matrix4 mat;
-	rotation.getMatrix_transposed(mat);
+        // rotation
+        core::matrix4 mat;
+        rotation.getMatrix_transposed(mat);
 	
-	// position	
-	f32 *m1 = mat.pointer();
+        // position	
+        f32 *m1 = mat.pointer();
 
-	m1[0] += position.X*m1[3];
-	m1[1] += position.Y*m1[3];
-	m1[2] += position.Z*m1[3];
+        m1[0] += position.X*m1[3];
+        m1[1] += position.Y*m1[3];
+        m1[2] += position.Z*m1[3];
 
-	m1[4] += position.X*m1[7];
-	m1[5] += position.Y*m1[7];
-	m1[6] += position.Z*m1[7];
+        m1[4] += position.X*m1[7];
+        m1[5] += position.Y*m1[7];
+        m1[6] += position.Z*m1[7];
 
-	m1[8] += position.X*m1[11];
-	m1[9] += position.Y*m1[11];
-	m1[10] += position.Z*m1[11];
+        m1[8] += position.X*m1[11];
+        m1[9] += position.Y*m1[11];
+        m1[10] += position.Z*m1[11];
 
-	m1[12] += position.X*m1[15];
-	m1[13] += position.Y*m1[15];
-	m1[14] += position.Z*m1[15];
+        m1[12] += position.X*m1[15];
+        m1[13] += position.Y*m1[15];
+        m1[14] += position.Z*m1[15];
 	
-	// scale
-	m1[0] *= scale.X;
-	m1[1] *= scale.X;
-	m1[2] *= scale.X;
-	m1[3] *= scale.X;
+        // scale
+        m1[0] *= scale.X;
+        m1[1] *= scale.X;
+        m1[2] *= scale.X;
+        m1[3] *= scale.X;
 
-	m1[4] *= scale.Y;
-	m1[5] *= scale.Y;
-	m1[6] *= scale.Y;
-	m1[7] *= scale.Y;
+        m1[4] *= scale.Y;
+        m1[5] *= scale.Y;
+        m1[6] *= scale.Y;
+        m1[7] *= scale.Y;
 
-	m1[8] *= scale.Z;
-	m1[9] *= scale.Z;
-	m1[10] *= scale.Z;
-	m1[11] *= scale.Z;
+        m1[8] *= scale.Z;
+        m1[9] *= scale.Z;
+        m1[10] *= scale.Z;
+        m1[11] *= scale.Z;
 
-	// update current relative matrix
-	AnimationMatrix = mat;
+        // update current relative matrix
+        AnimationMatrixLayer[i] = mat;
 	
-	// translate collada mesh node
-	if ( ColladaMesh && m_gameAnimation[m_animationLayer].isNullAnimation() == false )
-	{
-		AnimationMatrix *= ColladaMesh->InvBindShapeMatrix;
-	}
+        // translate collada mesh node
+        if ( ColladaMesh && m_gameAnimation[i].isNullAnimation() == false )
+        {
+            AnimationMatrixLayer[i] *= ColladaMesh->InvBindShapeMatrix;
+        }
+    }
 }
 
 void CGameColladaSceneNode::render()

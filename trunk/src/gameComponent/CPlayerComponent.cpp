@@ -418,7 +418,7 @@ void CPlayerComponent::updateStateRun()
 		
 		// enable on animation layer 1
 		m_collada->setAnimation( m_animAimUp, 0, true, 1 );		
-		m_collada->enableAnimLayer( m_nodesUpBody, 1, true );
+		m_collada->enableAnimLayer(1, true);
 		m_collada->setAnimLayer( m_nodesUpBody, 1 );
 
 
@@ -440,12 +440,12 @@ void CPlayerComponent::updateStateRun()
 	}
 	else if ( m_subState == SubStateEnd )
 	{
+        // disable anim layer 1
+        m_collada->enableAnimLayer(1, false);
+        m_collada->setAnimLayer( m_nodesUpBody, 0 );
+        
 		if ( m_nextState == CPlayerComponent::PlayerIdle )
 		{
-			// disable anim layer 1
-			m_collada->enableAnimLayer( m_nodesUpBody, 1, false );
-			m_collada->setAnimLayer( m_nodesUpBody, 0 );
-
             // turn off multi anim
 			m_collada->setAnimWeight(1.0f, 0);
 			m_collada->setAnimWeight(0.0f, 1);

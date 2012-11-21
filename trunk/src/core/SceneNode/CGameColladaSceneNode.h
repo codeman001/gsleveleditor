@@ -445,6 +445,9 @@ public:
 	core::matrix4	AnimationMatrix;
 	core::matrix4	AbsoluteAnimationMatrix;
 
+	core::matrix4	AnimationMatrixLayer[MAX_ANIMLAYER];
+	core::matrix4	AbsoluteAnimationMatrixLayer[MAX_ANIMLAYER];
+    
 	core::matrix4	LocalMatrix;
 	core::matrix4	GlobalInversedMatrix;
 	

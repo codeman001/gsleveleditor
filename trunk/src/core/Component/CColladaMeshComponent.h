@@ -321,6 +321,14 @@ public:
 	void onlyEnableAnimTrackChannel( int trackChannel, int animLayer = 0 );
     void onlyEnableAnimTrackChannel( std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, int animLayer = 0 );
     	
+	// setAnimLayer
+	// set animation layer
+	void setAnimLayer(int layer);
+	void setAnimLayer( std::vector<CGameColladaSceneNode*>& listNodes, int animLayer);
+	
+	void enableAnimLayer(int layer, bool b);
+	void enableAnimLayer(std::vector<CGameColladaSceneNode*>& listNodes, int layer, bool b);
+
 	// isPauseAnim
 	// check anim is pause??
 	bool isPauseAnim(int trackChanel = 0, int animLayer = 0);

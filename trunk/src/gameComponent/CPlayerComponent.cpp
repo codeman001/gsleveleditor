@@ -116,10 +116,15 @@ void CPlayerComponent::initComponent()
 
 	// up body
 	m_nodesUpBody = m_nodesHandsAndHead;
-	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine") );
+	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine") );	
 	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine1") );    
 	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine2") );
 	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine3") );
+
+	// connected animation layer
+	m_collada->getSceneNode("Spine")->setConnectAnimLayer(true);
+	m_collada->getSceneNode("RightGun")->setConnectAnimLayer(true);
+
 
 	// neck
 	m_nodeNeck = m_collada->getSceneNode("Neck");
@@ -410,6 +415,13 @@ void CPlayerComponent::updateStateRun()
 		m_collada->setAnimation(m_animRunStrafeLeft.c_str(),    5, true );
 		m_collada->setAnimWeight(0.0f, 5);
         
+		
+		// enable on animation layer 1
+		m_collada->setAnimation( m_animAimUp, 0, true, 1 );		
+		m_collada->enableAnimLayer( m_nodesUpBody, 1, true );
+		m_collada->setAnimLayer( m_nodesUpBody, 1 );
+
+
         // set weight run anim = zero
 		m_collada->setAnimWeight(1.0f, 0);
 		m_collada->setAnimWeight(0.0f, 1);
@@ -430,6 +442,10 @@ void CPlayerComponent::updateStateRun()
 	{
 		if ( m_nextState == CPlayerComponent::PlayerIdle )
 		{
+			// disable anim layer 1
+			m_collada->enableAnimLayer( m_nodesUpBody, 1, false );
+			m_collada->setAnimLayer( m_nodesUpBody, 0 );
+
             // turn off multi anim
 			m_collada->setAnimWeight(1.0f, 0);
 			m_collada->setAnimWeight(0.0f, 1);
@@ -491,16 +507,10 @@ void CPlayerComponent::updateStateRun()
 			m_collada->setAnimWeight(1.0f - m_runFactor,							0);            
 			m_collada->setAnimWeight(0.0f,											1);	
 
-			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animForwardFactor,	2);
-			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animBackwardFactor,	3);
-			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animLeftFactor,		4);
-			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animRightFactor,	5);
-
-			//m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,	2);
-			//m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,	3);
-			//m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,		4);
-			//m_collada->setAnimWeight(m_runFactor*m_animRightFactor,	5);
-
+			m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,	2);
+			m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,	3);
+			m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,		4);
+			m_collada->setAnimWeight(m_runFactor*m_animRightFactor,		5);
             
             m_collada->synchronizedByTimeScale();   
 		}
@@ -1341,8 +1351,11 @@ void CPlayerComponent::updateStateStandShooting()
 
 // _onUpdateFrameData
 // call back frame update on scenenode
-void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation )
+void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int animLayer )
 {
+	if ( animLayer != 0 )
+		return;
+
     // todo modify rotation, position of anim
 	const core::vector3df rotAxis = core::vector3df(0,0,1);
    	const core::vector3df rotAxisUp = core::vector3df(1,0,0); 
@@ -1381,12 +1394,14 @@ void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& po
 	}
 }
 
-void CPlayerComponent::_onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel )
+void CPlayerComponent::_onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel, int animLayer)
 {
+	if ( animLayer != 0 )
+		return;
+
 	if ( (m_state == CPlayerComponent::PlayerRunToRunFast || m_state == CPlayerComponent::PlayerRunFastToRun )&& channel == 1 )
 	{
 		ISceneNode *root = m_collada->getSceneNode("Reference");
-
 		
 		// todo modify rotation, position of anim    
 		const core::vector3df rotAxis = core::vector3df(0,0,1);

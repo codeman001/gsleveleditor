@@ -1296,6 +1296,57 @@ void CColladaMeshComponent::onlyEnableAnimTrackChannel( std::vector<CGameCollada
     }
 }
 
+// setAnimLayer
+// set animation layer
+void CColladaMeshComponent::setAnimLayer(int layer)
+{
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		CGameColladaSceneNode* j = (*i).second;
+		if ( j != NULL )
+		{
+			j->setAnimLayer(layer);
+		}
+        i++;
+    }
+}
+
+void CColladaMeshComponent::setAnimLayer( std::vector<CGameColladaSceneNode*>& listNodes, int animLayer)
+{
+	std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
+    while ( i != end )
+    {
+        (*i)->setAnimLayer(animLayer);
+        i++;
+    }
+}
+
+void CColladaMeshComponent::enableAnimLayer(int layer, bool b)
+{
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		CGameColladaSceneNode* j = (*i).second;
+		if ( j != NULL )
+		{
+			j->getAnimation(layer)->setEnable(b);
+		}
+        i++;
+    }
+}
+
+void CColladaMeshComponent::enableAnimLayer(std::vector<CGameColladaSceneNode*>& listNodes, int layer, bool b)
+{
+	std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
+    while ( i != end )
+    {
+        (*i)->getAnimation(layer)->setEnable(b);
+        i++;
+    }
+}
+
+
 // isPauseAnim
 // check anim is pause??
 bool CColladaMeshComponent::isPauseAnim(int trackChanel, int animLayer)

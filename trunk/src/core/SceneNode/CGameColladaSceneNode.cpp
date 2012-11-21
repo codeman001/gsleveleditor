@@ -410,7 +410,7 @@ void CGameAnimation::sortWeightTrack( SAnimWeight *arrayTrack, int &num )
 
 // getFrameData
 // get anim at frame
-void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix, IGameAnimationCallback* callback, ISceneNode *parent)
+void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix, IGameAnimationCallback* callback, ISceneNode *parent, int layer)
 {
 	SAnimWeight sortWeight[MAX_ANIMTRACK];
 	memset(sortWeight, 0, sizeof(sortWeight));
@@ -442,7 +442,7 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 
 		// implement callback
 		if ( callback )
-			callback->_onUpdateFrameDataChannel(parent, posTrack, scaleTrack, rotTrack, i);
+			callback->_onUpdateFrameDataChannel(parent, posTrack, scaleTrack, rotTrack, i, layer);
 					
 		// blending animation
 		if ( first == true )
@@ -756,6 +756,8 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	
 	m_animationCallback		= NULL;
 	
+	m_animationLayer		= 0;
+	m_connectLayerAnim		= false;
 
 #ifdef GSANIMATION
 	m_isShowName = false;
@@ -896,7 +898,7 @@ void CGameColladaSceneNode::OnRegisterSceneNode()
 void CGameColladaSceneNode::updateAbsolutePosition()
 {
 	core::matrix4 RelativeMatrix;
-	RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(),AnimationMatrix);	
+	RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(), AnimationMatrix);	
 
 	// calc absolute transform
 	AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(),RelativeMatrix);
@@ -905,7 +907,13 @@ void CGameColladaSceneNode::updateAbsolutePosition()
 	if ( m_isRootColladaNode == true )
 		AbsoluteAnimationMatrix = RelativeMatrix;
 	else
-		AbsoluteAnimationMatrix.setbyproduct_nocheck(((CGameColladaSceneNode*)Parent)->AbsoluteAnimationMatrix, RelativeMatrix);
+		AbsoluteAnimationMatrix.setbyproduct_nocheck(((CGameColladaSceneNode*)Parent)->AbsoluteAnimationMatrix, RelativeMatrix);	
+
+	// move to right position
+	if ( m_connectLayerAnim == true && m_isRootColladaNode == false )
+	{
+		
+	}
 }
 
 
@@ -1117,11 +1125,11 @@ void CGameColladaSceneNode::updateAnimation()
 	core::vector3df scale;
 	core::quaternion rotation;
 	
-	m_gameAnimation[0].getFrameData( position, scale, rotation, LocalMatrix, m_animationCallback, this );
+	m_gameAnimation[m_animationLayer].getFrameData( position, scale, rotation, LocalMatrix, m_animationCallback, this, m_animationLayer);
 
 	// run callback
 	if ( m_animationCallback )
-		m_animationCallback->_onUpdateFrameData( this,  position, scale, rotation );
+		m_animationCallback->_onUpdateFrameData( this,  position, scale, rotation, m_animationLayer);
 
 	// rotation
 	core::matrix4 mat;
@@ -1166,7 +1174,7 @@ void CGameColladaSceneNode::updateAnimation()
 	AnimationMatrix = mat;
 	
 	// translate collada mesh node
-	if ( ColladaMesh && m_gameAnimation[0].isNullAnimation() == false )
+	if ( ColladaMesh && m_gameAnimation[m_animationLayer].isNullAnimation() == false )
 	{
 		AnimationMatrix *= ColladaMesh->InvBindShapeMatrix;
 	}
@@ -1614,7 +1622,7 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 	newNode->RelativeTranslation = RelativeTranslation;
 	newNode->RelativeRotation = RelativeRotation;
 	newNode->RelativeScale = RelativeScale;
-
+	
 	newNode->AutomaticCullingState = AutomaticCullingState;
 
 	newNode->DebugDataVisible = DebugDataVisible;
@@ -1654,6 +1662,9 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 	newNode->m_isSkydome		= m_isSkydome;
 	newNode->m_terrainNode		= m_terrainNode;
 	newNode->m_hideTerrainNode	= m_hideTerrainNode;	
-		
+	
+	newNode->m_animationLayer	= m_animationLayer;
+	newNode->m_connectLayerAnim	= m_connectLayerAnim;
+
 	return newNode;
 }

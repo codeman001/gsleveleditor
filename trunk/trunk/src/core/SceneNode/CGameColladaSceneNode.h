@@ -36,8 +36,8 @@ struct SColladaSkinMeshBuffer: public SMeshBufferSkin
 class IGameAnimationCallback
 {
 public:
-	virtual void _onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation ) = 0;
-	virtual void _onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel ) = 0;
+	virtual void _onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int animLayer ) = 0;
+	virtual void _onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel, int animLayer ) = 0;
 };
 
 // CGameColladaMesh
@@ -390,7 +390,7 @@ public:
 
 	// getFrameData
 	// get anim at frame
-	void getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix, IGameAnimationCallback* callback, ISceneNode *parent);
+	void getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix, IGameAnimationCallback* callback, ISceneNode *parent, int layer);
 
 	// synchronizedTimeScale
 	// sync speed of n track	
@@ -467,6 +467,9 @@ protected:
 	CColladaMeshComponent		*m_component;
 
 	IGameAnimationCallback		*m_animationCallback;
+
+	int				m_animationLayer;
+	bool			m_connectLayerAnim;
 public:
 	CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id, bool hardwareSkinning = true);
 
@@ -514,6 +517,20 @@ public:
 	CGameColladaMesh* getMesh()
 	{
 		return ColladaMesh;
+	}
+
+	// setAnimLayer
+	// Set animation from layer
+	inline void setAnimLayer(int layer)
+	{
+		if (m_animationLayer >= 0 && m_animationLayer < MAX_ANIMLAYER)
+			m_animationLayer = layer;
+	}
+
+	// setConnectAnimLayer	
+	inline void setConnectAnimLayer(bool b)
+	{
+		m_connectLayerAnim = b;
 	}
 
 	// setSIDName

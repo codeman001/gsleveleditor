@@ -473,6 +473,9 @@ protected:
 
 	int				m_animationLayer;
 	bool			m_connectLayerAnim;
+	bool			m_linkRotateX;
+	bool			m_linkRotateY;
+	bool			m_linkRotateZ;
 public:
 	CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id, bool hardwareSkinning = true);
 
@@ -531,9 +534,12 @@ public:
 	}
 
 	// setConnectAnimLayer	
-	inline void setConnectAnimLayer(bool b)
+	inline void setConnectAnimLayer(bool b, bool linkRotX, bool linkRotY, bool linkRotZ)
 	{
 		m_connectLayerAnim = b;
+		m_linkRotateX = linkRotX;
+		m_linkRotateY = linkRotY;
+		m_linkRotateZ = linkRotZ;
 	}
 
 	// setSIDName

@@ -758,6 +758,10 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	
 	m_animationLayer		= 0;
 	m_connectLayerAnim		= false;
+	
+	m_linkRotateX = false;
+	m_linkRotateY = false;
+	m_linkRotateZ = false;
 
 #ifdef GSANIMATION
 	m_isShowName = false;
@@ -925,14 +929,17 @@ void CGameColladaSceneNode::updateAbsolutePosition()
                 core::vector3df myPos = AbsoluteAnimationMatrixLayer[i].getTranslation();
                 core::vector3df offset = myPos - myParentPos;                
                 
+				// change to right position
+				AbsoluteAnimationMatrixLayer[i].setTranslation(parentPos + offset);
+
                 // calc rotation
-                float rotY = AbsoluteAnimationMatrixLayer[0].getRotationDegrees().Y;
-                core::vector3df myRot = AbsoluteAnimationMatrixLayer[i].getRotationDegrees();
-                myRot.Y = rotY;
-                                                
-                // change to right position
-                AbsoluteAnimationMatrixLayer[i].setTranslation(parentPos + offset);
-                AbsoluteAnimationMatrixLayer[i].setRotationDegrees(myRot);
+				if (m_linkRotateY)
+				{
+					float rotY = AbsoluteAnimationMatrixLayer[0].getRotationDegrees().Y;
+					core::vector3df myRot = AbsoluteAnimationMatrixLayer[i].getRotationDegrees();
+					myRot.Y = rotY;
+					AbsoluteAnimationMatrixLayer[i].setRotationDegrees(myRot);
+				}                
             }
             
             
@@ -1700,6 +1707,10 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 	
 	newNode->m_animationLayer	= m_animationLayer;
 	newNode->m_connectLayerAnim	= m_connectLayerAnim;
+
+	newNode->m_linkRotateX		= m_linkRotateX;
+	newNode->m_linkRotateY		= m_linkRotateY;
+	newNode->m_linkRotateZ		= m_linkRotateZ;
 
 	return newNode;
 }

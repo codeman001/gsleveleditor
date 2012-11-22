@@ -740,103 +740,6 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 	m_currentAnim->loop = false;	// hardcode to turn of loop on current anim!	
 }
 
-
-void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, float nFrames, bool loop, int animLayer)
-{
-	if ( m_colladaNode == NULL )
-		return;
-
-	SColladaAnimClip *animClip = m_colladaAnimation->getAnim( lpAnimName );
-	if ( animClip == NULL )
-		return;
-	
-	std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
-	while ( i != end )
-	{
-		CGameColladaSceneNode* j = (*i);
-						
-		if ( j == NULL )
-		{
-			i++;
-			continue;
-		}
-
-		std::string nodeName = j->getName();
-
-		// get current frame data
-		core::vector3df		currentPos;
-		core::vector3df		currentScale;
-		core::quaternion	currentRotate;
-		CGameAnimationTrack *track = j->getAnimation(animLayer)->getTrack(trackChannel);
-
-		track->getFrameData( track->getCurrentFrame(), currentPos, currentScale, currentRotate, j->LocalMatrix );
-
-		CGameAnimationTrack::SRotationKey rot;
-		rot.frame		= 0;
-		rot.rotation	= currentRotate;
-
-		CGameAnimationTrack::SPositionKey pos;
-		pos.frame		= 0;
-		pos.position	= currentPos;
-
-		// clear old key frame		
-		track->clearAllKeyFrame();
-		track->setLoop( false );
-
-		// todo add animation key
-		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
-
-		if ( anim )
-		{			
-			int nRotKey = anim->RotationKeys.size();
-			if ( nRotKey > 0 )
-			{
-				// set current animation
-				track->RotationKeys.push_back( rot );
-
-				rot.frame		= nFrames;
-				rot.rotation	= anim->RotationKeys[0].rotation;
-				track->RotationKeys.push_back( rot );
-
-				// set cross animation
-				track->CrossAnimRotationKeys.set_used( nRotKey );
-				for ( int i = 0; i < nRotKey; i++ )
-				{
-					track->CrossAnimRotationKeys[i] = anim->RotationKeys[i];
-				}
-			}
-
-			int nPosKey = anim->PositionKeys.size();
-			if ( nPosKey > 0 )
-			{
-				// set current animation
-				track->PositionKeys.push_back( pos );
-
-				pos.frame		= nFrames;
-				pos.position	= anim->PositionKeys[0].position;
-				track->PositionKeys.push_back( pos );
-
-				// set cross animation
-				track->CrossAnimPositionKeys.set_used( nPosKey );
-				for ( int i = 0; i < nPosKey; i++ )
-				{
-					track->CrossAnimPositionKeys[i] = anim->PositionKeys[i];
-				}
-			}
-			
-			// enable cross animation
-			track->enableCrossAnimation( loop );
-		}
-
-		i++;
-	}
-			
-	// current anim crossfade clip
-	m_currentAnim = animClip;
-	m_currentAnim->loop = false;	// hardcode to turn of loop on current anim!	
-}
-
-
 // setAnimation
 // apply Animation to skin joint
 void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChannel, bool loop, int animLayer)
@@ -916,68 +819,6 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChanne
 	}
 }
 
-// setAnimation
-// apply Animation to array of skin joint
-void CColladaMeshComponent::setAnimation(const char *lpAnimName, std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, bool loop, int animLayer)
-{
-	if ( m_colladaNode == NULL )
-		return;
-	
-	SColladaAnimClip *animClip = m_colladaAnimation->getAnim( lpAnimName );
-	if ( animClip == NULL )
-		return;
-	
-	animClip->loop = loop;
-	
-	// set current anim clip
-	m_currentAnim = animClip;
-
-	std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
-	while ( i != end )
-	{		
-		CGameColladaSceneNode* j = (*i);
-				
-		if ( j == NULL )
-		{
-			i++;
-			continue;
-		}
-
-		// clear old key frame
-		CGameAnimationTrack *track = j->getAnimation(animLayer)->getTrack( trackChannel );
-		track->clearAllKeyFrame();							
-
-		// todo add animation key
-		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( j->getName() );
-
-		if ( anim )
-		{
-			int nRotKey = anim->RotationKeys.size();
-			for ( int i = 0; i < nRotKey; i++ )
-			{
-				track->RotationKeys.push_back( anim->RotationKeys[i] );	
-			}
-
-			int nPosKey = anim->PositionKeys.size();
-			for ( int i = 0; i < nPosKey; i++ )
-			{
-				track->PositionKeys.push_back( anim->PositionKeys[i] );
-			}
-
-			int nScaleKey = anim->ScaleKeys.size();
-			for ( int i = 0; i < nScaleKey; i++ )
-			{
-				track->ScaleKeys.push_back( anim->ScaleKeys[i] );
-			}			
-
-			track->setLoop( loop );
-		}
-
-		// next node
-		i++;
-	}
-}
-
 // synchronizedByTimeScale
 // sync 2 animation
 void CColladaMeshComponent::synchronizedByTimeScale(int animLayer)
@@ -996,17 +837,6 @@ void CColladaMeshComponent::synchronizedByTimeScale(int animLayer)
 		
 		j->getAnimation(animLayer)->synchronizedByTimeScale();
 
-		i++;
-	}
-}
-
-void CColladaMeshComponent::synchronizedByTimeScale(std::vector<CGameColladaSceneNode*>& listNodes, int animLayer)
-{
-	std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
-	while ( i != end )
-	{
-		CGameColladaSceneNode* j = (*i);
-		j->getAnimation(animLayer)->synchronizedByTimeScale();
 		i++;
 	}
 }
@@ -1084,30 +914,6 @@ float CColladaMeshComponent::getCurrentFrame(int trackChannel, int animLayer)
 	return 0.0f;
 }
 
-float CColladaMeshComponent::getCurrentFrame(std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, int animLayer)
-{
-	std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
-	while ( i != end )
-	{
-		CGameColladaSceneNode* j = (*i);
-				
-		if ( j == NULL )
-		{
-			i++;
-			continue;
-		}
-		
-		CGameAnimationTrack *track = j->getAnimation(animLayer)->getTrack( trackChannel );
-
-		if ( track->getTotalFrame() > 0 )
-			return track->getCurrentFrame();
-
-
-		i++;
-	}
-	return 0.0f;
-}
-
 // get current anim speed
 float CColladaMeshComponent::getAnimSpeed(int trackChannel, int animLayer)
 {
@@ -1132,31 +938,6 @@ float CColladaMeshComponent::getAnimSpeed(int trackChannel, int animLayer)
 	}
 	return 1.0f;
 }
-
-float CColladaMeshComponent::getAnimSpeed(std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, int animLayer)
-{
-	std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
-	while ( i != end )
-	{
-		CGameColladaSceneNode* j = (*i);
-				
-		if ( j == NULL )
-		{
-			i++;
-			continue;
-		}
-		
-		CGameAnimationTrack *track = j->getAnimation(animLayer)->getTrack( trackChannel );
-
-		if ( track->getTotalFrame() > 0 )
-			return track->getSpeedRatio();
-
-
-		i++;
-	}
-	return 1.0f;
-}
-
 
 // setCurrentFrame	
 void CColladaMeshComponent::setCurrentFrame(float f, int trackChannel, int animLayer)
@@ -1214,18 +995,6 @@ void CColladaMeshComponent::setAnimWeight(float w, int trackChannel, int animLay
 	}
 }
 
-// setAnimWeight
-// set anim weight on list bone node
-void CColladaMeshComponent::setAnimWeight(std::vector<CGameColladaSceneNode*>& listNodes, float w, int trackChannel, int animLayer)
-{
-    std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
-    while ( i != end )
-    {
-        (*i)->getAnimation(animLayer)->getTrack(trackChannel)->setAnimWeight(w);
-        i++;
-    }
-}
-
 // setAnimSpeed
 void CColladaMeshComponent::setAnimSpeed(float s, int trackChannel, int animLayer)
 {
@@ -1237,18 +1006,6 @@ void CColladaMeshComponent::setAnimSpeed(float s, int trackChannel, int animLaye
 			j->getAnimation(animLayer)->getTrack(trackChannel)->setSpeedRatio(s);
 		i++;
 	}
-}
-
-// setAnimSpeed
-// set anim speed on list bone node
-void CColladaMeshComponent::setAnimSpeed(std::vector<CGameColladaSceneNode*>& listNodes, float s, int trackChannel, int animLayer)
-{
-    std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
-    while ( i != end )
-    {
-        (*i)->getAnimation(animLayer)->getTrack(trackChannel)->setSpeedRatio(s);
-        i++;
-    }
 }
 
 void CColladaMeshComponent::enableAnimTrackChannel( int trackChannel, bool b, int animLayer)
@@ -1263,17 +1020,6 @@ void CColladaMeshComponent::enableAnimTrackChannel( int trackChannel, bool b, in
 	}
 }
 
-
-void CColladaMeshComponent::enableAnimTrackChannel( std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, bool b, int animLayer)
-{
-    std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
-    while ( i != end )
-    {
-        (*i)->getAnimation(animLayer)->getTrack(trackChannel)->setEnable(b);
-        i++;
-    }    
-}
-
 void CColladaMeshComponent::onlyEnableAnimTrackChannel( int trackChannel, int animLayer)
 {
 	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
@@ -1284,16 +1030,6 @@ void CColladaMeshComponent::onlyEnableAnimTrackChannel( int trackChannel, int an
 			j->getAnimation(animLayer)->onlyEnableTrack( trackChannel );
 		i++;
 	}
-}
-
-void CColladaMeshComponent::onlyEnableAnimTrackChannel( std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, int animLayer)
-{
-    std::vector<CGameColladaSceneNode*>::iterator i = listNodes.begin(), end = listNodes.end();
-    while ( i != end )
-    {
-        (*i)->getAnimation(animLayer)->onlyEnableTrack(trackChannel);
-        i++;
-    }
 }
 
 // setAnimLayer

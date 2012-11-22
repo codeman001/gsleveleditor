@@ -122,8 +122,8 @@ void CPlayerComponent::initComponent()
 	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine3") );
 
 	// connected animation layer
-	m_collada->getSceneNode("Spine")->setConnectAnimLayer(true);
-	m_collada->getSceneNode("RightGun")->setConnectAnimLayer(true);
+	m_collada->getSceneNode("Spine")->setConnectAnimLayer(true, false, true, false);
+	m_collada->getSceneNode("RightGun")->setConnectAnimLayer(true, false, false, false);
 
 
 	// neck
@@ -533,12 +533,7 @@ void CPlayerComponent::updateStateRun()
 
 			m_collada->setAnimWeight(1.0f - m_runFactor, 0);
             m_collada->setAnimWeight(0.0f, 1);
-            
-			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animForwardFactor,   2);
-            m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animBackwardFactor,  3);
-			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animLeftFactor,      4);
-			m_collada->setAnimWeight(m_nodesFoot, m_runFactor*m_animRightFactor,     5);
-            
+            		
 			m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,   2);
 			m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,  3);
 			m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,      4);

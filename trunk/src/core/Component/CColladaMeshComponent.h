@@ -238,13 +238,6 @@ public:
 		setCrossFadeAnimation( animName.c_str(), trackChannel, nFrames, loop, animLayer);
 	}
 
-	void setCrossFadeAnimation(const char *lpAnimName, std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel = 0, float nFrames = 10.0f, bool loop = true, int animLayer = 0);
-	void setCrossFadeAnimation(const std::string& animName, std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel = 0, float nFrames = 10.0f, bool loop = true, int animLayer = 0)
-	{
-		setCrossFadeAnimation( animName.c_str(), listNodes, trackChannel, nFrames, loop, animLayer);
-	}
-
-
 	// setAnimation
 	// apply Animation to skin joint
 	void setAnimation(const char *lpAnimName,		int track = 0, bool loop = true, int animLayer = 0);
@@ -253,18 +246,10 @@ public:
 		setAnimation( animName.c_str(), track, loop, animLayer );
 	}
 
-	// setAnimation
-	// apply Animation to array of skin joint
-	void setAnimation(const char *lpAnimName,		std::vector<CGameColladaSceneNode*>& listNodes, int track = 0, bool loop = true, int animLayer = 0 );
-	void setAnimation(const std::string& animName,	std::vector<CGameColladaSceneNode*>& listNodes, int track = 0, bool loop = true, int animLayer = 0 )
-	{
-		setAnimation( animName.c_str(), listNodes, track, loop, animLayer );
-	}
 
 	// synchronizedByTimeScale
 	// sync n animation
 	void synchronizedByTimeScale(int animLayer = 0);
-	void synchronizedByTimeScale(std::vector<CGameColladaSceneNode*>& listNodes, int animLayer = 0);	
     void synchronizedFrameByNode(CGameColladaSceneNode *node, int channel, int animLayer);
     
 	// getCurrentAnim
@@ -292,23 +277,19 @@ public:
 	// getCurrentFrame
 	// get current frame of anim
 	float getCurrentFrame(int trackChannel = 0, int animLayer = 0);	
-	float getCurrentFrame(std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel = 0, int animLayer = 0);
 
 	// getAnimSpeed
 	// get current anim speed
 	float getAnimSpeed(int trackChannel = 0, int animLayer = 0);
-	float getAnimSpeed(std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel = 0, int animLayer = 0);
 
 	// setCurrentFrame	
 	void setCurrentFrame(float f, int trackChannel = 0, int animLayer = 0);
 
 	// setAnimWeight
 	void setAnimWeight(float w, int trackChannel = 0, int animLayer = 0);
-    void setAnimWeight(std::vector<CGameColladaSceneNode*>& listNodes, float w, int trackChannel, int animLayer = 0);
     
 	// setAnimSpeed
 	void setAnimSpeed(float s, int trackChannel = 0, int animLayer = 0);    
-    void setAnimSpeed(std::vector<CGameColladaSceneNode*>& listNode, float s, int trackChannel, int animLayer = 0);
     
 	// resumeAnim
 	// resume animation
@@ -316,10 +297,9 @@ public:
 
 	// enableAnimTrackChanel
 	void enableAnimTrackChannel( int trackChannel, bool b, int animLayer = 0);
-	void enableAnimTrackChannel( std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, bool b, int animLayer = 0);
     
+	// onlyEnableAnimTrackChannel
 	void onlyEnableAnimTrackChannel( int trackChannel, int animLayer = 0 );
-    void onlyEnableAnimTrackChannel( std::vector<CGameColladaSceneNode*>& listNodes, int trackChannel, int animLayer = 0 );
     	
 	// setAnimLayer
 	// set animation layer

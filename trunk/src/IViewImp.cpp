@@ -47,8 +47,8 @@ IView::~IView()
 #else
 
 #if defined(GSGAMEPLAY) && defined(WIN32)
-	UIDEBUG_TRACE("Debug leak memory: \n");
-	UIDEBUG_DUMPLEAK();
+	//UIDEBUG_TRACE("Debug leak memory: \n");
+	//UIDEBUG_DUMPLEAK();
 #endif
 
 #endif

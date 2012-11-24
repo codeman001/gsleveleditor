@@ -56,6 +56,13 @@ class CGameColladaContainerSceneNode: public CGameContainerSceneNode
 protected:
 	std::vector<ISceneNode*>		m_boudingMeshNode;
 
+    struct SNodeReference
+    {
+        ISceneNode *node1;
+        ISceneNode *node2;
+    };
+    
+    std::vector<SNodeReference>     m_nodeReference;
 public:
 	CGameColladaContainerSceneNode(
 			CGameObject *owner,
@@ -82,6 +89,37 @@ public:
 		}
 	}
 
+    // addNodeReferenceByAnimLayer
+    void addNodeReferenceByAnimLayer(ISceneNode *node1, ISceneNode* node2)
+    {
+        if ( node1 == NULL || node2 == NULL )
+            return;
+        
+        for ( int i = 0, n = (int)m_nodeReference.size(); i < n; i++)
+        {
+            if (m_nodeReference[i].node1 == node1 && m_nodeReference[i].node2 == node2 )
+                return;
+        }
+        
+        m_nodeReference.push_back(SNodeReference());
+        SNodeReference& last = m_nodeReference.back();
+        last.node1 = node1;
+        last.node2 = node2;
+    }
+    
+    // removeNodeReferenceByAnimLayer
+    void removeNodeReferenceByAnimLayer(ISceneNode *node1, ISceneNode *node2)
+    {
+        for ( int i = 0, n = (int)m_nodeReference.size(); i < n; i++)
+        {
+            if (m_nodeReference[i].node1 == node1 && m_nodeReference[i].node2 == node2 )
+            {
+                m_nodeReference.erase(m_nodeReference.begin() + i);
+                return;
+            }
+        }
+    }
+    
 	std::vector<ISceneNode*>* getBoundingMeshNode()
 	{
 		return &m_boudingMeshNode;

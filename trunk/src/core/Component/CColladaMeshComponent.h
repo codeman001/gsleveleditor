@@ -312,7 +312,10 @@ public:
 	// isPauseAnim
 	// check anim is pause??
 	bool isPauseAnim(int trackChanel = 0, int animLayer = 0);
-	
+
+    // setNodeReferenceByAnimLayer
+    void setNodeReferenceByAnimLayer(CGameColladaSceneNode* node, CGameColladaSceneNode* parent);
+    void removeNodeReferenceByAnimLayer(CGameColladaSceneNode* node, CGameColladaSceneNode* parent);
 public:
 	// init
 	// run when init object

@@ -122,9 +122,9 @@ void CPlayerComponent::initComponent()
 	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine3") );
 
 	// connected animation layer
-	m_collada->getSceneNode("Spine")->setConnectAnimLayer(true, false, true, false);
-	m_collada->getSceneNode("RightGun")->setConnectAnimLayer(true, false, false, false);
-
+    m_collada->getSceneNode("Spine")->setConnectAnimLayer(true, false, true, false);
+    m_collada->setNodeReferenceByAnimLayer(m_collada->getSceneNode("RightGun"), m_collada->getSceneNode("RightHand"));
+    
 
 	// neck
 	m_nodeNeck = m_collada->getSceneNode("Neck");

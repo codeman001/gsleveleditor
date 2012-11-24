@@ -446,6 +446,7 @@ public:
 	core::matrix4	AbsoluteAnimationMatrix;
 
 	core::matrix4	AnimationMatrixLayer[MAX_ANIMLAYER];
+    core::matrix4	BaseAbsoluteAnimationMatrixLayer[MAX_ANIMLAYER];
 	core::matrix4	AbsoluteAnimationMatrixLayer[MAX_ANIMLAYER];
     
 	core::matrix4	LocalMatrix;
@@ -533,6 +534,11 @@ public:
 			m_animationLayer = layer;
 	}
 
+    inline int getCurrentAnimLayer()
+    {
+        return m_animationLayer;
+    }
+    
 	// setConnectAnimLayer	
 	inline void setConnectAnimLayer(bool b, bool linkRotX, bool linkRotY, bool linkRotZ)
 	{

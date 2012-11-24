@@ -1102,6 +1102,17 @@ bool CColladaMeshComponent::isPauseAnim(int trackChanel, int animLayer)
 }
 
 
+// setNodeReferenceByAnimLayer
+void CColladaMeshComponent::setNodeReferenceByAnimLayer(CGameColladaSceneNode* node, CGameColladaSceneNode* parent)
+{
+    m_colladaNode->addNodeReferenceByAnimLayer(node, parent);
+}
+
+void CColladaMeshComponent::removeNodeReferenceByAnimLayer(CGameColladaSceneNode* node, CGameColladaSceneNode* parent)
+{
+    m_colladaNode->removeNodeReferenceByAnimLayer(node, parent);
+}
+
 // saveSceneToBinary
 // save collada mesh info to binary file
 void CColladaMeshComponent::saveSceneToBinary( const char *lpFileName )

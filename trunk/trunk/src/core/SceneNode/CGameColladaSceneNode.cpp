@@ -913,9 +913,15 @@ void CGameColladaSceneNode::updateAbsolutePosition()
         
         // calc absolute animation
         if ( m_isRootColladaNode == true )
+        {
             AbsoluteAnimationMatrixLayer[i] = RelativeMatrix;
+            BaseAbsoluteAnimationMatrixLayer[i] = RelativeMatrix;
+        }
         else
-            AbsoluteAnimationMatrixLayer[i].setbyproduct_nocheck(colladaParent->AbsoluteAnimationMatrixLayer[i], RelativeMatrix);        
+        {
+            AbsoluteAnimationMatrixLayer[i].setbyproduct_nocheck(colladaParent->AbsoluteAnimationMatrixLayer[i], RelativeMatrix);            
+            BaseAbsoluteAnimationMatrixLayer[i].setbyproduct_nocheck(colladaParent->BaseAbsoluteAnimationMatrixLayer[i], RelativeMatrix);
+        }
         
         // set absolute transformation
         if ( i == m_animationLayer )

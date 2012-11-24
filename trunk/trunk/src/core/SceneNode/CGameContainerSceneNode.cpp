@@ -197,15 +197,39 @@ void CGameColladaContainerSceneNode::OnAnimate(irr::u32 timeMs)
 			queue.push( (*it) );
 			it++;
 		}
-	}
+	}    
+    
+    // update node reference
+    for ( int i = 0, n = (int)m_nodeReference.size(); i < n; i++)
+    {
+        CGameColladaSceneNode *colladaNode1  = (CGameColladaSceneNode*) m_nodeReference[i].node1;
+        CGameColladaSceneNode *colladaNode2  = (CGameColladaSceneNode*) m_nodeReference[i].node2;
+     
+        // check anim layer
+        int currentLayer = colladaNode2->getCurrentAnimLayer();
+        if ( colladaNode1->getCurrentAnimLayer() != currentLayer )
+            continue;
+        
+        // calc reference matrix
+        core::matrix4 matParent = colladaNode2->BaseAbsoluteAnimationMatrixLayer[currentLayer];
+        core::matrix4 matNode   = colladaNode1->BaseAbsoluteAnimationMatrixLayer[currentLayer];
+        
+        matParent.makeInverse();
+        core::matrix4 animationMtx = matParent*matNode;
 
-	// update skin
+        // recalc animation matrix
+        colladaNode1->AbsoluteAnimationMatrix = colladaNode2->AbsoluteAnimationMatrix*animationMtx;
+    }
+    
+    
+    // update skin
 	std::vector<ISceneNode*>::iterator itSkin = m_boudingMeshNode.begin(), endSkin = m_boudingMeshNode.end();
 	while ( itSkin != endSkin )
 	{
 		((CGameColladaSceneNode*)(*itSkin))->skin();
 		itSkin++;
 	}
+
 }
 
 // compute bb

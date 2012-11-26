@@ -34,6 +34,13 @@ public:
 		NumStateCount
 	};
 
+    enum EPlayerUpBodyState
+    {
+        PlayerUpBodyAim = 0,
+        PlayerUpBodyShoot,
+        PlayerUpBodyReload
+    };
+    
 	enum EPlayerSubState
 	{
 		SubStateInit = 0,
@@ -47,6 +54,9 @@ protected:
 	EPlayerState			m_nextState;
 	EPlayerState			m_lastState;
 
+    EPlayerSubState         m_upbodySubState;
+    EPlayerUpBodyState      m_upbodyState;
+    
 	float					m_runSpeed;
 	float					m_runFastSpeed;
 
@@ -170,6 +180,12 @@ public:
 		}
 	}
 
+    void setUpBodyState( EPlayerUpBodyState state )
+    {
+        m_upbodyState = state;
+        m_upbodySubState = SubStateInit;
+    }
+    
 protected:
 
 	// call back frame update on scenenode
@@ -190,6 +206,13 @@ protected:
     void updateStateRunFastToRun();
     void updateStateStandAim();   	
     void updateStateStandShooting();
+    
+    // updateUpperBody
+    // update state aim, shoot, reload
+    void updateUpperBody();
+    void updateUpperBodyAim();
+    void updateUpperBodyShoot();
+    void updateUpperBodyReload();    
     
 	// isFinishedAnim	
 	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0, int animLayer = 0);

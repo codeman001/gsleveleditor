@@ -683,6 +683,10 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 		pos.frame		= 0;
 		pos.position	= currentPos;
 
+        CGameAnimationTrack::SScaleKey scale;
+        scale.frame     = 0;
+        scale.scale     = currentScale;        
+        
 		// clear old key frame		
 		track->clearAllKeyFrame();
 		track->setLoop( false );
@@ -727,6 +731,24 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 					track->CrossAnimPositionKeys[i] = anim->PositionKeys[i];
 				}
 			}
+            
+            int nScaleKey = anim->ScaleKeys.size();
+            if ( nScaleKey > 0 )
+            {
+                // set current animation
+                track->ScaleKeys.push_back( scale );
+                
+                scale.frame     = nFrames;
+                scale.scale     = anim->ScaleKeys[0].scale;
+                
+                // set cross animation
+                track->CrossAnimScaleKeys.set_used( nScaleKey );
+                for ( int i = 0; i < nScaleKey; i++ )
+				{
+					track->CrossAnimScaleKeys[i] = anim->ScaleKeys[i];
+				}
+            }
+
 
 			// enable cross animation
 			track->enableCrossAnimation( loop );
@@ -737,8 +759,127 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 			
 	// current anim crossfade clip
 	m_currentAnim = animClip;
-	m_currentAnim->loop = false;	// hardcode to turn of loop on current anim!	
+	m_currentAnim->loop = false;	// hardcode to turn of loop on current anim!
 }
+
+
+void CColladaMeshComponent::setCrossFadeAnimationToLayer(const char *lpAnimName, float nFrames, bool loop, int fromAnimLayer, int fromChannel, int toAnimLayer, int toChannel)
+{
+	if ( m_colladaNode == NULL )
+		return;
+    
+	SColladaAnimClip *animClip = m_colladaAnimation->getAnim( lpAnimName );
+	if ( animClip == NULL )
+		return;
+	
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		const std::string& nodeName = (*i).first;
+		CGameColladaSceneNode* j = (*i).second;
+        
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+        
+		// get current frame data
+		core::vector3df		currentPos;
+		core::vector3df		currentScale;
+		core::quaternion	currentRotate;
+        
+		CGameAnimationTrack *srcTrack = j->getAnimation(fromAnimLayer)->getTrack(fromChannel);
+        
+		srcTrack->getFrameData( srcTrack->getCurrentFrame(), currentPos, currentScale, currentRotate, j->LocalMatrix );
+        
+		CGameAnimationTrack::SRotationKey rot;
+		rot.frame		= 0;
+		rot.rotation	= currentRotate;
+        
+		CGameAnimationTrack::SPositionKey pos;
+		pos.frame		= 0;
+		pos.position	= currentPos;
+        
+        CGameAnimationTrack::SScaleKey scale;
+        scale.frame     = 0;
+        scale.scale     = currentScale;
+        
+		// clear old key frame
+		CGameAnimationTrack *track = j->getAnimation(toAnimLayer)->getTrack(toChannel);        
+		track->clearAllKeyFrame();
+		track->setLoop( false );
+        
+		// todo add animation key
+		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
+        
+		if ( anim )
+		{			
+			int nRotKey = anim->RotationKeys.size();
+			if ( nRotKey > 0 )
+			{
+				// set current animation
+				track->RotationKeys.push_back( rot );
+                
+				rot.frame		= nFrames;
+				rot.rotation	= anim->RotationKeys[0].rotation;
+				track->RotationKeys.push_back( rot );
+                
+				// set cross animation
+				track->CrossAnimRotationKeys.set_used( nRotKey );
+				for ( int i = 0; i < nRotKey; i++ )
+				{
+					track->CrossAnimRotationKeys[i] = anim->RotationKeys[i];
+				}
+			}
+            
+			int nPosKey = anim->PositionKeys.size();
+			if ( nPosKey > 0 )
+			{
+				// set current animation
+				track->PositionKeys.push_back( pos );
+                
+				pos.frame		= nFrames;
+				pos.position	= anim->PositionKeys[0].position;
+				track->PositionKeys.push_back( pos );
+                
+				// set cross animation
+				track->CrossAnimPositionKeys.set_used( nPosKey );
+				for ( int i = 0; i < nPosKey; i++ )
+				{
+					track->CrossAnimPositionKeys[i] = anim->PositionKeys[i];
+				}
+			}
+            
+            int nScaleKey = anim->ScaleKeys.size();
+            if ( nScaleKey > 0 )
+            {
+                // set current animation
+                track->ScaleKeys.push_back( scale );
+                
+                scale.frame     = nFrames;
+                scale.scale     = anim->ScaleKeys[0].scale;
+                
+                // set cross animation
+                track->CrossAnimScaleKeys.set_used( nScaleKey );
+                for ( int i = 0; i < nScaleKey; i++ )
+				{
+					track->CrossAnimScaleKeys[i] = anim->ScaleKeys[i];
+				}
+            }
+            
+			// enable cross animation
+			track->enableCrossAnimation( loop );
+		}
+        
+		i++;
+	}
+    
+	// current anim crossfade clip
+	m_currentAnim = animClip;
+	m_currentAnim->loop = false;	// hardcode to turn of loop on current anim!    
+}
+
 
 // setAnimation
 // apply Animation to skin joint

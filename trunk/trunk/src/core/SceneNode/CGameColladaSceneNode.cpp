@@ -333,9 +333,12 @@ void CGameAnimationTrack::crossAnimation()
 		// cross anim
 		PositionKeys.clear();		
 		RotationKeys.clear();		
-		PositionKeys = CrossAnimPositionKeys;	
+		ScaleKeys.clear();
+        
+        PositionKeys = CrossAnimPositionKeys;	
 		RotationKeys = CrossAnimRotationKeys;	
-		
+		ScaleKeys = CrossAnimScaleKeys;
+        
 		// update cross animation info
 		m_isLoop = m_crossAnimationLoop;
 		m_currentFrame = 0;
@@ -345,7 +348,9 @@ void CGameAnimationTrack::crossAnimation()
 			m_totalFrame = RotationKeys.getLast().frame;
 		else if ( PositionKeys.size() > 0 )
 			m_totalFrame = PositionKeys.getLast().frame;
-
+        else if ( ScaleKeys.size() > 0 )
+            m_totalFrame = ScaleKeys.getLast().frame;
+        
 		// reset value
 		m_isCrossAnim = false;
 		m_endTrack = false;

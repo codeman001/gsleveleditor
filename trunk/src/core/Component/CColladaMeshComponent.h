@@ -238,6 +238,15 @@ public:
 		setCrossFadeAnimation( animName.c_str(), trackChannel, nFrames, loop, animLayer);
 	}
 
+    
+    // setCrossFadeAnimationToLayer
+	// crossfade current animation to a layer + channel animation
+	void setCrossFadeAnimationToLayer(const char *lpAnimName, float nFrames, bool loop, int fromAnimLayer, int fromChannel, int toAnimLayer, int toChannel);
+	void setCrossFadeAnimationToLayer(const std::string& animName, float nFrames, bool loop, int fromAnimLayer, int fromChannel, int toAnimLayer, int toChannel)
+	{
+		setCrossFadeAnimationToLayer( animName.c_str(), nFrames, loop, fromChannel, fromChannel, toAnimLayer, toChannel);
+	}
+    
 	// setAnimation
 	// apply Animation to skin joint
 	void setAnimation(const char *lpAnimName,		int track = 0, bool loop = true, int animLayer = 0);

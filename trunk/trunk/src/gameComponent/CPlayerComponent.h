@@ -8,7 +8,6 @@
 #include "gameEvent.h"
 
 class CWeaponComponent;
-class CInventoryComponent;
 class CColladaMeshComponent;
 
 class CPlayerComponent: 
@@ -72,7 +71,6 @@ protected:
 
 	CColladaAnimation*		m_animationPackage;
 	CColladaMeshComponent*	m_collada;
-	CInventoryComponent*	m_inventory;
 
 	std::vector<CGameColladaSceneNode*>	m_nodesHandsAndHead;
 	std::vector<CGameColladaSceneNode*>	m_nodesChest;	
@@ -224,15 +222,7 @@ protected:
 	// calc animation
 	void calcRunAnimationBlend(float rot, float &forward, float &backward, float &left, float &right);
 
-	void calcAimAnimationBlend(core::vector2df angle, float &up, float &down, float &left, float &right);
-
-	// updateActionShotWeapon
-	// shoot weapon action
-	void updateActionShotWeapon();
-
-	// updateWeaponPosition
-	// update weapon
-	void updateWeaponPosition();	
+	void calcAimAnimationBlend(core::vector2df angle, float &up, float &down, float &left, float &right);	
 
 	// doNextState
 	// change to next state
@@ -244,11 +234,7 @@ protected:
 		m_subState	= SubStateInit;
 		m_nextState = CPlayerComponent::PlayerNone;
 	}	
-
-	// getCurrentWeapon
-	// get weapon
-	CWeaponComponent* getCurrentWeapon();
-
+	
 public:
 
 	// setSpineRotation	

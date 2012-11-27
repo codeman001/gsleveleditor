@@ -429,10 +429,7 @@ int addItemToInventory(lua_State* state)
 
 	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
-	{
-		CInventoryComponent* inventory = (CInventoryComponent*) obj->getComponent( CGameComponent::InventoryComponent );
-		if ( inventory )
-			inventory->addItemToInventory( itemTemplate );
+	{		
 	}
 
 	return 0;
@@ -449,10 +446,7 @@ int setActiveItemOnInventory(lua_State* state)
 
 	CGameObject* obj = (CGameObject*)objID;
 	if ( obj )
-	{
-		CInventoryComponent* inventory = (CInventoryComponent*) obj->getComponent( CGameComponent::InventoryComponent );
-		if ( inventory )
-			inventory->setActiveItem( itemTemplate );
+	{		
 	}
 
 	return 0;

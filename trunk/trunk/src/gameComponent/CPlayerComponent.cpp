@@ -5,8 +5,6 @@
 #include "CPlayerComponent.h"
 
 #include "CColladaMeshComponent.h"
-#include "CInventoryComponent.h"
-#include "CWeaponComponent.h"
 
 #include "gameLevel/CGameLevel.h"
 #include "gameDebug/CGameDebug.h"
@@ -48,7 +46,6 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_runToRunFastAccel = 0.003f;
 
 	m_collada	= NULL;
-	m_inventory = NULL;
 
 	m_animCurrentTime		= 0.0f;	
 
@@ -164,8 +161,6 @@ void CPlayerComponent::initComponent()
 	setState( CPlayerComponent::PlayerIdle );
     setUpBodyState( CPlayerComponent::PlayerUpBodyAim );
     
-	m_inventory	= (CInventoryComponent*)m_gameObject->getComponent( CGameComponent::InventoryComponent );
-
 	// register event
 	getIView()->registerEvent("CPlayerComponent", this);	
     
@@ -184,7 +179,6 @@ void CPlayerComponent::updateComponent()
     
     // update player
 	updateState();
-	updateWeaponPosition();
 }
 
 // saveData
@@ -1752,41 +1746,7 @@ bool CPlayerComponent::isFinishedAnim( std::vector<CGameColladaSceneNode*>& node
 
 	return true;
 }
-// updateWeaponPosition
-// update weapon
-void CPlayerComponent::updateWeaponPosition()
-{	
-	if ( m_inventory && m_collada )
-	{
-		CInventoryComponent::SInventoryItem* item = m_inventory->getActiveItem();
-		if ( item && item->m_item )
-		{
-			CWeaponComponent* weapon = (CWeaponComponent*)item->m_item->getComponent( CGameComponent::WeaponComponent );
-			if ( weapon )
-			{
-				if ( weapon->getWeaponType() == CWeaponComponent::ShotGun )
-				{					
-				}		
-			}
-		}	// if has active item
-	}	// if has inventory
-}
 
-// getCurrentWeapon
-// get weapon
-CWeaponComponent* CPlayerComponent::getCurrentWeapon()
-{
-	if ( m_inventory && m_collada )
-	{
-		CInventoryComponent::SInventoryItem* item = m_inventory->getActiveItem();
-		if ( item && item->m_item )
-		{
-			CWeaponComponent* weapon = (CWeaponComponent*)item->m_item->getComponent( CGameComponent::WeaponComponent );
-			return weapon;			
-		}
-	}
-	return NULL;
-}
 
 // setSpineLookAt
 // rotate spine to look at a pos

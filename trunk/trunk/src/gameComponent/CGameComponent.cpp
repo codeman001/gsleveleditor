@@ -2,8 +2,6 @@
 #include "CGameComponent.h"
 
 #include "CPlayerComponent.h"
-#include "CInventoryComponent.h"
-#include "CWeaponComponent.h"
 
 const char *CGameComponent::s_compType[] = 
 {
@@ -23,9 +21,7 @@ IObjectComponent* CGameComponent::loadComponent( CGameObject *pObj, char *compon
 	
 	// declare init component
 	static SComponentCreation s_gameComponentCreation[] = {
-		{ stringOfComponent(CGameComponent::PlayerComponent),		newComponent<CPlayerComponent> },		
-		{ stringOfComponent(CGameComponent::InventoryComponent),	newComponent<CInventoryComponent> },
-		{ stringOfComponent(CGameComponent::WeaponComponent),		newComponent<CWeaponComponent> },
+		{ stringOfComponent(CGameComponent::PlayerComponent),		newComponent<CPlayerComponent> }		
 	};
 
 	// search all game component

@@ -55,7 +55,6 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_init = true;
 	
 	m_aimFactor = 0.0f;
-	m_initAimFactor = true;
 }
 
 CPlayerComponent::~CPlayerComponent()
@@ -266,10 +265,7 @@ void CPlayerComponent::updateState()
         updateStateRunFastToRun();
         break;
     case CPlayerComponent::PlayerStandAim:
-        updateStateStandAim();
-		break;
-	case CPlayerComponent::PlayerStandShooting:
-		updateStateStandShooting();
+        updateStateStandAim();			
         break;
 	}
 }
@@ -435,9 +431,13 @@ void CPlayerComponent::updateStateRun()
 	else if ( m_subState == SubStateEnd )
 	{
         // disable anim layer 1
-        m_collada->enableAnimLayer(1, false);
-        m_collada->setAnimLayer( m_nodesUpBody, 0 );
-        
+		if ( m_nextState != CPlayerComponent::PlayerStandAim && 
+			 m_nextState != CPlayerComponent::PlayerRunTurn )
+		{
+			m_collada->enableAnimLayer(1, false);
+			m_collada->setAnimLayer( m_nodesUpBody, 0 );
+		}
+
         if ( m_nextState == CPlayerComponent::PlayerIdle )
 		{
             // turn off multi anim
@@ -495,8 +495,7 @@ void CPlayerComponent::updateStateRun()
 			if ( m_runFactor < 0.0f )
 			{
 				m_runFactor = 0.0f;
-                setState( CPlayerComponent::PlayerIdle );
-                //setState( CPlayerComponent::PlayerStandAim );
+				setState( CPlayerComponent::PlayerStandAim );
 			}
             
 			m_collada->setAnimWeight(1.0f - m_runFactor,							0);            
@@ -573,6 +572,8 @@ void CPlayerComponent::updateStateRun()
     updateUpperBody();
 }
 
+// updateStateRunTurn
+// turn if rot > 150
 void CPlayerComponent::updateStateRunTurn()
 {
     static float s_runTurnFactor = 0.0f;
@@ -677,9 +678,11 @@ void CPlayerComponent::updateStateRunTurn()
             
             // change state
             setState(CPlayerComponent::PlayerRun);
-        }
-        
+        }        
     }
+
+	// update up body
+	updateUpperBody();
 }
 
 void CPlayerComponent::updateStateRunFast()
@@ -1126,23 +1129,7 @@ void CPlayerComponent::updateStateStandAim()
     {		
 		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str(),0 );
 		m_collada->setAnimWeight(1.0f, 0);
-
-        m_collada->setAnimation(m_animAimStraight.c_str(),	1, true );        
-        m_collada->setAnimWeight(0.0f, 1);
-		m_collada->enableAnimTrackChannel(1, true);
-        
-		m_collada->setAnimation(m_animAimUp.c_str(),	2, true );
-		m_collada->setAnimWeight(0.0f, 2);
-		m_collada->enableAnimTrackChannel(2, true);
-
-		m_collada->setAnimation(m_animAimDown.c_str(),	3, true );
-		m_collada->setAnimWeight(0.0f, 3);
-		m_collada->enableAnimTrackChannel(3, true);
-		
-		// reset aim anim weight
-		if ( m_initAimFactor )
-			m_aimFactor = 0.0f;		
-
+        		
 		// setup player cmd state
 		m_playerCmdEvt.shoot	= false;
 		m_playerCmdEvt.aim		= true;
@@ -1154,78 +1141,31 @@ void CPlayerComponent::updateStateStandAim()
     else if ( m_subState == SubStateEnd )
     {		
         m_collada->setCrossFadeAnimation(m_animIdle[0].c_str(), 0, 10, true);
-		m_initAimFactor = true;
         doNextState();
     }
     
 	// todo update
 	{
-        float step = 0.005f*getIView()->getTimeStep();
-
-        if ( m_runCommand )
-            m_aimFactor = m_aimFactor - step;
-        else
-            m_aimFactor = m_aimFactor + step;
-
-        // calc aim
-        m_aimFactor = core::clamp<float>(m_aimFactor, 0.0f, 1.0f);                
-        
         core::line3df	ray		= getCameraRay();
-		core::vector3df	colPos	= getCollisionPoint(ray);
-                		        
-		core::vector2df ret = getAimAngle(colPos);
-
-		float wUp, wDown, wLeft, wRight, wStraight;
-		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
-		
-        if ( wUp > 0 )
-            wStraight = 1.0f - wUp;
-        else 
-            wStraight = 1.0f - wDown;
-        
-        // setup straight
-        wStraight = core::clamp<float>(wStraight, 0.0f, 1.0f);
-        
-
-        // setup anim blend factor
-        wStraight   = wStraight * m_aimFactor;
-        wUp         = wUp * m_aimFactor;
-        wDown       = wDown * m_aimFactor;        
-		
-		
+		core::vector3df	colPos	= getCollisionPoint(ray);                		        		 
+				
 		// rotate main character		
 		core::vector3df v0 = m_gameObject->getFront();
 		core::vector3df lookPos = colPos - m_gameObject->getPosition();
 		lookPos.normalize();
 		turnToDir( v0, lookPos, 6.0f );		
-		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );		
 
+		// update body
+		updateUpperBody();
 
-        // blend anim up, down
-        m_collada->setAnimWeight(1.0f - m_aimFactor, 0);    // idle
-        m_collada->setAnimWeight(wStraight, 1);					// straight
-		m_collada->setAnimWeight(wUp,	2);						// up
-		m_collada->setAnimWeight(wDown, 3);						// down
-        m_collada->synchronizedByTimeScale();
-		
-
-        if ( m_runCommand && m_aimFactor == 0.0f )
-            setState(CPlayerComponent::PlayerRun);
-		else if ( m_gunOnCommand )
-		{
-			if ( m_playerCmdEvt.shoot == true )
-			{
-				// todo shoot
-				setState(CPlayerComponent::PlayerStandShooting);
-			}
-			else if ( m_playerCmdEvt.reload == true )
-			{
-				// todo reload
-			}
-		}
+		// change state un
+        if ( m_runCommand )
+            setState(CPlayerComponent::PlayerRun);		
     }    
 }
 
+#if 0
 void CPlayerComponent::updateStateStandShooting()
 {
     if ( m_subState == SubStateInit )
@@ -1258,7 +1198,6 @@ void CPlayerComponent::updateStateStandShooting()
 
 		// do not reset aim anim weight
 		m_aimFactor = 1.0f;
-		m_initAimFactor = false;
 
 		return;
 	}
@@ -1315,6 +1254,7 @@ void CPlayerComponent::updateStateStandShooting()
         m_collada->synchronizedByTimeScale();
 	}
 }
+#endif
 
 //void CPlayerComponent::updateStateTEMPLATE()
 //{

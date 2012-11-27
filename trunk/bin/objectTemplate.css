@@ -64,27 +64,8 @@ player
 	}
 	Ellipsoid collision component
 	{
-	}
-	Inventory component
-	{
-	}
+	}	
 	Player component
 	{
-	}
-}
-weaponShotGun
-{
-	Collada mesh component
-	{
-		meshFile: data/mesh/weapon/shotgun/mp_shotgun.scene | filePathType;
-		defaultNode:  | stringType;
-	}
-	Weapon component
-	{
-		weaponType: 1 | intType;
-		damage: 0.0 | floatType;
-		rate: 0.0 | floatType;
-		range: 0.0 | floatType;
-		mobility: 0.0 | floatType;
 	}
 }

@@ -546,6 +546,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\..\src\core\Serializable\CDaeUtils.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\..\src\core\Serializable\CDaeUtils.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\..\src\core\Serializable\CSerializable.cpp"
 						>
 					</File>
@@ -603,27 +611,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\src\gameComponent\CInventoryComponent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\gameComponent\CInventoryComponent.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\src\gameComponent\CPlayerComponent.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\..\src\gameComponent\CPlayerComponent.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\gameComponent\CWeaponComponent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\src\gameComponent\CWeaponComponent.h"
 					>
 				</File>
 			</Filter>

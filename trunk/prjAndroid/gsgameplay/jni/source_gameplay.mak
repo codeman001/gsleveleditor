@@ -58,15 +58,14 @@ LOCAL_SRC_FILES := ../../../src/core/Animators/CGameCameraFollowAnimator.cpp \
 ../../../src/core/SceneNode/CGameParticleContainerSceneNode.cpp \
 ../../../src/core/SceneNode/CGameWaterSceneNode.cpp \
 ../../../src/core/Serializable/CBinaryUtils.cpp \
+../../../src/core/Serializable/CDaeUtils.cpp \
 ../../../src/core/Serializable/CSerializable.cpp \
 ../../../src/core/Network/CComms.cpp \
 ../../../src/core/Network/CDataPacket.cpp \
 ../../../src/core/Network/CMultiplayerManager.cpp \
 ../../../src/core/Network/md5.cpp \
 ../../../src/gameComponent/CGameComponent.cpp \
-../../../src/gameComponent/CInventoryComponent.cpp \
 ../../../src/gameComponent/CPlayerComponent.cpp \
-../../../src/gameComponent/CWeaponComponent.cpp \
 ../../../src/gameDebug/CGameDebug.cpp \
 ../../../src/gameState/CGameState.cpp \
 ../../../src/gameState/CGameStateManager.cpp \

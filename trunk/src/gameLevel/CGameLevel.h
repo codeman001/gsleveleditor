@@ -11,8 +11,6 @@
 
 #include "CColladaMeshComponent.h"
 #include "gameComponent/CGameComponent.h"
-#include "gameComponent/CInventoryComponent.h"
-#include "gameComponent/CWeaponComponent.h"
 
 #include "CObjTemplateFactory.h"
 

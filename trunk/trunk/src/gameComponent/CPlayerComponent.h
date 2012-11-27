@@ -110,7 +110,6 @@ protected:
 	// end anim name declare	
 
 	float					m_aimFactor;
-	bool					m_initAimFactor;
 
 	float					m_runFactor;	
 	float					m_runAccel;

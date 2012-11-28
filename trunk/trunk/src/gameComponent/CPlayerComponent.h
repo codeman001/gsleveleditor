@@ -110,6 +110,7 @@ protected:
 	// end anim name declare	
 
 	float					m_aimFactor;
+	bool					m_aimRotateCharacter;
 
 	float					m_runFactor;	
 	float					m_runAccel;
@@ -122,7 +123,6 @@ protected:
 	float					m_animRightFactor;
 
 	float					m_spineRotation;
-	float					m_lastRotation;
 
 	float					m_rootBlendRotation;
 	float					m_spineBlendRotation;

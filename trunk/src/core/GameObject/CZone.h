@@ -11,7 +11,9 @@ class CZone: public CGameObject
 {
 protected:
 	ArrayGameObject						m_childs;
+	
 	ArrayGameObject						m_terrains;
+	ArrayGameObject						m_triggerObjects;
 
 	bool								m_needSortObject;
 

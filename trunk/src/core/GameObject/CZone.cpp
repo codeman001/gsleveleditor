@@ -52,8 +52,28 @@ CZone::~CZone()
 // updateObject
 // update object by frame...
 void CZone::updateObject()
-{
+{	
+	m_triggerObjects.clear();
+
 	ArrayGameObjectIter it = m_childs.begin(), end = m_childs.end();
+	while ( it != end )
+	{
+		CGameObject *pObject = (CGameObject*) (*it);
+		
+		if ( pObject->getObjectType() == TriggerObject )
+		{
+			m_triggerObjects.push_back( pObject );
+		}
+		else
+		{
+			if ( pObject->isEnable() )
+				pObject->updateObject();
+		}
+		it++;
+	}
+
+	// now we update trigger LUA later
+	it = m_triggerObjects.begin(), end = m_triggerObjects.end();
 	while ( it != end )
 	{
 		CGameObject *pObject = (CGameObject*) (*it);
@@ -63,6 +83,7 @@ void CZone::updateObject()
 
 		it++;
 	}
+
 }
 
 // sortNodeByID

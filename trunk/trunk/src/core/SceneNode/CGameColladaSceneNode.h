@@ -35,9 +35,25 @@ struct SColladaSkinMeshBuffer: public SMeshBufferSkin
 // interface for modify animation data
 class IGameAnimationCallback
 {
-public:
-	virtual void _onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int animLayer ) = 0;
-	virtual void _onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel, int animLayer ) = 0;
+public:	
+
+	// _onUpdateFrameDataChannel
+	// call when finish get frame on a channel
+	virtual void _onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel, int animLayer )
+	{
+	}
+
+	// _onUpdateFrameData
+	// call when finish blending many channel
+	virtual void _onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int animLayer )
+	{
+	}
+	
+	// _onUpdateFinishAbsolute
+	// call when finish calc skin animation
+	virtual void _onUpdateFinishAbsolute( ISceneNode* node, core::matrix4& absoluteAnimationMatrix )
+	{
+	}
 };
 
 // CGameColladaMesh

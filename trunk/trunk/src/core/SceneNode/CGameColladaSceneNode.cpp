@@ -953,10 +953,13 @@ void CGameColladaSceneNode::updateAbsolutePosition()
 				}                
             }
             
+			// callback
+			if ( m_animationCallback )
+				m_animationCallback->_onUpdateFinishAbsolute(this, AbsoluteAnimationMatrixLayer[i]);
             
             AnimationMatrix = AnimationMatrixLayer[i];
             AbsoluteAnimationMatrix = AbsoluteAnimationMatrixLayer[i];
-            
+            			
             AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(), RelativeMatrix);            
         }
         

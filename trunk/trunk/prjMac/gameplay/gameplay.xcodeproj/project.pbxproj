@@ -67,9 +67,7 @@
 		7F3A6BB4160F5E8000B31F81 /* CBinaryUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B4E160F5E8000B31F81 /* CBinaryUtils.cpp */; };
 		7F3A6BB5160F5E8000B31F81 /* CSerializable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B50160F5E8000B31F81 /* CSerializable.cpp */; };
 		7F3A6BB6160F5E8000B31F81 /* CGameComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B53160F5E8000B31F81 /* CGameComponent.cpp */; };
-		7F3A6BB7160F5E8000B31F81 /* CInventoryComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B55160F5E8000B31F81 /* CInventoryComponent.cpp */; };
 		7F3A6BB8160F5E8000B31F81 /* CPlayerComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B57160F5E8000B31F81 /* CPlayerComponent.cpp */; };
-		7F3A6BB9160F5E8000B31F81 /* CWeaponComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B59160F5E8000B31F81 /* CWeaponComponent.cpp */; };
 		7F3A6BBB160F5E8000B31F81 /* CGameControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B5E160F5E8000B31F81 /* CGameControl.cpp */; };
 		7F3A6BBC160F5E8000B31F81 /* CTouchManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B60160F5E8000B31F81 /* CTouchManager.cpp */; };
 		7F3A6BBD160F5E8000B31F81 /* CGameDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B63160F5E8000B31F81 /* CGameDebug.cpp */; };
@@ -253,12 +251,8 @@
 		7F3A6B51160F5E8000B31F81 /* CSerializable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSerializable.h; sourceTree = "<group>"; };
 		7F3A6B53160F5E8000B31F81 /* CGameComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGameComponent.cpp; sourceTree = "<group>"; };
 		7F3A6B54160F5E8000B31F81 /* CGameComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGameComponent.h; sourceTree = "<group>"; };
-		7F3A6B55160F5E8000B31F81 /* CInventoryComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CInventoryComponent.cpp; sourceTree = "<group>"; };
-		7F3A6B56160F5E8000B31F81 /* CInventoryComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CInventoryComponent.h; sourceTree = "<group>"; };
 		7F3A6B57160F5E8000B31F81 /* CPlayerComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CPlayerComponent.cpp; sourceTree = "<group>"; };
 		7F3A6B58160F5E8000B31F81 /* CPlayerComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPlayerComponent.h; sourceTree = "<group>"; };
-		7F3A6B59160F5E8000B31F81 /* CWeaponComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CWeaponComponent.cpp; sourceTree = "<group>"; };
-		7F3A6B5A160F5E8000B31F81 /* CWeaponComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWeaponComponent.h; sourceTree = "<group>"; };
 		7F3A6B5E160F5E8000B31F81 /* CGameControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGameControl.cpp; sourceTree = "<group>"; };
 		7F3A6B5F160F5E8000B31F81 /* CGameControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGameControl.h; sourceTree = "<group>"; };
 		7F3A6B60160F5E8000B31F81 /* CTouchManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CTouchManager.cpp; sourceTree = "<group>"; };
@@ -599,12 +593,8 @@
 			children = (
 				7F3A6B53160F5E8000B31F81 /* CGameComponent.cpp */,
 				7F3A6B54160F5E8000B31F81 /* CGameComponent.h */,
-				7F3A6B55160F5E8000B31F81 /* CInventoryComponent.cpp */,
-				7F3A6B56160F5E8000B31F81 /* CInventoryComponent.h */,
 				7F3A6B57160F5E8000B31F81 /* CPlayerComponent.cpp */,
 				7F3A6B58160F5E8000B31F81 /* CPlayerComponent.h */,
-				7F3A6B59160F5E8000B31F81 /* CWeaponComponent.cpp */,
-				7F3A6B5A160F5E8000B31F81 /* CWeaponComponent.h */,
 			);
 			name = gameComponent;
 			path = ../../src/gameComponent;
@@ -931,9 +921,7 @@
 				7F3A6BB4160F5E8000B31F81 /* CBinaryUtils.cpp in Sources */,
 				7F3A6BB5160F5E8000B31F81 /* CSerializable.cpp in Sources */,
 				7F3A6BB6160F5E8000B31F81 /* CGameComponent.cpp in Sources */,
-				7F3A6BB7160F5E8000B31F81 /* CInventoryComponent.cpp in Sources */,
 				7F3A6BB8160F5E8000B31F81 /* CPlayerComponent.cpp in Sources */,
-				7F3A6BB9160F5E8000B31F81 /* CWeaponComponent.cpp in Sources */,
 				7F3A6BBB160F5E8000B31F81 /* CGameControl.cpp in Sources */,
 				7F3A6BBC160F5E8000B31F81 /* CTouchManager.cpp in Sources */,
 				7F3A6BBD160F5E8000B31F81 /* CGameDebug.cpp in Sources */,

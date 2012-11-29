@@ -32,6 +32,10 @@ void CStateGameplay::onCreate()
 	// create dpad control
 	CUIDPad* dpad = new CUIDPad("dpad", m_rootWidget, getStateObjFx().findObj("mcDPadTouch"));
 	
+	// create hud view
+	CUIHudContainer *hud = new CUIHudContainer("hud", m_rootWidget, getStateObjFx().findObj("mcAimFocus"));
+
+	// init multiplayer
 #ifdef HAS_MULTIPLAYER
 	const char *isHost = CGameLevel::getLevelProperty("isHost");
 	if ( strcmp(isHost, "true") == 0 )

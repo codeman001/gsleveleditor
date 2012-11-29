@@ -959,8 +959,21 @@ void CGameColladaSceneNode::updateAbsolutePosition()
             
             AnimationMatrix = AnimationMatrixLayer[i];
             AbsoluteAnimationMatrix = AbsoluteAnimationMatrixLayer[i];
-            			
-            AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(), RelativeMatrix);            
+            						
+			if ( m_isRootColladaNode == true )
+				AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(), RelativeMatrix);
+			else
+			{
+				// find new relative mat
+				if ( i != 0 )
+				{
+					core::matrix4 toRelative(colladaParent->AbsoluteAnimationMatrix, core::matrix4::EM4CONST_INVERSE);				
+					RelativeMatrix = toRelative*AbsoluteAnimationMatrix;
+				}
+
+				// calc abs
+				AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(), RelativeMatrix);
+			}
         }
         
     }
@@ -1283,39 +1296,7 @@ void CGameColladaSceneNode::render()
 
 		}
 
-		Box = ColladaMesh->getBoundingBox();
-
-		// draw normals
-		/*
-		video::SMaterial m;
-		m.Lighting = false;
-		m.AntiAliasing=0;
-		driver->setMaterial(m);
-
-		core::vector3df normalizedNormal;
-		const f32 DebugNormalLength = SceneManager->getParameters()->getAttributeAsFloat(DEBUG_NORMAL_LENGTH);
-		const video::SColor DebugNormalColor = SColor(255,255,0,0);
-
-		for (u32 g=0; g< ColladaMesh->getMeshBufferCount(); ++g)
-		{
-			const scene::IMeshBuffer* mb = ColladaMesh->getMeshBuffer(g);
-			const u32 vSize = video::getVertexPitchFromType(mb->getVertexType());
-			const video::S3DVertex* v = ( const video::S3DVertex*)mb->getVertices();
-			const bool normalize = mb->getMaterial().NormalizeNormals;
-
-			for (u32 i=0; i != mb->getVertexCount(); ++i)
-			{
-				normalizedNormal = v->Normal;
-				if (normalize)
-					normalizedNormal.normalize();
-
-				driver->draw3DLine(v->Pos, v->Pos + (normalizedNormal * DebugNormalLength), DebugNormalColor);
-
-				v = (const video::S3DVertex*) ( (u8*) v+vSize );
-			}
-		}
-		driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
-		*/
+		Box = ColladaMesh->getBoundingBox();	
 	}
 #ifdef GSANIMATION
 	else
@@ -1379,7 +1360,7 @@ void CGameColladaSceneNode::render()
 		debug_mat.Lighting = false;
 		debug_mat.AntiAliasing = 0;
 		debug_mat.ZBuffer = video::ECFN_NEVER;
-		
+
 		driver->setMaterial(debug_mat);
 
 #ifdef GSANIMATION
@@ -1422,6 +1403,13 @@ void CGameColladaSceneNode::render()
 #else
 		driver->setTransform(video::ETS_WORLD, AbsoluteTransformation );
 		driver->draw3DBox( getBoundingBox(), video::SColor(255,255,255,255));
+		
+		// skin bone debug		
+		//float size = 2.0f;
+		//core::aabbox3d<f32> skinBox;
+		//skinBox.MinEdge = core::vector3df(-size, -size, -size);
+		//skinBox.MaxEdge = core::vector3df( size,  size,  size);
+		//driver->draw3DBox( skinBox, video::SColor(255,255,255,255));
 #endif
 		//core::matrix4 mat = GlobalInversedMatrix;
 		//mat.makeInverse();

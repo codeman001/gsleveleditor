@@ -1383,7 +1383,9 @@ void CPlayerComponent::updateUpperBodyShoot()
         m_collada->setAnimWeight(wStraight, 1, 1);		// straight
 		m_collada->setAnimWeight(wUp,		2, 1);		// up
 		m_collada->setAnimWeight(wDown,		3, 1);		// down
-        m_collada->synchronizedByTimeScale(1);
+
+		// speed up fire anim
+        m_collada->synchronizedByTimeScale(1, 2.0f);
 	}
 }
 

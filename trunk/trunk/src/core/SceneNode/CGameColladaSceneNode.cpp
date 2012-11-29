@@ -495,7 +495,7 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 
 // synchronizedTimeScale
 // sync speed of n track
-void CGameAnimation::synchronizedByTimeScale()
+void CGameAnimation::synchronizedByTimeScale(float baseRatio)
 {
 	float syncFrame = 0;
     
@@ -528,7 +528,7 @@ void CGameAnimation::synchronizedByTimeScale()
 		{
 			float speedRatio = m_animTrack[i].getTotalFrame()/syncFrame;
             
-			m_animTrack[i].setSpeedRatio( speedRatio );
+			m_animTrack[i].setSpeedRatio( speedRatio * baseRatio );
             
             if ( i != baseChannel )
             {

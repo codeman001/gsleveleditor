@@ -258,8 +258,7 @@ public:
 
 	// synchronizedByTimeScale
 	// sync n animation
-	void synchronizedByTimeScale(int animLayer = 0);
-    void synchronizedFrameByNode(CGameColladaSceneNode *node, int channel, int animLayer);
+	void synchronizedByTimeScale(int animLayer = 0, float speedRatio = 1.0f);
     
 	// getCurrentAnim
 	// get current anim

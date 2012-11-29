@@ -13,8 +13,6 @@ public:
 	{
 		PlayerComponent = IObjectComponent::NumBuildInComponent,
 		AIPlayerComponent,
-		InventoryComponent,
-		WeaponComponent
 	};
 
 	// loadComponent

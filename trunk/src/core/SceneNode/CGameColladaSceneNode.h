@@ -410,7 +410,7 @@ public:
 
 	// synchronizedTimeScale
 	// sync speed of n track	
-	void synchronizedByTimeScale();
+	void synchronizedByTimeScale(float baseRatio);
 
 	// update
 	// update per frame

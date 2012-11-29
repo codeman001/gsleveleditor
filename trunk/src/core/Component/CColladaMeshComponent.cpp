@@ -962,7 +962,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChanne
 
 // synchronizedByTimeScale
 // sync 2 animation
-void CColladaMeshComponent::synchronizedByTimeScale(int animLayer)
+void CColladaMeshComponent::synchronizedByTimeScale(int animLayer, float speedRatio)
 {
 	// loop all node
 	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
@@ -976,29 +976,8 @@ void CColladaMeshComponent::synchronizedByTimeScale(int animLayer)
 			continue;
 		}
 		
-		j->getAnimation(animLayer)->synchronizedByTimeScale();
+		j->getAnimation(animLayer)->synchronizedByTimeScale(speedRatio);
 
-		i++;
-	}
-}
-
-void CColladaMeshComponent::synchronizedFrameByNode(CGameColladaSceneNode *node, int channel, int animLayer)
-{
-    float currentFrame = node->getAnimation(animLayer)->getTrack(channel)->getCurrentFrame();
-    
-    std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
-	while ( i != end )
-	{
-		CGameColladaSceneNode* j = (*i).second;
-        
-		if ( j == NULL )
-		{
-			i++;
-			continue;
-		}
-		
-		j->getAnimation(animLayer)->getTrack(channel)->setCurrentFrame(currentFrame);
-		//j->getAnimation(animLayer)->synchronizedByTimeScale();
 		i++;
 	}
 }

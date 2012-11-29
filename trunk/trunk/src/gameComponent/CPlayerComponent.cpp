@@ -1307,6 +1307,8 @@ void CPlayerComponent::updateUpperBodyAim()
 
 void CPlayerComponent::updateUpperBodyShoot()
 {
+	const float shootSpeed = 2.0f;
+
     if ( m_upbodySubState == SubStateInit )
     {
 		m_collada->setAnimation(m_animShootStraight.c_str(),1, false, 1);        
@@ -1322,7 +1324,7 @@ void CPlayerComponent::updateUpperBodyShoot()
 		m_collada->enableAnimTrackChannel(3, true, 1);
         
 		// anim time
-		m_animCurrentTime = m_collada->getCurrentAnimTimeLength();
+		m_animCurrentTime = m_collada->getCurrentAnimTimeLength()/shootSpeed;
         
 		// setup player state
 		m_playerCmdEvt.shoot	= false;
@@ -1334,8 +1336,7 @@ void CPlayerComponent::updateUpperBodyShoot()
     else if ( m_upbodySubState == SubStateEnd )
     {
     }
-
-    
+	    
     // todo update
 	{
 		stepAnimationTime();
@@ -1385,7 +1386,7 @@ void CPlayerComponent::updateUpperBodyShoot()
 		m_collada->setAnimWeight(wDown,		3, 1);		// down
 
 		// speed up fire anim
-        m_collada->synchronizedByTimeScale(1, 2.0f);
+        m_collada->synchronizedByTimeScale(1, shootSpeed);
 	}
 }
 

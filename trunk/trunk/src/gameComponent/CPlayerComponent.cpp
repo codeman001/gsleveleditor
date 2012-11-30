@@ -1848,11 +1848,16 @@ core::vector2df CPlayerComponent::getAimAngle( const core::vector3df aimPoint )
 {
 	core::vector2df ret;
 
-	CGameColladaSceneNode *spine = m_collada->getSceneNode("Spine3");	
+	CGameColladaSceneNode *spine = m_collada->getSceneNode("RightGunTip");	
 	core::vector3df spinePoint = spine->getAbsolutePosition();
 
 	core::vector3df aimRay	= aimPoint - spinePoint;
 	core::vector3df base	= m_gameObject->getFront();
+
+	//core::line3df line;
+	//line.start = spinePoint;
+	//line.end = aimPoint;
+	//CGameDebug::getInstance()->addDrawLine(line, SColor(255,255,255,255));
 
 	aimRay.normalize();
 

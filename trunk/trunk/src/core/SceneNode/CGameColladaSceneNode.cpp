@@ -913,7 +913,6 @@ void CGameColladaSceneNode::updateAbsolutePosition()
         if ( m_gameAnimation[i].isEnable() == false )
             continue;
         
-        core::matrix4 RelativeMatrix;
         RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(), AnimationMatrixLayer[i]);	
         
         // calc absolute animation
@@ -977,6 +976,24 @@ void CGameColladaSceneNode::updateAbsolutePosition()
         }
         
     }
+}
+
+
+void CGameColladaSceneNode::reCalcAbsoluteMatrix()
+{
+	AbsoluteTransformation = getParent()->getAbsoluteTransformation()*RelativeMatrix;
+}
+
+void CGameColladaSceneNode::updateChildAbsoluteTransform()
+{				
+	ISceneNodeList::Iterator it = Children.begin();
+	for (; it != Children.end(); ++it)
+	{
+		CGameColladaSceneNode *child = (CGameColladaSceneNode*)(*it);
+
+		child->reCalcAbsoluteMatrix();
+		child->updateChildAbsoluteTransform();
+	}	
 }
 
 
@@ -1404,7 +1421,7 @@ void CGameColladaSceneNode::render()
 		driver->setTransform(video::ETS_WORLD, AbsoluteTransformation );
 		driver->draw3DBox( getBoundingBox(), video::SColor(255,255,255,255));
 		
-		// skin bone debug		
+		// skin bone debug
 		//float size = 2.0f;
 		//core::aabbox3d<f32> skinBox;
 		//skinBox.MinEdge = core::vector3df(-size, -size, -size);

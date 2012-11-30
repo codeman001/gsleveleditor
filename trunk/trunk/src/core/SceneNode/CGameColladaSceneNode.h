@@ -460,6 +460,7 @@ protected:
 public:
 	core::matrix4	AnimationMatrix;
 	core::matrix4	AbsoluteAnimationMatrix;
+	core::matrix4	RelativeMatrix;
 
 	core::matrix4	AnimationMatrixLayer[MAX_ANIMLAYER];
     core::matrix4	BaseAbsoluteAnimationMatrixLayer[MAX_ANIMLAYER];
@@ -720,6 +721,14 @@ public:
 	{
 		return LocalMatrix;
 	}
+
+	void setAbsoluteTransform( const core::matrix4& mat )
+	{
+		AbsoluteTransformation = mat;
+	}
+
+	void reCalcAbsoluteMatrix();
+	void updateChildAbsoluteTransform();
 
 	// updateAnimation
 	// calc relative matrix of animation

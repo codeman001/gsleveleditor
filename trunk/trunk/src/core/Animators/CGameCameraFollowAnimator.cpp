@@ -112,7 +112,11 @@ void CGameCameraFollowAnimator::animateNode(ISceneNode* node, u32 timeMs)
 	}	
 
 	core::aabbox3df box = m_followNode->getTransformedBoundingBox();
-	core::vector3df target = box.getCenter();	
+	core::vector3df target = box.getCenter();
+
+	// hard code to offset the camera target
+	target.Y = target.Y  + (box.MaxEdge.Y - box.MinEdge.Y)/4;
+
 	core::vector3df pos = core::vector3df(0,0, m_radius );
 
 	core::matrix4 mat;

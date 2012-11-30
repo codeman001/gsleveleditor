@@ -211,14 +211,19 @@ void CGameColladaContainerSceneNode::OnAnimate(irr::u32 timeMs)
             continue;
         
         // calc reference matrix
-        core::matrix4 matParent = colladaNode2->BaseAbsoluteAnimationMatrixLayer[currentLayer];
-        core::matrix4 matNode   = colladaNode1->BaseAbsoluteAnimationMatrixLayer[currentLayer];
+        core::matrix4 matParentInv	= colladaNode2->BaseAbsoluteAnimationMatrixLayer[currentLayer];
+        core::matrix4 matNode		= colladaNode1->BaseAbsoluteAnimationMatrixLayer[currentLayer];
         
-        matParent.makeInverse();
-        core::matrix4 animationMtx = matParent*matNode;
+        matParentInv.makeInverse();
+        core::matrix4 relativeMtx = matParentInv*matNode;
 
         // recalc animation matrix
-        colladaNode1->AbsoluteAnimationMatrix = colladaNode2->AbsoluteAnimationMatrix*animationMtx;
+        colladaNode1->AbsoluteAnimationMatrix = colladaNode2->AbsoluteAnimationMatrix*relativeMtx;
+		
+		// calc absolute transform
+		core::matrix4 absoluteTransform = colladaNode2->getAbsoluteTransformation()*relativeMtx;
+		colladaNode1->setAbsoluteTransform(absoluteTransform);
+		colladaNode1->updateChildAbsoluteTransform();
     }
     
     

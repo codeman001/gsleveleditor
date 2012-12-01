@@ -887,8 +887,12 @@ void CPlayerComponent::updateStateRunToRunFast()
         m_collada->enableAnimTrackChannel(1, true);
         m_collada->setAnimation(m_animRunNoGun.c_str(), 1, true );        
         
+		// change state of up body
+		setOffGunAnimation(m_animRunNoGun);
+		setUpBodyState(CPlayerComponent::PlayerUpBodyOffGun);
+
         // change state
-		m_subState = SubStateActive;		
+		m_subState = SubStateActive;
 	}
 	else if ( m_subState == SubStateEnd )
 	{	
@@ -927,7 +931,7 @@ void CPlayerComponent::updateStateRunToRunFast()
 				s_runFastFactor = 1.0f;
 
             invRun = 1.0f - s_runFastFactor;
-            
+			
             if ( s_runFastFactor >= 1.0f )
             {            
                 m_collada->enableAnimTrackChannel(0, true);
@@ -982,6 +986,10 @@ void CPlayerComponent::updateStateRunToRunFast()
 		float runSpeed = (m_runSpeed + deltaSpeed)*m_runFactor* getIView()->getTimeStep();
 		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate * runSpeed;
 		m_gameObject->setPosition( newPos );        
+
+
+		m_aimFactor = 1.0f - m_runFactor;
+		updateUpperBody();
     }
 
 }
@@ -1058,6 +1066,9 @@ void CPlayerComponent::updateStateRunFastToRun()
 	}
 	else if ( m_subState == SubStateEnd )
 	{
+		// change state of up body		
+		setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
+
 		bool runState = false;
 		if ( m_nextState == CPlayerComponent::PlayerRun )        
             runState = true;
@@ -1205,14 +1216,20 @@ void CPlayerComponent::updateUpperBody()
     {
         updateUpperBodyReload();
     }
-        
+	else if ( m_upbodyState == CPlayerComponent::PlayerUpBodyOffGun )
+	{
+		updateUpperBodyOffgun();
+	}
 }
 
 void CPlayerComponent::updateUpperBodyAim()
 {
     if ( m_upbodySubState == SubStateInit )
     {                
+		// base idle
         m_collada->setCrossFadeAnimationToLayer( m_animIdle[0].c_str(), 10.0f, true, 0, 0, 1, 0);
+
+		// base aim
         m_collada->setAnimation(m_animAimStraight.c_str(),	1, true, 1 );        
         m_collada->setAnimWeight(0.0f, 1, 1);
         m_collada->enableAnimTrackChannel(1, true, 1);
@@ -1402,6 +1419,25 @@ void CPlayerComponent::updateUpperBodyReload()
     else
     {	
     }    
+}
+
+void CPlayerComponent::updateUpperBodyOffgun()
+{
+    if ( m_upbodySubState == SubStateInit )
+    {
+		m_collada->setAnimation(m_offGunAnimation, 0, true, 1);        
+        m_collada->setAnimWeight(0.0f, 0, 1);
+		m_collada->enableAnimTrackChannel(0, true, 1);
+
+        m_upbodySubState = SubStateActive;		
+    }
+    else if ( m_upbodySubState == SubStateEnd )
+    {
+    }
+    else
+    {		
+		
+    }
 }
 
 //void CPlayerComponent::updateUpperBodyTEMPLATE()

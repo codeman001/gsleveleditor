@@ -37,7 +37,8 @@ public:
     {
         PlayerUpBodyAim = 0,
         PlayerUpBodyShoot,
-        PlayerUpBodyReload
+        PlayerUpBodyReload,
+		PlayerUpBodyOffGun
     };
     
 	enum EPlayerSubState
@@ -109,6 +110,8 @@ protected:
 	std::string						m_animShootStraight;
 	// end anim name declare	
 
+	std::string				m_offGunAnimation;
+	
 	float					m_aimFactor;
 	bool					m_aimRotateCharacter;
 
@@ -212,7 +215,8 @@ protected:
     void updateUpperBodyAim();
     void updateUpperBodyShoot();
     void updateUpperBodyReload();    
-    
+    void updateUpperBodyOffgun();
+
 	// isFinishedAnim	
 	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0, int animLayer = 0);
 
@@ -244,6 +248,12 @@ public:
 		const float maxAngle = 110.0f;
 		m_spineRotation = r;
 		m_spineRotation = core::clamp<float>(m_spineRotation, -maxAngle, maxAngle);
+	}
+
+	// setOffGunAnimation
+	void setOffGunAnimation( std::string animName )
+	{
+		m_offGunAnimation = animName;
 	}
 
 	// setSpineLookAt

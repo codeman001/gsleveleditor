@@ -430,23 +430,6 @@ void CPlayerComponent::updateStateRun()
 	}
 	else if ( m_subState == SubStateEnd )
 	{
-        // disable anim layer 1
-		if ( m_nextState != CPlayerComponent::PlayerStandAim && 
-			 m_nextState != CPlayerComponent::PlayerRunTurn )
-		{
-			m_collada->enableAnimLayer(1, false);
-			m_collada->setAnimLayer( m_nodesUpBody, 0 );
-		}
-
-        if ( m_nextState == CPlayerComponent::PlayerIdle )
-		{
-            // turn off multi anim
-			m_collada->setAnimWeight(1.0f, 0);
-			m_collada->setAnimWeight(0.0f, 1);
-
-			m_collada->setAnimSpeed(1.0f, 0);
-			m_collada->onlyEnableAnimTrackChannel(0);
-		}
 		doNextState();
 	}
 	else
@@ -557,8 +540,8 @@ void CPlayerComponent::updateStateRun()
 			m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 
 			// calc spine rotation
-			// core::vector3df lookPos = m_gameObject->getPosition() + m_gameObject->getFront();
-			// setSpineLookAt( lookPos, 1.0f );
+			core::vector3df lookPos = m_gameObject->getPosition() + m_gameObject->getFront();
+            setSpineLookAt( lookPos, 1.0f );
 		}
 
 		// update run position
@@ -705,6 +688,12 @@ void CPlayerComponent::updateStateRunFast()
 	{
 		if ( m_nextState == CPlayerComponent::PlayerIdle )
 		{
+            // turn off multi anim channel
+            m_collada->enableAnimLayer(1, false);
+			m_collada->setAnimLayer( m_nodesUpBody, 0 );
+            
+            
+            // turn off multi anim track
 			m_collada->setAnimWeight(1.0f, 0);
 			m_collada->setAnimWeight(0.0f, 1);
 
@@ -813,6 +802,9 @@ void CPlayerComponent::updateStateRunFast()
 			m_gameObject->setPosition( newPos );
 		}
 	}
+    
+    // update upper body
+    updateUpperBody();
 }
 
 void CPlayerComponent::updateStateRunFastTurn()
@@ -872,6 +864,9 @@ void CPlayerComponent::updateStateRunFastTurn()
 		core::vector3df newPos = m_gameObject->getPosition() + m_runCurrentVector * runSpeed;
 		m_gameObject->setPosition( newPos );
 	}
+    
+    // update upper body
+    updateUpperBody();
 }
 
 void CPlayerComponent::updateStateRunToRunFast()
@@ -885,11 +880,7 @@ void CPlayerComponent::updateStateRunToRunFast()
         m_runFactor = 1.0f;
         
         m_collada->enableAnimTrackChannel(1, true);
-        m_collada->setAnimation(m_animRunNoGun.c_str(), 1, true );        
-        
-		// change state of up body
-		setOffGunAnimation(m_animRunNoGun);
-		setUpBodyState(CPlayerComponent::PlayerUpBodyOffGun);
+        m_collada->setAnimation(m_animRunNoGun.c_str(), 1, true );
 
         // change state
 		m_subState = SubStateActive;
@@ -987,10 +978,10 @@ void CPlayerComponent::updateStateRunToRunFast()
 		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate * runSpeed;
 		m_gameObject->setPosition( newPos );        
 
-
-		m_aimFactor = 1.0f - m_runFactor;
-		updateUpperBody();
     }
+    
+    // update upper body
+    updateUpperBody();
 
 }
 
@@ -1066,13 +1057,22 @@ void CPlayerComponent::updateStateRunFastToRun()
 	}
 	else if ( m_subState == SubStateEnd )
 	{
-		// change state of up body		
-		setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
-
 		bool runState = false;
 		if ( m_nextState == CPlayerComponent::PlayerRun )        
             runState = true;
 
+        // turn of multi layer anim
+        if ( m_nextState == CPlayerComponent::PlayerIdle )
+        {
+            m_collada->enableAnimLayer(1, false);
+			m_collada->setAnimLayer( m_nodesUpBody, 0 );
+        }
+        else 
+        {
+            // change state of up body		
+            setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
+        }
+        
         // change state
 		doNextState();
         
@@ -1130,7 +1130,10 @@ void CPlayerComponent::updateStateRunFastToRun()
 		float runSpeed = (m_runFastSpeed - deltaSpeed)* m_runFactor * getIView()->getTimeStep();
 		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate*runSpeed;
 		m_gameObject->setPosition( newPos );
-    }    
+    } 
+    
+    // update upper body
+    updateUpperBody();
 }
 
 void CPlayerComponent::updateStateStandAim()
@@ -1469,14 +1472,6 @@ void CPlayerComponent::_onUpdateFrameDataChannel( ISceneNode* node, core::vector
 	if ( (m_state == CPlayerComponent::PlayerRunToRunFast || m_state == CPlayerComponent::PlayerRunFastToRun )&& channel == 1 )
 	{
 		ISceneNode *root = m_collada->getSceneNode("Reference");
-		
-		// todo modify rotation, position of anim    
-		const core::vector3df rotAxis = core::vector3df(0,0,1);
-
-		const float maxSpine = 70.0f;
-		float spineAngle = core::clamp<float>(m_spineBlendRotation, -maxSpine, maxSpine);
-		float neckAngle = m_spineBlendRotation - spineAngle;
-		float r = spineAngle/3.0f;
 
 		// we need rotate the animation channel
 		if ( node == root )
@@ -1486,45 +1481,17 @@ void CPlayerComponent::_onUpdateFrameDataChannel( ISceneNode* node, core::vector
 
 			q.fromAngleAxis( core::degToRad( m_rootBlendRotation ), rotAxis );
 			rotation = rotation * q;
-		}	
-		else if ( node == m_nodesChest[0] )
-		{
-			core::quaternion q;
-			q.fromAngleAxis( core::degToRad(r), rotAxis  );
-			rotation = rotation * q;
-		}
-		else if ( node == m_nodesChest[1] )
-		{
-			core::quaternion q;
-			q.fromAngleAxis( core::degToRad(r), rotAxis );
-			rotation = rotation * q;
-		}
-		else if ( node == m_nodesChest[2] )
-		{
-			core::quaternion q;
-			q.fromAngleAxis( core::degToRad(r), rotAxis );
-			rotation = rotation * q;
-		}
-		else if ( node == m_nodeNeck )
-		{
-			core::quaternion q;
-			core::vector3df neckAxis = core::vector3df(0.0f,-0.8f,1.0f);
-			neckAxis.normalize();
-			q.fromAngleAxis( core::degToRad( neckAngle ), neckAxis );
-			rotation = rotation * q;
-		}
+		}        
 	}
+    
 }
 
 
 // _onUpdateFrameData
 // call when finish blending many channel
 void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int animLayer )
-{
-	if ( animLayer != 0 )
-		return;
-       
-	if ( m_state == CPlayerComponent::PlayerRunFast || m_state == CPlayerComponent::PlayerIdle )
+{    
+	if ( animLayer != 0 && m_state == CPlayerComponent::PlayerIdle )
 	{
 		 // todo modify rotation, position of anim
 		const core::vector3df rotAxis = core::vector3df(0,0,1);
@@ -1532,72 +1499,83 @@ void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& po
 		const float maxSpine = 70.0f;
 		float spineAngle = core::clamp<float>(m_spineRotation, -maxSpine, maxSpine);
 		float neckAngle = m_spineRotation - spineAngle;
-		float r = spineAngle/3.0f;	
+		float r = spineAngle/3.0f;
 
-		if ( node == m_nodesChest[0] )
-		{
-			core::quaternion q;
-			q.fromAngleAxis( core::degToRad(r), rotAxis  );
-			rotation = rotation * q;
-		}
-		else if ( node == m_nodesChest[1] )
-		{
-			core::quaternion q;
-			q.fromAngleAxis( core::degToRad(r), rotAxis );
-			rotation = rotation * q;
-		}
-		else if ( node == m_nodesChest[2] )
-		{
-			core::quaternion q;
-			q.fromAngleAxis( core::degToRad(r), rotAxis );
-			rotation = rotation * q;
-		}
-		else if ( node == m_nodeNeck )
-		{
-			core::quaternion q;
-			core::vector3df neckAxis = core::vector3df(0.0f,-0.8f,1.0f);
-			neckAxis.normalize();
-			q.fromAngleAxis( core::degToRad( neckAngle ), neckAxis );
-			rotation = rotation * q;
-		}
-	}
+        if ( r > 0 || neckAngle > 0 )
+        {
+            if ( node == m_nodesChest[0] )
+            {
+                core::quaternion q;
+                q.fromAngleAxis( core::degToRad(r), rotAxis  );
+                rotation = rotation * q;
+            }
+            else if ( node == m_nodesChest[1] )
+            {
+                core::quaternion q;
+                q.fromAngleAxis( core::degToRad(r), rotAxis );
+                rotation = rotation * q;
+            }
+            else if ( node == m_nodesChest[2] )
+            {
+                core::quaternion q;
+                q.fromAngleAxis( core::degToRad(r), rotAxis );
+                rotation = rotation * q;
+            }
+            else if ( node == m_nodeNeck )
+            {
+                core::quaternion q;
+                core::vector3df neckAxis = core::vector3df(0.0f,-0.8f,1.0f);
+                neckAxis.normalize();
+                q.fromAngleAxis( core::degToRad( neckAngle ), neckAxis );
+                rotation = rotation * q;
+            }
+        }
+	}  
 }
 
 // _onUpdateFinishAbsolute
 // call when finish calc skin animation
 void CPlayerComponent::_onUpdateFinishAbsolute( ISceneNode* node, core::matrix4& absoluteAnimationMatrix )
 {
-	if ( m_state == CPlayerComponent::PlayerRun || 
-		 m_state == CPlayerComponent::PlayerRunTurn || 
-		 m_state == PlayerStandAim )
+	if ( m_state != CPlayerComponent::PlayerIdle )
 	{
 		// todo modify rotation, position of anim
 		const core::vector3df rotAxis = core::vector3df(0,0,1);
 
 		const float maxSpine = 70.0f;
 		float spineAngle = core::clamp<float>(m_spineRotation, -maxSpine, maxSpine);
-            
+        float neckAngle = m_spineRotation - spineAngle;        
 		float r = spineAngle/3.0f;	
 	    
-		if ( node == m_nodesChest[0] )
-		{
-			core::quaternion q;
-			q.fromAngleAxis( core::degToRad(r), rotAxis  );
-			absoluteAnimationMatrix *= q.getMatrix();
-		}
-		else if ( node == m_nodesChest[1] )
-		{
-			core::quaternion q;
-			q.fromAngleAxis( core::degToRad(r), rotAxis );
-			absoluteAnimationMatrix *= q.getMatrix();
-		}
-		else if ( node == m_nodesChest[2] )
-		{
-			core::quaternion q;
-			q.fromAngleAxis( core::degToRad(r), rotAxis );
-			absoluteAnimationMatrix *= q.getMatrix();
-		}			
-
+        if ( r > 0 || neckAngle > 0 )
+        {
+            if ( node == m_nodesChest[0] )
+            {
+                core::quaternion q;
+                q.fromAngleAxis( core::degToRad(r), rotAxis  );
+                absoluteAnimationMatrix *= q.getMatrix();
+            }
+            else if ( node == m_nodesChest[1] )
+            {
+                core::quaternion q;
+                q.fromAngleAxis( core::degToRad(r), rotAxis );
+                absoluteAnimationMatrix *= q.getMatrix();
+            }
+            else if ( node == m_nodesChest[2] )
+            {
+                core::quaternion q;
+                q.fromAngleAxis( core::degToRad(r), rotAxis );
+                absoluteAnimationMatrix *= q.getMatrix();
+            }			
+            else if ( node == m_nodeNeck )
+            {
+                core::quaternion q;
+                core::vector3df neckAxis = core::vector3df(0.0f,-0.8f,1.0f);
+                neckAxis.normalize();
+                q.fromAngleAxis( core::degToRad( neckAngle ), neckAxis );
+                absoluteAnimationMatrix *= q.getMatrix();
+            }
+        }
 	}
 }
 

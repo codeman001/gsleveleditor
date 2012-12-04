@@ -53,6 +53,8 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 
 	m_init = true;
 	
+	m_offGunFactor = 1.0f;
+
 	m_aimFactor = 0.0f;
 	m_aimRotateCharacter = false;
 }
@@ -158,8 +160,16 @@ void CPlayerComponent::initComponent()
 	m_collada->setAnimation( m_animIdle[0] );
 
 	setState( CPlayerComponent::PlayerIdle );
-    setUpBodyState( CPlayerComponent::PlayerUpBodyAim );
     
+	// enable anim layer 1
+    m_collada->enableAnimLayer(1, true);
+	m_collada->setAnimLayer( m_nodesUpBody, 1 );		
+	
+	setUpBodyState( CPlayerComponent::PlayerUpBodyOffGun );
+    setOffGunAnimation("Hero@Idle","");
+	setOffGunFactor(1.0f, 0.0f);
+
+
 	// register event
 	getIView()->registerEvent("CPlayerComponent", this);	
     
@@ -268,6 +278,9 @@ void CPlayerComponent::updateState()
         updateStateStandAim();			
         break;
 	}
+
+	// update body
+	updateUpperBody();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -284,7 +297,8 @@ void CPlayerComponent::updateStateIdle()
         int r = device->getRandomizer()->rand() % (int)m_animIdle.size();		
         const char *anim = m_animIdle[r].c_str();
 
-        m_collada->setCrossFadeAnimation( anim, 0, 10.0f, false );
+		// change idle animation
+        m_collada->setCrossFadeAnimation( anim, 0, 10.0f, false, 1 );
         m_animCurrentTime = m_collada->getCurrentAnimTimeLength();
            
 		m_subState = SubStateActive;
@@ -421,11 +435,10 @@ void CPlayerComponent::updateStateRun()
 
 		// default control rotate
 		m_controlRotate = m_gameObject->getFront();
-        
-        // enable anim layer 1
-        m_collada->enableAnimLayer(1, true);
-        m_collada->setAnimLayer( m_nodesUpBody, 1 );
-        
+		
+		// switch up body to aim state
+		setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
+
 		m_subState = SubStateActive;
 	}
 	else if ( m_subState == SubStateEnd )
@@ -549,10 +562,7 @@ void CPlayerComponent::updateStateRun()
 		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate * runSpeed;
 		m_gameObject->setPosition( newPos );
 
-	}
-    
-    // update upper body
-    updateUpperBody();
+	}       
 }
 
 // updateStateRunTurn
@@ -663,9 +673,6 @@ void CPlayerComponent::updateStateRunTurn()
             setState(CPlayerComponent::PlayerRun);
         }        
     }
-
-	// update up body
-	updateUpperBody();
 }
 
 void CPlayerComponent::updateStateRunFast()
@@ -688,11 +695,6 @@ void CPlayerComponent::updateStateRunFast()
 	{
 		if ( m_nextState == CPlayerComponent::PlayerIdle )
 		{
-            // turn off multi anim channel
-            m_collada->enableAnimLayer(1, false);
-			m_collada->setAnimLayer( m_nodesUpBody, 0 );
-            
-            
             // turn off multi anim track
 			m_collada->setAnimWeight(1.0f, 0);
 			m_collada->setAnimWeight(0.0f, 1);
@@ -802,9 +804,6 @@ void CPlayerComponent::updateStateRunFast()
 			m_gameObject->setPosition( newPos );
 		}
 	}
-    
-    // update upper body
-    updateUpperBody();
 }
 
 void CPlayerComponent::updateStateRunFastTurn()
@@ -864,9 +863,6 @@ void CPlayerComponent::updateStateRunFastTurn()
 		core::vector3df newPos = m_gameObject->getPosition() + m_runCurrentVector * runSpeed;
 		m_gameObject->setPosition( newPos );
 	}
-    
-    // update upper body
-    updateUpperBody();
 }
 
 void CPlayerComponent::updateStateRunToRunFast()
@@ -881,6 +877,11 @@ void CPlayerComponent::updateStateRunToRunFast()
         
         m_collada->enableAnimTrackChannel(1, true);
         m_collada->setAnimation(m_animRunNoGun.c_str(), 1, true );
+
+		// set upbody state		
+		setOffGunAnimation(m_animRunNoGun, m_animIdle[0]);
+		setOffGunFactor(0.0f, 1.0f - m_runFactor);
+		setUpBodyState(CPlayerComponent::PlayerUpBodyOffGun);
 
         // change state
 		m_subState = SubStateActive;
@@ -920,9 +921,9 @@ void CPlayerComponent::updateStateRunToRunFast()
             s_runFastFactor = s_runFastFactor + step;
 			if ( s_runFastFactor >= 1.0f )
 				s_runFastFactor = 1.0f;
-
-            invRun = 1.0f - s_runFastFactor;
 			
+
+            invRun = 1.0f - s_runFastFactor;			
             if ( s_runFastFactor >= 1.0f )
             {            
                 m_collada->enableAnimTrackChannel(0, true);
@@ -972,6 +973,9 @@ void CPlayerComponent::updateStateRunToRunFast()
         
         m_collada->synchronizedByTimeScale();
         
+		// set factor for upbody animation
+		setOffGunFactor(runFast, 1.0f - m_runFactor);
+
         // update run position
 		float deltaSpeed = (m_runFastSpeed - m_runSpeed)*s_runFastFactor;
 		float runSpeed = (m_runSpeed + deltaSpeed)*m_runFactor* getIView()->getTimeStep();
@@ -979,10 +983,6 @@ void CPlayerComponent::updateStateRunToRunFast()
 		m_gameObject->setPosition( newPos );        
 
     }
-    
-    // update upper body
-    updateUpperBody();
-
 }
 
 void CPlayerComponent::updateStateRunFastToRun()
@@ -1026,7 +1026,7 @@ void CPlayerComponent::updateStateRunFastToRun()
 		v1 = getCameraFrontVector();
         runDir = v1;
         
-        // calc blend (see function callback
+        // calc blend (see function callback)
         m_spineBlendRotation = getAngle(v0, v1);
         m_rootBlendRotation = -m_spineBlendRotation;
         const float maxSpineAngle = 110.0f;
@@ -1062,16 +1062,7 @@ void CPlayerComponent::updateStateRunFastToRun()
             runState = true;
 
         // turn of multi layer anim
-        if ( m_nextState == CPlayerComponent::PlayerIdle )
-        {
-            m_collada->enableAnimLayer(1, false);
-			m_collada->setAnimLayer( m_nodesUpBody, 0 );
-        }
-        else 
-        {
-            // change state of up body		
-            setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
-        }
+		setUpBodyState(CPlayerComponent::PlayerUpBodyAim);        
         
         // change state
 		doNextState();
@@ -1130,10 +1121,7 @@ void CPlayerComponent::updateStateRunFastToRun()
 		float runSpeed = (m_runFastSpeed - deltaSpeed)* m_runFactor * getIView()->getTimeStep();
 		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate*runSpeed;
 		m_gameObject->setPosition( newPos );
-    } 
-    
-    // update upper body
-    updateUpperBody();
+    }        
 }
 
 void CPlayerComponent::updateStateStandAim()
@@ -1174,11 +1162,7 @@ void CPlayerComponent::updateStateStandAim()
 				m_aimRotateCharacter = false;
 
 			m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
-		}
-
-
-		// update body
-		updateUpperBody();
+		}		
 
 		// change state un
         if ( m_runCommand )
@@ -1243,13 +1227,8 @@ void CPlayerComponent::updateUpperBodyAim()
         
         m_collada->setAnimation(m_animAimDown.c_str(),	3, true, 1 );
         m_collada->setAnimWeight(0.0f, 3, 1);
-        m_collada->enableAnimTrackChannel(3, true, 1);        
-        
-        
-        m_collada->enableAnimLayer(1, true);
-        m_collada->setAnimLayer( m_nodesUpBody, 1 );
-        
-        
+        m_collada->enableAnimTrackChannel(3, true, 1);                       
+                
         m_upbodySubState = SubStateActive;
     }
     else if ( m_upbodySubState == SubStateEnd )
@@ -1319,7 +1298,7 @@ void CPlayerComponent::updateUpperBodyAim()
 			else if ( m_playerCmdEvt.reload == true )
 			{
 				// todo reload
-				// setUpBodyState( CPlayerComponent::PlayerUpBodyReload );
+				setUpBodyState( CPlayerComponent::PlayerUpBodyReload );
 			}
 		}        
     }
@@ -1428,9 +1407,27 @@ void CPlayerComponent::updateUpperBodyOffgun()
 {
     if ( m_upbodySubState == SubStateInit )
     {
-		m_collada->setAnimation(m_offGunAnimation, 0, true, 1);        
-        m_collada->setAnimWeight(0.0f, 0, 1);
-		m_collada->enableAnimTrackChannel(0, true, 1);
+		if ( m_offGunAnimation1.length() > 0 )
+		{
+			m_collada->setAnimation(m_offGunAnimation1, 4, true, 1);        
+			m_collada->setAnimWeight(m_offGunFactor1, 4, 1);
+			m_collada->enableAnimTrackChannel(4, true, 1);
+		}
+		else
+		{
+			m_collada->enableAnimTrackChannel(4, false, 1);
+		}
+
+		if ( m_offGunAnimation.length() > 0 )
+		{
+			m_collada->setAnimation(m_offGunAnimation, 0, true, 1);        
+			m_collada->setAnimWeight(m_offGunFactor, 0, 1);
+			m_collada->enableAnimTrackChannel(0, true, 1);
+		}
+		else
+		{
+			m_collada->enableAnimTrackChannel(0, false, 1);
+		}
 
         m_upbodySubState = SubStateActive;		
     }
@@ -1438,8 +1435,44 @@ void CPlayerComponent::updateUpperBodyOffgun()
     {
     }
     else
-    {		
+	{
+		core::line3df	ray		= getCameraRay();
+		core::vector3df	colPos	= getCollisionPoint(ray);
+        
+		core::vector2df ret = getAimAngle(colPos);
+        
+		float wUp, wDown, wLeft, wRight, wStraight;
+		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
 		
+        if ( wUp > 0 )
+            wStraight = 1.0f - wUp;
+        else 
+            wStraight = 1.0f - wDown;
+        
+        // setup straight
+        wStraight = core::clamp<float>(wStraight, 0.0f, 1.0f);
+		
+		float inv	= 1.0f - m_offGunFactor;
+		float inv1	= 1.0f - m_offGunFactor1;
+		float f		= inv*inv1;
+
+		// recalc weight
+		wStraight	= wStraight*f;
+		wUp			= wUp*f;
+		wDown		= wDown*f;		
+
+		// blending anim
+        m_collada->setAnimWeight(m_offGunFactor*inv1,	0, 1);		// off gun anim
+        m_collada->setAnimWeight(wStraight,				1, 1);		// straight
+		m_collada->setAnimWeight(wUp,					2, 1);		// up
+		m_collada->setAnimWeight(wDown,					3, 1);		// down
+		m_collada->setAnimWeight(m_offGunFactor1,		4, 1);		// off gun anim 1
+
+		m_collada->synchronizedByTimeScale(1);
+
+		// revert the animation speed
+		m_collada->setAnimSpeed(1.0f, 0, 1);
+		m_collada->setAnimSpeed(1.0f, 4, 1);
     }
 }
 

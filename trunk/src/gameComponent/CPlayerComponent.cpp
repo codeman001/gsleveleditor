@@ -53,7 +53,8 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 
 	m_init = true;
 	
-	m_offGunFactor = 1.0f;
+	m_offGunFactor1 = 1.0f;
+	m_offGunFactor2 = 0.0f;
 
 	m_aimFactor = 0.0f;
 	m_aimRotateCharacter = false;
@@ -866,122 +867,21 @@ void CPlayerComponent::updateStateRunFastTurn()
 }
 
 void CPlayerComponent::updateStateRunToRunFast()
-{
-    static float s_runFastFactor = 0.0f;
-    float invRun = 1.0f - s_runFastFactor;
-    
+{   
     if ( m_subState == SubStateInit )
-	{        
-        s_runFastFactor = 0.0f;
-        m_runFactor = 1.0f;
-        
-        m_collada->enableAnimTrackChannel(1, true);
-        m_collada->setAnimation(m_animRunNoGun.c_str(), 1, true );
-
-		// set upbody state		
-		setOffGunAnimation(m_animRunNoGun, m_animIdle[0]);
-		setOffGunFactor(0.0f, 1.0f - m_runFactor);
-		setUpBodyState(CPlayerComponent::PlayerUpBodyOffGun);
-
+	{               
         // change state
 		m_subState = SubStateActive;
 	}
 	else if ( m_subState == SubStateEnd )
-	{	
-        bool runFastState = false;
-        if ( m_nextState == CPlayerComponent::PlayerRunFast )        
-            runFastState = true;
-        
+	{	       
         // change state
-		doNextState();
-        
-        // do not need init run fast
-        if ( runFastState )
-            m_subState = SubStateActive;
+		doNextState();     
 	}
 	else
 	{	
-        float step = m_runToRunFastAccel*getIView()->getTimeStep();
-        
-        if ( m_runCommand == false )
-		{
-			m_runFactor = m_runFactor - step;
-			if ( m_runFactor < 0.0f )
-			{
-				m_runFactor = 0.0f;
-				setState( CPlayerComponent::PlayerIdle );
-			}                   
-		}
-        else
-        {
-            m_runFactor = m_runFactor + step;
-            if ( m_runFactor > 1.0f )
-                m_runFactor = 1.0f;
-            
-            s_runFastFactor = s_runFastFactor + step;
-			if ( s_runFastFactor >= 1.0f )
-				s_runFastFactor = 1.0f;
-			
-
-            invRun = 1.0f - s_runFastFactor;			
-            if ( s_runFastFactor >= 1.0f )
-            {            
-                m_collada->enableAnimTrackChannel(0, true);
-                m_collada->enableAnimTrackChannel(1, true);
-                
-				// rotate object to control dir
-				m_gameObject->lookAt( m_gameObject->getPosition() + m_controlRotate );
-								
-				float spineRotation = getAngle( m_gameObject->getFront(), getCameraFrontVector());
-				setSpineRotation(spineRotation);
-
-				// if run back (we do not rotate spine)
-				if ( fabsf(m_playerMoveEvt.rotate) >= 150.0f )
-					setSpineRotation(0.0f);
-
-				// run fast state
-                setState(CPlayerComponent::PlayerRunFast);
-            }
-        }
-
-		// calc rotate anim (see callback function: _onUpdateFrameDataChannel)
-		m_spineBlendRotation = getAngle( m_controlRotate, m_gameObject->getFront() );
-		m_rootBlendRotation	 = -m_spineBlendRotation;
-		
-		// if run back (we do not rotate spine)
-		if ( fabsf(m_playerMoveEvt.rotate) >= 150.0f )
-			m_spineBlendRotation = 0.0f;
-
-		const float maxSpineAngle = 110.0f;
-		m_spineBlendRotation = core::clamp<float>(m_spineBlendRotation, -maxSpineAngle, maxSpineAngle);
-
-
-		// calc animation blending
-        float runFast       = s_runFastFactor*m_runFactor;
-        float runForward    = invRun*m_animForwardFactor*m_runFactor;
-        float runBackward   = invRun*m_animBackwardFactor*m_runFactor;
-        float runLeft       = invRun*m_animLeftFactor*m_runFactor;
-        float runRight      = invRun*m_animRightFactor*m_runFactor;
-        
-        m_collada->setAnimWeight(1.0f - m_runFactor,	0);
-		m_collada->setAnimWeight(runFast,				1);
-
-        m_collada->setAnimWeight(runForward,    2);
-        m_collada->setAnimWeight(runBackward,   3);
-        m_collada->setAnimWeight(runLeft,       4);
-        m_collada->setAnimWeight(runRight,      5);    
-        
-        m_collada->synchronizedByTimeScale();
-        
-		// set factor for upbody animation
-		setOffGunFactor(runFast, 1.0f - m_runFactor);
-
-        // update run position
-		float deltaSpeed = (m_runFastSpeed - m_runSpeed)*s_runFastFactor;
-		float runSpeed = (m_runSpeed + deltaSpeed)*m_runFactor* getIView()->getTimeStep();
-		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate * runSpeed;
-		m_gameObject->setPosition( newPos );        
-
+		// run fast state
+		setState(CPlayerComponent::PlayerRunFast);
     }
 }
 
@@ -991,136 +891,21 @@ void CPlayerComponent::updateStateRunFastToRun()
 	static float s_runRotate = 0.0f;
 
     if ( m_subState == SubStateInit )
-	{
-		// enable multi animation blending
-		m_collada->enableAnimTrackChannel(0, true);
-		m_collada->enableAnimTrackChannel(1, true);
-		m_collada->enableAnimTrackChannel(2, true);
-		m_collada->enableAnimTrackChannel(3, true);
-		m_collada->enableAnimTrackChannel(4, true);
-		m_collada->enableAnimTrackChannel(5, true);
-
-		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str(),0 );
-		m_collada->setAnimation(m_animRunForward.c_str(),       2, true );
-		m_collada->setAnimation(m_animRunBackward.c_str(),      3, true );
-		m_collada->setAnimation(m_animRunStrafeRight.c_str(),   4, true );
-		m_collada->setAnimation(m_animRunStrafeLeft.c_str(),    5, true );        
-        
-        // set weight run anim = zero
-		m_collada->setAnimWeight(1.0f - m_runFactor, 0);        
-		m_collada->setAnimWeight(m_runFactor, 1);
-		m_collada->setAnimWeight(0.0f, 2);
-		m_collada->setAnimWeight(0.0f, 3);
-		m_collada->setAnimWeight(0.0f, 4);
-		m_collada->setAnimWeight(0.0f, 5);
-        
-		m_collada->synchronizedByTimeScale();	
-
-		s_runFastToRunFactor = 0.0f;
-		s_runRotate = m_playerMoveEvt.rotate;
-
-        core::vector3df v0, v1, runDir;
-                
-		// get vector rotate & speed
-		v0 = m_gameObject->getFront();
-		v1 = getCameraFrontVector();
-        runDir = v1;
-        
-        // calc blend (see function callback)
-        m_spineBlendRotation = getAngle(v0, v1);
-        m_rootBlendRotation = -m_spineBlendRotation;
-        const float maxSpineAngle = 110.0f;
-		m_spineBlendRotation = core::clamp<float>(m_spineBlendRotation, -maxSpineAngle, maxSpineAngle);
-        
-        // rotate obj to camera
-        m_gameObject->lookAt( m_gameObject->getPosition() + getCameraFrontVector() );
-        
-		// rotate rundir
-		core::quaternion q;        
-		q.fromAngleAxis( core::degToRad(s_runRotate), core::vector3df(0,1,0) );
-		q.getMatrix().rotateVect(runDir);
-		runDir.normalize();		
-                
-		// fix rotate
-		m_controlRotate = runDir;
-        setSpineRotation( 0.0f );
-        
-        // calc animation blending			
-		calcRunAnimationBlend(s_runRotate,
-                              m_animForwardFactor, 
-                              m_animBackwardFactor, 
-                              m_animLeftFactor, 
-                              m_animRightFactor);        
-        
+	{		
         // active state
 		m_subState = SubStateActive;		
 	}
 	else if ( m_subState == SubStateEnd )
-	{
-		bool runState = false;
-		if ( m_nextState == CPlayerComponent::PlayerRun )        
-            runState = true;
-
+	{		
         // turn of multi layer anim
-		setUpBodyState(CPlayerComponent::PlayerUpBodyAim);        
+		setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
         
         // change state
-		doNextState();
-        
-        // do not need init run
-        if ( runState )
-            m_subState = SubStateActive;
+		doNextState();   
 	}
 	else
 	{
-		float step = m_runToRunFastAccel*getIView()->getTimeStep();
-        
-        if ( m_runCommand == false )
-		{
-			m_runFactor = m_runFactor - step;
-			if ( m_runFactor < 0.0f )
-			{
-				m_runFactor = 0.0f;
-				setState( CPlayerComponent::PlayerIdle );
-			}                   
-		}
-        else
-        {
-            m_runFactor = m_runFactor + step;
-            if ( m_runFactor > 1.0f )
-                m_runFactor = 1.0f;
-            
-            s_runFastToRunFactor = s_runFastToRunFactor + step;
-
-			if ( s_runFastToRunFactor >= 1.0f )
-            {
-				s_runFastToRunFactor = 1.0f;
-				setState(CPlayerComponent::PlayerRun);
-            }
-        }
-
-        float runFast       = (1.0f - s_runFastToRunFactor)*m_runFactor;
-        float runForward    = s_runFastToRunFactor*m_animForwardFactor*m_runFactor;
-        float runBackward   = s_runFastToRunFactor*m_animBackwardFactor*m_runFactor;
-        float runLeft       = s_runFastToRunFactor*m_animLeftFactor*m_runFactor;
-        float runRight      = s_runFastToRunFactor*m_animRightFactor*m_runFactor;        
-        
-        
-        m_collada->setAnimWeight(1.0f - m_runFactor,   0);
-        m_collada->setAnimWeight(runFast,       1);
-        m_collada->setAnimWeight(runForward,    2);
-        m_collada->setAnimWeight(runBackward,   3);
-        m_collada->setAnimWeight(runLeft,       4);
-        m_collada->setAnimWeight(runRight,      5);
-        
-        m_collada->synchronizedByTimeScale();
-        
-        
-        // update run position
-		float deltaSpeed = (m_runFastSpeed - m_runSpeed)*s_runFastToRunFactor;
-		float runSpeed = (m_runFastSpeed - deltaSpeed)* m_runFactor * getIView()->getTimeStep();
-		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate*runSpeed;
-		m_gameObject->setPosition( newPos );
+		setState(CPlayerComponent::PlayerRun);        
     }        
 }
 
@@ -1407,10 +1192,10 @@ void CPlayerComponent::updateUpperBodyOffgun()
 {
     if ( m_upbodySubState == SubStateInit )
     {
-		if ( m_offGunAnimation1.length() > 0 )
+		if ( m_offGunAnimation2.length() > 0 )
 		{
-			m_collada->setAnimation(m_offGunAnimation1, 4, true, 1);        
-			m_collada->setAnimWeight(m_offGunFactor1, 4, 1);
+			m_collada->setAnimation(m_offGunAnimation2, 4, true, 1);        
+			m_collada->setAnimWeight(m_offGunFactor2, 4, 1);
 			m_collada->enableAnimTrackChannel(4, true, 1);
 		}
 		else
@@ -1418,10 +1203,10 @@ void CPlayerComponent::updateUpperBodyOffgun()
 			m_collada->enableAnimTrackChannel(4, false, 1);
 		}
 
-		if ( m_offGunAnimation.length() > 0 )
+		if ( m_offGunAnimation1.length() > 0 )
 		{
-			m_collada->setAnimation(m_offGunAnimation, 0, true, 1);        
-			m_collada->setAnimWeight(m_offGunFactor, 0, 1);
+			m_collada->setAnimation(m_offGunAnimation1, 0, true, 1);        
+			m_collada->setAnimWeight(m_offGunFactor1, 0, 1);
 			m_collada->enableAnimTrackChannel(0, true, 1);
 		}
 		else
@@ -1452,9 +1237,9 @@ void CPlayerComponent::updateUpperBodyOffgun()
         // setup straight
         wStraight = core::clamp<float>(wStraight, 0.0f, 1.0f);
 		
-		float inv	= 1.0f - m_offGunFactor;
 		float inv1	= 1.0f - m_offGunFactor1;
-		float f		= inv*inv1;
+		float inv2	= 1.0f - m_offGunFactor2;
+		float f		= inv1*inv2;
 
 		// recalc weight
 		wStraight	= wStraight*f;
@@ -1462,7 +1247,7 @@ void CPlayerComponent::updateUpperBodyOffgun()
 		wDown		= wDown*f;		
 
 		// blending anim
-        m_collada->setAnimWeight(m_offGunFactor*inv1,	0, 1);		// off gun anim
+        m_collada->setAnimWeight(m_offGunFactor1*inv2,	0, 1);		// off gun anim
         m_collada->setAnimWeight(wStraight,				1, 1);		// straight
 		m_collada->setAnimWeight(wUp,					2, 1);		// up
 		m_collada->setAnimWeight(wDown,					3, 1);		// down
@@ -1499,24 +1284,7 @@ void CPlayerComponent::updateUpperBodyOffgun()
 // call when finish get frame on a channel
 void CPlayerComponent::_onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel, int animLayer)
 {
-	if ( animLayer != 0 )
-		return;
 
-	if ( (m_state == CPlayerComponent::PlayerRunToRunFast || m_state == CPlayerComponent::PlayerRunFastToRun )&& channel == 1 )
-	{
-		ISceneNode *root = m_collada->getSceneNode("Reference");
-
-		// we need rotate the animation channel
-		if ( node == root )
-		{
-			core::quaternion q;
-			const core::vector3df rotAxis = core::vector3df(0,1,0);
-
-			q.fromAngleAxis( core::degToRad( m_rootBlendRotation ), rotAxis );
-			rotation = rotation * q;
-		}        
-	}
-    
 }
 
 
@@ -1968,4 +1736,14 @@ core::vector3df CPlayerComponent::getCollisionPoint( core::line3df ray )
 	}
 	 
 	return ret;
+}
+
+// syncAnimation	
+void CPlayerComponent::syncAnimation(int fromChannel, int fromLayer, int toChannel, int toLayer)
+{	
+	float speed = m_collada->getAnimSpeed(fromChannel, fromLayer);
+	float frame = m_collada->getCurrentFrame(fromChannel, fromLayer);
+
+	m_collada->setAnimSpeed(speed, toChannel, toLayer);
+	m_collada->setCurrentFrame(frame, toChannel, toLayer);
 }

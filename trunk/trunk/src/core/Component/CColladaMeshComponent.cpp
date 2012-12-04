@@ -1023,7 +1023,7 @@ float CColladaMeshComponent::getCurrentFrame(int trackChannel, int animLayer)
 			continue;
 		}
 		
-		CGameAnimationTrack *track = j->getAnimation(animLayer)->getTrack( trackChannel );
+		CGameAnimationTrack *track = j->getAnimation(animLayer)->getTrack(trackChannel);
 
 		if ( track->getTotalFrame() > 0 )
 			return track->getCurrentFrame();

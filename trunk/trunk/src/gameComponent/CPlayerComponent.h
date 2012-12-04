@@ -110,10 +110,10 @@ protected:
 	std::string						m_animShootStraight;
 	// end anim name declare	
 
-	std::string				m_offGunAnimation;
 	std::string				m_offGunAnimation1;
-	float					m_offGunFactor;
+	std::string				m_offGunAnimation2;
 	float					m_offGunFactor1;
+	float					m_offGunFactor2;
 
 	float					m_aimFactor;
 	bool					m_aimRotateCharacter;
@@ -254,17 +254,17 @@ public:
 	}
 
 	// setOffGunAnimation
-	inline void setOffGunAnimation( std::string animName, std::string animName1 )
+	inline void setOffGunAnimation( std::string animName1, std::string animName2 )
 	{
-		m_offGunAnimation = animName;
 		m_offGunAnimation1 = animName1;
+		m_offGunAnimation2 = animName2;
 	}
 
 	// setOffGunFactor
-	inline void setOffGunFactor(float f, float f1)
+	inline void setOffGunFactor(float f1, float f2)
 	{
-		m_offGunFactor = f;
 		m_offGunFactor1 = f1;
+		m_offGunFactor2 = f2;
 	}
 
 	// setSpineLookAt
@@ -297,6 +297,9 @@ public:
 	// getCollisionPoint
 	// check collision
 	core::vector3df getCollisionPoint( core::line3df ray );
+
+	// syncAnimation	
+	void syncAnimation(int fromChannel, int fromLayer, int toChannel, int toLayer);
 };
 
 #endif

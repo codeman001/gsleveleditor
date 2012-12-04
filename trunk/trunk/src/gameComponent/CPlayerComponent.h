@@ -111,7 +111,10 @@ protected:
 	// end anim name declare	
 
 	std::string				m_offGunAnimation;
-	
+	std::string				m_offGunAnimation1;
+	float					m_offGunFactor;
+	float					m_offGunFactor1;
+
 	float					m_aimFactor;
 	bool					m_aimRotateCharacter;
 
@@ -251,9 +254,17 @@ public:
 	}
 
 	// setOffGunAnimation
-	void setOffGunAnimation( std::string animName )
+	inline void setOffGunAnimation( std::string animName, std::string animName1 )
 	{
 		m_offGunAnimation = animName;
+		m_offGunAnimation1 = animName1;
+	}
+
+	// setOffGunFactor
+	inline void setOffGunFactor(float f, float f1)
+	{
+		m_offGunFactor = f;
+		m_offGunFactor1 = f1;
 	}
 
 	// setSpineLookAt

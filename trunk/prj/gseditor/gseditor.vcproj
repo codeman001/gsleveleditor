@@ -781,6 +781,34 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="AIMap"
+					>
+					<File
+						RelativePath="..\..\src\core\AIMap\CAIMap.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\AIMap\CAIMap.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\AIMap\CAIMapTriangle.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\AIMap\CAIMapTriangle.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\AIMap\CAIMapWayPoint.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\AIMap\CAIMapWayPoint.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="GlobalInstance"

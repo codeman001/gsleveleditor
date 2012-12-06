@@ -872,6 +872,11 @@ void CPlayerComponent::updateStateRunToRunFast()
 	{               
         // change state
 		m_subState = SubStateActive;
+        
+        setUpBodyState( CPlayerComponent::PlayerUpBodyOffGun );
+        setOffGunAnimation(m_animRunForward,"");
+        setOffGunFactor(0.0f, 0.0f);
+        
 	}
 	else if ( m_subState == SubStateEnd )
 	{	       
@@ -880,8 +885,41 @@ void CPlayerComponent::updateStateRunToRunFast()
 	}
 	else
 	{	
-		// run fast state
-		setState(CPlayerComponent::PlayerRunFast);
+		core::vector3df v0, v1, runDir;
+        
+		// get vector rotate & speed
+		v0 = m_gameObject->getFront();
+		v1 = getCameraFrontVector();
+        
+		float step = m_runAccel*getIView()->getTimeStep()*1.5f;
+        
+
+        m_runFactor = m_runFactor - step;
+                
+        if ( m_runFactor < 0.0f )
+        {
+            m_runFactor = 0.0f;
+            setOffGunFactor(1.0f, 0.0f);
+            
+            setState( CPlayerComponent::PlayerRunFast );
+        }
+            
+        setOffGunFactor(1.0f - m_runFactor, 0.0f);
+        
+        m_collada->setAnimWeight(1.0f - m_runFactor,							0);            
+        m_collada->setAnimWeight(0.0f,											1);	
+            
+        m_collada->setAnimWeight(m_runFactor*m_animForwardFactor,	2);
+        m_collada->setAnimWeight(m_runFactor*m_animBackwardFactor,	3);
+        m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,		4);
+        m_collada->setAnimWeight(m_runFactor*m_animRightFactor,		5);
+            
+        m_collada->synchronizedByTimeScale();   
+		                
+		// update run position
+		float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep();
+		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate * runSpeed;
+		m_gameObject->setPosition( newPos );
     }
 }
 

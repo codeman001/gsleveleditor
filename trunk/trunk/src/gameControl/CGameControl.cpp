@@ -200,24 +200,24 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	if ( runLeft )
 	{
 		if ( runUp )
-			rot = 43.0f;
+			rot = 45.0f;
 		else if ( runBack )
-			rot = 133.0f;
+			rot = 135.0f;
 		else
-			rot = 88.0f;
+			rot = 90.0f;
 	}
 	else if ( runRight )
 	{
 		if ( runUp )
-			rot = -43.0f;
+			rot = -45.0f;
 		else if ( runBack )
-			rot = -133.0f;
+			rot = -135.0f;
 		else
-			rot = -88.0f;
+			rot = -90.0f;
 	}
 	else if ( runBack )
 	{
-		rot = -178.0f;
+		rot = -180.0f;
 	}
 
 	bool runCommand = runUp || runBack || runLeft || runRight;

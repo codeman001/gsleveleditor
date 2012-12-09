@@ -831,12 +831,28 @@ void CPlayerComponent::updateStateRunFastTurn()
 
 		// get vector rotate & speed
 		v0 = m_gameObject->getFront();
-		v1 = m_runCurrentVector + m_runTurnVector;
+		v1 = m_runTurnVector;
 		v1.normalize();
 		
+        // if rot 180 deg
+        core::vector3df v = v0 + v1;
+        if ( v.getLengthSQ() <= 0.1f )
+            v1 = m_gameObject->getRight();
+        
 		// step to turn camera vector
-        turnToDir( v0, v1, 1.0f );
+        bool turn = turnToDir( v0, v1, 2.0f );
 
+#ifdef WIN32            
+        // debug line
+        CGameDebug *debug = CGameDebug::getInstance();
+        core::line3df line;
+        line.start	= m_gameObject->getPosition();
+        line.end	= m_gameObject->getPosition() + v1 * 400.0f;
+        debug->addDrawLine(line, SColor(255,255,0,0) ); 
+        line.end	= m_gameObject->getPosition() + v0 * 400.0f;
+        debug->addDrawLine(line, SColor(255,0,255,0) );
+#endif        
+        
 		// rotate object
 		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 
@@ -844,11 +860,13 @@ void CPlayerComponent::updateStateRunFastTurn()
 		core::vector3df lookPos = m_gameObject->getPosition() + getCameraFrontVector();
 		setSpineLookAt( lookPos );
 
-
 		// synch animation to idle
 		float step = m_runAccel*getIView()->getTimeStep()*0.8f;
-		m_runFactor = m_runFactor - step;
-		if ( m_runFactor < 0.0f )
+		m_runFactor = m_runFactor - step;        
+        
+        m_runFactor = core::clamp(m_runFactor, 0.0f, 1.0f);
+        
+		if ( m_runFactor <= 0.0f && turn == true )
 		{
 			m_runFactor = 0.0f;
 			setState( CPlayerComponent::PlayerRunFast );
@@ -1610,22 +1628,18 @@ core::vector3df CPlayerComponent::getCameraFrontVector()
 // turnToDir
 bool CPlayerComponent::turnToDir(core::vector3df& dir, const core::vector3df& turnTo, float speed )
 {
-	// get speed need
-	speed = getRatioWithAngle(dir, turnTo, speed);
-
-	// hack if speed is too small
-	if ( speed < 0.02f )
-		speed = 0.02f;
-
 	// rotate front vec
 	float f = speed*0.1f*getIView()->getTimeStep();	
-	if ( f >= 1.0f )
-	{		
-		dir = turnTo;
-		return true;
-	}
 	
-	dir = interpolateTurnToDir( dir, turnTo, f );
+    dir = interpolateTurnToDir( dir, turnTo, f );
+    
+    float rot = fabsf(getAngle(dir, turnTo));
+    if ( rot < speed )
+    {
+        dir = turnTo;
+        return true;
+    }
+    
 	return false;
 }
 
@@ -1634,29 +1648,18 @@ bool CPlayerComponent::turnToDir(core::vector3df& dir, const core::vector3df& tu
 core::vector3df CPlayerComponent::interpolateTurnToDir( const core::vector3df& turnFrom, const core::vector3df& turnTo, float f )
 {
 	// calc turn Direction
-	core::vector3df normal;
-	normal = turnTo.crossProduct(turnFrom);
-	normal.normalize();
-
-	// fix f factor
-	f = core::clamp( f, 0.0f, 1.0f );
-
-	// calc angle
-	float angle = turnTo.dotProduct( turnFrom );
-	angle = fixAngle(angle);
-	angle = acosf(angle);
-	
-	// interpolate	
-	core::quaternion q, q1,q2;
-	
-	q1.fromAngleAxis( 0,		normal );
-	q2.fromAngleAxis( angle,	normal );
-	q.slerp( q1, q2, f );
-
+    core::vector3df normal;
+    normal = turnTo.crossProduct(turnFrom);
+    normal.normalize();
+    
+    core::quaternion q;
+    q.fromAngleAxis( core::degToRad(f), normal);
+    
 	// rotate result vector
 	core::vector3df dir = turnFrom;
 	q.getMatrix().rotateVect( dir );
 	dir.normalize();
+    
 	return dir;	
 }
 
@@ -1666,7 +1669,7 @@ float CPlayerComponent::getRatioWithAngle( const core::vector3df& turnFrom, cons
 	float angleVec = turnTo.dotProduct( turnFrom );		
 	angleVec = fixAngle(angleVec);
 	angleVec = core::radToDeg( acosf(angleVec) );
-	
+    
 	if ( realIsZero(angleVec) )
 		return 1.0f;
 

@@ -1007,6 +1007,55 @@ void CColladaMeshComponent::pauseAtFrame( float frame, int trackChannel, int ani
 	}
 }
 	
+// setAnimationLoop
+// loop the anim
+void CColladaMeshComponent::setAnimationLoop( bool loop, int trackChannel, int animLayer)
+{
+    // loop all node
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		CGameColladaSceneNode* j = (*i).second;
+        
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+		
+		CGameAnimationTrack *track = j->getAnimation(animLayer)->getTrack(trackChannel);
+		track->setLoop(loop);
+        
+		i++;
+	}
+}
+
+// isEndAnimation
+// check is end of anim
+bool CColladaMeshComponent::isEndAnimation(int trackChannel, int animLayer)
+{
+    // loop all node
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		CGameColladaSceneNode* j = (*i).second;
+        
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+		
+		CGameAnimationTrack *track = j->getAnimation(animLayer)->getTrack(trackChannel);
+        if ( track->isEndTrack() == false )
+            return false;
+        
+		i++;
+	}
+    
+    return true;
+}
+
 // getCurrentFrame
 // get current frame of anim
 float CColladaMeshComponent::getCurrentFrame(int trackChannel, int animLayer)

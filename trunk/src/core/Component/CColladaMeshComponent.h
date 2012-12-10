@@ -282,6 +282,14 @@ public:
 	// pause anim at frame id
 	void pauseAtFrame( float frame, int trackChannel = 0, int animLayer = 0);
 	
+    // setAnimationLoop
+    // loop the anim
+    void setAnimationLoop( bool loop, int trackChannel = 0, int animLayer = 0);
+    
+    // isEndAnimation
+    // check is end of anim
+    bool isEndAnimation(int trackChannel = 0, int animLayer = 0);
+    
 	// getCurrentFrame
 	// get current frame of anim
 	float getCurrentFrame(int trackChannel = 0, int animLayer = 0);	

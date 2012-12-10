@@ -38,7 +38,10 @@ public:
         PlayerUpBodyAim = 0,
         PlayerUpBodyShoot,
         PlayerUpBodyReload,
-		PlayerUpBodyOffGun
+		PlayerUpBodyOffGun,
+        PlayerUpBodyAimToRunFast,
+        PlayerUpBodyRunFastToAim,
+        PlayerUpBodyRunFastToIdle
     };
     
 	enum EPlayerSubState
@@ -110,11 +113,9 @@ protected:
 	std::string						m_animShootStraight;
 	// end anim name declare	
 
-	std::string				m_offGunAnimation1;
-	std::string				m_offGunAnimation2;
-	float					m_offGunFactor1;
-	float					m_offGunFactor2;
-
+	std::string				m_offGunAnimation;
+	float					m_offGunFactor;
+    
 	float					m_aimFactor;
 	bool					m_aimRotateCharacter;
 
@@ -219,6 +220,9 @@ protected:
     void updateUpperBodyShoot();
     void updateUpperBodyReload();    
     void updateUpperBodyOffgun();
+    void updateUpperBodyAimToRunFast();
+    void updateUpperBodyRunFastToAim();
+    void updateUpperBodyRunFastToIdle();
 
 	// isFinishedAnim	
 	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0, int animLayer = 0);
@@ -254,18 +258,17 @@ public:
 	}
 
 	// setOffGunAnimation
-	inline void setOffGunAnimation( std::string animName1, std::string animName2 )
+	inline void setOffGunAnimation( std::string animName)
 	{
-		m_offGunAnimation1 = animName1;
-		m_offGunAnimation2 = animName2;
+		m_offGunAnimation = animName;
 	}
 
 	// setOffGunFactor
-	inline void setOffGunFactor(float f1, float f2)
+	inline void setOffGunFactor(float f)
 	{
-		m_offGunFactor1 = f1;
-		m_offGunFactor2 = f2;
+		m_offGunFactor = f;
 	}
+    
 
 	// setSpineLookAt
 	// rotate spine to look at a pos

@@ -2628,6 +2628,10 @@ void CDaeUtils::loadDaeAnim( const char *lpFileName, CColladaAnimation	*collada)
 				{					
 					parseAnimationNode( xmlRead );				
 				}
+				else if ( core::stringw(L"visual_scene") == nodeName )
+				{
+					parseSceneNode( xmlRead );
+				}
 				else if ( nodeName == L"up_axis" )
 				{
 					readLUpAxis = true;
@@ -2670,6 +2674,9 @@ void CDaeUtils::loadDaeAnim( const char *lpFileName, CColladaAnimation	*collada)
 		SColladaAnimClip *clip = m_colladaAnim->at(i);
 		(*m_animWithName)[ clip->animName ] = clip;
 	}	
+
+
+	cleanData();
 }
 
 
@@ -2791,6 +2798,37 @@ bool CDaeUtils::getScaleFrameID( SColladaNodeAnim* frames, float frame, int *fra
 }
 
 
+core::matrix4 CDaeUtils::getDefaultAnimMatrix( const std::string& nodeName )
+{
+	wchar_t wName[512];
+	uiString::convertUTF8ToUnicode(nodeName.c_str(), (unsigned short*)wName);
+
+	for ( int j = 0; j < (int)m_listNode.size(); j++ )
+	{
+		SNodeParam* pNode = m_listNode[j];
+		
+		std::stack<SNodeParam*>	stackNode;
+		stackNode.push( pNode );
+		while ( stackNode.size() )
+		{
+			pNode = stackNode.top();
+			stackNode.pop();
+
+			// found node
+			if ( pNode->Name == wName )
+				return pNode->Transform;
+			else
+			{
+				for ( int i = 0; i < (int)pNode->Childs.size(); i++ )
+					stackNode.push( pNode->Childs[i] );
+			}
+		}		
+	}
+
+	return core::IdentityMatrix;
+}
+
+
 // clippingDaeAnim
 // clip a long clip to many clip
 void CDaeUtils::clipDaeAnim()
@@ -2815,7 +2853,10 @@ void CDaeUtils::clipDaeAnim()
 			SColladaNodeAnim* newNodeAnim = new SColladaNodeAnim();
 
 			*newNodeAnim = *nodeAnim;
-			
+
+			// get default matrix
+			newNodeAnim->DefaultMatrix = getDefaultAnimMatrix( newNodeAnim->sceneNodeName );
+
 			if ( nodeAnim->PositionKeys.size() )
 			{
 				if ( frames < nodeAnim->PositionKeys.getLast().frame )
@@ -2830,7 +2871,7 @@ void CDaeUtils::clipDaeAnim()
 			{
 				if ( frames < nodeAnim->ScaleKeys.getLast().frame )
 					frames = nodeAnim->ScaleKeys.getLast().frame;
-			}
+			}			
 
 			clip->addNodeAnim(newNodeAnim );
 			iNodeAnim++;
@@ -2877,6 +2918,9 @@ void CDaeUtils::clipDaeAnim()
 				{
 					SColladaNodeAnim *newNodeAnim = new SColladaNodeAnim();
 					newNodeAnim->sceneNodeName = nodeAnim->sceneNodeName;
+	
+					// get default matrix
+					newNodeAnim->DefaultMatrix = getDefaultAnimMatrix( newNodeAnim->sceneNodeName );
 
 					// add new node anim
 					clip->addNodeAnim( newNodeAnim );

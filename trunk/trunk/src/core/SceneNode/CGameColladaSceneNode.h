@@ -246,7 +246,7 @@ protected:
 	bool		m_isPause;
 	bool		m_isLoop;
 	bool		m_endTrack;
-
+		
 	bool					m_isCrossAnim;
 	bool					m_crossAnimationLoop;
 
@@ -261,6 +261,8 @@ public:
 	core::array<CGameAnimationTrack::SRotationKey>	CrossAnimRotationKeys;
 	core::array<CGameAnimationTrack::SEventKey>		CrossAnimEventKeys;
 
+	bool											UseDefaultMatrix;
+	core::matrix4									DefaultMatrix;
 public:
 	CGameAnimationTrack();
 	virtual ~CGameAnimationTrack();
@@ -339,6 +341,9 @@ public:
 		m_scaleHint = 0;
 		m_rotHint = 0;
 		m_currentFrame = 0;
+
+		UseDefaultMatrix = false;
+		DefaultMatrix = core::IdentityMatrix;
 
 		m_isCrossAnim = false;
 	}

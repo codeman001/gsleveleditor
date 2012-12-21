@@ -128,6 +128,9 @@ void CBinaryUtils::saveAnimClip( io::IWriteFile *file, SColladaAnimClip* animCli
 		strcpy( stringc, nodeFrames->sceneNodeName.c_str() );
 		memStream.writeData( stringc, STRING_BUFFER_SIZE );	
 
+		// write default matrix
+		memStream.writeData( nodeFrames->DefaultMatrix.pointer(), sizeof(float)*16 );
+
 		// write num frame
 		int nPos = nodeFrames->PositionKeys.size();
 		memStream.writeData( &nPos, sizeof(int) );
@@ -571,6 +574,9 @@ void CBinaryUtils::readAnimClip( unsigned char *data, unsigned int size, CCollad
 		// read name of scenenode		
 		memStream.readData( stringc, STRING_BUFFER_SIZE );
 		nodeFrames->sceneNodeName = stringc;
+
+		// read default matrix
+		memStream.readData( nodeFrames->DefaultMatrix.pointer(), sizeof(float)*16 );
 
 		animClip->addNodeAnim( nodeFrames );
 

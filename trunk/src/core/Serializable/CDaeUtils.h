@@ -183,6 +183,8 @@ struct SColladaNodeAnim
 	core::array<CGameAnimationTrack::SScaleKey>		ScaleKeys;
 	core::array<CGameAnimationTrack::SRotationKey>	RotationKeys;
 	core::array<CGameAnimationTrack::SEventKey>		EventKeys;
+
+	core::matrix4									DefaultMatrix;
 };
 
 // SColladaAnim
@@ -449,6 +451,8 @@ protected:
 	// clippingDaeAnim
 	// clip a long clip to many clip
 	void clipDaeAnim();
+
+	core::matrix4 getDefaultAnimMatrix( const std::string& nodeName );
 #pragma endregion
 
 };

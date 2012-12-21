@@ -696,6 +696,10 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 
 		if ( anim )
 		{			
+			// default matrix of not have animation
+			track->DefaultMatrix = anim->DefaultMatrix;
+			track->UseDefaultMatrix = true;
+
 			int nRotKey = anim->RotationKeys.size();
 			if ( nRotKey > 0 )
 			{
@@ -782,8 +786,8 @@ void CColladaMeshComponent::setCrossFadeAnimationToLayer(const char *lpAnimName,
 		{
 			i++;
 			continue;
-		}
-        
+		}       
+
 		// get current frame data
 		core::vector3df		currentPos;
 		core::vector3df		currentScale;
@@ -815,6 +819,10 @@ void CColladaMeshComponent::setCrossFadeAnimationToLayer(const char *lpAnimName,
         
 		if ( anim )
 		{			
+			// default matrix of not have animation
+			track->DefaultMatrix = anim->DefaultMatrix;
+			track->UseDefaultMatrix = true;
+
 			int nRotKey = anim->RotationKeys.size();
 			if ( nRotKey > 0 )
 			{
@@ -919,6 +927,10 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChanne
 
 		if ( anim )
 		{
+			// default matrix of not have animation
+			track->DefaultMatrix = anim->DefaultMatrix;
+			track->UseDefaultMatrix = true;
+
 			// add rotation key
 			int nRotKey = anim->RotationKeys.size();
 			if ( nRotKey > 0 )
@@ -1007,55 +1019,6 @@ void CColladaMeshComponent::pauseAtFrame( float frame, int trackChannel, int ani
 	}
 }
 	
-// setAnimationLoop
-// loop the anim
-void CColladaMeshComponent::setAnimationLoop( bool loop, int trackChannel, int animLayer)
-{
-    // loop all node
-	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
-	while ( i != end )
-	{
-		CGameColladaSceneNode* j = (*i).second;
-        
-		if ( j == NULL )
-		{
-			i++;
-			continue;
-		}
-		
-		CGameAnimationTrack *track = j->getAnimation(animLayer)->getTrack(trackChannel);
-		track->setLoop(loop);
-        
-		i++;
-	}
-}
-
-// isEndAnimation
-// check is end of anim
-bool CColladaMeshComponent::isEndAnimation(int trackChannel, int animLayer)
-{
-    // loop all node
-	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
-	while ( i != end )
-	{
-		CGameColladaSceneNode* j = (*i).second;
-        
-		if ( j == NULL )
-		{
-			i++;
-			continue;
-		}
-		
-		CGameAnimationTrack *track = j->getAnimation(animLayer)->getTrack(trackChannel);
-        if ( track->isEndTrack() == false )
-            return false;
-        
-		i++;
-	}
-    
-    return true;
-}
-
 // getCurrentFrame
 // get current frame of anim
 float CColladaMeshComponent::getCurrentFrame(int trackChannel, int animLayer)

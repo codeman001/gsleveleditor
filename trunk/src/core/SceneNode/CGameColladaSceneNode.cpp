@@ -80,6 +80,11 @@ CGameAnimationTrack::CGameAnimationTrack()
 	m_isLoop = true;
 
 	m_endTrack = false;
+
+	m_isCrossAnim = false;
+	m_crossAnimationLoop = false;
+	
+	UseDefaultMatrix = false;	
 }
 
 CGameAnimationTrack::~CGameAnimationTrack()
@@ -152,9 +157,17 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 	}
 	else
 	{
-		// default position
-		position = core::vector3df(0,0,0);
-		localMatrix.translateVect( position );
+		if ( UseDefaultMatrix )
+		{
+			position = core::vector3df(0,0,0);
+			DefaultMatrix.translateVect( position );
+		}
+		else
+		{
+			// default position
+			position = core::vector3df(0,0,0);
+			localMatrix.translateVect( position );
+		}
 	}
 
 #pragma endregion	
@@ -278,7 +291,14 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 	else
 	{
 		// default rotation
-		rotation = core::quaternion(localMatrix);
+		if ( UseDefaultMatrix )
+		{
+			rotation = core::quaternion(DefaultMatrix);
+		}
+		else
+		{
+			rotation = core::quaternion(localMatrix);
+		}
 	}
 #pragma endregion
 
@@ -389,9 +409,8 @@ void CGameAnimation::sortWeightTrack( SAnimWeight *arrayTrack, int &num )
 
 	for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 	{
-		if ( m_animTrack[i].isEnable() == true && 
-			m_animTrack[i].getAnimWeight() != 0.0f &&
-			m_animTrack[i].getTotalFrame() != 0 )
+		if (	m_animTrack[i].isEnable() == true && 
+				m_animTrack[i].getAnimWeight() != 0.0f )
 		{		
 			animWeightInfo.animID = i;
 			animWeightInfo.animWeight = m_animTrack[i].getAnimWeight();

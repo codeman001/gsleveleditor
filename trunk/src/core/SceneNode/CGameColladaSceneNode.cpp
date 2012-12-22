@@ -93,7 +93,7 @@ CGameAnimationTrack::~CGameAnimationTrack()
 }
 
 void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix)
-{	
+{
 	s32 foundPositionIndex	= -1;
 	s32 foundScaleIndex		= -1;
 	s32 foundRotationIndex	= -1;
@@ -497,19 +497,17 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 
 	}
 	
-	// if not have animation
-	if ( first == true )
-	{		
-		// we need use default matrix
-		position	= core::vector3df();
-		localMatrix.transformVect( position );
-		scale		= core::vector3df(1,1,1);
-		rotation	= core::quaternion( localMatrix );		
-	}
-	else
+	// check null animation
+	for ( int track = (int)nTrack - 1; track >= 0; track-- )
 	{
-		m_nullAnimation = false;
+		int i = sortWeight[track].animID;
+		if ( m_animTrack[i].getTotalFrame() > 0 )
+		{
+			m_nullAnimation = false;
+			break;
+		}
 	}
+
 }
 
 // synchronizedTimeScale

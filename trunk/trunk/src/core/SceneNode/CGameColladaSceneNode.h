@@ -341,6 +341,7 @@ public:
 		m_scaleHint = 0;
 		m_rotHint = 0;
 		m_currentFrame = 0;
+		m_totalFrame = 0;
 
 		UseDefaultMatrix = false;
 		DefaultMatrix = core::IdentityMatrix;

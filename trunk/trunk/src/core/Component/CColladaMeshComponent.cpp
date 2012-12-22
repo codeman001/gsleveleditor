@@ -744,7 +744,8 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
                 
                 scale.frame     = nFrames;
                 scale.scale     = anim->ScaleKeys[0].scale;
-                
+                track->ScaleKeys.push_back( scale );
+
                 // set cross animation
                 track->CrossAnimScaleKeys.set_used( nScaleKey );
                 for ( int i = 0; i < nScaleKey; i++ )
@@ -755,7 +756,7 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 
 
 			// enable cross animation
-			track->enableCrossAnimation( loop );
+			// track->enableCrossAnimation( loop );
 		}
 
 		i++;
@@ -867,7 +868,8 @@ void CColladaMeshComponent::setCrossFadeAnimationToLayer(const char *lpAnimName,
                 
                 scale.frame     = nFrames;
                 scale.scale     = anim->ScaleKeys[0].scale;
-                
+                track->ScaleKeys.push_back( scale );
+
                 // set cross animation
                 track->CrossAnimScaleKeys.set_used( nScaleKey );
                 for ( int i = 0; i < nScaleKey; i++ )

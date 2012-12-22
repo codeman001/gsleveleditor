@@ -1335,7 +1335,7 @@ void CPlayerComponent::updateUpperBodyAimToRunFast()
         if ( s_state == 0 )
         {
             // AIM to GUN OFF
-            m_offGunFactor = m_offGunFactor + 0.001f*getIView()->getTimeStep();
+            m_offGunFactor = m_offGunFactor + 0.003f*getIView()->getTimeStep();
             if ( m_offGunFactor >= 0 )
                 m_offGunFactor = 1.0f;
             
@@ -1387,9 +1387,12 @@ void CPlayerComponent::updateUpperBodyAimToRunFast()
         else 
         {
             // GUN OFF TO RUN
-            m_offGunFactor = m_offGunFactor - 0.002f*getIView()->getTimeStep();
+            m_offGunFactor = m_offGunFactor - 0.004f*getIView()->getTimeStep();
             if ( m_offGunFactor < 0 )
+            {
                 m_offGunFactor = 0.0f;
+                setUpBodyState(CPlayerComponent::PlayerUpBodyRunFastToIdle);
+            }
             
             m_collada->setAnimWeight(m_offGunFactor,         0, 1);		// off gun anim
             m_collada->setAnimWeight(1.0f - m_offGunFactor,  4, 1);		// run anim

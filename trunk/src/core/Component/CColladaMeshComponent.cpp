@@ -756,7 +756,7 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 
 
 			// enable cross animation
-			// track->enableCrossAnimation( loop );
+			track->enableCrossAnimation( loop );
 		}
 
 		i++;

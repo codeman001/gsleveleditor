@@ -1057,7 +1057,10 @@ void CPlayerComponent::updateUpperBody()
 void CPlayerComponent::updateUpperBodyAim()
 {
     if ( m_upbodySubState == SubStateInit )
-    {                
+    {   
+        // turn off all anim channel
+        m_collada->onlyEnableAnimTrackChannel(0, 1);
+        
 		// base idle
         m_collada->setCrossFadeAnimationToLayer( m_animIdle[0].c_str(), 10.0f, true, 0, 0, 1, 0);
 
@@ -1155,6 +1158,9 @@ void CPlayerComponent::updateUpperBodyShoot()
 
     if ( m_upbodySubState == SubStateInit )
     {
+        // turn off all anim channel
+        m_collada->onlyEnableAnimTrackChannel(1, 1);
+        
 		m_collada->setAnimation(m_animShootStraight.c_str(),1, false, 1);        
         m_collada->setAnimWeight(0.0f, 1, 1);
 		m_collada->enableAnimTrackChannel(1, true, 1);
@@ -1327,13 +1333,13 @@ void CPlayerComponent::updateUpperBodyAimToRunFast()
         m_upbodySubState = SubStateActive;
     }
     else if ( m_upbodySubState == SubStateEnd )
-    {		
+    {
         doNextState();		
     }
     else
     {
         if ( s_state == 0 )
-        {
+        {        
             // AIM to GUN OFF
             m_offGunFactor = m_offGunFactor + 0.003f*getIView()->getTimeStep();
             if ( m_offGunFactor >= 0 )

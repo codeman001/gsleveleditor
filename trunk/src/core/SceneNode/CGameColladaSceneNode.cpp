@@ -974,18 +974,8 @@ void CGameColladaSceneNode::updateAbsolutePosition()
 			if ( m_animationCallback )
 				m_animationCallback->_onUpdateFinishAbsolute(this, AbsoluteAnimationMatrixLayer[i]);
             
-            // need blend here
-            float layerWeight = m_gameAnimation[i].getAnimLayerWeight();
-            if ( i > 0 && layerWeight < 1.0f )
-            {
-                AnimationMatrix = slerpMatrix(AnimationMatrixLayer[i], AnimationMatrixLayer[0], layerWeight);
-                AbsoluteAnimationMatrix = slerpMatrix(AbsoluteAnimationMatrixLayer[i], AbsoluteAnimationMatrixLayer[0], layerWeight);                
-            }
-            else
-            {
-                AnimationMatrix = AnimationMatrixLayer[i];
-                AbsoluteAnimationMatrix = AbsoluteAnimationMatrixLayer[i];
-            }
+            AnimationMatrix = AnimationMatrixLayer[i];
+            AbsoluteAnimationMatrix = AbsoluteAnimationMatrixLayer[i];
             
 			if ( m_isRootColladaNode == true )
 				AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(), RelativeMatrix);
@@ -1004,11 +994,6 @@ void CGameColladaSceneNode::updateAbsolutePosition()
         }
         
     }
-}
-
-core::matrix4 CGameColladaSceneNode::slerpMatrix(const core::matrix4 &mat1, const core::matrix4 &mat2, float w)
-{
-    return mat1;
 }
 
 void CGameColladaSceneNode::reCalcAbsoluteMatrix()
@@ -1233,6 +1218,11 @@ void CGameColladaSceneNode::skin()
 // calc relative matrix of animation
 void CGameColladaSceneNode::updateAnimation()
 {
+    core::vector3df basePosition;
+    core::vector3df baseScale;
+    core::quaternion baseRotation;
+    bool haveCalcBase = false;
+    
     for ( int i = 0; i < MAX_ANIMLAYER; i++ )
     {   
         if ( m_gameAnimation[i].isEnable() == false )
@@ -1248,6 +1238,36 @@ void CGameColladaSceneNode::updateAnimation()
         if ( m_animationCallback )
             m_animationCallback->_onUpdateFrameData( this,  position, scale, rotation, i);
 
+        // blending multi layer animtion
+        if ( haveCalcBase == false )
+        {
+            // need get base rotation
+            basePosition    = position;
+            baseScale       = scale;
+            baseRotation    = rotation;
+            
+            haveCalcBase = true;
+        }
+        else if ( i > 0 && m_gameAnimation[i].getAnimLayerWeight() < 1.0f )
+        {            
+            // blending....
+            float w = m_gameAnimation[i].getAnimLayerWeight();
+            
+            core::vector3df blendPosition;
+            blendPosition.interpolate(position, basePosition, w);
+            
+            core::vector3df blendScale;
+            blendScale.interpolate(scale, baseScale, w);
+            
+            core::quaternion blendRotation;
+            blendRotation.slerp(baseRotation, rotation, w);
+            
+            position    = blendPosition;
+            scale       = blendScale;
+            rotation    = blendRotation;
+        }
+        
+        
         // rotation
         core::matrix4 mat;
         rotation.getMatrix_transposed(mat);

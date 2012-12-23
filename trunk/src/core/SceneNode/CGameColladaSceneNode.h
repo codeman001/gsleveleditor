@@ -787,7 +787,6 @@ public:
     
 private:
     
-    core::matrix4   slerpMatrix(const core::matrix4 &mat1, const core::matrix4 &mat2, float w);
     
 };
 

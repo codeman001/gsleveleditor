@@ -371,6 +371,7 @@ protected:
 	bool					m_nullAnimation;
 	
 	bool					m_isEnable;
+    float                   m_weight;
 public:
 	CGameAnimation();
 	virtual ~CGameAnimation();
@@ -443,6 +444,20 @@ public:
 		return m_isEnable;
 	}
 
+    // setAnimLayerWeight
+    // set animation weight of anim layer
+    inline void setAnimLayerWeight(float w)
+    {
+        m_weight = w;
+    }
+    
+    // getAnimLayerWeight
+    // get anim
+    inline float getAnimLayerWeight()
+    {
+        return m_weight;
+    }
+    
 protected:
 	
 	struct SAnimWeight
@@ -769,6 +784,11 @@ public:
 		
 	inline void setRootColladaNode( bool b )	{ m_isRootColladaNode = b; }
 	inline bool isRootColladaNode()				{ return m_isRootColladaNode; }
+    
+private:
+    
+    core::matrix4   slerpMatrix(const core::matrix4 &mat1, const core::matrix4 &mat2, float w);
+    
 };
 
 #endif

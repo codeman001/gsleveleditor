@@ -395,6 +395,7 @@ CGameAnimation::CGameAnimation()
 	// null animation
 	m_nullAnimation = true;
 	m_isEnable = false;
+    m_weight = 1.0f;
 }
 
 CGameAnimation::~CGameAnimation()
@@ -973,9 +974,19 @@ void CGameColladaSceneNode::updateAbsolutePosition()
 			if ( m_animationCallback )
 				m_animationCallback->_onUpdateFinishAbsolute(this, AbsoluteAnimationMatrixLayer[i]);
             
-            AnimationMatrix = AnimationMatrixLayer[i];
-            AbsoluteAnimationMatrix = AbsoluteAnimationMatrixLayer[i];
-            						
+            // need blend here
+            float layerWeight = m_gameAnimation[i].getAnimLayerWeight();
+            if ( i > 0 && layerWeight < 1.0f )
+            {
+                AnimationMatrix = slerpMatrix(AnimationMatrixLayer[i], AnimationMatrixLayer[0], layerWeight);
+                AbsoluteAnimationMatrix = slerpMatrix(AbsoluteAnimationMatrixLayer[i], AbsoluteAnimationMatrixLayer[0], layerWeight);                
+            }
+            else
+            {
+                AnimationMatrix = AnimationMatrixLayer[i];
+                AbsoluteAnimationMatrix = AbsoluteAnimationMatrixLayer[i];
+            }
+            
 			if ( m_isRootColladaNode == true )
 				AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(), RelativeMatrix);
 			else
@@ -995,6 +1006,10 @@ void CGameColladaSceneNode::updateAbsolutePosition()
     }
 }
 
+core::matrix4 CGameColladaSceneNode::slerpMatrix(const core::matrix4 &mat1, const core::matrix4 &mat2, float w)
+{
+    return mat1;
+}
 
 void CGameColladaSceneNode::reCalcAbsoluteMatrix()
 {

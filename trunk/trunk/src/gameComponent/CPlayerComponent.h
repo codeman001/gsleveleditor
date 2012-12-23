@@ -39,9 +39,8 @@ public:
         PlayerUpBodyShoot,
         PlayerUpBodyReload,
 		PlayerUpBodyOffGun,
-        PlayerUpBodyAimToRunFast,
-        PlayerUpBodyRunFastToAim,
-        PlayerUpBodyRunFastToIdle
+        PlayerUpBodyAimToOffGun,
+        PlayerUpBodyRunFast      
     };
     
 	enum EPlayerSubState
@@ -65,8 +64,11 @@ protected:
 
 	bool					m_runCommand;
     bool                    m_gunOnCommand;
-    bool					m_init;
 
+    bool					m_init;
+    bool                    m_isRunFast;
+    
+    
 	SEventPlayerMove		m_playerMoveEvt;
     SEventPlayerCommand     m_playerCmdEvt;
 	core::vector3df			m_controlRotate;
@@ -220,9 +222,8 @@ protected:
     void updateUpperBodyShoot();
     void updateUpperBodyReload();    
     void updateUpperBodyOffgun();
-    void updateUpperBodyAimToRunFast();
-    void updateUpperBodyRunFastToAim();
-    void updateUpperBodyRunFastToIdle();
+    void updateUpperBodyAimToOffgun();
+    void updateUpperBodyRunFast();
 
 	// isFinishedAnim	
 	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0, int animLayer = 0);

@@ -1021,6 +1021,29 @@ void CColladaMeshComponent::pauseAtFrame( float frame, int trackChannel, int ani
 	}
 }
 
+void CColladaMeshComponent::setAnimationLayerWeight( int animLayer, float weight )
+{
+    // loop all node
+	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		CGameColladaSceneNode* j = (*i).second;
+        
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+		
+		CGameAnimation *anim = j->getAnimation(animLayer);
+        
+        if ( anim->isEnable() == true )
+            anim->setAnimLayerWeight(weight);
+        
+		i++;
+	}
+}
+
 // setAnimationLoop
 // loop the anim
 void CColladaMeshComponent::setAnimationLoop( bool loop, int trackChannel, int animLayer)

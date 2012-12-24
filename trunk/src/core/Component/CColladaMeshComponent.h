@@ -255,6 +255,7 @@ public:
 		setAnimation( animName.c_str(), track, loop, animLayer );
 	}
 
+    void setAnimationLayerWeight( int animLayer, float weight );
 
 	// synchronizedByTimeScale
 	// sync n animation

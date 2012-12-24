@@ -40,6 +40,7 @@ public:
         PlayerUpBodyReload,
 		PlayerUpBodyOffGun,
         PlayerUpBodyAimToOffGun,
+        PlayerUpBodyOffGunToAim,
         PlayerUpBodyRunFast      
     };
     
@@ -65,9 +66,7 @@ protected:
 	bool					m_runCommand;
     bool                    m_gunOnCommand;
 
-    bool					m_init;
-    bool                    m_isRunFast;
-    
+    bool					m_init;    
     
 	SEventPlayerMove		m_playerMoveEvt;
     SEventPlayerCommand     m_playerCmdEvt;
@@ -121,6 +120,8 @@ protected:
 	float					m_aimFactor;
 	bool					m_aimRotateCharacter;
 
+    float                   m_upBodyRunFastFactor;
+    
 	float					m_runFactor;	
 	float					m_runAccel;
 	float					m_runToRunFastAccel;
@@ -223,6 +224,7 @@ protected:
     void updateUpperBodyReload();    
     void updateUpperBodyOffgun();
     void updateUpperBodyAimToOffgun();
+    void updateUpperBodyOffgunToAim();
     void updateUpperBodyRunFast();
 
 	// isFinishedAnim	

@@ -717,8 +717,9 @@ void CPlayerComponent::updateStateRunFast()
             // calc spine rotation
             //core::vector3df lookPos = m_gameObject->getPosition() + m_gameObject->getFront();
             //setSpineLookAt( lookPos, 1.0f );
-
+            
             m_runFactor = m_runFactor - step;
+
             if ( m_runFactor < 0.0f )
             {
                 m_runFactor = 0.0f;
@@ -747,7 +748,7 @@ void CPlayerComponent::updateStateRunFast()
             // change to run state
             // only change when ready run fast state
             if ( m_playerMoveEvt.runFast == false )
-            {
+            {    
                 setUpBodyState(CPlayerComponent::PlayerUpBodyOffGunToAim);                
                 setState( CPlayerComponent::PlayerRunFastToRun );
             }
@@ -1430,9 +1431,7 @@ void CPlayerComponent::updateUpperBodyOffgunToAim()
     }
     else
     {        
-        float step = 0.002f*getIView()->getTimeStep();
-        
-        printf("%f - %f\n", m_upBodyRunFastFactor, m_offGunFactor);
+        float step = 0.002f*getIView()->getTimeStep();    
         
         if ( s_offgunState == 0 )
         {

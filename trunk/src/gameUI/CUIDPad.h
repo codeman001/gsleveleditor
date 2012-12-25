@@ -13,6 +13,8 @@ protected:
 
 	core::position2di   m_dpadBasePos;
 	core::position2di   m_dpadMovePos;
+    
+    bool        m_isEnable;
 public:
 	CUIDPad( const char *name, CUIWidget* parent, CMenuFxObj flashObj );
 	virtual ~CUIDPad();
@@ -24,6 +26,13 @@ public:
 	// onTouchEvent
 	// update touch event
 	virtual bool onEvent( const SEvent& gameEvent);
+    
+    // setEnable
+    // enable this control
+    inline void setEnable(bool b)
+    {
+        m_isEnable = b;
+    }
 };
 
 

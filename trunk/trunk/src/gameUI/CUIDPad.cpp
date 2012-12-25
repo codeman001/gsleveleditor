@@ -12,6 +12,8 @@ CUIDPad::CUIDPad( const char *name, CUIWidget* parent, CMenuFxObj flashObj )
 
 	m_dpadBase.setVisible( false );
 	m_dpadMove.setVisible( false );
+    
+    m_isEnable = false;
 }
 
 CUIDPad::~CUIDPad()
@@ -29,7 +31,7 @@ void CUIDPad::update()
 // update touch event
 bool CUIDPad::onEvent( const SEvent& gameEvent)
 {
-	if ( m_controlID != -1 && m_controlID != gameEvent.EventControlID )
+	if ( (m_controlID != -1 && m_controlID != gameEvent.EventControlID) || m_isEnable == false )
 		return false;
 
 	if ( gameEvent.EventType == EET_MOUSE_INPUT_EVENT )

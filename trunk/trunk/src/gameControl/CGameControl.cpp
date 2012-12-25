@@ -141,7 +141,7 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
             m_keyActionBit |= KeyRunFast;
 	}		
 	else
-	{
+	{     
 		if (  key == irr::KEY_UP || key == irr::KEY_KEY_W )
 			m_keyActionBit &= ~KeyUp;
 		else if (  key == irr::KEY_DOWN || key == irr::KEY_KEY_S )
@@ -220,12 +220,12 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 		rot = -180.0f;
 	}
 
-	bool runCommand = runUp || runBack || runLeft || runRight;
-	
+	bool runCommand = runUp || runBack || runLeft || runRight;	
+    
 	// send event to player component
 	if ( runCommand )		
 		sendPlayerRunEvent( 1.0f, rot, runFast );		
-	else		
+	else
 		sendPlayerStopEvent();
 
     // send event to player component

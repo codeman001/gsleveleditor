@@ -31,7 +31,11 @@ void CStateGameplay::onCreate()
     
 	// create dpad control
 	CUIDPad* dpad = new CUIDPad("dpad", m_rootWidget, getStateObjFx().findObj("mcDPadTouch"));
-	
+    
+#if defined (IOS) || defined (ANDROID)
+    dpad->setEnable(true);
+#endif
+    
 	// create hud view
 	CUIHudContainer *hud = new CUIHudContainer("hud", m_rootWidget, getStateObjFx().findObj("mcAimFocus"));
 

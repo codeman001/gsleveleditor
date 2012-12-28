@@ -749,7 +749,7 @@ void CPlayerComponent::updateStateRunFast()
             // only change when ready run fast state
             if ( m_playerMoveEvt.runFast == false )
             {    
-                setUpBodyState(CPlayerComponent::PlayerUpBodyOffGunToAim);                
+                setUpBodyState(CPlayerComponent::PlayerUpBodyOffGunToAim);
                 setState( CPlayerComponent::PlayerRunFastToRun );
             }
             
@@ -948,6 +948,8 @@ void CPlayerComponent::updateStateRunFastToRun()
 {
     if ( m_subState == SubStateInit )
 	{		
+        setUpBodyState(CPlayerComponent::PlayerUpBodyOffGunToAim);
+        
         // active state
 		m_subState = SubStateActive;		
 	}
@@ -958,7 +960,32 @@ void CPlayerComponent::updateStateRunFastToRun()
 	}
 	else
 	{
-		setState(CPlayerComponent::PlayerRun);        
+        core::vector3df v0, v1, runDir;
+        
+		// get vector rotate & speed
+		v0 = m_gameObject->getFront();
+		v1 = getCameraFrontVector();
+        
+		float step = m_runAccel*getIView()->getTimeStep()*1.5f;
+        
+        m_runFactor = m_runFactor - step;
+        
+        if ( m_runFactor < 0.0f )
+        {
+            m_runFactor = 0.0f;            
+            setState( CPlayerComponent::PlayerRun );
+        }    
+        
+        // set anim weight
+        m_collada->setAnimWeight(1.0f - m_runFactor,							0);            
+        m_collada->setAnimWeight(m_runFactor,									1);        
+        
+        m_collada->synchronizedByTimeScale();   
+        
+		// update run position
+		float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep();
+		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate * runSpeed;
+		m_gameObject->setPosition( newPos );
     }        
 }
 

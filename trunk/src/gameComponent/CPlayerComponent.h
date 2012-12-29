@@ -28,8 +28,7 @@ public:
         PlayerRunToRunFast,
         PlayerRunFastToRun,
         PlayerStandAim,
-		PlayerStandShooting,
-        PlayerRunAim,
+        PlayerRotate,
 		NumStateCount
 	};
 
@@ -214,7 +213,7 @@ protected:
     void updateStateRunToRunFast();
     void updateStateRunFastToRun();
     void updateStateStandAim();   	
-    void updateStateStandShooting();
+    void updateStatePlayerRotate();
     
     // updateUpperBody
     // update state aim, shoot, reload

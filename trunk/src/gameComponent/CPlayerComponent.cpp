@@ -279,6 +279,9 @@ void CPlayerComponent::updateState()
     case CPlayerComponent::PlayerStandAim:
         updateStateStandAim();			
         break;
+    case CPlayerComponent::PlayerRotate:
+        updateStatePlayerRotate();
+        break;
 	}
 
 	// update body
@@ -318,8 +321,11 @@ void CPlayerComponent::updateStateIdle()
 		if ( m_runCommand )
 			setState( CPlayerComponent::PlayerTurn );			
 		else if ( m_gunOnCommand )
-			setState( CPlayerComponent::PlayerStandAim );
-
+        {
+			setState( CPlayerComponent::PlayerRotate );            
+            m_gunOnCommand = false;
+        }
+        
         // reinit state
 		if ( m_animCurrentTime <= 0 )
 			m_subState = SubStateInit;
@@ -460,17 +466,19 @@ void CPlayerComponent::updateStateRun()
 		core::quaternion q;
 		float rot = 0.0f;
 
-		if ( m_runCommand )		
+		if ( m_runCommand )
+        {
 			rot = m_playerMoveEvt.rotate;		
 
-		// rotate rundir
-		q.fromAngleAxis( core::degToRad(rot), core::vector3df(0,1,0) );
-		q.getMatrix().rotateVect(runDir);
-		runDir.normalize();		
+            // rotate rundir
+            q.fromAngleAxis( core::degToRad(rot), core::vector3df(0,1,0) );
+            q.getMatrix().rotateVect(runDir);
+            runDir.normalize();		
         
-		// rotate step runDir
-		turnToDir( m_controlRotate, runDir, 2.0f );
-		
+            // rotate step runDir
+            turnToDir( m_controlRotate, runDir, 2.0f );
+        }
+        
 #ifdef WIN32
 		// debug line
 		CGameDebug *debug = CGameDebug::getInstance();
@@ -725,7 +733,7 @@ void CPlayerComponent::updateStateRunFast()
                 m_runFactor = 0.0f;
                 
                 setUpBodyState(CPlayerComponent::PlayerUpBodyOffGunToAim);
-                setState( CPlayerComponent::PlayerIdle );
+                setState( CPlayerComponent::PlayerRotate );
             }
 
             m_collada->setAnimWeight(1.0f - m_runFactor, 0);
@@ -848,7 +856,7 @@ void CPlayerComponent::updateStateRunFastTurn()
             v1 = m_gameObject->getRight();
         
 		// step to turn camera vector
-        bool turn = turnToDir( v0, v1, 2.0f );
+        bool turn = turnToDir( v0, v1, 3.0f );
 
 #ifdef WIN32            
         // debug line
@@ -908,21 +916,13 @@ void CPlayerComponent::updateStateRunToRunFast()
 		doNextState();     
 	}
 	else
-	{	
-		core::vector3df v0, v1, runDir;
-        
-		// get vector rotate & speed
-		v0 = m_gameObject->getFront();
-		v1 = getCameraFrontVector();
-        
-		float step = m_runAccel*getIView()->getTimeStep()*1.5f;
-        
+	{		        
+		float step = m_runAccel*getIView()->getTimeStep()*1.0f;        
         m_runFactor = m_runFactor - step;
                 
         if ( m_runFactor < 0.0f )
         {
-            m_runFactor = 0.0f;
-            
+            m_runFactor = 0.0f;            
             setState( CPlayerComponent::PlayerRunFast );
         }    
                 
@@ -935,8 +935,23 @@ void CPlayerComponent::updateStateRunToRunFast()
         m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,		4);
         m_collada->setAnimWeight(m_runFactor*m_animRightFactor,		5);
             
-        m_collada->synchronizedByTimeScale();   
-		                
+        m_collada->synchronizedByTimeScale();            
+        
+        
+        core::vector3df v0, v1, runDir;
+        v0 = m_gameObject->getFront();
+		v1 = getCameraFrontVector();
+        runDir = v0;
+        // rotate character to camera 
+        // if rot 180 deg
+        core::vector3df v = v0 + v1;
+        if ( v.getLengthSQ() <= 0.1f )
+            v1 = m_gameObject->getRight();
+        
+        turnToDir(runDir, v1, 6.0f);
+        m_gameObject->lookAt(m_gameObject->getPosition() + runDir);
+        
+        
 		// update run position
 		float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep();
 		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate * runSpeed;
@@ -965,8 +980,9 @@ void CPlayerComponent::updateStateRunFastToRun()
 		// get vector rotate & speed
 		v0 = m_gameObject->getFront();
 		v1 = getCameraFrontVector();
+        runDir = v0;
         
-		float step = m_runAccel*getIView()->getTimeStep()*1.5f;
+		float step = m_runAccel*getIView()->getTimeStep()*1.0f;
         
         m_runFactor = m_runFactor - step;
         
@@ -975,6 +991,16 @@ void CPlayerComponent::updateStateRunFastToRun()
             m_runFactor = 0.0f;            
             setState( CPlayerComponent::PlayerRun );
         }    
+        
+        
+        // rotate character to camera 
+        // if rot 180 deg
+        core::vector3df v = v0 + v1;
+        if ( v.getLengthSQ() <= 0.1f )
+            v1 = m_gameObject->getRight();
+        
+        turnToDir(runDir, v1, 6.0f);
+        m_gameObject->lookAt(m_gameObject->getPosition() + runDir);
         
         // set anim weight
         m_collada->setAnimWeight(1.0f - m_runFactor,							0);            
@@ -1032,6 +1058,36 @@ void CPlayerComponent::updateStateStandAim()
 		// change state un
         if ( m_runCommand )
             setState(CPlayerComponent::PlayerRun);		
+    }    
+}
+
+void CPlayerComponent::updateStatePlayerRotate()
+{
+    if ( m_subState == SubStateInit )
+    {        
+        m_subState = SubStateActive;		
+    }
+    else if ( m_subState == SubStateEnd )
+    {		
+        doNextState();		
+    }
+    else
+    {
+        core::line3df	ray		= getCameraRay();
+        core::vector3df	colPos	= getCollisionPoint(ray);                		        		 
+        
+        // rotate main character		
+        core::vector3df v0 = m_gameObject->getFront();
+        core::vector3df aimPos = colPos - m_gameObject->getPosition();
+        aimPos.Y = 0;
+        aimPos.normalize();
+        
+        if ( turnToDir( v0, aimPos, 6.0f ) == true )
+        {
+            setState(CPlayerComponent::PlayerStandAim);
+            setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
+        }
+        m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
     }    
 }
 

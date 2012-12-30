@@ -77,6 +77,12 @@ public:
 	virtual void drawObject();
 #endif
 
+    // getLightSceneNode
+    // get light obj
+    inline ILightSceneNode* getLightSceneNode()
+    {
+        return m_lightSceneNode;
+    }
 };
 
 // A utility class to aid in sorting scene nodes into a distance order

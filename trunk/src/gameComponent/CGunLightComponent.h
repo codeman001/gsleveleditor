@@ -12,12 +12,13 @@
 #include "IObjectComponent.h"
 #include "CGameComponent.h"
 #include "CGameObject.h"
+#include "CLightObject.h"
 
 class CGunLightComponent: public IObjectComponent
 {
 protected:
-    float   m_lighTime;
-    
+    float           m_lighTime;
+    CLightObject    *m_lightObj;
 public:  
 	CGunLightComponent(CGameObject* obj);
 	virtual ~CGunLightComponent();
@@ -40,10 +41,8 @@ public:
         
     // setLightTime
     // set light
-    inline void setLightTime(float t)
-    {
-        m_lighTime = t;
-    }
+    void setLightTime(float t);
+    
 };
 
 #endif

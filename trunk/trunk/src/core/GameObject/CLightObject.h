@@ -83,6 +83,17 @@ public:
     {
         return m_lightSceneNode;
     }
+    
+    // setVisible
+    // turn on/off light
+    inline void setVisible(bool b)
+    {
+        m_lightSceneNode->setVisible(b);
+    }
+    
+    // setLightData
+    // set light data
+    void setLightData(float radius, float strength);
 };
 
 // A utility class to aid in sorting scene nodes into a distance order

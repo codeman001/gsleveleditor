@@ -279,6 +279,22 @@ void CLightObject::updateObject()
 	CGameObject::updateObject();
 }
 
+// setLightData
+// set light data
+void CLightObject::setLightData(float radius, float strength)
+{
+    m_radius = radius;
+    m_strength = strength;
+    
+    video::SLight &light = m_lightSceneNode->getLightData();
+	light.Type = m_lightType == 0? ELT_POINT : ELT_DIRECTIONAL;
+	light.DiffuseColor	= m_diffuseColor;
+	light.SpecularColor = m_specularColor;
+	light.Radius		= m_radius;
+	light.Attenuation.X	= 0.0f;
+	light.Attenuation.Y	= 1.0f/(m_radius * m_strength);
+	light.Attenuation.Z	= 0.0f;
+}
 
 // getColorString
 // get string hexa color name from SColor

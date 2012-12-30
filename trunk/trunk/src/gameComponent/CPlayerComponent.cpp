@@ -2,9 +2,13 @@
 #include "IView.h"
 #include "IRandomizer.h"
 
+#include "CZone.h"
+#include "CLightObject.h"
+
 #include "CPlayerComponent.h"
 
 #include "CColladaMeshComponent.h"
+#include "CGunLightComponent.h"
 
 #include "gameLevel/CGameLevel.h"
 #include "gameDebug/CGameDebug.h"
@@ -46,7 +50,9 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_runToRunFastAccel = 0.003f;
 
 	m_collada	= NULL;
-
+    m_gunLight  = NULL;
+    m_gunLightComp = NULL;
+    
 	m_animCurrentTime		= 0.0f;	
 
 	m_spineRotation = 0.0f;
@@ -174,6 +180,14 @@ void CPlayerComponent::initComponent()
 
 	// register event
 	getIView()->registerEvent("CPlayerComponent", this);	
+    
+    
+    // create gunlight
+    CZone *currentZone = (CZone*)m_gameObject->getParent();
+    m_gunLight = currentZone->createLight();
+    m_gunLight->setLightData(400.0f, 1.0f);
+    m_gunLightComp = new CGunLightComponent(m_gunLight);
+    m_gunLight->addComponenet(m_gunLightComp);
     
 }
 
@@ -1268,6 +1282,15 @@ void CPlayerComponent::updateUpperBodyShoot()
 		m_playerCmdEvt.shoot	= false;
 		m_playerCmdEvt.aim		= false;
 		m_playerCmdEvt.reload	= false;        
+        
+        
+        CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
+        
+        // active gunlight
+        core::vector3df gunPos = gunTip->getAbsolutePosition();
+        m_gunLight->setPosition(gunPos);
+        m_gunLightComp->setLightTime(100.0f);
+        
         
         m_upbodySubState = SubStateActive;		
     }

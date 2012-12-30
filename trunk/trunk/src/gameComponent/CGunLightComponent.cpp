@@ -14,7 +14,11 @@
 CGunLightComponent::CGunLightComponent(CGameObject* obj)
     :IObjectComponent(obj, CGameComponent::GunLightComponent)
 {
+    m_lighTime = 0;
     
+    m_lightObj = (CLightObject*)m_gameObject;
+    m_lightObj->getLightSceneNode()->setLightType(video::ELT_POINT);
+    m_lightObj->setVisible(false);
 }
 
 CGunLightComponent::~CGunLightComponent()
@@ -26,7 +30,6 @@ CGunLightComponent::~CGunLightComponent()
 // run when init object
 void CGunLightComponent::initComponent()
 {
-    
 }
 
 // update
@@ -34,21 +37,18 @@ void CGunLightComponent::initComponent()
 void CGunLightComponent::updateComponent()
 {
     if (m_gameObject->getObjectType() == CGameObject::LightObject )
-    {
-        CLightObject *lightObj = (CLightObject*)m_gameObject;
-        ILightSceneNode *lightNode = lightObj->getLightSceneNode();
-        
+    {        
         float timeStep = getIView()->getTimeStep();
-
         m_lighTime = m_lighTime - timeStep;
+        
         if ( m_lighTime <= 0 )
         {
-            lightNode->setVisible(false);
+            m_lightObj->setVisible(false);
             m_lighTime = 0;
         }
         else 
         {
-            lightNode->setVisible(true);
+            m_lightObj->setVisible(true);
         }
     }
 }
@@ -65,4 +65,16 @@ void CGunLightComponent::saveData( CSerializable* pObj )
 void CGunLightComponent::loadData( CSerializable* pObj )
 {
     pObj->nextRecord();
+}
+
+// setLightTime
+// set light
+void CGunLightComponent::setLightTime(float t)
+{
+    m_lighTime = t;
+    
+    if (m_lighTime > 0 )
+        m_lightObj->setVisible(true);
+    else
+        m_lighTime = 0;
 }

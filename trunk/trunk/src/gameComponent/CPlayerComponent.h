@@ -2,8 +2,13 @@
 #define _CPLAYERCOMPONENT_H_
 
 #include "IObjectComponent.h"
+
 #include "CColladaMeshComponent.h"
 #include "CGameComponent.h"
+
+#include "CLightObject.h"
+#include "CGunLightComponent.h"
+
 
 #include "gameEvent.h"
 
@@ -73,6 +78,9 @@ protected:
 
 	float					m_animCurrentTime;
 
+    CLightObject*           m_gunLight;
+    CGunLightComponent*     m_gunLightComp;
+    
 	CColladaAnimation*		m_animationPackage;
 	CColladaMeshComponent*	m_collada;
 

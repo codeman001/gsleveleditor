@@ -92,6 +92,8 @@
 		7F3A6BDF160F684200B31F81 /* arial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BD8160F684200B31F81 /* arial.ttf */; };
 		7F3A6BE0160F684200B31F81 /* killerants.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BD9160F684200B31F81 /* killerants.ttf */; };
 		7F3A6BE1160F684200B31F81 /* zrnic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BDA160F684200B31F81 /* zrnic.ttf */; };
+		7F409F5B16900B9900879830 /* CGunLightComponent.h in Sources */ = {isa = PBXBuildFile; fileRef = 7F409F5A16900B9800879830 /* CGunLightComponent.h */; };
+		7F409F5D16900BBC00879830 /* CGunLightComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F409F5C16900BBC00879830 /* CGunLightComponent.cpp */; };
 		7F42768416284F300003D8E6 /* CUIButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F42767E16284F300003D8E6 /* CUIButton.cpp */; };
 		7F42768516284F300003D8E6 /* CUICanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F42768016284F300003D8E6 /* CUICanvas.cpp */; };
 		7F42768616284F300003D8E6 /* CUIWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F42768216284F300003D8E6 /* CUIWidget.cpp */; };
@@ -298,6 +300,8 @@
 		7F3A6BD8160F684200B31F81 /* arial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = arial.ttf; path = ../../bin/arial.ttf; sourceTree = "<group>"; };
 		7F3A6BD9160F684200B31F81 /* killerants.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = killerants.ttf; path = ../../bin/killerants.ttf; sourceTree = "<group>"; };
 		7F3A6BDA160F684200B31F81 /* zrnic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = zrnic.ttf; path = ../../bin/zrnic.ttf; sourceTree = "<group>"; };
+		7F409F5A16900B9800879830 /* CGunLightComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGunLightComponent.h; sourceTree = "<group>"; };
+		7F409F5C16900BBC00879830 /* CGunLightComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGunLightComponent.cpp; sourceTree = "<group>"; };
 		7F42767E16284F300003D8E6 /* CUIButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIButton.cpp; sourceTree = "<group>"; };
 		7F42767F16284F300003D8E6 /* CUIButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIButton.h; sourceTree = "<group>"; };
 		7F42768016284F300003D8E6 /* CUICanvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUICanvas.cpp; sourceTree = "<group>"; };
@@ -598,6 +602,8 @@
 				7F3A6B54160F5E8000B31F81 /* CGameComponent.h */,
 				7F3A6B57160F5E8000B31F81 /* CPlayerComponent.cpp */,
 				7F3A6B58160F5E8000B31F81 /* CPlayerComponent.h */,
+				7F409F5A16900B9800879830 /* CGunLightComponent.h */,
+				7F409F5C16900BBC00879830 /* CGunLightComponent.cpp */,
 			);
 			name = gameComponent;
 			path = ../../src/gameComponent;
@@ -954,6 +960,8 @@
 				7F4D165B163055A2009F066A /* CUIListview.cpp in Sources */,
 				7F38760116384DE300E84B98 /* CDaeUtils.cpp in Sources */,
 				7F7712B2166A55D2005795B6 /* CUIHudContainer.cpp in Sources */,
+				7F409F5B16900B9900879830 /* CGunLightComponent.h in Sources */,
+				7F409F5D16900BBC00879830 /* CGunLightComponent.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -2,13 +2,12 @@
 #include "CGameComponent.h"
 
 #include "CPlayerComponent.h"
+#include "CGunLightComponent.h"
 
 const char *CGameComponent::s_compType[] = 
 {
 	"Player component",
-	"AI player component",
-	"Inventory component",
-	"Weapon component"
+    "Gun light component"
 };
 
 #define	stringOfComponent( type )	CGameComponent::s_compType[ (int)type - (int)CGameComponent::PlayerComponent  ]
@@ -21,7 +20,8 @@ IObjectComponent* CGameComponent::loadComponent( CGameObject *pObj, char *compon
 	
 	// declare init component
 	static SComponentCreation s_gameComponentCreation[] = {
-		{ stringOfComponent(CGameComponent::PlayerComponent),		newComponent<CPlayerComponent> }		
+		{ stringOfComponent(CGameComponent::PlayerComponent),		newComponent<CPlayerComponent> },
+		{ stringOfComponent(CGameComponent::GunLightComponent),		newComponent<CGunLightComponent> }        
 	};
 
 	// search all game component

@@ -733,7 +733,7 @@ void CPlayerComponent::updateStateRunFast()
 	{
 		float step = m_runAccel*getIView()->getTimeStep();
         
-		if ( m_runCommand == false )
+		if ( m_runCommand == false && m_upbodyState == CPlayerComponent::PlayerUpBodyRunFast )
 		{
             
             // calc spine rotation
@@ -870,7 +870,7 @@ void CPlayerComponent::updateStateRunFastTurn()
             v1 = m_gameObject->getRight();
         
 		// step to turn camera vector
-        bool turn = turnToDir( v0, v1, 3.0f );
+        bool turn = turnToDir( v0, v1, 5.0f );
 
 #ifdef WIN32            
         // debug line
@@ -949,21 +949,7 @@ void CPlayerComponent::updateStateRunToRunFast()
         m_collada->setAnimWeight(m_runFactor*m_animLeftFactor,		4);
         m_collada->setAnimWeight(m_runFactor*m_animRightFactor,		5);
             
-        m_collada->synchronizedByTimeScale();            
-        
-        
-        core::vector3df v0, v1, runDir;
-        v0 = m_gameObject->getFront();
-		v1 = getCameraFrontVector();
-        runDir = v0;
-        // rotate character to camera 
-        // if rot 180 deg
-        core::vector3df v = v0 + v1;
-        if ( v.getLengthSQ() <= 0.1f )
-            v1 = m_gameObject->getRight();
-        
-        turnToDir(runDir, v1, 6.0f);
-        m_gameObject->lookAt(m_gameObject->getPosition() + runDir);
+        m_collada->synchronizedByTimeScale();                    
         
         
 		// update run position
@@ -1004,7 +990,7 @@ void CPlayerComponent::updateStateRunFastToRun()
         {
             m_runFactor = 0.0f;            
             setState( CPlayerComponent::PlayerRun );
-        }    
+        }
         
         
         // rotate character to camera 
@@ -1024,7 +1010,7 @@ void CPlayerComponent::updateStateRunFastToRun()
         
 		// update run position
 		float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep();
-		core::vector3df newPos = m_gameObject->getPosition() + m_controlRotate * runSpeed;
+		core::vector3df newPos = m_gameObject->getPosition() + m_gameObject->getFront() * runSpeed;
 		m_gameObject->setPosition( newPos );
     }        
 }
@@ -1424,69 +1410,30 @@ void CPlayerComponent::updateUpperBodyOffgun()
 }
 
 void CPlayerComponent::updateUpperBodyAimToOffgun()
-{    
+{        
     if ( m_upbodySubState == SubStateInit )
     {        
-        m_offGunFactor = 0.0f;
+        m_offGunFactor = 1.0f;
         
         m_collada->setAnimation(m_animGunOff, 0, true, 1);
-        m_collada->setAnimWeight(m_offGunFactor, 0, 1);
+        m_collada->setAnimWeight(1.0f, 0, 1);
+        m_collada->setAnimSpeed(1.0f, 0, 1);
         m_collada->setAnimationLoop(false, 0, 1);
-        m_collada->enableAnimTrackChannel(0, true, 1);    
-        
+        m_collada->onlyEnableAnimTrackChannel(0, 1);
+                        
         m_upbodySubState = SubStateActive;
     }
     else if ( m_upbodySubState == SubStateEnd )
     {
-        doNextState();		
+        doNextState();
     }
     else
-    {    
-        // AIM to GUN OFF
-        m_offGunFactor = m_offGunFactor + 0.003f*getIView()->getTimeStep();
-        if ( m_offGunFactor >= 0 )
-            m_offGunFactor = 1.0f;
-            
-        core::line3df	ray		= getCameraRay();
-        core::vector3df	colPos	= getCollisionPoint(ray);
-            
-        core::vector2df ret = getAimAngle(colPos);
-            
-        float wUp, wDown, wLeft, wRight, wStraight;
-        calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
-            
-        if ( wUp > 0 )
-            wStraight = 1.0f - wUp;
-        else 
-            wStraight = 1.0f - wDown;
-            
-        // setup straight
-        wStraight = core::clamp<float>(wStraight, 0.0f, 1.0f);
-            
-        float inv	= 1.0f - m_offGunFactor;
-            
-        // recalc weight
-        wStraight	= wStraight*inv;
-        wUp			= wUp*inv;
-        wDown		= wDown*inv;		
-            
-        // blending anim
-        m_collada->setAnimWeight(m_offGunFactor,        0, 1);		// off gun anim
-        m_collada->setAnimWeight(wStraight,				1, 1);		// straight
-        m_collada->setAnimWeight(wUp,					2, 1);		// up
-        m_collada->setAnimWeight(wDown,					3, 1);		// down
-            
-        m_collada->synchronizedByTimeScale(1);
-            
-        // change state
-        if ( m_offGunFactor >= 1.0f && m_collada->isEndAnimation(0, 1) == true )
-        {                
-            // turn off
-            m_collada->enableAnimTrackChannel(1, false, 1);
-            m_collada->enableAnimTrackChannel(2, false, 1);
-            m_collada->enableAnimTrackChannel(3, false, 1);               
-            
+    {
+        // change state if finish animation
+        if ( m_collada->isEndAnimation(0, 1) == true )
+        {                                     
             m_upBodyRunFastFactor = 0.0f;
+            m_offGunFactor = 1.0f;
             
             // run fast animation
             setUpBodyState(CPlayerComponent::PlayerUpBodyRunFast);
@@ -1708,35 +1655,33 @@ void CPlayerComponent::_onUpdateFinishAbsolute( ISceneNode* node, core::matrix4&
         float neckAngle = m_spineRotation - spineAngle;        
 		float r = spineAngle/3.0f;	
 	    
-        if ( r > 0 || neckAngle > 0 )
+        if ( node == m_nodesChest[0] )
         {
-            if ( node == m_nodesChest[0] )
-            {
-                core::quaternion q;
-                q.fromAngleAxis( core::degToRad(r), rotAxis  );
-                absoluteAnimationMatrix *= q.getMatrix();
-            }
-            else if ( node == m_nodesChest[1] )
-            {
-                core::quaternion q;
-                q.fromAngleAxis( core::degToRad(r), rotAxis );
-                absoluteAnimationMatrix *= q.getMatrix();
-            }
-            else if ( node == m_nodesChest[2] )
-            {
-                core::quaternion q;
-                q.fromAngleAxis( core::degToRad(r), rotAxis );
-                absoluteAnimationMatrix *= q.getMatrix();
-            }			
-            else if ( node == m_nodeNeck )
-            {
-                core::quaternion q;
-                core::vector3df neckAxis = core::vector3df(0.0f,-0.8f,1.0f);
-                neckAxis.normalize();
-                q.fromAngleAxis( core::degToRad( neckAngle ), neckAxis );
-                absoluteAnimationMatrix *= q.getMatrix();
-            }
+            core::quaternion q;
+            q.fromAngleAxis( core::degToRad(r), rotAxis  );
+            absoluteAnimationMatrix *= q.getMatrix();
         }
+        else if ( node == m_nodesChest[1] )
+        {
+            core::quaternion q;
+            q.fromAngleAxis( core::degToRad(r), rotAxis );
+            absoluteAnimationMatrix *= q.getMatrix();
+        }
+        else if ( node == m_nodesChest[2] )
+        {
+            core::quaternion q;
+            q.fromAngleAxis( core::degToRad(r), rotAxis );
+            absoluteAnimationMatrix *= q.getMatrix();
+        }			
+        else if ( node == m_nodeNeck )
+        {
+            core::quaternion q;
+            core::vector3df neckAxis = core::vector3df(0.0f,-0.8f,1.0f);
+            neckAxis.normalize();
+            q.fromAngleAxis( core::degToRad( neckAngle ), neckAxis );
+            absoluteAnimationMatrix *= q.getMatrix();
+        }
+        
 	}
 }
 

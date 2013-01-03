@@ -1201,8 +1201,8 @@ void CPlayerComponent::updateUpperBodyAim()
 		core::vector2df ret = getAimAngle(colPos);
         
 		float wUp, wDown, wLeft, wRight, wStraight;
-		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
-		
+		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);		
+        
         if ( wUp > 0 )
             wStraight = 1.0f - wUp;
         else 
@@ -1235,8 +1235,7 @@ void CPlayerComponent::updateUpperBodyAim()
         m_collada->setAnimWeight(wStraight, 1, 1);					// straight
 		m_collada->setAnimWeight(wUp,	2, 1);						// up
 		m_collada->setAnimWeight(wDown, 3, 1);						// down
-        m_collada->synchronizedByTimeScale(1);
-		
+        m_collada->synchronizedByTimeScale(1);    
         
         if ( m_gunOnCommand )
 		{
@@ -2009,7 +2008,7 @@ core::vector2df CPlayerComponent::getAimAngle( const core::vector3df aimPoint )
 {
 	core::vector2df ret;
 
-	CGameColladaSceneNode *spine = m_collada->getSceneNode("RightGunTip");	
+	CGameColladaSceneNode *spine = m_collada->getSceneNode("Neck");	//RightGunTip
 	core::vector3df spinePoint = spine->getAbsolutePosition();
 
 	core::vector3df aimRay	= aimPoint - spinePoint;

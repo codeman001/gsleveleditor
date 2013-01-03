@@ -1035,10 +1035,8 @@ void CColladaMeshComponent::setAnimationLayerWeight( int animLayer, float weight
 			continue;
 		}
 		
-		CGameAnimation *anim = j->getAnimation(animLayer);
-        
-        if ( anim->isEnable() == true )
-            anim->setAnimLayerWeight(weight);
+		CGameAnimation *anim = j->getAnimation(animLayer);    
+        anim->setAnimLayerWeight(weight);
         
 		i++;
 	}

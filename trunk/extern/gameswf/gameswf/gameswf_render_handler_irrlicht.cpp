@@ -1092,7 +1092,9 @@ struct render_handler_irrlicht : public gameswf::render_handler
         {
             m_spriteBatch.m_currentTexture->layout();
             material.setTexture(0, m_spriteBatch.m_currentTexture->m_texture );
-            material.TextureLayer[0].BilinearFilter = true;
+            
+            // turn on bilinear on override material
+            m_material->TextureLayer[0].BilinearFilter = true;
         }
         else
         {

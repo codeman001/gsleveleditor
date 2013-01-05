@@ -51,6 +51,18 @@ namespace video
 		//! 128 bit floating point format. 32 bits are used for the red, green, blue and alpha channels.
 		ECF_A32B32G32R32F,
 
+		//! DDS formats
+		ECF_COMPRESSED_RGB_S3TC_DXT1,
+		ECF_COMPRESSED_RGBA_S3TC_DXT1,
+		ECF_COMPRESSED_RGBA_S3TC_DXT3,
+		ECF_COMPRESSED_RGBA_S3TC_DXT5,
+
+		//! PVR formats
+		ECF_COMPRESSED_RGBA_PVRTC_2BPP,
+		ECF_COMPRESSED_RGB_PVRTC_2BPP,
+		ECF_COMPRESSED_RGBA_PVRTC_4BPP,
+		ECF_COMPRESSED_RGB_PVRTC_4BPP,
+
 		//! Unknown color format:
 		ECF_UNKNOWN
 	};

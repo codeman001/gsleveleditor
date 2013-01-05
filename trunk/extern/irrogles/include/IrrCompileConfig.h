@@ -66,8 +66,8 @@
 #define _IRR_WINDOWS_API_
 #define _IRR_COMPILE_WITH_WINDOWS_DEVICE_
 //#define _IRR_COMPILE_WITH_OGLES1_
-//#define _IRR_COMPILE_WITH_OGLES2_
-#define _IRR_COMPILE_WITH_OPENGL_
+#define _IRR_COMPILE_WITH_OGLES2_
+//#define _IRR_COMPILE_WITH_OPENGL_
 
 // Build with windowsdk6 if use direct3d9
 //#define _IRR_COMPILE_WITH_DIRECT3D_9_
@@ -645,6 +645,17 @@ B3D, MS3D or X meshes */
 #define _IRR_COMPILE_WITH_TGA_WRITER_
 #ifdef NO_IRR_COMPILE_WITH_TGA_WRITER_
 #undef _IRR_COMPILE_WITH_TGA_WRITER_
+#endif
+
+
+//! Define _IRR_COMPILE_WITH_PVR_WRITER_ if you want to write .pvr files
+#if !defined(_IRR_COMPILE_WITH_OGLES2_) || !defined(_IRR_COMPILE_WITH_OGLES1_)
+#define NO_IRR_COMPILE_WITH_PVR_LOADER_
+#endif
+
+#define _IRR_COMPILE_WITH_PVR_LOADER_
+#ifdef NO_IRR_COMPILE_WITH_PVR_LOADER_
+#undef _IRR_COMPILE_WITH_PVR_LOADER_
 #endif
 
 //! Define __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_ if you want to open ZIP and GZIP archives

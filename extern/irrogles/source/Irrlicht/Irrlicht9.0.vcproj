@@ -2340,6 +2340,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\CImageCompressed.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\CImageCompressed.h"
+						>
+					</File>
+					<File
 						RelativePath="CNullDriver.cpp"
 						>
 					</File>
@@ -2468,6 +2476,14 @@
 						</File>
 						<File
 							RelativePath="CImageLoaderPSD.h"
+							>
+						</File>
+						<File
+							RelativePath=".\CImageLoaderPVR.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\CImageLoaderPVR.h"
 							>
 						</File>
 						<File

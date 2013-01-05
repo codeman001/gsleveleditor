@@ -1,0 +1,1 @@
+bash -c "make -f makefile.mak image_pvr"

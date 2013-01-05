@@ -915,10 +915,7 @@ struct render_handler_irrlicht : public gameswf::render_handler
 
             
 			index[i] = i;
-		}			
-
-        // enable biliner zoom
-        m_material->TextureLayer[0].BilinearFilter = true;
+		}
         
         // draw sprite
         m_current_styles[LEFT_STYLE].applyTexture ( primitive_type, vertices, vertex_count, index, index_count, coords );	
@@ -1088,21 +1085,26 @@ struct render_handler_irrlicht : public gameswf::render_handler
         m_driver->setTransform( ETS_VIEW,		m_viewMatrix );
 		m_driver->setTransform( ETS_WORLD,		core::IdentityMatrix );
         
+        SMaterial material;
+        
 		// set texture
         if ( m_spriteBatch.m_currentTexture )
         {
             m_spriteBatch.m_currentTexture->layout();
-            m_material->setTexture(0, m_spriteBatch.m_currentTexture->m_texture );
+            material.setTexture(0, m_spriteBatch.m_currentTexture->m_texture );
+            material.TextureLayer[0].BilinearFilter = true;
         }
         else
-            m_material->setTexture(0, NULL );
+        {
+            material.setTexture(0, NULL );
+        }
         
 		if ( m_isRenderMask )
-			m_material->MaterialType = EMT_SOLID;
+			material.MaterialType = EMT_SOLID;
 		else
-			m_material->MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;
+			material.MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;
 
-		m_driver->setMaterial( *m_material );
+		m_driver->setMaterial( material );
         
 		m_driver->enableChangeProjectionMatrixWhenSetRenderMode( false );
 		m_driver->draw2DVertexPrimitiveList(

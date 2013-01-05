@@ -145,7 +145,12 @@ void CApplication::mainLoop()
     
 	// update camera aspect
     f32 fAspect = (f32)m_driver->getCurrentRenderTargetSize().Width / (f32)m_driver->getCurrentRenderTargetSize().Height;
-    setCameraAspectRatio( fAspect );
+
+	// setup orientation
+	if ( m_driver->getOrientation() == video::EOO_0 )
+		setCameraAspectRatio( fAspect );
+	else
+		setCameraAspectRatio( 1/fAspect );
 	
 	// update touch event
 	m_touchMgr.update();

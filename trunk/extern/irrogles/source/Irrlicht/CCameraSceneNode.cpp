@@ -268,23 +268,18 @@ void CCameraSceneNode::render()
 	if ( driver)
 	{
 		core::matrix4 prjMat = ViewArea.getTransform ( video::ETS_PROJECTION);
-		core::matrix4 r = core::IdentityMatrix;
 
 		// Rotate by orientation
+		core::matrix4 r = core::IdentityMatrix;
 		video::E_ORIENTATION currentOrientation = driver->getOrientation();
 		if ( currentOrientation == video::EOO_270 )
-		{
 			r.setRotationDegrees(core::vector3df(0,0,-90));
-			prjMat *= r;
-		}
 		else if ( currentOrientation == video::EOO_90 )
-		{
 			r.setRotationDegrees(core::vector3df(0,0,90));
-			prjMat *= r;
-		}
 
-		driver->setTransform(video::ETS_PROJECTION, prjMat);
-		driver->setTransform(video::ETS_VIEW, ViewArea.getTransform ( video::ETS_VIEW) );
+		driver->setTransform(video::ETS_PROJECTION, r*prjMat);
+
+		driver->setTransform(video::ETS_VIEW, ViewArea.getTransform (video::ETS_VIEW) );
 	}
 }
 

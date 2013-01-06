@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		7F1AEED415F7897A00DF8EA0 /* IrrCompileConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F1AEED315F7897A00DF8EA0 /* IrrCompileConfig.h */; };
+		7FBECA221699176C00091F26 /* CImageCompressed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FBECA201699176C00091F26 /* CImageCompressed.cpp */; };
+		7FBECA231699176C00091F26 /* CImageCompressed.h in Headers */ = {isa = PBXBuildFile; fileRef = 7FBECA211699176C00091F26 /* CImageCompressed.h */; };
+		7FBECA271699179000091F26 /* CImageLoaderPVR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FBECA251699179000091F26 /* CImageLoaderPVR.cpp */; };
+		7FBECA281699179000091F26 /* CImageLoaderPVR.h in Headers */ = {isa = PBXBuildFile; fileRef = 7FBECA261699179000091F26 /* CImageLoaderPVR.h */; };
 		7FCBD11C15F4B13300C432A7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBD11B15F4B13300C432A7 /* Foundation.framework */; };
 		7FCBD31D15F4B2D400C432A7 /* aes.h in Headers */ = {isa = PBXBuildFile; fileRef = 7FCBD13215F4B2D300C432A7 /* aes.h */; };
 		7FCBD31E15F4B2D400C432A7 /* aescrypt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FCBD13315F4B2D300C432A7 /* aescrypt.cpp */; };
@@ -482,6 +486,10 @@
 
 /* Begin PBXFileReference section */
 		7F1AEED315F7897A00DF8EA0 /* IrrCompileConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IrrCompileConfig.h; path = ../../../../../include/IrrCompileConfig.h; sourceTree = "<group>"; };
+		7FBECA201699176C00091F26 /* CImageCompressed.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CImageCompressed.cpp; path = ../../../CImageCompressed.cpp; sourceTree = "<group>"; };
+		7FBECA211699176C00091F26 /* CImageCompressed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CImageCompressed.h; path = ../../../CImageCompressed.h; sourceTree = "<group>"; };
+		7FBECA251699179000091F26 /* CImageLoaderPVR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CImageLoaderPVR.cpp; path = ../../../CImageLoaderPVR.cpp; sourceTree = "<group>"; };
+		7FBECA261699179000091F26 /* CImageLoaderPVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CImageLoaderPVR.h; path = ../../../CImageLoaderPVR.h; sourceTree = "<group>"; };
 		7FCBD11815F4B13300C432A7 /* libirrlicht.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libirrlicht.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7FCBD11B15F4B13300C432A7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7FCBD11F15F4B13300C432A7 /* irrlicht-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "irrlicht-Prefix.pch"; sourceTree = "<group>"; };
@@ -1614,6 +1622,8 @@
 		7FCBDD6915F4C00A00C432A7 /* Null */ = {
 			isa = PBXGroup;
 			children = (
+				7FBECA201699176C00091F26 /* CImageCompressed.cpp */,
+				7FBECA211699176C00091F26 /* CImageCompressed.h */,
 				7FCBDD7D15F4C09800C432A7 /* writer */,
 				7FCBDD7C15F4C08D00C432A7 /* loader */,
 				7FCBDD6A15F4C08100C432A7 /* CColorConverter.cpp */,
@@ -1632,6 +1642,8 @@
 		7FCBDD7C15F4C08D00C432A7 /* loader */ = {
 			isa = PBXGroup;
 			children = (
+				7FBECA251699179000091F26 /* CImageLoaderPVR.cpp */,
+				7FBECA261699179000091F26 /* CImageLoaderPVR.h */,
 				7FCBDD7E15F4C0B300C432A7 /* CImageLoaderBMP.cpp */,
 				7FCBDD7F15F4C0B300C432A7 /* CImageLoaderBMP.h */,
 				7FCBDD8015F4C0B300C432A7 /* CImageLoaderDDS.cpp */,
@@ -1925,6 +1937,8 @@
 				7FCBDE2A15F4C32400C432A7 /* CLMTSMeshFileLoader.h in Headers */,
 				7FD0C01E15F4FB3A00626D90 /* CWADReader.h in Headers */,
 				7F1AEED415F7897A00DF8EA0 /* IrrCompileConfig.h in Headers */,
+				7FBECA231699176C00091F26 /* CImageCompressed.h in Headers */,
+				7FBECA281699179000091F26 /* CImageLoaderPVR.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2252,6 +2266,8 @@
 				7FCBDE2515F4C2E200C432A7 /* CDMFLoader.cpp in Sources */,
 				7FCBDE2915F4C32400C432A7 /* CLMTSMeshFileLoader.cpp in Sources */,
 				7FD0C01D15F4FB3A00626D90 /* CWADReader.cpp in Sources */,
+				7FBECA221699176C00091F26 /* CImageCompressed.cpp in Sources */,
+				7FBECA271699179000091F26 /* CImageLoaderPVR.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

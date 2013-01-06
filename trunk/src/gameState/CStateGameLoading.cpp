@@ -3,6 +3,7 @@
 #include "CStateGameplay.h"
 #include "CGameStateManager.h"
 #include "IView.h"
+#include "core/TextureManager/CTextureManager.h"
 
 CStateGameLoading::CStateGameLoading()
 	:CGameState( CGameState::GSStateGameLoading )
@@ -14,6 +15,9 @@ CStateGameLoading::CStateGameLoading()
 	m_levelLoad = gameplay->getLevel();
 	m_levelLoad->loadLevel( CGameLevel::getLevelProperty("levelLoad") );
 
+    // release all main menu texture
+    CTextureManager::getInstance()->removeAllTexture();
+    
 	m_nextState = gameplay;
 }
 

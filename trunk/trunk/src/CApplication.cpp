@@ -111,6 +111,9 @@ void CApplication::initApplication( IrrlichtDevice* device )
     CGameControl::createGetInstance();
     registerEvent( "gameControl", CGameControl::getInstance() );
     
+    // init instance for texture manager
+    CTextureManager::createGetInstance();
+    
 	// push gamestate
 	CGameStateMgr::getInstance()->pushState( new CStateInit() );
 }
@@ -133,6 +136,7 @@ void CApplication::destroyApplication()
 	CGameDebug::releaseInstance();
 	CGameUI::releaseInstance();
     CGameControl::releaseInstance();
+    CTextureManager::releaseInstance();
 }
 
 void CApplication::mainLoop()

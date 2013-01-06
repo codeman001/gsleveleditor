@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CBinaryUtils.h"
 #include "IView.h"
+#include "core/TextureManager/CTextureManager.h"
 
 //////////////////////////////////////////////
 // function c implement
@@ -1063,7 +1064,12 @@ void CBinaryUtils::readMaterial( unsigned char *data, unsigned int size, std::st
 			uiString::cat<char,char>( fullPath , "/" );
 			uiString::cat<char,char>( fullPath , stringc );
 #endif
-			mat->setTexture(i, getIView()->getDriver()->getTexture( fullPath ) );
+            // load texture of material
+            ITexture *tex = getIView()->getDriver()->getTexture( fullPath );            
+			mat->setTexture(i, tex);
+            
+            // register the texture
+            CTextureManager::getInstance()->registerTexture(tex);
 		}
 	}
 

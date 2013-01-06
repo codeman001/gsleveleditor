@@ -629,6 +629,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="TextureManager"
+					>
+					<File
+						RelativePath="..\..\src\core\TextureManager\CTextureManager.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\TextureManager\CTextureManager.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="uiClass"

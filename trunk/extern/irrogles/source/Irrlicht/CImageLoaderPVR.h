@@ -25,7 +25,7 @@ public:
 
 	//! returns true if the file maybe is able to be loaded by this class 
 	//! based on the file extension (e.g. ".tga") 
-	virtual bool isALoadableFileExtension(const c8* fileName) const; 
+	virtual bool isALoadableFileExtension(const io::path& filename) const; 
 
 	//! returns true if the file maybe is able to be loaded by this class 
 	virtual bool isALoadableFileFormat(irr::io::IReadFile* file) const; 
@@ -33,6 +33,8 @@ public:
 	//! creates a surface from the file 
 	virtual IImage* loadImage(irr::io::IReadFile* file) const;
 };
+
+IImageLoader* createImageLoaderPVR();
 
 } // end namespace video 
 } // end namespace demon 

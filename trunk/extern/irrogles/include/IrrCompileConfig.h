@@ -649,7 +649,7 @@ B3D, MS3D or X meshes */
 
 
 //! Define _IRR_COMPILE_WITH_PVR_WRITER_ if you want to write .pvr files
-#if !defined(_IRR_COMPILE_WITH_OGLES2_) || !defined(_IRR_COMPILE_WITH_OGLES1_)
+#if !defined(_IRR_COMPILE_WITH_OGLES2_) && !defined(_IRR_COMPILE_WITH_OGLES1_)
 #define NO_IRR_COMPILE_WITH_PVR_LOADER_
 #endif
 

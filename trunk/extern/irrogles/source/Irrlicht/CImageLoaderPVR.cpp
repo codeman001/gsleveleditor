@@ -7,7 +7,7 @@
 #include "CReadFile.h"
 #include "CColorConverter.h"
 #include "CImage.h"
-//#include "CCompressedImage.h" 
+#include "CImageCompressed.h" 
 #include "SPVRHeader.h"
 #include "os.h"
 
@@ -65,9 +65,9 @@ CImageLoaderPVR::~CImageLoaderPVR()
 }
 
 bool
-CImageLoaderPVR::isALoadableFileExtension(const c8* fileName) const
+CImageLoaderPVR::isALoadableFileExtension(const io::path& filename) const
 {
-	return strstr(fileName, ".pvr") != 0; 
+	return core::hasFileExtension ( filename, "pvr" );
 }
 
 bool
@@ -105,7 +105,7 @@ CImageLoaderPVR::loadImage(irr::io::IReadFile* file) const
 	{
 		case 0x12:	// OGL_RGBA_8888
 		{
-			colorFormat = ECF_R8G8B8A8;
+			colorFormat = ECF_A8R8G8B8;
 		}
 		break;
 
@@ -153,9 +153,9 @@ CImageLoaderPVR::loadImage(irr::io::IReadFile* file) const
 	}
 
 	IImage* result = NULL; 
-	if(colorFormat == ECF_R8G8B8A8)
+	if(colorFormat == ECF_A8R8G8B8)
 	{
-		result = new CImage(ECF_R8G8B8A8, core::dimension2d<s32>(header.Width, header.Height));
+		result = new CImage(ECF_A8R8G8B8, core::dimension2d<u32>(header.Width, header.Height));
 		
 		CColorConverter::convert32BitTo32Bit((s32*)data, (s32*)result->lock(), header.Width, header.Height, 0, false);
 		delete[] data;
@@ -166,19 +166,19 @@ CImageLoaderPVR::loadImage(irr::io::IReadFile* file) const
 		// -- CUBE MAP
 		if (isCubeMap) 
 		{
-			result = new CCompressedImage( colorFormat, core::dimension2d<u32>( header.Width, header.Height ), data, header.DataLength, header.MipmapCount, true, true, true ); 
+			result = new CImageCompressed( colorFormat, core::dimension2d<u32>( header.Width, header.Height ), data, header.DataLength, header.MipmapCount, true, true, true ); 
 
 			for (int i=0;i<5;i++) 
 			{
 				long bytesRead = file->read(data, header.DataLength);
-				CCompressedImage* compressedImage = static_cast<CCompressedImage*>(result);
+				CImageCompressed* compressedImage = static_cast<CImageCompressed*>(result);
 				compressedImage->setCubeMapExtraFaceData(i+1, data, header.DataLength);
 			}			
 		}
 		// -- NORMAL
 		else
 		{
-			result = new CCompressedImage( colorFormat, core::dimension2d<u32>( header.Width, header.Height ), data, header.DataLength, header.MipmapCount ); 
+			result = new CImageCompressed( colorFormat, core::dimension2d<u32>( header.Width, header.Height ), data, header.DataLength, header.MipmapCount ); 
 		}
 	}
 	return result;
@@ -187,7 +187,7 @@ CImageLoaderPVR::loadImage(irr::io::IReadFile* file) const
 IImageLoader*
 createImageLoaderPVR()
 {
-	return new CImageLoaderPVR;
+	return new CImageLoaderPVR();
 }
 
 } // end namespace video

@@ -58,6 +58,8 @@ IImageLoader* createImageLoaderPPM();
 //! creates a loader which is able to load rgb images
 IImageLoader* createImageLoaderRGB();
 
+//! creates a loader which is able to load rgb images
+IImageLoader* createImageLoaderPVR();
 
 //! creates a writer which is able to save bmp images
 IImageWriter* createImageWriterBMP();
@@ -158,6 +160,10 @@ CNullDriver::CNullDriver(io::IFileSystem* io, const core::dimension2d<u32>& scre
 #ifdef _IRR_COMPILE_WITH_BMP_LOADER_
 	SurfaceLoader.push_back(video::createImageLoaderBMP());
 #endif
+#ifdef _IRR_COMPILE_WITH_PVR_LOADER_
+	SurfaceLoader.push_back(video::createImageLoaderPVR());
+#endif
+
 
 
 #ifdef _IRR_COMPILE_WITH_PPM_WRITER_

@@ -199,7 +199,7 @@ u32 CImageCompressed::getBytesPerBlockFromFormat(ECOLOR_FORMAT format)
 }
 
 //! sets a pixel
-void CImageCompressed::setPixel(u32 x, u32 y, const SColor &color )
+void CImageCompressed::setPixel(u32 x, u32 y, const SColor &color, bool blend )
 {
 	_IRR_DEBUG_BREAK_IF("Not implemented");
 }
@@ -240,7 +240,7 @@ void CImageCompressed::copyToWithAlpha(IImage* target, const core::position2d<s3
 //! copies this surface into another, scaling it to the target image size
 // note: this is very very slow. (i didn't want to write a fast version.
 // but hopefully, nobody wants to scale surfaces every frame.
-void CImageCompressed::copyToScaling(void* target, s32 width, s32 height, ECOLOR_FORMAT format, u32 pitch)
+void CImageCompressed::copyToScaling(void* target, u32 width, u32 height, ECOLOR_FORMAT format, u32 pitch)
 {
 	_IRR_DEBUG_BREAK_IF("Not implemented");
 }
@@ -253,6 +253,11 @@ void CImageCompressed::copyToScaling(IImage* target)
 	_IRR_DEBUG_BREAK_IF("Not implemented");
 }
 
+//! copies this surface into another, scaling it to fit, appyling a box filter
+void CImageCompressed::copyToScalingBoxFilter(IImage* target, s32 bias, bool blend)
+{
+	_IRR_DEBUG_BREAK_IF("Not implemented");
+}
 
 //! fills the surface with given color
 void CImageCompressed::fill(const SColor &color)

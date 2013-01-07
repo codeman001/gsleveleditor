@@ -64,7 +64,7 @@ public:
 	virtual SColor getPixel(u32 x, u32 y) const;
 
 	//! sets a pixel
-	virtual void setPixel(u32 x, u32 y, const SColor &color );
+	virtual void setPixel(u32 x, u32 y, const SColor &color, bool blend = false  );
 
 	//! returns the color format
 	virtual ECOLOR_FORMAT getColorFormat() const;
@@ -85,7 +85,7 @@ public:
 	virtual u32 getPitch() const { return Pitch; }
 
 	//! copies this surface into another, scaling it to fit.
-	virtual void copyToScaling(void* target, s32 width, s32 height, ECOLOR_FORMAT format, u32 pitch=0);
+	virtual void copyToScaling(void* target, u32 width, u32 height, ECOLOR_FORMAT format=ECF_A8R8G8B8, u32 pitch=0);
 
 	//! copies this surface into another, scaling it to fit.
 	virtual void copyToScaling(IImage* target);
@@ -100,6 +100,9 @@ public:
 	virtual void copyToWithAlpha(IImage* target, const core::position2d<s32>& pos,
 			const core::rect<s32>& sourceRect, const SColor &color,
 			const core::rect<s32>* clipRect = 0);
+
+	//! copies this surface into another, scaling it to fit, appyling a box filter
+	virtual void copyToScalingBoxFilter(IImage* target, s32 bias = 0, bool blend = false);
 
 	//! fills the surface with black or white
 	virtual void fill(const SColor &color);

@@ -1057,6 +1057,15 @@ void CBinaryUtils::readMaterial( unsigned char *data, unsigned int size, std::st
 		{
 			// load texture here
 			char fullPath[512];
+			char fileName[512];
+
+#ifdef _IRR_COMPILE_WITH_OGLES2_
+			// replace texture is PVR
+			uiString::getFileNameNoExt<char,char>(stringc, fileName);
+			uiString::copy<char,char>(stringc,fileName);
+			uiString::cat<char,char>(stringc,".pvr");
+#endif
+
 #ifdef USE_ZIPPACKAGE
 			uiString::copy<char, char>( fullPath, stringc );
 #else

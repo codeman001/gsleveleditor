@@ -1,5 +1,6 @@
 delete _common.zip
-delete _texture.zip
+delete _textureTGA.zip
+delete _texturePVR.zip
 delete _scene.zip
 
 ..\tools\7z\7z.exe a -r _common.zip *.css
@@ -10,8 +11,8 @@ delete _scene.zip
 ..\tools\7z\7z.exe a -r _common.zip *.lua
 ..\tools\7z\7z.exe a -r _common.zip *.png
 
-..\tools\7z\7z.exe a -r _texture.zip *.tga
-..\tools\7z\7z.exe a -r _texture.zip *.pvr
+..\tools\7z\7z.exe a -r _textureTGA.zip *.tga
+..\tools\7z\7z.exe a -r _texturePVR.zip *.pvr
 
 ..\tools\7z\7z.exe a -r _scene.zip *.scene
 ..\tools\7z\7z.exe a -r _scene.zip *.anim

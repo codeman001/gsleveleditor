@@ -1880,10 +1880,16 @@ bool CPlayerComponent::turnToDir(core::vector3df& dir, const core::vector3df& tu
 	// rotate front vec
 	float f = speed*0.1f*getIView()->getTimeStep();	
 	
+	if ( f >= fabsf(getAngle(dir, turnTo)) )
+	{
+		dir = turnTo;
+        return true;
+	}
+
     dir = interpolateTurnToDir( dir, turnTo, f );
     
     float rot = fabsf(getAngle(dir, turnTo));
-    if ( rot < speed )
+    if ( rot <= speed )
     {
         dir = turnTo;
         return true;

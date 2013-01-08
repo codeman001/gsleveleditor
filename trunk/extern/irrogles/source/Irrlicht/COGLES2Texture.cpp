@@ -13,6 +13,7 @@
 #include "COGLES2Driver.h"
 #include "os.h"
 #include "CImage.h"
+#include "CImageCompressed.h"
 #include "CColorConverter.h"
 #include "irrString.h"
 
@@ -147,7 +148,21 @@ namespace video
 		}
 
 		const core::dimension2d<u32> nImageSize = ImageSize.getOptimalSize( !Driver->queryFeature( EVDF_TEXTURE_NPOT ) );
-		const ECOLOR_FORMAT destFormat = getBestColorFormat( image->getColorFormat() );
+        
+        ECOLOR_FORMAT colorFormat = image->getColorFormat();
+        
+        
+        // compress texture
+        if ( colorFormat >= ECF_COMPRESSED_RGBA_PVRTC_2BPP &&
+            colorFormat <= ECF_COMPRESSED_RGB_PVRTC_4BPP )
+        {
+            Image = image;
+            Image->grab();
+            return;
+        }
+        
+                
+		const ECOLOR_FORMAT destFormat = getBestColorFormat( colorFormat );
 
 		Image = new CImage( destFormat, nImageSize );
 		// copy texture
@@ -172,6 +187,10 @@ namespace video
 			return;
 		}
 
+        bool isPVRTC2 = false;
+        bool isPVRTC4 = false;
+        bool isCompressTexture = false;
+        
 		void( *convert )( const void*, s32, void* ) = 0;
 		switch ( Image->getColorFormat() )
 		{
@@ -210,11 +229,168 @@ namespace video
 					PixelFormat = GL_RGBA;
 				}
 				break;
+            case ECF_COMPRESSED_RGBA_PVRTC_2BPP:
+                InternalFormat = GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
+                PixelFormat = GL_UNSIGNED_BYTE;
+                isCompressTexture = true;
+                isPVRTC2 = true;
+                break;
+            case ECF_COMPRESSED_RGB_PVRTC_2BPP:
+                InternalFormat = GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
+                PixelFormat = GL_UNSIGNED_BYTE;
+                isCompressTexture = true;
+                isPVRTC2 = true;
+                break;
+            case ECF_COMPRESSED_RGBA_PVRTC_4BPP:
+                InternalFormat = GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
+                PixelFormat = GL_UNSIGNED_BYTE;
+                isCompressTexture = true;
+                isPVRTC4 = true;
+                break;
+            case ECF_COMPRESSED_RGB_PVRTC_4BPP:
+                InternalFormat = GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
+                PixelFormat = GL_UNSIGNED_BYTE;
+                isCompressTexture = true;
+                isPVRTC4 = true;
+                break;
 			default:
 				os::Printer::log( "Unsupported texture format", ELL_ERROR );
 				break;
 		}
 
+        if ( isCompressTexture )
+        {
+            CImageCompressed *imgCompress = static_cast<CImageCompressed*>(Image);
+            
+            if (imgCompress->isCubeMap() == true)
+            {
+                glEnable(GL_TEXTURE_CUBE_MAP);
+                glBindTexture(GL_TEXTURE_CUBE_MAP, TextureName);
+            }
+            else
+            {
+                glBindTexture(GL_TEXTURE_2D, TextureName);
+            }
+            
+            if (Driver->testEGLError())
+                os::Printer::log("Count not bind Texture", ELL_ERROR);
+            
+            u32 mipMapCount = imgCompress->getMipMapCount();
+            
+            if (imgCompress->isCubeMap() == false)
+            {
+                if (mipMapCount > 1)
+                {
+                    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+                    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                    HasMipMaps = true;
+                }
+                else
+                {
+                    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+                    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+                    HasMipMaps = false;
+                }
+            }
+            
+            void* source = Image->lock();
+            
+            u32 nWidth = imgCompress->getDimension().Width;
+            u32 nHeight = imgCompress->getDimension().Height;
+            u32 nOffset = 0;
+            
+            if (imgCompress->isCubeMap())
+            {                
+                for( u32 i = 0; i < 6; ++i ) {
+                    GLenum target = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
+                    
+                    u32 nSize;
+                    if (isPVRTC4)
+                    {
+                        nSize = ( core::max_(nWidth, 8U) * core::max_(nHeight, 8U) * 4 + 7) / 8;
+                    }
+                    else if (isPVRTC2)
+                    {
+                        nSize = ( core::max_(nWidth, 16U) * core::max_(nHeight, 8U) * 2 + 7) / 8;
+                    }
+                    else
+                    {
+                        nSize = ((nWidth+3)/4) * ((nHeight+3)/4) * imgCompress->getBytesPerBlock();
+                    }
+                    
+                    glCompressedTexImage2D(	target,
+                                            0,
+                                            InternalFormat,
+                                            nWidth,
+                                            nHeight,
+                                            0,
+                                            nSize,
+                                            (i==0) ? ((u8 *)source) : (imgCompress->getCubeMapExtraFaceData(i-1)) );
+                }
+                
+                imgCompress->deleteCubeMapData();
+            }
+            else
+            {
+                for( u32 i = 0; i < mipMapCount; ++i )
+                {
+                    if( nWidth  == 0 ) nWidth  = 1;
+                    if( nHeight == 0 ) nHeight = 1;
+                    
+                    u32 nSize;
+                    if (isPVRTC4)
+                    {
+                        nSize = ( core::max_(nWidth, 8U) * core::max_(nHeight, 8U) * 4 + 7) / 8;
+                    }
+                    else if (isPVRTC2)
+                    {
+                        nSize = ( core::max_(nWidth, 16U) * core::max_(nHeight, 8U) * 2 + 7) / 8;
+                    }
+                    else
+                    {
+                        nSize = ((nWidth+3)/4) * ((nHeight+3)/4) * imgCompress->getBytesPerBlock();
+                    }
+                    
+                    glCompressedTexImage2D( GL_TEXTURE_2D,
+                                            i,
+                                            InternalFormat,
+                                            nWidth,
+                                            nHeight,
+                                            0,
+                                            nSize,
+                                            (u8 *)source + nOffset );
+                    
+                    nOffset += nSize;
+                    
+                    // Half the image size for the next mip-map level...
+                    nWidth  = (nWidth  / 2);
+                    nHeight = (nHeight / 2);
+                }
+            }
+            
+            Image->unlock();
+            
+            
+            if (!imgCompress->isCubeMap())
+            {
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            }
+            else {
+                glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            }
+            
+            if (Driver->testGLError())
+                os::Printer::log("Could not glCompressedTexImage2D", ELL_ERROR);
+            
+            return;
+        }
+        
+        
+        
 		glBindTexture( GL_TEXTURE_2D, TextureName );
 		if ( Driver->testGLError() )
 			os::Printer::log( "Could not bind Texture", ELL_ERROR );

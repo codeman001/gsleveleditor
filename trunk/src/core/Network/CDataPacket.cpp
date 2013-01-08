@@ -3,7 +3,7 @@
 
 #include "md5.h"
 
-#define	CHECKSUMBYTE	16
+#define	CHECKSUMBYTE	2
 
 CDataPacket::CDataPacket( int size )
 {
@@ -120,17 +120,16 @@ void CDataPacket::packData()
 // check data revc
 bool CDataPacket::checkData()
 {
-	static unsigned char ret[CHECKSUMBYTE];
+	short ret = 0;
 
 	// get checksum from data
-	memcpy(ret, m_messageBody, CHECKSUMBYTE);
+	memcpy(&ret, m_messageBody, CHECKSUMBYTE);
 
 	// calc data checksum
-	memset(m_messageBody, 0, CHECKSUMBYTE);
-	unsigned char *sum = calcDataChecksum();
+	short sum = *((short*)(calcDataChecksum()));
 
 	// check checksum
-	if ( memcmp(ret, sum,CHECKSUMBYTE) == 0 )
+	if ( ret == sum )
 		return true;
 
 	return false;
@@ -139,8 +138,8 @@ bool CDataPacket::checkData()
 // calcDataChecksum
 unsigned char* CDataPacket::calcDataChecksum()
 {
-	static unsigned char ret[CHECKSUMBYTE];
-	memset(ret, 0, CHECKSUMBYTE);
+	unsigned char ret[16];
+	memset(ret, 0, 16);
 
 	// clear checksum data
 	memset(m_messageBody, 0, CHECKSUMBYTE);
@@ -150,5 +149,12 @@ unsigned char* CDataPacket::calcDataChecksum()
 	MD5_Init( &md5Contex );
 	MD5_Update( &md5Contex, m_messageBody, (unsigned long)m_size );
 	MD5_Final( ret, &md5Contex );
-	return ret;
+
+	// calc sign number
+	static short value = 0;
+	value = 0;
+	for (int i = 0; i < 16; i++)
+		value += ret[i];
+
+	return (unsigned char*)&value;
 }

@@ -204,7 +204,7 @@ bool CMultiplayerManager::onRevcData( unsigned char *buffer, int size, int devID
 		const char *lpIp = getDeviceIp(addr);
 
         char string[512];
-		sprintf(string,"- Network warning: %s send data error", lpIp);
+		sprintf(string,"- Network warning: %s revc data error", lpIp);
         os::Printer::log(string);
         
 		return false;

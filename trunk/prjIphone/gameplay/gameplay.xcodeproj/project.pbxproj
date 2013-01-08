@@ -10,13 +10,13 @@
 		7F1AEED615F789E900DF8EA0 /* CIOSApi.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEED515F789E900DF8EA0 /* CIOSApi.mm */; };
 		7F1AEEDE15F78CFB00DF8EA0 /* _common.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEED815F78CFA00DF8EA0 /* _common.zip */; };
 		7F1AEEDF15F78CFB00DF8EA0 /* _scene.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEED915F78CFA00DF8EA0 /* _scene.zip */; };
-		7F1AEEE015F78CFB00DF8EA0 /* _texture.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEEDA15F78CFA00DF8EA0 /* _texture.zip */; };
 		7F1AEEE115F78CFB00DF8EA0 /* arial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEEDB15F78CFB00DF8EA0 /* arial.ttf */; };
 		7F1AEEE215F78CFB00DF8EA0 /* killerants.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEEDC15F78CFB00DF8EA0 /* killerants.ttf */; };
 		7F1AEEE315F78CFB00DF8EA0 /* zrnic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F1AEEDD15F78CFB00DF8EA0 /* zrnic.ttf */; };
 		7F1AEF0D15F7A02700DF8EA0 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEF0C15F7A02700DF8EA0 /* Application.cpp */; };
 		7F1AEF1015F7A2C500DF8EA0 /* CAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */; };
 		7F1EC5E616109767008D61A2 /* libLua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F1EC5E516109756008D61A2 /* libLua.a */; };
+		7F2F9A27169C759D003797B3 /* _texturePVR.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F2F9A26169C759D003797B3 /* _texturePVR.zip */; };
 		7F3743F51613552C0006762B /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3743F31613552C0006762B /* md5.cpp */; };
 		7F3875E5163841FD00E84B98 /* CDaeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3875E3163841FD00E84B98 /* CDaeUtils.cpp */; };
 		7F39584F160EF17700EEB3A2 /* CDataPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */; };
@@ -147,13 +147,13 @@
 		7F1AEED515F789E900DF8EA0 /* CIOSApi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CIOSApi.mm; sourceTree = "<group>"; };
 		7F1AEED815F78CFA00DF8EA0 /* _common.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _common.zip; path = ../../bin/_common.zip; sourceTree = "<group>"; };
 		7F1AEED915F78CFA00DF8EA0 /* _scene.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _scene.zip; path = ../../bin/_scene.zip; sourceTree = "<group>"; };
-		7F1AEEDA15F78CFA00DF8EA0 /* _texture.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _texture.zip; path = ../../bin/_texture.zip; sourceTree = "<group>"; };
 		7F1AEEDB15F78CFB00DF8EA0 /* arial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = arial.ttf; path = ../../bin/arial.ttf; sourceTree = "<group>"; };
 		7F1AEEDC15F78CFB00DF8EA0 /* killerants.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = killerants.ttf; path = ../../bin/killerants.ttf; sourceTree = "<group>"; };
 		7F1AEEDD15F78CFB00DF8EA0 /* zrnic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = zrnic.ttf; path = ../../bin/zrnic.ttf; sourceTree = "<group>"; };
 		7F1AEF0C15F7A02700DF8EA0 /* Application.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Application.cpp; sourceTree = "<group>"; };
 		7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CAppDelegate.mm; sourceTree = "<group>"; };
 		7F1EC5DD16109755008D61A2 /* Lua.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lua.xcodeproj; path = ../../../extern/lua/ios/Lua.xcodeproj; sourceTree = "<group>"; };
+		7F2F9A26169C759D003797B3 /* _texturePVR.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _texturePVR.zip; path = ../../bin/_texturePVR.zip; sourceTree = "<group>"; };
 		7F3743F31613552C0006762B /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = md5.cpp; path = Network/md5.cpp; sourceTree = "<group>"; };
 		7F3743F41613552C0006762B /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = md5.h; path = Network/md5.h; sourceTree = "<group>"; };
 		7F3875E3163841FD00E84B98 /* CDaeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDaeUtils.cpp; sourceTree = "<group>"; };
@@ -356,14 +356,14 @@
 		7F1AEED715F78CCD00DF8EA0 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				7F1AEED815F78CFA00DF8EA0 /* _common.zip */,
+				7F1AEED915F78CFA00DF8EA0 /* _scene.zip */,
+				7F2F9A26169C759D003797B3 /* _texturePVR.zip */,
+				7F1AEEDB15F78CFB00DF8EA0 /* arial.ttf */,
 				7F609836162F0C2B0085D3FF /* corbel.ttf */,
 				7F609837162F0C2B0085D3FF /* corbelb.ttf */,
 				7F609838162F0C2B0085D3FF /* corbeli.ttf */,
 				7F609839162F0C2B0085D3FF /* corbelz.ttf */,
-				7F1AEED815F78CFA00DF8EA0 /* _common.zip */,
-				7F1AEED915F78CFA00DF8EA0 /* _scene.zip */,
-				7F1AEEDA15F78CFA00DF8EA0 /* _texture.zip */,
-				7F1AEEDB15F78CFB00DF8EA0 /* arial.ttf */,
 				7F1AEEDC15F78CFB00DF8EA0 /* killerants.ttf */,
 				7F1AEEDD15F78CFB00DF8EA0 /* zrnic.ttf */,
 			);
@@ -873,7 +873,6 @@
 				7FE6C72915F47C2D00E07797 /* InfoPlist.strings in Resources */,
 				7F1AEEDE15F78CFB00DF8EA0 /* _common.zip in Resources */,
 				7F1AEEDF15F78CFB00DF8EA0 /* _scene.zip in Resources */,
-				7F1AEEE015F78CFB00DF8EA0 /* _texture.zip in Resources */,
 				7F1AEEE115F78CFB00DF8EA0 /* arial.ttf in Resources */,
 				7F1AEEE215F78CFB00DF8EA0 /* killerants.ttf in Resources */,
 				7F1AEEE315F78CFB00DF8EA0 /* zrnic.ttf in Resources */,
@@ -881,6 +880,7 @@
 				7F60983B162F0C2B0085D3FF /* corbelb.ttf in Resources */,
 				7F60983C162F0C2B0085D3FF /* corbeli.ttf in Resources */,
 				7F60983D162F0C2B0085D3FF /* corbelz.ttf in Resources */,
+				7F2F9A27169C759D003797B3 /* _texturePVR.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

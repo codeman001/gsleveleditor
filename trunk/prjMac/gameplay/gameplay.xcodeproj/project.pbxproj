@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7F1EC6011610985F008D61A2 /* macosxapi.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F1EC6001610985F008D61A2 /* macosxapi.mm */; };
+		7F2F9A0C169C750B003797B3 /* _textureTGA.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F2F9A0B169C750B003797B3 /* _textureTGA.zip */; };
 		7F3743C016133C530006762B /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3743BE16133C530006762B /* md5.cpp */; };
 		7F38760116384DE300E84B98 /* CDaeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3875FF16384DE300E84B98 /* CDaeUtils.cpp */; };
 		7F395802160ED88000EEB3A2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F395801160ED88000EEB3A2 /* Cocoa.framework */; };
@@ -88,7 +89,6 @@
 		7F3A6BDB160F684200B31F81 /* _common.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BD4160F684200B31F81 /* _common.zip */; };
 		7F3A6BDC160F684200B31F81 /* _rawdata.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BD5160F684200B31F81 /* _rawdata.zip */; };
 		7F3A6BDD160F684200B31F81 /* _scene.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BD6160F684200B31F81 /* _scene.zip */; };
-		7F3A6BDE160F684200B31F81 /* _texture.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BD7160F684200B31F81 /* _texture.zip */; };
 		7F3A6BDF160F684200B31F81 /* arial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BD8160F684200B31F81 /* arial.ttf */; };
 		7F3A6BE0160F684200B31F81 /* killerants.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BD9160F684200B31F81 /* killerants.ttf */; };
 		7F3A6BE1160F684200B31F81 /* zrnic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BDA160F684200B31F81 /* zrnic.ttf */; };
@@ -141,6 +141,7 @@
 
 /* Begin PBXFileReference section */
 		7F1EC6001610985F008D61A2 /* macosxapi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = macosxapi.mm; sourceTree = "<group>"; };
+		7F2F9A0B169C750B003797B3 /* _textureTGA.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _textureTGA.zip; path = ../../bin/_textureTGA.zip; sourceTree = "<group>"; };
 		7F3743BE16133C530006762B /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = md5.cpp; sourceTree = "<group>"; };
 		7F3743BF16133C530006762B /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
 		7F3875FF16384DE300E84B98 /* CDaeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDaeUtils.cpp; sourceTree = "<group>"; };
@@ -297,7 +298,6 @@
 		7F3A6BD4160F684200B31F81 /* _common.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _common.zip; path = ../../bin/_common.zip; sourceTree = "<group>"; };
 		7F3A6BD5160F684200B31F81 /* _rawdata.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _rawdata.zip; path = ../../bin/_rawdata.zip; sourceTree = "<group>"; };
 		7F3A6BD6160F684200B31F81 /* _scene.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _scene.zip; path = ../../bin/_scene.zip; sourceTree = "<group>"; };
-		7F3A6BD7160F684200B31F81 /* _texture.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _texture.zip; path = ../../bin/_texture.zip; sourceTree = "<group>"; };
 		7F3A6BD8160F684200B31F81 /* arial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = arial.ttf; path = ../../bin/arial.ttf; sourceTree = "<group>"; };
 		7F3A6BD9160F684200B31F81 /* killerants.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = killerants.ttf; path = ../../bin/killerants.ttf; sourceTree = "<group>"; };
 		7F3A6BDA160F684200B31F81 /* zrnic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = zrnic.ttf; path = ../../bin/zrnic.ttf; sourceTree = "<group>"; };
@@ -731,15 +731,15 @@
 		7F3A6BD3160F681F00B31F81 /* resource */ = {
 			isa = PBXGroup;
 			children = (
+				7F3A6BD4160F684200B31F81 /* _common.zip */,
+				7F3A6BD5160F684200B31F81 /* _rawdata.zip */,
+				7F3A6BD6160F684200B31F81 /* _scene.zip */,
+				7F2F9A0B169C750B003797B3 /* _textureTGA.zip */,
+				7F3A6BD8160F684200B31F81 /* arial.ttf */,
 				7FCB58C5162C6CC200349381 /* corbel.ttf */,
 				7FCB58C6162C6CC200349381 /* corbelb.ttf */,
 				7FCB58C7162C6CC200349381 /* corbeli.ttf */,
 				7FCB58C8162C6CC200349381 /* corbelz.ttf */,
-				7F3A6BD4160F684200B31F81 /* _common.zip */,
-				7F3A6BD5160F684200B31F81 /* _rawdata.zip */,
-				7F3A6BD6160F684200B31F81 /* _scene.zip */,
-				7F3A6BD7160F684200B31F81 /* _texture.zip */,
-				7F3A6BD8160F684200B31F81 /* arial.ttf */,
 				7F3A6BD9160F684200B31F81 /* killerants.ttf */,
 				7F3A6BDA160F684200B31F81 /* zrnic.ttf */,
 			);
@@ -880,7 +880,6 @@
 				7F3A6BDB160F684200B31F81 /* _common.zip in Resources */,
 				7F3A6BDC160F684200B31F81 /* _rawdata.zip in Resources */,
 				7F3A6BDD160F684200B31F81 /* _scene.zip in Resources */,
-				7F3A6BDE160F684200B31F81 /* _texture.zip in Resources */,
 				7F3A6BDF160F684200B31F81 /* arial.ttf in Resources */,
 				7F3A6BE0160F684200B31F81 /* killerants.ttf in Resources */,
 				7F3A6BE1160F684200B31F81 /* zrnic.ttf in Resources */,
@@ -888,6 +887,7 @@
 				7FCB58CA162C6CC200349381 /* corbelb.ttf in Resources */,
 				7FCB58CB162C6CC200349381 /* corbeli.ttf in Resources */,
 				7FCB58CC162C6CC200349381 /* corbelz.ttf in Resources */,
+				7F2F9A0C169C750B003797B3 /* _textureTGA.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

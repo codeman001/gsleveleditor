@@ -61,7 +61,11 @@ void CStateInit::onUpdate()
 		// add zip package
 		io::IFileSystem *fileSystem = getIView()->getDevice()->getFileSystem();
 		fileSystem->addZipFileArchive( getIView()->getPhysicPath("_scene.zip") );
-		fileSystem->addZipFileArchive( getIView()->getPhysicPath("_texture.zip") );
+	#if defined (IOS)
+		fileSystem->addZipFileArchive( getIView()->getPhysicPath("_texturePVR.zip") );
+	#else
+		fileSystem->addZipFileArchive( getIView()->getPhysicPath("_textureTGA.zip") );
+	#endif
 #endif
 
 		// load all template

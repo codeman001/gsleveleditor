@@ -168,7 +168,7 @@ void CStateJoinGame::onEvent(const SEvent& event)
         }
         else if ( event.GameEvent.EventID == (s32)EvtButtonRelease )
         {
-            SEventButtonRelease *buttonEvent = ((SEventButtonRelease*)event.GameEvent.EventData);
+            SEventButtonData *buttonEvent = ((SEventButtonData*)event.GameEvent.EventData);
             
             if ( buttonEvent->data == m_btnMainMenu )
             {

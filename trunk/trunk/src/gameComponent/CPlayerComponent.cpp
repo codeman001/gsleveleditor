@@ -1298,8 +1298,20 @@ void CPlayerComponent::updateUpperBodyShoot()
 			else
 			{
 				// continue shoot
-                m_animCurrentTime = m_collada->getCurrentAnimTimeLength();
+                m_animCurrentTime = m_collada->getCurrentAnimTimeLength()/shootSpeed;
                 
+				// reset frame
+				m_collada->setCurrentFrame(0, 1, 1);
+				m_collada->setCurrentFrame(0, 2, 1);
+				m_collada->setCurrentFrame(0, 3, 1);
+
+				CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
+        
+				// active gunlight
+				core::vector3df gunPos = gunTip->getAbsolutePosition();
+				m_gunLight->setPosition(gunPos);
+				m_gunLightComp->setLightTime(100.0f);
+
                 // setup player state
                 m_playerCmdEvt.shoot	= false;
                 m_playerCmdEvt.aim		= false;

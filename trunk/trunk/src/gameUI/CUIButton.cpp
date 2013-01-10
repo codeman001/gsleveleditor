@@ -33,14 +33,26 @@ void CUIButton::update()
 	if ( m_visible == false && m_buttonState != ButtonInvisible )
 	{
 		// todo
-		m_visible = ButtonInvisible;
+		m_visible = true;
 	}
 	else if ( m_visible == true && m_buttonState == ButtonInvisible )
 	{
 		// todo
-		m_visible = ButtonNormal;
+		m_visible = false;
 	}    
     
+}
+
+// setVisible
+// set visible a button
+void CUIButton::setVisible( bool b )
+{
+	m_visible = b;
+
+	if ( m_visible == false )
+		m_buttonState = ButtonInvisible;
+
+	m_flashObj.setVisible(b);
 }
 
 // onTouchEvent
@@ -87,6 +99,19 @@ bool CUIButton::onEvent( const SEvent& gameEvent)
                     m_flashObj.gotoFrame("focus", true);
 					m_buttonState = ButtonFocus;
 				}
+
+				// post press button event
+                SEvent event;
+                SEventButtonData button;
+                
+                event.EventType = EET_GAME_EVENT;
+				event.GameEvent.EventID = (s32)EvtButtonPress;
+                
+                button.buttonName = m_widgetName;
+                button.data = this;
+                event.GameEvent.EventData = &button;
+                
+                getIView()->getDevice()->postEventFromUser( event );
 			}
 			else if ( gameEvent.MouseInput.Event == EMIE_LMOUSE_LEFT_UP )
 			{			
@@ -126,7 +151,7 @@ bool CUIButton::onEvent( const SEvent& gameEvent)
                 
                 // post press button event
                 SEvent event;
-                SEventButtonRelease button;
+                SEventButtonData button;
                 
                 event.EventType = EET_GAME_EVENT;
                 event.GameEvent.EventID = (s32)EvtButtonRelease;

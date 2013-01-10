@@ -87,7 +87,7 @@ public:
 
 	// setVisible
 	// set visible
-	inline void setVisible( bool b )
+	virtual void setVisible( bool b )
 	{
 		m_visible = b;
 	}

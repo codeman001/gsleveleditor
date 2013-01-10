@@ -14,6 +14,8 @@ CUIDPad::CUIDPad( const char *name, CUIWidget* parent, CMenuFxObj flashObj )
 	m_dpadMove.setVisible( false );
     
     m_isEnable = false;
+	m_isRunFast = false;
+	m_isShootState = false;
 }
 
 CUIDPad::~CUIDPad()
@@ -25,6 +27,9 @@ CUIDPad::~CUIDPad()
 void CUIDPad::update()
 {
 	CUIWidget::update();
+
+	if ( m_isShootState )
+		CGameControl::getInstance()->sendPlayerCommand(true, false, false);
 }
 
 // onTouchEvent
@@ -87,7 +92,7 @@ bool CUIDPad::onEvent( const SEvent& gameEvent)
 			// run event
 			float f = length/k_maxMove;
 			if ( f >= 0.3f )
-				CGameControl::getInstance()->sendPlayerRunEvent( f, (float)moveVec.getAngle() - 90.0f, false );
+				CGameControl::getInstance()->sendPlayerRunEvent( f, (float)moveVec.getAngle() - 90.0f, m_isRunFast );
 			else
 				CGameControl::getInstance()->sendPlayerStopEvent();
 

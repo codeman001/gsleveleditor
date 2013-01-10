@@ -48,6 +48,10 @@ public:
 		m_buttonState = state;
 	}
     
+	// setVisible
+	// set visible a button
+	virtual void setVisible( bool b );
+
 };
 
 #endif

@@ -30,10 +30,13 @@ void CStateGameplay::onCreate()
     CGameControl::getInstance()->setEnable(true);
     
 	// create dpad control
-	CUIDPad*	dpad	= new CUIDPad("dpad", m_rootWidget, getStateObjFx().findObj("mcDPadTouch"));
-	CUIButton*	run		= new CUIButton("runfast", m_rootWidget, getStateObjFx().findObj("mcBtnRunFast"));
-	CUIButton*	shoot	= new CUIButton("shoot", m_rootWidget, getStateObjFx().findObj("mcBtnShoot"));
-	CUIButton*	pause	= new CUIButton("pause", m_rootWidget, getStateObjFx().findObj("mcBtnPause"));
+	m_dpad			= new CUIDPad("dpad", m_rootWidget, getStateObjFx().findObj("mcDPadTouch"));
+	m_btnRunFast	= new CUIButton("runfast", m_rootWidget, getStateObjFx().findObj("mcBtnRunFast"));
+	m_btnShoot		= new CUIButton("shoot", m_rootWidget, getStateObjFx().findObj("mcBtnShoot"));
+	m_btnPause		= new CUIButton("pause", m_rootWidget, getStateObjFx().findObj("mcBtnPause"));
+
+	m_btnRunFast->setVisible(false);
+	m_btnShoot->setVisible(false);
 
 #if defined (IOS) || defined (ANDROID)
     dpad->setEnable(true);
@@ -94,38 +97,70 @@ void CStateGameplay::onRender()
 
 void CStateGameplay::onEvent(const SEvent& event)
 {
-#ifdef HAS_MULTIPLAYER    
-    if ( event.EventType == EET_GAME_EVENT && event.GameEvent.EventID == (s32)EvtNetworking )
-    {
-        SEventNetworking *networkEvent = ((SEventNetworking*)event.GameEvent.EventData);                
-        
-        // todo unpack data
-        if ( networkEvent->eventID == CMultiplayerManager::GameData )
-        {
-            CDataPacket *gamePacket = (CDataPacket*)networkEvent->data;
-
-            int hostKeyID = (int)gamePacket->getShort();
-            m_level->unpackDataMultiplayer(gamePacket, hostKeyID);
-        }
-		else if ( networkEvent->eventID == CMultiplayerManager::PlayerQuit )
+	if ( event.EventType == EET_GAME_EVENT )
+	{
+#ifdef HAS_MULTIPLAYER
+		if ( event.GameEvent.EventID == (s32)EvtNetworking )
 		{
-			CDataPacket *gamePacket = (CDataPacket*)networkEvent->data;
+			SEventNetworking *networkEvent = ((SEventNetworking*)event.GameEvent.EventData);                
+	        
+			// todo unpack data
+			if ( networkEvent->eventID == CMultiplayerManager::GameData )
+			{
+				CDataPacket *gamePacket = (CDataPacket*)networkEvent->data;
 
-            int hostKeyID = (int)gamePacket->getShort();
-			m_level->removeDisconectedObject(hostKeyID);
+				int hostKeyID = (int)gamePacket->getShort();
+				m_level->unpackDataMultiplayer(gamePacket, hostKeyID);
+			}
+			else if ( networkEvent->eventID == CMultiplayerManager::PlayerQuit )
+			{
+				CDataPacket *gamePacket = (CDataPacket*)networkEvent->data;
+
+				int hostKeyID = (int)gamePacket->getShort();
+				m_level->removeDisconectedObject(hostKeyID);
+			}
+
 		}
+		else if ( event.GameEvent.EventID == (s32)EvtNetworkDisconected )
+		{
+			SEventNetworkingDisconected *networkDisconected = ((SEventNetworkingDisconected*)event.GameEvent.EventData);
+			
+			// send player quit message to all client
+			if ( m_mpMgr->isServer() )
+				m_mpMgr->sendPlayerQuit(networkDisconected->hostKeyID);
 
-    }
-    else if ( event.EventType == EET_GAME_EVENT && event.GameEvent.EventID == (s32)EvtNetworkDisconected )
-    {
-		SEventNetworkingDisconected *networkDisconected = ((SEventNetworkingDisconected*)event.GameEvent.EventData);
-		
-		// send player quit message to all client
-		if ( m_mpMgr->isServer() )
-			m_mpMgr->sendPlayerQuit(networkDisconected->hostKeyID);
+			// remove disconected objects
+			m_level->removeDisconectedObject(networkDisconected->hostKeyID);
+		}
+#endif
+		if ( event.GameEvent.EventID == (s32)EvtButtonPress )
+		{
+			SEventButtonData *buttonEvent = ((SEventButtonData*)event.GameEvent.EventData);
 
-		// remove disconected objects
-		m_level->removeDisconectedObject(networkDisconected->hostKeyID);
-    }
-#endif    
+			if ( buttonEvent->data == m_btnRunFast )
+            {
+				m_dpad->setRunFastState(true);
+            }
+			else if ( buttonEvent->data == m_btnShoot )
+            {
+				m_dpad->setShootState(true);
+            }
+		}
+		else if ( event.GameEvent.EventID == (s32)EvtButtonRelease )
+		{
+			SEventButtonData *buttonEvent = ((SEventButtonData*)event.GameEvent.EventData);
+
+			if ( buttonEvent->data == m_btnRunFast )
+            {
+				m_dpad->setRunFastState(false);
+            }
+			else if ( buttonEvent->data == m_btnShoot )
+            {
+				m_dpad->setShootState(false);
+            }
+			else if ( buttonEvent->data == m_btnPause )
+			{
+			}
+		}
+	}
 }

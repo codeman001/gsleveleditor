@@ -7,6 +7,7 @@ enum GameUserEvent
 	EvtPlayerCommand,    
     EvtNetworking,
     EvtNetworkDisconected,
+	EvtButtonPress,
     EvtButtonRelease,
 	EvtCount
 };
@@ -55,7 +56,7 @@ struct SEventNetworkingDisconected
     void    *dev;
 };
 
-struct SEventButtonRelease
+struct SEventButtonData
 {
     std::string buttonName;
     void    *data;

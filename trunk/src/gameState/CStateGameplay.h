@@ -13,6 +13,11 @@ protected:
     float           m_syncGameInterval;
 #endif
     
+	CUIDPad*	m_dpad;
+	CUIButton*	m_btnRunFast;
+	CUIButton*	m_btnShoot;
+	CUIButton*	m_btnPause;
+
 public:
 	CStateGameplay();
 	virtual ~CStateGameplay();

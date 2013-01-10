@@ -15,6 +15,8 @@ protected:
 	core::position2di   m_dpadMovePos;
     
     bool        m_isEnable;
+	bool		m_isRunFast;
+	bool		m_isShootState;
 public:
 	CUIDPad( const char *name, CUIWidget* parent, CMenuFxObj flashObj );
 	virtual ~CUIDPad();
@@ -33,6 +35,20 @@ public:
     {
         m_isEnable = b;
     }
+
+	// setRunFastState
+	// run fast
+	inline void setRunFastState(bool b)
+	{
+		m_isRunFast = b;
+	}
+
+	// setShootState
+	// shoot
+	inline void setShootState(bool b)
+	{
+		m_isShootState = b;
+	}
 };
 
 

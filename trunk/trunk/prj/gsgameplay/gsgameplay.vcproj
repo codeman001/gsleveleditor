@@ -894,14 +894,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\gameUI\CUIHudContainer.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\gameUI\CUIHudContainer.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\gameUI\CUIListview.cpp"
 					>
 				</File>

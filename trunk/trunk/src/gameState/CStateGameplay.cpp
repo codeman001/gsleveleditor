@@ -30,14 +30,15 @@ void CStateGameplay::onCreate()
     CGameControl::getInstance()->setEnable(true);
     
 	// create dpad control
-	CUIDPad* dpad = new CUIDPad("dpad", m_rootWidget, getStateObjFx().findObj("mcDPadTouch"));
-    
+	CUIDPad*	dpad	= new CUIDPad("dpad", m_rootWidget, getStateObjFx().findObj("mcDPadTouch"));
+	CUIButton*	run		= new CUIButton("runfast", m_rootWidget, getStateObjFx().findObj("mcBtnRunFast"));
+	CUIButton*	shoot	= new CUIButton("shoot", m_rootWidget, getStateObjFx().findObj("mcBtnShoot"));
+	CUIButton*	pause	= new CUIButton("pause", m_rootWidget, getStateObjFx().findObj("mcBtnPause"));
+
 #if defined (IOS) || defined (ANDROID)
     dpad->setEnable(true);
 #endif
     
-	// create hud view
-	CUIHudContainer *hud = new CUIHudContainer("hud", m_rootWidget, getStateObjFx().findObj("mcAimFocus"));
 
 	// init multiplayer
 #ifdef HAS_MULTIPLAYER

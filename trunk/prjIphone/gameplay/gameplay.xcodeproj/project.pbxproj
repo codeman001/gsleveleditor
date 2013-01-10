@@ -21,7 +21,6 @@
 		7F3875E5163841FD00E84B98 /* CDaeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3875E3163841FD00E84B98 /* CDaeUtils.cpp */; };
 		7F39584F160EF17700EEB3A2 /* CDataPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */; };
 		7F3A4562169722670088EB8A /* CGunLightComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A4560169722670088EB8A /* CGunLightComponent.cpp */; };
-		7F4A0E5D168B55AA00D24D0E /* CUIHudContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4A0E5B168B55AA00D24D0E /* CUIHudContainer.cpp */; };
 		7F4D163F1630552A009F066A /* CUIListview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4D163D1630552A009F066A /* CUIListview.cpp */; };
 		7F60982F162F0B860085D3FF /* CUIButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F609827162F0B860085D3FF /* CUIButton.cpp */; };
 		7F609830162F0B860085D3FF /* CUICanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F609829162F0B860085D3FF /* CUICanvas.cpp */; };
@@ -162,8 +161,6 @@
 		7F39584E160EF17700EEB3A2 /* CDataPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDataPacket.h; path = Network/CDataPacket.h; sourceTree = "<group>"; };
 		7F3A4560169722670088EB8A /* CGunLightComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGunLightComponent.cpp; sourceTree = "<group>"; };
 		7F3A4561169722670088EB8A /* CGunLightComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGunLightComponent.h; sourceTree = "<group>"; };
-		7F4A0E5B168B55AA00D24D0E /* CUIHudContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIHudContainer.cpp; sourceTree = "<group>"; };
-		7F4A0E5C168B55AA00D24D0E /* CUIHudContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIHudContainer.h; sourceTree = "<group>"; };
 		7F4D163D1630552A009F066A /* CUIListview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIListview.cpp; sourceTree = "<group>"; };
 		7F4D163E1630552A009F066A /* CUIListview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIListview.h; sourceTree = "<group>"; };
 		7F609827162F0B860085D3FF /* CUIButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIButton.cpp; sourceTree = "<group>"; };
@@ -381,8 +378,6 @@
 		7F609826162F0B860085D3FF /* gameUI */ = {
 			isa = PBXGroup;
 			children = (
-				7F4A0E5B168B55AA00D24D0E /* CUIHudContainer.cpp */,
-				7F4A0E5C168B55AA00D24D0E /* CUIHudContainer.h */,
 				7F4D163D1630552A009F066A /* CUIListview.cpp */,
 				7F4D163E1630552A009F066A /* CUIListview.h */,
 				7F609827162F0B860085D3FF /* CUIButton.cpp */,
@@ -970,7 +965,6 @@
 				7F609835162F0BE60085D3FF /* CStateJoinGame.cpp in Sources */,
 				7F4D163F1630552A009F066A /* CUIListview.cpp in Sources */,
 				7F3875E5163841FD00E84B98 /* CDaeUtils.cpp in Sources */,
-				7F4A0E5D168B55AA00D24D0E /* CUIHudContainer.cpp in Sources */,
 				7F3A4562169722670088EB8A /* CGunLightComponent.cpp in Sources */,
 				7FB364051699CCCA00DA4152 /* CTextureManager.cpp in Sources */,
 			);

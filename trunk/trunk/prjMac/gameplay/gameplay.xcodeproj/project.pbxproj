@@ -99,7 +99,6 @@
 		7F42768616284F300003D8E6 /* CUIWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F42768216284F300003D8E6 /* CUIWidget.cpp */; };
 		7F4D165B163055A2009F066A /* CUIListview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4D1659163055A2009F066A /* CUIListview.cpp */; };
 		7F60980C162F0AF30085D3FF /* CUIDPad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F60980A162F0AF30085D3FF /* CUIDPad.cpp */; };
-		7F7712B2166A55D2005795B6 /* CUIHudContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F7712B0166A55D2005795B6 /* CUIHudContainer.cpp */; };
 		7FB363E81699C3D900DA4152 /* CTextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB363E71699C3D900DA4152 /* CTextureManager.cpp */; };
 		7FCB58AB162C69DD00349381 /* CStateJoinGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FCB58A9162C69DD00349381 /* CStateJoinGame.cpp */; };
 		7FCB58C9162C6CC200349381 /* corbel.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7FCB58C5162C6CC200349381 /* corbel.ttf */; };
@@ -313,8 +312,6 @@
 		7F4D165A163055A2009F066A /* CUIListview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIListview.h; sourceTree = "<group>"; };
 		7F60980A162F0AF30085D3FF /* CUIDPad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIDPad.cpp; sourceTree = "<group>"; };
 		7F60980B162F0AF30085D3FF /* CUIDPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIDPad.h; sourceTree = "<group>"; };
-		7F7712B0166A55D2005795B6 /* CUIHudContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIHudContainer.cpp; sourceTree = "<group>"; };
-		7F7712B1166A55D2005795B6 /* CUIHudContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIHudContainer.h; sourceTree = "<group>"; };
 		7FB363E61699C3BD00DA4152 /* CTextureManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CTextureManager.h; path = TextureManager/CTextureManager.h; sourceTree = "<group>"; };
 		7FB363E71699C3D900DA4152 /* CTextureManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CTextureManager.cpp; path = TextureManager/CTextureManager.cpp; sourceTree = "<group>"; };
 		7FCB58A9162C69DD00349381 /* CStateJoinGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CStateJoinGame.cpp; sourceTree = "<group>"; };
@@ -749,8 +746,6 @@
 		7F42767D16284F300003D8E6 /* gameUI */ = {
 			isa = PBXGroup;
 			children = (
-				7F7712B0166A55D2005795B6 /* CUIHudContainer.cpp */,
-				7F7712B1166A55D2005795B6 /* CUIHudContainer.h */,
 				7F4D1659163055A2009F066A /* CUIListview.cpp */,
 				7F4D165A163055A2009F066A /* CUIListview.h */,
 				7F60980A162F0AF30085D3FF /* CUIDPad.cpp */,
@@ -972,7 +967,6 @@
 				7F60980C162F0AF30085D3FF /* CUIDPad.cpp in Sources */,
 				7F4D165B163055A2009F066A /* CUIListview.cpp in Sources */,
 				7F38760116384DE300E84B98 /* CDaeUtils.cpp in Sources */,
-				7F7712B2166A55D2005795B6 /* CUIHudContainer.cpp in Sources */,
 				7F409F5B16900B9900879830 /* CGunLightComponent.h in Sources */,
 				7F409F5D16900BBC00879830 /* CGunLightComponent.cpp in Sources */,
 				7FB363E81699C3D900DA4152 /* CTextureManager.cpp in Sources */,

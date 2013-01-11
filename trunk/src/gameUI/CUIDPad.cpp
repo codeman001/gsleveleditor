@@ -30,6 +30,9 @@ void CUIDPad::update()
 
 	if ( m_isShootState )
 		CGameControl::getInstance()->sendPlayerCommand(true, false, false);
+	else
+		CGameControl::getInstance()->sendPlayerCommand(false, false, false);
+
 }
 
 // onTouchEvent

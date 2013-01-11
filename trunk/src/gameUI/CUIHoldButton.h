@@ -7,7 +7,7 @@
 class CUIHoldButton: public CUIWidget
 {
 protected:
-
+	bool	m_holdState;
 public:
 	CUIHoldButton( const char *name, CUIWidget* parent, CMenuFxObj flashObj );
 	virtual ~CUIHoldButton();

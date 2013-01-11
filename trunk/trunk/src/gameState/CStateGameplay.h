@@ -14,8 +14,8 @@ protected:
 #endif
     
 	CUIDPad*	m_dpad;
-	CUIButton*	m_btnRunFast;
-	CUIButton*	m_btnShoot;
+	CUIHoldButton*	m_btnRunFast;
+	CUIHoldButton*	m_btnShoot;
 	CUIButton*	m_btnPause;
 
 public:

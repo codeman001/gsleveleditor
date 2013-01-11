@@ -101,6 +101,7 @@ bool CUIButton::onEvent( const SEvent& gameEvent)
 				}
 
 				// post press button event
+				/*
                 SEvent event;
                 SEventButtonData button;
                 
@@ -112,6 +113,7 @@ bool CUIButton::onEvent( const SEvent& gameEvent)
                 event.GameEvent.EventData = &button;
                 
                 getIView()->getDevice()->postEventFromUser( event );
+				*/
 			}
 			else if ( gameEvent.MouseInput.Event == EMIE_LMOUSE_LEFT_UP )
 			{			

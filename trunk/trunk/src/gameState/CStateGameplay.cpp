@@ -31,15 +31,17 @@ void CStateGameplay::onCreate()
     
 	// create dpad control
 	m_dpad			= new CUIDPad("dpad", m_rootWidget, getStateObjFx().findObj("mcDPadTouch"));
-	m_btnRunFast	= new CUIButton("runfast", m_rootWidget, getStateObjFx().findObj("mcBtnRunFast"));
-	m_btnShoot		= new CUIButton("shoot", m_rootWidget, getStateObjFx().findObj("mcBtnShoot"));
+	m_btnRunFast	= new CUIHoldButton("runfast", m_rootWidget, getStateObjFx().findObj("mcBtnRunFast"));
+	m_btnShoot		= new CUIHoldButton("shoot", m_rootWidget, getStateObjFx().findObj("mcBtnShoot"));
 	m_btnPause		= new CUIButton("pause", m_rootWidget, getStateObjFx().findObj("mcBtnPause"));
 
 	m_btnRunFast->setVisible(false);
 	m_btnShoot->setVisible(false);
 
 #if defined (IOS) || defined (ANDROID)
-    dpad->setEnable(true);
+    m_dpad->setEnable(true);
+	m_btnRunFast->setVisible(true);
+	m_btnShoot->setVisible(true);
 #endif
     
 

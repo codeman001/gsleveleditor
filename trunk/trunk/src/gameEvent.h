@@ -32,13 +32,11 @@ struct SEventPlayerCommand
 {
     bool    shoot;
     bool    reload;
-    bool    aim;
     
     SEventPlayerCommand()
     {
         shoot   = false;
         reload  = false;
-        aim     = false;
     }
 };
 

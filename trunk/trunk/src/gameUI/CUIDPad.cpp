@@ -14,8 +14,6 @@ CUIDPad::CUIDPad( const char *name, CUIWidget* parent, CMenuFxObj flashObj )
 	m_dpadMove.setVisible( false );
     
     m_isEnable = false;
-	m_isRunFast = false;
-	m_isShootState = false;
 }
 
 CUIDPad::~CUIDPad()
@@ -27,12 +25,6 @@ CUIDPad::~CUIDPad()
 void CUIDPad::update()
 {
 	CUIWidget::update();
-
-	if ( m_isShootState )
-		CGameControl::getInstance()->sendPlayerCommand(true, false, false);
-	else
-		CGameControl::getInstance()->sendPlayerCommand(false, false, false);
-
 }
 
 // onTouchEvent
@@ -55,8 +47,8 @@ bool CUIDPad::onEvent( const SEvent& gameEvent)
 		menuFx->getFxScaleRatio( &fw, &fh );
 		
 		// delta drag
-		const float k_maxMove = 100.0f*fw;
-
+		const float k_maxMove = 100.0f*fw;    
+        
 		if (gameEvent.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN && m_mouseOver == true )				
 		{			
 			// press
@@ -95,10 +87,13 @@ bool CUIDPad::onEvent( const SEvent& gameEvent)
 			// run event
 			float f = length/k_maxMove;
 			if ( f >= 0.3f )
-				CGameControl::getInstance()->sendPlayerRunEvent( f, (float)moveVec.getAngle() - 90.0f, m_isRunFast );
+            {
+                CGameControl::getInstance()->setRunParameter( f, (float)moveVec.getAngle() - 90.0f);
+                CGameControl::getInstance()->setRunMode(true);
+            }
 			else
-				CGameControl::getInstance()->sendPlayerStopEvent();
-
+                CGameControl::getInstance()->setRunMode(false);
+            
 			// recalc touch pos to render
 			moveVec *= length;
 			m_dpadMovePos = m_dpadBasePos + core::position2di((int)moveVec.X, (int)moveVec.Y);
@@ -121,7 +116,7 @@ bool CUIDPad::onEvent( const SEvent& gameEvent)
 			m_dpadMove.setVisible( false );
 
 			// stop
-			CGameControl::getInstance()->sendPlayerStopEvent();
+            CGameControl::getInstance()->setRunMode(false);
 		}
 
 	}

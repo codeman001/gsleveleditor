@@ -280,7 +280,7 @@
 					_LIB,
 					FT_CONFIG_OPTION_NO_ASSEMBLER,
 				);
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
@@ -304,7 +304,7 @@
 					_LIB,
 					FT_CONFIG_OPTION_NO_ASSEMBLER,
 				);
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};

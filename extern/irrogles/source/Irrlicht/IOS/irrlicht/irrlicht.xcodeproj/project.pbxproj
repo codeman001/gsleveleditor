@@ -2323,6 +2323,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "irrlicht/irrlicht-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = IOS;
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = ../../../../include;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2337,6 +2338,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "irrlicht/irrlicht-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = IOS;
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = ../../../../include;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";

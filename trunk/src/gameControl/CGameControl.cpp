@@ -11,6 +11,15 @@ CGameControl::CGameControl()
     
     m_screenTouchID = -1;
 	m_keyActionBit = 0;	
+    
+    
+    m_runStrength = 0.0f;
+    m_runRot = 0.0f;
+    
+    m_runState = false;
+    m_runFastState = false;
+    m_shootState = false;
+    m_reloadState = false;
 }
 
 CGameControl::~CGameControl()
@@ -24,6 +33,45 @@ void CGameControl::update()
 {
     if ( m_isEnable == false )
         return;
+    
+#ifdef IOS    
+    if ( m_runState )
+        sendPlayerRunEvent(m_runStrength, m_runRot, m_runFastState);
+    else 
+        sendPlayerStopEvent();
+    
+    if ( m_reloadState )
+        sendPlayerCommand(false, true);
+    else 
+    {        
+        if ( m_shootState )
+            sendPlayerCommand(true, false);
+        else
+            sendPlayerCommand(false, false);
+    }
+#endif
+}
+
+void CGameControl::setRunParameter(float f, float runRot)
+{
+    m_runStrength = f;
+    m_runRot = runRot;
+}
+
+void CGameControl::setRunMode(bool run)
+{
+    m_runState = run;
+}
+
+void CGameControl::setRunFatMode(bool runFast)
+{
+    m_runFastState = runFast;
+}
+
+void CGameControl::setShootMode(bool shoot, bool reload)
+{
+    m_shootState = shoot;
+    m_reloadState = reload;
 }
 
 
@@ -230,9 +278,9 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 
     // send event to player component
     if ( shoot )
-        sendPlayerCommand(true, false, false);
+        sendPlayerCommand(true, false);
     else
-        sendPlayerCommand(false, false, false);
+        sendPlayerCommand(false, false);
     
 	return true;
 }
@@ -289,7 +337,7 @@ void CGameControl::sendPlayerRunEvent(float f, float rotate, bool runFast)
 	getIView()->getDevice()->postEventFromUser( playerMove );
 }
 
-void CGameControl::sendPlayerCommand(bool shoot, bool reload, bool aim)
+void CGameControl::sendPlayerCommand(bool shoot, bool reload)
 {
     if ( m_isEnable == false )
         return;
@@ -297,7 +345,6 @@ void CGameControl::sendPlayerCommand(bool shoot, bool reload, bool aim)
 	static SEvent playerCommand;
 	static SEventPlayerCommand command;
 	command.shoot = shoot;
-    command.aim = aim;
     command.reload = reload;
     
 	playerCommand.EventType = EET_GAME_EVENT;

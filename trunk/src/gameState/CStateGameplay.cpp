@@ -140,26 +140,18 @@ void CStateGameplay::onEvent(const SEvent& event)
 			SEventButtonData *buttonEvent = ((SEventButtonData*)event.GameEvent.EventData);
 
 			if ( buttonEvent->data == m_btnRunFast )
-            {
-				m_dpad->setRunFastState(true);
-            }
+                CGameControl::getInstance()->setRunFatMode(true);
 			else if ( buttonEvent->data == m_btnShoot )
-            {
-				m_dpad->setShootState(true);
-            }
+                CGameControl::getInstance()->setShootMode(true, false);
 		}
 		else if ( event.GameEvent.EventID == (s32)EvtButtonRelease )
 		{
 			SEventButtonData *buttonEvent = ((SEventButtonData*)event.GameEvent.EventData);
 
 			if ( buttonEvent->data == m_btnRunFast )
-            {
-				m_dpad->setRunFastState(false);
-            }
+                CGameControl::getInstance()->setRunFatMode(false);
 			else if ( buttonEvent->data == m_btnShoot )
-            {
-				m_dpad->setShootState(false);
-            }
+                CGameControl::getInstance()->setShootMode(false, false);
 			else if ( buttonEvent->data == m_btnPause )
 			{
 			}

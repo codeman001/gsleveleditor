@@ -15,6 +15,14 @@ protected:
 	int			m_keyActionBit;
 
 	int			m_touchIDStatus[ MAX_MULTITOUCH ];
+
+protected:
+    float       m_runStrength;
+    float       m_runRot;
+    bool        m_runState;
+    bool        m_runFastState;
+    bool        m_shootState;
+    bool        m_reloadState;
 public:
 	CGameControl();
 	virtual ~CGameControl();
@@ -54,7 +62,7 @@ public:
 	// send event to player stop run
 	void sendPlayerStopEvent();
 	void sendPlayerRunEvent(float f, float rotate, bool runFast);
-    void sendPlayerCommand(bool shoot, bool reload, bool aim);
+    void sendPlayerCommand(bool shoot, bool reload);
     
 	// setTouchIDStatus
 	// set touch
@@ -75,6 +83,12 @@ public:
 
 	void resetTouchIDStatus();
 
+    // action
+    void setRunParameter(float f, float runRot);
+    void setRunMode(bool run);
+    void setRunFatMode(bool runFast);
+    void setShootMode(bool shoot, bool reload);
+    
 protected:
 
 	// handleTouchEvent

@@ -246,7 +246,7 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
         {
             m_playerCmdEvt = *((SEventPlayerCommand*)irrEvent.GameEvent.EventData);
             
-            if ( m_playerCmdEvt.shoot || m_playerCmdEvt.aim || m_playerCmdEvt.reload )
+            if ( m_playerCmdEvt.shoot || m_playerCmdEvt.reload )
                 m_gunOnCommand = true;
             else
                 m_gunOnCommand = false;
@@ -1024,7 +1024,6 @@ void CPlayerComponent::updateStateStandAim()
         		
 		// setup player cmd state
 		m_playerCmdEvt.shoot	= false;
-		m_playerCmdEvt.aim		= true;
 		m_playerCmdEvt.reload	= false;
 
 		// change state
@@ -1265,7 +1264,6 @@ void CPlayerComponent::updateUpperBodyShoot()
         
 		// setup player state
 		m_playerCmdEvt.shoot	= false;
-		m_playerCmdEvt.aim		= false;
 		m_playerCmdEvt.reload	= false;        
         
         
@@ -1314,7 +1312,6 @@ void CPlayerComponent::updateUpperBodyShoot()
 
                 // setup player state
                 m_playerCmdEvt.shoot	= false;
-                m_playerCmdEvt.aim		= false;
                 m_playerCmdEvt.reload	= false;
                 
 			}

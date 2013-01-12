@@ -112,9 +112,14 @@ void CUIWidget::update()
 	// update bouding rect
 	if ( m_parent == NULL )	
 		m_rect = driver->getViewPort();
-	else		
+	else
+    {
 		getRectByFxObj( m_flashObj, m_rect );
-
+        
+        // hide touchzone obj
+        m_flashObj.findObj("mcTouchZone").setVisible(false);
+    }
+    
 	//update childs
 	std::vector<CUIWidget*>::iterator i = m_childs.begin(), end = m_childs.end();
 	while ( i != end )

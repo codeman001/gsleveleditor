@@ -1048,7 +1048,7 @@ void CPlayerComponent::updateStateStandAim()
 			aimPos.Y = 0;
 			aimPos.normalize();
 
-			if ( turnToDir( v0, aimPos, 4.0f ) == true )
+			if ( turnToDir( v0, aimPos, 6.0f ) == true )
 				m_aimRotateCharacter = false;
 
 			m_gameObject->lookAt( m_gameObject->getPosition() + v0 );

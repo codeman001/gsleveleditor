@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrlicht\include;..\..\..\extern\uiClass;..\..\..\extern\irrlicht\source\Irrlicht;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Serializable;..\..\src\core\Network;..\..\..\extern\spark\include"
+				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrlicht\include;..\..\..\extern\uiClass;..\..\..\extern\irrlicht\source\Irrlicht;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Serializable;..\..\src\core\Network;..\..\src\core\TextureManager;..\..\..\extern\spark\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;GSANIMATION;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -374,6 +374,18 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\Serializable\CSerializable.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="TextureManager"
+				>
+				<File
+					RelativePath="..\..\src\core\TextureManager\CTextureManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\TextureManager\CTextureManager.h"
 					>
 				</File>
 			</Filter>

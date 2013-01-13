@@ -16,6 +16,7 @@ CStateGameLoading::CStateGameLoading()
 	m_levelLoad->loadLevel( CGameLevel::getLevelProperty("levelLoad") );
 
     // release all main menu texture
+	CColladaCache::freeData();
     CTextureManager::getInstance()->removeAllTexture();
     
 	m_nextState = gameplay;

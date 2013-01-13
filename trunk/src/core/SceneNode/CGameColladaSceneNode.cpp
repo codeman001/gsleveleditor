@@ -22,18 +22,14 @@ CGameColladaMesh* CGameColladaMesh::clone()
 	newMesh->InvBindShapeMatrix = InvBindShapeMatrix;
 	
 	ISceneManager *smgr = getIView()->getSceneMgr();
-	SMesh *mesh = smgr->getMeshManipulator()->createMeshCopy( this );
 
-	int n = mesh->getMeshBufferCount();
+	int n = getMeshBufferCount();
 	for ( int i = 0; i < n; i++ )
 	{
-		IMeshBuffer *buffer = mesh->getMeshBuffer(i);
-		buffer->getMaterial() = getMeshBuffer(i)->getMaterial();
-
+		IMeshBuffer *buffer = getMeshBuffer(i);
 		newMesh->addMeshBuffer( buffer );
 	}
 
-	mesh->drop();
 	return newMesh;
 }
 

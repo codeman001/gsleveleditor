@@ -10,7 +10,10 @@
 #define _CTEXTURE_MANAGER_H_
 
 #include "stdafx.h"
+
+#ifdef GSGAMEPLAY
 #include "uiClass/uiSingleton.h"
+#endif
 
 class CTextureManager: public uiSingleton<CTextureManager>
 {

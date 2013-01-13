@@ -7,6 +7,7 @@
 #include "CHistoryManager.h"
 #include "CBinaryUtils.h"
 #include "CDaeUtils.h"
+#include "CTextureManager.h"
 
 #include "IController.h"
 #include "CDocument.h"
@@ -32,7 +33,7 @@ CViewWindow::CViewWindow( WCHAR* lpString, uiWindow *p )
 	// init controller
 	CBinaryUtils::createGetInstance();
 	CDaeUtils::createGetInstance();
-
+	CTextureManager::createGetInstance();
 	CControllerManager::createGetInstance();
 	CHistoryManager::createGetInstance();		
 
@@ -54,6 +55,7 @@ CViewWindow::~CViewWindow()
 	CHistoryManager::releaseInstance();
 	CBinaryUtils::releaseInstance();
 	CDaeUtils::releaseInstance();
+	CTextureManager::releaseInstance();
 
 	CComponentFactory::freeData();
 	CObjTemplateFactory::freeData();

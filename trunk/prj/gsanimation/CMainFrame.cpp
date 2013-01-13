@@ -2,6 +2,7 @@
 #include "CMainFrame.h"
 #include "Resource.h"
 
+#include "CTextureManager.h"
 #include "CBinaryUtils.h"
 #include "CDaeUtils.h"
 
@@ -18,6 +19,7 @@ CMainFrame::CMainFrame(const wchar_t* lpCmdLine)
 	// init singleton
 	CBinaryUtils::createGetInstance();
 	CDaeUtils::createGetInstance();
+	CTextureManager::createGetInstance();
 
 	CColladaAnimationFactory::createGetInstance();
 }
@@ -26,6 +28,7 @@ CMainFrame::~CMainFrame()
 {
 	CBinaryUtils::releaseInstance();
 	CDaeUtils::releaseInstance();
+	CTextureManager::releaseInstance();
 
 	CColladaAnimationFactory::releaseInstance();
 }

@@ -34,7 +34,7 @@ void CGameControl::update()
     if ( m_isEnable == false )
         return;
     
-#ifdef IOS    
+#ifdef IOS
     if ( m_runState )
         sendPlayerRunEvent(m_runStrength, m_runRot, m_runFastState);
     else 

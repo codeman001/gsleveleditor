@@ -1222,7 +1222,7 @@ void CPlayerComponent::updateUpperBodyAim()
 		m_collada->setAnimWeight(wDown, 3, 1);						// down
         m_collada->synchronizedByTimeScale(1);    
         
-        if ( m_gunOnCommand )
+		if ( m_gunOnCommand && m_aimFactor == 1.0f )
 		{
 			if ( m_playerCmdEvt.shoot == true )
 			{
@@ -1291,7 +1291,7 @@ void CPlayerComponent::updateUpperBodyShoot()
 			if ( m_playerCmdEvt.shoot == false )
 			{
 				// change to aim state if end shooting
-                setUpBodyState(CPlayerComponent::PlayerUpBodyAim);            
+                setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
 			}
 			else
 			{
@@ -1317,10 +1317,24 @@ void CPlayerComponent::updateUpperBodyShoot()
 			}
 		}
         
-        
         core::line3df	ray		= getCameraRay();
 		core::vector3df	colPos	= getCollisionPoint(ray);
         
+
+		// rotate spine character
+		core::vector3df v0 = m_gameObject->getFront();
+		core::vector3df aimPos = colPos - m_gameObject->getPosition();
+		aimPos.Y = 0;
+		aimPos.normalize();
+		float angle = getAngle(v0,aimPos);
+		if ( fabsf(angle) > 40.0f )
+			m_aimRotateCharacter = true;
+
+		angle = core::clamp<float>(angle, -40.0f, 40.0f);
+		setSpineRotation(angle);
+
+
+		// blend to up/down hand
 		core::vector2df ret = getAimAngle(colPos);
         
 		float wUp, wDown, wLeft, wRight, wStraight;

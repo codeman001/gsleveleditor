@@ -1761,7 +1761,8 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 			CGameColladaMesh *mesh = ColladaMesh->clone();
 				
 			// update hardware skinning
-			newNode->setColladaMesh( mesh );			
+			newNode->setColladaMesh( mesh );
+			mesh->drop();
 		}
 	}
 

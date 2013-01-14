@@ -331,8 +331,13 @@ void CPlayerComponent::updateMuzzleMesh()
 		core::quaternion rot;
 		rot.fromAngleAxis(core::degToRad(90.0f), core::vector3df(0,1,0));
 		mat *= rot.getMatrix();
-		m_gunMuzzle->setPosition( mat.getTranslation() );
-		m_gunMuzzle->setRotation( mat.getRotationDegrees() );
+        
+        core::vector3df position(mat.getTranslation());
+        core::vector3df rotation(mat.getRotationDegrees());
+        
+		m_gunMuzzle->setPosition(position);
+		m_gunMuzzle->setRotation(rotation);
+        
 		m_gunMuzzle->setVisible(true);
 	}
 	else

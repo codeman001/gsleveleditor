@@ -60,6 +60,10 @@ public:
 	// createObject
 	// create a template object
 	CGameObject* createObject( wchar_t* objTemplate );
+	
+	// createEmptyObject
+	// create a obj with no component
+	CGameObject* createEmptyObject();
 
 	// createCamera
 	// create a cameraObject

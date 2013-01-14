@@ -78,6 +78,8 @@ protected:
 
 	float					m_animCurrentTime;
 
+	float					m_muzzleMeshTime;
+	CGameObject*			m_gunMuzzle;
     CLightObject*           m_gunLight;
     CGunLightComponent*     m_gunLightComp;
     
@@ -210,7 +212,8 @@ protected:
 
 protected:
 	// updateState	
-	void updateState();
+	void updateState();	
+	void updateMuzzleMesh();
 
 	void updateStateIdle();	
 	void updateStateTurn();
@@ -233,6 +236,7 @@ protected:
     void updateUpperBodyAimToOffgun();
     void updateUpperBodyOffgunToAim();
     void updateUpperBodyRunFast();
+
 
 	// isFinishedAnim	
 	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0, int animLayer = 0);
@@ -257,6 +261,11 @@ protected:
 		m_nextState = CPlayerComponent::PlayerNone;
 	}	
 	
+	inline void showMuzzle(float time)
+	{
+		m_muzzleMeshTime = time;
+	}
+
 public:
 
 	// setSpineRotation	

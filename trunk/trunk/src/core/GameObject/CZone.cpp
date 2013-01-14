@@ -205,6 +205,41 @@ CGameObject* CZone::createObject( wchar_t* objTemplate )
 	return p;
 }
 
+// createEmptyObject
+// create a obj with no component
+CGameObject* CZone::createEmptyObject()
+{
+	CGameObject *p = new CGameObject(this);
+	if ( p == NULL )
+		return NULL;
+
+	wchar_t lpName[1024];
+	swprintf( lpName, 1024, L"%emptyObject_%d", (int)CGameObject::s_objectID );
+	
+	p->setID( CGameObject::s_objectID++ );	
+	
+#ifdef GSEDITOR
+	// create tree item
+	uiTreeViewItem *pTreeItem =	m_treeItem->addChild( (LPWSTR) lpName );
+	CDocument *pDoc = (CDocument*) getIView()->getDocument();
+
+	pTreeItem->setIconIndex( 4 );
+	pTreeItem->setIconStateIndex( 4 );
+	pTreeItem->update();
+
+	pTreeItem->setData( p );
+	p->setTreeItem( pTreeItem );
+	m_treeItem->update();
+	m_treeItem->expandChild( true );
+#endif
+
+	p->setName( lpName );
+
+	addChild( p );
+	
+	return p;
+}
+
 #if defined(GSEDITOR) || defined(GSGAMEPLAY)
 
 // createWaypoint

@@ -50,6 +50,9 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_runToRunFastAccel = 0.003f;
 
 	m_collada	= NULL;
+
+	m_muzzleMeshTime = 0;
+	m_gunMuzzle = NULL;
     m_gunLight  = NULL;
     m_gunLightComp = NULL;
     
@@ -189,6 +192,11 @@ void CPlayerComponent::initComponent()
     m_gunLightComp = new CGunLightComponent(m_gunLight);
     m_gunLight->addComponenet(m_gunLightComp);
     
+	// create a empty obj
+	m_gunMuzzle = currentZone->createEmptyObject();
+	CColladaMeshComponent *gunMesh = new CColladaMeshComponent(m_gunMuzzle);
+	gunMesh->loadFromFile( getIView()->getPath("data/mesh/character/hero/muzzleFlash.scene"));
+	m_gunMuzzle->addComponenet(gunMesh);
 }
 
 // update
@@ -204,6 +212,10 @@ void CPlayerComponent::updateComponent()
     
     // update player
 	updateState();
+
+	// muzzle mesh update
+	updateMuzzleMesh();
+
 }
 
 // saveData
@@ -261,6 +273,7 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 // Player component implement
 ///////////////////////////////////////////////////////////////////////
 
+
 // updateState	
 void CPlayerComponent::updateState()
 {	
@@ -300,6 +313,32 @@ void CPlayerComponent::updateState()
 
 	// update body
 	updateUpperBody();
+}
+
+
+// updateMuzzleMesh
+void CPlayerComponent::updateMuzzleMesh()
+{
+	if ( m_muzzleMeshTime > 0 )
+	{
+		m_muzzleMeshTime = m_muzzleMeshTime - getIView()->getTimeStep();
+		if ( m_muzzleMeshTime <= 0.0f )
+			m_muzzleMeshTime = 0.0f;
+
+		// update muzzle mesh position
+		CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
+		core::matrix4 mat = gunTip->getAbsoluteTransformation();
+		core::quaternion rot;
+		rot.fromAngleAxis(core::degToRad(90.0f), core::vector3df(0,1,0));
+		mat *= rot.getMatrix();
+		m_gunMuzzle->setPosition( mat.getTranslation() );
+		m_gunMuzzle->setRotation( mat.getRotationDegrees() );
+		m_gunMuzzle->setVisible(true);
+	}
+	else
+	{
+		m_gunMuzzle->setVisible(false);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1240,7 +1279,8 @@ void CPlayerComponent::updateUpperBodyAim()
 
 void CPlayerComponent::updateUpperBodyShoot()
 {
-	const float shootSpeed = 2.0f;
+	const float shootSpeed = 2.0f;      
+	const float flashTime = 100.0f;
 
     if ( m_upbodySubState == SubStateInit )
     {
@@ -1268,12 +1308,14 @@ void CPlayerComponent::updateUpperBodyShoot()
         
         
         CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
-        
-        // active gunlight
+		
+		// active gunlight
         core::vector3df gunPos = gunTip->getAbsolutePosition();
         m_gunLight->setPosition(gunPos);
-        m_gunLightComp->setLightTime(100.0f);
+        m_gunLightComp->setLightTime(flashTime);
         
+		// show muzzle
+		showMuzzle(flashTime);
         
         m_upbodySubState = SubStateActive;		
     }
@@ -1309,6 +1351,9 @@ void CPlayerComponent::updateUpperBodyShoot()
 				core::vector3df gunPos = gunTip->getAbsolutePosition();
 				m_gunLight->setPosition(gunPos);
 				m_gunLightComp->setLightTime(100.0f);
+
+				// show muzzle
+				showMuzzle(flashTime);
 
                 // setup player state
                 m_playerCmdEvt.shoot	= false;

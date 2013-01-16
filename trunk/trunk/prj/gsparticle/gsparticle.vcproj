@@ -385,11 +385,39 @@
 				Name="Serializable"
 				>
 				<File
+					RelativePath="..\..\src\core\Serializable\CBinaryUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Serializable\CBinaryUtils.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Serializable\CDaeUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Serializable\CDaeUtils.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\Serializable\CSerializable.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\core\Serializable\CSerializable.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="TextureManager"
+				>
+				<File
+					RelativePath="..\..\src\core\TextureManager\CTextureManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\TextureManager\CTextureManager.h"
 					>
 				</File>
 			</Filter>

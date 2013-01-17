@@ -3,6 +3,7 @@
 
 #include "IObjectComponent.h"
 #include "CGameObject.h"
+#include "CGameParticleContainerSceneNode.h"
 
 typedef struct tagParticleInfo
 {
@@ -122,6 +123,53 @@ public:
 	// fixParticlePosition
 	// fix affector rotation & affector attraction
 	void fixParticlePosition();
+};
+
+struct SParticleCacheItem
+{
+	ISceneNode*							node;
+	std::vector<SParticleInfo>			arrayParticle;
+};
+
+class CParticleCache
+{
+public:
+	// for cache node
+	static std::map<std::string, SParticleCacheItem*>	s_nodeCache;
+
+	// cacheNode
+	// cache node with name
+	static void cacheNode( const std::string &name, SParticleCacheItem* item )
+	{
+		s_nodeCache[name] = item;
+		item->node->grab();
+	}
+
+	// getNodeInCache
+	// get node in cache
+	static SParticleCacheItem* getNodeInCache( const std::string &name )
+	{
+		return s_nodeCache[name];
+	}
+
+	// destroyCache
+	// destroy all cache
+	static void freeData()
+	{
+		std::map<std::string, SParticleCacheItem*>::iterator i = s_nodeCache.begin(), end = s_nodeCache.end();
+		while ( i != end )
+		{
+			SParticleCacheItem *item = (*i).second;
+			if ( item != NULL )
+			{
+				item->node->drop();
+				delete item;
+			}
+
+			i++;
+		}
+		s_nodeCache.clear();
+	}
 };
 
 #endif

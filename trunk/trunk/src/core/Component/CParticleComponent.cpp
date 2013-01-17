@@ -4,6 +4,9 @@
 
 #include "CGameParticleContainerSceneNode.h"
 
+std::map<std::string, SParticleCacheItem*>	CParticleCache::s_nodeCache;
+
+
 CParticleComponent::CParticleComponent(CGameObject *pObj)
 	:IObjectComponent(pObj, IObjectComponent::Particle)
 {
@@ -141,8 +144,26 @@ void CParticleComponent::initParticle()
 	selector->drop();
 #endif
 
-	// load particle
-	loadXML( m_xmlPath.c_str() );
+	SParticleCacheItem *cache = CParticleCache::getNodeInCache( m_xmlPath );
+
+	if ( cache == NULL )
+	{
+		// load particle from file
+		loadXML( m_xmlPath.c_str() );
+	}
+	else
+	{
+		// list particle
+		m_arrayParticle = cache->arrayParticle;
+
+		// init particle
+		std::vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
+		while ( i != end )
+		{
+			(*i).ps->clone( m_gameObject->m_node, m_gameObject->m_node->getSceneManager() );
+			i++;
+		}
+	}
 
 	m_time = 0;
 	m_totalLifeTime = -1;
@@ -428,6 +449,14 @@ void CParticleComponent::loadXML( const char *lpFileName )
 	}
 
 	xmlRead->drop();
+
+
+	// cache this node
+	SParticleCacheItem *item = new SParticleCacheItem();
+	item->arrayParticle = m_arrayParticle;
+	item->node = m_gameObject->m_node;
+
+	CParticleCache::cacheNode( std::string(lpFileName), item );
 }
 
 // stopParticle

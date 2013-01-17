@@ -74,6 +74,9 @@ CPlayerComponent::~CPlayerComponent()
 {
 	// unregister event
 	getIView()->unRegisterEvent( this );
+
+	delete m_gunLight;
+	delete m_gunMuzzle;
 }
 
 // init
@@ -186,17 +189,18 @@ void CPlayerComponent::initComponent()
     
     
     // create gunlight
-    CZone *currentZone = (CZone*)m_gameObject->getParent();
-    m_gunLight = currentZone->createLight();
+	m_gunLight = new CLightObject( NULL );
     m_gunLight->setLightData(400.0f, 1.0f);
     m_gunLightComp = new CGunLightComponent(m_gunLight);
     m_gunLight->addComponenet(m_gunLightComp);
-    
+	m_gunLight->setParent( m_gameObject );
+
 	// create a empty obj
-	m_gunMuzzle = currentZone->createEmptyObject();
+	m_gunMuzzle = new CGameObject( NULL );
 	CColladaMeshComponent *gunMesh = new CColladaMeshComponent(m_gunMuzzle);
 	gunMesh->loadFromFile( getIView()->getPath("data/mesh/character/hero/muzzleFlash.scene"));
 	m_gunMuzzle->addComponenet(gunMesh);
+	m_gunMuzzle->setParent( m_gameObject );
 }
 
 // update
@@ -216,6 +220,9 @@ void CPlayerComponent::updateComponent()
 	// muzzle mesh update
 	updateMuzzleMesh();
 
+	// update gun muzzle & gun light
+	m_gunLight->updateObject();
+	m_gunMuzzle->updateObject();
 }
 
 // saveData

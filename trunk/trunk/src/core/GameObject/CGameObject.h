@@ -122,7 +122,7 @@ protected:
 #endif
 
 public:
-	ISceneNode					*m_node;
+	ISceneNode						*m_node;
 	std::vector<IObjectComponent*>	m_components;
 
 	void addComponenet( IObjectComponent* comp )

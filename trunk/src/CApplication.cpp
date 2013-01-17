@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "CApplication.h"
 
+#include "CParticleComponent.h"
+#include "CColladaMeshComponent.h"
+
 #ifdef ANDROID
 	#include <android/log.h>
 #endif
@@ -125,7 +128,9 @@ void CApplication::destroyApplication()
 	unRegisterEvent( CGameUI::getInstance() );
     unRegisterEvent( CGameControl::getInstance() );
     
-	CColladaCache::freeData();		
+	CColladaCache::freeData();
+	CParticleCache::freeData();
+
 	CObjTemplateFactory::freeData();
 			
 	CBinaryUtils::releaseInstance();

@@ -3,6 +3,10 @@
 #include "CStateGameplay.h"
 #include "CGameStateManager.h"
 #include "IView.h"
+
+#include "CParticleComponent.h"
+#include "CColladaMeshComponent.h"
+
 #include "core/TextureManager/CTextureManager.h"
 
 CStateGameLoading::CStateGameLoading()
@@ -17,6 +21,8 @@ CStateGameLoading::CStateGameLoading()
 
     // release all main menu texture
 	CColladaCache::freeData();
+	CParticleCache::freeData();
+
     CTextureManager::getInstance()->removeAllTexture();
     
 	m_nextState = gameplay;

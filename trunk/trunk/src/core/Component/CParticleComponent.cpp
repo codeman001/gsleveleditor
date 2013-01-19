@@ -2,6 +2,8 @@
 #include "CParticleComponent.h"
 #include "IView.h"
 
+#include "TextureManager/CTextureManager.h"
+
 #include "CGameParticleContainerSceneNode.h"
 
 std::map<std::string, SParticleCacheItem*>	CParticleCache::s_nodeCache;
@@ -71,7 +73,7 @@ void CParticleComponent::updateComponent()
 			p.ps->getEmitter()->setMinParticlesPerSecond( 0 );
 			p.ps->getEmitter()->setMaxParticlesPerSecond( 0 );
 			p.isStop = true;
-			isStop = true;
+			isStop = true;			
 		}
 		else
 		{
@@ -119,11 +121,22 @@ void CParticleComponent::loadData( CSerializable* pObj )
 	initParticle();
 }
 
+// initParticle
+// init with file name
+void CParticleComponent::initParticle(const char* lpFileName)
+{
+	m_xmlPath = lpFileName;
+	initParticle();
+}
 
 // initParticle
 // create empty particle
 void CParticleComponent::initParticle()
 {
+	// release scenenode
+	if ( m_gameObject->m_node )
+		m_gameObject->destroyNode();
+
 	ISceneManager *smgr = getIView()->getSceneMgr();
 
 	// create an container node
@@ -156,13 +169,31 @@ void CParticleComponent::initParticle()
 		// list particle
 		m_arrayParticle = cache->arrayParticle;
 
+		io::IFileSystem *fs = getIView()->getDevice()->getFileSystem();
+		io::IAttributes *attrb = fs->createEmptyAttributes();	
+
 		// init particle
 		std::vector<SParticleInfo>::iterator i = m_arrayParticle.begin(), end = m_arrayParticle.end();
 		while ( i != end )
 		{
-			(*i).ps->clone( m_gameObject->m_node, m_gameObject->m_node->getSceneManager() );
+			// get particle info from cache
+			IParticleSystemSceneNode *cache = (*i).ps;
+			cache->serializeAttributes(attrb);		
+
+			// create new particle
+			(*i).ps = smgr->addParticleSystemSceneNode( false, m_gameObject->m_node );
+			(*i).ps->deserializeAttributes(attrb);
+
+			// apply material
+			(*i).ps->setMaterialTexture(0, cache->getMaterial(0).getTexture(0) );
+			(*i).ps->setMaterialFlag(	video::EMF_LIGHTING, false );
+			(*i).ps->setMaterialType(	cache->getMaterial(0).MaterialType );
+
+			attrb->clear();
 			i++;
 		}
+
+		attrb->drop();
 	}
 
 	m_time = 0;
@@ -391,6 +422,19 @@ void CParticleComponent::loadXML( const char *lpFileName )
 							ITexture *pTex = driver->getTexture( attribValueA );
 							if ( pTex == NULL )
 								pTex = driver->getTexture( getIView()->getPath(attribValueA) );
+							if ( pTex == NULL )
+							{
+								// search with xml file
+								char path[512];
+								uiString::getFolderPath<const char, char>(lpFileName, path);
+								uiString::cat<char,char>(path, "/");
+								uiString::cat<char,char>(path, attribValueA);
+
+								pTex = driver->getTexture(path);
+							}
+
+							if ( pTex )
+								CTextureManager::getInstance()->registerTexture(pTex);
 
 							attribValue = xmlRead->getAttributeValue(L"additiveTrans");
 							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );
@@ -403,12 +447,12 @@ void CParticleComponent::loadXML( const char *lpFileName )
 							if ( pTex && particle )
 							{
 								particle->setMaterialTexture(0, pTex );
-								particle->setMaterialFlag(	video::EMF_LIGHTING, false );
+								particle->setMaterialFlag(video::EMF_LIGHTING, false);
 
 								if ( particleInfo->additiveTrans )
-									particle->setMaterialType(	video::EMT_TRANSPARENT_ADD_COLOR );
+									particle->setMaterialType( video::EMT_TRANSPARENT_ADD_COLOR );
 								else
-									particle->setMaterialType(	video::EMT_TRANSPARENT_ALPHA_CHANNEL );
+									particle->setMaterialType( video::EMT_TRANSPARENT_ALPHA_CHANNEL );
 							}
 
 							// set start time
@@ -485,6 +529,9 @@ void CParticleComponent::startParticle()
 {
 	m_time = 0;
 	m_stopEmitter = false;
+
+	m_time = (long) irr::os::Timer::getTime();
+	m_totalLifeTime = -1;
 }
 
 // fixParticlePosition

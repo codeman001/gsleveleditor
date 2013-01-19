@@ -63,6 +63,7 @@ public:
 	// initParticle
 	// create empty particle
 	void initParticle();
+	void initParticle(const char* lpFileName);
 
 	// createParticle
 	// create an empty particle
@@ -108,10 +109,12 @@ public:
 	// save list particle to xml file
 	void saveXML( const char *lpFileName );
 
+protected:
 	// loadXML
 	// load particle from xml file
 	void loadXML( const char *lpFileName );
 
+public:
 	// stopParticle
 	// stop particle emitter
 	void stopParticle();

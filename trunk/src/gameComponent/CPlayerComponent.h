@@ -83,6 +83,8 @@ protected:
     CLightObject*           m_gunLight;
     CGunLightComponent*     m_gunLightComp;
     
+	std::vector<CGameObject*>	m_bulletSpark;
+
 	CColladaAnimation*		m_animationPackage;
 	CColladaMeshComponent*	m_collada;
 
@@ -322,6 +324,10 @@ public:
 
 	// syncAnimation	
 	void syncAnimation(int fromChannel, int fromLayer, int toChannel, int toLayer);
+
+	// createSpark
+	// create a spark
+	CGameObject* createSpark( core::vector3df position, const char* xml );
 };
 
 #endif

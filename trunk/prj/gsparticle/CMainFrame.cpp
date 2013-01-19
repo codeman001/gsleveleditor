@@ -533,7 +533,7 @@ void CMainFrame::onMenuOpenEffects( uiObject *pSender )
 	CParticleComponent *pParticleComponent = (CParticleComponent*)pParticle->getComponent( IObjectComponent::Particle );
 	
 	// load particle system
-	pParticleComponent->loadXML( lpFileName );
+	pParticleComponent->initParticle( lpFileName );
 
 	int i = 0;
 	IParticleSystemSceneNode *ps = pParticleComponent->getParticle(i);

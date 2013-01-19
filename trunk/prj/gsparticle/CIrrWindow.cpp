@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CIrrWindow.h"
+#include "TextureManager/CTextureManager.h"
 
 CIrrWindow *g_irrView = NULL;
 
@@ -68,6 +69,9 @@ void CIrrWindow::initScene()
 	IrrlichtDevice* device = m_device;
 	ISceneManager* smgr = m_smgr;
 
+	// create texture manager
+	CTextureManager::createGetInstance();
+
 	// create design camera
 	m_designCamera = new CGameCamera();
 	m_designCamera->setName( L"Design camera" );
@@ -104,6 +108,8 @@ void CIrrWindow::destroyScene()
 {
 	delete m_particleObject;
 	delete m_designCamera;
+
+	CTextureManager::releaseInstance();
 }
 
 void CIrrWindow::irrUpdate()
@@ -134,6 +140,7 @@ void CIrrWindow::irrUpdate()
 
 	// end scene
 	driver->endScene();
+
 }
 
 void CIrrWindow::_OnSize(uiSizeEvent sizeEvent, int nWidth, int nHeight)

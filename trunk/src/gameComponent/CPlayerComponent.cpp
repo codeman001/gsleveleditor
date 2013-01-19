@@ -7,6 +7,7 @@
 
 #include "CPlayerComponent.h"
 
+#include "CParticleComponent.h"
 #include "CColladaMeshComponent.h"
 #include "CGunLightComponent.h"
 
@@ -75,8 +76,18 @@ CPlayerComponent::~CPlayerComponent()
 	// unregister event
 	getIView()->unRegisterEvent( this );
 
+	// delete gunlight & muzzle mesh
 	delete m_gunLight;
 	delete m_gunMuzzle;
+
+	// delete spark
+	std::vector<CGameObject*>::iterator itSpark = m_bulletSpark.begin(), endSpark = m_bulletSpark.end();
+	while (itSpark != endSpark)
+	{
+		delete (*itSpark);
+		itSpark++;
+	}
+	m_bulletSpark.clear();
 }
 
 // init
@@ -223,6 +234,14 @@ void CPlayerComponent::updateComponent()
 	// update gun muzzle & gun light
 	m_gunLight->updateObject();
 	m_gunMuzzle->updateObject();
+
+	// update spark
+	std::vector<CGameObject*>::iterator itSpark = m_bulletSpark.begin(), endSpark = m_bulletSpark.end();
+	while (itSpark != endSpark)
+	{
+		(*itSpark)->updateObject();
+		itSpark++;
+	}
 }
 
 // saveData
@@ -1329,6 +1348,9 @@ void CPlayerComponent::updateUpperBodyShoot()
 		// show muzzle
 		showMuzzle(flashTime);
         
+		// create spark
+		createSpark(gunPos, "data/particle/bullet.xml");
+
         m_upbodySubState = SubStateActive;		
     }
     else if ( m_upbodySubState == SubStateEnd )
@@ -2119,4 +2141,20 @@ void CPlayerComponent::syncAnimation(int fromChannel, int fromLayer, int toChann
 {
 	float frame = m_collada->getCurrentFrame(fromChannel, fromLayer);
 	m_collada->setCurrentFrame(frame, toChannel, toLayer);
+}
+
+// createSpark
+// create a spark
+CGameObject* CPlayerComponent::createSpark( core::vector3df position, const char* xml )
+{
+	CGameObject *spark = new CGameObject(NULL);
+	m_bulletSpark.push_back(spark);
+
+	CParticleComponent	*particle = new CParticleComponent(spark);
+	particle->initParticle(xml);
+	spark->addComponenet(particle);
+	spark->setParent(spark);	
+	spark->setPosition(position);
+
+	return spark;
 }

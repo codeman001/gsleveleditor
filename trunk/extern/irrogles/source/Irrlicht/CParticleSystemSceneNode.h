@@ -1,4 +1,4 @@
-// Copyright (C) 2002-2011 Nikolaus Gebhardt
+// Copyright (C) 2002-2010 Nikolaus Gebhardt
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
@@ -50,6 +50,7 @@ public:
 
 	//! Removes all particle affectors in the particle system.
 	virtual void removeAllAffectors();
+
 	//! Remove the affector at position id
 	virtual void removeAffector( int id );
 
@@ -198,11 +199,6 @@ public:
 	//! Remove all currently visible particles
 	virtual void clearParticles();
 
-	//! Do manually update the particles.
- 	//! This should only be called when you want to render the node outside the scenegraph,
- 	//! as the node will care about this otherwise automatically.
-	virtual void doParticleSystem(u32 time);
-
 	//! Writes attributes of the scene node.
 	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const;
 
@@ -214,11 +210,15 @@ public:
 
 private:
 
+	void doParticleSystem(u32 time);
 	void reallocateBuffers();
 
 	core::list<IParticleAffector*> AffectorList;
 	IParticleEmitter* Emitter;
+
 	core::array<SParticle> Particles;
+
+private:
 	core::dimension2d<f32> ParticleSize;
 	u32 LastEmitTime;
 	s32 MaxParticles;
@@ -234,6 +234,23 @@ private:
 	E_PARTICLES_PRIMITIVE ParticlePrimitive;
 
 	bool ParticlesAreGlobal;
+
+	bool IsRotateParticle;
+	
+	bool IsNoBillboardParticle;
+
+	bool IsPlaneParticle;
+
+	enum E_PARTICLE_ROTATE
+	{
+		EPR_LEFT,
+		EPR_RIGHT,
+		EPR_BOTH
+	};
+	E_PARTICLE_ROTATE	ParticleRotate;
+	float				ParticleRotateSpeed;
+
+	bool IsRandomSprite;
 };
 
 } // end namespace scene

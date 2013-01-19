@@ -1,4 +1,4 @@
-// Copyright (C) 2002-2011 Nikolaus Gebhardt
+// Copyright (C) 2002-2010 Nikolaus Gebhardt
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
@@ -38,12 +38,12 @@ public:
 	virtual u32 getFadeOutTime() const { return static_cast<u32>(FadeOutTime); }
 
 	//! Writes attributes of the object.
-	//! Implement this to expose the attributes of your scene node animator for
+	//! Implement this to expose the attributes of your scene node animator for 
 	//! scripting languages, editors, debuggers or xml serialization purposes.
 	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const;
 
 	//! Reads attributes of the object.
-	//! Implement this to set the attributes of your scene node animator for
+	//! Implement this to set the attributes of your scene node animator for 
 	//! scripting languages, editors, debuggers or xml deserialization purposes.
 	//! \param startIndex: start index where to start reading attributes.
 	//! \return: returns last index of an attribute read by this affector

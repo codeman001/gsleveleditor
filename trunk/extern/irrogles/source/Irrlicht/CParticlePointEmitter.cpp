@@ -1,4 +1,4 @@
-// Copyright (C) 2002-2011 Nikolaus Gebhardt
+// Copyright (C) 2002-2010 Nikolaus Gebhardt
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
@@ -25,7 +25,7 @@ CParticlePointEmitter::CParticlePointEmitter(
 	MaxParticlesPerSecond(maxParticlesPerSecond),
 	MinStartColor(minStartColor), MaxStartColor(maxStartColor),
 	MinLifeTime(lifeTimeMin), MaxLifeTime(lifeTimeMax),
-	MaxAngleDegrees(maxAngleDegrees), Time(0), Emitted(0)
+	MaxAngleDegrees(maxAngleDegrees), Time(1000), Emitted(0)
 {
 	#ifdef _DEBUG
 	setDebugName("CParticlePointEmitter");
@@ -40,7 +40,7 @@ s32 CParticlePointEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle*& out
 	Time += timeSinceLastCall;
 
 	const u32 pps = (MaxParticlesPerSecond - MinParticlesPerSecond);
-	const f32 perSecond = pps ? ((f32)MinParticlesPerSecond + os::Randomizer::frand() * pps) : MinParticlesPerSecond;
+	const f32 perSecond = pps ? (f32)MinParticlesPerSecond + (os::Randomizer::rand() % pps) : MinParticlesPerSecond;
 	const f32 everyWhatMillisecond = 1000.0f / perSecond;
 
 	if (Time > everyWhatMillisecond)
@@ -105,8 +105,9 @@ void CParticlePointEmitter::serializeAttributes(io::IAttributes* out, io::SAttri
 void CParticlePointEmitter::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
 {
 	Direction = in->getAttributeAsVector3d("Direction");
-	if (Direction.getLength() == 0)
-		Direction.set(0,0.01f,0);
+	
+	//if (Direction.getLength() == 0)
+	//	Direction.set(0,0.01f,0);
 
 	int idx = -1;
 	idx = in->findAttribute("MinStartSizeWidth");

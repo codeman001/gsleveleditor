@@ -2,7 +2,7 @@
 #include "CParticleComponent.h"
 #include "IView.h"
 
-#include "TextureManager/CTextureManager.h"
+#include "core/TextureManager/CTextureManager.h"
 
 #include "CGameParticleContainerSceneNode.h"
 

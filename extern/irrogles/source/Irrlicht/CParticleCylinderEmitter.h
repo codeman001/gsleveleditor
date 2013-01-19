@@ -1,4 +1,4 @@
-// Copyright (C) 2002-2011 Nikolaus Gebhardt
+// Copyright (C) 2002-2010 Nikolaus Gebhardt
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
@@ -31,7 +31,7 @@ public:
 		u32 lifeTimeMax=4000,
 		s32 maxAngleDegrees=0,
 		const core::dimension2df& minStartSize = core::dimension2df(5.0f,5.0f),
-		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f)
+		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f) 
 		);
 
 	//! Prepares an array with new particles to emitt into the system

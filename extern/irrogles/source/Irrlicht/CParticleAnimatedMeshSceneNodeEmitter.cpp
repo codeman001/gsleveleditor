@@ -1,4 +1,4 @@
-// Copyright (C) 2002-2011 Nikolaus Gebhardt
+// Copyright (C) 2002-2010 Nikolaus Gebhardt
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
@@ -44,7 +44,7 @@ s32 CParticleAnimatedMeshSceneNodeEmitter::emitt(u32 now, u32 timeSinceLastCall,
 	Time += timeSinceLastCall;
 
 	const u32 pps = (MaxParticlesPerSecond - MinParticlesPerSecond);
-	const f32 perSecond = pps ? ((f32)MinParticlesPerSecond + os::Randomizer::frand() * pps) : MinParticlesPerSecond;
+	const f32 perSecond = pps ? (f32)MinParticlesPerSecond + (os::Randomizer::rand() % pps) : MinParticlesPerSecond;
 	const f32 everyWhatMillisecond = 1000.0f / perSecond;
 
 	if(Time > everyWhatMillisecond)
@@ -104,6 +104,11 @@ s32 CParticleAnimatedMeshSceneNodeEmitter::emitt(u32 now, u32 timeSinceLastCall,
 							p.startSize = MinStartSize.getInterpolated(MaxStartSize, os::Randomizer::frand());
 						p.size = p.startSize;
 
+						p.spriteID = os::Randomizer::rand() % 4;
+
+						p.spinAngle = 0.0f;
+						p.spinSpeed = 0.0f;
+
 						Particles.push_back(p);
 					}
 				}
@@ -156,6 +161,11 @@ s32 CParticleAnimatedMeshSceneNodeEmitter::emitt(u32 now, u32 timeSinceLastCall,
 				else
 					p.startSize = MinStartSize.getInterpolated(MaxStartSize, os::Randomizer::frand());
 				p.size = p.startSize;
+
+				p.spriteID = os::Randomizer::rand() % 4;
+
+				p.spinAngle = 0.0f;
+				p.spinSpeed = 0.0f;
 
 				Particles.push_back(p);
 			}

@@ -1,4 +1,4 @@
-// Copyright (C) 2002-2011 Nikolaus Gebhardt
+// Copyright (C) 2002-2010 Nikolaus Gebhardt
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
@@ -25,7 +25,7 @@ CParticleBoxEmitter::CParticleBoxEmitter(
 	MaxParticlesPerSecond(maxParticlesPerSecond),
 	MinStartColor(minStartColor), MaxStartColor(maxStartColor),
 	MinLifeTime(lifeTimeMin), MaxLifeTime(lifeTimeMax),
-	Time(0), Emitted(0), MaxAngleDegrees(maxAngleDegrees)
+	Time(1000), Emitted(0), MaxAngleDegrees(maxAngleDegrees)
 {
 	#ifdef _DEBUG
 	setDebugName("CParticleBoxEmitter");
@@ -89,6 +89,11 @@ s32 CParticleBoxEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle*& outAr
 			else
 				p.startSize = MinStartSize.getInterpolated(MaxStartSize, os::Randomizer::frand());
 			p.size = p.startSize;
+			
+			p.spriteID = os::Randomizer::rand() % 4;
+
+			p.spinAngle = 0.0f;
+			p.spinSpeed = 0.0f;
 
 			Particles.push_back(p);
 		}
@@ -145,8 +150,8 @@ void CParticleBoxEmitter::deserializeAttributes(io::IAttributes* in, io::SAttrib
 	Box.MaxEdge.Z = b.Z;
 
 	Direction = in->getAttributeAsVector3d("Direction");
-	if (Direction.getLength() == 0)
-		Direction.set(0,0.01f,0);
+	//if (Direction.getLength() == 0)
+	//	Direction.set(0,0.01f,0);
 
 	int idx = -1;
 	idx = in->findAttribute("MinStartSizeWidth");

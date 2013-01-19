@@ -1,4 +1,4 @@
-// Copyright (C) 2002-2011 Nikolaus Gebhardt
+// Copyright (C) 2002-2010 Nikolaus Gebhardt
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
@@ -70,10 +70,10 @@ public:
 	virtual void setMaxStartColor( const video::SColor& color ) { MaxStartColor = color; }
 
 	//! Set the maximum starting size for particles
-	virtual void setMaxStartSize( const core::dimension2df& size ) { MaxStartSize = size; }
+	virtual void setMaxStartSize( const core::dimension2df& size ) { MaxStartSize = size; };
 
 	//! Set the minimum starting size for particles
-	virtual void setMinStartSize( const core::dimension2df& size ) { MinStartSize = size; }
+	virtual void setMinStartSize( const core::dimension2df& size ) { MinStartSize = size; };
 
 	//! Set the minimum particle life-time in milliseconds
 	virtual void setMinLifeTime( u32 lifeTimeMin ) { MinLifeTime = lifeTimeMin; }
@@ -83,7 +83,6 @@ public:
 
 	//!	Maximal random derivation from the direction
 	virtual void setMaxAngleDegrees( s32 maxAngleDegrees ) { MaxAngleDegrees = maxAngleDegrees; }
-
 	//! Get Mesh we're emitting particles from
 	virtual const IAnimatedMeshSceneNode* getAnimatedMeshSceneNode() const { return Node; }
 
@@ -126,7 +125,6 @@ public:
 
 	//!	Maximal random derivation from the direction
 	virtual s32 getMaxAngleDegrees() const { return MaxAngleDegrees; }
-
 private:
 
 	IAnimatedMeshSceneNode* Node;

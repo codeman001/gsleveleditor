@@ -1,4 +1,4 @@
-// Copyright (C) 2002-2011 Nikolaus Gebhardt
+// Copyright (C) 2002-2010 Nikolaus Gebhardt
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
@@ -43,7 +43,7 @@ s32 CParticleCylinderEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle*& 
 	Time += timeSinceLastCall;
 
 	const u32 pps = (MaxParticlesPerSecond - MinParticlesPerSecond);
-	const f32 perSecond = pps ? ((f32)MinParticlesPerSecond + os::Randomizer::frand() * pps) : MinParticlesPerSecond;
+	const f32 perSecond = pps ? (f32)MinParticlesPerSecond + (os::Randomizer::rand() % pps) : MinParticlesPerSecond;
 	const f32 everyWhatMillisecond = 1000.0f / perSecond;
 
 	if(Time > everyWhatMillisecond)
@@ -101,6 +101,11 @@ s32 CParticleCylinderEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle*& 
 				p.startSize = MinStartSize.getInterpolated(MaxStartSize, os::Randomizer::frand());
 			p.size = p.startSize;
 
+			p.spriteID = os::Randomizer::rand() % 4;
+
+			p.spinAngle = 0.0f;
+			p.spinSpeed = 0.0f;
+
 			Particles.push_back(p);
 		}
 
@@ -142,8 +147,8 @@ void CParticleCylinderEmitter::deserializeAttributes(io::IAttributes* in, io::SA
 	if (Normal.getLength() == 0)
 		Normal.set(0,1.f,0);
 	Direction = in->getAttributeAsVector3d("Direction");
-	if (Direction.getLength() == 0)
-		Direction.set(0,0.01f,0);
+	//if (Direction.getLength() == 0)
+	//	Direction.set(0,0.01f,0);
 
 	int idx = -1;
 	idx = in->findAttribute("MinStartSizeWidth");

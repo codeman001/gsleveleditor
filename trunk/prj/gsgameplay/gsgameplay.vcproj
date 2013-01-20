@@ -810,6 +810,14 @@
 				Name="gameComponent"
 				>
 				<File
+					RelativePath="..\..\src\gameComponent\CBulletRayComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameComponent\CBulletRayComponent.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\gameComponent\CGameComponent.cpp"
 					>
 				</File>
@@ -823,6 +831,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\gameComponent\CGunLightComponent.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameComponent\CLifeTimeComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameComponent\CLifeTimeComponent.h"
 					>
 				</File>
 				<File

@@ -56,7 +56,9 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_gunMuzzle = NULL;
     m_gunLight  = NULL;
     m_gunLightComp = NULL;
-    
+    m_bullet = NULL;
+	m_bulletRayComp = NULL;
+
 	m_animCurrentTime		= 0.0f;	
 
 	m_spineRotation = 0.0f;
@@ -79,15 +81,7 @@ CPlayerComponent::~CPlayerComponent()
 	// delete gunlight & muzzle mesh
 	delete m_gunLight;
 	delete m_gunMuzzle;
-
-	// delete spark
-	std::vector<CGameObject*>::iterator itSpark = m_bulletSpark.begin(), endSpark = m_bulletSpark.end();
-	while (itSpark != endSpark)
-	{
-		delete (*itSpark);
-		itSpark++;
-	}
-	m_bulletSpark.clear();
+	delete m_bullet;
 }
 
 // init
@@ -200,18 +194,24 @@ void CPlayerComponent::initComponent()
     
     
     // create gunlight
-	m_gunLight = new CLightObject( NULL );
+	m_gunLight = new CLightObject(NULL);
     m_gunLight->setLightData(400.0f, 1.0f);
     m_gunLightComp = new CGunLightComponent(m_gunLight);
     m_gunLight->addComponenet(m_gunLightComp);
 	m_gunLight->setParent( m_gameObject );
 
 	// create a empty obj
-	m_gunMuzzle = new CGameObject( NULL );
+	m_gunMuzzle = new CGameObject(NULL);
 	CColladaMeshComponent *gunMesh = new CColladaMeshComponent(m_gunMuzzle);
 	gunMesh->loadFromFile( getIView()->getPath("data/mesh/character/hero/muzzleFlash.scene"));
 	m_gunMuzzle->addComponenet(gunMesh);
-	m_gunMuzzle->setParent( m_gameObject );
+	m_gunMuzzle->setParent(m_gameObject);
+
+	// create bullet
+	m_bullet = new CGameObject(NULL);
+	m_bulletRayComp = new CBulletRayComponent(m_bullet);
+	m_bullet->addComponenet(m_bulletRayComp);
+	m_bullet->setParent(m_gameObject);
 }
 
 // update
@@ -234,14 +234,7 @@ void CPlayerComponent::updateComponent()
 	// update gun muzzle & gun light
 	m_gunLight->updateObject();
 	m_gunMuzzle->updateObject();
-
-	// update spark
-	std::vector<CGameObject*>::iterator itSpark = m_bulletSpark.begin(), endSpark = m_bulletSpark.end();
-	while (itSpark != endSpark)
-	{
-		(*itSpark)->updateObject();
-		itSpark++;
-	}
+	m_bullet->updateObject();
 }
 
 // saveData
@@ -1312,6 +1305,7 @@ void CPlayerComponent::updateUpperBodyShoot()
 {
 	const float shootSpeed = 2.0f;      
 	const float flashTime = 100.0f;
+	static bool s_spawnBullet = true;
 
     if ( m_upbodySubState == SubStateInit )
     {
@@ -1347,9 +1341,9 @@ void CPlayerComponent::updateUpperBodyShoot()
         
 		// show muzzle
 		showMuzzle(flashTime);
-        
-		// create spark
-		createSpark(gunPos, "data/particle/bullet.xml");
+		
+		// spawn bullet
+		s_spawnBullet = true;
 
         m_upbodySubState = SubStateActive;		
     }
@@ -1392,6 +1386,9 @@ void CPlayerComponent::updateUpperBodyShoot()
                 // setup player state
                 m_playerCmdEvt.shoot	= false;
                 m_playerCmdEvt.reload	= false;
+
+				// spawn bullet
+				s_spawnBullet = true;
                 
 			}
 		}
@@ -1399,6 +1396,18 @@ void CPlayerComponent::updateUpperBodyShoot()
         core::line3df	ray		= getCameraRay();
 		core::vector3df	colPos	= getCollisionPoint(ray);
         
+		if ( s_spawnBullet == true )
+		{
+			CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
+			core::vector3df gunPos = gunTip->getAbsolutePosition();
+
+			core::line3df bulletRay;
+			bulletRay.start = gunPos;
+			bulletRay.end = colPos;
+
+			m_bulletRayComp->addBulletRay(bulletRay);
+			s_spawnBullet = false;
+		}
 
 		// rotate spine character
 		core::vector3df v0 = m_gameObject->getFront();
@@ -2141,20 +2150,4 @@ void CPlayerComponent::syncAnimation(int fromChannel, int fromLayer, int toChann
 {
 	float frame = m_collada->getCurrentFrame(fromChannel, fromLayer);
 	m_collada->setCurrentFrame(frame, toChannel, toLayer);
-}
-
-// createSpark
-// create a spark
-CGameObject* CPlayerComponent::createSpark( core::vector3df position, const char* xml )
-{
-	CGameObject *spark = new CGameObject(NULL);
-	m_bulletSpark.push_back(spark);
-
-	CParticleComponent	*particle = new CParticleComponent(spark);
-	particle->initParticle(xml);
-	spark->addComponenet(particle);
-	spark->setParent(spark);	
-	spark->setPosition(position);
-
-	return spark;
 }

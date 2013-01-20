@@ -15,6 +15,9 @@ protected:
 	ArrayGameObject						m_terrains;
 	ArrayGameObject						m_triggerObjects;
 
+	ArrayGameObject						m_add;
+	ArrayGameObject						m_remove;
+
 	bool								m_needSortObject;
 
 #ifdef GSGAMEPLAY
@@ -29,6 +32,10 @@ public:
 	// updateObject
 	// update object by frame...
 	virtual void updateObject();
+
+	// updateAddRemoveObj
+	// add child, remove child
+	void updateAddRemoveObj();
 
 	// sortObjectByID
 	// sort object by id in list child

@@ -84,6 +84,7 @@ void CZone::updateObject()
 		it++;
 	}
 
+	updateAddRemoveObj();
 }
 
 // sortNodeByID
@@ -214,7 +215,7 @@ CGameObject* CZone::createEmptyObject()
 		return NULL;
 
 	wchar_t lpName[1024];
-	swprintf( lpName, 1024, L"%emptyObject_%d", (int)CGameObject::s_objectID );
+	swprintf( lpName, 1024, L"emptyObject_%d", (int)CGameObject::s_objectID );
 	
 	p->setID( CGameObject::s_objectID++ );	
 	
@@ -381,45 +382,75 @@ CGameCamera* CZone::createCamera()
 	return p;
 }
 
+// updateAddRemoveObj
+// add child, remove child
+void CZone::updateAddRemoveObj()
+{
+	ArrayGameObjectIter it = m_add.begin(), end = m_add.end();
+	while ( it != end )
+	{
+		m_childs.push_back( (*it) );
+		it++;
+	}
+
+	it = m_remove.begin(), end = m_remove.end();
+	while ( it != end )
+	{
+		CGameObject *pObj = (*it);
+
+		ArrayGameObjectIter iObj = m_childs.begin(), end = m_childs.end();
+		while ( iObj != end )
+		{
+			if ( pObj == (*iObj) )
+			{
+
+	#ifdef GSEDITOR
+				uiTreeViewItem *pTreeItem = pObj->getTreeItem();
+				if ( pTreeItem )
+					m_treeItem->destroyChild( pTreeItem );			
+	#endif
+
+	#ifdef GSGAMEPLAY
+				// remove name first
+				m_objectByName.remove( pObj->getDefaultName() );
+	#endif
+
+				// delete gameObject
+				delete pObj;
+				m_childs.erase( iObj );
+
+				break;
+			}
+
+			iObj++;
+		}
+
+		it++;
+	}
+
+	if ( m_add.size() > 0 )
+		m_needSortObject = true;
+
+	if ( m_remove.size() > 0 )
+		m_needSortObject = true;
+	
+	m_add.clear();
+	m_remove.clear();
+}
+
 // addChild
 // add a game object to child list
 void CZone::addChild( CGameObject *p )
 {
-	p->setParent( this );
-	m_childs.push_back( p );
-	m_needSortObject = true;
+	p->setParent( this );	
+	m_add.push_back(p);
 }
 
 // removeObject
 // remove object
 void CZone::removeObject( CGameObject *pObj )
 {	
-	ArrayGameObjectIter iObj = m_childs.begin(), end = m_childs.end();
-	while ( iObj != end )
-	{
-		if ( pObj == (*iObj) )
-		{
-
-#ifdef GSEDITOR
-			uiTreeViewItem *pTreeItem = pObj->getTreeItem();
-			if ( pTreeItem )
-				m_treeItem->destroyChild( pTreeItem );			
-#endif
-
-#ifdef GSGAMEPLAY
-			// remove name first
-			m_objectByName.remove( pObj->getDefaultName() );
-#endif
-			// delete gameObject
-			delete pObj;
-
-			m_childs.erase( iObj );
-
-			break;
-		}
-
-		iObj++;
-	}	
+	m_remove.push_back(pObj);
 }
 
 // saveData

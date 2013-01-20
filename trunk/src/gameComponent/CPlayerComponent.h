@@ -9,6 +9,7 @@
 #include "CLightObject.h"
 #include "CGunLightComponent.h"
 
+#include "CBulletRayComponent.h"
 
 #include "gameEvent.h"
 
@@ -79,10 +80,15 @@ protected:
 	float					m_animCurrentTime;
 
 	float					m_muzzleMeshTime;
+
 	CGameObject*			m_gunMuzzle;
+
     CLightObject*           m_gunLight;
     CGunLightComponent*     m_gunLightComp;
     
+	CGameObject*			m_bullet;
+	CBulletRayComponent*	m_bulletRayComp;
+
 	std::vector<CGameObject*>	m_bulletSpark;
 
 	CColladaAnimation*		m_animationPackage;
@@ -325,9 +331,6 @@ public:
 	// syncAnimation	
 	void syncAnimation(int fromChannel, int fromLayer, int toChannel, int toLayer);
 
-	// createSpark
-	// create a spark
-	CGameObject* createSpark( core::vector3df position, const char* xml );
 };
 
 #endif

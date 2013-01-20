@@ -12,7 +12,8 @@ public:
 	enum ComponentType
 	{
 		PlayerComponent = IObjectComponent::NumBuildInComponent,
-        GunLightComponent,        
+        GunLightComponent,
+		BulletRayComponent
 	};
 
 	// loadComponent

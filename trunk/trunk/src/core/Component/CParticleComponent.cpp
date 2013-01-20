@@ -458,7 +458,7 @@ void CParticleComponent::loadXML( const char *lpFileName )
 								uiString::cat<char,const char>(path, "/");
 								uiString::cat<char,char>(path, attribValueA);
 
-								pTex = driver->getTexture(path);
+								pTex = driver->getTexture( getIView()->getPath(path) );
 							}
 
 							if ( pTex )

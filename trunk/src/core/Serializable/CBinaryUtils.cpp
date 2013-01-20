@@ -1064,14 +1064,14 @@ void CBinaryUtils::readMaterial( unsigned char *data, unsigned int size, std::st
 			// replace texture is PVR
 			uiString::getFileNameNoExt<char,char>(stringc, fileName);
 			uiString::copy<char,char>(stringc,fileName);
-			uiString::cat<char,char>(stringc,".pvr");
+			uiString::cat<char, const char>(stringc,".pvr");
 #endif
 
 #ifdef USE_ZIPPACKAGE
 			uiString::copy<char, char>( fullPath, stringc );
 #else
 			uiString::getFolderPath<const char,char>( currentPath.c_str(), fullPath );
-			uiString::cat<char,char>( fullPath , "/" );
+			uiString::cat<char, const char>( fullPath , "/" );
 			uiString::cat<char,char>( fullPath , stringc );
 #endif
             // load texture of material

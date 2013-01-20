@@ -370,6 +370,20 @@ void CParticleComponent::saveXML( const char *lpFileName )
 	file->drop();
 }
 
+// convertToU16
+// on MAC wchar_t is 4bytes
+// so we need convert it to 2bytes
+void CParticleComponent::convertToU16( unsigned short* dst, const wchar_t *src)
+{
+    while ( *src != 0 )
+    {
+        *dst = *src;
+        dst++;
+        src++;
+    }
+    *dst = 0;
+}
+
 // loadXML
 // load particle from xml file
 void CParticleComponent::loadXML( const char *lpFileName )
@@ -387,10 +401,13 @@ void CParticleComponent::loadXML( const char *lpFileName )
 		if ( xmlRead == NULL )
 			return;	
 	}
-
+    
 	IParticleSystemSceneNode *particle = NULL;
 	SParticleInfo*	particleInfo = NULL;
-
+    
+    unsigned short  attribValueW[1024];
+    char attribValueA[1024] = {0};
+    
 	while ( xmlRead->read() )
 	{
 		if (core::stringw(L"particles") == xmlRead->getNodeName())
@@ -409,13 +426,24 @@ void CParticleComponent::loadXML( const char *lpFileName )
 							particleInfo = CParticleComponent::getParticleInfo( particle );
 
 							const wchar_t *attribValue = xmlRead->getAttributeValue(L"name");
-							char attribValueA[1024] = {0};
-							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );
+                            convertToU16(attribValueW, attribValue);
+							uiString::convertUnicodeToUTF8(attribValueW, attribValueA );
 							particle->setName( attribValue );
 
-							attribValue = xmlRead->getAttributeValue(L"texture");							
-							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );
-														
+                            
+							attribValue = xmlRead->getAttributeValue(L"texture");		
+                            convertToU16(attribValueW, attribValue);
+							uiString::convertUnicodeToUTF8(attribValueW, attribValueA );
+
+#ifdef _IRR_COMPILE_WITH_OGLES2_
+                            char fileName[512];
+                            
+                            // replace texture is PVR
+                            uiString::getFileNameNoExt<char,char>(attribValueA, fileName);
+                            uiString::copy<char,char>(attribValueA,fileName);
+                            uiString::cat<char, const char>(attribValueA,".pvr");
+#endif
+                            
 							// set texture
 							particleInfo->texture = attribValueA;
 
@@ -427,7 +455,7 @@ void CParticleComponent::loadXML( const char *lpFileName )
 								// search with xml file
 								char path[512];
 								uiString::getFolderPath<const char, char>(lpFileName, path);
-								uiString::cat<char,char>(path, "/");
+								uiString::cat<char,const char>(path, "/");
 								uiString::cat<char,char>(path, attribValueA);
 
 								pTex = driver->getTexture(path);
@@ -437,7 +465,9 @@ void CParticleComponent::loadXML( const char *lpFileName )
 								CTextureManager::getInstance()->registerTexture(pTex);
 
 							attribValue = xmlRead->getAttributeValue(L"additiveTrans");
-							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );
+                            convertToU16(attribValueW, attribValue);
+							uiString::convertUnicodeToUTF8(attribValueW, attribValueA );
+                            
 							if ( strcmp( attribValueA, "true") == 0 )
 								particleInfo->additiveTrans = true;
 							else
@@ -456,13 +486,17 @@ void CParticleComponent::loadXML( const char *lpFileName )
 							}
 
 							// set start time
-							attribValue = xmlRead->getAttributeValue(L"startTime");							
-							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );	
+							attribValue = xmlRead->getAttributeValue(L"startTime");
+                            convertToU16(attribValueW, attribValue);
+							uiString::convertUnicodeToUTF8(attribValueW, attribValueA );
+                            
 							sscanf(attribValueA, "%ld", &particleInfo->startTime );
 
 							// set life time
-							attribValue = xmlRead->getAttributeValue(L"lifeTime");							
-							uiString::convertUnicodeToUTF8( (unsigned short*)attribValue, attribValueA );
+							attribValue = xmlRead->getAttributeValue(L"lifeTime");
+                            convertToU16(attribValueW, attribValue);
+							uiString::convertUnicodeToUTF8(attribValueW, attribValueA );
+                            
 							sscanf(attribValueA, "%ld", &particleInfo->lifeTime );							
 
 						}

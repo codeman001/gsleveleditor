@@ -89,6 +89,12 @@ public:
     inline void setVisible(bool b)
     {
         m_lightSceneNode->setVisible(b);
+
+#ifdef GSEDITOR
+		m_node->setVisible(b);
+#endif
+
+		m_visible = b;
     }
     
     // setLightData

@@ -152,6 +152,7 @@ void CMainFrame::_OnCreate()
 
 	e.pushKey( FVIRTKEY, VK_ESCAPE,		(WORD) ID_CAMERA_COMMAND);		// esc
 	e.pushKey( FVIRTKEY, VK_DELETE,		(WORD) ID_DELETE_COMMAND);		// delete
+	e.pushKey( FVIRTKEY, VK_BACK,		(WORD) ID_DELETE_COMMAND);		// delete
 	e.pushKey( FVIRTKEY, 'S',			(WORD) ID_SELECT_COMMAND);		// select controller
 	e.pushKey( FVIRTKEY, 'R',			(WORD) ID_ROTATE_COMMAND);		// rotate controller
 	e.pushKey( FVIRTKEY, 'L',			(WORD) ID_SCALE_COMMAND);		// scale controller

@@ -13,7 +13,8 @@ public:
 	{
 		PlayerComponent = IObjectComponent::NumBuildInComponent,
         GunLightComponent,
-		BulletRayComponent
+		BulletRayComponent,
+		LifeTimeComponent
 	};
 
 	// loadComponent

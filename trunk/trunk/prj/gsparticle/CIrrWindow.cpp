@@ -33,7 +33,7 @@ void CIrrWindow::createIrrDevice()
 	// create irr device
 	SIrrlichtCreationParameters param;
 	param.WindowId = (void*)getHandle();
-
+	param.ZBufferBits = 32;
 	param.DriverType = video::EDT_OPENGL;	
 
 	m_device	= createDeviceEx(param);

@@ -125,7 +125,7 @@ public:
 	ISceneNode						*m_node;
 	std::vector<IObjectComponent*>	m_components;
 
-	void addComponenet( IObjectComponent* comp )
+	void addComponent( IObjectComponent* comp )
 	{
 		m_components.push_back( comp );
 	}

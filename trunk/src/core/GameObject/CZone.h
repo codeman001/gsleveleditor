@@ -15,6 +15,7 @@ protected:
 	ArrayGameObject						m_triggerObjects;
 
 	CContainerObject					*m_particleMgr;
+	CGameObject							*m_shadowMgr;
 public:
 	CZone();
 	virtual ~CZone();
@@ -107,6 +108,13 @@ public:
 	inline CContainerObject* getParticleManager()
 	{
 		return m_particleMgr;
+	}
+
+	// getShadowManager
+	// return shadow manager
+	inline CGameObject* getStaticShadowManager()
+	{
+		return m_shadowMgr;
 	}
 };
 

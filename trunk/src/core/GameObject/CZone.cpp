@@ -11,6 +11,7 @@
 #include "CGameContainerSceneNode.h"
 
 #include "CTerrainComponent.h"
+#include "CShadowComponent.h"
 
 #ifdef GSGAMEPLAY
 #include "gameLevel/CGameLevel.h"
@@ -34,6 +35,11 @@ CZone::CZone()
 	m_particleMgr = new CContainerObject(this);
 	m_particleMgr->setID( CGameObject::s_objectID++ );
 	addChild(m_particleMgr);
+
+	m_shadowMgr = createEmptyObject();
+	CShadowComponent *shadowComp = new CShadowComponent(m_shadowMgr);
+	shadowComp->initComponent();
+	m_shadowMgr->addComponent(shadowComp);
 }
 
 CZone::~CZone()

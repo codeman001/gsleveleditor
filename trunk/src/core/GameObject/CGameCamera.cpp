@@ -44,7 +44,7 @@ CGameCamera::CGameCamera()
 #ifdef GSEDITOR	
 	CColladaMeshComponent *comp = new CColladaMeshComponent( this );
 	comp->loadFromFile( getIView()->getPath("data/editor/camera.dae") );
-	addComponenet( comp );
+	addComponent( comp );
 	setLighting( false );
 
 	m_cameraMesh = m_node;	

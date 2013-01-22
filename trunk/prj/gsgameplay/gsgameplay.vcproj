@@ -565,6 +565,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\core\SceneNode\CGameStaticShadowSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameStaticShadowSceneNode.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\SceneNode\CGameWaterSceneNode.cpp"
 						>
 					</File>

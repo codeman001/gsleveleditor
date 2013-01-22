@@ -19,7 +19,7 @@ CWayPoint::CWayPoint()
 	// init waypoint mesh
 	//CColladaMeshComponent *comp = new CColladaMeshComponent( this );
 	//comp->loadFromFile( getIView()->getPath("data/editor/waypoint.dae") );
-	//addComponenet( comp );
+	//addComponent( comp );
 	//setLighting( false );
 	
 
@@ -57,7 +57,7 @@ CWayPoint::CWayPoint(CGameObject *parent)
 	// init waypoint mesh
 	//CColladaMeshComponent *comp = new CColladaMeshComponent( this );
 	//comp->loadFromFile( getIView()->getPath("data/editor/waypoint.dae") );
-	//addComponenet( comp );
+	//addComponent( comp );
 	//setLighting( false );
 
 	m_node = new CGameBoxSceneNode(this, 5, parentNode, smgr, (s32)m_objectID);

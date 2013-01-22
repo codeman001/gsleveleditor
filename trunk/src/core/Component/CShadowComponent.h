@@ -7,8 +7,7 @@
 class CShadowComponent: public IObjectComponent
 {
 protected:
-	bool m_shadowCasting;
-	bool m_shadowReceiving;
+	std::vector<video::S3DVertex>	m_listShadowPos;
 
 public:
 	CShadowComponent(CGameObject *owner);
@@ -31,19 +30,30 @@ public:
 	// load data to serializable
 	virtual void loadData( CSerializable* pObj );
 
-	// isShadowCasting
-	// return true if casting shadow
-	inline bool isShadowCasting()
+	// addShadowNode
+	// add shadow
+	void setShadowNode( const core::vector3df& pos, const core::vector3df& normal )
 	{
-		return m_shadowCasting;
+		video::S3DVertex v;
+		v.Pos = pos;
+		v.Normal = normal;
+		m_listShadowPos.push_back(v);
 	}
 
-	// isShadowReceiving
-	// return true if receiving shadow
-	inline bool isShadowReceiving()
+	// getShadowCount
+	// get number of shadow
+	inline int getShadowCount()
 	{
-		return m_shadowReceiving;
+		return m_listShadowPos.size();
 	}
+
+	// getListShadow
+	// get list shadow
+	inline std::vector<video::S3DVertex>& getListShadow()
+	{
+		return m_listShadowPos;
+	}
+
 };
 
 #endif

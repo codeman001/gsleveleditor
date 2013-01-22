@@ -31,6 +31,11 @@ protected:
 	float					m_cameraAspect;
 
 	float					m_timeStep;
+
+#ifdef GSGAMEPLAY
+	float					m_clearScreenTime;
+#endif
+
 public:
 
 	IView();
@@ -147,6 +152,15 @@ public:
 	{
 		return m_timeStep;
 	}
+
+#ifdef GSGAMEPLAY
+	// clearScreenTime
+	// set clear time
+	inline void clearScreenTime(float f)
+	{
+		m_clearScreenTime = f;
+	}
+#endif
 
 #if defined(GSEDITOR) || defined(GSANIMATION)
 	// enableFreeCamera

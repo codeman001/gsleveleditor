@@ -7,7 +7,7 @@
 CStateGameplay::CStateGameplay()
 	:CGameState(CGameState::GSStateGameplay)
 {
-	m_level = new CGameLevel();    
+	m_level = new CGameLevel();   
 }
 
 CStateGameplay::~CStateGameplay()
@@ -63,6 +63,9 @@ void CStateGameplay::onCreate()
     m_syncGameInterval = 1000.0f/(float)MP_GAMEFPS_SYNC;
 #endif
     
+	// clear screen
+	getIView()->clearScreenTime(100.0f);
+
 }
 
 void CStateGameplay::onDestroy()

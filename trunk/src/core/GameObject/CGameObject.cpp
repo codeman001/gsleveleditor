@@ -1091,7 +1091,11 @@ void CGameObject::updateObject()
 ISceneNode* CGameObject::getParentSceneNode()
 {
 	if ( m_parent )
-		return m_parent->getSceneNode();
-	else
-		return getIView()->getSceneMgr()->getRootSceneNode();
+	{
+		ISceneNode* node = m_parent->getSceneNode();
+		if ( node )
+			return node;
+	}
+	
+	return getIView()->getSceneMgr()->getRootSceneNode();
 }

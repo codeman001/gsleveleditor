@@ -14,9 +14,9 @@ protected:
 	ArrayGameObject						m_terrains;
 	ArrayGameObject						m_triggerObjects;
 
+	CContainerObject					*m_particleMgr;
 public:
 	CZone();
-
 	virtual ~CZone();
 
 	// updateObject
@@ -26,10 +26,6 @@ public:
 	// createObject
 	// create a template object
 	CGameObject* createObject( wchar_t* objTemplate );
-	
-	// createEmptyObject
-	// create a obj with no component
-	CGameObject* createEmptyObject();
 
 	// createCamera
 	// create a cameraObject
@@ -106,6 +102,12 @@ public:
 	}
 #endif
 
+	// getParticleManager
+	// return ps container
+	inline CContainerObject* getParticleManager()
+	{
+		return m_particleMgr;
+	}
 };
 
 typedef std::vector<CZone*>				ArrayZone;

@@ -6,6 +6,12 @@ CContainerObject::CContainerObject()
 	m_needSortObject = true;
 }
 
+CContainerObject::CContainerObject(CGameObject *parent)
+	:CGameObject(parent)
+{
+	m_needSortObject = true;
+}
+
 CContainerObject::~CContainerObject()
 {
 	ArrayGameObjectIter it = m_childs.begin(), end = m_childs.end();
@@ -38,6 +44,24 @@ void CContainerObject::updateObject()
 	updateAddRemoveObj();
 }
 
+// createEmptyObject
+// create a obj with no component
+CGameObject* CContainerObject::createEmptyObject()
+{
+	CGameObject *p = new CGameObject(this);
+	if ( p == NULL )
+		return NULL;
+
+	wchar_t lpName[1024];
+	swprintf( lpName, 1024, L"emptyObject_%d", (int)CGameObject::s_objectID );
+	
+	p->setID( CGameObject::s_objectID++ );
+	p->setName( lpName );
+
+	addChild( p );
+	
+	return p;
+}
 
 // sortNodeByID
 // sort object by id in list child

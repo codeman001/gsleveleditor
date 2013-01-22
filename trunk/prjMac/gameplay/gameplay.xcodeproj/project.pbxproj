@@ -98,6 +98,8 @@
 		7F42768416284F300003D8E6 /* CUIButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F42767E16284F300003D8E6 /* CUIButton.cpp */; };
 		7F42768516284F300003D8E6 /* CUICanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F42768016284F300003D8E6 /* CUICanvas.cpp */; };
 		7F42768616284F300003D8E6 /* CUIWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F42768216284F300003D8E6 /* CUIWidget.cpp */; };
+		7F44D90E16AEF8640039FA06 /* CGameStaticShadowSceneNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F44D90C16AEF8640039FA06 /* CGameStaticShadowSceneNode.cpp */; };
+		7F44D91116AEF87F0039FA06 /* CContainerObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F44D90F16AEF87F0039FA06 /* CContainerObject.cpp */; };
 		7F4D165B163055A2009F066A /* CUIListview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4D1659163055A2009F066A /* CUIListview.cpp */; };
 		7F4D2BE916AC39D8002C3A7C /* CBulletRayComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4D2BE516AC39D8002C3A7C /* CBulletRayComponent.cpp */; };
 		7F4D2BEA16AC39D8002C3A7C /* CLifeTimeComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4D2BE716AC39D8002C3A7C /* CLifeTimeComponent.cpp */; };
@@ -313,6 +315,10 @@
 		7F42768116284F300003D8E6 /* CUICanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUICanvas.h; sourceTree = "<group>"; };
 		7F42768216284F300003D8E6 /* CUIWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIWidget.cpp; sourceTree = "<group>"; };
 		7F42768316284F300003D8E6 /* CUIWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIWidget.h; sourceTree = "<group>"; };
+		7F44D90C16AEF8640039FA06 /* CGameStaticShadowSceneNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGameStaticShadowSceneNode.cpp; sourceTree = "<group>"; };
+		7F44D90D16AEF8640039FA06 /* CGameStaticShadowSceneNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGameStaticShadowSceneNode.h; sourceTree = "<group>"; };
+		7F44D90F16AEF87F0039FA06 /* CContainerObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CContainerObject.cpp; sourceTree = "<group>"; };
+		7F44D91016AEF87F0039FA06 /* CContainerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CContainerObject.h; sourceTree = "<group>"; };
 		7F4D1659163055A2009F066A /* CUIListview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIListview.cpp; sourceTree = "<group>"; };
 		7F4D165A163055A2009F066A /* CUIListview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIListview.h; sourceTree = "<group>"; };
 		7F4D2BE516AC39D8002C3A7C /* CBulletRayComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CBulletRayComponent.cpp; sourceTree = "<group>"; };
@@ -521,6 +527,8 @@
 		7F3A6B1D160F5E8000B31F81 /* GameObject */ = {
 			isa = PBXGroup;
 			children = (
+				7F44D90F16AEF87F0039FA06 /* CContainerObject.cpp */,
+				7F44D91016AEF87F0039FA06 /* CContainerObject.h */,
 				7F3A6B1E160F5E8000B31F81 /* CGameCamera.cpp */,
 				7F3A6B1F160F5E8000B31F81 /* CGameCamera.h */,
 				7F3A6B20160F5E8000B31F81 /* CGameObject.cpp */,
@@ -566,6 +574,8 @@
 		7F3A6B36160F5E8000B31F81 /* SceneNode */ = {
 			isa = PBXGroup;
 			children = (
+				7F44D90C16AEF8640039FA06 /* CGameStaticShadowSceneNode.cpp */,
+				7F44D90D16AEF8640039FA06 /* CGameStaticShadowSceneNode.h */,
 				7F3A6B37160F5E8000B31F81 /* CGameAnimatedMeshSceneNode.cpp */,
 				7F3A6B38160F5E8000B31F81 /* CGameAnimatedMeshSceneNode.h */,
 				7F3A6B39160F5E8000B31F81 /* CGameBillboardSceneNode.cpp */,
@@ -988,6 +998,8 @@
 				7F3FF81716A1103C000EFAED /* CUIHoldButton.cpp in Sources */,
 				7F4D2BE916AC39D8002C3A7C /* CBulletRayComponent.cpp in Sources */,
 				7F4D2BEA16AC39D8002C3A7C /* CLifeTimeComponent.cpp in Sources */,
+				7F44D90E16AEF8640039FA06 /* CGameStaticShadowSceneNode.cpp in Sources */,
+				7F44D91116AEF87F0039FA06 /* CContainerObject.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

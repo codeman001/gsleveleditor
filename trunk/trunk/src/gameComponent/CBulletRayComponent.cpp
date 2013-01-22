@@ -66,7 +66,7 @@ CGameObject* CBulletRayComponent::createSpark( core::vector3df position, const c
 	if ( obj && obj->getObjectType() == CGameObject::ZoneObject )
 	{
 		// create object
-		spark = ((CZone*)obj)->createEmptyObject();
+		spark = ((CZone*)obj)->getParticleManager()->createEmptyObject();
 		
 		// add component
 		CParticleComponent	*particle = new CParticleComponent(spark);

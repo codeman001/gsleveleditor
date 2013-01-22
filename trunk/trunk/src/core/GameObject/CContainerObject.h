@@ -18,11 +18,17 @@ protected:
 
 public:
 	CContainerObject();
+	CContainerObject(CGameObject *parent);
+
 	virtual ~CContainerObject();
 
 	// updateObject
 	// update object by frame...
 	virtual void updateObject();
+
+	// createEmptyObject
+	// create a obj with no component
+	CGameObject* createEmptyObject();
 
 	// updateAddRemoveObj
 	// add child, remove child

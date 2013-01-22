@@ -18,7 +18,7 @@ void CShadowComponent::initComponent()
 {
 	if ( m_gameObject->m_node )
 		m_gameObject->destroyNode();
-
+	
 	// new node
 	m_gameObject->m_node = new CGameStaticShadowSceneNode(
 			m_gameObject,
@@ -27,6 +27,15 @@ void CShadowComponent::initComponent()
 			m_gameObject->getPosition(), 
 			(s32)m_gameObject->getID() 
 		);
+
+#ifdef _IRR_COMPILE_WITH_OGLES2_
+	ITexture *pShadowTex = getIView()->getDriver()->getTexture( getIView()->getPath( "data/texture/shadow.pvr" ) );
+#else
+	ITexture *pShadowTex = getIView()->getDriver()->getTexture( getIView()->getPath( "data/texture/shadow.tga" ) );
+#endif
+
+	m_gameObject->m_node->getMaterial(0).setTexture(0, pShadowTex);
+	m_gameObject->m_node->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 }
 
 // update

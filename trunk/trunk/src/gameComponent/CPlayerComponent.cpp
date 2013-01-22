@@ -563,7 +563,7 @@ void CPlayerComponent::updateStateRun()
             // rotate step runDir
             turnToDir( m_controlRotate, runDir, 2.0f );
         }
-        
+/*        
 #ifdef WIN32
 		// debug line
 		CGameDebug *debug = CGameDebug::getInstance();
@@ -578,7 +578,7 @@ void CPlayerComponent::updateStateRun()
 		line.end	= m_gameObject->getPosition() + m_controlRotate * 400.0f;
 		debug->addDrawLine(line, SColor(255,0,0,255) );
 #endif
-
+*/
 		float step = m_runAccel*getIView()->getTimeStep();
         
 		if ( m_runCommand == false )
@@ -873,7 +873,7 @@ void CPlayerComponent::updateStateRunFast()
 		}
 		else
 		{
-
+/*
 #ifdef WIN32            
 			// debug line
 			CGameDebug *debug = CGameDebug::getInstance();
@@ -884,7 +884,7 @@ void CPlayerComponent::updateStateRunFast()
 			line.end	= m_gameObject->getPosition() + v0 * 400.0f;
 			debug->addDrawLine(line, SColor(255,0,255,0) );
 #endif
-            
+*/            
 			// step to turn camera vector
 			if ( m_runCommand )
 			{
@@ -942,7 +942,7 @@ void CPlayerComponent::updateStateRunFastTurn()
         
 		// step to turn camera vector
         bool turn = turnToDir( v0, v1, 5.0f );
-
+/*
 #ifdef WIN32            
         // debug line
         CGameDebug *debug = CGameDebug::getInstance();
@@ -953,7 +953,7 @@ void CPlayerComponent::updateStateRunFastTurn()
         line.end	= m_gameObject->getPosition() + v0 * 400.0f;
         debug->addDrawLine(line, SColor(255,0,255,0) );
 #endif        
-        
+*/
 		// rotate object
 		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
 

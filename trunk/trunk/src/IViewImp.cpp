@@ -33,6 +33,10 @@ IView::IView()
 	m_cameraAspect = 1.0f;
 	m_timeStep = 1.0f;
 
+#ifdef GSGAMEPLAY
+	m_clearScreenTime = 0.0f;
+#endif
+
 #ifdef VISUALLEAKDETECTOR
 	VLDEnable();
 #endif

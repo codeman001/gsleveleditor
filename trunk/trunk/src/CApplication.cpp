@@ -189,7 +189,18 @@ void CApplication::mainLoop()
 
     // draw debug
     CGameDebug::getInstance()->draw2D();
-    
+
+	// clear screen
+	if ( m_clearScreenTime > 0.0f )
+	{
+		// clear screen
+		m_driver->beginScene(true, true, video::SColor(255,0,0,0));
+
+		m_clearScreenTime = m_clearScreenTime - m_timeStep;
+		if ( m_clearScreenTime < 0 )
+			m_clearScreenTime = 0.0f;
+	}
+
 	// draw debug fps string
 	int fps = m_driver->getFPS();
 	

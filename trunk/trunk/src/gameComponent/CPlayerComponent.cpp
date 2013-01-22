@@ -10,6 +10,7 @@
 #include "CParticleComponent.h"
 #include "CColladaMeshComponent.h"
 #include "CGunLightComponent.h"
+#include "CShadowComponent.h"
 
 #include "gameLevel/CGameLevel.h"
 #include "gameDebug/CGameDebug.h"
@@ -197,20 +198,20 @@ void CPlayerComponent::initComponent()
 	m_gunLight = new CLightObject(NULL);
     m_gunLight->setLightData(400.0f, 1.0f);
     m_gunLightComp = new CGunLightComponent(m_gunLight);
-    m_gunLight->addComponenet(m_gunLightComp);
+    m_gunLight->addComponent(m_gunLightComp);
 	m_gunLight->setParent( m_gameObject );
 
 	// create a empty obj
 	m_gunMuzzle = new CGameObject(NULL);
 	CColladaMeshComponent *gunMesh = new CColladaMeshComponent(m_gunMuzzle);
 	gunMesh->loadFromFile( getIView()->getPath("data/mesh/character/hero/muzzleFlash.scene"));
-	m_gunMuzzle->addComponenet(gunMesh);
+	m_gunMuzzle->addComponent(gunMesh);
 	m_gunMuzzle->setParent(m_gameObject);
 
 	// create bullet
 	m_bullet = new CGameObject(NULL);
 	m_bulletRayComp = new CBulletRayComponent(m_bullet);
-	m_bullet->addComponenet(m_bulletRayComp);
+	m_bullet->addComponent(m_bulletRayComp);
 	m_bullet->setParent(m_gameObject);
 }
 
@@ -235,6 +236,13 @@ void CPlayerComponent::updateComponent()
 	m_gunLight->updateObject();
 	m_gunMuzzle->updateObject();
 	m_bullet->updateObject();
+
+	// set shadow
+	CZone *zone = (CZone*)m_gameObject->getParent();
+	CGameObject *shadowObj = zone->getStaticShadowManager();
+	CShadowComponent* shadowComp = (CShadowComponent*)shadowObj->getComponent(IObjectComponent::Shadow);
+	if ( shadowComp )
+		shadowComp->setShadowNode( m_gameObject->getPosition(), core::vector3df(0,1,0) );
 }
 
 // saveData

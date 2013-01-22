@@ -71,11 +71,11 @@ CGameObject* CBulletRayComponent::createSpark( core::vector3df position, const c
 		// add component
 		CParticleComponent	*particle = new CParticleComponent(spark);
 		particle->initParticle(xml);
-		spark->addComponenet(particle);
+		spark->addComponent(particle);
 
 		CLifeTimeComponent *lifeTime = new CLifeTimeComponent(spark);
 		lifeTime->setLifeTime(lifeDelay);
-		spark->addComponenet(lifeTime);
+		spark->addComponent(lifeTime);
 	
 		spark->setPosition(position);
 	}

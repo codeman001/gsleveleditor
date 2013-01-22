@@ -22,6 +22,8 @@
 		7F39584F160EF17700EEB3A2 /* CDataPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */; };
 		7F3A4562169722670088EB8A /* CGunLightComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A4560169722670088EB8A /* CGunLightComponent.cpp */; };
 		7F3FF7F716A10CE5000EFAED /* CUIHoldButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3FF7F516A10CE5000EFAED /* CUIHoldButton.cpp */; };
+		7F44D92D16AEF9090039FA06 /* CContainerObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F44D92B16AEF9090039FA06 /* CContainerObject.cpp */; };
+		7F44D93016AEF9190039FA06 /* CGameStaticShadowSceneNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F44D92E16AEF9190039FA06 /* CGameStaticShadowSceneNode.cpp */; };
 		7F4D163F1630552A009F066A /* CUIListview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4D163D1630552A009F066A /* CUIListview.cpp */; };
 		7F4D2C0816AC3A42002C3A7C /* CBulletRayComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4D2C0416AC3A42002C3A7C /* CBulletRayComponent.cpp */; };
 		7F4D2C0916AC3A42002C3A7C /* CLifeTimeComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4D2C0616AC3A42002C3A7C /* CLifeTimeComponent.cpp */; };
@@ -166,6 +168,10 @@
 		7F3A4561169722670088EB8A /* CGunLightComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGunLightComponent.h; sourceTree = "<group>"; };
 		7F3FF7F516A10CE5000EFAED /* CUIHoldButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIHoldButton.cpp; sourceTree = "<group>"; };
 		7F3FF7F616A10CE5000EFAED /* CUIHoldButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIHoldButton.h; sourceTree = "<group>"; };
+		7F44D92B16AEF9090039FA06 /* CContainerObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CContainerObject.cpp; sourceTree = "<group>"; };
+		7F44D92C16AEF9090039FA06 /* CContainerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CContainerObject.h; sourceTree = "<group>"; };
+		7F44D92E16AEF9190039FA06 /* CGameStaticShadowSceneNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGameStaticShadowSceneNode.cpp; sourceTree = "<group>"; };
+		7F44D92F16AEF9190039FA06 /* CGameStaticShadowSceneNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGameStaticShadowSceneNode.h; sourceTree = "<group>"; };
 		7F4D163D1630552A009F066A /* CUIListview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIListview.cpp; sourceTree = "<group>"; };
 		7F4D163E1630552A009F066A /* CUIListview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIListview.h; sourceTree = "<group>"; };
 		7F4D2C0416AC3A42002C3A7C /* CBulletRayComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CBulletRayComponent.cpp; sourceTree = "<group>"; };
@@ -535,6 +541,8 @@
 		7FD0BF7D15F4F34400626D90 /* GameObject */ = {
 			isa = PBXGroup;
 			children = (
+				7F44D92B16AEF9090039FA06 /* CContainerObject.cpp */,
+				7F44D92C16AEF9090039FA06 /* CContainerObject.h */,
 				7FD0BF7E15F4F34400626D90 /* CGameCamera.cpp */,
 				7FD0BF7F15F4F34400626D90 /* CGameCamera.h */,
 				7FD0BF8015F4F34400626D90 /* CGameObject.cpp */,
@@ -565,6 +573,8 @@
 		7FD0BF8F15F4F34400626D90 /* SceneNode */ = {
 			isa = PBXGroup;
 			children = (
+				7F44D92E16AEF9190039FA06 /* CGameStaticShadowSceneNode.cpp */,
+				7F44D92F16AEF9190039FA06 /* CGameStaticShadowSceneNode.h */,
 				7FD0BF9015F4F34400626D90 /* CGameAnimatedMeshSceneNode.cpp */,
 				7FD0BF9115F4F34400626D90 /* CGameAnimatedMeshSceneNode.h */,
 				7FD0BF9215F4F34400626D90 /* CGameBillboardSceneNode.cpp */,
@@ -985,6 +995,8 @@
 				7F3FF7F716A10CE5000EFAED /* CUIHoldButton.cpp in Sources */,
 				7F4D2C0816AC3A42002C3A7C /* CBulletRayComponent.cpp in Sources */,
 				7F4D2C0916AC3A42002C3A7C /* CLifeTimeComponent.cpp in Sources */,
+				7F44D92D16AEF9090039FA06 /* CContainerObject.cpp in Sources */,
+				7F44D93016AEF9190039FA06 /* CGameStaticShadowSceneNode.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

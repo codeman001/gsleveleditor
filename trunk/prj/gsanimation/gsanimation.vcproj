@@ -277,6 +277,14 @@
 				Name="GameObject"
 				>
 				<File
+					RelativePath="..\..\src\core\GameObject\CContainerObject.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\GameObject\CContainerObject.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\GameObject\CGameCamera.cpp"
 					>
 				</File>

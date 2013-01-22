@@ -75,7 +75,7 @@ void CViewWindow::createIrrDevice()
 	// create irr device
 	SIrrlichtCreationParameters param;
 	param.WindowId = (void*)getHandle();
-
+	param.ZBufferBits = 32;
 	param.DriverType = video::EDT_OPENGL;	
 
 	m_device	= createDeviceEx(param);
@@ -90,7 +90,7 @@ void CViewWindow::createIrrDevice()
 	int pf = GetPixelFormat(HDc);	
 	DescribePixelFormat(HDc, pf, sizeof(PIXELFORMATDESCRIPTOR), &pfd);	
 	pfd.dwFlags |= PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
-	pfd.cDepthBits=16;
+	pfd.cDepthBits = 16;
 	pf = ChoosePixelFormat(HDc, &pfd);	
 	SetPixelFormat(HDc, pf, &pfd);
 	

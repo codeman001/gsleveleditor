@@ -601,6 +601,14 @@
 					Name="GameObject"
 					>
 					<File
+						RelativePath="..\..\src\core\GameObject\CContainerObject.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\GameObject\CContainerObject.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\core\GameObject\CGameCamera.cpp"
 						>
 					</File>
@@ -742,6 +750,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\core\SceneNode\CGameParticleContainerSceneNode.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameStaticShadowSceneNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\SceneNode\CGameStaticShadowSceneNode.h"
 						>
 					</File>
 					<File

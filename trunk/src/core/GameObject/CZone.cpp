@@ -31,6 +31,7 @@ CZone::CZone()
 	m_node->setDebugDataVisible( EDS_BBOX );
 #endif
 
+#if defined(GSEDITOR) || defined(GSGAMEPLAY)
 	// add particle manager
 	m_particleMgr = new CContainerObject(this);
 	m_particleMgr->setID( CGameObject::s_objectID++ );
@@ -40,6 +41,8 @@ CZone::CZone()
 	CShadowComponent *shadowComp = new CShadowComponent(m_shadowMgr);
 	shadowComp->initComponent();
 	m_shadowMgr->addComponent(shadowComp);
+#endif
+
 }
 
 CZone::~CZone()

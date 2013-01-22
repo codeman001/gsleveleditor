@@ -14,8 +14,11 @@ protected:
 	ArrayGameObject						m_terrains;
 	ArrayGameObject						m_triggerObjects;
 
+#if defined(GSEDITOR) || defined(GSGAMEPLAY)
 	CContainerObject					*m_particleMgr;
 	CGameObject							*m_shadowMgr;
+#endif
+
 public:
 	CZone();
 	virtual ~CZone();
@@ -101,7 +104,6 @@ public:
 	{
 		return m_terrains;
 	}
-#endif
 
 	// getParticleManager
 	// return ps container
@@ -116,6 +118,8 @@ public:
 	{
 		return m_shadowMgr;
 	}
+#endif
+
 };
 
 typedef std::vector<CZone*>				ArrayZone;

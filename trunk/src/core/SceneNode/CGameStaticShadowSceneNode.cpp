@@ -86,19 +86,19 @@ void CGameStaticShadowSceneNode::render()
 
 			// update buffer position
 			Buffer->Vertices[0+idx].Pos = pos + horizontal + vertical;
-			Buffer->Vertices[0+idx].Color = SColor(255,255,255,255);
+			Buffer->Vertices[0+idx].Color = SColor(255,0,0,0);
 			Buffer->Vertices[0+idx].Normal = nor;
 
 			Buffer->Vertices[1+idx].Pos = pos + horizontal - vertical;
-			Buffer->Vertices[1+idx].Color = SColor(255,255,255,255);
+			Buffer->Vertices[1+idx].Color = SColor(255,0,0,0);
 			Buffer->Vertices[1+idx].Normal = nor;
 
 			Buffer->Vertices[2+idx].Pos = pos - horizontal - vertical;
-			Buffer->Vertices[2+idx].Color = SColor(255,255,255,255);
+			Buffer->Vertices[2+idx].Color = SColor(255,0,0,0);
 			Buffer->Vertices[2+idx].Normal = nor;
 
 			Buffer->Vertices[3+idx].Pos = pos - horizontal + vertical;
-			Buffer->Vertices[3+idx].Color = SColor(255,255,255,255);
+			Buffer->Vertices[3+idx].Color = SColor(255,0,0,0);
 			Buffer->Vertices[3+idx].Normal = nor;
 
 			idx += 4;
@@ -114,6 +114,8 @@ void CGameStaticShadowSceneNode::render()
 		// render 2 face on nonbillboard particle
 		Buffer->Material.BackfaceCulling = false;
 		Buffer->Material.FrontfaceCulling = false;
+        
+        Buffer->Material.Lighting = false;
 
 		driver->setMaterial(Buffer->Material);
 

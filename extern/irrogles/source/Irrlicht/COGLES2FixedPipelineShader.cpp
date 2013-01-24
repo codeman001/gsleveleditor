@@ -191,7 +191,7 @@ namespace video
 		if ( RenderMode == EMT_SOLID )
 		{
 			if ( Lighting == false )
-			{
+			{				
 				if ( nTexture == 0 )
 					mat = MaterialType[ ES_SOLID ];
 				else
@@ -204,8 +204,17 @@ namespace video
 
 		}
 		else
-		{
-			mat = MaterialType[ ES_SOLID ];
+		{			
+			if ( nTexture == 0 )
+			{
+				// primitive (line, rect)
+				mat = MaterialType[ ES_SOLID ];
+			}
+			else
+			{
+				// transparent (alpha, add)
+				mat = MaterialType[ ES_SOLID_ONETEXTURE ];
+			}
 		}
 		
 		

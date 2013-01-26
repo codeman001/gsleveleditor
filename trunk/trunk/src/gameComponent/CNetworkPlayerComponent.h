@@ -31,15 +31,32 @@ public:
 	void unpackDataFromPlayerComponent( CDataPacket* packet );
 
 protected:
+    CPlayerComponent::EPlayerSubState		m_subState;
+	CPlayerComponent::EPlayerState			m_state;
+	CPlayerComponent::EPlayerState			m_nextState;
+	CPlayerComponent::EPlayerState			m_lastState;
+    
+    CPlayerComponent::EPlayerSubState       m_upbodySubState;
+    CPlayerComponent::EPlayerUpBodyState    m_upbodyState;
+    
+    bool					m_runCommand;
+    bool                    m_gunOnCommand;
+    
+    float                   m_animCurrentTime;
+    
 	CPlayerComponent::EPlayerSubState		m_subStateMP;
 	CPlayerComponent::EPlayerState			m_stateMP;
 
 	CPlayerComponent::EPlayerSubState		m_upbodySubStateMP;
 	CPlayerComponent::EPlayerUpBodyState	m_upbodyStateMP;
 
+    
 	SEventPlayerMove		m_playerMoveEvt;
     SEventPlayerCommand     m_playerCmdEvt;
 
+    CPlayerComponent*       m_playerComp;
+    CColladaMeshComponent*  m_collada;
+    
 protected:
 	void unpackDataMPState(CDataPacket *packet);
 
@@ -53,7 +70,57 @@ protected:
 	void unpackDataStateRunFastToRun(CDataPacket *packet);
 	void unpackDataStateStandAim(CDataPacket *packet);
 	void unpackDataStatePlayerRotate(CDataPacket *packet);
-
+    
+protected:
+    void updateState();
+    
+	void updateStateIdle();
+    void updateStateTurn();
+	void updateStateRunTurn();
+	void updateStateRun();
+	void updateStateRunFastTurn();    
+	void updateStateRunFast();
+    void updateStateRunToRunFast();
+    void updateStateRunFastToRun();
+    void updateStateStandAim();   	
+    void updateStatePlayerRotate();
+    
+public:
+    // doNextState
+	// change to next state
+	void doNextState()
+	{		
+		// change next state
+		m_lastState	= m_state;
+		m_state		= m_nextState;
+		m_subState	= CPlayerComponent::SubStateInit;
+		m_nextState = CPlayerComponent::PlayerNone;
+	}
+    
+    // setState
+	// set state for player
+	void setState( CPlayerComponent::EPlayerState state )
+	{
+		if ( m_state == state )
+		{
+			m_nextState = state;
+			return;
+		}
+        
+		if ( m_state == CPlayerComponent::PlayerNone )
+		{
+			m_state		= state;
+			m_subState	= CPlayerComponent::SubStateInit;
+		}
+		else
+		{
+			m_nextState = state;
+			m_subState	= CPlayerComponent::SubStateEnd;
+		}
+	}
+    
+    // stepAnimationTime	
+	void stepAnimationTime();
 };
 
 #endif

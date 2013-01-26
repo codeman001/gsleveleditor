@@ -64,8 +64,6 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	m_animCurrentTime		= 0.0f;	
 
 	m_spineRotation = 0.0f;
-
-	m_init = true;
 	
     m_upBodyRunFastFactor = 0.0f;
 	m_offGunFactor = 1.0f;

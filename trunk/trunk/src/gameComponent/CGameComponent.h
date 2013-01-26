@@ -12,6 +12,7 @@ public:
 	enum ComponentType
 	{
 		PlayerComponent = IObjectComponent::NumBuildInComponent,
+		NetworkPlayerComponent,
         GunLightComponent,
 		BulletRayComponent,
 		LifeTimeComponent

@@ -858,6 +858,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\gameComponent\CNetworkPlayerComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameComponent\CNetworkPlayerComponent.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\gameComponent\CPlayerComponent.cpp"
 					>
 				</File>

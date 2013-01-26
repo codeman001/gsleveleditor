@@ -11,6 +11,7 @@
 #include "CColladaMeshComponent.h"
 #include "CGunLightComponent.h"
 #include "CShadowComponent.h"
+#include "CNetworkPlayerComponent.h"
 
 #include "gameLevel/CGameLevel.h"
 #include "gameDebug/CGameDebug.h"
@@ -226,8 +227,9 @@ void CPlayerComponent::updateComponent()
     // alway sync this object
     m_gameObject->setSyncNetwork(true);
     
-    // update player
-	updateState();
+	// only update state on current player	
+	if ( m_gameObject->isNetworkController() == false )
+		updateState();	
 
 	// muzzle mesh update
 	updateMuzzleMesh();
@@ -271,6 +273,10 @@ void CPlayerComponent::loadData( CSerializable* pObj )
 // pack data multiplayer
 void CPlayerComponent::packDataMultiplayer(CDataPacket *packet)
 {
+	CNetworkPlayerComponent *comp = (CNetworkPlayerComponent*)m_gameObject->getComponent(CGameComponent::NetworkPlayerComponent);
+	if ( comp == NULL )
+		return;
+
 	// packet player control
 	packet->addFloat(m_playerMoveEvt.rotate);
 	packet->addFloat(m_playerMoveEvt.strength);
@@ -295,24 +301,9 @@ void CPlayerComponent::packDataMultiplayer(CDataPacket *packet)
 // unpack data on multiplayer
 void CPlayerComponent::unpackDataMultiplayer(CDataPacket *packet)
 {
-	// unpack player control
-	m_playerMoveEvt.rotate		= packet->getFloat();
-	m_playerMoveEvt.strength	= packet->getFloat();
-	m_playerMoveEvt.run			= (packet->getByte() == 1);
-	m_playerMoveEvt.runFast		= (packet->getByte() == 1);
-
-	m_playerCmdEvt.shoot		= (packet->getByte() == 1);
-	m_playerCmdEvt.reload		= (packet->getByte() == 1);	
-
-	// unpack player state
-	m_subStateMP	= (EPlayerSubState)packet->getByte();
-	m_stateMP		= (EPlayerState)packet->getByte();
-
-	m_upbodySubStateMP	= (EPlayerSubState)packet->getByte();
-	m_upbodyStateMP		= (EPlayerUpBodyState)packet->getByte();
-
-	// unpack mp state
-	packDataMPState(packet);
+	CNetworkPlayerComponent *comp = (CNetworkPlayerComponent*)m_gameObject->getComponent(CGameComponent::NetworkPlayerComponent);
+	if ( comp )
+		comp->unpackDataFromPlayerComponent(packet);
 }
 
 // OnEvent
@@ -380,42 +371,6 @@ void CPlayerComponent::packDataMPState(CDataPacket *packet)
 	}
 }
 
-void CPlayerComponent::unpackDataMPState(CDataPacket *packet)
-{
-	switch( m_stateMP )
-	{
-	case CPlayerComponent::PlayerIdle:
-		unpackDataStateIdle(packet);			
-		break;
-	case CPlayerComponent::PlayerTurn:
-		unpackDataStateTurn(packet);			
-		break;
-	case CPlayerComponent::PlayerRunTurn:
-		unpackDataStateRunTurn(packet);
-		break;
-	case CPlayerComponent::PlayerRun:
-		unpackDataStateRun(packet);
-		break;
-    case CPlayerComponent::PlayerRunFastTurn:
-        unpackDataStateRunFastTurn(packet);    
-        break;
-	case CPlayerComponent::PlayerRunFast:
-		unpackDataStateRunFast(packet);
-		break;
-    case CPlayerComponent::PlayerRunToRunFast:
-        unpackDataStateRunToRunFast(packet);
-        break;
-    case CPlayerComponent::PlayerRunFastToRun:
-        unpackDataStateRunFastToRun(packet);
-        break;
-    case CPlayerComponent::PlayerStandAim:
-        unpackDataStateStandAim(packet);			
-        break;
-    case CPlayerComponent::PlayerRotate:
-        unpackDataStatePlayerRotate(packet);
-        break;
-	}
-}
 
 ///////////////////////////////////////////////////////////////////////
 // Player component implement
@@ -543,9 +498,6 @@ void CPlayerComponent::packDataStateIdle(CDataPacket *packet)
 {
 }
 
-void CPlayerComponent::unpackDataStateIdle(CDataPacket *packet)
-{
-}
 
 void CPlayerComponent::updateStateTurn()
 {
@@ -620,9 +572,6 @@ void CPlayerComponent::packDataStateTurn(CDataPacket *packet)
 {
 }
 
-void CPlayerComponent::unpackDataStateTurn(CDataPacket *packet)
-{
-}
 
 
 void CPlayerComponent::updateStateRun()
@@ -804,10 +753,6 @@ void CPlayerComponent::packDataStateRun(CDataPacket *packet)
 {
 }
 
-void CPlayerComponent::unpackDataStateRun(CDataPacket *packet)
-{
-}
-
 // updateStateRunTurn
 // turn if rot > 150
 void CPlayerComponent::updateStateRunTurn()
@@ -921,11 +866,6 @@ void CPlayerComponent::updateStateRunTurn()
 void CPlayerComponent::packDataStateRunTurn(CDataPacket *packet)
 {
 }
-
-void CPlayerComponent::unpackDataStateRunTurn(CDataPacket *packet)
-{
-}
-
 
 
 void CPlayerComponent::updateStateRunFast()
@@ -1069,10 +1009,6 @@ void CPlayerComponent::packDataStateRunFast(CDataPacket *packet)
 {
 }
 
-void CPlayerComponent::unpackDataStateRunFast(CDataPacket *packet)
-{
-}
-
 void CPlayerComponent::updateStateRunFastTurn()
 {
 	if ( m_subState == SubStateInit )
@@ -1154,10 +1090,6 @@ void CPlayerComponent::packDataStateRunFastTurn(CDataPacket *packet)
 {
 }
 
-void CPlayerComponent::unpackDataStateRunFastTurn(CDataPacket *packet)
-{
-}
-
 
 void CPlayerComponent::updateStateRunToRunFast()
 {   
@@ -1207,11 +1139,6 @@ void CPlayerComponent::updateStateRunToRunFast()
 void CPlayerComponent::packDataStateRunToRunFast(CDataPacket *packet)
 {
 }
-
-void CPlayerComponent::unpackDataStateRunToRunFast(CDataPacket *packet)
-{
-}
-
 
 void CPlayerComponent::updateStateRunFastToRun()
 {
@@ -1273,12 +1200,6 @@ void CPlayerComponent::packDataStateRunFastToRun(CDataPacket *packet)
 {
 }
 
-void CPlayerComponent::unpackDataStateRunFastToRun(CDataPacket *packet)
-{
-}
-
-
-
 void CPlayerComponent::updateStateStandAim()
 {
     if ( m_subState == SubStateInit )
@@ -1328,12 +1249,6 @@ void CPlayerComponent::packDataStateStandAim(CDataPacket *packet)
 {
 }
 
-void CPlayerComponent::unpackDataStateStandAim(CDataPacket *packet)
-{
-}
-
-
-
 void CPlayerComponent::updateStatePlayerRotate()
 {
     if ( m_subState == SubStateInit )
@@ -1365,10 +1280,6 @@ void CPlayerComponent::updateStatePlayerRotate()
 }
 
 void CPlayerComponent::packDataStatePlayerRotate(CDataPacket *packet)
-{
-}
-
-void CPlayerComponent::unpackDataStatePlayerRotate(CDataPacket *packet)
 {
 }
 

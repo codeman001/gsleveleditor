@@ -64,13 +64,6 @@ protected:
 
     EPlayerSubState         m_upbodySubState;
     EPlayerUpBodyState      m_upbodyState;
-    
-	
-	EPlayerSubState			m_subStateMP;
-	EPlayerState			m_stateMP;
-
-	EPlayerSubState         m_upbodySubStateMP;
-	EPlayerUpBodyState      m_upbodyStateMP;
 
 
 	float					m_runSpeed;
@@ -83,6 +76,7 @@ protected:
     
 	SEventPlayerMove		m_playerMoveEvt;
     SEventPlayerCommand     m_playerCmdEvt;
+
 	core::vector3df			m_controlRotate;
 
 	float					m_animCurrentTime;
@@ -236,8 +230,7 @@ protected:
 	
 
 protected:
-	void packDataMPState(CDataPacket *packet);
-	void unpackDataMPState(CDataPacket *packet);
+	void packDataMPState(CDataPacket *packet);	
 
 	// updateState	
 	void updateState();	
@@ -256,34 +249,15 @@ protected:
     
 	// mp sync
 	void packDataStateIdle(CDataPacket *packet);
-	void unpackDataStateIdle(CDataPacket *packet);	
-
 	void packDataStateTurn(CDataPacket *packet);
-	void unpackDataStateTurn(CDataPacket *packet);
-
 	void packDataStateRunTurn(CDataPacket *packet);
-	void unpackDataStateRunTurn(CDataPacket *packet);
-
 	void packDataStateRun(CDataPacket *packet);
-	void unpackDataStateRun(CDataPacket *packet);
-
 	void packDataStateRunFastTurn(CDataPacket *packet);
-	void unpackDataStateRunFastTurn(CDataPacket *packet);  
-
 	void packDataStateRunFast(CDataPacket *packet);
-	void unpackDataStateRunFast(CDataPacket *packet);
-
     void packDataStateRunToRunFast(CDataPacket *packet);
-	void unpackDataStateRunToRunFast(CDataPacket *packet);
-
     void packDataStateRunFastToRun(CDataPacket *packet);
-	void unpackDataStateRunFastToRun(CDataPacket *packet);
-
     void packDataStateStandAim(CDataPacket *packet);
-	void unpackDataStateStandAim(CDataPacket *packet);
-
-    void packDataStatePlayerRotate(CDataPacket *packet);
-    void unpackDataStatePlayerRotate(CDataPacket *packet);
+    void packDataStatePlayerRotate(CDataPacket *packet);    
 
 
     // updateUpperBody

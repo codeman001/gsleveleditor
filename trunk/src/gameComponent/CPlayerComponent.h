@@ -15,6 +15,7 @@
 
 class CWeaponComponent;
 class CColladaMeshComponent;
+class CNetworkPlayerComponent;
 
 class CPlayerComponent: 
 	public IObjectComponent,
@@ -71,8 +72,6 @@ protected:
 
 	bool					m_runCommand;
     bool                    m_gunOnCommand;
-
-    bool					m_init;    
     
 	SEventPlayerMove		m_playerMoveEvt;
     SEventPlayerCommand     m_playerCmdEvt;
@@ -233,7 +232,7 @@ protected:
 	void packDataMPState(CDataPacket *packet);	
 
 	// updateState	
-	void updateState();	
+	void updateState();
 	void updateMuzzleMesh();
 
 	void updateStateIdle();	
@@ -293,7 +292,7 @@ protected:
 		m_state		= m_nextState;
 		m_subState	= SubStateInit;
 		m_nextState = CPlayerComponent::PlayerNone;
-	}	
+	}
 	
 	inline void showMuzzle(float time)
 	{
@@ -357,6 +356,8 @@ public:
 	// syncAnimation	
 	void syncAnimation(int fromChannel, int fromLayer, int toChannel, int toLayer);
 
+    
+    friend class CNetworkPlayerComponent;
 };
 
 #endif

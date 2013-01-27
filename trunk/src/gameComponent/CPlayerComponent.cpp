@@ -16,61 +16,21 @@
 #include "gameLevel/CGameLevel.h"
 #include "gameDebug/CGameDebug.h"
 
-#define LOG_ANIM_TIME
-
-#define REAL_PRECISION	0.000001f
-inline bool realIsZero(float x, float precision = REAL_PRECISION) 
-{ 
-	return fabs(x) < precision; 
-};
-inline bool realIsEqual(float a, float b, float precision = REAL_PRECISION) 
-{ 
-	return realIsZero(a-b, precision); 
-};
-
 ///////////////////////////////////////////////////////////////////////
 // IObjectComponent overide implement
 ///////////////////////////////////////////////////////////////////////
 
 CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	:IObjectComponent(obj, CGameComponent::PlayerComponent)
-{
-	// default state
-	m_state			= CPlayerComponent::PlayerNone;	
-	m_lastState		= CPlayerComponent::PlayerNone;
-	m_nextState		= CPlayerComponent::PlayerNone;
-
-	
-	// init run const
-	m_runSpeed				= 0.3f;
-	m_runFastSpeed			= 0.5f;
-
-	m_runCommand	= false;			
-    m_gunOnCommand  = false;
-    
-	m_runFactor = 0.0f;
-	m_runAccel	= 0.002f;
-	m_runToRunFastAccel = 0.003f;
-
+{	
 	m_collada	= NULL;
-
+    
 	m_muzzleMeshTime = 0;
 	m_gunMuzzle = NULL;
     m_gunLight  = NULL;
     m_gunLightComp = NULL;
     m_bullet = NULL;
 	m_bulletRayComp = NULL;
-
-	m_animCurrentTime		= 0.0f;	
-
-	m_spineRotation = 0.0f;
-	
-    m_upBodyRunFastFactor = 0.0f;
-	m_offGunFactor = 1.0f;
-
-	m_aimFactor = 0.0f;
-	m_aimRotateCharacter = false;
-
 }
 
 CPlayerComponent::~CPlayerComponent()
@@ -87,30 +47,13 @@ CPlayerComponent::~CPlayerComponent()
 // init
 // run when init object
 void CPlayerComponent::initComponent()
-{	
-	m_collada = (CColladaMeshComponent*) m_gameObject->getComponent( IObjectComponent::ColladaMesh );
-	m_collada->setAnimationPackage( m_animationPackage );
+{
+    m_collada = (CColladaMeshComponent*)m_gameObject->getComponent( IObjectComponent::ColladaMesh );
+    m_collada->setAnimationPackage( m_animationPackage );
+    
+    init(m_gameObject);    
 
-	// foot nodes
-	m_nodesFoot.push_back( m_collada->getSceneNode("Reference") );
-	m_nodesFoot.push_back( m_collada->getSceneNode("LeftGun") );
-	m_nodesFoot.push_back( m_collada->getSceneNode("Hips") );		
-	m_nodesFoot.push_back( m_collada->getSceneNode("LeftUpLeg") );
-	m_nodesFoot.push_back( m_collada->getSceneNode("RightUpLeg") );
-	m_collada->getChildsOfSceneNode("LeftUpLeg",	m_nodesFoot);
-	m_collada->getChildsOfSceneNode("RightUpLeg",	m_nodesFoot);
-
-	// left & right hand with gun
-	m_collada->getChildsOfSceneNode("LeftShoulder",		m_nodesLeftShoulder);
-	m_nodesLeftShoulder.push_back( m_collada->getSceneNode("LeftGun") );
-	m_nodesLeftShoulder.push_back( m_collada->getSceneNode("LeftGunTip") );	
-
-	m_collada->getChildsOfSceneNode("RightShoulder",	m_nodesRightShoulder);
-	m_collada->getChildsOfSceneNode("RightGun",			m_nodesRightShoulder);
-	m_nodesRightShoulder.push_back( m_collada->getSceneNode("RightGun") );
-	m_nodesRightShoulder.push_back( m_collada->getSceneNode("RightGunTip") );
-
-	// chest nodes
+    // apply animation callback
 	CGameColladaSceneNode *spine = m_collada->getSceneNode("Spine");
 	spine->setAnimationCallback(this);
 	m_nodesChest.push_back( spine );
@@ -118,89 +61,33 @@ void CPlayerComponent::initComponent()
 	spine = m_collada->getSceneNode("Spine1");
 	spine->setAnimationCallback(this);	
 	m_nodesChest.push_back( spine );
-
+    
 	spine = m_collada->getSceneNode("Spine2");
 	spine->setAnimationCallback(this);
 	m_nodesChest.push_back( spine );
-
-	// set callback of root node
+    
 	CGameColladaSceneNode *root = m_collada->getSceneNode("Reference");
 	root->setAnimationCallback(this);
-
-	// hand, head
-	m_nodesHandsAndHead.push_back( m_collada->getSceneNode("RightGun") );		
-	m_collada->getChildsOfSceneNode("Spine3",m_nodesHandsAndHead);
-
-	// up body
-	m_nodesUpBody = m_nodesHandsAndHead;
-	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine") );	
-	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine1") );    
-	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine2") );
-	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine3") );
-
-	// connected animation layer
-    m_collada->getSceneNode("Spine")->setConnectAnimLayer(true, false, false, false);
-    m_collada->setNodeReferenceByAnimLayer(m_collada->getSceneNode("RightGun"), m_collada->getSceneNode("RightHand"));
     
-
-	// neck
 	m_nodeNeck = m_collada->getSceneNode("Neck");
 	m_nodeNeck->setAnimationCallback(this);
-
-	// decalre anim list
-	m_animIdle.push_back( "Hero@Idle" );
-	m_animIdle.push_back( "Hero@Idle1" );
-	m_animIdle.push_back( "Hero@Idle2" );
-
-	m_animRunForward	= "Hero@RunForward";
-	m_animRunBackward	= "Hero@RunBackward";
-	m_animRunStrafeLeft	= "Hero@RunStrafeLeft";
-	m_animRunStrafeRight= "Hero@RunStrafeRight";
-	m_animRunNoGun		= "Hero@RunForwardNoGun";
-
-	m_animGunOn			= "Hero@GunOn";
-	m_animGunOff		= "Hero@GunOff";	
-	m_animGunReload		= "Hero@GunReload";
-
-	m_animAimDown		= "Hero@AimDown";
-	m_animAimUp			= "Hero@AimUp";
-	m_animAimLeft		= "Hero@AimLeft";
-	m_animAimRight		= "Hero@AimRight";
-	m_animAimStraight	= "Hero@AimStraight";
-
-	m_animShootLeft		= "Hero@ShootLeft";
-	m_animShootRight	= "Hero@ShootRight";
-	m_animShootUp		= "Hero@ShootUp";
-	m_animShootDown		= "Hero@ShootDown";
-	m_animShootStraight	= "Hero@ShootStraight";
-
-
-	// set basic state idle
-	m_collada->setAnimation( m_animIdle[0] );
-
-	setState( CPlayerComponent::PlayerIdle );
     
-	// enable anim layer 1
-    m_collada->enableAnimLayer(1, true);
-	m_collada->setAnimLayer( m_nodesUpBody, 1 );		
-	
-	setUpBodyState( CPlayerComponent::PlayerUpBodyOffGun );
-    setOffGunAnimation("Hero@Idle");
-	setOffGunFactor(1.0f);
-
-
+    
+    
 	// register event
 	getIView()->registerEvent("CPlayerComponent", this);	
     
     
-    // create gunlight
+    
+    
+    // create gunlight obj
 	m_gunLight = new CLightObject(NULL);
     m_gunLight->setLightData(400.0f, 1.0f);
     m_gunLightComp = new CGunLightComponent(m_gunLight);
     m_gunLight->addComponent(m_gunLightComp);
 	m_gunLight->setParent( m_gameObject );
 
-	// create a empty obj
+	// create a gun muzzle mesh obj
 	m_gunMuzzle = new CGameObject(NULL);
 	CColladaMeshComponent *gunMesh = new CColladaMeshComponent(m_gunMuzzle);
 	gunMesh->loadFromFile( getIView()->getPath("data/mesh/character/hero/muzzleFlash.scene"));
@@ -458,7 +345,8 @@ void CPlayerComponent::updateStateIdle()
 	if ( m_subState == SubStateInit )
 	{
         IrrlichtDevice* device = getIView()->getDevice();
-        int r = device->getRandomizer()->rand() % (int)m_animIdle.size();		
+        int r = device->getRandomizer()->rand() % (int)m_animIdle.size();
+        m_idleAnimationID = r;
         const char *anim = m_animIdle[r].c_str();
 
 		// change idle animation
@@ -494,6 +382,7 @@ void CPlayerComponent::updateStateIdle()
 // mp sync
 void CPlayerComponent::packDataStateIdle(CDataPacket *packet)
 {
+    packet->addByte((unsigned char)m_idleAnimationID);
 }
 
 
@@ -1929,17 +1818,6 @@ void CPlayerComponent::_onUpdateFinishAbsolute( ISceneNode* node, core::matrix4&
 // Player component end callback animation function
 ///////////////////////////////////////////////////////////////////////
 
-
-// stepAnimationTime	
-void CPlayerComponent::stepAnimationTime()
-{
-	float timeStep = getIView()->getTimeStep();
-	m_animCurrentTime = m_animCurrentTime - timeStep;
-	
-	if ( m_animCurrentTime < 0 )
-		m_animCurrentTime = 0;
-}
-
 // calcRunAnimationBlend
 // calc animation
 void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &backward, float &left, float &right)
@@ -2060,25 +1938,6 @@ void CPlayerComponent::calcAimAnimationBlend(core::vector2df angle, float &up, f
     }
 }
 
-// isFinishedAnim	
-bool CPlayerComponent::isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel, int animLayer)
-{
-	for ( int i = 0, n = (int)nodes.size(); i < n; i++ )
-	{		
-		CGameAnimationTrack* track = nodes[i]->getAnimation(animLayer)->getTrack(trackChannel);
-
-		if ( track->getTotalFrame() == 0 || track->isEnable() == false || track->isPause() == true )
-			continue;
-
-		if ( track->isEndTrack() == false || track->isCrossAnim() )
-			return false;
-	}
-
-
-	return true;
-}
-
-
 // setSpineLookAt
 // rotate spine to look at a pos
 void CPlayerComponent::setSpineLookAt( const core::vector3df& pos, float speed )
@@ -2111,87 +1970,6 @@ core::vector3df CPlayerComponent::getCameraFrontVector()
 	front.normalize();	
 
 	return front;
-}
-
-// turnToDir
-bool CPlayerComponent::turnToDir(core::vector3df& dir, const core::vector3df& turnTo, float speed )
-{
-	// rotate front vec
-	float f = speed*0.1f*getIView()->getTimeStep();	
-	
-	if ( f >= fabsf(getAngle(dir, turnTo)) )
-	{
-		dir = turnTo;
-        return true;
-	}
-
-    dir = interpolateTurnToDir( dir, turnTo, f );
-    
-    float rot = fabsf(getAngle(dir, turnTo));
-    if ( rot <= speed )
-    {
-        dir = turnTo;
-        return true;
-    }
-    
-	return false;
-}
-
-// turnToDir
-// turn vector dir to turnTo
-core::vector3df CPlayerComponent::interpolateTurnToDir( const core::vector3df& turnFrom, const core::vector3df& turnTo, float f )
-{
-	// calc turn Direction
-    core::vector3df normal;
-    normal = turnTo.crossProduct(turnFrom);
-    normal.normalize();
-    
-    core::quaternion q;
-    q.fromAngleAxis( core::degToRad(f), normal);
-    
-	// rotate result vector
-	core::vector3df dir = turnFrom;
-	q.getMatrix().rotateVect( dir );
-	dir.normalize();
-    
-	return dir;	
-}
-
-// getRatioWithAngle	
-float CPlayerComponent::getRatioWithAngle( const core::vector3df& turnFrom, const core::vector3df& turnTo, float angle )
-{
-	float angleVec = turnTo.dotProduct( turnFrom );		
-	angleVec = fixAngle(angleVec);
-	angleVec = core::radToDeg( acosf(angleVec) );
-    
-	if ( realIsZero(angleVec) )
-		return 1.0f;
-
-	return angle/angleVec;
-}
-
-float CPlayerComponent::getAngle( const core::vector3df& v1, const core::vector3df& v2 )
-{
-	core::vector3df normal = v2.crossProduct(v1);	
-	
-	float angleVec = v2.dotProduct( v1 );
-	
-	angleVec = fixAngle(angleVec);
-	angleVec = core::radToDeg( acosf(angleVec) );
-
-	if ( normal.Y < 0 )
-		angleVec = -angleVec;
-	return angleVec;
-}
-
-// fixAngle
-float CPlayerComponent::fixAngle( float f )
-{
-	if (realIsEqual(f, 1.f, 0.001f))
-		f = 1.f;
-	else if (realIsEqual(f, -1.f, 0.001f))
-		f = -1.f;
-	return f;
 }
 
 core::vector2df CPlayerComponent::getAimAngle( const core::vector3df aimPoint )
@@ -2271,11 +2049,4 @@ core::vector3df CPlayerComponent::getCollisionPoint( core::line3df ray )
 	}
 	 
 	return ret;
-}
-
-// syncAnimation	
-void CPlayerComponent::syncAnimation(int fromChannel, int fromLayer, int toChannel, int toLayer)
-{
-	float frame = m_collada->getCurrentFrame(fromChannel, fromLayer);
-	m_collada->setCurrentFrame(frame, toChannel, toLayer);
 }

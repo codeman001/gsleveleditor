@@ -105,6 +105,7 @@
 		7F4D2BE916AC39D8002C3A7C /* CBulletRayComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4D2BE516AC39D8002C3A7C /* CBulletRayComponent.cpp */; };
 		7F4D2BEA16AC39D8002C3A7C /* CLifeTimeComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4D2BE716AC39D8002C3A7C /* CLifeTimeComponent.cpp */; };
 		7F60980C162F0AF30085D3FF /* CUIDPad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F60980A162F0AF30085D3FF /* CUIDPad.cpp */; };
+		7F70B24116B5623C00E098D2 /* CBasePlayerState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F70B24016B5623C00E098D2 /* CBasePlayerState.cpp */; };
 		7FB363E81699C3D900DA4152 /* CTextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB363E71699C3D900DA4152 /* CTextureManager.cpp */; };
 		7FCB58AB162C69DD00349381 /* CStateJoinGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FCB58A9162C69DD00349381 /* CStateJoinGame.cpp */; };
 		7FCB58C9162C6CC200349381 /* corbel.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7FCB58C5162C6CC200349381 /* corbel.ttf */; };
@@ -330,6 +331,8 @@
 		7F4D2BE816AC39D8002C3A7C /* CLifeTimeComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLifeTimeComponent.h; sourceTree = "<group>"; };
 		7F60980A162F0AF30085D3FF /* CUIDPad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIDPad.cpp; sourceTree = "<group>"; };
 		7F60980B162F0AF30085D3FF /* CUIDPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIDPad.h; sourceTree = "<group>"; };
+		7F70B23F16B5622800E098D2 /* CBasePlayerState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBasePlayerState.h; sourceTree = "<group>"; };
+		7F70B24016B5623C00E098D2 /* CBasePlayerState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CBasePlayerState.cpp; sourceTree = "<group>"; };
 		7FB363E61699C3BD00DA4152 /* CTextureManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CTextureManager.h; path = TextureManager/CTextureManager.h; sourceTree = "<group>"; };
 		7FB363E71699C3D900DA4152 /* CTextureManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CTextureManager.cpp; path = TextureManager/CTextureManager.cpp; sourceTree = "<group>"; };
 		7FCB58A9162C69DD00349381 /* CStateJoinGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CStateJoinGame.cpp; sourceTree = "<group>"; };
@@ -633,6 +636,8 @@
 				7F3A6B58160F5E8000B31F81 /* CPlayerComponent.h */,
 				7F409F5A16900B9800879830 /* CGunLightComponent.h */,
 				7F409F5C16900BBC00879830 /* CGunLightComponent.cpp */,
+				7F70B23F16B5622800E098D2 /* CBasePlayerState.h */,
+				7F70B24016B5623C00E098D2 /* CBasePlayerState.cpp */,
 			);
 			name = gameComponent;
 			path = ../../src/gameComponent;
@@ -1006,6 +1011,7 @@
 				7F44D90E16AEF8640039FA06 /* CGameStaticShadowSceneNode.cpp in Sources */,
 				7F44D91116AEF87F0039FA06 /* CContainerObject.cpp in Sources */,
 				7F45B1EC16B405290078D077 /* CNetworkPlayerComponent.cpp in Sources */,
+				7F70B24116B5623C00E098D2 /* CBasePlayerState.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

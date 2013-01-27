@@ -38,6 +38,8 @@
 		7F60983D162F0C2B0085D3FF /* corbelz.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F609839162F0C2B0085D3FF /* corbelz.ttf */; };
 		7F62FBA91600C9EC0022D697 /* CEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F62FBA81600C9EC0022D697 /* CEAGLView.mm */; };
 		7F62FBAB1600D6620022D697 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F62FBAA1600D6620022D697 /* QuartzCore.framework */; };
+		7F70B25F16B56C8F00E098D2 /* CBasePlayerState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F70B25B16B56C8F00E098D2 /* CBasePlayerState.cpp */; };
+		7F70B26016B56C8F00E098D2 /* CNetworkPlayerComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F70B25D16B56C8F00E098D2 /* CNetworkPlayerComponent.cpp */; };
 		7FB364051699CCCA00DA4152 /* CTextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB364031699CCCA00DA4152 /* CTextureManager.cpp */; };
 		7FCBD3E115F4B41700C432A7 /* libirrlicht.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBD12D15F4B13400C432A7 /* libirrlicht.a */; };
 		7FCBDE3D15F4C3E200C432A7 /* libgameswf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBDE3315F4C3A800C432A7 /* libgameswf.a */; };
@@ -195,6 +197,10 @@
 		7F62FBA71600C9BB0022D697 /* CEAGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CEAGLView.h; sourceTree = "<group>"; };
 		7F62FBA81600C9EC0022D697 /* CEAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CEAGLView.mm; sourceTree = "<group>"; };
 		7F62FBAA1600D6620022D697 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		7F70B25B16B56C8F00E098D2 /* CBasePlayerState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CBasePlayerState.cpp; sourceTree = "<group>"; };
+		7F70B25C16B56C8F00E098D2 /* CBasePlayerState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBasePlayerState.h; sourceTree = "<group>"; };
+		7F70B25D16B56C8F00E098D2 /* CNetworkPlayerComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CNetworkPlayerComponent.cpp; sourceTree = "<group>"; };
+		7F70B25E16B56C8F00E098D2 /* CNetworkPlayerComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNetworkPlayerComponent.h; sourceTree = "<group>"; };
 		7FB364031699CCCA00DA4152 /* CTextureManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CTextureManager.cpp; path = TextureManager/CTextureManager.cpp; sourceTree = "<group>"; };
 		7FB364041699CCCA00DA4152 /* CTextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CTextureManager.h; path = TextureManager/CTextureManager.h; sourceTree = "<group>"; };
 		7FCBD12815F4B13300C432A7 /* irrlicht.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = irrlicht.xcodeproj; path = ../../../extern/irrogles/source/Irrlicht/IOS/irrlicht/irrlicht.xcodeproj; sourceTree = "<group>"; };
@@ -617,6 +623,10 @@
 		7FD0BFAB15F4F34400626D90 /* gameComponent */ = {
 			isa = PBXGroup;
 			children = (
+				7F70B25B16B56C8F00E098D2 /* CBasePlayerState.cpp */,
+				7F70B25C16B56C8F00E098D2 /* CBasePlayerState.h */,
+				7F70B25D16B56C8F00E098D2 /* CNetworkPlayerComponent.cpp */,
+				7F70B25E16B56C8F00E098D2 /* CNetworkPlayerComponent.h */,
 				7F4D2C0416AC3A42002C3A7C /* CBulletRayComponent.cpp */,
 				7F4D2C0516AC3A42002C3A7C /* CBulletRayComponent.h */,
 				7F4D2C0616AC3A42002C3A7C /* CLifeTimeComponent.cpp */,
@@ -997,6 +1007,8 @@
 				7F4D2C0916AC3A42002C3A7C /* CLifeTimeComponent.cpp in Sources */,
 				7F44D92D16AEF9090039FA06 /* CContainerObject.cpp in Sources */,
 				7F44D93016AEF9190039FA06 /* CGameStaticShadowSceneNode.cpp in Sources */,
+				7F70B25F16B56C8F00E098D2 /* CBasePlayerState.cpp in Sources */,
+				7F70B26016B56C8F00E098D2 /* CNetworkPlayerComponent.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,7 +8,6 @@
 CNetworkPlayerComponent::CNetworkPlayerComponent(CGameObject* obj)
 	:IObjectComponent(obj, CGameComponent::NetworkPlayerComponent)
 {
-    m_animCurrentTime = 0.0f;
 }
 
 CNetworkPlayerComponent::~CNetworkPlayerComponent()
@@ -19,19 +18,18 @@ CNetworkPlayerComponent::~CNetworkPlayerComponent()
 // run when init object
 void CNetworkPlayerComponent::initComponent()
 {
-    m_playerComp = (CPlayerComponent*)m_gameObject->getComponent(CGameComponent::PlayerComponent);
-    m_collada = (CColladaMeshComponent*)m_gameObject->getComponent(IObjectComponent::ColladaMesh);
-    
-    
-    m_state = CPlayerComponent::PlayerIdle;
-    m_subState = CPlayerComponent::SubStateInit;
+    m_collada = (CColladaMeshComponent*)m_gameObject->getComponent( IObjectComponent::ColladaMesh );
+    init(m_gameObject);
 }
 
 // update
 // run when update per frame
 void CNetworkPlayerComponent::updateComponent()
 {
-    if ( m_playerComp == NULL || m_collada == NULL )
+    if ( m_collada == NULL )
+        return;
+    
+    if ( m_gameObject->isNetworkController() == false )
         return;
     
     updateState();
@@ -64,7 +62,7 @@ void CNetworkPlayerComponent::unpackDataFromPlayerComponent( CDataPacket* packet
 
 	m_playerCmdEvt.shoot		= (packet->getByte() == 1);
 	m_playerCmdEvt.reload		= (packet->getByte() == 1);	
-
+    
 	// unpack player state
 	m_subStateMP	= (CPlayerComponent::EPlayerSubState)packet->getByte();
 	m_stateMP		= (CPlayerComponent::EPlayerState)packet->getByte();
@@ -72,8 +70,19 @@ void CNetworkPlayerComponent::unpackDataFromPlayerComponent( CDataPacket* packet
 	m_upbodySubStateMP	= (CPlayerComponent::EPlayerSubState)packet->getByte();
 	m_upbodyStateMP		= (CPlayerComponent::EPlayerUpBodyState)packet->getByte();
 
+    // check run command
+    m_runCommand	= m_playerMoveEvt.run;    
+    if ( m_playerCmdEvt.shoot || m_playerCmdEvt.reload )
+        m_gunOnCommand = true;
+    else
+        m_gunOnCommand = false;
+    
 	// unpack mp state
 	unpackDataMPState(packet);
+    
+    // change state
+    if ( m_state != m_stateMP )
+        setState(m_stateMP);
 }
 
 
@@ -157,12 +166,14 @@ void CNetworkPlayerComponent::updateState()
 
 void CNetworkPlayerComponent::updateStateIdle()
 {
+    static int s_currentAnimID = 0;
+    
     stepAnimationTime();
     
 	if ( m_subState == CPlayerComponent::SubStateInit )
 	{
-        int r = 0;
-        const char *anim = m_playerComp->m_animIdle[r].c_str();
+        s_currentAnimID = m_idleAnimationID;
+        const char *anim = m_animIdle[m_idleAnimationID].c_str();
         
 		// change idle animation
         m_collada->setCrossFadeAnimation( anim, 0, 10.0f, false, 1 );
@@ -189,13 +200,14 @@ void CNetworkPlayerComponent::updateStateIdle()
         }
         
         // reinit state
-		if ( m_animCurrentTime <= 0 )
-			m_subState = CPlayerComponent::SubStateInit;
+		if ( m_animCurrentTime <= 0 || m_idleAnimationID != s_currentAnimID )
+			m_subState = CPlayerComponent::SubStateInit;        
 	}
 }
 
 void CNetworkPlayerComponent::unpackDataStateIdle(CDataPacket *packet)
 {
+    m_idleAnimationID = (int)packet->getByte();
 }
 
 
@@ -284,19 +296,35 @@ void CNetworkPlayerComponent::unpackDataStateStandAim(CDataPacket *packet)
 
 void CNetworkPlayerComponent::updateStatePlayerRotate()
 {
+    if ( m_subState == CPlayerComponent::SubStateInit )
+    {        
+        m_subState = CPlayerComponent::SubStateActive;		
+    }
+    else if ( m_subState == CPlayerComponent::SubStateEnd )
+    {		
+        doNextState();		
+    }
+    else
+    {
+/*        core::line3df	ray		= getCameraRay();
+        core::vector3df	colPos	= getCollisionPoint(ray);                		        		 
+        
+        // rotate main character		
+        core::vector3df v0 = m_gameObject->getFront();
+        core::vector3df aimPos = colPos - m_gameObject->getPosition();
+        aimPos.Y = 0;
+        aimPos.normalize();
+        
+        if ( turnToDir( v0, aimPos, 6.0f ) == true )
+        {
+            setState(CPlayerComponent::PlayerStandAim);
+            setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
+        }
+        m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+ */
+    } 
 }
 
 void CNetworkPlayerComponent::unpackDataStatePlayerRotate(CDataPacket *packet)
 {
-}
-
-
-// stepAnimationTime	
-void CNetworkPlayerComponent::stepAnimationTime()
-{
-	float timeStep = getIView()->getTimeStep();
-	m_animCurrentTime = m_animCurrentTime - timeStep;
-	
-	if ( m_animCurrentTime < 0 )
-		m_animCurrentTime = 0;
 }

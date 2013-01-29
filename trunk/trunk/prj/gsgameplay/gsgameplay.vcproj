@@ -826,6 +826,14 @@
 				Name="gameComponent"
 				>
 				<File
+					RelativePath="..\..\src\gameComponent\CBasePlayerState.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameComponent\CBasePlayerState.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\gameComponent\CBulletRayComponent.cpp"
 					>
 				</File>

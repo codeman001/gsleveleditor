@@ -14,7 +14,7 @@ protected:
 	ArrayGameObject						m_terrains;
 	ArrayGameObject						m_triggerObjects;
 
-#if defined(GSEDITOR) || defined(GSGAMEPLAY)
+#if defined(GSGAMEPLAY)
 	CContainerObject					*m_particleMgr;
 	CGameObject							*m_shadowMgr;
 #endif
@@ -104,7 +104,9 @@ public:
 	{
 		return m_terrains;
 	}
+#endif
 
+#ifdef GSGAMEPLAY
 	// getParticleManager
 	// return ps container
 	inline CContainerObject* getParticleManager()

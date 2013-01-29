@@ -330,6 +330,11 @@ bool CGameLevel::loadStep( int nStep )
 					if ( r )
 						sscanf( r->data, "%d", &m_numObjects );
 				}
+
+				// add child
+				if ( m_loadZone )
+					m_loadZone->updateAddRemoveObj();
+
 			}
 
 			objData.clear();

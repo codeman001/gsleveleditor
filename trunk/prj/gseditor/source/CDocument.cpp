@@ -278,6 +278,9 @@ bool CDocument::readDocumentFromData( char *lpData )
 				}
 			}
 
+			if ( currentZone )
+				currentZone->updateAddRemoveObj();
+
 			objData.clear();
 		}
 		else if ( *p == '}' )

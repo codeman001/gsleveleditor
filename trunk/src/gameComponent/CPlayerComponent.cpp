@@ -1163,11 +1163,14 @@ void CPlayerComponent::updateStateStandAim()
 		// change state un
         if ( m_runCommand )
             setState(CPlayerComponent::PlayerRun);		
-    }    
+    }
 }
 
 void CPlayerComponent::packDataStateStandAim(CDataPacket *packet)
 {
+	packet->addFloat(m_MPRotateVector.X);
+    packet->addFloat(m_MPRotateVector.Y);
+    packet->addFloat(m_MPRotateVector.Z);
 }
 
 void CPlayerComponent::updateStatePlayerRotate()

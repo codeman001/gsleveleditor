@@ -246,3 +246,123 @@ bool CBasePlayerState::isFinishedAnim( std::vector<CGameColladaSceneNode*>& node
     
 	return true;
 }
+
+// calcRunAnimationBlend
+// calc animation
+void CBasePlayerState::calcRunAnimationBlend(float rot, float &forward, float &backward, float &left, float &right)
+{
+	forward = 0.0f;
+	backward = 0.0f;
+	left = 0.0f;
+	right = 0.0f;
+    
+	if ( -90.0f <= rot && rot <= 90.0f )
+	{
+		// move forward		
+		backward = 0.0f;
+		if ( rot <= 0.0f && rot <= 90.0f )
+		{
+			// right
+			left = 0.0f;
+            
+			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
+			float dForward	= fabsf(sinf(fixAngle));
+            
+			// we have sin2 + cos2 = 1
+            // it mean dforward2 + dright2 = 1.0f
+            forward = dForward*dForward;
+			right   = 1.0f - forward;
+		}
+		else
+		{
+			// left
+			right = 0.0f;
+            
+			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
+			float dForward	= fabsf(sinf(fixAngle));
+			
+            forward = dForward*dForward;
+            left = 1.0f - forward;
+		}
+	}
+	else
+	{
+		// move back
+		forward = 0.0f;
+		if ( 90.0f <= rot && rot <= 180.0f )
+		{
+			// left
+			right = 0.0f;
+            
+			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
+			float dBackward	= fabsf(sinf(fixAngle));			
+            
+            backward    = dBackward*dBackward;
+            left        = 1.0f - backward;
+		}
+		else
+		{
+			// right
+			left = 0.0f;
+            
+			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
+			float dBackward	= fabsf(sinf(fixAngle));
+			
+            backward    = dBackward*dBackward;
+            right       = 1.0f - backward;
+		}
+	}
+    
+}
+
+void CBasePlayerState::calcAimAnimationBlend(core::vector2df angle, float &up, float &down, float &left, float &right)
+{
+    
+    const float maxAngleLR = 45.0f;
+    const float maxangleUD = 45.0f;
+    
+    if ( angle.X > 0 )
+    {
+        // aim left
+        if (angle.Y < 0 )
+        {
+            // aim left down
+            left = fabsf(angle.X)/maxAngleLR;
+            down = fabsf(angle.Y)/maxangleUD;
+            
+            right = 0.0f;
+            up = 0.0f;
+        }
+        else 
+        {
+            // aim left up
+            left    = fabsf(angle.X)/maxAngleLR;
+            up      = fabsf(angle.Y)/maxangleUD;
+            
+            right = 0.0f;
+            down = 0.0f;
+        }
+    }
+    else 
+    {
+        // aim right
+        if (angle.Y < 0 )
+        {
+            // aim right down
+            right = fabsf(angle.X)/maxAngleLR;
+            down = fabsf(angle.Y)/maxangleUD;
+            
+            left = 0.0f;
+            up = 0.0f;
+        }
+        else 
+        {
+            // aim right up
+            right = fabsf(angle.X)/maxAngleLR;
+            up = fabsf(angle.Y)/maxangleUD;
+            
+            left = 0.0f;
+            down = 0.0f;
+        }
+    }
+}

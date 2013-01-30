@@ -136,7 +136,7 @@ protected:
 	float					m_runAccel;
 	float					m_runToRunFastAccel;
 	float					m_gunOnOffAccel;
-    
+        
 	float					m_animForwardFactor;
 	float					m_animBackwardFactor;
 	float					m_animLeftFactor;
@@ -150,6 +150,10 @@ protected:
 	core::vector3df			m_runTurnVector;
 	core::vector3df			m_runCurrentVector;
     
+    // mp sync
+    core::vector3df         m_MPRotateVector;
+    float                   m_MPRunRotate;
+    float                   m_MPRunTurnFactor;
 protected:
     
 	// setState
@@ -224,7 +228,11 @@ protected:
 	// fixAngle
 	float fixAngle( float f );
     
-
+    // calcRunAnimationBlend
+	// calc animation
+	void calcRunAnimationBlend(float rot, float &forward, float &backward, float &left, float &right);
+    
+	void calcAimAnimationBlend(core::vector2df angle, float &up, float &down, float &left, float &right);
 };
 
 #endif

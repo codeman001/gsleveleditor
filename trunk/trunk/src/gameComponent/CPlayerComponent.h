@@ -121,14 +121,7 @@ protected:
     void updateUpperBodyAimToOffgun();
     void updateUpperBodyOffgunToAim();
     void updateUpperBodyRunFast();
-
     
-
-	// calcRunAnimationBlend
-	// calc animation
-	void calcRunAnimationBlend(float rot, float &forward, float &backward, float &left, float &right);
-
-	void calcAimAnimationBlend(core::vector2df angle, float &up, float &down, float &left, float &right);	
 	
 	inline void showMuzzle(float time)
 	{

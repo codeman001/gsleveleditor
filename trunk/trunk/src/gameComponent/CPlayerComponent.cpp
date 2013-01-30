@@ -409,7 +409,9 @@ void CPlayerComponent::updateStateTurn()
 		// get vector rotate & speed
 		v0 = m_gameObject->getFront();
 		v1 = getCameraFrontVector();
-		
+        
+        // sync multiplayer
+        m_MPRotateVector = v1;
         
 		float rot = 0.0f;
 		if ( m_runCommand )
@@ -457,6 +459,9 @@ void CPlayerComponent::updateStateTurn()
 
 void CPlayerComponent::packDataStateTurn(CDataPacket *packet)
 {
+    packet->addFloat(m_MPRotateVector.X);
+    packet->addFloat(m_MPRotateVector.Y);
+    packet->addFloat(m_MPRotateVector.Z);    
 }
 
 
@@ -523,6 +528,9 @@ void CPlayerComponent::updateStateRun()
 		v1 = getCameraFrontVector();
 		runDir = v0;		
 
+        // sync multiplayer
+        m_MPRotateVector = v1;
+        
 		core::quaternion q;
 		float rot = 0.0f;
 
@@ -580,10 +588,13 @@ void CPlayerComponent::updateStateRun()
 			// calc animation rotate
 			m_controlRotate.normalize();		
 			float realRot = -getAngle(m_controlRotate, v0);		
-
+            
+            // mp sync
+            m_MPRunRotate = realRot;
+            
 			// calc animation blending			
 			calcRunAnimationBlend(realRot, 
-				m_animForwardFactor, 
+				m_animForwardFactor,
 				m_animBackwardFactor, 
 				m_animLeftFactor, 
 				m_animRightFactor);
@@ -638,6 +649,12 @@ void CPlayerComponent::updateStateRun()
 
 void CPlayerComponent::packDataStateRun(CDataPacket *packet)
 {
+    packet->addFloat(m_MPRotateVector.X);
+    packet->addFloat(m_MPRotateVector.Y);
+    packet->addFloat(m_MPRotateVector.Z);
+    
+    packet->addFloat(m_runFactor);
+    packet->addFloat(m_MPRunRotate);
 }
 
 // updateStateRunTurn
@@ -677,7 +694,10 @@ void CPlayerComponent::updateStateRunTurn()
         {
             m_runFactor = m_runFactor - step;
             if ( m_runFactor <= 0 )
+            {
+                m_runFactor = 0;
                 setState( CPlayerComponent::PlayerIdle );
+            }
         }
         else 
         {
@@ -694,6 +714,9 @@ void CPlayerComponent::updateStateRunTurn()
 		// get vector rotate & speed
 		v0 = m_gameObject->getFront();
 		v1 = getCameraFrontVector();
+        
+        // sync mp
+        m_MPRotateVector = v1;
         
         core::quaternion q;
         
@@ -746,13 +769,24 @@ void CPlayerComponent::updateStateRunTurn()
             
             // change state
             setState(CPlayerComponent::PlayerRun);
-        }        
+        }  
+        
+        m_MPRunTurnFactor   = s_runTurnFactor;
+        m_MPRunRotate       = s_controlRotate;
     }
 }
 
 void CPlayerComponent::packDataStateRunTurn(CDataPacket *packet)
 {
+    packet->addFloat(m_MPRotateVector.X);
+    packet->addFloat(m_MPRotateVector.Y);
+    packet->addFloat(m_MPRotateVector.Z);    
+    
+    packet->addFloat(m_MPRunTurnFactor);
+    packet->addFloat(m_MPRunRotate);
 }
+
+
 
 
 void CPlayerComponent::updateStateRunFast()
@@ -1157,6 +1191,9 @@ void CPlayerComponent::updateStatePlayerRotate()
         aimPos.Y = 0;
         aimPos.normalize();
         
+        // set vector for packmultiplayer
+        m_MPRotateVector = aimPos;
+        
         if ( turnToDir( v0, aimPos, 6.0f ) == true )
         {
             setState(CPlayerComponent::PlayerStandAim);
@@ -1168,6 +1205,9 @@ void CPlayerComponent::updateStatePlayerRotate()
 
 void CPlayerComponent::packDataStatePlayerRotate(CDataPacket *packet)
 {
+    packet->addFloat(m_MPRotateVector.X);
+    packet->addFloat(m_MPRotateVector.Y);
+    packet->addFloat(m_MPRotateVector.Z);
 }
 
 
@@ -1817,126 +1857,6 @@ void CPlayerComponent::_onUpdateFinishAbsolute( ISceneNode* node, core::matrix4&
 ///////////////////////////////////////////////////////////////////////
 // Player component end callback animation function
 ///////////////////////////////////////////////////////////////////////
-
-// calcRunAnimationBlend
-// calc animation
-void CPlayerComponent::calcRunAnimationBlend(float rot, float &forward, float &backward, float &left, float &right)
-{
-	forward = 0.0f;
-	backward = 0.0f;
-	left = 0.0f;
-	right = 0.0f;
-			
-	if ( -90.0f <= rot && rot <= 90.0f )
-	{
-		// move forward		
-		backward = 0.0f;
-		if ( rot <= 0.0f && rot <= 90.0f )
-		{
-			// right
-			left = 0.0f;
-
-			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
-			float dForward	= fabsf(sinf(fixAngle));
-   
-			// we have sin2 + cos2 = 1
-            // it mean dforward2 + dright2 = 1.0f
-            forward = dForward*dForward;
-			right   = 1.0f - forward;
-		}
-		else
-		{
-			// left
-			right = 0.0f;
-
-			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
-			float dForward	= fabsf(sinf(fixAngle));
-			
-            forward = dForward*dForward;
-            left = 1.0f - forward;
-		}
-	}
-	else
-	{
-		// move back
-		forward = 0.0f;
-		if ( 90.0f <= rot && rot <= 180.0f )
-		{
-			// left
-			right = 0.0f;
-
-			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
-			float dBackward	= fabsf(sinf(fixAngle));			
-
-            backward    = dBackward*dBackward;
-            left        = 1.0f - backward;
-		}
-		else
-		{
-			// right
-			left = 0.0f;
-
-			float fixAngle	= core::degToRad(fmodf(rot + 90.0f, 360.0f));
-			float dBackward	= fabsf(sinf(fixAngle));
-			
-            backward    = dBackward*dBackward;
-            right       = 1.0f - backward;
-		}
-	}
-    
-}
-
-void CPlayerComponent::calcAimAnimationBlend(core::vector2df angle, float &up, float &down, float &left, float &right)
-{
-    
-    const float maxAngleLR = 45.0f;
-    const float maxangleUD = 45.0f;
-    
-    if ( angle.X > 0 )
-    {
-        // aim left
-        if (angle.Y < 0 )
-        {
-            // aim left down
-            left = fabsf(angle.X)/maxAngleLR;
-            down = fabsf(angle.Y)/maxangleUD;
-            
-            right = 0.0f;
-            up = 0.0f;
-        }
-        else 
-        {
-            // aim left up
-            left    = fabsf(angle.X)/maxAngleLR;
-            up      = fabsf(angle.Y)/maxangleUD;
-            
-            right = 0.0f;
-            down = 0.0f;
-        }
-    }
-    else 
-    {
-        // aim right
-        if (angle.Y < 0 )
-        {
-            // aim right down
-            right = fabsf(angle.X)/maxAngleLR;
-            down = fabsf(angle.Y)/maxangleUD;
-            
-            left = 0.0f;
-            up = 0.0f;
-        }
-        else 
-        {
-            // aim right up
-            right = fabsf(angle.X)/maxAngleLR;
-            up = fabsf(angle.Y)/maxangleUD;
-            
-            left = 0.0f;
-            down = 0.0f;
-        }
-    }
-}
 
 // setSpineLookAt
 // rotate spine to look at a pos

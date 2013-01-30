@@ -33,14 +33,14 @@ CZone::CZone()
 
 #if defined(GSGAMEPLAY)
 	// add particle manager
-	//m_particleMgr = new CContainerObject(this);
-	//m_particleMgr->setID( CGameObject::s_objectID++ );
-	//addChild(m_particleMgr);
+	m_particleMgr = new CContainerObject(this);
+	m_particleMgr->setID( CGameObject::s_objectID++ );
+	addChild(m_particleMgr);
 
-	//m_shadowMgr = createEmptyObject();
-	//CShadowComponent *shadowComp = new CShadowComponent(m_shadowMgr);
-	//shadowComp->initComponent();
-	//m_shadowMgr->addComponent(shadowComp);
+	m_shadowMgr = createEmptyObject();
+	CShadowComponent *shadowComp = new CShadowComponent(m_shadowMgr);
+	shadowComp->initComponent();
+	m_shadowMgr->addComponent(shadowComp);
 #endif
 
 }

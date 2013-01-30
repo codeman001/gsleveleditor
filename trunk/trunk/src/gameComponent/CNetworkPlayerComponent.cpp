@@ -598,10 +598,47 @@ void CNetworkPlayerComponent::unpackDataStateRunFastToRun(CDataPacket *packet)
 
 void CNetworkPlayerComponent::updateStateStandAim()
 {
+	if ( m_subState == SubStateInit )
+    {		
+		m_collada->setCrossFadeAnimation( m_animIdle[0].c_str(),0 );
+		m_collada->setAnimWeight(1.0f, 0);
+        		
+		// setup player cmd state
+		m_playerCmdEvt.shoot	= false;
+		m_playerCmdEvt.reload	= false;
+
+		// change state
+        m_subState = SubStateActive;
+    }
+    else if ( m_subState == SubStateEnd )
+    {		
+        m_collada->setCrossFadeAnimation(m_animIdle[0].c_str(), 0, 10, true);
+        doNextState();
+    }
+    
+	// todo update
+	{
+		if ( m_aimRotateCharacter )
+		{		
+			// rotate main character		
+			core::vector3df v0 = m_gameObject->getFront();
+			core::vector3df aimPos = m_MPRotateVector;
+			aimPos.Y = 0;
+			aimPos.normalize();
+
+			if ( turnToDir( v0, aimPos, 6.0f ) == true )
+				m_aimRotateCharacter = false;
+
+			m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+		}		
+    }
 }
 
 void CNetworkPlayerComponent::unpackDataStateStandAim(CDataPacket *packet)
 {
+	m_MPRotateVector.X = packet->getFloat();
+    m_MPRotateVector.Y = packet->getFloat();
+    m_MPRotateVector.Z = packet->getFloat();
 }
 
 

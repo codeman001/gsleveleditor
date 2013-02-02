@@ -465,7 +465,7 @@ void CGameLevel::packDataMultiplayer(CDataPacket *packet)
 {
 #ifdef HAS_MULTIPLAYER    
     // add number zone
-    packet->addInt( (int)m_zones.size() );
+    packet->addByte((unsigned char)m_zones.size() );
     
     // pack data all zone
     ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
@@ -482,7 +482,7 @@ void CGameLevel::packDataMultiplayer(CDataPacket *packet)
 void CGameLevel::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
 {
 #ifdef HAS_MULTIPLAYER
-    int nZone = packet->getInt();
+    int nZone = (int)packet->getByte();
     if ( nZone < 0 || nZone > (int)m_zones.size() )
     {
         // sync error
@@ -500,21 +500,11 @@ void CGameLevel::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
             return;
         }
         
+        // get zone id
         int zoneid = packet->getInt();
-        int zoneParentId = packet->getInt();
         
         CZone *zone = m_zones[i];        
         if ( zone->getID() != zoneid )
-        {
-            // sync error
-            return;
-        }
-        
-        long parentId = -1;
-        if ( zone->getParent() )
-            parentId = zone->getParent()->getID();
-        
-        if ( zoneParentId != parentId )
         {
             // sync error
             return;

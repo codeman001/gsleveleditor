@@ -371,10 +371,6 @@ void CZone::packDataMultiplayer(CDataPacket *packet)
     // obj type
     packet->addByte( (unsigned char) m_objectType );
     packet->addInt( (int)m_objectID );    
-    if ( m_parent )
-        packet->addInt( (int)m_parent->getID() );
-    else
-        packet->addInt( -1 );
     
     
     // find object need sync game data
@@ -391,7 +387,7 @@ void CZone::packDataMultiplayer(CDataPacket *packet)
 	}
     
     // sync object game data to packet
-    packet->addInt( (int)listObjectSync.size() );
+    packet->addShort((short)listObjectSync.size() );
     it = listObjectSync.begin(), end = listObjectSync.end();
 	while ( it != end )
 	{
@@ -407,7 +403,7 @@ void CZone::packDataMultiplayer(CDataPacket *packet)
 void CZone::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
 {
 #ifdef HAS_MULTIPLAYER
-    int nObjectSync = packet->getInt();
+    int nObjectSync = (int)packet->getShort();
     
     for (int i = 0; i < nObjectSync; i++)
     {
@@ -421,7 +417,6 @@ void CZone::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
         }
         
         long    networkObjectID = (long)packet->getInt();
-        long    networkParentID = (long)packet->getInt();
         short   templateID = packet->getShort();
         
         wchar_t *templateName = CObjTemplateFactory::getTemplateName(templateID);

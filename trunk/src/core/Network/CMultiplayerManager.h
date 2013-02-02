@@ -39,7 +39,10 @@ protected:
     std::string m_name;
     
 	short           m_keyID;
-    CDataPacket*    m_gamePacket;    
+    CDataPacket*    m_gamePacket;
+    
+    bool            m_needSyncData;
+    float           m_syncTime;
 public:
 	CMultiplayerManager(bool isServer, bool isOnline, const char *connectIP = NULL);
 	virtual ~CMultiplayerManager();
@@ -92,6 +95,21 @@ public:
 	{
 		return m_isServer;
 	}
+    
+    // needSyncData
+    // return true if this client need send data to another
+    inline bool needSyncData()
+    {
+        return m_needSyncData;
+    }
+    
+    // setSyncData
+    // tell the network to sync data
+    void setSyncData(bool b)
+    {
+        m_needSyncData = b;
+        m_syncTime = 1000.0f/(float)MP_GAMEFPS_SYNC;
+    }
 public:
     
 	// sendDiscoveryPacket

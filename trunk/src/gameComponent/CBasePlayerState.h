@@ -186,14 +186,7 @@ protected:
     
     // doNextState
 	// change to next state
-	void doNextState()
-	{		
-		// change next state
-		m_lastState	= m_state;
-		m_state		= m_nextState;
-		m_subState	= SubStateInit;
-		m_nextState = PlayerNone;
-	}
+	void doNextState();	
     
     // setOffGunAnimation
 	inline void setOffGunAnimation( std::string animName)

@@ -7,6 +7,7 @@
 //
 
 #include "stdafx.h"
+#include "CGameStateManager.h"
 #include "CBasePlayerState.h"
 #include "IView.h"
 
@@ -137,6 +138,20 @@ void CBasePlayerState::init(CGameObject* gameObj)
 	setOffGunFactor(1.0f);
 }
 
+
+void CBasePlayerState::doNextState()
+{		
+    // change next state
+    m_lastState	= m_state;
+    m_state		= m_nextState;
+    m_subState	= SubStateInit;
+    m_nextState = PlayerNone;
+    
+    // sync at next frame
+    CMultiplayerManager *mpMgr = CGameStateMgr::getInstance()->getCurrentState()->getMPManager();
+    if ( mpMgr )
+        mpMgr->setSyncData(true);
+}
 
 // stepAnimationTime	
 void CBasePlayerState::stepAnimationTime()

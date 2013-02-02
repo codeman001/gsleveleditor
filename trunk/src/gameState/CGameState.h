@@ -119,6 +119,13 @@ public:
 	// getStateObjFx
 	CMenuFxObj getStateObjFx();
 
+    
+#ifdef HAS_MULTIPLAYER
+	CMultiplayerManager* getMPManager()
+    {
+        return m_mpMgr;
+    }
+#endif    
 };
 
 #endif

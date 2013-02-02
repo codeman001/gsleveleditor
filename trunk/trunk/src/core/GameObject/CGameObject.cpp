@@ -539,7 +539,6 @@ void CGameObject::packDataMultiplayer(CDataPacket *packet)
     
     // obj id
     packet->addInt( (int)m_objectID );
-    packet->addInt( (int)m_parent->getID() );
     
     // template
     packet->addShort( (unsigned short) CObjTemplateFactory::getTemplateId( (wchar_t*)m_objectTemplate.c_str()));

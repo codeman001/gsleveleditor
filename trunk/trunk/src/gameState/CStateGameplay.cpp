@@ -59,8 +59,6 @@ void CStateGameplay::onCreate()
 		m_mpMgr->setKeyID(keyID);
         m_mpMgr->sendReadyGameMessage();
     }
-    
-    m_syncGameInterval = 1000.0f/(float)MP_GAMEFPS_SYNC;
 #endif
     
 	// clear screen
@@ -85,11 +83,10 @@ void CStateGameplay::onUpdate()
 #ifdef HAS_MULTIPLAYER
 	m_mpMgr->update();
     
-    m_syncGameInterval = m_syncGameInterval - getIView()->getTimeStep();
-    if ( m_syncGameInterval < 0 )
+    if ( m_mpMgr->needSyncData() )
     {
         m_mpMgr->sendGameDataMessage(m_level);
-        m_syncGameInterval = 1000.0f/(float)MP_GAMEFPS_SYNC;        
+        m_mpMgr->setSyncData(false);
     }
 #endif
 	m_level->update();

@@ -34,6 +34,9 @@ CMultiplayerManager::CMultiplayerManager(bool isServer, bool isOnline, const cha
 	m_isServer = isServer;
 	m_isOnline = isOnline;
     
+    m_needSyncData  = false;    
+    m_syncTime      = 1000.0f/(float)MP_GAMEFPS_SYNC;
+    
 	// get default name
 	char lpName[512];
 	gethostname( lpName, 512 );
@@ -52,6 +55,15 @@ CMultiplayerManager::~CMultiplayerManager()
 // update networking per frame
 void CMultiplayerManager::update()
 {
+    // update sync data
+    m_syncTime = m_syncTime - getIView()->getTimeStep();
+    if ( m_syncTime <= 0 )
+    {
+        m_needSyncData = true;
+        m_syncTime = 1000.0f/(float)MP_GAMEFPS_SYNC;
+    }
+    
+    // update send/revc
 	m_comm->updateRevcData();
 	m_comm->updateSendData();
     m_comm->updateDevices();
@@ -183,6 +195,8 @@ bool CMultiplayerManager::sendGameDataMessage(CGameLevel *level)
     m_gamePacket->addShort(m_keyID);
     level->packDataMultiplayer(m_gamePacket);    
     m_gamePacket->packData();    
+    
+    //printf("Packdata size: %d\n", m_gamePacket->getMessageSize());
     
     bool ret = false;
     if ( m_isServer )

@@ -9,10 +9,6 @@ class CStateGameplay: public CGameState
 protected:	
 	CGameLevel		*m_level;
     
-#ifdef HAS_MULTIPLAYER
-    float           m_syncGameInterval;
-#endif
-    
 	CUIDPad*	m_dpad;
 	CUIHoldButton*	m_btnRunFast;
 	CUIHoldButton*	m_btnShoot;

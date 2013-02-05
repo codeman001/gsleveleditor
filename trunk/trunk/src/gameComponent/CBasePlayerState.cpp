@@ -7,7 +7,7 @@
 //
 
 #include "stdafx.h"
-#include "CGameStateManager.h"
+#include "gameState/CGameStateManager.h"
 #include "CBasePlayerState.h"
 #include "IView.h"
 

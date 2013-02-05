@@ -591,9 +591,10 @@ void CGameObject::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId )
     m_position.Y = packet->getFloat();
     m_position.Z = packet->getFloat();
 
-    m_rotation.X = packet->getFloat();
-    m_rotation.Y = packet->getFloat();
-    m_rotation.Z = packet->getFloat();
+	core::vector3df rot;
+    rot.X = packet->getFloat();
+    rot.Y = packet->getFloat();
+    rot.Z = packet->getFloat();
     
     m_scale.X = packet->getFloat();
     m_scale.Y = packet->getFloat();
@@ -611,9 +612,10 @@ void CGameObject::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId )
     setVisible(visible);
     setLighting(lighting);
     
-    updateNodePosition();
-    updateNodeRotation();
+    updateNodePosition();    
     updateNodeScale();
+
+	setRotation(rot);
     
 #endif
 }

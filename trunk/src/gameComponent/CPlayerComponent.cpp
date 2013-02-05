@@ -400,59 +400,58 @@ void CPlayerComponent::updateStateTurn()
 	}
 	else if ( m_subState == SubStateEnd )
 	{		
-		doNextState();		
+		doNextState();
+		return;
 	}
-	else
-	{		
-		core::vector3df v0, v1;
+	
+	core::vector3df v0, v1;
 
-		// get vector rotate & speed
-		v0 = m_gameObject->getFront();
-		v1 = getCameraFrontVector();
+	// get vector rotate & speed
+	v0 = m_gameObject->getFront();
+	v1 = getCameraFrontVector();
+    
+    // sync multiplayer
+    m_MPRotateVector = v1;
+    
+	float rot = 0.0f;
+	if ( m_runCommand )
+    {
+        // rotate to player control direction
+		rot = m_playerMoveEvt.rotate;
+    }
+    else
+    {
+        // user cancel run command
+        setState( CPlayerComponent::PlayerIdle );
+    }   
         
-        // sync multiplayer
-        m_MPRotateVector = v1;
-        
-		float rot = 0.0f;
+    // rotate to run dir if runfast
+    if ( s_runFast )
+    {
+        core::quaternion q;
+        q.fromAngleAxis( core::degToRad(rot), core::vector3df(0,1,0) );
+        q.getMatrix().rotateVect(v1);
+        v1.normalize();
+    }
+    
+	// step to turn camera vector
+	bool turnFinish  = turnToDir( v0, v1, 6.0f );
+
+	// rotate object
+	m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+			
+	if ( turnFinish )
+	{
 		if ( m_runCommand )
-        {
-            // rotate to player control direction
-			rot = m_playerMoveEvt.rotate;
-        }
-        else
-        {
-            // user cancel run command
-            setState( CPlayerComponent::PlayerIdle );
-        }   
-            
-        // rotate to run dir if runfast
-        if ( s_runFast )
-        {
-            core::quaternion q;
-            q.fromAngleAxis( core::degToRad(rot), core::vector3df(0,1,0) );
-            q.getMatrix().rotateVect(v1);
-            v1.normalize();
-        }
-        
-		// step to turn camera vector
-		bool turnFinish  = turnToDir( v0, v1, 6.0f );
-
-		// rotate object
-		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
-				
-		if ( turnFinish )
 		{
-			if ( m_runCommand )
-			{
-				if ( s_runFast )
-					setState( CPlayerComponent::PlayerRunFast );
-				else
-					setState( CPlayerComponent::PlayerRun );
-			}		
+			if ( s_runFast )
+				setState( CPlayerComponent::PlayerRunFast );
 			else
-			{
-				setState( CPlayerComponent::PlayerIdle );
-			}
+				setState( CPlayerComponent::PlayerRun );
+		}		
+		else
+		{
+			setState( CPlayerComponent::PlayerIdle );
 		}
 	}
 }

@@ -348,7 +348,7 @@ void CNetworkPlayerComponent::updateStateRun()
             runDir.normalize();		
             
             // rotate step runDir
-            turnToDir( m_controlRotate, runDir, 2.0f );
+            turnToDir( m_controlRotate, runDir, 2.0f );				
         }
 
         

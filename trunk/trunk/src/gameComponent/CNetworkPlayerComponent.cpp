@@ -90,34 +90,34 @@ void CNetworkPlayerComponent::unpackDataMPState(CDataPacket *packet)
 {
 	switch( m_stateMP )
 	{
-	case CPlayerComponent::PlayerIdle:
+	case CBasePlayerState::PlayerIdle:
 		unpackDataStateIdle(packet);			
 		break;
-	case CPlayerComponent::PlayerTurn:
+	case CBasePlayerState::PlayerTurn:
 		unpackDataStateTurn(packet);			
 		break;
-	case CPlayerComponent::PlayerRunTurn:
+	case CBasePlayerState::PlayerRunTurn:
 		unpackDataStateRunTurn(packet);
 		break;
-	case CPlayerComponent::PlayerRun:
+	case CBasePlayerState::PlayerRun:
 		unpackDataStateRun(packet);
 		break;
-    case CPlayerComponent::PlayerRunFastTurn:
+    case CBasePlayerState::PlayerRunFastTurn:
         unpackDataStateRunFastTurn(packet);    
         break;
-	case CPlayerComponent::PlayerRunFast:
+	case CBasePlayerState::PlayerRunFast:
 		unpackDataStateRunFast(packet);
 		break;
-    case CPlayerComponent::PlayerRunToRunFast:
+    case CBasePlayerState::PlayerRunToRunFast:
         unpackDataStateRunToRunFast(packet);
         break;
-    case CPlayerComponent::PlayerRunFastToRun:
+    case CBasePlayerState::PlayerRunFastToRun:
         unpackDataStateRunFastToRun(packet);
         break;
-    case CPlayerComponent::PlayerStandAim:
+    case CBasePlayerState::PlayerStandAim:
         unpackDataStateStandAim(packet);			
         break;
-    case CPlayerComponent::PlayerRotate:
+    case CBasePlayerState::PlayerRotate:
         unpackDataStatePlayerRotate(packet);
         break;
 	}
@@ -127,34 +127,34 @@ void CNetworkPlayerComponent::updateState()
 {
     switch( m_state )
 	{
-        case CPlayerComponent::PlayerIdle:
+        case CBasePlayerState::PlayerIdle:
             updateStateIdle();			
             break;
-        case CPlayerComponent::PlayerTurn:
+        case CBasePlayerState::PlayerTurn:
             updateStateTurn();			
             break;
-        case CPlayerComponent::PlayerRunTurn:
+        case CBasePlayerState::PlayerRunTurn:
             updateStateRunTurn();
             break;
-        case CPlayerComponent::PlayerRun:
+        case CBasePlayerState::PlayerRun:
             updateStateRun();
             break;
-        case CPlayerComponent::PlayerRunFastTurn:
+        case CBasePlayerState::PlayerRunFastTurn:
             updateStateRunFastTurn();    
             break;
-        case CPlayerComponent::PlayerRunFast:
+        case CBasePlayerState::PlayerRunFast:
             updateStateRunFast();
             break;
-        case CPlayerComponent::PlayerRunToRunFast:
+        case CBasePlayerState::PlayerRunToRunFast:
             updateStateRunToRunFast();
             break;
-        case CPlayerComponent::PlayerRunFastToRun:
+        case CBasePlayerState::PlayerRunFastToRun:
             updateStateRunFastToRun();
             break;
-        case CPlayerComponent::PlayerStandAim:
+        case CBasePlayerState::PlayerStandAim:
             updateStateStandAim();			
             break;
-        case CPlayerComponent::PlayerRotate:
+        case CBasePlayerState::PlayerRotate:
             updateStatePlayerRotate();
             break;
 	}
@@ -308,8 +308,8 @@ void CNetworkPlayerComponent::updateStateRun()
 		m_controlRotate = m_gameObject->getFront();
 		
 		// switch up body to aim state
-        if ( m_upbodyState == CPlayerComponent::PlayerUpBodyOffGun )
-            setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
+        if ( m_upbodyState == CBasePlayerState::PlayerUpBodyOffGun )
+            setUpBodyState(CBasePlayerState::PlayerUpBodyAim);
         
         // init virtual factor variable
         // it will sync from mp later
@@ -446,8 +446,17 @@ void CNetworkPlayerComponent::updateStateRunTurn()
     }
 	else if ( m_subState == SubStateEnd )
     {
+        bool runState = false;
+        
+		if ( m_nextState == CBasePlayerState::PlayerRun )
+            runState = true;
+
         // change state
-		doNextState();        
+		doNextState();
+        
+        // do not need init run state
+        if (runState )
+            m_subState = SubStateActive;
     }
     else
     {
@@ -664,8 +673,8 @@ void CNetworkPlayerComponent::updateStatePlayerRotate()
         
         if ( turnToDir( v0, aimPos, 6.0f ) == true )
         {
-            setState(CPlayerComponent::PlayerStandAim);
-            setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
+            setState(CBasePlayerState::PlayerStandAim);
+            setUpBodyState(CBasePlayerState::PlayerUpBodyAim);
         }
         m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
         

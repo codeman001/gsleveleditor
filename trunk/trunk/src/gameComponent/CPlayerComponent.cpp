@@ -223,34 +223,34 @@ void CPlayerComponent::packDataMPState(CDataPacket *packet)
 {
 	switch( m_state )
 	{
-	case CPlayerComponent::PlayerIdle:
+	case CBasePlayerState::PlayerIdle:
 		packDataStateIdle(packet);			
 		break;
-	case CPlayerComponent::PlayerTurn:
+	case CBasePlayerState::PlayerTurn:
 		packDataStateTurn(packet);			
 		break;
-	case CPlayerComponent::PlayerRunTurn:
+	case CBasePlayerState::PlayerRunTurn:
 		packDataStateRunTurn(packet);
 		break;
-	case CPlayerComponent::PlayerRun:
+	case CBasePlayerState::PlayerRun:
 		packDataStateRun(packet);
 		break;
-    case CPlayerComponent::PlayerRunFastTurn:
+    case CBasePlayerState::PlayerRunFastTurn:
         packDataStateRunFastTurn(packet);    
         break;
-	case CPlayerComponent::PlayerRunFast:
+	case CBasePlayerState::PlayerRunFast:
 		packDataStateRunFast(packet);
 		break;
-    case CPlayerComponent::PlayerRunToRunFast:
+    case CBasePlayerState::PlayerRunToRunFast:
         packDataStateRunToRunFast(packet);
         break;
-    case CPlayerComponent::PlayerRunFastToRun:
+    case CBasePlayerState::PlayerRunFastToRun:
         packDataStateRunFastToRun(packet);
         break;
-    case CPlayerComponent::PlayerStandAim:
+    case CBasePlayerState::PlayerStandAim:
         packDataStateStandAim(packet);			
         break;
-    case CPlayerComponent::PlayerRotate:
+    case CBasePlayerState::PlayerRotate:
         packDataStatePlayerRotate(packet);
         break;
 	}
@@ -267,34 +267,34 @@ void CPlayerComponent::updateState()
 {	
 	switch( m_state )
 	{
-	case CPlayerComponent::PlayerIdle:
+	case CBasePlayerState::PlayerIdle:
 		updateStateIdle();			
 		break;
-	case CPlayerComponent::PlayerTurn:
+	case CBasePlayerState::PlayerTurn:
 		updateStateTurn();			
 		break;
-	case CPlayerComponent::PlayerRunTurn:
+	case CBasePlayerState::PlayerRunTurn:
 		updateStateRunTurn();
 		break;
-	case CPlayerComponent::PlayerRun:
+	case CBasePlayerState::PlayerRun:
 		updateStateRun();
 		break;
-    case CPlayerComponent::PlayerRunFastTurn:
+    case CBasePlayerState::PlayerRunFastTurn:
         updateStateRunFastTurn();    
         break;
-	case CPlayerComponent::PlayerRunFast:
+	case CBasePlayerState::PlayerRunFast:
 		updateStateRunFast();
 		break;
-    case CPlayerComponent::PlayerRunToRunFast:
+    case CBasePlayerState::PlayerRunToRunFast:
         updateStateRunToRunFast();
         break;
-    case CPlayerComponent::PlayerRunFastToRun:
+    case CBasePlayerState::PlayerRunFastToRun:
         updateStateRunFastToRun();
         break;
-    case CPlayerComponent::PlayerStandAim:
+    case CBasePlayerState::PlayerStandAim:
         updateStateStandAim();			
         break;
-    case CPlayerComponent::PlayerRotate:
+    case CBasePlayerState::PlayerRotate:
         updateStatePlayerRotate();
         break;
 	}
@@ -366,10 +366,10 @@ void CPlayerComponent::updateStateIdle()
 		//setSpineLookAt( lookPos, 1.0f );
 	
 		if ( m_runCommand )
-			setState( CPlayerComponent::PlayerTurn );			
+			setState( CBasePlayerState::PlayerTurn );			
 		else if ( m_gunOnCommand )
         {
-			setState( CPlayerComponent::PlayerRotate );            
+			setState( CBasePlayerState::PlayerRotate );            
             m_gunOnCommand = false;
         }
         
@@ -422,7 +422,7 @@ void CPlayerComponent::updateStateTurn()
     else
     {
         // user cancel run command
-        setState( CPlayerComponent::PlayerIdle );
+        setState( CBasePlayerState::PlayerIdle );
     }   
         
     // rotate to run dir if runfast
@@ -445,13 +445,13 @@ void CPlayerComponent::updateStateTurn()
 		if ( m_runCommand )
 		{
 			if ( s_runFast )
-				setState( CPlayerComponent::PlayerRunFast );
+				setState( CBasePlayerState::PlayerRunFast );
 			else
-				setState( CPlayerComponent::PlayerRun );
+				setState( CBasePlayerState::PlayerRun );
 		}		
 		else
 		{
-			setState( CPlayerComponent::PlayerIdle );
+			setState( CBasePlayerState::PlayerIdle );
 		}
 	}
 }
@@ -509,8 +509,8 @@ void CPlayerComponent::updateStateRun()
 		m_controlRotate = m_gameObject->getFront();
 		
 		// switch up body to aim state
-        if ( m_upbodyState == CPlayerComponent::PlayerUpBodyOffGun )
-            setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
+        if ( m_upbodyState == CBasePlayerState::PlayerUpBodyOffGun )
+            setUpBodyState(CBasePlayerState::PlayerUpBodyAim);
 
 		m_subState = SubStateActive;
 	}
@@ -525,7 +525,7 @@ void CPlayerComponent::updateStateRun()
 		// get vector rotate & speed
 		v0 = m_gameObject->getFront();
 		v1 = getCameraFrontVector();
-		runDir = v0;		
+		runDir = v0;
 
         // sync multiplayer
         m_MPRotateVector = v1;
@@ -543,9 +543,9 @@ void CPlayerComponent::updateStateRun()
             runDir.normalize();		
         
             // rotate step runDir
-            turnToDir( m_controlRotate, runDir, 2.0f );
+            turnToDir( m_controlRotate, runDir, 2.0f );			
         }
-/*        
+
 #ifdef WIN32
 		// debug line
 		CGameDebug *debug = CGameDebug::getInstance();
@@ -560,7 +560,7 @@ void CPlayerComponent::updateStateRun()
 		line.end	= m_gameObject->getPosition() + m_controlRotate * 400.0f;
 		debug->addDrawLine(line, SColor(255,0,0,255) );
 #endif
-*/
+
 		float step = m_runAccel*getIView()->getTimeStep();
         
 		if ( m_runCommand == false )
@@ -569,7 +569,7 @@ void CPlayerComponent::updateStateRun()
 			if ( m_runFactor < 0.0f )
 			{
 				m_runFactor = 0.0f;
-				setState( CPlayerComponent::PlayerStandAim );
+				setState( CBasePlayerState::PlayerStandAim );
 			}
             
 			m_collada->setAnimWeight(1.0f - m_runFactor,							0);            
@@ -615,13 +615,14 @@ void CPlayerComponent::updateStateRun()
             if ( fabs(getAngle(m_controlRotate, runDir)) > 150.0f )
             {
                 // need force turn
-                setState(CPlayerComponent::PlayerRunTurn);
+				// process when (run forward -> run back)
+                setState(CBasePlayerState::PlayerRunTurn);
             }
             
             if ( m_playerMoveEvt.runFast && m_runFactor >= 1.0f )
             {
                 // need change state run fast
-                setState(CPlayerComponent::PlayerRunToRunFast);
+                setState(CBasePlayerState::PlayerRunToRunFast);
             }
             
 		}
@@ -675,7 +676,7 @@ void CPlayerComponent::updateStateRunTurn()
     {
         bool runState = false;
         
-        if ( m_nextState == CPlayerComponent::PlayerRun )
+        if ( m_nextState == CBasePlayerState::PlayerRun )
             runState = true;
 
         // change state
@@ -695,7 +696,7 @@ void CPlayerComponent::updateStateRunTurn()
             if ( m_runFactor <= 0 )
             {
                 m_runFactor = 0;
-                setState( CPlayerComponent::PlayerIdle );
+                setState( CBasePlayerState::PlayerIdle );
             }
         }
         else 
@@ -767,7 +768,7 @@ void CPlayerComponent::updateStateRunTurn()
             m_animRightFactor = animRight;
             
             // change state
-            setState(CPlayerComponent::PlayerRun);
+            setState(CBasePlayerState::PlayerRun);
         }  
         
         m_MPRunTurnFactor   = s_runTurnFactor;
@@ -806,7 +807,7 @@ void CPlayerComponent::updateStateRunFast()
 	}
 	else if ( m_subState == SubStateEnd )
 	{
-		if ( m_nextState == CPlayerComponent::PlayerIdle )
+		if ( m_nextState == CBasePlayerState::PlayerIdle )
 		{
             // turn off multi anim track
 			m_collada->setAnimWeight(1.0f, 0);
@@ -821,7 +822,7 @@ void CPlayerComponent::updateStateRunFast()
 	{
 		float step = m_runAccel*getIView()->getTimeStep();
         
-		if ( m_runCommand == false && m_upbodyState == CPlayerComponent::PlayerUpBodyRunFast )
+		if ( m_runCommand == false && m_upbodyState == CBasePlayerState::PlayerUpBodyRunFast )
 		{
             
             // calc spine rotation
@@ -834,8 +835,8 @@ void CPlayerComponent::updateStateRunFast()
             {
                 m_runFactor = 0.0f;
                 
-                setUpBodyState(CPlayerComponent::PlayerUpBodyOffGunToAim);
-                setState( CPlayerComponent::PlayerRotate );
+                setUpBodyState(CBasePlayerState::PlayerUpBodyOffGunToAim);
+                setState( CBasePlayerState::PlayerRotate );
             }
 
             m_collada->setAnimWeight(1.0f - m_runFactor, 0);
@@ -859,8 +860,8 @@ void CPlayerComponent::updateStateRunFast()
             // only change when ready run fast state
             if ( m_playerMoveEvt.runFast == false )
             {    
-                setUpBodyState(CPlayerComponent::PlayerUpBodyOffGunToAim);
-                setState( CPlayerComponent::PlayerRunFastToRun );
+                setUpBodyState(CBasePlayerState::PlayerUpBodyOffGunToAim);
+                setState( CBasePlayerState::PlayerRunFastToRun );
             }
             
 		}
@@ -884,7 +885,7 @@ void CPlayerComponent::updateStateRunFast()
 		// do not need run turn state
 		if ( fabs( getAngle(v0,v1) ) >= 150.0f && m_runCommand )
 		{			
-			setState( CPlayerComponent::PlayerRunFastTurn );			
+			setState( CBasePlayerState::PlayerRunFastTurn );			
 			m_runTurnVector  = v1;
 			m_runCurrentVector = m_gameObject->getFront();
 		}
@@ -991,7 +992,7 @@ void CPlayerComponent::updateStateRunFastTurn()
 		if ( m_runFactor <= 0.0f && turn == true )
 		{
 			m_runFactor = 0.0f;
-			setState( CPlayerComponent::PlayerRunFast );
+			setState( CBasePlayerState::PlayerRunFast );
 		}
 		
 		m_collada->setAnimWeight(1.0f - m_runFactor, 0);
@@ -1019,7 +1020,7 @@ void CPlayerComponent::updateStateRunToRunFast()
 		m_subState = SubStateActive;
         
         // upper state
-        setUpBodyState( CPlayerComponent::PlayerUpBodyAimToOffGun );
+        setUpBodyState( CBasePlayerState::PlayerUpBodyAimToOffGun );
 	}
 	else if ( m_subState == SubStateEnd )
 	{	       
@@ -1034,7 +1035,7 @@ void CPlayerComponent::updateStateRunToRunFast()
         if ( m_runFactor < 0.0f )
         {
             m_runFactor = 0.0f;            
-            setState( CPlayerComponent::PlayerRunFast );
+            setState( CBasePlayerState::PlayerRunFast );
         }    
                 
         // set anim weight
@@ -1064,7 +1065,7 @@ void CPlayerComponent::updateStateRunFastToRun()
 {
     if ( m_subState == SubStateInit )
 	{		
-        setUpBodyState(CPlayerComponent::PlayerUpBodyOffGunToAim);
+        setUpBodyState(CBasePlayerState::PlayerUpBodyOffGunToAim);
         
         // active state
 		m_subState = SubStateActive;		
@@ -1090,7 +1091,7 @@ void CPlayerComponent::updateStateRunFastToRun()
         if ( m_runFactor < 0.0f )
         {
             m_runFactor = 0.0f;            
-            setState( CPlayerComponent::PlayerRun );
+            setState( CBasePlayerState::PlayerRun );
         }
         
         
@@ -1161,7 +1162,7 @@ void CPlayerComponent::updateStateStandAim()
 
 		// change state un
         if ( m_runCommand )
-            setState(CPlayerComponent::PlayerRun);		
+            setState(CBasePlayerState::PlayerRun);		
     }
 }
 
@@ -1198,8 +1199,8 @@ void CPlayerComponent::updateStatePlayerRotate()
         
         if ( turnToDir( v0, aimPos, 6.0f ) == true )
         {
-            setState(CPlayerComponent::PlayerStandAim);
-            setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
+            setState(CBasePlayerState::PlayerStandAim);
+            setUpBodyState(CBasePlayerState::PlayerUpBodyAim);
         }
         m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
     }    
@@ -1233,31 +1234,31 @@ void CPlayerComponent::packDataStatePlayerRotate(CDataPacket *packet)
 // update state aim, shoot, reload
 void CPlayerComponent::updateUpperBody()
 {
-    if ( m_upbodyState == CPlayerComponent::PlayerUpBodyAim )
+    if ( m_upbodyState == CBasePlayerState::PlayerUpBodyAim )
     {
         updateUpperBodyAim();
     }
-    else if ( m_upbodyState == CPlayerComponent::PlayerUpBodyShoot )
+    else if ( m_upbodyState == CBasePlayerState::PlayerUpBodyShoot )
     {
         updateUpperBodyShoot();
     }
-    else if ( m_upbodyState == CPlayerComponent::PlayerUpBodyReload )
+    else if ( m_upbodyState == CBasePlayerState::PlayerUpBodyReload )
     {
         updateUpperBodyReload();
     }
-	else if ( m_upbodyState == CPlayerComponent::PlayerUpBodyOffGun )
+	else if ( m_upbodyState == CBasePlayerState::PlayerUpBodyOffGun )
 	{
 		updateUpperBodyOffgun();
 	}
-    else if ( m_upbodyState == CPlayerComponent::PlayerUpBodyAimToOffGun )
+    else if ( m_upbodyState == CBasePlayerState::PlayerUpBodyAimToOffGun )
     {
         updateUpperBodyAimToOffgun();
     }
-    else if ( m_upbodyState == CPlayerComponent::PlayerUpBodyOffGunToAim )
+    else if ( m_upbodyState == CBasePlayerState::PlayerUpBodyOffGunToAim )
     {
         updateUpperBodyOffgunToAim();
     }
-    else if ( m_upbodyState == CPlayerComponent::PlayerUpBodyRunFast )
+    else if ( m_upbodyState == CBasePlayerState::PlayerUpBodyRunFast )
     {
         updateUpperBodyRunFast();
     }
@@ -1349,12 +1350,12 @@ void CPlayerComponent::updateUpperBodyAim()
 			if ( m_playerCmdEvt.shoot == true )
 			{
 				// todo shoot
-                setUpBodyState( CPlayerComponent::PlayerUpBodyShoot );
+                setUpBodyState( CBasePlayerState::PlayerUpBodyShoot );
 			}
 			else if ( m_playerCmdEvt.reload == true )
 			{
 				// todo reload
-				setUpBodyState( CPlayerComponent::PlayerUpBodyReload );
+				setUpBodyState( CBasePlayerState::PlayerUpBodyReload );
 			}
 		}        
     }
@@ -1420,7 +1421,7 @@ void CPlayerComponent::updateUpperBodyShoot()
 			if ( m_playerCmdEvt.shoot == false )
 			{
 				// change to aim state if end shooting
-                setUpBodyState(CPlayerComponent::PlayerUpBodyAim);
+                setUpBodyState(CBasePlayerState::PlayerUpBodyAim);
 			}
 			else
 			{
@@ -1606,7 +1607,7 @@ void CPlayerComponent::updateUpperBodyAimToOffgun()
             m_offGunFactor = 1.0f;
             
             // run fast animation
-            setUpBodyState(CPlayerComponent::PlayerUpBodyRunFast);
+            setUpBodyState(CBasePlayerState::PlayerUpBodyRunFast);
         }
     }
 }
@@ -1732,7 +1733,7 @@ void CPlayerComponent::updateUpperBodyOffgunToAim()
             
             // change state
             if ( m_offGunFactor == 0.0f )
-                setUpBodyState( CPlayerComponent::PlayerUpBodyAim );            
+                setUpBodyState( CBasePlayerState::PlayerUpBodyAim );            
         }
         
     }
@@ -1769,7 +1770,7 @@ void CPlayerComponent::_onUpdateFrameDataChannel( ISceneNode* node, core::vector
 // call when finish blending many channel
 void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int animLayer )
 {    
-	if ( animLayer != 0 && m_state == CPlayerComponent::PlayerIdle )
+	if ( animLayer != 0 && m_state == CBasePlayerState::PlayerIdle )
 	{
 		 // todo modify rotation, position of anim
 		const core::vector3df rotAxis = core::vector3df(0,0,1);
@@ -1815,7 +1816,7 @@ void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& po
 // call when finish calc skin animation
 void CPlayerComponent::_onUpdateFinishAbsolute( ISceneNode* node, core::matrix4& absoluteAnimationMatrix )
 {
-	if ( m_state != CPlayerComponent::PlayerIdle )
+	if ( m_state != CBasePlayerState::PlayerIdle )
 	{
 		// todo modify rotation, position of anim
 		const core::vector3df rotAxis = core::vector3df(0,0,1);

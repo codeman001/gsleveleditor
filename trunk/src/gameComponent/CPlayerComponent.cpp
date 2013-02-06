@@ -359,7 +359,8 @@ void CPlayerComponent::updateStateIdle()
 	{
 		doNextState();		
 	}
-	else
+
+    // todo update
 	{
 		// calc spine rotation
 		//core::vector3df lookPos = m_gameObject->getPosition() + m_gameObject->getFront();
@@ -518,7 +519,9 @@ void CPlayerComponent::updateStateRun()
 	{
 		doNextState();
 	}
-	else
+
+    
+    // todo update
 	{		
 		core::vector3df v0, v1, runDir;
 
@@ -686,7 +689,9 @@ void CPlayerComponent::updateStateRunTurn()
         if (runState )
             m_subState = SubStateActive;
     }
-    else
+
+    
+    // todo update
     {
         float step = m_runAccel*getIView()->getTimeStep();
         
@@ -818,7 +823,8 @@ void CPlayerComponent::updateStateRunFast()
 		}
 		doNextState();
 	}
-	else
+
+    // todo update
 	{
 		float step = m_runAccel*getIView()->getTimeStep();
         
@@ -872,6 +878,10 @@ void CPlayerComponent::updateStateRunFast()
 		v0 = m_gameObject->getFront();
 		v1 = getCameraFrontVector();
 		
+        // sync multiplayer
+        m_MPRotateVector = v1;
+        
+        
 		core::quaternion q;
 		float rot = 0.0f;
 
@@ -928,7 +938,14 @@ void CPlayerComponent::updateStateRunFast()
 
 void CPlayerComponent::packDataStateRunFast(CDataPacket *packet)
 {
+    packet->addFloat(m_MPRotateVector.X);
+    packet->addFloat(m_MPRotateVector.Y);
+    packet->addFloat(m_MPRotateVector.Z);    
 }
+
+
+
+
 
 void CPlayerComponent::updateStateRunFastTurn()
 {
@@ -948,7 +965,8 @@ void CPlayerComponent::updateStateRunFastTurn()
 	{		
 		doNextState();		
 	}
-	else
+
+    // todo update state
 	{		
 		core::vector3df v0, v1;
 
@@ -1009,6 +1027,9 @@ void CPlayerComponent::updateStateRunFastTurn()
 
 void CPlayerComponent::packDataStateRunFastTurn(CDataPacket *packet)
 {
+    packet->addFloat(m_runTurnVector.X);
+    packet->addFloat(m_runTurnVector.Y);
+    packet->addFloat(m_runTurnVector.Z);
 }
 
 
@@ -1027,7 +1048,8 @@ void CPlayerComponent::updateStateRunToRunFast()
         // change state
 		doNextState();     
 	}
-	else
+
+    // todo update
 	{		        
 		float step = m_runAccel*getIView()->getTimeStep()*1.0f;        
         m_runFactor = m_runFactor - step;
@@ -1075,51 +1097,60 @@ void CPlayerComponent::updateStateRunFastToRun()
         // change state
 		doNextState();
 	}
-	else
-	{
-        core::vector3df v0, v1, runDir;
+	
+    
+    core::vector3df v0, v1, runDir;
         
-		// get vector rotate & speed
-		v0 = m_gameObject->getFront();
-		v1 = getCameraFrontVector();
-        runDir = v0;
+    // get vector rotate & speed
+    v0 = m_gameObject->getFront();
+    v1 = getCameraFrontVector();
+    runDir = v0;
         
-		float step = m_runAccel*getIView()->getTimeStep()*1.0f;
-        
-        m_runFactor = m_runFactor - step;
-        
-        if ( m_runFactor < 0.0f )
-        {
-            m_runFactor = 0.0f;            
-            setState( CBasePlayerState::PlayerRun );
-        }
+    // MP sync
+    m_MPRotateVector = getCameraFrontVector();
         
         
-        // rotate character to camera 
-        // if rot 180 deg
-        core::vector3df v = v0 + v1;
-        if ( v.getLengthSQ() <= 0.1f )
-            v1 = m_gameObject->getRight();
+    float step = m_runAccel*getIView()->getTimeStep()*1.0f;
         
-        turnToDir(runDir, v1, 6.0f);
-        m_gameObject->lookAt(m_gameObject->getPosition() + runDir);
+    m_runFactor = m_runFactor - step;
         
-        // set anim weight
-        m_collada->setAnimWeight(1.0f - m_runFactor,							0);            
-        m_collada->setAnimWeight(m_runFactor,									1);        
+    if ( m_runFactor < 0.0f )
+    {
+        m_runFactor = 0.0f;            
+        setState( CBasePlayerState::PlayerRun );
+    }
         
-        m_collada->synchronizedByTimeScale();   
+    
+    // rotate character to camera 
+    // if rot 180 deg
+    core::vector3df v = v0 + v1;
+    if ( v.getLengthSQ() <= 0.1f )
+        v1 = m_gameObject->getRight();
         
-		// update run position
-		float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep();
-		core::vector3df newPos = m_gameObject->getPosition() + m_gameObject->getFront() * runSpeed;
-		m_gameObject->setPosition( newPos );
-    }        
+    turnToDir(runDir, v1, 6.0f);
+    m_gameObject->lookAt(m_gameObject->getPosition() + runDir);
+        
+    // set anim weight
+    m_collada->setAnimWeight(1.0f - m_runFactor,							0);            
+    m_collada->setAnimWeight(m_runFactor,									1);        
+        
+    m_collada->synchronizedByTimeScale();   
+        
+    // update run position
+    float runSpeed = m_runSpeed * m_runFactor * getIView()->getTimeStep();
+    core::vector3df newPos = m_gameObject->getPosition() + m_gameObject->getFront() * runSpeed;
+    m_gameObject->setPosition( newPos );
+      
 }
 
 void CPlayerComponent::packDataStateRunFastToRun(CDataPacket *packet)
 {
+    packet->addFloat(m_MPRotateVector.X);
+    packet->addFloat(m_MPRotateVector.Y);
+    packet->addFloat(m_MPRotateVector.Z);
 }
+
+
 
 void CPlayerComponent::updateStateStandAim()
 {
@@ -1183,7 +1214,8 @@ void CPlayerComponent::updateStatePlayerRotate()
     {		
         doNextState();		
     }
-    else
+
+    // update rotate
     {
         core::line3df	ray		= getCameraRay();
         core::vector3df	colPos	= getCollisionPoint(ray);                		        		 

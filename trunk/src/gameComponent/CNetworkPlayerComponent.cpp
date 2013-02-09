@@ -982,6 +982,7 @@ void CNetworkPlayerComponent::unpackDataStateStandAim(CDataPacket *packet)
 	m_MPRotateVector.X = packet->getFloat();
     m_MPRotateVector.Y = packet->getFloat();
     m_MPRotateVector.Z = packet->getFloat();
+    m_aimRotateCharacter = (packet->getByte() == 1);
 }
 
 
@@ -1025,14 +1026,92 @@ void CNetworkPlayerComponent::unpackDataStatePlayerRotate(CDataPacket *packet)
 
 
 
+
+
 void CNetworkPlayerComponent::updateUpperBodyAim()
 {
+    if ( m_upbodySubState == SubStateInit )
+    {   
+        // turn off all anim channel
+        m_collada->onlyEnableAnimTrackChannel(0, 1);
+        
+		// base idle
+        m_collada->setCrossFadeAnimationToLayer( m_animIdle[0].c_str(), 10.0f, true, 0, 0, 1, 0);
+        
+		// base aim
+        m_collada->setAnimation(m_animAimStraight.c_str(),	1, true, 1 );        
+        m_collada->setAnimWeight(0.0f, 1, 1);
+        m_collada->enableAnimTrackChannel(1, true, 1);
+        
+        m_collada->setAnimation(m_animAimUp.c_str(),	2, true, 1 );
+        m_collada->setAnimWeight(0.0f, 2, 1);
+        m_collada->enableAnimTrackChannel(2, true, 1);
+        
+        m_collada->setAnimation(m_animAimDown.c_str(),	3, true, 1 );
+        m_collada->setAnimWeight(0.0f, 3, 1);
+        m_collada->enableAnimTrackChannel(3, true, 1);                       
+        
+        m_upbodySubState = SubStateActive;
+    }
+    else if ( m_upbodySubState == SubStateEnd )
+    {
+    }
     
+    // todo update aim
+    {
+        float step = 0.005f*getIView()->getTimeStep();
+        
+        // inc aim factor
+        m_aimFactor = m_aimFactor + step;
+        
+        // calc aim
+        m_aimFactor = core::clamp<float>(m_aimFactor, 0.0f, 1.0f);
+        
+        // get up,down factor
+		core::vector2df ret     = m_MPAimAngle;
+        
+		float wUp, wDown, wLeft, wRight, wStraight;
+		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);		
+        
+        if ( wUp > 0 )
+            wStraight = 1.0f - wUp;
+        else 
+            wStraight = 1.0f - wDown;
+        
+        // setup straight
+        wStraight = core::clamp<float>(wStraight, 0.0f, 1.0f);
+        
+        
+        // setup anim blend factor
+        wStraight   = wStraight * m_aimFactor;
+        wUp         = wUp * m_aimFactor;
+        wDown       = wDown * m_aimFactor;        
+		
+		
+		// rotate spine character        
+        float spineAngle = m_MPSpineRotate;
+        spineAngle = core::clamp<float>(spineAngle, -40.0f, 40.0f);
+        
+        // set spine to look aim focus
+        CPlayerComponent *playerComp = (CPlayerComponent*)m_gameObject->getComponent(CGameComponent::PlayerComponent);
+        playerComp->setSpineRotation(spineAngle);
+        
+        
+        // blend anim up, down
+        m_collada->setAnimWeight(1.0f - m_aimFactor, 0, 1);			// idle
+        m_collada->setAnimWeight(wStraight, 1, 1);					// straight
+		m_collada->setAnimWeight(wUp,	2, 1);						// up
+		m_collada->setAnimWeight(wDown, 3, 1);						// down
+        m_collada->synchronizedByTimeScale(1);
+        
+    }
 }
 
 void CNetworkPlayerComponent::unpackDataUpperBodyAim(CDataPacket *packet)
 {
-    
+    m_MPAimAngle.X = packet->getFloat();
+    m_MPAimAngle.Y = packet->getFloat();
+    m_MPSpineRotate = packet->getFloat();
 }
 
 

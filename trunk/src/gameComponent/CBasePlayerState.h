@@ -154,6 +154,8 @@ protected:
     core::vector3df         m_MPRotateVector;
     float                   m_MPRunRotate;
     float                   m_MPRunTurnFactor;
+    core::vector2df         m_MPAimAngle;
+    float                   m_MPSpineRotate;
 protected:
     
 	// setState

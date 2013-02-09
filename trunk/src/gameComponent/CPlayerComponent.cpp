@@ -1227,6 +1227,7 @@ void CPlayerComponent::packDataStateStandAim(CDataPacket *packet)
 	packet->addFloat(m_MPRotateVector.X);
     packet->addFloat(m_MPRotateVector.Y);
     packet->addFloat(m_MPRotateVector.Z);
+    packet->addByte(m_aimRotateCharacter == true);
 }
 
 void CPlayerComponent::updateStatePlayerRotate()
@@ -1365,6 +1366,10 @@ void CPlayerComponent::updateUpperBodyAim()
         
 		core::vector2df ret = getAimAngle(colPos);
         
+        // MP sync
+        m_MPAimAngle = ret;
+        
+        
 		float wUp, wDown, wLeft, wRight, wStraight;
 		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);		
         
@@ -1395,6 +1400,9 @@ void CPlayerComponent::updateUpperBodyAim()
 		angle = core::clamp<float>(angle, -40.0f, 40.0f);
 		setSpineRotation(angle);
         
+        // MP sync
+        m_MPSpineRotate = angle;
+        
         // blend anim up, down
         m_collada->setAnimWeight(1.0f - m_aimFactor, 0, 1);			// idle
         m_collada->setAnimWeight(wStraight, 1, 1);					// straight
@@ -1420,7 +1428,9 @@ void CPlayerComponent::updateUpperBodyAim()
 
 void CPlayerComponent::packDataUpperBodyAim(CDataPacket *packet)
 {
-    
+    packet->addFloat(m_MPAimAngle.X);
+    packet->addFloat(m_MPAimAngle.Y);
+    packet->addFloat(m_MPSpineRotate);
 }
 
 

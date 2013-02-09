@@ -79,10 +79,15 @@ void CNetworkPlayerComponent::unpackDataFromPlayerComponent( CDataPacket* packet
     
 	// unpack mp state
 	unpackDataMPState(packet);
+    unpackDataMPUpBodyState(packet);
     
     // change state
     if ( m_state != m_stateMP )
         setState(m_stateMP);
+    
+    // change upbody state
+    if ( m_upbodyState != m_upbodyStateMP )
+        setUpBodyState(m_upbodyStateMP);
 }
 
 
@@ -123,6 +128,36 @@ void CNetworkPlayerComponent::unpackDataMPState(CDataPacket *packet)
 	}
 }
 
+void CNetworkPlayerComponent::unpackDataMPUpBodyState(CDataPacket *packet)
+{
+    switch (m_upbodyStateMP)
+    {
+        case CBasePlayerState::PlayerUpBodyAim:
+            unpackDataUpperBodyAim(packet);
+            break;
+        case CBasePlayerState::PlayerUpBodyShoot:
+            unpackDataUpperBodyShoot(packet);
+            break;            
+        case CBasePlayerState::PlayerUpBodyReload:
+            unpackDataUpperBodyReload(packet);
+            break;            
+        case CBasePlayerState::PlayerUpBodyOffGun:
+            unpackDataUpperBodyOffgun(packet);
+            break;            
+        case CBasePlayerState::PlayerUpBodyAimToOffGun:
+            unpackDataUpperBodyAimToOffGun(packet);
+            break;            
+        case CBasePlayerState::PlayerUpBodyOffGunToAim:
+            unpackDataUpperBodyOffGunToAim(packet);
+            break;            
+        case CBasePlayerState::PlayerUpBodyRunFast:
+            unpackDataUpperBodyRunFast(packet);
+            break;            
+        default:
+            break;
+    }
+}
+
 void CNetworkPlayerComponent::updateState()
 {
     switch( m_state )
@@ -160,7 +195,30 @@ void CNetworkPlayerComponent::updateState()
 	}
     
 	// update body
-	// updateUpperBody();
+    switch ( m_upbodyStateMP ) 
+    {
+        case CBasePlayerState::PlayerUpBodyAim:
+            updateUpperBodyAim();
+            break;
+        case CBasePlayerState::PlayerUpBodyShoot:
+            updateUpperBodyShoot();
+            break;
+        case CBasePlayerState::PlayerUpBodyReload:
+            updateUpperBodyReload();
+            break;
+        case CBasePlayerState::PlayerUpBodyOffGun:
+            updateUpperBodyOffgun();
+            break;
+        case CBasePlayerState::PlayerUpBodyAimToOffGun:
+            updateUpperBodyAimToOffGun();
+            break;
+        case CBasePlayerState::PlayerUpBodyOffGunToAim:
+            updateUpperBodyOffGunToAim();
+            break;
+        case CBasePlayerState::PlayerUpBodyRunFast:
+            updateUpperBodyRunFast();
+            break;            
+    }
 }
 
 
@@ -247,7 +305,7 @@ void CNetworkPlayerComponent::updateStateTurn()
         }
         
 		// step to turn camera vector
-		bool turnFinish  = turnToDir( v0, v1, 6.0f );
+        turnToDir( v0, v1, 6.0f );
         
 		// rotate object
 		m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
@@ -962,4 +1020,92 @@ void CNetworkPlayerComponent::unpackDataStatePlayerRotate(CDataPacket *packet)
     m_MPRotateVector.X = packet->getFloat();
     m_MPRotateVector.Y = packet->getFloat();
     m_MPRotateVector.Z = packet->getFloat();
+}
+
+
+
+
+void CNetworkPlayerComponent::updateUpperBodyAim()
+{
+    
+}
+
+void CNetworkPlayerComponent::unpackDataUpperBodyAim(CDataPacket *packet)
+{
+    
+}
+
+
+
+
+void CNetworkPlayerComponent::updateUpperBodyShoot()
+{
+    
+}
+
+void CNetworkPlayerComponent::unpackDataUpperBodyShoot(CDataPacket *packet)
+{
+    
+}
+
+
+
+
+void CNetworkPlayerComponent::updateUpperBodyReload()
+{
+    
+}
+
+void CNetworkPlayerComponent::unpackDataUpperBodyReload(CDataPacket *packet)
+{
+    
+}
+
+
+
+
+void CNetworkPlayerComponent::updateUpperBodyOffgun()
+{
+    
+}
+
+void CNetworkPlayerComponent::unpackDataUpperBodyOffgun(CDataPacket *packet)
+{
+    
+}
+
+
+
+
+void CNetworkPlayerComponent::updateUpperBodyAimToOffGun()
+{
+    
+}
+
+void CNetworkPlayerComponent::unpackDataUpperBodyAimToOffGun(CDataPacket *packet)
+{
+    
+}
+
+
+
+void CNetworkPlayerComponent::updateUpperBodyOffGunToAim()
+{
+    
+}
+
+void CNetworkPlayerComponent::unpackDataUpperBodyOffGunToAim(CDataPacket *packet)
+{
+    
+}
+
+
+void CNetworkPlayerComponent::updateUpperBodyRunFast()
+{
+    
+}
+
+void CNetworkPlayerComponent::unpackDataUpperBodyRunFast(CDataPacket *packet)
+{
+    
 }

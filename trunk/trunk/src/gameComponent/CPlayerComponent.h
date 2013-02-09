@@ -116,12 +116,19 @@ protected:
     void updateUpperBody();
     void updateUpperBodyAim();
     void updateUpperBodyShoot();
-    void updateUpperBodyReload();    
+    void updateUpperBodyReload();
     void updateUpperBodyOffgun();
     void updateUpperBodyAimToOffgun();
     void updateUpperBodyOffgunToAim();
     void updateUpperBodyRunFast();
     
+    void packDataUpperBodyAim(CDataPacket *packet);
+    void packDataUpperBodyShoot(CDataPacket *packet);
+    void packDataUpperBodyReload(CDataPacket *packet);
+    void packDataUpperBodyOffgun(CDataPacket *packet);
+    void packDataUpperBodyAimToOffgun(CDataPacket *packet);
+    void packDataUpperBodyOffguntoAim(CDataPacket *packet);
+    void packDataUpperBodyRunFast(CDataPacket *packet);
 	
 	inline void showMuzzle(float time)
 	{

@@ -254,6 +254,31 @@ void CPlayerComponent::packDataMPState(CDataPacket *packet)
         packDataStatePlayerRotate(packet);
         break;
 	}
+    
+    switch (m_upbodyState) 
+    {
+        case CBasePlayerState::PlayerUpBodyAim:
+            packDataUpperBodyAim(packet);
+            break;
+        case CBasePlayerState::PlayerUpBodyShoot:
+            packDataUpperBodyShoot(packet);
+            break;
+        case CBasePlayerState::PlayerUpBodyReload:
+            packDataUpperBodyReload(packet);
+            break;
+        case CBasePlayerState::PlayerUpBodyOffGun:
+            packDataUpperBodyOffgun(packet);
+            break;
+        case CBasePlayerState::PlayerUpBodyAimToOffGun:
+            packDataUpperBodyAimToOffgun(packet);
+            break;
+        case CBasePlayerState::PlayerUpBodyOffGunToAim:
+            packDataUpperBodyOffguntoAim(packet);
+            break;
+        case CBasePlayerState::PlayerUpBodyRunFast:
+            packDataUpperBodyRunFast(packet);
+            break;
+    }    
 }
 
 
@@ -1393,6 +1418,14 @@ void CPlayerComponent::updateUpperBodyAim()
     }
 }
 
+void CPlayerComponent::packDataUpperBodyAim(CDataPacket *packet)
+{
+    
+}
+
+
+
+
 void CPlayerComponent::updateUpperBodyShoot()
 {
 	const float shootSpeed = 2.0f;      
@@ -1539,6 +1572,14 @@ void CPlayerComponent::updateUpperBodyShoot()
 	}
 }
 
+void CPlayerComponent::packDataUpperBodyShoot(CDataPacket *packet)
+{
+    
+}
+
+
+
+
 void CPlayerComponent::updateUpperBodyReload()
 {
     if ( m_upbodySubState == SubStateInit )
@@ -1552,6 +1593,14 @@ void CPlayerComponent::updateUpperBodyReload()
     {	
     }    
 }
+
+void CPlayerComponent::packDataUpperBodyReload(CDataPacket *packet)
+{
+    
+}
+
+
+
 
 void CPlayerComponent::updateUpperBodyOffgun()
 {
@@ -1612,6 +1661,15 @@ void CPlayerComponent::updateUpperBodyOffgun()
     }
 }
 
+void CPlayerComponent::packDataUpperBodyOffgun(CDataPacket *packet)
+{
+    
+}
+
+
+
+
+
 void CPlayerComponent::updateUpperBodyAimToOffgun()
 {        
     if ( m_upbodySubState == SubStateInit )
@@ -1644,6 +1702,14 @@ void CPlayerComponent::updateUpperBodyAimToOffgun()
     }
 }
 
+void CPlayerComponent::packDataUpperBodyAimToOffgun(CDataPacket *packet)
+{
+    
+}
+
+
+
+
 void CPlayerComponent::updateUpperBodyRunFast()
 {
     if ( m_upbodySubState == SubStateInit )
@@ -1670,6 +1736,14 @@ void CPlayerComponent::updateUpperBodyRunFast()
         m_collada->setAnimationLayerWeight(1, 1.0f - m_upBodyRunFastFactor);
     }    
 }
+
+void CPlayerComponent::packDataUpperBodyOffguntoAim(CDataPacket *packet)
+{
+    
+}
+
+
+
 
 void CPlayerComponent::updateUpperBodyOffgunToAim()
 {
@@ -1770,6 +1844,12 @@ void CPlayerComponent::updateUpperBodyOffgunToAim()
         
     }
 }
+
+void CPlayerComponent::packDataUpperBodyRunFast(CDataPacket *packet)
+{
+    
+}
+
 
 //void CPlayerComponent::updateUpperBodyTEMPLATE()
 //{

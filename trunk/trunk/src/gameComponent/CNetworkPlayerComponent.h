@@ -35,11 +35,11 @@ public:
 
 protected:
 
-	CPlayerComponent::EPlayerSubState		m_subStateMP;
-	CPlayerComponent::EPlayerState			m_stateMP;
+	CBasePlayerState::EPlayerSubState		m_subStateMP;
+	CBasePlayerState::EPlayerState			m_stateMP;
 
-	CPlayerComponent::EPlayerSubState		m_upbodySubStateMP;
-	CPlayerComponent::EPlayerUpBodyState	m_upbodyStateMP;
+	CBasePlayerState::EPlayerSubState		m_upbodySubStateMP;
+	CBasePlayerState::EPlayerUpBodyState	m_upbodyStateMP;
     
 protected:
 	void unpackDataMPState(CDataPacket *packet);
@@ -55,6 +55,17 @@ protected:
 	void unpackDataStateStandAim(CDataPacket *packet);
 	void unpackDataStatePlayerRotate(CDataPacket *packet);
     
+    
+    void unpackDataMPUpBodyState(CDataPacket *packet);
+    
+    void unpackDataUpperBodyAim(CDataPacket *packet);
+    void unpackDataUpperBodyShoot(CDataPacket *packet);
+    void unpackDataUpperBodyReload(CDataPacket *packet);
+    void unpackDataUpperBodyOffgun(CDataPacket *packet);
+    void unpackDataUpperBodyAimToOffGun(CDataPacket *packet);
+    void unpackDataUpperBodyOffGunToAim(CDataPacket *packet);
+    void unpackDataUpperBodyRunFast(CDataPacket *packet);
+        
 protected:
     void updateState();
     
@@ -68,6 +79,14 @@ protected:
     void updateStateRunFastToRun();
     void updateStateStandAim();   	
     void updateStatePlayerRotate();
+    
+    void updateUpperBodyAim();
+    void updateUpperBodyShoot();
+    void updateUpperBodyReload();
+    void updateUpperBodyOffgun();
+    void updateUpperBodyAimToOffGun();
+    void updateUpperBodyOffGunToAim();
+    void updateUpperBodyRunFast();
     
 public:
     

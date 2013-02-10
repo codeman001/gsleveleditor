@@ -366,11 +366,7 @@ void CNetworkPlayerComponent::updateStateRun()
 		m_collada->synchronizedByTimeScale();	
         
 		// default control rotate
-		m_controlRotate = m_gameObject->getFront();
-		
-		// switch up body to aim state
-        if ( m_upbodyState == CBasePlayerState::PlayerUpBodyOffGun )
-            setUpBodyState(CBasePlayerState::PlayerUpBodyAim);
+		m_controlRotate = m_gameObject->getFront();				
         
         // init virtual factor variable
         // it will sync from mp later

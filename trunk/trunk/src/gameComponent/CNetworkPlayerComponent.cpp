@@ -1031,7 +1031,7 @@ void CNetworkPlayerComponent::unpackDataStatePlayerRotate(CDataPacket *packet)
 void CNetworkPlayerComponent::updateUpperBodyAim()
 {
     if ( m_upbodySubState == SubStateInit )
-    {   
+    {
         // turn off all anim channel
         m_collada->onlyEnableAnimTrackChannel(0, 1);
         
@@ -1145,12 +1145,65 @@ void CNetworkPlayerComponent::unpackDataUpperBodyReload(CDataPacket *packet)
 
 void CNetworkPlayerComponent::updateUpperBodyOffgun()
 {
+    if ( m_upbodySubState == SubStateInit )
+    {
+		if ( m_offGunAnimation.length() > 0 )
+		{
+			m_collada->setAnimation(m_offGunAnimation, 0, true, 1);        
+			m_collada->setAnimWeight(m_offGunFactor, 0, 1);
+			m_collada->enableAnimTrackChannel(0, true, 1);
+		}
+		else
+		{
+			m_collada->enableAnimTrackChannel(0, false, 1);
+		}
+        
+        m_upbodySubState = SubStateActive;		
+    }
+    else if ( m_upbodySubState == SubStateEnd )
+    {
+    }
     
+    // todo update state
+	{		
+		core::vector2df ret = m_MPAimAngle;
+        
+		float wUp, wDown, wLeft, wRight, wStraight;
+		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
+		
+        if ( wUp > 0 )
+            wStraight = 1.0f - wUp;
+        else 
+            wStraight = 1.0f - wDown;
+        
+        // setup straight
+        wStraight = core::clamp<float>(wStraight, 0.0f, 1.0f);
+		
+		float inv	= 1.0f - m_offGunFactor;
+		float f		= inv;
+        
+		// recalc weight
+		wStraight	= wStraight*f;
+		wUp			= wUp*f;
+		wDown		= wDown*f;		
+        
+		// blending anim
+        m_collada->setAnimWeight(m_offGunFactor,        0, 1);		// off gun anim
+        m_collada->setAnimWeight(wStraight,				1, 1);		// straight
+		m_collada->setAnimWeight(wUp,					2, 1);		// up
+		m_collada->setAnimWeight(wDown,					3, 1);		// down
+        
+		m_collada->synchronizedByTimeScale(1);
+        
+		// revert the animation speed
+		m_collada->setAnimSpeed(1.0f, 0, 1);                      
+    }
 }
 
 void CNetworkPlayerComponent::unpackDataUpperBodyOffgun(CDataPacket *packet)
 {
-    
+    m_MPAimAngle.X = packet->getFloat();
+    m_MPAimAngle.Y = packet->getFloat();
 }
 
 
@@ -1158,7 +1211,32 @@ void CNetworkPlayerComponent::unpackDataUpperBodyOffgun(CDataPacket *packet)
 
 void CNetworkPlayerComponent::updateUpperBodyAimToOffGun()
 {
-    
+    if ( m_upbodySubState == SubStateInit )
+    {        
+        m_offGunFactor = 1.0f;
+        
+        m_collada->setAnimation(m_animGunOff, 0, true, 1);
+        m_collada->setAnimWeight(1.0f, 0, 1);
+        m_collada->setAnimSpeed(1.0f, 0, 1);
+        m_collada->setAnimationLoop(false, 0, 1);
+        m_collada->onlyEnableAnimTrackChannel(0, 1);
+        
+        m_upbodySubState = SubStateActive;
+    }
+    else if ( m_upbodySubState == SubStateEnd )
+    {
+        doNextState();
+    }
+
+    // todo update
+    {
+        // change state if finish animation
+        if ( m_collada->isEndAnimation(0, 1) == true )
+        {                                     
+            m_upBodyRunFastFactor = 0.0f;
+            m_offGunFactor = 1.0f;        
+        }
+    }
 }
 
 void CNetworkPlayerComponent::unpackDataUpperBodyAimToOffGun(CDataPacket *packet)
@@ -1170,18 +1248,129 @@ void CNetworkPlayerComponent::unpackDataUpperBodyAimToOffGun(CDataPacket *packet
 
 void CNetworkPlayerComponent::updateUpperBodyOffGunToAim()
 {
+    static int s_offgunState = 0;
     
+    if ( m_upbodySubState == SubStateInit )
+    {        
+        s_offgunState = 0;
+        m_upbodySubState = SubStateActive;
+    }
+    else if ( m_upbodySubState == SubStateEnd )
+    {		
+        doNextState();		
+    }
+    
+    // todo update
+    {        
+        float step = 0.002f*getIView()->getTimeStep();    
+        
+        if ( s_offgunState == 0 )
+        {
+            m_upBodyRunFastFactor = m_upBodyRunFastFactor - step;
+            
+            // apply blend
+            m_upBodyRunFastFactor = core::clamp<float>(m_upBodyRunFastFactor, 0.0f, 1.0f);    
+            
+            // apply anim weight
+            m_collada->setAnimationLayerWeight(1, 1.0f - m_upBodyRunFastFactor);
+            
+            if ( m_upBodyRunFastFactor == 0.0f )
+            {
+                s_offgunState = 1;
+                
+                
+                m_collada->onlyEnableAnimTrackChannel(0, 1);
+                m_offGunFactor = 1.0f;
+                
+                m_collada->setAnimation(m_animGunOn, 0, true, 1);
+                m_collada->setAnimWeight(m_offGunFactor, 0, 1);
+                m_collada->setAnimationLoop(false, 0, 1);
+                m_collada->enableAnimTrackChannel(0, true, 1);                
+                
+                m_collada->setAnimation(m_animShootStraight.c_str(),1, false, 1);        
+                m_collada->setAnimWeight(0.0f, 1, 1);
+                m_collada->enableAnimTrackChannel(1, true, 1);
+                
+                m_collada->setAnimation(m_animShootUp.c_str(),		2, false, 1);
+                m_collada->setAnimWeight(0.0f, 2, 1);
+                m_collada->enableAnimTrackChannel(2, true, 1);
+                
+                m_collada->setAnimation(m_animShootDown.c_str(),	3, false, 1);
+                m_collada->setAnimWeight(0.0f, 3, 1);
+                m_collada->enableAnimTrackChannel(3, true, 1);
+                
+                
+            }
+        }
+        else
+        {
+            m_offGunFactor = m_offGunFactor - step;
+            m_offGunFactor = core::clamp<float>(m_offGunFactor, 0.0f, 1.0f);
+            
+            core::vector2df ret = m_MPAimAngle;
+            
+            float wUp, wDown, wLeft, wRight, wStraight;
+            calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
+            
+            if ( wUp > 0 )
+                wStraight = 1.0f - wUp;
+            else 
+                wStraight = 1.0f - wDown;
+            
+            // setup straight
+            wStraight = core::clamp<float>(wStraight, 0.0f, 1.0f);
+            
+            float inv	= 1.0f - m_offGunFactor;
+            
+            // recalc weight
+            wStraight	= wStraight*inv;
+            wUp			= wUp*inv;
+            wDown		= wDown*inv;		
+            
+            // blending anim
+            m_collada->setAnimWeight(m_offGunFactor,        0, 1);		// off gun anim
+            m_collada->setAnimWeight(wStraight,				1, 1);		// straight
+            m_collada->setAnimWeight(wUp,					2, 1);		// up
+            m_collada->setAnimWeight(wDown,					3, 1);		// down
+            
+            m_collada->synchronizedByTimeScale(1);            
+        }        
+    }
 }
 
 void CNetworkPlayerComponent::unpackDataUpperBodyOffGunToAim(CDataPacket *packet)
 {
-    
+    m_MPAimAngle.X = packet->getFloat();
+    m_MPAimAngle.Y = packet->getFloat();
 }
 
 
 void CNetworkPlayerComponent::updateUpperBodyRunFast()
 {
+    if ( m_upbodySubState == SubStateInit )
+    {        
+        m_upbodySubState = SubStateActive;
+    }
+    else if ( m_upbodySubState == SubStateEnd )
+    {
+        doNextState();		
+    }
     
+    // todo update state
+    {
+        float step = 0.002f*getIView()->getTimeStep();
+        
+        if ( m_runCommand == true )
+            m_upBodyRunFastFactor = m_upBodyRunFastFactor + step;
+        else
+            m_upBodyRunFastFactor = m_upBodyRunFastFactor - step;
+        
+        // apply blend
+        m_upBodyRunFastFactor = core::clamp<float>(m_upBodyRunFastFactor, 0.0f, 1.0f);    
+        
+        // apply anim weight
+        m_collada->setAnimationLayerWeight(1, 1.0f - m_upBodyRunFastFactor);
+    }
 }
 
 void CNetworkPlayerComponent::unpackDataUpperBodyRunFast(CDataPacket *packet)

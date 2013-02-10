@@ -1639,6 +1639,9 @@ void CPlayerComponent::updateUpperBodyOffgun()
         
 		core::vector2df ret = getAimAngle(colPos);
         
+        // MP sync
+        m_MPAimAngle = ret;
+                
 		float wUp, wDown, wLeft, wRight, wStraight;
 		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
 		
@@ -1673,7 +1676,8 @@ void CPlayerComponent::updateUpperBodyOffgun()
 
 void CPlayerComponent::packDataUpperBodyOffgun(CDataPacket *packet)
 {
-    
+    packet->addFloat(m_MPAimAngle.X);
+    packet->addFloat(m_MPAimAngle.Y);
 }
 
 
@@ -1698,7 +1702,8 @@ void CPlayerComponent::updateUpperBodyAimToOffgun()
     {
         doNextState();
     }
-    else
+
+    // todo update
     {
         // change state if finish animation
         if ( m_collada->isEndAnimation(0, 1) == true )
@@ -1706,7 +1711,6 @@ void CPlayerComponent::updateUpperBodyAimToOffgun()
             m_upBodyRunFastFactor = 0.0f;
             m_offGunFactor = 1.0f;
             
-            // run fast animation
             setUpBodyState(CBasePlayerState::PlayerUpBodyRunFast);
         }
     }
@@ -1730,7 +1734,8 @@ void CPlayerComponent::updateUpperBodyRunFast()
     {		
         doNextState();		
     }
-    else
+
+    // todo update state
     {
         float step = 0.002f*getIView()->getTimeStep();
         
@@ -1744,7 +1749,7 @@ void CPlayerComponent::updateUpperBodyRunFast()
 
         // apply anim weight
         m_collada->setAnimationLayerWeight(1, 1.0f - m_upBodyRunFastFactor);
-    }    
+    }
 }
 
 void CPlayerComponent::packDataUpperBodyOffguntoAim(CDataPacket *packet)
@@ -1768,7 +1773,8 @@ void CPlayerComponent::updateUpperBodyOffgunToAim()
     {		
         doNextState();		
     }
-    else
+
+    // todo update
     {        
         float step = 0.002f*getIView()->getTimeStep();    
         
@@ -1779,6 +1785,9 @@ void CPlayerComponent::updateUpperBodyOffgunToAim()
             // apply blend
             m_upBodyRunFastFactor = core::clamp<float>(m_upBodyRunFastFactor, 0.0f, 1.0f);    
         
+            // sync mp
+            m_MPAimAngle  = core::vector2df(0,0);
+            
             // apply anim weight
             m_collada->setAnimationLayerWeight(1, 1.0f - m_upBodyRunFastFactor);
         
@@ -1821,6 +1830,9 @@ void CPlayerComponent::updateUpperBodyOffgunToAim()
             
             core::vector2df ret = getAimAngle(colPos);
             
+            // sync mp
+            m_MPAimAngle  = ret;
+            
             float wUp, wDown, wLeft, wRight, wStraight;
             calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
             
@@ -1857,7 +1869,8 @@ void CPlayerComponent::updateUpperBodyOffgunToAim()
 
 void CPlayerComponent::packDataUpperBodyRunFast(CDataPacket *packet)
 {
-    
+    packet->addFloat(m_MPAimAngle.X);
+    packet->addFloat(m_MPAimAngle.Y);
 }
 
 

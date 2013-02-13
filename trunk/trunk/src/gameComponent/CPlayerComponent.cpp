@@ -51,33 +51,10 @@ void CPlayerComponent::initComponent()
     m_collada = (CColladaMeshComponent*)m_gameObject->getComponent( IObjectComponent::ColladaMesh );
     m_collada->setAnimationPackage( m_animationPackage );
     
-    init(m_gameObject);    
+    init(m_gameObject);
 
-    // apply animation callback
-	CGameColladaSceneNode *spine = m_collada->getSceneNode("Spine");
-	spine->setAnimationCallback(this);
-	m_nodesChest.push_back( spine );
-	
-	spine = m_collada->getSceneNode("Spine1");
-	spine->setAnimationCallback(this);	
-	m_nodesChest.push_back( spine );
-    
-	spine = m_collada->getSceneNode("Spine2");
-	spine->setAnimationCallback(this);
-	m_nodesChest.push_back( spine );
-    
-	CGameColladaSceneNode *root = m_collada->getSceneNode("Reference");
-	root->setAnimationCallback(this);
-    
-	m_nodeNeck = m_collada->getSceneNode("Neck");
-	m_nodeNeck->setAnimationCallback(this);
-    
-    
-    
 	// register event
-	getIView()->registerEvent("CPlayerComponent", this);	
-    
-    
+	getIView()->registerEvent("CPlayerComponent", this);    
     
     
     // create gunlight obj
@@ -107,14 +84,20 @@ void CPlayerComponent::updateComponent()
 {
 	// update gameplay	
 	if ( m_collada == NULL )
-		return;	
-
-    // alway sync this object
-    m_gameObject->setSyncNetwork(true);
+		return;	    
     
 	// only update state on current player	
 	if ( m_gameObject->isNetworkController() == false )
+	{
+		// apply animation callback
+		applyAnimationCallback();
+
+		// update character action
 		updateState();	
+
+		// alway sync this object
+		m_gameObject->setSyncNetwork(true);
+	}
 
 	// muzzle mesh update
 	updateMuzzleMesh();
@@ -1888,113 +1871,6 @@ void CPlayerComponent::packDataUpperBodyRunFast(CDataPacket *packet)
 //    {	
 //    }    
 //}
-
-///////////////////////////////////////////////////////////////////////
-// Player component end update state function
-///////////////////////////////////////////////////////////////////////
-
-// _onUpdateFrameDataChannel
-// call when finish get frame on a channel
-void CPlayerComponent::_onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel, int animLayer)
-{
-
-}
-
-
-// _onUpdateFrameData
-// call when finish blending many channel
-void CPlayerComponent::_onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int animLayer )
-{    
-	if ( animLayer != 0 && m_state == CBasePlayerState::PlayerIdle )
-	{
-		 // todo modify rotation, position of anim
-		const core::vector3df rotAxis = core::vector3df(0,0,1);
-
-		const float maxSpine = 70.0f;
-		float spineAngle = core::clamp<float>(m_spineRotation, -maxSpine, maxSpine);
-		float neckAngle = m_spineRotation - spineAngle;
-		float r = spineAngle/3.0f;
-
-        if ( r > 0 || neckAngle > 0 )
-        {
-            if ( node == m_nodesChest[0] )
-            {
-                core::quaternion q;
-                q.fromAngleAxis( core::degToRad(r), rotAxis  );
-                rotation = rotation * q;
-            }
-            else if ( node == m_nodesChest[1] )
-            {
-                core::quaternion q;
-                q.fromAngleAxis( core::degToRad(r), rotAxis );
-                rotation = rotation * q;
-            }
-            else if ( node == m_nodesChest[2] )
-            {
-                core::quaternion q;
-                q.fromAngleAxis( core::degToRad(r), rotAxis );
-                rotation = rotation * q;
-            }
-            else if ( node == m_nodeNeck )
-            {
-                core::quaternion q;
-                core::vector3df neckAxis = core::vector3df(0.0f,-0.8f,1.0f);
-                neckAxis.normalize();
-                q.fromAngleAxis( core::degToRad( neckAngle ), neckAxis );
-                rotation = rotation * q;
-            }
-        }
-	}  
-}
-
-// _onUpdateFinishAbsolute
-// call when finish calc skin animation
-void CPlayerComponent::_onUpdateFinishAbsolute( ISceneNode* node, core::matrix4& absoluteAnimationMatrix )
-{
-	if ( m_state != CBasePlayerState::PlayerIdle )
-	{
-		// todo modify rotation, position of anim
-		const core::vector3df rotAxis = core::vector3df(0,0,1);
-
-		const float maxSpine = 70.0f;
-		float spineAngle = core::clamp<float>(m_spineRotation, -maxSpine, maxSpine);
-        float neckAngle = m_spineRotation - spineAngle;        
-		float r = spineAngle/3.0f;	
-	    
-        if ( node == m_nodesChest[0] )
-        {
-            core::quaternion q;
-            q.fromAngleAxis( core::degToRad(r), rotAxis  );
-            absoluteAnimationMatrix *= q.getMatrix();
-        }
-        else if ( node == m_nodesChest[1] )
-        {
-            core::quaternion q;
-            q.fromAngleAxis( core::degToRad(r), rotAxis );
-            absoluteAnimationMatrix *= q.getMatrix();
-        }
-        else if ( node == m_nodesChest[2] )
-        {
-            core::quaternion q;
-            q.fromAngleAxis( core::degToRad(r), rotAxis );
-            absoluteAnimationMatrix *= q.getMatrix();
-        }			
-        else if ( node == m_nodeNeck )
-        {
-            core::quaternion q;
-            core::vector3df neckAxis = core::vector3df(0.0f,-0.8f,1.0f);
-            neckAxis.normalize();
-            q.fromAngleAxis( core::degToRad( neckAngle ), neckAxis );
-            absoluteAnimationMatrix *= q.getMatrix();
-        }
-        
-	}
-}
-
-
-///////////////////////////////////////////////////////////////////////
-// Player component end callback animation function
-///////////////////////////////////////////////////////////////////////
 
 // setSpineLookAt
 // rotate spine to look at a pos

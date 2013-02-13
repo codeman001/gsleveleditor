@@ -19,8 +19,7 @@ class CNetworkPlayerComponent;
 class CPlayerComponent: 
     public CBasePlayerState,
 	public IObjectComponent,
-	public IEventReceiver,
-	public IGameAnimationCallback
+	public IEventReceiver	
 {
 public:	
 
@@ -68,17 +67,6 @@ public:
     // unPackDataMultiplayer
     // unpack data on multiplayer
     virtual void unpackDataMultiplayer(CDataPacket *packet);
-
-public:
-
-    
-protected:
-
-	// call back frame update on scenenode
-	virtual void _onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int animLayer);
-	virtual void _onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel, int animLayer);
-	virtual void _onUpdateFinishAbsolute( ISceneNode* node, core::matrix4& absoluteAnimationMatrix );
-	
 
 protected:
 	void packDataMPState(CDataPacket *packet);	
@@ -136,14 +124,6 @@ protected:
 	}
 
 public:
-
-	// setSpineRotation	
-	void setSpineRotation( float r )
-	{
-		const float maxAngle = 110.0f;
-		m_spineRotation = r;
-		m_spineRotation = core::clamp<float>(m_spineRotation, -maxAngle, maxAngle);
-	}
 
 	// setSpineLookAt
 	// rotate spine to look at a pos

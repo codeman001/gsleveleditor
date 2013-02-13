@@ -381,3 +381,81 @@ void CBasePlayerState::calcAimAnimationBlend(core::vector2df angle, float &up, f
         }
     }
 }
+
+
+
+
+///////////////////////////////////////////////////////////////////////
+// Player component end callback animation function
+///////////////////////////////////////////////////////////////////////
+
+void CBasePlayerState::applyAnimationCallback()
+{
+	CGameColladaSceneNode *spine = m_collada->getSceneNode("Spine");
+	spine->setAnimationCallback(this);
+	m_nodesChest.push_back( spine );
+	
+	spine = m_collada->getSceneNode("Spine1");
+	spine->setAnimationCallback(this);	
+	m_nodesChest.push_back( spine );
+    
+	spine = m_collada->getSceneNode("Spine2");
+	spine->setAnimationCallback(this);
+	m_nodesChest.push_back( spine );
+    
+	CGameColladaSceneNode *root = m_collada->getSceneNode("Reference");
+	root->setAnimationCallback(this);
+    
+	m_nodeNeck = m_collada->getSceneNode("Neck");
+	m_nodeNeck->setAnimationCallback(this);	 
+}
+
+// call back frame update on scenenode
+void CBasePlayerState::_onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int animLayer)
+{
+}
+
+void CBasePlayerState::_onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel, int animLayer)
+{
+}
+
+void CBasePlayerState::_onUpdateFinishAbsolute( ISceneNode* node, core::matrix4& absoluteAnimationMatrix )
+{
+	if ( m_state != CBasePlayerState::PlayerIdle )
+	{
+		// todo modify rotation, position of anim
+		const core::vector3df rotAxis = core::vector3df(0,0,1);
+
+		const float maxSpine = 70.0f;
+		float spineAngle = core::clamp<float>(m_spineRotation, -maxSpine, maxSpine);
+        float neckAngle = m_spineRotation - spineAngle;        
+		float r = spineAngle/3.0f;	    
+
+        if ( node == m_nodesChest[0] )
+        {
+            core::quaternion q;
+            q.fromAngleAxis( core::degToRad(r), rotAxis  );
+            absoluteAnimationMatrix *= q.getMatrix();
+        }
+        else if ( node == m_nodesChest[1] )
+        {
+            core::quaternion q;
+            q.fromAngleAxis( core::degToRad(r), rotAxis );
+            absoluteAnimationMatrix *= q.getMatrix();
+        }
+        else if ( node == m_nodesChest[2] )
+        {
+            core::quaternion q;
+            q.fromAngleAxis( core::degToRad(r), rotAxis );
+            absoluteAnimationMatrix *= q.getMatrix();
+        }			
+        else if ( node == m_nodeNeck )
+        {
+            core::quaternion q;
+            core::vector3df neckAxis = core::vector3df(0.0f,-0.8f,1.0f);
+            neckAxis.normalize();
+            q.fromAngleAxis( core::degToRad( neckAngle ), neckAxis );
+            absoluteAnimationMatrix *= q.getMatrix();
+        }        
+	}
+}

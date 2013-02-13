@@ -19,7 +19,8 @@ CNetworkPlayerComponent::~CNetworkPlayerComponent()
 void CNetworkPlayerComponent::initComponent()
 {
     m_collada = (CColladaMeshComponent*)m_gameObject->getComponent( IObjectComponent::ColladaMesh );
-    init(m_gameObject);
+    
+	init(m_gameObject);
 }
 
 // update
@@ -32,6 +33,8 @@ void CNetworkPlayerComponent::updateComponent()
     if ( m_gameObject->isNetworkController() == false )
         return;
     
+	applyAnimationCallback();
+
     updateState();
 }
 
@@ -1086,12 +1089,8 @@ void CNetworkPlayerComponent::updateUpperBodyAim()
 		
 		// rotate spine character        
         float spineAngle = m_MPSpineRotate;
-        spineAngle = core::clamp<float>(spineAngle, -40.0f, 40.0f);
-        
-        // set spine to look aim focus
-        CPlayerComponent *playerComp = (CPlayerComponent*)m_gameObject->getComponent(CGameComponent::PlayerComponent);
-        playerComp->setSpineRotation(spineAngle);
-        
+        spineAngle = core::clamp<float>(spineAngle, -40.0f, 40.0f);        
+		setSpineRotation(spineAngle);
         
         // blend anim up, down
         m_collada->setAnimWeight(1.0f - m_aimFactor, 0, 1);			// idle

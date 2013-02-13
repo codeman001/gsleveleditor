@@ -16,7 +16,8 @@
 
 
 
-class CBasePlayerState
+class CBasePlayerState:
+	public IGameAnimationCallback
 {
 public:
     enum EPlayerState
@@ -228,6 +229,24 @@ protected:
 	void calcRunAnimationBlend(float rot, float &forward, float &backward, float &left, float &right);
     
 	void calcAimAnimationBlend(core::vector2df angle, float &up, float &down, float &left, float &right);
+
+	// setSpineRotation	
+	void setSpineRotation( float r )
+	{
+		const float maxAngle = 110.0f;
+		m_spineRotation = r;
+		m_spineRotation = core::clamp<float>(m_spineRotation, -maxAngle, maxAngle);
+	}
+
+protected:	
+	void applyAnimationCallback();
+
+	// call back frame update on scenenode
+	virtual void _onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int animLayer);
+	virtual void _onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel, int animLayer);
+	virtual void _onUpdateFinishAbsolute( ISceneNode* node, core::matrix4& absoluteAnimationMatrix );
+	
+
 };
 
 #endif

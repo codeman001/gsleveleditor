@@ -89,7 +89,7 @@ protected:
     void updateUpperBodyRunFast();
     
 public:
-    
+  
 };
 
 #endif

@@ -33,7 +33,8 @@ void CNetworkPlayerComponent::updateComponent()
     if ( m_gameObject->isNetworkController() == false )
         return;
     
-	applyAnimationCallback();
+	// update
+	CBasePlayerState::update();
 
     updateState();
 }
@@ -1114,7 +1115,150 @@ void CNetworkPlayerComponent::unpackDataUpperBodyAim(CDataPacket *packet)
 
 void CNetworkPlayerComponent::updateUpperBodyShoot()
 {
-    
+	/*
+    const float shootSpeed = 2.0f;      
+	const float flashTime = 100.0f;
+	static bool s_spawnBullet = true;
+
+    if ( m_upbodySubState == SubStateInit )
+    {
+        // turn off all anim channel
+        m_collada->onlyEnableAnimTrackChannel(1, 1);
+        
+		m_collada->setAnimation(m_animShootStraight.c_str(),1, false, 1);        
+        m_collada->setAnimWeight(0.0f, 1, 1);
+		m_collada->enableAnimTrackChannel(1, true, 1);
+        
+		m_collada->setAnimation(m_animShootUp.c_str(),		2, false, 1);
+		m_collada->setAnimWeight(0.0f, 2, 1);
+		m_collada->enableAnimTrackChannel(2, true, 1);
+        
+		m_collada->setAnimation(m_animShootDown.c_str(),	3, false, 1);
+		m_collada->setAnimWeight(0.0f, 3, 1);
+		m_collada->enableAnimTrackChannel(3, true, 1);
+        
+		// anim time
+		m_animCurrentTime = m_collada->getCurrentAnimTimeLength()/shootSpeed;
+        
+		// setup player state
+		m_playerCmdEvt.shoot	= false;
+		m_playerCmdEvt.reload	= false;        
+        
+        
+        CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
+		
+		// active gunlight
+        core::vector3df gunPos = gunTip->getAbsolutePosition();
+        m_gunLight->setPosition(gunPos);
+        m_gunLightComp->setLightTime(flashTime);
+        
+		// show muzzle
+		showMuzzle(flashTime);
+		
+		// spawn bullet
+		s_spawnBullet = true;
+
+        m_upbodySubState = SubStateActive;		
+    }
+    else if ( m_upbodySubState == SubStateEnd )
+    {
+    }
+	    
+    // todo update
+	{
+		stepAnimationTime();
+		
+		// finish animation shoot
+		if ( m_animCurrentTime == 0.0f )
+		{
+			if ( m_playerCmdEvt.shoot == false )
+			{
+				// change to aim state if end shooting
+                setUpBodyState(CBasePlayerState::PlayerUpBodyAim);
+			}
+			else
+			{
+				// continue shoot
+                m_animCurrentTime = m_collada->getCurrentAnimTimeLength()/shootSpeed;
+                
+				// reset frame
+				m_collada->setCurrentFrame(0, 1, 1);
+				m_collada->setCurrentFrame(0, 2, 1);
+				m_collada->setCurrentFrame(0, 3, 1);
+
+				CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
+        
+				// active gunlight
+				core::vector3df gunPos = gunTip->getAbsolutePosition();
+				m_gunLight->setPosition(gunPos);
+				m_gunLightComp->setLightTime(100.0f);
+
+				// show muzzle
+				showMuzzle(flashTime);
+
+                // setup player state
+                m_playerCmdEvt.shoot	= false;
+                m_playerCmdEvt.reload	= false;
+
+				// spawn bullet
+				s_spawnBullet = true;
+                
+			}
+		}
+        
+        core::line3df	ray		= getCameraRay();
+		core::vector3df	colPos	= getCollisionPoint(ray);
+        
+		if ( s_spawnBullet == true )
+		{
+			CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
+			core::vector3df gunPos = gunTip->getAbsolutePosition();
+
+			core::line3df bulletRay;
+			bulletRay.start = gunPos;
+			bulletRay.end = colPos;
+
+			m_bulletRayComp->addBulletRay(bulletRay);
+			s_spawnBullet = false;
+		}
+
+		// rotate spine character
+		core::vector3df v0 = m_gameObject->getFront();
+		core::vector3df aimPos = colPos - m_gameObject->getPosition();
+		aimPos.Y = 0;
+		aimPos.normalize();
+		float angle = getAngle(v0,aimPos);
+		if ( fabsf(angle) > 40.0f )
+			m_aimRotateCharacter = true;
+
+		angle = core::clamp<float>(angle, -40.0f, 40.0f);
+		setSpineRotation(angle);
+
+
+		// blend to up/down hand
+		core::vector2df ret = getAimAngle(colPos);
+        
+		float wUp, wDown, wLeft, wRight, wStraight;
+		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
+		
+        if ( wUp > 0 )
+            wStraight = 1.0f - wUp;
+        else 
+            wStraight = 1.0f - wDown;
+        
+        // setup straight
+        wStraight = core::clamp<float>(wStraight, 0.0f, 1.0f);		
+        
+        // blend anim up, down
+        m_collada->setAnimWeight(0.0f,		0, 1);		// idle
+        m_collada->setAnimWeight(wStraight, 1, 1);		// straight
+		m_collada->setAnimWeight(wUp,		2, 1);		// up
+		m_collada->setAnimWeight(wDown,		3, 1);		// down
+
+		// speed up fire anim
+        m_collada->synchronizedByTimeScale(1, shootSpeed);
+	}
+	*/
 }
 
 void CNetworkPlayerComponent::unpackDataUpperBodyShoot(CDataPacket *packet)

@@ -53,15 +53,90 @@ CBasePlayerState::CBasePlayerState()
     
 	m_aimFactor = 0.0f;
 	m_aimRotateCharacter = false;
+
+	// mesh time
+	m_muzzleMeshTime = 0;
+
+	m_gunMuzzle = NULL;
+    m_gunLight  = NULL;
+    m_gunLightComp = NULL;
+    m_bullet = NULL;
+	m_bulletRayComp = NULL;
+
+	m_owner = NULL;
+
+	m_initPlayer = true;
 }
 
 CBasePlayerState::~CBasePlayerState()
 {
-    
+    // delete gunlight & muzzle mesh
+	delete m_gunLight;
+	delete m_gunMuzzle;
+	delete m_bullet;
 }
+
+void CBasePlayerState::update()
+{
+	if ( m_initPlayer == true )
+	{
+		initAnimationCallback();
+		initPlayerObjects();
+
+		m_initPlayer = false;
+	}
+
+	// update muzzle mesh time
+	updateMuzzleMesh();
+
+	// update gun muzzle & gun light
+	m_gunLight->updateObject();
+	m_gunMuzzle->updateObject();
+	m_bullet->updateObject();
+
+	// set shadow
+	CZone *zone = (CZone*)m_owner->getParent();
+	CGameObject *shadowObj = zone->getStaticShadowManager();
+	CShadowComponent* shadowComp = (CShadowComponent*)shadowObj->getComponent(IObjectComponent::Shadow);
+	if ( shadowComp )
+		shadowComp->setShadowNode( m_owner->getPosition(), core::vector3df(0,1,0) );
+}
+
+
+void CBasePlayerState::updateMuzzleMesh()
+{
+	if ( m_muzzleMeshTime > 0 )
+	{
+		m_muzzleMeshTime = m_muzzleMeshTime - getIView()->getTimeStep();
+		if ( m_muzzleMeshTime <= 0.0f )
+			m_muzzleMeshTime = 0.0f;
+
+		// update muzzle mesh position
+		CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
+		core::matrix4 mat = gunTip->getAbsoluteTransformation();
+		core::quaternion rot;
+		rot.fromAngleAxis(core::degToRad(90.0f), core::vector3df(0,1,0));
+		mat *= rot.getMatrix();
+        
+        core::vector3df position(mat.getTranslation());
+        core::vector3df rotation(mat.getRotationDegrees());
+        
+		m_gunMuzzle->setPosition(position);
+		m_gunMuzzle->setRotation(rotation);
+        
+		m_gunMuzzle->setVisible(true);
+	}
+	else
+	{
+		m_gunMuzzle->setVisible(false);
+	}
+}
+
 
 void CBasePlayerState::init(CGameObject* gameObj)
 {    
+	m_owner = gameObj;
+
     // foot nodes
 	m_nodesFoot.push_back( m_collada->getSceneNode("Reference") );
 	m_nodesFoot.push_back( m_collada->getSceneNode("LeftGun") );
@@ -136,6 +211,52 @@ void CBasePlayerState::init(CGameObject* gameObj)
 	setUpBodyState(PlayerUpBodyOffGun );
     setOffGunAnimation("Hero@Idle");
 	setOffGunFactor(1.0f);
+}
+
+void CBasePlayerState::initPlayerObjects()
+{
+	// create gunlight obj
+	m_gunLight = new CLightObject(NULL);
+    m_gunLight->setLightData(400.0f, 1.0f);
+    m_gunLightComp = new CGunLightComponent(m_gunLight);
+    m_gunLight->addComponent(m_gunLightComp);
+	m_gunLight->setParent(m_owner);
+
+	// create a gun muzzle mesh obj
+	m_gunMuzzle = new CGameObject(NULL);
+	CColladaMeshComponent *gunMesh = new CColladaMeshComponent(m_gunMuzzle);
+	gunMesh->loadFromFile( getIView()->getPath("data/mesh/character/hero/muzzleFlash.scene"));
+	m_gunMuzzle->addComponent(gunMesh);
+	m_gunMuzzle->setParent(m_owner);
+
+	// create bullet
+	m_bullet = new CGameObject(NULL);
+	m_bulletRayComp = new CBulletRayComponent(m_bullet);
+	m_bullet->addComponent(m_bulletRayComp);
+	m_bullet->setParent(m_owner);
+}
+
+// initAnimationCallback
+// init callback func
+void CBasePlayerState::initAnimationCallback()
+{
+	CGameColladaSceneNode *spine = m_collada->getSceneNode("Spine");
+	spine->setAnimationCallback(this);
+	m_nodesChest.push_back( spine );
+	
+	spine = m_collada->getSceneNode("Spine1");
+	spine->setAnimationCallback(this);	
+	m_nodesChest.push_back( spine );
+    
+	spine = m_collada->getSceneNode("Spine2");
+	spine->setAnimationCallback(this);
+	m_nodesChest.push_back( spine );
+    
+	CGameColladaSceneNode *root = m_collada->getSceneNode("Reference");
+	root->setAnimationCallback(this);
+    
+	m_nodeNeck = m_collada->getSceneNode("Neck");
+	m_nodeNeck->setAnimationCallback(this);	 
 }
 
 
@@ -388,27 +509,6 @@ void CBasePlayerState::calcAimAnimationBlend(core::vector2df angle, float &up, f
 ///////////////////////////////////////////////////////////////////////
 // Player component end callback animation function
 ///////////////////////////////////////////////////////////////////////
-
-void CBasePlayerState::applyAnimationCallback()
-{
-	CGameColladaSceneNode *spine = m_collada->getSceneNode("Spine");
-	spine->setAnimationCallback(this);
-	m_nodesChest.push_back( spine );
-	
-	spine = m_collada->getSceneNode("Spine1");
-	spine->setAnimationCallback(this);	
-	m_nodesChest.push_back( spine );
-    
-	spine = m_collada->getSceneNode("Spine2");
-	spine->setAnimationCallback(this);
-	m_nodesChest.push_back( spine );
-    
-	CGameColladaSceneNode *root = m_collada->getSceneNode("Reference");
-	root->setAnimationCallback(this);
-    
-	m_nodeNeck = m_collada->getSceneNode("Neck");
-	m_nodeNeck->setAnimationCallback(this);	 
-}
 
 // call back frame update on scenenode
 void CBasePlayerState::_onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int animLayer)

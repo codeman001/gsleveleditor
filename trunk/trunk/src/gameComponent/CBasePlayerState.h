@@ -14,7 +14,11 @@
 #include "CGameObject.h"
 #include "CColladaMeshComponent.h"
 
+#include "CLightObject.h"
+#include "CGunLightComponent.h"
+#include "CShadowComponent.h"
 
+#include "CBulletRayComponent.h"
 
 class CBasePlayerState:
 	public IGameAnimationCallback
@@ -57,8 +61,7 @@ public:
 public:
     CBasePlayerState();
     virtual ~CBasePlayerState();
-    
-    
+        
     void init(CGameObject* gameObj);
 protected:
     EPlayerSubState			m_subState;
@@ -151,12 +154,26 @@ protected:
 	core::vector3df			m_runTurnVector;
 	core::vector3df			m_runCurrentVector;
     
+
+	bool					m_initPlayer;
+	float					m_muzzleMeshTime;
+	
+	CGameObject*			m_owner;
+	CGameObject*			m_gunMuzzle;
+
+    CLightObject*           m_gunLight;
+    CGunLightComponent*     m_gunLightComp;
+    
+	CGameObject*			m_bullet;
+	CBulletRayComponent*	m_bulletRayComp;
+
     // mp sync
     core::vector3df         m_MPRotateVector;
     float                   m_MPRunRotate;
     float                   m_MPRunTurnFactor;
     core::vector2df         m_MPAimAngle;
     float                   m_MPSpineRotate;
+
 protected:
     
 	// setState
@@ -238,8 +255,17 @@ protected:
 		m_spineRotation = core::clamp<float>(m_spineRotation, -maxAngle, maxAngle);
 	}
 
-protected:	
-	void applyAnimationCallback();
+	inline void showMuzzle(float time)
+	{
+		m_muzzleMeshTime = time;
+	}
+
+protected:
+	void update();
+	void updateMuzzleMesh();
+
+	void initAnimationCallback();
+	void initPlayerObjects();
 
 	// call back frame update on scenenode
 	virtual void _onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int animLayer);

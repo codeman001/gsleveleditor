@@ -3,18 +3,12 @@
 #include "IRandomizer.h"
 
 #include "CZone.h"
-#include "CLightObject.h"
-
 #include "CPlayerComponent.h"
-
-#include "CParticleComponent.h"
-#include "CColladaMeshComponent.h"
-#include "CGunLightComponent.h"
-#include "CShadowComponent.h"
-#include "CNetworkPlayerComponent.h"
 
 #include "gameLevel/CGameLevel.h"
 #include "gameDebug/CGameDebug.h"
+
+#include "CNetworkPlayerComponent.h"
 
 ///////////////////////////////////////////////////////////////////////
 // IObjectComponent overide implement
@@ -24,24 +18,12 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	:IObjectComponent(obj, CGameComponent::PlayerComponent)
 {	
 	m_collada	= NULL;
-    
-	m_muzzleMeshTime = 0;
-	m_gunMuzzle = NULL;
-    m_gunLight  = NULL;
-    m_gunLightComp = NULL;
-    m_bullet = NULL;
-	m_bulletRayComp = NULL;
 }
 
 CPlayerComponent::~CPlayerComponent()
 {
 	// unregister event
 	getIView()->unRegisterEvent( this );
-
-	// delete gunlight & muzzle mesh
-	delete m_gunLight;
-	delete m_gunMuzzle;
-	delete m_bullet;
 }
 
 // init
@@ -54,28 +36,7 @@ void CPlayerComponent::initComponent()
     init(m_gameObject);
 
 	// register event
-	getIView()->registerEvent("CPlayerComponent", this);    
-    
-    
-    // create gunlight obj
-	m_gunLight = new CLightObject(NULL);
-    m_gunLight->setLightData(400.0f, 1.0f);
-    m_gunLightComp = new CGunLightComponent(m_gunLight);
-    m_gunLight->addComponent(m_gunLightComp);
-	m_gunLight->setParent( m_gameObject );
-
-	// create a gun muzzle mesh obj
-	m_gunMuzzle = new CGameObject(NULL);
-	CColladaMeshComponent *gunMesh = new CColladaMeshComponent(m_gunMuzzle);
-	gunMesh->loadFromFile( getIView()->getPath("data/mesh/character/hero/muzzleFlash.scene"));
-	m_gunMuzzle->addComponent(gunMesh);
-	m_gunMuzzle->setParent(m_gameObject);
-
-	// create bullet
-	m_bullet = new CGameObject(NULL);
-	m_bulletRayComp = new CBulletRayComponent(m_bullet);
-	m_bullet->addComponent(m_bulletRayComp);
-	m_bullet->setParent(m_gameObject);
+	getIView()->registerEvent("CPlayerComponent", this);
 }
 
 // update
@@ -89,8 +50,8 @@ void CPlayerComponent::updateComponent()
 	// only update state on current player	
 	if ( m_gameObject->isNetworkController() == false )
 	{
-		// apply animation callback
-		applyAnimationCallback();
+		// update
+		CBasePlayerState::update();
 
 		// update character action
 		updateState();	
@@ -98,21 +59,6 @@ void CPlayerComponent::updateComponent()
 		// alway sync this object
 		m_gameObject->setSyncNetwork(true);
 	}
-
-	// muzzle mesh update
-	updateMuzzleMesh();
-
-	// update gun muzzle & gun light
-	m_gunLight->updateObject();
-	m_gunMuzzle->updateObject();
-	m_bullet->updateObject();
-
-	// set shadow
-	CZone *zone = (CZone*)m_gameObject->getParent();
-	CGameObject *shadowObj = zone->getStaticShadowManager();
-	CShadowComponent* shadowComp = (CShadowComponent*)shadowObj->getComponent(IObjectComponent::Shadow);
-	if ( shadowComp )
-		shadowComp->setShadowNode( m_gameObject->getPosition(), core::vector3df(0,1,0) );
 }
 
 // saveData
@@ -309,37 +255,6 @@ void CPlayerComponent::updateState()
 
 	// update body
 	updateUpperBody();
-}
-
-
-// updateMuzzleMesh
-void CPlayerComponent::updateMuzzleMesh()
-{
-	if ( m_muzzleMeshTime > 0 )
-	{
-		m_muzzleMeshTime = m_muzzleMeshTime - getIView()->getTimeStep();
-		if ( m_muzzleMeshTime <= 0.0f )
-			m_muzzleMeshTime = 0.0f;
-
-		// update muzzle mesh position
-		CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
-		core::matrix4 mat = gunTip->getAbsoluteTransformation();
-		core::quaternion rot;
-		rot.fromAngleAxis(core::degToRad(90.0f), core::vector3df(0,1,0));
-		mat *= rot.getMatrix();
-        
-        core::vector3df position(mat.getTranslation());
-        core::vector3df rotation(mat.getRotationDegrees());
-        
-		m_gunMuzzle->setPosition(position);
-		m_gunMuzzle->setRotation(rotation);
-        
-		m_gunMuzzle->setVisible(true);
-	}
-	else
-	{
-		m_gunMuzzle->setVisible(false);
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////

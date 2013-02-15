@@ -6,10 +6,6 @@
 #include "CColladaMeshComponent.h"
 #include "CGameComponent.h"
 
-#include "CLightObject.h"
-#include "CGunLightComponent.h"
-
-#include "CBulletRayComponent.h"
 #include "CBasePlayerState.h"
 
 class CWeaponComponent;
@@ -24,17 +20,7 @@ class CPlayerComponent:
 public:	
 
 
-protected:
-
-	float					m_muzzleMeshTime;
-
-	CGameObject*			m_gunMuzzle;
-
-    CLightObject*           m_gunLight;
-    CGunLightComponent*     m_gunLightComp;
-    
-	CGameObject*			m_bullet;
-	CBulletRayComponent*	m_bulletRayComp;
+protected:	
 
 public:
 	CPlayerComponent(CGameObject* obj);
@@ -73,7 +59,6 @@ protected:
 
 	// updateState	
 	void updateState();
-	void updateMuzzleMesh();
 
 	void updateStateIdle();	
 	void updateStateTurn();
@@ -117,11 +102,6 @@ protected:
     void packDataUpperBodyAimToOffgun(CDataPacket *packet);
     void packDataUpperBodyOffguntoAim(CDataPacket *packet);
     void packDataUpperBodyRunFast(CDataPacket *packet);
-	
-	inline void showMuzzle(float time)
-	{
-		m_muzzleMeshTime = time;
-	}
 
 public:
 

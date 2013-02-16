@@ -34,6 +34,9 @@ void CBulletRayComponent::updateComponent()
 	}
 
 	m_rays.clear();
+    
+    //if ( m_raysSync.size() > 0 )
+    //    m_gameObject->setSyncNetwork(true);
 }
     
 // saveData
@@ -49,6 +52,21 @@ void CBulletRayComponent::loadData( CSerializable* pObj )
 {
 	pObj->nextRecord();
 }
+
+
+// packDataMultiplayer
+// pack data multiplayer
+void CBulletRayComponent::packDataMultiplayer(CDataPacket *packet)
+{
+    
+}
+
+// unPackDataMultiplayer
+// unpack data on multiplayer
+void CBulletRayComponent::unpackDataMultiplayer(CDataPacket *packet)
+{
+}
+
 
 // updateBulletCollision
 void CBulletRayComponent::updateBulletCollision(core::line3df& ray)

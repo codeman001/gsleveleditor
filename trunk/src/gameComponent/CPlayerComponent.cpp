@@ -1453,11 +1453,16 @@ void CPlayerComponent::updateUpperBodyShoot()
 
 		angle = core::clamp<float>(angle, -40.0f, 40.0f);
 		setSpineRotation(angle);
-
+		
+		// MP sync
+		m_MPSpineRotate = angle;
 
 		// blend to up/down hand
 		core::vector2df ret = getAimAngle(colPos);
-        
+
+		// MP sync
+		m_MPAimAngle = ret;
+
 		float wUp, wDown, wLeft, wRight, wStraight;
 		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
 		
@@ -1482,8 +1487,11 @@ void CPlayerComponent::updateUpperBodyShoot()
 
 void CPlayerComponent::packDataUpperBodyShoot(CDataPacket *packet)
 {
-    
+	packet->addFloat(m_MPAimAngle.X);
+	packet->addFloat(m_MPAimAngle.Y);
+	packet->addFloat(m_MPSpineRotate);
 }
+
 
 
 

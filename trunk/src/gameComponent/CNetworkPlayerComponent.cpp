@@ -1115,7 +1115,6 @@ void CNetworkPlayerComponent::unpackDataUpperBodyAim(CDataPacket *packet)
 
 void CNetworkPlayerComponent::updateUpperBodyShoot()
 {
-	/*
     const float shootSpeed = 2.0f;      
 	const float flashTime = 100.0f;
 	static bool s_spawnBullet = true;
@@ -1170,73 +1169,30 @@ void CNetworkPlayerComponent::updateUpperBodyShoot()
 		
 		// finish animation shoot
 		if ( m_animCurrentTime == 0.0f )
-		{
-			if ( m_playerCmdEvt.shoot == false )
-			{
-				// change to aim state if end shooting
-                setUpBodyState(CBasePlayerState::PlayerUpBodyAim);
-			}
-			else
-			{
-				// continue shoot
-                m_animCurrentTime = m_collada->getCurrentAnimTimeLength()/shootSpeed;
-                
-				// reset frame
-				m_collada->setCurrentFrame(0, 1, 1);
-				m_collada->setCurrentFrame(0, 2, 1);
-				m_collada->setCurrentFrame(0, 3, 1);
-
-				CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
+			setUpBodyState(CBasePlayerState::PlayerUpBodyAim);	
         
-				// active gunlight
-				core::vector3df gunPos = gunTip->getAbsolutePosition();
-				m_gunLight->setPosition(gunPos);
-				m_gunLightComp->setLightTime(100.0f);
-
-				// show muzzle
-				showMuzzle(flashTime);
-
-                // setup player state
-                m_playerCmdEvt.shoot	= false;
-                m_playerCmdEvt.reload	= false;
-
-				// spawn bullet
-				s_spawnBullet = true;
-                
-			}
-		}
-        
-        core::line3df	ray		= getCameraRay();
-		core::vector3df	colPos	= getCollisionPoint(ray);
         
 		if ( s_spawnBullet == true )
 		{
 			CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
 			core::vector3df gunPos = gunTip->getAbsolutePosition();
 
-			core::line3df bulletRay;
-			bulletRay.start = gunPos;
-			bulletRay.end = colPos;
-
-			m_bulletRayComp->addBulletRay(bulletRay);
+			//core::line3df bulletRay;
+			//bulletRay.start = gunPos;
+			//bulletRay.end = colPos;
+			//m_bulletRayComp->addBulletRay(bulletRay);
+			
 			s_spawnBullet = false;
 		}
 
 		// rotate spine character
-		core::vector3df v0 = m_gameObject->getFront();
-		core::vector3df aimPos = colPos - m_gameObject->getPosition();
-		aimPos.Y = 0;
-		aimPos.normalize();
-		float angle = getAngle(v0,aimPos);
-		if ( fabsf(angle) > 40.0f )
-			m_aimRotateCharacter = true;
-
+		float angle = m_MPSpineRotate;
 		angle = core::clamp<float>(angle, -40.0f, 40.0f);
 		setSpineRotation(angle);
 
 
 		// blend to up/down hand
-		core::vector2df ret = getAimAngle(colPos);
+		core::vector2df ret = m_MPAimAngle;
         
 		float wUp, wDown, wLeft, wRight, wStraight;
 		calcAimAnimationBlend(ret, wUp, wDown, wLeft, wRight);
@@ -1258,12 +1214,14 @@ void CNetworkPlayerComponent::updateUpperBodyShoot()
 		// speed up fire anim
         m_collada->synchronizedByTimeScale(1, shootSpeed);
 	}
-	*/
 }
 
 void CNetworkPlayerComponent::unpackDataUpperBodyShoot(CDataPacket *packet)
 {
-    
+	m_MPAimAngle.X = packet->getFloat();
+	m_MPAimAngle.Y = packet->getFloat();
+	
+	m_MPSpineRotate = packet->getFloat();
 }
 
 

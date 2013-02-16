@@ -15,6 +15,7 @@
 
 #ifdef GSGAMEPLAY
 #include "gameLevel/CGameLevel.h"
+#include "gameComponent/CBulletRayComponent.h"
 #endif
 
 CZone::CZone()
@@ -41,6 +42,11 @@ CZone::CZone()
 	CShadowComponent *shadowComp = new CShadowComponent(m_shadowMgr);
 	shadowComp->initComponent();
 	m_shadowMgr->addComponent(shadowComp);
+
+	m_bulletMgr = createEmptyObject();
+	CBulletRayComponent* bulletComp = new CBulletRayComponent(m_bulletMgr);
+	bulletComp->initComponent();
+	m_bulletMgr->addComponent(bulletComp);
 #endif
 
 }

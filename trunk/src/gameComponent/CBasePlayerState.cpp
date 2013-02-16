@@ -59,9 +59,7 @@ CBasePlayerState::CBasePlayerState()
 
 	m_gunMuzzle = NULL;
     m_gunLight  = NULL;
-    m_gunLightComp = NULL;
-    m_bullet = NULL;
-	m_bulletRayComp = NULL;
+    m_gunLightComp = NULL;    
 
 	m_owner = NULL;
 
@@ -73,7 +71,6 @@ CBasePlayerState::~CBasePlayerState()
     // delete gunlight & muzzle mesh
 	delete m_gunLight;
 	delete m_gunMuzzle;
-	delete m_bullet;
 }
 
 void CBasePlayerState::update()
@@ -92,7 +89,6 @@ void CBasePlayerState::update()
 	// update gun muzzle & gun light
 	m_gunLight->updateObject();
 	m_gunMuzzle->updateObject();
-	m_bullet->updateObject();
 
 	// set shadow
 	CZone *zone = (CZone*)m_owner->getParent();
@@ -228,12 +224,6 @@ void CBasePlayerState::initPlayerObjects()
 	gunMesh->loadFromFile( getIView()->getPath("data/mesh/character/hero/muzzleFlash.scene"));
 	m_gunMuzzle->addComponent(gunMesh);
 	m_gunMuzzle->setParent(m_owner);
-
-	// create bullet
-	m_bullet = new CGameObject(NULL);
-	m_bulletRayComp = new CBulletRayComponent(m_bullet);
-	m_bullet->addComponent(m_bulletRayComp);
-	m_bullet->setParent(m_owner);
 }
 
 // initAnimationCallback

@@ -1438,7 +1438,7 @@ void CPlayerComponent::updateUpperBodyShoot()
 			bulletRay.start = gunPos;
 			bulletRay.end = colPos;
 
-			m_bulletRayComp->addBulletRay(bulletRay);
+			//m_bulletRayComp->addBulletRay(bulletRay);
 			s_spawnBullet = false;
 		}
 

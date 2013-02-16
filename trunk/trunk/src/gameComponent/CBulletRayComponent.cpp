@@ -60,7 +60,7 @@ void CBulletRayComponent::updateBulletCollision(core::line3df& ray)
 // createSpark
 CGameObject* CBulletRayComponent::createSpark( core::vector3df position, const char* xml, float lifeDelay )
 {
-	CGameObject *obj = m_gameObject->getParent()->getParent();
+	CGameObject *obj = m_gameObject->getParent();
 	CGameObject *spark = NULL;
 
 	if ( obj && obj->getObjectType() == CGameObject::ZoneObject )

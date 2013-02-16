@@ -17,6 +17,7 @@ protected:
 #if defined(GSGAMEPLAY)
 	CContainerObject					*m_particleMgr;
 	CGameObject							*m_shadowMgr;
+	CGameObject							*m_bulletMgr;
 #endif
 
 public:
@@ -119,6 +120,13 @@ public:
 	inline CGameObject* getStaticShadowManager()
 	{
 		return m_shadowMgr;
+	}
+
+	// getBulletManager
+	// return bullet manager
+	inline CGameObject* getBulletManager()
+	{
+		return m_bulletMgr;
 	}
 #endif
 

@@ -163,9 +163,6 @@ protected:
 
     CLightObject*           m_gunLight;
     CGunLightComponent*     m_gunLightComp;
-    
-	CGameObject*			m_bullet;
-	CBulletRayComponent*	m_bulletRayComp;
 
     // mp sync
     core::vector3df         m_MPRotateVector;

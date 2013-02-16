@@ -1117,8 +1117,8 @@ void CNetworkPlayerComponent::updateUpperBodyShoot()
 {
     const float shootSpeed = 2.0f;      
 	const float flashTime = 100.0f;
-	static bool s_spawnBullet = true;
 
+    
     if ( m_upbodySubState == SubStateInit )
     {
         // turn off all anim channel
@@ -1152,10 +1152,7 @@ void CNetworkPlayerComponent::updateUpperBodyShoot()
         m_gunLightComp->setLightTime(flashTime);
         
 		// show muzzle
-		showMuzzle(flashTime);
-		
-		// spawn bullet
-		s_spawnBullet = true;
+		showMuzzle(flashTime);		
 
         m_upbodySubState = SubStateActive;		
     }
@@ -1170,20 +1167,10 @@ void CNetworkPlayerComponent::updateUpperBodyShoot()
 		// finish animation shoot
 		if ( m_animCurrentTime == 0.0f )
 			setUpBodyState(CBasePlayerState::PlayerUpBodyAim);	
+           
         
-        
-		if ( s_spawnBullet == true )
-		{
-			CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
-			core::vector3df gunPos = gunTip->getAbsolutePosition();
-
-			//core::line3df bulletRay;
-			//bulletRay.start = gunPos;
-			//bulletRay.end = colPos;
-			//m_bulletRayComp->addBulletRay(bulletRay);
-			
-			s_spawnBullet = false;
-		}
+        // hongduc.pr@gmail note
+        // the bullet spawn will sync on CBulletRayComponent
 
 		// rotate spine character
 		float angle = m_MPSpineRotate;

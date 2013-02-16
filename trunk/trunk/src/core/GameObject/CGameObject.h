@@ -110,6 +110,8 @@ protected:
 
 	bool				m_needSortComponent;
     bool                m_needSyncNetwork;
+
+    bool                m_isNetworkGlobalObject;
     bool                m_isNetworkController;
 	SNetworkObjID		m_networkObjID;
 
@@ -460,6 +462,20 @@ public:
     inline bool isNetworkController()
     {
         return m_isNetworkController;
+    }
+    
+    // setNetworkGlobalObject
+    // set object is global
+    inline void setNetworkGlobalObject(bool b)
+    {
+        m_isNetworkGlobalObject = b;
+    }
+    
+    // isNetworkGlobalObject
+    // check the object global from network
+    inline bool isNetworkGlobalObject()
+    {
+        return m_isNetworkGlobalObject;
     }
 
 	// getNetworkObjID

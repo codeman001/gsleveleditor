@@ -128,6 +128,17 @@ void CBasePlayerState::updateMuzzleMesh()
 	}
 }
 
+// getZoneBulletComponent
+// get bullet manager
+CBulletRayComponent* CBasePlayerState::getZoneBulletComponent()
+{
+    CZone *zone = (CZone*)m_owner->getParent();
+    CGameObject *bulletMgr = (CGameObject*)zone->getBulletManager();
+    
+    CBulletRayComponent *bullet = (CBulletRayComponent*)bulletMgr->getComponent(CGameComponent::BulletRayComponent);
+    return bullet;
+}
+
 
 void CBasePlayerState::init(CGameObject* gameObj)
 {    

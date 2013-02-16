@@ -257,6 +257,10 @@ protected:
 		m_muzzleMeshTime = time;
 	}
 
+    // getZoneBulletComponent
+    // get bullet manager
+    CBulletRayComponent* getZoneBulletComponent();
+    
 protected:
 	void update();
 	void updateMuzzleMesh();

@@ -69,6 +69,7 @@ void CGameObject::initNull()
 
 	m_needSortComponent	= true;
     m_needSyncNetwork   = false;
+    m_isNetworkGlobalObject = false;
     m_isNetworkController = false;
     
 #ifdef GSEDITOR
@@ -543,6 +544,9 @@ void CGameObject::packDataMultiplayer(CDataPacket *packet)
     // template
     packet->addShort( (unsigned short) CObjTemplateFactory::getTemplateId( (wchar_t*)m_objectTemplate.c_str()));
     
+    // global object
+    packet->addByte( (unsigned char)(m_isNetworkGlobalObject == true) );
+    
     // gameobject sync infomation
     // obj info
     packet->addByte((unsigned char)m_enable);
@@ -581,7 +585,7 @@ void CGameObject::packDataMultiplayer(CDataPacket *packet)
 // unpack data on multiplayer
 void CGameObject::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId )
 {
-#ifdef HAS_MULTIPLAYER    
+#ifdef HAS_MULTIPLAYER
     // unpack gameobject infomation
     bool enable		= (bool)(packet->getByte() != 0);
     bool visible	= (bool)(packet->getByte() != 0);

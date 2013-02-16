@@ -9,6 +9,7 @@ class CBulletRayComponent: public IObjectComponent
 {
 protected:
 	std::vector<core::line3df>		m_rays;
+	std::vector<core::line3df>		m_raysSync;    
 	float							m_damage;
 
 public:  
@@ -36,6 +37,7 @@ public:
 	void addBulletRay( const core::line3df& ray )
 	{
 		m_rays.push_back(ray);
+        m_raysSync.push_back(ray);
 	}
 
 	// setBulletDamage
@@ -45,6 +47,14 @@ public:
 		m_damage = f;
 	}
 
+    // packDataMultiplayer
+    // pack data multiplayer
+    virtual void packDataMultiplayer(CDataPacket *packet);
+    
+    // unPackDataMultiplayer
+    // unpack data on multiplayer
+    virtual void unpackDataMultiplayer(CDataPacket *packet);
+    
 protected:
 	
 	// updateBulletCollision

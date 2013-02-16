@@ -1437,8 +1437,11 @@ void CPlayerComponent::updateUpperBodyShoot()
 			core::line3df bulletRay;
 			bulletRay.start = gunPos;
 			bulletRay.end = colPos;
-
-			//m_bulletRayComp->addBulletRay(bulletRay);
+            
+            CBulletRayComponent *bullet = getZoneBulletComponent();
+            if ( bullet )
+                bullet->addBulletRay(bulletRay);
+            
 			s_spawnBullet = false;
 		}
 

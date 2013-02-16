@@ -47,6 +47,7 @@ CZone::CZone()
 	CBulletRayComponent* bulletComp = new CBulletRayComponent(m_bulletMgr);
 	bulletComp->initComponent();
 	m_bulletMgr->addComponent(bulletComp);
+    m_bulletMgr->setNetworkGlobalObject(true);
 #endif
 
 }
@@ -432,6 +433,8 @@ void CZone::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
             return;
         }
      
+        bool globalObject = (bool)(packet->getByte() != 0);
+        
         CGameObject *obj = NULL;
         
         SNetworkObjID networkObjID;
@@ -441,7 +444,10 @@ void CZone::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
         CGameLevel *level = CGameLevel::getCurrentLevel();
         
         // search network object id
-        long objectID = level->getNetworkObjID(networkObjID);
+        long objectID = networkObjectID;
+        
+        if ( globalObject == false )
+            objectID = level->getNetworkObjID(networkObjID);
         
         if ( objectID == -1 )
         {

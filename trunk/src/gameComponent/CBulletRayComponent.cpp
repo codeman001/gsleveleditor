@@ -26,6 +26,8 @@ void CBulletRayComponent::initComponent()
 // run when update per frame
 void CBulletRayComponent::updateComponent()
 {
+	m_gameObject->setSyncNetwork(true);
+
 	std::vector<core::line3df>::iterator it = m_rays.begin(), end = m_rays.end();
 	while (it != end)
 	{
@@ -34,9 +36,6 @@ void CBulletRayComponent::updateComponent()
 	}
 
 	m_rays.clear();
-    
-    //if ( m_raysSync.size() > 0 )
-    //    m_gameObject->setSyncNetwork(true);
 }
     
 // saveData
@@ -58,13 +57,39 @@ void CBulletRayComponent::loadData( CSerializable* pObj )
 // pack data multiplayer
 void CBulletRayComponent::packDataMultiplayer(CDataPacket *packet)
 {
-    
+	int nray = m_raysSync.size();
+	packet->addByte((unsigned char)nray);
+	for (int i = 0; i < nray; i++)
+	{
+		packet->addFloat(m_raysSync[i].start.X);
+		packet->addFloat(m_raysSync[i].start.Y);
+		packet->addFloat(m_raysSync[i].start.Z);
+
+		packet->addFloat(m_raysSync[i].end.X);
+		packet->addFloat(m_raysSync[i].end.Y);
+		packet->addFloat(m_raysSync[i].end.Z);
+	}
+	m_raysSync.clear();
 }
 
 // unPackDataMultiplayer
 // unpack data on multiplayer
 void CBulletRayComponent::unpackDataMultiplayer(CDataPacket *packet)
 {
+	int nray = (int)packet->getByte();
+	for (int i = 0; i < nray; i++)
+	{
+		core::line3df ray;
+		ray.start.X = packet->getFloat();
+		ray.start.Y = packet->getFloat();
+		ray.start.Z = packet->getFloat();
+
+		ray.end.X = packet->getFloat();
+		ray.end.Y = packet->getFloat();
+		ray.end.Z = packet->getFloat();
+
+		m_rays.push_back(ray);
+	}
 }
 
 

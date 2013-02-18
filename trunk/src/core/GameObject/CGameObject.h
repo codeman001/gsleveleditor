@@ -111,6 +111,7 @@ protected:
 	bool				m_needSortComponent;
     bool                m_needSyncNetwork;
 
+	bool				m_syncTransfrom;
     bool                m_isNetworkGlobalObject;
     bool                m_isNetworkController;
 	SNetworkObjID		m_networkObjID;
@@ -445,11 +446,25 @@ public:
     
     // isSyncNetwork
     // check to sync network
-    bool isSyncNetwork()
+    inline bool isSyncNetwork()
     {
         return m_needSyncNetwork;
     }
     
+	// isSyncTransform
+	// sync position & rotateion
+	inline bool isSyncTransform()
+	{
+		return m_syncTransfrom;
+	}
+
+	// setSyncTransform
+	// enable/disable syncTransfrom
+	inline void setSyncTransform(bool b)
+	{
+		m_syncTransfrom = b;
+	}
+
     // setNetworkController
     // set network controller object
     inline void setNetworkController( bool b )

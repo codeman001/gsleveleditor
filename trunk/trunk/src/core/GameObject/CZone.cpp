@@ -48,6 +48,7 @@ CZone::CZone()
 	bulletComp->initComponent();
 	m_bulletMgr->addComponent(bulletComp);
     m_bulletMgr->setNetworkGlobalObject(true);
+	m_bulletMgr->setSyncTransform(false);
 #endif
 
 }
@@ -411,27 +412,23 @@ void CZone::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
 {
 #ifdef HAS_MULTIPLAYER
     int nObjectSync = (int)packet->getShort();
-    
+	
     for (int i = 0; i < nObjectSync; i++)
     {
         // sync object game data
         // obj type
         int     objType = packet->getByte();
         if ( objType != CGameObject::GameObject )
-        {
-            // sync data error
+        {            
             return;
         }
         
         long    networkObjectID = (long)packet->getInt();
         short   templateID = packet->getShort();
         
+		// get object template
         wchar_t *templateName = CObjTemplateFactory::getTemplateName(templateID);
-        if ( templateName == NULL )
-        {
-            // sync data error
-            return;
-        }
+
      
         bool globalObject = (bool)(packet->getByte() != 0);
         
@@ -451,30 +448,40 @@ void CZone::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
         
         if ( objectID == -1 )
         {
-            // need spawn object
-            obj = createObject( templateName );
-            
-            char string[512] = {0};
-            char temp[512] = {0};
-            uiString::convertUnicodeToUTF8( (const unsigned short*)templateName, temp);
-            
-            if ( obj == NULL )
-            {
-                // sync error                
-                sprintf(string, "- Network warning: can not create obj template:'%s' from host id: %d", temp, hostKeyId);
-                os::Printer::log( string );
-                return;
-            }
-            
-            // set object is create from host
-            obj->setNetworkController(true);
-            obj->setNetworkObjID(networkObjID);
+			if ( templateName != NULL )
+			{
+				// need spawn object
+				obj = createObject( templateName );
+	            
+				char string[512] = {0};
+				char temp[512] = {0};
+				uiString::convertUnicodeToUTF8( (const unsigned short*)templateName, temp);
+	            
+				if ( obj == NULL )
+				{
+					// sync error                
+					sprintf(string, "- Network warning: can not create obj template:'%s' from host id: %d", temp, hostKeyId);
+					os::Printer::log( string );
+					return;
+				}
+	            
+				// set object is create from host
+				obj->setNetworkController(true);
+				obj->setNetworkObjID(networkObjID);
 
-            // register network object id
-            level->registerNetworkObjID(networkObjID, obj->getID());            
-            sprintf(string, "- Network warning: create obj template:'%s' with id: %ld from host id: %d", temp, obj->getID(), hostKeyId);
-            os::Printer::log( string );
-            
+				// register network object id
+				level->registerNetworkObjID(networkObjID, obj->getID());            
+				sprintf(string, "- Network warning: create obj template:'%s' with id: %ld from host id: %d", temp, obj->getID(), hostKeyId);
+				os::Printer::log( string );
+			}
+			else
+			{
+				char string[512] = {0};
+				sprintf(string, "- Network warning: Sync error OBJECT TEMPLATE from host id: %d", hostKeyId);
+				os::Printer::log( string );
+				return;
+			}
+
         }
         else
         {

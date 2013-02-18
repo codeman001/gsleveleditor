@@ -71,7 +71,8 @@ void CGameObject::initNull()
     m_needSyncNetwork   = false;
     m_isNetworkGlobalObject = false;
     m_isNetworkController = false;
-    
+    m_syncTransfrom = true;
+
 #ifdef GSEDITOR
 	m_treeItem		= NULL;
 	m_uiVisible		= true;
@@ -547,27 +548,34 @@ void CGameObject::packDataMultiplayer(CDataPacket *packet)
     // global object
     packet->addByte( (unsigned char)(m_isNetworkGlobalObject == true) );
     
-    // gameobject sync infomation
-    // obj info
-    packet->addByte((unsigned char)m_enable);
-    packet->addByte((unsigned char)m_visible);
-    packet->addByte((unsigned char)m_lighting);    
-    
-    // obj position
-    packet->addFloat( m_position.X );
-    packet->addFloat( m_position.Y );
-    packet->addFloat( m_position.Z );
+	// sync transform
+	packet->addByte( (unsigned char)(m_syncTransfrom == true) );
 
-    // obj rotation
-    packet->addFloat( m_rotation.X );
-    packet->addFloat( m_rotation.Y );
-    packet->addFloat( m_rotation.Z );
+	// sync transform
+	if ( m_syncTransfrom )
+	{
+		// gameobject sync infomation
+		// obj info
+		packet->addByte((unsigned char)m_enable);
+		packet->addByte((unsigned char)m_visible);
+		packet->addByte((unsigned char)m_lighting);    
+	    
+		// obj position
+		packet->addFloat( m_position.X );
+		packet->addFloat( m_position.Y );
+		packet->addFloat( m_position.Z );
 
-    // obj scale
-    packet->addFloat( m_scale.X );
-    packet->addFloat( m_scale.Y );
-    packet->addFloat( m_scale.Z );    
-    
+		// obj rotation
+		packet->addFloat( m_rotation.X );
+		packet->addFloat( m_rotation.Y );
+		packet->addFloat( m_rotation.Z );
+
+		// obj scale
+		packet->addFloat( m_scale.X );
+		packet->addFloat( m_scale.Y );
+		packet->addFloat( m_scale.Z );    
+	}
+
     // pack component
 	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
 	while ( iComp != iEnd )
@@ -575,9 +583,6 @@ void CGameObject::packDataMultiplayer(CDataPacket *packet)
 		(*iComp)->packDataMultiplayer( packet );
 		iComp++;
 	}
-
-    // set flag to sync = false to next update
-    setSyncNetwork(false);
 #endif
 }
 
@@ -586,24 +591,38 @@ void CGameObject::packDataMultiplayer(CDataPacket *packet)
 void CGameObject::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId )
 {
 #ifdef HAS_MULTIPLAYER
-    // unpack gameobject infomation
-    bool enable		= (bool)(packet->getByte() != 0);
-    bool visible	= (bool)(packet->getByte() != 0);
-    bool lighting	= (bool)(packet->getByte() != 0);
-    
-    m_position.X = packet->getFloat();
-    m_position.Y = packet->getFloat();
-    m_position.Z = packet->getFloat();
+	bool syncTransform = (bool)(packet->getByte() != 0);
 
-	core::vector3df rot;
-    rot.X = packet->getFloat();
-    rot.Y = packet->getFloat();
-    rot.Z = packet->getFloat();
-    
-    m_scale.X = packet->getFloat();
-    m_scale.Y = packet->getFloat();
-    m_scale.Z = packet->getFloat();    
-    
+	if ( syncTransform )
+	{
+		// unpack gameobject infomation
+		bool enable		= (bool)(packet->getByte() != 0);
+		bool visible	= (bool)(packet->getByte() != 0);
+		bool lighting	= (bool)(packet->getByte() != 0);
+	    
+		m_position.X = packet->getFloat();
+		m_position.Y = packet->getFloat();
+		m_position.Z = packet->getFloat();
+
+		core::vector3df rot;
+		rot.X = packet->getFloat();
+		rot.Y = packet->getFloat();
+		rot.Z = packet->getFloat();
+	    
+		m_scale.X = packet->getFloat();
+		m_scale.Y = packet->getFloat();
+		m_scale.Z = packet->getFloat();
+
+		setEnable(enable);
+		setVisible(visible);
+		setLighting(lighting);
+	    
+		updateNodePosition();    
+		updateNodeScale();
+
+		setRotation(rot);
+	}
+
     // unpack component
 	ArrayComponentIter iComp = m_components.begin(), iEnd = m_components.end();
 	while ( iComp != iEnd )
@@ -611,16 +630,6 @@ void CGameObject::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId )
 		(*iComp)->unpackDataMultiplayer( packet );
 		iComp++;
 	}
-    
-    setEnable(enable);
-    setVisible(visible);
-    setLighting(lighting);
-    
-    updateNodePosition();    
-    updateNodeScale();
-
-	setRotation(rot);
-    
 #endif
 }
 

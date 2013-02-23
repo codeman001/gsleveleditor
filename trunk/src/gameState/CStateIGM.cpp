@@ -92,6 +92,23 @@ void CStateIGM::onRender()
 void CStateIGM::onUpdate()
 {
     CGameState::onUpdate();
+
+	if ( m_menuChoice != -1 )
+	{
+		if ( m_resumeButton )
+		{
+			m_rootWidget->removeChild(m_resumeButton);
+			delete m_resumeButton;
+			m_resumeButton = NULL;
+		}
+
+		if ( m_mainMenuButton )
+		{
+			m_rootWidget->removeChild(m_mainMenuButton);
+			delete m_mainMenuButton;
+			m_mainMenuButton = NULL;
+		}
+	}
 }
 
 void CStateIGM::onEvent(const SEvent& event)
@@ -109,10 +126,7 @@ void CStateIGM::onEvent(const SEvent& event)
             else if ( buttonEvent->data == m_mainMenuButton )
             {
                 m_menuChoice = k_btnMainMenu;
-            }
-            
-            m_rootWidget->removeChild(m_resumeButton);
-            m_rootWidget->removeChild(m_mainMenuButton);
+            }           
             
             // animation state
             getStateObjFx().gotoFrame("hide", true);

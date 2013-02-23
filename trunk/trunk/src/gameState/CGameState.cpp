@@ -35,6 +35,7 @@ const char* CGameState::getStateName( EGameState state )
 		"stateJoinGame",
 		"stateGameLoading",
 		"stateGameHud",
+        "stateIGM",
 		"stateCount"
 	};
 

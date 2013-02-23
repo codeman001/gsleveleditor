@@ -29,6 +29,7 @@ public:
 		GSStateJoinGame,
 		GSStateGameLoading,
 		GSStateGameplay,
+        GSStateIGM,
 		StateCount
 	};
 

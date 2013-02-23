@@ -1,7 +1,11 @@
 #include "stdafx.h"
 #include "IView.h"
 #include "gameEvent.h"
+
+#include "CGameStateManager.h"
 #include "CStateGameplay.h"
+#include "CStateIGM.h"
+
 #include "gameControl/CGameControl.h"
 
 CStateGameplay::CStateGameplay()
@@ -23,8 +27,8 @@ void CStateGameplay::onCreate()
 	// show ui
 	m_menuFx = CGameUI::getInstance()->getFlash("uiGameHud");
 	
-	setFxStateVisible( m_state, true );
-	setFxAllStateVisible( m_state, false );
+	// show mainmenu state
+	showFxThisState();
 	
     // enable gamecontrol
     CGameControl::getInstance()->setEnable(true);
@@ -153,8 +157,7 @@ void CStateGameplay::onEvent(const SEvent& event)
 			else if ( buttonEvent->data == m_btnShoot )
                 CGameControl::getInstance()->setShootMode(false, false);
 			else if ( buttonEvent->data == m_btnPause )
-			{
-			}
+				CGameStateMgr::getInstance()->pushState( new CStateIGM() );
 		}
 	}
 }

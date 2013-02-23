@@ -789,6 +789,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="CStateIGM"
+					>
+					<File
+						RelativePath="..\..\src\gameState\CStateIGM.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\gameState\CStateIGM.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="gameLevel"

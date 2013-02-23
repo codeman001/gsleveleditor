@@ -41,6 +41,7 @@
 		7F70B25F16B56C8F00E098D2 /* CBasePlayerState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F70B25B16B56C8F00E098D2 /* CBasePlayerState.cpp */; };
 		7F70B26016B56C8F00E098D2 /* CNetworkPlayerComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F70B25D16B56C8F00E098D2 /* CNetworkPlayerComponent.cpp */; };
 		7FB364051699CCCA00DA4152 /* CTextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB364031699CCCA00DA4152 /* CTextureManager.cpp */; };
+		7FC1A11516D90F0A00574176 /* CStateIGM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FC1A11316D90F0A00574176 /* CStateIGM.cpp */; };
 		7FCBD3E115F4B41700C432A7 /* libirrlicht.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBD12D15F4B13400C432A7 /* libirrlicht.a */; };
 		7FCBDE3D15F4C3E200C432A7 /* libgameswf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBDE3315F4C3A800C432A7 /* libgameswf.a */; };
 		7FCBDE4B15F4C4C100C432A7 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FCBDE4A15F4C4A500C432A7 /* libfreetype.a */; };
@@ -203,6 +204,8 @@
 		7F70B25E16B56C8F00E098D2 /* CNetworkPlayerComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNetworkPlayerComponent.h; sourceTree = "<group>"; };
 		7FB364031699CCCA00DA4152 /* CTextureManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CTextureManager.cpp; path = TextureManager/CTextureManager.cpp; sourceTree = "<group>"; };
 		7FB364041699CCCA00DA4152 /* CTextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CTextureManager.h; path = TextureManager/CTextureManager.h; sourceTree = "<group>"; };
+		7FC1A11316D90F0A00574176 /* CStateIGM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CStateIGM.cpp; sourceTree = "<group>"; };
+		7FC1A11416D90F0A00574176 /* CStateIGM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CStateIGM.h; sourceTree = "<group>"; };
 		7FCBD12815F4B13300C432A7 /* irrlicht.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = irrlicht.xcodeproj; path = ../../../extern/irrogles/source/Irrlicht/IOS/irrlicht/irrlicht.xcodeproj; sourceTree = "<group>"; };
 		7FCBDE2B15F4C3A800C432A7 /* gameswf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = gameswf.xcodeproj; path = ../../../extern/gameswf/projects/iphone/gameswf.xcodeproj; sourceTree = "<group>"; };
 		7FCBDE4215F4C4A400C432A7 /* freetype.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = freetype.xcodeproj; path = ../../../extern/freetype/builds/iphone/freetype.xcodeproj; sourceTree = "<group>"; };
@@ -664,6 +667,8 @@
 		7FD0BFBC15F4F34400626D90 /* gameState */ = {
 			isa = PBXGroup;
 			children = (
+				7FC1A11316D90F0A00574176 /* CStateIGM.cpp */,
+				7FC1A11416D90F0A00574176 /* CStateIGM.h */,
 				7F609833162F0BE60085D3FF /* CStateJoinGame.cpp */,
 				7F609834162F0BE60085D3FF /* CStateJoinGame.h */,
 				7FD0BFBD15F4F34400626D90 /* CGameState.cpp */,
@@ -1009,6 +1014,7 @@
 				7F44D93016AEF9190039FA06 /* CGameStaticShadowSceneNode.cpp in Sources */,
 				7F70B25F16B56C8F00E098D2 /* CBasePlayerState.cpp in Sources */,
 				7F70B26016B56C8F00E098D2 /* CNetworkPlayerComponent.cpp in Sources */,
+				7FC1A11516D90F0A00574176 /* CStateIGM.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

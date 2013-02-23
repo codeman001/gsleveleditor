@@ -8,7 +8,7 @@ CUIButton::CUIButton( const char *name, CUIWidget* parent, CMenuFxObj flashObj )
 {
     m_buttonState       = ButtonNormal;
     m_buttonLastState   = m_buttonState;
-    m_mouseOver         = false;	
+    m_mouseOver         = false;
 }
 
 CUIButton::~CUIButton()

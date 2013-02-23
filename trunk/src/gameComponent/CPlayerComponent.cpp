@@ -1885,7 +1885,7 @@ core::line3df CPlayerComponent::getCameraRay()
     core::line3d<f32> ray;
     ICameraSceneNode *camera = getIView()->getSceneMgr()->getActiveCamera();
     ray.start = camera->getPosition();
-    ray.end = ray.start + (camera->getTarget() - ray.start).normalize() * 1000.0f;
+    ray.end = ray.start + (camera->getTarget() - ray.start).normalize() * 10000.0f;
     return ray;
 }
 

@@ -6,6 +6,9 @@
 #include "CStateGameplay.h"
 #include "CStateIGM.h"
 
+#include "CParticleComponent.h"
+#include "core/TextureManager/CTextureManager.h"
+
 #include "gameControl/CGameControl.h"
 
 CStateGameplay::CStateGameplay()
@@ -16,8 +19,6 @@ CStateGameplay::CStateGameplay()
 
 CStateGameplay::~CStateGameplay()
 {
-	delete m_level;	
-	CGameLevel::setCurrentLevel( NULL );
 }
 
 void CStateGameplay::onCreate()
@@ -72,8 +73,21 @@ void CStateGameplay::onCreate()
 
 void CStateGameplay::onDestroy()
 {
+    // hide fx state
+	setFxStateVisible( m_state, false );
+    
     // enable gamecontrol
     CGameControl::getInstance()->setEnable(false);
+    
+    // destroy level
+    delete m_level;	
+	CGameLevel::setCurrentLevel( NULL );
+    
+    // release all main menu texture
+	CColladaCache::freeData();
+	CParticleCache::freeData();
+    
+    CTextureManager::getInstance()->removeAllTexture();
 }
 
 void CStateGameplay::onFsCommand( const char *command, const char *param )

@@ -23,9 +23,7 @@ CStateMainMenu::CStateMainMenu()
 }
 
 CStateMainMenu::~CStateMainMenu()
-{	
-	delete m_level;	
-	CGameLevel::setCurrentLevel( NULL );
+{
 }
 
 void CStateMainMenu::onCreate()
@@ -44,6 +42,9 @@ void CStateMainMenu::onDestroy()
 {	
     // hide fx state
 	setFxStateVisible( m_state, false );
+    
+    delete m_level;	
+	CGameLevel::setCurrentLevel( NULL );
 }
 
 void CStateMainMenu::onUpdate()

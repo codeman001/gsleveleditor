@@ -7,7 +7,9 @@
 //
 
 #include "stdafx.h"
+#include "IView.h"
 #include "CStateIGM.h"
+#include "CStateMainMenu.h"
 #include "CGameStateManager.h"
 #include "gameEvent.h"
 
@@ -67,6 +69,15 @@ void CStateIGM::onFsCommand( const char *command, const char *param )
             else if ( m_menuChoice == k_btnMainMenu )
             {
                 // todo quit game and joint to mainmenu
+                CGameStateMgr::getInstance()->popAllState();
+                
+                CStateMainMenu *mainMenu = new CStateMainMenu();
+                mainMenu->getLevel()->loadLevel( getIView()->getPath( "data/level/levelMainMenu.lv" ) );			
+                while ( mainMenu->getLevel()->loadStep() == false )
+                {
+                    // todo loading level
+                }                
+                CGameStateMgr::getInstance()->pushState(mainMenu);
             }
         }
 	}

@@ -119,20 +119,24 @@ void CStateMainMenu::onEvent(const SEvent& event)
 		if ( event.GameEvent.EventID == (s32)EvtButtonRelease )
         {
             SEventButtonData *buttonEvent = ((SEventButtonData*)event.GameEvent.EventData);
-
+            
             if ( buttonEvent->data == m_btnCreateGame )
             {
                 // press create game
                 m_menuChoice = k_btnCreateGame;
+                
+                // animation state
+                getStateObjFx().gotoFrame("hide", true);
             }
             else if ( buttonEvent->data == m_btnJoinGame )
             {
                 // press joint game
 				m_menuChoice = k_btnJointGame;
+                
+                // animation state
+                getStateObjFx().gotoFrame("hide", true);
             }
             
-            // animation state
-            getStateObjFx().gotoFrame("hide", true);
         }
         
     }

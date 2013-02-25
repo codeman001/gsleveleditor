@@ -42,12 +42,17 @@ using namespace std;
 	#if defined(ANDROID) || defined (IOS) || defined (MACOSX)
 		#define USE_ZIPPACKAGE
 	#endif
+
+	#if defined(WIN32) && !defined(_DEBUG)
+		// release version
+		#define USE_ZIPPACKAGE
+	#endif
 #endif
 
 #ifdef GSEDITOR
-	#define STR_APP_TITLE "gseditor - developer: hongduc.dev@gmail.com"
+	#define STR_APP_TITLE "gseditor - developer: hongduc.pr@gmail.com"
 #else
-	#define STR_APP_TITLE L"game - developer: hongduc.dev@gmail.com"
+	#define STR_APP_TITLE L"game - joy entertainment"
 #endif
 
 #endif

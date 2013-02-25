@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)\..\..\Lib\Lib_$(PlatformName)_$(ConfigurationName)\$(ProjectName)\"
-			IntermediateDirectory="$(SolutionDir)\..\..\Lib\Lib_$(PlatformName)_$(ConfigurationName)\$(ProjectName)\obj\"
+			OutputDirectory="..\..\..\..\..\trunk\bin"
+			IntermediateDirectory="..\..\..\..\..\trunk\bin\freetypeTempRelease"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -47,7 +47,7 @@
 				AdditionalIncludeDirectories="..\..\..\include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;_CRT_SECURE_NO_WARNINGS;FT2_BUILD_LIBRARY"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				DisableLanguageExtensions="true"
 				PrecompiledHeaderFile="$(IntDir)\freetype.pch"

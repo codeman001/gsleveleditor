@@ -83,8 +83,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(ProjectDir)\lib"
-			IntermediateDirectory="$(ProjectDir)\lib\$(ConfigurationName)"
+			OutputDirectory="..\..\trunk\bin"
+			IntermediateDirectory="..\..\trunk\bin\luaTempRelease"
 			ConfigurationType="4"
 			CharacterSet="0"
 			WholeProgramOptimization="1"
@@ -110,6 +110,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				WholeProgramOptimization="false"
+				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
@@ -126,7 +127,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(ProjectDir)\lib\lua.lib"
+				OutputFile="..\..\trunk\bin\lua.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

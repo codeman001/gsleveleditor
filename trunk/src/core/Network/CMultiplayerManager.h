@@ -110,6 +110,10 @@ public:
         m_needSyncData = b;
         m_syncTime = 1000.0f/(float)MP_GAMEFPS_SYNC;
     }
+
+	// isHostServer
+	// check keyid is server or not?
+	bool isHostServer(short hostkeyID);
 public:
     
 	// sendDiscoveryPacket
@@ -137,7 +141,7 @@ public:
     bool sendGameDataMessage(CGameLevel *level);
     
 	// sendPlayerQuit	
-	bool sendPlayerQuit(short hostID);
+	bool sendPlayerQuit(short hostID = -1);
 
     // onRevcData
 	// process when revc data

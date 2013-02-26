@@ -68,7 +68,7 @@ void CStateIGM::onFsCommand( const char *command, const char *param )
                 CGameStateMgr::getInstance()->popState();
             else if ( m_menuChoice == k_btnMainMenu )
             {
-                // todo quit game and joint to mainmenu
+                // todo quit game and jump to mainmenu
                 CGameStateMgr::getInstance()->popAllState();
                 
                 CStateMainMenu *mainMenu = new CStateMainMenu();

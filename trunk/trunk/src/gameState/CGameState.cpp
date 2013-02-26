@@ -21,7 +21,8 @@ CGameState::~CGameState()
 	delete m_rootWidget;
 
 #ifdef HAS_MULTIPLAYER
-	delete m_mpMgr;
+	if ( m_mpMgr != NULL )
+		delete m_mpMgr;
 #endif
 }
 

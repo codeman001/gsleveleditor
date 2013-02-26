@@ -26,6 +26,8 @@ public:
 
     virtual void onEvent(const SEvent& event);    
     
+	void checkDisconectedFromServer(int hostkeyID);
+
 	// getLevel
 	// get 3d level
 	CGameLevel* getLevel()

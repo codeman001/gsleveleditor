@@ -110,6 +110,28 @@ const char *CMultiplayerManager::getDeviceIp( void *addr )
     return inet_ntoa( ((sockaddr_in*)addr)->sin_addr );    
 }
 
+// isHostServer
+// check keyid is server or not?
+bool CMultiplayerManager::isHostServer(short hostkeyID)
+{
+	if ( m_isServer )
+	{
+		if ( hostkeyID == m_keyID )
+			return true;
+	}
+	else
+	{
+		CDeviceDetails *dev = m_comm->getDevice(0);
+		if ( dev == NULL )
+			return true;
+
+		if ( (long)dev->m_deviceData == (long)hostkeyID )
+			return true;
+	}
+
+	return false;
+}
+
 // sendDiscoveryPacket
 // send a packet to find server
 bool CMultiplayerManager::sendDiscoveryPacket()
@@ -175,6 +197,9 @@ bool CMultiplayerManager::sendGetNameMessage()
 // sendPlayerQuit	
 bool CMultiplayerManager::sendPlayerQuit(short hostID)
 {	
+	if ( hostID == -1 )
+		hostID = m_keyID;
+
 	CDataPacket packet(64);
 	packet.addByte( (unsigned char) CMultiplayerManager::PlayerQuit );
 	packet.addShort(hostID);

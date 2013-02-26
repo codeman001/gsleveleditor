@@ -5,6 +5,7 @@
 #include "CGameStateManager.h"
 #include "CStateGameplay.h"
 #include "CStateIGM.h"
+#include "CStateMainMenu.h"
 
 #include "CParticleComponent.h"
 #include "core/TextureManager/CTextureManager.h"
@@ -73,6 +74,10 @@ void CStateGameplay::onCreate()
 
 void CStateGameplay::onDestroy()
 {
+	// tell network quit
+	m_mpMgr->sendPlayerQuit();
+	m_mpMgr->update();
+
     // hide fx state
 	setFxStateVisible( m_state, false );
     
@@ -81,6 +86,7 @@ void CStateGameplay::onDestroy()
     
     // destroy level
     delete m_level;	
+	m_level = NULL;
 	CGameLevel::setCurrentLevel( NULL );
     
     // release all main menu texture
@@ -101,6 +107,10 @@ void CStateGameplay::onUpdate()
 #ifdef HAS_MULTIPLAYER
 	m_mpMgr->update();
     
+	// if call onDestroy first (if lost connection)
+	if ( m_level == NULL )
+		return;
+
     if ( m_mpMgr->needSyncData() )
     {
         m_mpMgr->sendGameDataMessage(m_level);
@@ -112,7 +122,8 @@ void CStateGameplay::onUpdate()
 
 void CStateGameplay::onRender()
 {
-	m_level->render();
+	if ( m_level )
+		m_level->render();
 }
 
 void CStateGameplay::onEvent(const SEvent& event)
@@ -138,6 +149,9 @@ void CStateGameplay::onEvent(const SEvent& event)
 
 				int hostKeyID = (int)gamePacket->getShort();
 				m_level->removeDisconectedObject(hostKeyID);
+
+				// also quit game if host disconected
+				checkDisconectedFromServer(hostKeyID);
 			}
 
 		}
@@ -151,6 +165,9 @@ void CStateGameplay::onEvent(const SEvent& event)
 
 			// remove disconected objects
 			m_level->removeDisconectedObject(networkDisconected->hostKeyID);
+
+			// also quit game if host disconected
+			checkDisconectedFromServer(networkDisconected->hostKeyID);
 		}
 #endif
 		if ( event.GameEvent.EventID == (s32)EvtButtonPress )
@@ -173,5 +190,23 @@ void CStateGameplay::onEvent(const SEvent& event)
 			else if ( buttonEvent->data == m_btnPause )
 				CGameStateMgr::getInstance()->pushState( new CStateIGM() );
 		}
+	}
+}
+
+void CStateGameplay::checkDisconectedFromServer(int hostkeyID)
+{
+	// disconected from server
+	if ( m_mpMgr->isHostServer(hostkeyID) == true )
+	{
+		// todo quit game and jump to mainmenu
+		CGameStateMgr::getInstance()->popAllState();
+	    
+		CStateMainMenu *mainMenu = new CStateMainMenu();
+		mainMenu->getLevel()->loadLevel( getIView()->getPath( "data/level/levelMainMenu.lv" ) );			
+		while ( mainMenu->getLevel()->loadStep() == false )
+		{
+			// todo loading level
+		}                
+		CGameStateMgr::getInstance()->pushState(mainMenu);
 	}
 }

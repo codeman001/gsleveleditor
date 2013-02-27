@@ -424,6 +424,7 @@
 			baseConfigurationReference = 982254F711C3985A004FEDA3 /* debug-libLua.xcconfig */;
 			buildSettings = {
 				GCC_VERSION = "";
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
@@ -434,6 +435,7 @@
 			baseConfigurationReference = 9822550011C3985A004FEDA3 /* release-libLua.xcconfig */;
 			buildSettings = {
 				GCC_VERSION = "";
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;

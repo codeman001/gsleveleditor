@@ -87,7 +87,6 @@
 		7F3A6BCA160F5E8000B31F81 /* CMenuFx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B82160F5E8000B31F81 /* CMenuFx.cpp */; };
 		7F3A6BCB160F5E8000B31F81 /* CMenuFxObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A6B84160F5E8000B31F81 /* CMenuFxObj.cpp */; };
 		7F3A6BDB160F684200B31F81 /* _common.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BD4160F684200B31F81 /* _common.zip */; };
-		7F3A6BDC160F684200B31F81 /* _rawdata.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BD5160F684200B31F81 /* _rawdata.zip */; };
 		7F3A6BDD160F684200B31F81 /* _scene.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BD6160F684200B31F81 /* _scene.zip */; };
 		7F3A6BDF160F684200B31F81 /* arial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BD8160F684200B31F81 /* arial.ttf */; };
 		7F3A6BE0160F684200B31F81 /* killerants.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F3A6BD9160F684200B31F81 /* killerants.ttf */; };
@@ -303,7 +302,6 @@
 		7F3A6B87160F5E8000B31F81 /* uiSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uiSingleton.h; sourceTree = "<group>"; };
 		7F3A6B88160F5E8000B31F81 /* uiString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uiString.h; sourceTree = "<group>"; };
 		7F3A6BD4160F684200B31F81 /* _common.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _common.zip; path = ../../bin/_common.zip; sourceTree = "<group>"; };
-		7F3A6BD5160F684200B31F81 /* _rawdata.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _rawdata.zip; path = ../../bin/_rawdata.zip; sourceTree = "<group>"; };
 		7F3A6BD6160F684200B31F81 /* _scene.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _scene.zip; path = ../../bin/_scene.zip; sourceTree = "<group>"; };
 		7F3A6BD8160F684200B31F81 /* arial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = arial.ttf; path = ../../bin/arial.ttf; sourceTree = "<group>"; };
 		7F3A6BD9160F684200B31F81 /* killerants.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = killerants.ttf; path = ../../bin/killerants.ttf; sourceTree = "<group>"; };
@@ -767,7 +765,6 @@
 			isa = PBXGroup;
 			children = (
 				7F3A6BD4160F684200B31F81 /* _common.zip */,
-				7F3A6BD5160F684200B31F81 /* _rawdata.zip */,
 				7F3A6BD6160F684200B31F81 /* _scene.zip */,
 				7F2F9A0B169C750B003797B3 /* _textureTGA.zip */,
 				7F3A6BD8160F684200B31F81 /* arial.ttf */,
@@ -913,7 +910,6 @@
 				7F39580C160ED88000EEB3A2 /* InfoPlist.strings in Resources */,
 				7F395812160ED88000EEB3A2 /* Credits.rtf in Resources */,
 				7F3A6BDB160F684200B31F81 /* _common.zip in Resources */,
-				7F3A6BDC160F684200B31F81 /* _rawdata.zip in Resources */,
 				7F3A6BDD160F684200B31F81 /* _scene.zip in Resources */,
 				7F3A6BDF160F684200B31F81 /* arial.ttf in Resources */,
 				7F3A6BE0160F684200B31F81 /* killerants.ttf in Resources */,

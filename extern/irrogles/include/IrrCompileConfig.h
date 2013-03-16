@@ -71,6 +71,7 @@
 
 // Build with windowsdk6 if use direct3d9
 //#define _IRR_COMPILE_WITH_DIRECT3D_9_
+#define _IRR_COMPILE_WITH_DIRECT3D_11_
 #endif
 
 //! WINCE is a very restricted environment for mobile devices
@@ -178,6 +179,10 @@ If not defined, Windows Multimedia library is used, which offers also broad supp
 #endif
 #ifdef NO_IRR_COMPILE_WITH_DIRECT3D_9_
 #undef _IRR_COMPILE_WITH_DIRECT3D_9_
+#endif
+
+#ifdef NO_IRR_COMPOLE_WITH_DIRECT_11_
+#undef _IRR_COMPILE_WITH_DIRECT3D_11_
 #endif
 
 #endif

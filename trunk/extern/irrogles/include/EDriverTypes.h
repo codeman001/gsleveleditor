@@ -46,6 +46,7 @@ namespace video
 		/** Performs hardware accelerated rendering of 3D and 2D
 		primitives. */
 		EDT_DIRECT3D9,
+		EDT_DIRECT3D11,
 
 		//! OpenGL device, available on most platforms.
 		/** Performs hardware accelerated rendering of 3D and 2D

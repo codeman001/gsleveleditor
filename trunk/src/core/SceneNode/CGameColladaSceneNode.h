@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 
-#define MAX_BONEMATRIX	58
+#define MAX_BONEMATRIX	64
 #define MAX_LIGHTS		2
 #define MAX_POINTLIGHTS	4
 

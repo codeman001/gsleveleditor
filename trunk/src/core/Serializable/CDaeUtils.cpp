@@ -693,8 +693,11 @@ void CDaeUtils::parseGeometryNode( io::IXMLReader *xmlRead )
 
 				triangle.NumPolygon = xmlRead->getAttributeValueAsInt(L"count");
 
-				std::wstring materialName = xmlRead->getAttributeValue(L"material");
-				triangle.EffectIndex = getEffectWithUri( materialName, m_listEffects, m_listMaterial );
+				if ( xmlRead->getAttributeValue(L"material") )
+				{
+					std::wstring materialName = xmlRead->getAttributeValue(L"material");
+					triangle.EffectIndex = getEffectWithUri( materialName, m_listEffects, m_listMaterial );
+				}
 
 				while(xmlRead->read())
 				{							
@@ -2902,7 +2905,7 @@ void CDaeUtils::clipDaeAnim()
 
 				float currentFrame	= 0;
 				float frameBegin	= clip->time;
-				float frameEnd		= clip->time + clip->duration;
+				float frameEnd		= (clip->time + clip->duration)*k_defaultAnimFPS;
 				
 				core::vector3df v1, v2;
 				core::quaternion q1, q2;

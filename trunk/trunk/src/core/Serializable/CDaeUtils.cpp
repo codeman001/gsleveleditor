@@ -2857,9 +2857,24 @@ void CDaeUtils::clipDaeAnim()
 			SColladaNodeAnim* newNodeAnim = new SColladaNodeAnim();
 
 			*newNodeAnim = *nodeAnim;
-
+		
 			// get default matrix
-			newNodeAnim->DefaultMatrix = getDefaultAnimMatrix( newNodeAnim->sceneNodeName );
+			core::matrix4 defaultMatrix = getDefaultAnimMatrix( newNodeAnim->sceneNodeName );
+			if ( nodeAnim->HasDefaultPos == true || nodeAnim->HasDefaultRot == true )
+			{								
+				if ( nodeAnim->HasDefaultPos )				
+					newNodeAnim->DefaultMatrix.setTranslation(nodeAnim->DefaultPos);
+				else
+					newNodeAnim->DefaultMatrix.setTranslation(defaultMatrix.getTranslation());
+
+				if ( nodeAnim->HasDefaultRot )
+					newNodeAnim->DefaultMatrix *= nodeAnim->DefaultRot.getMatrix();
+				else
+					newNodeAnim->DefaultMatrix *= core::quaternion(defaultMatrix).getMatrix();
+			}
+			else
+				newNodeAnim->DefaultMatrix = defaultMatrix;
+
 
 			if ( nodeAnim->PositionKeys.size() )
 			{
@@ -2924,7 +2939,21 @@ void CDaeUtils::clipDaeAnim()
 					newNodeAnim->sceneNodeName = nodeAnim->sceneNodeName;
 	
 					// get default matrix
-					newNodeAnim->DefaultMatrix = getDefaultAnimMatrix( newNodeAnim->sceneNodeName );
+					core::matrix4 defaultMatrix = getDefaultAnimMatrix( newNodeAnim->sceneNodeName );
+					if ( nodeAnim->HasDefaultPos == true || nodeAnim->HasDefaultRot == true )
+					{								
+						if ( nodeAnim->HasDefaultPos )				
+							newNodeAnim->DefaultMatrix.setTranslation(nodeAnim->DefaultPos);
+						else
+							newNodeAnim->DefaultMatrix.setTranslation(defaultMatrix.getTranslation());
+
+						if ( nodeAnim->HasDefaultRot )
+							newNodeAnim->DefaultMatrix *= nodeAnim->DefaultRot.getMatrix();
+						else
+							newNodeAnim->DefaultMatrix *= core::quaternion(defaultMatrix).getMatrix();
+					}
+					else
+						newNodeAnim->DefaultMatrix = defaultMatrix;
 
 					// add new node anim
 					clip->addNodeAnim( newNodeAnim );
@@ -3215,7 +3244,9 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 	{
 		nodeAnim = new SColladaNodeAnim();
 		nodeAnim->sceneNodeName = stringBuffer;
-	
+		nodeAnim->HasDefaultPos = false;
+		nodeAnim->HasDefaultRot = false;
+
 		// add node anim
 		m_globalClip.addNodeAnim( nodeAnim );	
 	}
@@ -3224,6 +3255,9 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 	
 	float	*arrayTime = NULL;
 	float	*arrayFloat = NULL;
+	
+	bool	needReadDefaultRotValue = false;	
+	bool	needReadDefaultPosValue = false;
 
 	std::wstring arrayID;
 	int count = 0;
@@ -3270,30 +3304,41 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 
 					for ( int i = 0; i < nFrame; i++ )
 					{						
-						if ( isRotation && stride == 4 )
-						{				
-							if ( m_needFlip == true )
+						if ( isRotation )
+						{
+							if ( stride == 4 )
 							{
-								fvector[0] = arrayFloat[i*4];
-								fvector[1] = arrayFloat[i*4 + 2];
-								fvector[2] = arrayFloat[i*4 + 1];
-								fvector[3] = arrayFloat[i*4 + 3];
+								if ( m_needFlip == true )
+								{
+									fvector[0] = arrayFloat[i*4];
+									fvector[1] = arrayFloat[i*4 + 2];
+									fvector[2] = arrayFloat[i*4 + 1];
+									fvector[3] = arrayFloat[i*4 + 3];
+								}
+								else
+								{
+									fvector[0] = arrayFloat[i*4];
+									fvector[1] = arrayFloat[i*4 + 1];
+									fvector[2] = arrayFloat[i*4 + 2];
+									fvector[3] = -arrayFloat[i*4 + 3];
+								}
+
+								CGameAnimationTrack::SRotationKey key;
+								key.frame = arrayTime[i]*k_defaultAnimFPS;
+								key.rotation.fromAngleAxis(
+										fvector[3] * core::DEGTORAD, 
+										core::vector3df(fvector[0], fvector[1], fvector[2])
+									);
+								nodeAnim->RotationKeys.push_back(key);
+							}
+							else if ( stride == 1 )
+							{
+								needReadDefaultRotValue = true;
 							}
 							else
 							{
-								fvector[0] = arrayFloat[i*4];
-								fvector[1] = arrayFloat[i*4 + 1];
-								fvector[2] = arrayFloat[i*4 + 2];
-								fvector[3] = -arrayFloat[i*4 + 3];
+								printf("Warning: May be not support stride: %d on rotate!\n", stride);
 							}
-
-							CGameAnimationTrack::SRotationKey key;
-							key.frame = arrayTime[i]*k_defaultAnimFPS;
-							key.rotation.fromAngleAxis(
-									fvector[3] * core::DEGTORAD, 
-									core::vector3df(fvector[0], fvector[1], fvector[2])
-								);
-							nodeAnim->RotationKeys.push_back(key);
 						}
 						else if ( isTranslate )
 						{				
@@ -3316,6 +3361,10 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 								key.frame = arrayTime[i]*k_defaultAnimFPS;
 								key.position = core::vector3df(fvector[0], fvector[1], fvector[2] );
 								nodeAnim->PositionKeys.push_back(key);
+							}
+							else if ( stride == 1 )
+							{
+								needReadDefaultPosValue = true;
 							}
 							else
 								printf("Warning: May be not support stride: %d on translate!\n", stride);
@@ -3391,13 +3440,106 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 
 					}
 
-					delete arrayTime;
-					arrayTime = NULL;
+					if ( needReadDefaultRotValue == false && needReadDefaultPosValue == false )
+					{
+						delete arrayTime;
+						arrayTime = NULL;
 
-					delete arrayFloat;
-					arrayFloat = NULL;
+						delete arrayFloat;
+						arrayFloat = NULL;
+					}
+
+				}	
+				else if ( core::stringw(L"default_values") == nodeName && isRotation )
+				{
+					float	a = 0;;
+					float	fvector[4] = {0};
+
+					parseDefaultValueRotate( xmlRead, &fvector[0], &fvector[1], &fvector[2], &fvector[3] );					
+
+					if ( m_needFlip == true )
+					{
+						float t = fvector[1];					
+						fvector[1] = fvector[2];
+						fvector[2] = t;						
+					}
+
+					// apply default fot
+					nodeAnim->DefaultRot.fromAngleAxis( -fvector[3] * core::DEGTORAD, core::vector3df(fvector[0], fvector[1], fvector[2]) );
+					nodeAnim->HasDefaultRot = true;
+
+					if ( needReadDefaultRotValue == true )
+					{
+						for ( int i = 0; i < count; i++ )
+						{
+							CGameAnimationTrack::SRotationKey key;
+							key.frame = arrayTime[i]*k_defaultAnimFPS;
+							key.rotation.fromAngleAxis(
+									-arrayFloat[i] * core::DEGTORAD, // hard code -arrayFloat[i] (Glitch fixed)
+									core::vector3df(fvector[0], fvector[1], fvector[2])
+								);
+							nodeAnim->RotationKeys.push_back(key);					
+						}
+
+						delete arrayTime;
+						arrayTime = NULL;
+
+						delete arrayFloat;
+						arrayFloat = NULL;
+
+						needReadDefaultRotValue = false;
+					}
+				}
+				else if ( core::stringw(L"default_values") == nodeName && isTranslate )
+				{
+					float	fvector[4] = {0};
+					parseDefaultValuePosition( xmlRead, &fvector[0], &fvector[1], &fvector[2] );
+					
+					if ( m_needFlip == true )
+					{
+						float t = fvector[1];					
+						fvector[1] = fvector[2];
+						fvector[2] = t;						
+					}
+					
+					// apply default fot
+					nodeAnim->DefaultPos = core::vector3df(fvector[0], fvector[1], fvector[2]);
+					nodeAnim->HasDefaultPos = true;
+
+					if ( needReadDefaultPosValue == true )
+					{
+						int state = 0;
+						if ( fvector[1] > 0.0f )
+							state = 1;
+						else if ( fvector[2] > 0.0f )
+							state = 2;
+
+						for ( int i = 0; i < count; i++ )
+						{
+							CGameAnimationTrack::SPositionKey key;
+							key.frame = arrayTime[i]*k_defaultAnimFPS;
+
+							if ( state == 0 )
+								key.position = core::vector3df(arrayFloat[i], 0, 0);
+							else if ( state == 1 )
+								key.position = core::vector3df(0, arrayFloat[i], 0);
+							else
+								key.position = core::vector3df(0, 0, arrayFloat[i]);
+
+							nodeAnim->PositionKeys.push_back(key);					
+						}
+
+						delete arrayTime;
+						arrayTime = NULL;
+
+						delete arrayFloat;
+						arrayFloat = NULL;
+
+						needReadDefaultPosValue = false;
+					}
 				}
 			}
+			break;
 		case io::EXN_ELEMENT_END:
 			{
 				core::stringw nodeName = xmlRead->getNodeName();
@@ -3461,4 +3603,101 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 		}
 	}	
 
+}
+
+
+// parseDefaultValue
+// parse default
+void CDaeUtils::parseDefaultValueRotate( io::IXMLReader *xmlRead, float *x, float *y, float *z, float *angle )
+{
+	int readState = 0;
+
+	while ( xmlRead->read() )
+	{
+		switch (xmlRead->getNodeType())
+		{		
+		case io::EXN_ELEMENT:
+			{
+				core::stringw nodeName = xmlRead->getNodeName();
+				if ( core::stringw(L"param") == nodeName )				
+					readState++;				
+			}
+			break;
+		case io::EXN_TEXT:
+			{
+				const wchar_t *data = xmlRead->getNodeData();
+
+				if ( readState == 1 )				
+					swscanf(data,L"%f", x);				
+				else if ( readState == 2 )				
+					swscanf(data,L"%f", y);				
+				else if ( readState == 3 )				
+					swscanf(data,L"%f", z);				
+				else if ( readState == 4 )
+					swscanf(data,L"%f", angle);
+			}
+			break;
+		case io::EXN_ELEMENT_END:
+			{
+				core::stringw nodeName = xmlRead->getNodeName();
+				if ( core::stringw(L"default_values") == nodeName )
+					return;				
+			}
+			break;
+		}
+	};
+}
+
+void CDaeUtils::parseDefaultValuePosition( io::IXMLReader *xmlRead, float *x, float *y, float *z )
+{
+	int readState = 0;
+	*x = 0.0f;
+	*y = 0.0f;
+	*z = 0.0f;
+
+	while ( xmlRead->read() )
+	{
+		switch (xmlRead->getNodeType())
+		{		
+		case io::EXN_ELEMENT:
+			{
+				core::stringw nodeName = xmlRead->getNodeName();
+				if ( core::stringw(L"param") == nodeName )
+				{
+					if ( xmlRead->getAttributeValue(L"name") != NULL )
+					{
+						core::stringw attb = xmlRead->getAttributeValue(L"name");
+						if ( attb == L"X" || attb == L"x" )
+							readState = 1;
+						if ( attb == L"Y" || attb == L"y" )
+							readState = 2;
+						if ( attb == L"Z" || attb == L"z" )
+							readState = 3;
+					}
+				}
+			}
+			break;
+		case io::EXN_TEXT:
+			{
+				const wchar_t *data = xmlRead->getNodeData();
+
+				if ( readState == 1 )				
+					swscanf(data,L"%f", x);				
+				else if ( readState == 2 )				
+					swscanf(data,L"%f", y);				
+				else if ( readState == 3 )				
+					swscanf(data,L"%f", z);
+
+				readState = 0;
+			}
+			break;
+		case io::EXN_ELEMENT_END:
+			{
+				core::stringw nodeName = xmlRead->getNodeName();
+				if ( core::stringw(L"default_values") == nodeName )
+					return;				
+			}
+			break;
+		}
+	};
 }

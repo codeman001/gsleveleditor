@@ -185,6 +185,11 @@ struct SColladaNodeAnim
 	core::array<CGameAnimationTrack::SEventKey>		EventKeys;
 
 	core::matrix4									DefaultMatrix;
+	
+	core::quaternion								DefaultRot;
+	core::vector3df									DefaultPos;
+	bool											HasDefaultRot;
+	bool											HasDefaultPos;
 };
 
 // SColladaAnim
@@ -443,6 +448,11 @@ protected:
 	// parseAnimationNode
 	// parse anim node
 	void parseAnimationNode( io::IXMLReader *xmlRead );
+
+	// parseDefaultValue
+	// parse default
+	void parseDefaultValueRotate( io::IXMLReader *xmlRead, float *x, float *y, float *z, float *angle );
+	void parseDefaultValuePosition( io::IXMLReader *xmlRead, float *x, float *y, float *z );
 
 	// parseClipNode
 	// parse clip time node

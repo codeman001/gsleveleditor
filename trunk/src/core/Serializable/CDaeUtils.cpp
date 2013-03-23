@@ -3556,9 +3556,17 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 					if ( applyDefaultPos )
 					{
 						// apply position
-						for ( int i = 0, n = nodeAnim->PositionKeys.size(); i < n; i++ )					
-							nodeAnim->PositionKeys[i].position += nodeAnim->DefaultPos;
-
+						for ( int i = 0, n = nodeAnim->PositionKeys.size(); i < n; i++ )
+						{
+							if ( nodeAnim->PositionKeys[i].position.X == 0.0f )
+								nodeAnim->PositionKeys[i].position.X += nodeAnim->DefaultPos.X;
+							
+							if ( nodeAnim->PositionKeys[i].position.Y == 0.0f )
+								nodeAnim->PositionKeys[i].position.Y += nodeAnim->DefaultPos.Y;
+							
+							if ( nodeAnim->PositionKeys[i].position.Z == 0.0f )
+								nodeAnim->PositionKeys[i].position.Z += nodeAnim->DefaultPos.Z;
+						}
 						applyDefaultPos = false;
 					}
 

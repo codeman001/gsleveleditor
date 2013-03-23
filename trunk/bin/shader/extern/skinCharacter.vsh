@@ -1,6 +1,6 @@
 #define LIGHTING
 
-#define MAX_BONES	58
+#define MAX_BONES	64
 
 attribute highp vec4 inVertexPosition;
 attribute highp vec4 inVertexColor;

@@ -2721,7 +2721,12 @@ bool CDaeUtils::getRotationFrameID( SColladaNodeAnim* frames, float frame, int *
 			return true;
 		}
 	}
+
+	// default last key
 	*frameRotID = nRotFrames - 1;
+	if ( nRotFrames > 0 )
+		*rotateData = frames->RotationKeys[*frameRotID].rotation;
+
 	return false;
 }
 
@@ -2759,7 +2764,11 @@ bool CDaeUtils::getPositionFrameID( SColladaNodeAnim* frames, float frame, int *
 		}
 	}
 
-	*framePosID = nPosFrames - 1;
+	// default last key
+	*framePosID		= nPosFrames - 1;
+	if ( nPosFrames > 0 )
+		*positionData	= frames->PositionKeys[*framePosID].position;
+
 	return false;
 }
 
@@ -2797,7 +2806,10 @@ bool CDaeUtils::getScaleFrameID( SColladaNodeAnim* frames, float frame, int *fra
 		}
 	}
 
-	*frameScaleID = nScaleFrames - 1;
+	*frameScaleID	= nScaleFrames - 1;
+	if ( nScaleFrames > 0 )
+		*scaleData		= frames->ScaleKeys[*frameScaleID].scale;
+
 	return false;
 }
 
@@ -3258,6 +3270,7 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 	
 	bool	needReadDefaultRotValue = false;	
 	bool	needReadDefaultPosValue = false;
+	bool	applyDefaultPos			= false;
 
 	std::wstring arrayID;
 	int count = 0;
@@ -3490,6 +3503,40 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 						needReadDefaultRotValue = false;
 					}
 				}
+				else if ( core::stringw(L"param") == nodeName && needReadDefaultPosValue )
+				{
+					core::stringw axis = xmlRead->getAttributeValue(L"name");
+					
+					int state = 0;
+					if ( axis == L"Y" )
+						state = 1;
+					else if ( axis == L"Z" )
+						state = 2;
+
+					for ( int i = 0; i < count; i++ )
+					{
+						CGameAnimationTrack::SPositionKey key;
+						key.frame = arrayTime[i]*k_defaultAnimFPS;
+
+						if ( state == 0 )
+							key.position = core::vector3df(arrayFloat[i], 0, 0);
+						else if ( state == 1 )
+							key.position = core::vector3df(0, arrayFloat[i], 0);
+						else
+							key.position = core::vector3df(0, 0, arrayFloat[i]);
+
+						nodeAnim->PositionKeys.push_back(key);					
+					}
+
+					delete arrayTime;
+					arrayTime = NULL;
+
+					delete arrayFloat;
+					arrayFloat = NULL;
+
+					needReadDefaultPosValue = false;
+					applyDefaultPos = true;
+				}
 				else if ( core::stringw(L"default_values") == nodeName && isTranslate )
 				{
 					float	fvector[4] = {0};
@@ -3499,44 +3546,22 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 					{
 						float t = fvector[1];					
 						fvector[1] = fvector[2];
-						fvector[2] = t;						
+						fvector[2] = t;
 					}
 					
 					// apply default fot
 					nodeAnim->DefaultPos = core::vector3df(fvector[0], fvector[1], fvector[2]);
 					nodeAnim->HasDefaultPos = true;
-
-					if ( needReadDefaultPosValue == true )
+					
+					if ( applyDefaultPos )
 					{
-						int state = 0;
-						if ( fvector[1] > 0.0f )
-							state = 1;
-						else if ( fvector[2] > 0.0f )
-							state = 2;
+						// apply position
+						for ( int i = 0, n = nodeAnim->PositionKeys.size(); i < n; i++ )					
+							nodeAnim->PositionKeys[i].position += nodeAnim->DefaultPos;
 
-						for ( int i = 0; i < count; i++ )
-						{
-							CGameAnimationTrack::SPositionKey key;
-							key.frame = arrayTime[i]*k_defaultAnimFPS;
-
-							if ( state == 0 )
-								key.position = core::vector3df(arrayFloat[i], 0, 0);
-							else if ( state == 1 )
-								key.position = core::vector3df(0, arrayFloat[i], 0);
-							else
-								key.position = core::vector3df(0, 0, arrayFloat[i]);
-
-							nodeAnim->PositionKeys.push_back(key);					
-						}
-
-						delete arrayTime;
-						arrayTime = NULL;
-
-						delete arrayFloat;
-						arrayFloat = NULL;
-
-						needReadDefaultPosValue = false;
+						applyDefaultPos = false;
 					}
+
 				}
 			}
 			break;

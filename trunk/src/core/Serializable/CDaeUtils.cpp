@@ -2717,7 +2717,10 @@ bool CDaeUtils::getRotationFrameID( SColladaNodeAnim* frames, float frame, int *
 			rotateData->slerp( q1, q2, f );
 	
 			// set frame id
-			*frameRotID = mid + 1;
+			if ( f == frame1.frame )
+				*frameRotID = mid;
+			else
+				*frameRotID = mid + 1;
 			return true;
 		}
 	}
@@ -2759,7 +2762,10 @@ bool CDaeUtils::getPositionFrameID( SColladaNodeAnim* frames, float frame, int *
 			*positionData = v1 + (v2 - v1) * f;			
 
 			// set frame id
-			*framePosID = mid + 1;
+			if ( f == frame1.frame )
+				*framePosID = mid;
+			else
+				*framePosID = mid + 1;
 			return true;
 		}
 	}
@@ -2801,7 +2807,10 @@ bool CDaeUtils::getScaleFrameID( SColladaNodeAnim* frames, float frame, int *fra
 			*scaleData = v1 + (v2 - v1) * f;			
 
 			// set frame id
-			*frameScaleID = mid + 1;
+			if ( f == frame1.frame )
+				*frameScaleID = mid;
+			else
+				*frameScaleID = mid + 1;
 			return true;
 		}
 	}
@@ -2928,7 +2937,8 @@ void CDaeUtils::clipDaeAnim()
 
 			while ( iNodeAnim != iNodeEnd )
 			{
-				SColladaNodeAnim* nodeAnim = (*iNodeAnim);			
+				SColladaNodeAnim *nodeAnim = (*iNodeAnim);			
+				SColladaNodeAnim *newNodeAnim = NULL;
 
 				float currentFrame	= 0;
 				float frameBegin	= clip->time;
@@ -2938,6 +2948,7 @@ void CDaeUtils::clipDaeAnim()
 				core::quaternion q1, q2;
 
 				int beginID, endID;
+				
 
 #pragma region ClipRotation
 				// clip rotation
@@ -2947,25 +2958,8 @@ void CDaeUtils::clipDaeAnim()
 				// add clip
 				if ( beginID >= 0 && endID >= 0 )
 				{
-					SColladaNodeAnim *newNodeAnim = new SColladaNodeAnim();
-					newNodeAnim->sceneNodeName = nodeAnim->sceneNodeName;
-	
-					// get default matrix
-					core::matrix4 defaultMatrix = getDefaultAnimMatrix( newNodeAnim->sceneNodeName );
-					if ( nodeAnim->HasDefaultPos == true || nodeAnim->HasDefaultRot == true )
-					{								
-						if ( nodeAnim->HasDefaultPos )				
-							newNodeAnim->DefaultMatrix.setTranslation(nodeAnim->DefaultPos);
-						else
-							newNodeAnim->DefaultMatrix.setTranslation(defaultMatrix.getTranslation());
-
-						if ( nodeAnim->HasDefaultRot )
-							newNodeAnim->DefaultMatrix *= nodeAnim->DefaultRot.getMatrix();
-						else
-							newNodeAnim->DefaultMatrix *= core::quaternion(defaultMatrix).getMatrix();
-					}
-					else
-						newNodeAnim->DefaultMatrix = defaultMatrix;
+					newNodeAnim = new SColladaNodeAnim();
+					newNodeAnim->sceneNodeName = nodeAnim->sceneNodeName;						
 
 					// add new node anim
 					clip->addNodeAnim( newNodeAnim );
@@ -3023,7 +3017,7 @@ void CDaeUtils::clipDaeAnim()
 
 				if ( beginID >= 0 && endID >= 0 )
 				{
-					SColladaNodeAnim *newNodeAnim = clip->getAnimOfSceneNode( nodeAnim->sceneNodeName.c_str() );
+					newNodeAnim = clip->getAnimOfSceneNode( nodeAnim->sceneNodeName.c_str() );
 					if ( newNodeAnim == NULL )
 					{
 						newNodeAnim = new SColladaNodeAnim();
@@ -3086,7 +3080,7 @@ void CDaeUtils::clipDaeAnim()
 
 				if ( beginID >= 0 && endID >= 0 )
 				{
-					SColladaNodeAnim *newNodeAnim = clip->getAnimOfSceneNode( nodeAnim->sceneNodeName.c_str() );
+					newNodeAnim = clip->getAnimOfSceneNode( nodeAnim->sceneNodeName.c_str() );
 					if ( newNodeAnim == NULL )
 					{
 						newNodeAnim = new SColladaNodeAnim();
@@ -3141,6 +3135,28 @@ void CDaeUtils::clipDaeAnim()
 					}
 				}			
 #pragma endregion
+				
+				if ( newNodeAnim != NULL )
+				{
+					// apply
+					// get default matrix
+					core::matrix4 defaultMatrix = getDefaultAnimMatrix( newNodeAnim->sceneNodeName );
+					
+					if ( nodeAnim->HasDefaultPos == true || nodeAnim->HasDefaultRot == true )
+					{								
+						if ( nodeAnim->HasDefaultPos )				
+							newNodeAnim->DefaultMatrix.setTranslation(nodeAnim->DefaultPos);
+						else
+							newNodeAnim->DefaultMatrix.setTranslation(defaultMatrix.getTranslation());
+
+						if ( nodeAnim->HasDefaultRot )
+							newNodeAnim->DefaultMatrix *= nodeAnim->DefaultRot.getMatrix();
+						else
+							newNodeAnim->DefaultMatrix *= core::quaternion(defaultMatrix).getMatrix();
+					}
+					else
+						newNodeAnim->DefaultMatrix = defaultMatrix;
+				}
 
 				iNodeAnim++;
 			}
@@ -3347,6 +3363,7 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 							else if ( stride == 1 )
 							{
 								needReadDefaultRotValue = true;
+								break;
 							}
 							else
 							{
@@ -3378,6 +3395,7 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 							else if ( stride == 1 )
 							{
 								needReadDefaultPosValue = true;
+								break;
 							}
 							else
 								printf("Warning: May be not support stride: %d on translate!\n", stride);
@@ -3475,7 +3493,7 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 						float t = fvector[1];					
 						fvector[1] = fvector[2];
 						fvector[2] = t;						
-					}
+					}					
 
 					// apply default fot
 					nodeAnim->DefaultRot.fromAngleAxis( -fvector[3] * core::DEGTORAD, core::vector3df(fvector[0], fvector[1], fvector[2]) );
@@ -3487,8 +3505,13 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 						{
 							CGameAnimationTrack::SRotationKey key;
 							key.frame = arrayTime[i]*k_defaultAnimFPS;
+
+							float f = arrayFloat[i];
+							if ( m_needFlip == false )
+								f = -f;
+
 							key.rotation.fromAngleAxis(
-									-arrayFloat[i] * core::DEGTORAD, // hard code -arrayFloat[i] (Glitch fixed)
+									f * core::DEGTORAD,
 									core::vector3df(fvector[0], fvector[1], fvector[2])
 								);
 							nodeAnim->RotationKeys.push_back(key);					
@@ -3525,7 +3548,14 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 						else
 							key.position = core::vector3df(0, 0, arrayFloat[i]);
 
-						nodeAnim->PositionKeys.push_back(key);					
+						if ( m_needFlip == true )
+						{
+							float t = key.position.Y;					
+							key.position.Y = key.position.Z;
+							key.position.Z = t;
+						}
+
+						nodeAnim->PositionKeys.push_back(key);
 					}
 
 					delete arrayTime;

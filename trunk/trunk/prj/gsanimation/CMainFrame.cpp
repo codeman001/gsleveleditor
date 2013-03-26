@@ -37,6 +37,10 @@ CMainFrame::~CMainFrame()
 // Khoi tao cua so
 int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent, LPWSTR lpName)
 {
+	AllocConsole();
+	freopen("con","w",stdout);
+	freopen("con","w",stderr);
+
 	int ret = uiForm::create( lpTitle, x, y, w, h, pParent, lpName );	
 	
 	if ( m_action != CMainFrame::None && m_action != CMainFrame::Open )

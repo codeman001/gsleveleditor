@@ -344,6 +344,8 @@ protected:
 	std::string					m_animeshFile;
 	std::string					m_animFileName;
 
+	SNodeParam					*m_boneRoot;
+
 #pragma region DAE_PARSE_OBJECTS
 	//	list of effect in collada scene
 	ArrayImages					m_listImages;

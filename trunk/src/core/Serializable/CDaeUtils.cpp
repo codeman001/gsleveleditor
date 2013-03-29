@@ -309,7 +309,7 @@ core::matrix4 readRotateNode(io::IXMLReader* reader, bool flip)
 		if (flip)
 			q.fromAngleAxis(floats[3]*core::DEGTORAD, core::vector3df(floats[0], floats[2], floats[1]));
 		else
-			q.fromAngleAxis(floats[3]*-core::DEGTORAD, core::vector3df(floats[0], floats[1], floats[2]));
+			q.fromAngleAxis(-floats[3]*core::DEGTORAD, core::vector3df(floats[0], floats[1], floats[2]));
 		
 		q.normalize();
 		return q.getMatrix();
@@ -1002,6 +1002,8 @@ void CDaeUtils::parseSceneNode( io::IXMLReader *xmlRead )
 {
 	const std::wstring sceneSectionName(L"visual_scene");
 	const std::wstring nodeSectionName(L"node");
+	
+	m_boneRoot = NULL;
 
 	while(xmlRead->read())
 	{			
@@ -1011,8 +1013,7 @@ void CDaeUtils::parseSceneNode( io::IXMLReader *xmlRead )
 		{
 			if ( nodeName == nodeSectionName )
 			{
-				SNodeParam* pNewNode = parseNode( xmlRead, NULL );
-				m_listNode.push_back( pNewNode );
+				parseNode( xmlRead, NULL );
 			}
 		}
 		else if ( xmlRead->getNodeType() == io::EXN_ELEMENT_END )
@@ -1049,6 +1050,23 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 	if ( xmlRead->getAttributeValue(L"type") )
 		pNode->Type = xmlRead->getAttributeValue(L"type");
 	
+	if ( pNode->Type == L"JOINT" && parent == NULL )
+	{
+		// hard code to flip Ox animation
+		if ( m_boneRoot == NULL )
+		{
+			m_boneRoot = new SNodeParam();
+			m_boneRoot->Name = L"BoneRoot";
+			m_boneRoot->ChildLevel = 0;
+			m_boneRoot->Parent = NULL;
+			m_boneRoot->Transform.setScale( core::vector3df(-1,1,1) );
+
+			m_listNode.push_back(m_boneRoot);
+		}		
+		
+		parent = m_boneRoot;
+	}
+
 	pNode->Parent = parent;
 	if ( parent )
 	{
@@ -1107,6 +1125,9 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 				break;
 		}
 	}
+
+	if ( pNode->Parent == NULL )
+		m_listNode.push_back(pNode);
 
 	return pNode;
 }
@@ -1990,6 +2011,7 @@ void CDaeUtils::constructSkinMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri,
 	{
 		u32 ind = i * 3;
 
+		/*
 		if (flip)
 		{
 			mbuffer->Indices.push_back(indices[ind+2]);
@@ -2001,6 +2023,21 @@ void CDaeUtils::constructSkinMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri,
 			mbuffer->Indices.push_back(indices[ind+0]);
 			mbuffer->Indices.push_back(indices[ind+1]);
 			mbuffer->Indices.push_back(indices[ind+2]);
+		}
+		*/
+
+		// hard code to flip 0x animation
+		if (flip)
+		{
+			mbuffer->Indices.push_back(indices[ind+0]);
+			mbuffer->Indices.push_back(indices[ind+1]);
+			mbuffer->Indices.push_back(indices[ind+2]);
+		}
+		else
+		{
+			mbuffer->Indices.push_back(indices[ind+2]);
+			mbuffer->Indices.push_back(indices[ind+1]);
+			mbuffer->Indices.push_back(indices[ind+0]);
 		}
 	}
 		

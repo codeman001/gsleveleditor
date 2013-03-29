@@ -224,7 +224,14 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 	}
 	else
 	{
-		scale = core::vector3df(1,1,1);
+		if ( UseDefaultMatrix )
+		{
+			scale = DefaultMatrix.getScale();
+		}
+		else
+		{
+			scale = localMatrix.getScale();
+		}
 	}
 #pragma endregion
 	

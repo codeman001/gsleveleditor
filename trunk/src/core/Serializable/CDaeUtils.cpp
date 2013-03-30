@@ -848,6 +848,7 @@ SMeshParam* CDaeUtils::parseSkinNode( io::IXMLReader *xmlRead )
 	const std::wstring vNode(L"v");
 	const std::wstring sourceNode(L"source");
 	const std::wstring bindShapeMatrix(L"bind_shape_matrix");
+	const std::wstring extraJointsBBox(L"joints_bounding_boxes");
 
 	std::vector<std::wstring>	nameArray;
 
@@ -857,6 +858,10 @@ SMeshParam* CDaeUtils::parseSkinNode( io::IXMLReader *xmlRead )
 	
 	std::vector<s32>				&vCountArray	= mesh->JointVertexIndex;
 	std::vector<s32>				vArray;
+	
+	int						bbCount = 0;
+	float					*bbArrayMin = NULL;
+	float					*bbArrayMax = NULL;
 
 	while(xmlRead->read())
 	{							
@@ -976,6 +981,37 @@ SMeshParam* CDaeUtils::parseSkinNode( io::IXMLReader *xmlRead )
 			{
 				readIntsInsideElement( xmlRead, vArray );
 			}
+			// <joints_bounding_boxes>
+			else if ( node == extraJointsBBox )
+			{
+				while(xmlRead->read())
+				{
+					if (xmlRead->getNodeType() == io::EXN_ELEMENT )
+					{
+						// <Name_array>
+						if ( xmlRead->getNodeName() == floatArraySectionName )
+						{
+							bbCount = xmlRead->getAttributeValueAsInt(L"count");
+
+							if ( bbArrayMin == NULL )
+							{
+								bbArrayMin = new float[bbCount];
+								readFloatsInsideElement(xmlRead, bbArrayMin, bbCount);
+							}
+							else if ( bbArrayMax == NULL )
+							{
+								bbArrayMax = new float[bbCount];
+								readFloatsInsideElement(xmlRead, bbArrayMax, bbCount);
+							}
+						}						
+					}				
+					else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END )
+					{
+						if ( xmlRead->getNodeName() == extraJointsBBox )
+							break;
+					}
+				}
+			}
 		}		
 		else if (xmlRead->getNodeType() == io::EXN_ELEMENT_END )
 		{
@@ -985,7 +1021,14 @@ SMeshParam* CDaeUtils::parseSkinNode( io::IXMLReader *xmlRead )
 	}
 	
 	mesh->Type = k_skinMesh;
-	updateJointToMesh( mesh, nameArray, weightArray, transformArray, vCountArray, vArray, m_needFlip );
+	updateJointToMesh( mesh, nameArray, weightArray, transformArray, vCountArray, vArray, bbArrayMin, bbArrayMax, bbCount, m_needFlip );
+
+	// clean
+	if ( bbArrayMin )
+		delete bbArrayMin;
+	
+	if ( bbArrayMax )
+		delete bbArrayMax;
 
 	if ( weightArray )
 		delete weightArray;
@@ -1051,8 +1094,7 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 		pNode->Type = xmlRead->getAttributeValue(L"type");
 	
 	if ( pNode->Type == L"JOINT" && parent == NULL )
-	{
-		// hard code to flip Ox animation
+	{		
 		if ( m_boneRoot == NULL )
 		{
 			m_boneRoot = new SNodeParam();
@@ -2010,23 +2052,7 @@ void CDaeUtils::constructSkinMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri,
 	for (u32 i = 0; i < nPoly; i++)
 	{
 		u32 ind = i * 3;
-
-		/*
-		if (flip)
-		{
-			mbuffer->Indices.push_back(indices[ind+2]);
-			mbuffer->Indices.push_back(indices[ind+1]);
-			mbuffer->Indices.push_back(indices[ind+0]);
-		}
-		else
-		{
-			mbuffer->Indices.push_back(indices[ind+0]);
-			mbuffer->Indices.push_back(indices[ind+1]);
-			mbuffer->Indices.push_back(indices[ind+2]);
-		}
-		*/
-
-		// hard code to flip 0x animation
+		
 		if (flip)
 		{
 			mbuffer->Indices.push_back(indices[ind+0]);
@@ -2077,6 +2103,9 @@ void CDaeUtils::constructSkinMesh( SMeshParam *meshParam, CGameColladaMesh *mesh
 		uiString::copy<char, const wchar_t>( sidName, joint.Name.c_str() );
 		newJoint.name = joint.Name;
 		newJoint.node = m_component->getSceneNodeBySID( sidName );
+		
+		newJoint.bbBox		= joint.BBox;
+		newJoint.haveBBox	= joint.HaveBBox;
 
 		// set invert matrix
 		newJoint.globalInversedMatrix = joint.InvMatrix;
@@ -2217,7 +2246,16 @@ void CDaeUtils::constructSkinMesh( SMeshParam *meshParam, CGameColladaMesh *mesh
 
 // updateJointToMesh
 // update joint
-void CDaeUtils::updateJointToMesh( SMeshParam *mesh, std::vector<std::wstring>& arrayName, float *arrayWeight, float *arrayTransform, std::vector<s32>& vCountArray, std::vector<s32>& vArray, bool flipZ )
+void CDaeUtils::updateJointToMesh(	SMeshParam *mesh, 
+									std::vector<std::wstring>& arrayName, 
+									float *arrayWeight, 
+									float *arrayTransform, 
+									std::vector<s32>& vCountArray, 
+									std::vector<s32>& vArray, 
+									float *bboxMin, 
+									float *bboxMax, 
+									int bbCount, 
+									bool flipZ )
 {
 	int numJoint = (int)arrayName.size();
 
@@ -2228,6 +2266,7 @@ void CDaeUtils::updateJointToMesh( SMeshParam *mesh, std::vector<std::wstring>& 
 	{
 		SJointParam newJoint;
 
+		newJoint.HaveBBox = false;
 		newJoint.Name = arrayName[i];
 
 		core::matrix4 mat;
@@ -2256,6 +2295,33 @@ void CDaeUtils::updateJointToMesh( SMeshParam *mesh, std::vector<std::wstring>& 
 			newJoint.InvMatrix = mat.getTransposed();
 		}
 		
+		if ( numJoint == bbCount/3 )
+		{
+			newJoint.HaveBBox = true;
+			
+			if ( flipZ )
+			{
+				newJoint.BBox.MinEdge.X = bboxMin[i*3];
+				newJoint.BBox.MinEdge.Y = bboxMin[i*3+2];
+				newJoint.BBox.MinEdge.Z = bboxMin[i*3+1];
+
+				newJoint.BBox.MaxEdge.X = bboxMax[i*3];
+				newJoint.BBox.MaxEdge.Y = bboxMax[i*3+2];
+				newJoint.BBox.MaxEdge.Z = bboxMax[i*3+1];
+			}
+			else
+			{
+				newJoint.BBox.MinEdge.X = bboxMin[i*3];
+				newJoint.BBox.MinEdge.Y = bboxMin[i*3+1];
+				newJoint.BBox.MinEdge.Z = bboxMin[i*3+2];
+
+				newJoint.BBox.MaxEdge.X = bboxMax[i*3];
+				newJoint.BBox.MaxEdge.Y = bboxMax[i*3+1];
+				newJoint.BBox.MaxEdge.Z = bboxMax[i*3+2];
+			}
+
+		}
+
 		// add joint to controller
 		mesh->Joints.push_back( newJoint );
 	}

@@ -186,10 +186,13 @@ public:
 		std::wstring			name;
 		core::matrix4			globalInversedMatrix;
 		core::matrix4			skinningMatrix;
+		core::aabbox3df			bbBox;
+		bool					haveBBox;
 
 		CGameColladaSceneNode*	node;	
 		SJoint()
 		{
+			haveBBox = false;
 			name = L"noName";
 			node = NULL;
 		}

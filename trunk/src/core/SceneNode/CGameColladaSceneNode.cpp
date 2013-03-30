@@ -1368,6 +1368,24 @@ void CGameColladaSceneNode::render()
 
 		}
 
+#ifdef GSANIMATION
+		// Draw joints bbbox
+		for ( int i = 0, n = ColladaMesh->Joints.size(); i < n; i++ )
+		{
+			CGameColladaMesh::SJoint& j = ColladaMesh->Joints[i];
+			if ( j.node )
+			{
+				video::SMaterial debug_mat;
+				debug_mat.Lighting = false;
+				debug_mat.AntiAliasing = 0;
+
+				driver->setMaterial(debug_mat);				
+				driver->setTransform(video::ETS_WORLD, j.node->getAbsoluteTransformation() );
+				driver->draw3DBox( j.bbBox, video::SColor(255,255,0,0));
+			}
+		}
+#endif
+
 		Box = ColladaMesh->getBoundingBox();	
 	}
 #ifdef GSANIMATION
@@ -1382,8 +1400,7 @@ void CGameColladaSceneNode::render()
 
 		video::SMaterial debug_mat;
 		debug_mat.Lighting = false;
-		debug_mat.AntiAliasing = 0;
-		debug_mat.ZBuffer = video::ECFN_NEVER;
+		debug_mat.AntiAliasing = 0;		
 		driver->setMaterial(debug_mat);
 				
 		// get current position node
@@ -1430,8 +1447,7 @@ void CGameColladaSceneNode::render()
 
 		video::SMaterial debug_mat;
 		debug_mat.Lighting = false;
-		debug_mat.AntiAliasing = 0;
-		debug_mat.ZBuffer = video::ECFN_NEVER;
+		debug_mat.AntiAliasing = 0;		
 
 		driver->setMaterial(debug_mat);
 

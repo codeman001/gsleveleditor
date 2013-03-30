@@ -122,6 +122,8 @@ struct SJointParam
 {
 	std::wstring			Name;
 	core::matrix4			InvMatrix;
+	bool					HaveBBox;
+	core::aabbox3df			BBox;
 	std::vector<SWeightParam>	Weights;	
 };
 
@@ -131,8 +133,8 @@ struct SMeshParam
 	std::wstring			Name;
 	std::wstring			ControllerName;
 
-	std::vector<SBufferParam>	Buffers;
-	std::vector<SVerticesParam>	Vertices;
+	std::vector<SBufferParam>		Buffers;
+	std::vector<SVerticesParam>		Vertices;
 	std::vector<STrianglesParam>	Triangles;
 	std::vector<SJointParam>		Joints;
 	
@@ -431,7 +433,7 @@ protected:
 		
 	// updateJointToMesh
 	// update joint
-	void updateJointToMesh( SMeshParam *mesh, std::vector<std::wstring>& arrayName, float *arrayWeight, float *arrayTransform, std::vector<s32>& vCountArray, std::vector<s32>& vArray, bool flipZ );	
+	void updateJointToMesh( SMeshParam *mesh, std::vector<std::wstring>& arrayName, float *arrayWeight, float *arrayTransform, std::vector<s32>& vCountArray, std::vector<s32>& vArray, float *bboxMin, float *bboxMax, int bbCount, bool flipZ );
 
 	// cleanData
 	// free all data from parse dae

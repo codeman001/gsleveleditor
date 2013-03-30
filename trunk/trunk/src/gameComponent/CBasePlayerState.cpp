@@ -111,7 +111,7 @@ void CBasePlayerState::updateMuzzleMesh()
 		CGameColladaSceneNode *gunTip = m_collada->getSceneNode("RightGunTip");
 		core::matrix4 mat = gunTip->getAbsoluteTransformation();
 		core::quaternion rot;
-		rot.fromAngleAxis(core::degToRad(90.0f), core::vector3df(0,1,0));
+		rot.fromAngleAxis(core::degToRad(-90.0f), core::vector3df(0,1,0));
 		mat *= rot.getMatrix();
         
         core::vector3df position(mat.getTranslation());

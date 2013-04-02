@@ -78,9 +78,7 @@ CGameAnimationTrack::CGameAnimationTrack()
 	m_endTrack = false;
 
 	m_isCrossAnim = false;
-	m_crossAnimationLoop = false;
-	
-	UseDefaultMatrix = false;	
+	m_crossAnimationLoop = false;	
 }
 
 CGameAnimationTrack::~CGameAnimationTrack()
@@ -153,17 +151,7 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 	}
 	else
 	{
-		if ( UseDefaultMatrix )
-		{
-			position = core::vector3df(0,0,0);
-			DefaultMatrix.translateVect( position );
-		}
-		else
-		{
-			// default position
-			position = core::vector3df(0,0,0);
-			localMatrix.translateVect( position );
-		}
+		position = DefaultPos;
 	}
 
 #pragma endregion	
@@ -224,10 +212,7 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 	}
 	else
 	{
-		if ( UseDefaultMatrix )		
-			scale = DefaultMatrix.getScale();		
-		else		
-			scale = localMatrix.getScale();		
+		scale = DefaultScale;	
 	}
 #pragma endregion
 	
@@ -289,17 +274,7 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 	}
 	else
 	{		
-		core::matrix4 mat;
-		core::vector3df rot;
-
-		// default rotation
-		if ( UseDefaultMatrix )		
-			rot = DefaultMatrix.getRotationDegrees();			
-		else
-			rot = localMatrix.getRotationDegrees();;		
-
-		mat.setRotationDegrees(rot);
-		rotation = core::quaternion(mat);
+		rotation = DefaultRot;
 	}
 #pragma endregion
 

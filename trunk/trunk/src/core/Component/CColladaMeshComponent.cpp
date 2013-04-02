@@ -697,8 +697,9 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 		if ( anim )
 		{			
 			// default matrix of not have animation
-			track->DefaultMatrix = anim->DefaultMatrix;
-			track->UseDefaultMatrix = true;
+			track->DefaultPos	= anim->DefaultPos;
+			track->DefaultRot	= anim->DefaultRot;
+			track->DefaultScale = anim->DefaultScale;
 
 			int nRotKey = anim->RotationKeys.size();
 			if ( nRotKey > 0 )
@@ -821,8 +822,10 @@ void CColladaMeshComponent::setCrossFadeAnimationToLayer(const char *lpAnimName,
 		if ( anim )
 		{			
 			// default matrix of not have animation
-			track->DefaultMatrix = anim->DefaultMatrix;
-			track->UseDefaultMatrix = true;
+			track->DefaultPos	= anim->DefaultPos;
+			track->DefaultRot	= anim->DefaultRot;
+			track->DefaultScale = anim->DefaultScale;
+			
 
 			int nRotKey = anim->RotationKeys.size();
 			if ( nRotKey > 0 )
@@ -930,8 +933,9 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChanne
 		if ( anim )
 		{
 			// default matrix of not have animation
-			track->DefaultMatrix = anim->DefaultMatrix;
-			track->UseDefaultMatrix = true;
+			track->DefaultPos	= anim->DefaultPos;
+			track->DefaultRot	= anim->DefaultRot;
+			track->DefaultScale = anim->DefaultScale;
 
 			// add rotation key
 			int nRotKey = anim->RotationKeys.size();

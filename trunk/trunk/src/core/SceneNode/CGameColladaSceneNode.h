@@ -264,8 +264,10 @@ public:
 	core::array<CGameAnimationTrack::SRotationKey>	CrossAnimRotationKeys;
 	core::array<CGameAnimationTrack::SEventKey>		CrossAnimEventKeys;
 
-	bool											UseDefaultMatrix;
-	core::matrix4									DefaultMatrix;
+	core::quaternion								DefaultRot;
+	core::vector3df									DefaultPos;
+	core::vector3df									DefaultScale;
+
 public:
 	CGameAnimationTrack();
 	virtual ~CGameAnimationTrack();
@@ -344,10 +346,7 @@ public:
 		m_scaleHint = 0;
 		m_rotHint = 0;
 		m_currentFrame = 0;
-		m_totalFrame = 0;
-
-		UseDefaultMatrix = false;
-		DefaultMatrix = core::IdentityMatrix;
+		m_totalFrame = 0;		
 
 		m_isCrossAnim = false;
 	}

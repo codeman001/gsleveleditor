@@ -1130,17 +1130,23 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 			else if ( xmlRead->getNodeName() == translateSectionName )
 			{
 				// mul translate
-				pNode->Transform *= readTranslateNode(xmlRead, m_needFlip);
+				core::matrix4 m = readTranslateNode(xmlRead, m_needFlip);
+				pNode->Transform *= m;
+				pNode->Pos = m.getTranslation();
 			}
 			else if ( xmlRead->getNodeName() == rotateSectionName )
 			{
 				// mul rotate
-				pNode->Transform *= readRotateNode(xmlRead, m_needFlip);
+				core::matrix4 m = readRotateNode(xmlRead, m_needFlip);
+				pNode->Transform *= m;
+				pNode->Rot = core::quaternion(m);
 			}
 			else if ( xmlRead->getNodeName() == scaleSectionName )
 			{
 				// mul scale
-				pNode->Transform *= readScaleNode(xmlRead, m_needFlip);
+				core::matrix4 m = readScaleNode(xmlRead, m_needFlip);
+				pNode->Transform *= m;
+				pNode->Scale = m.getScale();
 			}			
 			else if ( xmlRead->getNodeName() == matrixNodeName)
 			{
@@ -2926,7 +2932,7 @@ bool CDaeUtils::getScaleFrameID( SColladaNodeAnim* frames, float frame, int *fra
 }
 
 
-core::matrix4 CDaeUtils::getDefaultAnimMatrix( const std::string& nodeName )
+SNodeParam* CDaeUtils::getNode( const std::string& nodeName )
 {
 	wchar_t wName[512];
 	uiString::convertUTF8ToUnicode(nodeName.c_str(), (unsigned short*)wName);
@@ -2944,7 +2950,7 @@ core::matrix4 CDaeUtils::getDefaultAnimMatrix( const std::string& nodeName )
 
 			// found node
 			if ( pNode->Name == wName )
-				return pNode->Transform;
+				return pNode;
 			else
 			{
 				for ( int i = 0; i < (int)pNode->Childs.size(); i++ )
@@ -2953,7 +2959,7 @@ core::matrix4 CDaeUtils::getDefaultAnimMatrix( const std::string& nodeName )
 		}		
 	}
 
-	return core::IdentityMatrix;
+	return NULL;
 }
 
 
@@ -2983,22 +2989,13 @@ void CDaeUtils::clipDaeAnim()
 			*newNodeAnim = *nodeAnim;
 		
 			// get default matrix
-			core::matrix4 defaultMatrix = getDefaultAnimMatrix( newNodeAnim->sceneNodeName );
-			if ( nodeAnim->HasDefaultPos == true || nodeAnim->HasDefaultRot == true )
-			{								
-				if ( nodeAnim->HasDefaultPos )				
-					newNodeAnim->DefaultMatrix.setTranslation(nodeAnim->DefaultPos);
-				else
-					newNodeAnim->DefaultMatrix.setTranslation(defaultMatrix.getTranslation());
-
-				if ( nodeAnim->HasDefaultRot )
-					newNodeAnim->DefaultMatrix *= nodeAnim->DefaultRot.getMatrix();
-				else
-					newNodeAnim->DefaultMatrix *= core::quaternion(defaultMatrix).getMatrix();
+			SNodeParam *n = getNode(newNodeAnim->sceneNodeName);
+			if ( n )
+			{
+				newNodeAnim->DefaultPos		= n->Pos;
+				newNodeAnim->DefaultRot		= n->Rot;
+				newNodeAnim->DefaultScale	= n->Scale;
 			}
-			else
-				newNodeAnim->DefaultMatrix = defaultMatrix;
-
 
 			if ( nodeAnim->PositionKeys.size() )
 			{
@@ -3243,22 +3240,14 @@ void CDaeUtils::clipDaeAnim()
 				{
 					// apply
 					// get default matrix
-					core::matrix4 defaultMatrix = getDefaultAnimMatrix( newNodeAnim->sceneNodeName );
-					
-					if ( nodeAnim->HasDefaultPos == true || nodeAnim->HasDefaultRot == true )
-					{								
-						if ( nodeAnim->HasDefaultPos )				
-							newNodeAnim->DefaultMatrix.setTranslation(nodeAnim->DefaultPos);
-						else
-							newNodeAnim->DefaultMatrix.setTranslation(defaultMatrix.getTranslation());
-
-						if ( nodeAnim->HasDefaultRot )
-							newNodeAnim->DefaultMatrix *= nodeAnim->DefaultRot.getMatrix();
-						else
-							newNodeAnim->DefaultMatrix *= core::quaternion(defaultMatrix).getMatrix();
+					// get default matrix
+					SNodeParam *n = getNode(newNodeAnim->sceneNodeName);
+					if ( n )
+					{
+						newNodeAnim->DefaultPos		= n->Pos;
+						newNodeAnim->DefaultRot		= n->Rot;
+						newNodeAnim->DefaultScale	= n->Scale;
 					}
-					else
-						newNodeAnim->DefaultMatrix = defaultMatrix;
 				}
 
 				iNodeAnim++;
@@ -3374,9 +3363,13 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 	if ( nodeAnim == NULL )
 	{
 		nodeAnim = new SColladaNodeAnim();
-		nodeAnim->sceneNodeName = stringBuffer;
-		nodeAnim->HasDefaultPos = false;
-		nodeAnim->HasDefaultRot = false;
+		nodeAnim->sceneNodeName = stringBuffer;		
+
+		// default value
+		core::matrix4 mat;
+		nodeAnim->DefaultRot	= core::quaternion(mat);
+		nodeAnim->DefaultPos	= mat.getTranslation();
+		nodeAnim->DefaultScale	= mat.getScale();
 
 		// add node anim
 		m_globalClip.addNodeAnim( nodeAnim );	
@@ -3598,10 +3591,6 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 						fvector[2] = t;						
 					}					
 
-					// apply default fot
-					nodeAnim->DefaultRot.fromAngleAxis( -fvector[3] * core::DEGTORAD, core::vector3df(fvector[0], fvector[1], fvector[2]) );
-					nodeAnim->HasDefaultRot = true;
-
 					if ( needReadDefaultRotValue == true )
 					{
 						for ( int i = 0; i < count; i++ )
@@ -3680,11 +3669,7 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 						float t = fvector[1];					
 						fvector[1] = fvector[2];
 						fvector[2] = t;
-					}
-					
-					// apply default fot
-					nodeAnim->DefaultPos = core::vector3df(fvector[0], fvector[1], fvector[2]);
-					nodeAnim->HasDefaultPos = true;
+					}										
 					
 					if ( applyDefaultPos )
 					{
@@ -3692,13 +3677,13 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 						for ( int i = 0, n = nodeAnim->PositionKeys.size(); i < n; i++ )
 						{
 							if ( nodeAnim->PositionKeys[i].position.X == 0.0f )
-								nodeAnim->PositionKeys[i].position.X += nodeAnim->DefaultPos.X;
+								nodeAnim->PositionKeys[i].position.X += fvector[0];
 							
 							if ( nodeAnim->PositionKeys[i].position.Y == 0.0f )
-								nodeAnim->PositionKeys[i].position.Y += nodeAnim->DefaultPos.Y;
+								nodeAnim->PositionKeys[i].position.Y += fvector[1];
 							
 							if ( nodeAnim->PositionKeys[i].position.Z == 0.0f )
-								nodeAnim->PositionKeys[i].position.Z += nodeAnim->DefaultPos.Z;
+								nodeAnim->PositionKeys[i].position.Z += fvector[2];
 						}
 						applyDefaultPos = false;
 					}

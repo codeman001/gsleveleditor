@@ -129,8 +129,21 @@ void CBinaryUtils::saveAnimClip( io::IWriteFile *file, SColladaAnimClip* animCli
 		strcpy( stringc, nodeFrames->sceneNodeName.c_str() );
 		memStream.writeData( stringc, STRING_BUFFER_SIZE );	
 
-		// write default matrix
-		memStream.writeData( nodeFrames->DefaultMatrix.pointer(), sizeof(float)*16 );
+		// write default rot		
+		floatArray[0] = nodeFrames->DefaultRot.X;
+		floatArray[1] = nodeFrames->DefaultRot.Y;
+		floatArray[2] = nodeFrames->DefaultRot.Z;
+		floatArray[3] = nodeFrames->DefaultRot.W;
+		memStream.writeData( floatArray, sizeof(float) * 4 );
+
+		// write default pos
+		getArrayFromVector( nodeFrames->DefaultPos, floatArray );
+		memStream.writeData( floatArray, sizeof(float) * 3 );
+
+		// write default scale
+		getArrayFromVector( nodeFrames->DefaultScale, floatArray );
+		memStream.writeData( floatArray, sizeof(float) * 3 );
+
 
 		// write num frame
 		int nPos = nodeFrames->PositionKeys.size();
@@ -330,6 +343,21 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 		
 		memStream.writeData(  joint.globalInversedMatrix.pointer(), sizeof(f32)*16 );
 		memStream.writeData(  joint.skinningMatrix.pointer(), sizeof(f32)*16 );
+
+		// save bone bbox
+		int haveBBox = 0;
+		if ( joint.haveBBox == true )
+			haveBBox = 1;
+		memStream.writeData( &haveBBox, sizeof(int) );
+		
+		if ( haveBBox )
+		{
+			getArrayFromVector( joint.bbBox.MaxEdge, floatArray );
+			memStream.writeData( floatArray, sizeof(float)*3 );
+
+			getArrayFromVector( joint.bbBox.MinEdge, floatArray );
+			memStream.writeData( floatArray, sizeof(float)*3 );
+		}
 
 	}	
 
@@ -574,14 +602,27 @@ void CBinaryUtils::readAnimClip( unsigned char *data, unsigned int size, CCollad
 		
 		// read name of scenenode		
 		memStream.readData( stringc, STRING_BUFFER_SIZE );
-		nodeFrames->sceneNodeName = stringc;
+		nodeFrames->sceneNodeName = stringc;		
 
-		// read default matrix
-		memStream.readData( nodeFrames->DefaultMatrix.pointer(), sizeof(float)*16 );
+		// read default rot	
+		memStream.readData( floatArray, sizeof(float) * 4 );
+		nodeFrames->DefaultRot.X = floatArray[0];
+		nodeFrames->DefaultRot.Y = floatArray[1];
+		nodeFrames->DefaultRot.Z = floatArray[2];
+		nodeFrames->DefaultRot.W = floatArray[3];
+
+		// write default pos
+		memStream.readData( floatArray, sizeof(float) * 3 );
+		nodeFrames->DefaultPos = core::vector3df( floatArray[0], floatArray[1], floatArray[2] );		
+
+		// write default scale
+		memStream.readData( floatArray, sizeof(float) * 3 );
+		nodeFrames->DefaultScale = core::vector3df( floatArray[0], floatArray[1], floatArray[2] );
 
 		animClip->addNodeAnim( nodeFrames );
 
-		// read num frame		
+
+		// read num frame
 		int nPos = 0;
 		memStream.readData( &nPos, sizeof(int) );
 		if ( nPos > 0 )
@@ -922,6 +963,18 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned int size )
 		memStream.readData(  joint.globalInversedMatrix.pointer(), sizeof(f32)*16 );
 		memStream.readData(  joint.skinningMatrix.pointer(), sizeof(f32)*16 );
         
+		// load bone bbox
+		int haveBBox = 0;
+		memStream.readData( &haveBBox, sizeof(int) );
+		joint.haveBBox = haveBBox > 0;
+		if ( haveBBox > 0 )
+		{
+			memStream.readData( floatArray, sizeof(float)*3 );
+			joint.bbBox.MaxEdge = core::vector3df( floatArray[0], floatArray[1], floatArray[2] );
+
+			memStream.readData( floatArray, sizeof(float)*3 );
+			joint.bbBox.MinEdge = core::vector3df( floatArray[0], floatArray[1], floatArray[2] );
+		}
 	}	
 
 	// read bouding box	

@@ -153,7 +153,13 @@ struct SNodeParam
 	std::wstring			Type;
 	std::wstring			SID;
 	std::wstring			Instance;
+	
 	core::matrix4			Transform;
+	core::quaternion		Rot;
+	core::vector3df			Pos;
+	core::vector3df			Scale;
+
+
 	std::vector<SNodeParam*>		Childs;
 	SNodeParam*				Parent;
 
@@ -184,14 +190,12 @@ struct SColladaNodeAnim
 	core::array<CGameAnimationTrack::SPositionKey>	PositionKeys;
 	core::array<CGameAnimationTrack::SScaleKey>		ScaleKeys;
 	core::array<CGameAnimationTrack::SRotationKey>	RotationKeys;
-	core::array<CGameAnimationTrack::SEventKey>		EventKeys;
-
-	core::matrix4									DefaultMatrix;
+	core::array<CGameAnimationTrack::SEventKey>		EventKeys;	
 	
 	core::quaternion								DefaultRot;
 	core::vector3df									DefaultPos;
-	bool											HasDefaultRot;
-	bool											HasDefaultPos;
+	core::vector3df									DefaultScale;
+
 };
 
 // SColladaAnim
@@ -466,7 +470,7 @@ protected:
 	// clip a long clip to many clip
 	void clipDaeAnim();
 
-	core::matrix4 getDefaultAnimMatrix( const std::string& nodeName );
+	SNodeParam* getNode( const std::string& nodeName );
 #pragma endregion
 
 };

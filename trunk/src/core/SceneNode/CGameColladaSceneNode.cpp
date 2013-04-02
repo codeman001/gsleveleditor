@@ -224,14 +224,10 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 	}
 	else
 	{
-		if ( UseDefaultMatrix )
-		{
-			scale = DefaultMatrix.getScale();
-		}
-		else
-		{
-			scale = localMatrix.getScale();
-		}
+		if ( UseDefaultMatrix )		
+			scale = DefaultMatrix.getScale();		
+		else		
+			scale = localMatrix.getScale();		
 	}
 #pragma endregion
 	
@@ -292,16 +288,18 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 		}
 	}
 	else
-	{
+	{		
+		core::matrix4 mat;
+		core::vector3df rot;
+
 		// default rotation
-		if ( UseDefaultMatrix )
-		{
-			rotation = core::quaternion(DefaultMatrix);
-		}
+		if ( UseDefaultMatrix )		
+			rot = DefaultMatrix.getRotationDegrees();			
 		else
-		{
-			rotation = core::quaternion(localMatrix);
-		}
+			rot = localMatrix.getRotationDegrees();;		
+
+		mat.setRotationDegrees(rot);
+		rotation = core::quaternion(mat);
 	}
 #pragma endregion
 
@@ -397,6 +395,8 @@ CGameAnimation::CGameAnimation()
 
 	// null animation
 	m_nullAnimation = true;
+	m_haveAnim = false;
+
 	m_isEnable = false;
     m_weight = 1.0f;
 }
@@ -498,9 +498,8 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 			currentScaleTrack	= scale;
 			currentRotTrack		= rotation;
 		}
-
 	}
-	
+
 	// check null animation
 	for ( int track = (int)nTrack - 1; track >= 0; track-- )
 	{
@@ -511,7 +510,6 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 			break;
 		}
 	}
-
 }
 
 // synchronizedTimeScale
@@ -566,7 +564,7 @@ void CGameAnimation::synchronizedByTimeScale(float baseRatio)
 void CGameAnimation::update(float timeStep)
 {
 	bool startNewLoop = true;
-    bool haveAnim = false;
+    m_haveAnim = false;
     
 	for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 	{
@@ -580,13 +578,13 @@ void CGameAnimation::update(float timeStep)
             
             if ( m_animTrack[i].getTotalFrame() != 0 )
             {
-                haveAnim = true;
+                m_haveAnim = true;
             }
 		}
-	}
+	}	
 
 	// we will synchronized all animation loop
-	if ( startNewLoop && haveAnim )
+	if ( startNewLoop && m_haveAnim )
 	{
 		for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 		{
@@ -789,6 +787,8 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	m_linkRotateY = false;
 	m_linkRotateZ = false;
 
+	m_enableBoneBBox = true;
+
 #ifdef GSANIMATION
 	m_isShowName = false;
 	m_renderRotate = 0;
@@ -934,8 +934,9 @@ void CGameColladaSceneNode::updateAbsolutePosition()
         if ( m_gameAnimation[i].isEnable() == false )
             continue;
         
-        RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(), AnimationMatrixLayer[i]);	
-        
+        //RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(), AnimationMatrixLayer[i]);	
+		RelativeMatrix = AnimationMatrixLayer[i];
+
         // calc absolute animation
         if ( m_isRootColladaNode == true )
         {
@@ -1230,94 +1231,104 @@ void CGameColladaSceneNode::updateAnimation()
     {   
         if ( m_gameAnimation[i].isEnable() == false )
             continue;
-            
-        core::vector3df position;
-        core::vector3df scale;
-        core::quaternion rotation;
-	
-        m_gameAnimation[i].getFrameData( position, scale, rotation, LocalMatrix, m_animationCallback, this, m_animationLayer);
+        		
+		if ( m_gameAnimation[i].isHaveAnim() == false )
+		{
+			// no animation
+			AnimationMatrixLayer[i] = LocalMatrix;
+		}
+		else
+		{
+			// get animation frame to calc AnimationMatrix
+			core::vector3df position;
+			core::vector3df scale;
+			core::quaternion rotation;
+		
+			m_gameAnimation[i].getFrameData( position, scale, rotation, LocalMatrix, m_animationCallback, this, m_animationLayer);
 
-        // run callback
-        if ( m_animationCallback )
-            m_animationCallback->_onUpdateFrameData( this,  position, scale, rotation, i);
+			// run callback
+			if ( m_animationCallback )
+				m_animationCallback->_onUpdateFrameData( this,  position, scale, rotation, i);
 
-        // blending multi layer animtion
-        if ( haveCalcBase == false )
-        {
-            // need get base rotation
-            basePosition    = position;
-            baseScale       = scale;
-            baseRotation    = rotation;
-            
-            haveCalcBase = true;
-        }
-        else if ( i > 0 && m_gameAnimation[i].getAnimLayerWeight() < 1.0f )
-        {            
-            // blending....
-            float w = m_gameAnimation[i].getAnimLayerWeight();
-            
-            core::vector3df blendPosition;
-            blendPosition.interpolate(position, basePosition, w);
-            
-            core::vector3df blendScale;
-            blendScale.interpolate(scale, baseScale, w);
-            
-            core::quaternion blendRotation;
-            blendRotation.slerp(baseRotation, rotation, w);
-            
-            position    = blendPosition;
-            scale       = blendScale;
-            rotation    = blendRotation;
-        }
-        
-        
-        // rotation
-        core::matrix4 mat;
-        rotation.getMatrix_transposed(mat);
-	
-        // position	
-        f32 *m1 = mat.pointer();
+			// blending multi layer animtion
+			if ( haveCalcBase == false )
+			{
+				// need get base rotation
+				basePosition    = position;
+				baseScale       = scale;
+				baseRotation    = rotation;
+	            
+				haveCalcBase = true;
+			}
+			else if ( i > 0 && m_gameAnimation[i].getAnimLayerWeight() < 1.0f )
+			{            
+				// blending....
+				float w = m_gameAnimation[i].getAnimLayerWeight();
+	            
+				core::vector3df blendPosition;
+				blendPosition.interpolate(position, basePosition, w);
+	            
+				core::vector3df blendScale;
+				blendScale.interpolate(scale, baseScale, w);
+	            
+				core::quaternion blendRotation;
+				blendRotation.slerp(baseRotation, rotation, w);
+	            
+				position    = blendPosition;
+				scale       = blendScale;
+				rotation    = blendRotation;
+			}
+	        
+			// rotation
+			core::matrix4 mat;
+			rotation.getMatrix_transposed(mat);		
 
-        m1[0] += position.X*m1[3];
-        m1[1] += position.Y*m1[3];
-        m1[2] += position.Z*m1[3];
+			// position	
+			f32 *m1 = mat.pointer();
 
-        m1[4] += position.X*m1[7];
-        m1[5] += position.Y*m1[7];
-        m1[6] += position.Z*m1[7];
+			m1[0] += position.X*m1[3];
+			m1[1] += position.Y*m1[3];
+			m1[2] += position.Z*m1[3];
 
-        m1[8] += position.X*m1[11];
-        m1[9] += position.Y*m1[11];
-        m1[10] += position.Z*m1[11];
+			m1[4] += position.X*m1[7];
+			m1[5] += position.Y*m1[7];
+			m1[6] += position.Z*m1[7];
 
-        m1[12] += position.X*m1[15];
-        m1[13] += position.Y*m1[15];
-        m1[14] += position.Z*m1[15];
-	
-        // scale
-        m1[0] *= scale.X;
-        m1[1] *= scale.X;
-        m1[2] *= scale.X;
-        m1[3] *= scale.X;
+			m1[8] += position.X*m1[11];
+			m1[9] += position.Y*m1[11];
+			m1[10] += position.Z*m1[11];
 
-        m1[4] *= scale.Y;
-        m1[5] *= scale.Y;
-        m1[6] *= scale.Y;
-        m1[7] *= scale.Y;
+			m1[12] += position.X*m1[15];
+			m1[13] += position.Y*m1[15];
+			m1[14] += position.Z*m1[15];
+		
+			// scale
+			m1[0] *= scale.X;
+			m1[1] *= scale.X;
+			m1[2] *= scale.X;
+			m1[3] *= scale.X;
 
-        m1[8] *= scale.Z;
-        m1[9] *= scale.Z;
-        m1[10] *= scale.Z;
-        m1[11] *= scale.Z;
+			m1[4] *= scale.Y;
+			m1[5] *= scale.Y;
+			m1[6] *= scale.Y;
+			m1[7] *= scale.Y;
 
-        // update current relative matrix
-        AnimationMatrixLayer[i] = mat;
-	
-        // translate collada mesh node
-        if ( ColladaMesh && m_gameAnimation[i].isNullAnimation() == false )
-        {
-            AnimationMatrixLayer[i] *= ColladaMesh->InvBindShapeMatrix;
-        }
+			m1[8] *= scale.Z;
+			m1[9] *= scale.Z;
+			m1[10] *= scale.Z;
+			m1[11] *= scale.Z;		
+
+			// update current relative matrix
+			AnimationMatrixLayer[i] = mat;
+		
+			core::vector3df rot = mat.getRotationDegrees();
+
+			// translate collada mesh node
+			if ( ColladaMesh )
+			{
+				AnimationMatrixLayer[i] *= ColladaMesh->InvBindShapeMatrix;
+			}
+		}
     }
 }
 
@@ -1373,15 +1384,15 @@ void CGameColladaSceneNode::render()
 		for ( int i = 0, n = ColladaMesh->Joints.size(); i < n; i++ )
 		{
 			CGameColladaMesh::SJoint& j = ColladaMesh->Joints[i];
-			if ( j.node )
+			if ( j.node && j.node->isEnableBoneBBox() )
 			{
 				video::SMaterial debug_mat;
 				debug_mat.Lighting = false;
-				debug_mat.AntiAliasing = 0;
+				debug_mat.AntiAliasing = 0;				
 
-				driver->setMaterial(debug_mat);				
-				driver->setTransform(video::ETS_WORLD, j.node->getAbsoluteTransformation() );
-				driver->draw3DBox( j.bbBox, video::SColor(255,255,0,0));
+				driver->setMaterial(debug_mat);
+				driver->setTransform(video::ETS_WORLD, j.node->getAbsoluteTransformation());
+				driver->draw3DBox(j.bbBox, video::SColor(255,255,0,0));
 			}
 		}
 #endif

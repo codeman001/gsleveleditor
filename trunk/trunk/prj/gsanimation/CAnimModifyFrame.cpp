@@ -8,8 +8,9 @@
 
 int k_menuShowNode = 0;
 int k_menuEnableNode = 1;
-int k_menuEnableAllChildNode = 3;
-int k_menuDisableAllChildNode = 4;
+int k_menuEnableBoneBBox = 3;
+int k_menuEnableAllChildNode = 5;
+int k_menuDisableAllChildNode = 6;
 
 CTreeContainer::CTreeContainer( LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pParent )
 	:uiWindow( lpTitle, x,y,w,h, pParent )
@@ -31,6 +32,10 @@ CTreeContainer::CTreeContainer( LPWSTR lpTitle, int x, int y, int w, int h, uiWi
 	item->setEventOnClick<CTreeContainer, &CTreeContainer::_onMenuCommand>( this );
 
 	item = m_treePopupMenu->appendMenuItem(L"Enable node");
+	item->setEventOnClick<CTreeContainer, &CTreeContainer::_onMenuCommand>( this );
+
+	m_treePopupMenu->appendMenuItem();
+	item = m_treePopupMenu->appendMenuItem(L"Enable bone bbBox");
 	item->setEventOnClick<CTreeContainer, &CTreeContainer::_onMenuCommand>( this );
 
 	m_treePopupMenu->appendMenuItem();
@@ -82,6 +87,7 @@ LRESULT	CTreeContainer::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lP
 			// disable enable node item
 			m_treePopupMenu->getItem(k_menuEnableNode)->setDisable(true);
 			((uiMenuItem*)m_treePopupMenu->getItem(k_menuEnableNode))->setCheck(false);
+						
 
 			if ( m_clickTreeItem && colladaNode )
 			{
@@ -95,6 +101,12 @@ LRESULT	CTreeContainer::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lP
 				// set check on node item
 				m_treePopupMenu->getItem(k_menuEnableNode)->setDisable(false);
 				((uiMenuItem*)m_treePopupMenu->getItem(k_menuEnableNode))->setCheck( colladaNode->isEnableAnim() );
+
+
+				// disable enable node item
+				bool checkBoneBBox = colladaNode->isEnableBoneBBox();
+				m_treePopupMenu->getItem(k_menuEnableBoneBBox)->setDisable(false);
+				((uiMenuItem*)m_treePopupMenu->getItem(k_menuEnableBoneBBox))->setCheck(checkBoneBBox);
 			}			
 			
 			// popup menu
@@ -129,6 +141,17 @@ void CTreeContainer::_onMenuCommand( uiObject *pSender )
 			if ( node )
 			{
 				node->setEnableAnim( !node->isEnableAnim() );
+			}
+		}
+	}
+	else if ( pos == k_menuEnableBoneBBox )
+	{
+		if ( m_clickTreeItem )
+		{			
+			CGameColladaSceneNode *node = (CGameColladaSceneNode*) m_clickTreeItem->getData();
+			if ( node )
+			{
+				node->setBoneBBox(!node->isEnableBoneBBox() );
 			}
 		}
 	}

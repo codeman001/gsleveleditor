@@ -372,7 +372,7 @@ class CGameAnimation
 protected:
 	CGameAnimationTrack		m_animTrack[MAX_ANIMTRACK];
 	bool					m_nullAnimation;
-	
+	bool					m_haveAnim;
 	bool					m_isEnable;
     float                   m_weight;
 public:
@@ -445,6 +445,13 @@ public:
 	inline bool isEnable()
 	{
 		return m_isEnable;
+	}
+
+	// isHaveAnim
+	// check have anim
+	inline bool isHaveAnim()
+	{
+		return m_haveAnim;
 	}
 
     // setAnimLayerWeight
@@ -662,6 +669,16 @@ public:
 		return m_hideTerrainNode;
 	}
 
+	bool isEnableBoneBBox()
+	{
+		return m_enableBoneBBox;
+	}
+
+	void setBoneBBox(bool b)
+	{
+		m_enableBoneBBox = b;
+	}
+
 #ifdef GSANIMATION
 protected:
 	int m_renderRotate;
@@ -768,6 +785,7 @@ public:
 protected:	
 	u32				m_timer;	
 
+	bool			m_enableBoneBBox;
 	bool			m_isSkydome;
 	bool			m_terrainNode;
 	bool			m_hideTerrainNode;

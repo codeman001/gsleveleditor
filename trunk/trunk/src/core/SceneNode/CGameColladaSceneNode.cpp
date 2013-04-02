@@ -909,8 +909,8 @@ void CGameColladaSceneNode::updateAbsolutePosition()
         if ( m_gameAnimation[i].isEnable() == false )
             continue;
         
-        //RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(), AnimationMatrixLayer[i]);	
-		RelativeMatrix = AnimationMatrixLayer[i];
+		// apply custom transform (skybox) with anim matrix
+		RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(), AnimationMatrixLayer[i]);			
 
         // calc absolute animation
         if ( m_isRootColladaNode == true )

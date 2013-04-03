@@ -93,7 +93,7 @@ public:
 
 	// setStateForSelectObject
 	// set state for select object
-	virtual void setStateForSelectObject( CGameObject::ObjectState state );
+	virtual void setStateForSelectObject( CGameObject::EObjectState state );
 
 	// clearSelect
 	// clear all select

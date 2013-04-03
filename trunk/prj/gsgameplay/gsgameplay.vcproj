@@ -981,6 +981,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="gameMatch"
+				>
+				<File
+					RelativePath="..\..\src\gameMatch\IGameMatch.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\gsgameplay.cpp"

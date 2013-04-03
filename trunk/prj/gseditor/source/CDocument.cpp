@@ -625,7 +625,7 @@ void CDocument::loadListSelectObj()
 
 // setStateForSelectObject
 // set state for select object
-void CDocument::setStateForSelectObject( CGameObject::ObjectState state )
+void CDocument::setStateForSelectObject( CGameObject::EObjectState state )
 {
 	ArrayGameObjectIter i = m_selectObjects.begin(), iEnd = m_selectObjects.end();
 	while ( i != iEnd )

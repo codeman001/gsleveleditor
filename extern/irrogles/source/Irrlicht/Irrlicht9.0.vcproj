@@ -2784,26 +2784,6 @@
 						>
 					</File>
 				</Filter>
-				<Filter
-					Name="Direct3D11"
-					>
-					<File
-						RelativePath=".\CD3D11Driver.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\CD3D11Driver.h"
-						>
-					</File>
-					<File
-						RelativePath=".\CD3D11Texture.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\CD3D11Texture.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="irr"

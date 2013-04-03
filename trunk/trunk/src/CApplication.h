@@ -56,9 +56,9 @@ public:
 	// notify change size of window
 	void notifyResizeWin(int w, int h);
 
-	// notifyTouchEvent
+	// notifyETouchEvent
 	// touch on device
-	void notifyTouchEvent(CTouchManager::TouchEvent touchEvent, int x, int y, int id);
+	void notifyETouchEvent(CTouchManager::ETouchEvent touchEvent, int x, int y, int id);
     
     // notifyChangeOrientation
     // change orientation

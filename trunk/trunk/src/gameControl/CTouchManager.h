@@ -6,7 +6,7 @@
 class CTouchManager
 {
 public:
-	enum TouchEvent
+	enum ETouchEvent
 	{
 		TouchNone = 0,
 		TouchDown,
@@ -16,7 +16,7 @@ public:
 
 	struct STouchStatus
 	{
-		TouchEvent	touchEvent;		
+		ETouchEvent	touchEvent;		
 		int			x;
 		int			y;
         bool        doTouchDown;
@@ -40,7 +40,7 @@ public:
 
 	// touchEvent
 	// update touch event
-	void touchEvent(TouchEvent touchEvent, int x, int y, int id);
+	void touchEvent(ETouchEvent touchEvent, int x, int y, int id);
 };
 
 #endif

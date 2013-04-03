@@ -9,7 +9,7 @@ public:
 	static const char *s_compType[];
 
 public:
-	enum ComponentType
+	enum EComponentType
 	{
 		PlayerComponent = IObjectComponent::NumBuildInComponent,
 		NetworkPlayerComponent,

@@ -7,7 +7,7 @@
 class CUIButton: public CUIWidget
 {
 public:
-	enum ButtonState
+	enum EButtonState
 	{
 		ButtonNormal = 0,
 		ButtonInvisible,
@@ -17,8 +17,8 @@ public:
 	};
     
 protected:
-	ButtonState m_buttonState;
-	ButtonState m_buttonLastState;
+	EButtonState m_buttonState;
+	EButtonState m_buttonLastState;
     bool        m_mouseOver;
     
 public:
@@ -30,20 +30,20 @@ public:
 	// update per frame
 	virtual void update();
 
-	// onTouchEvent
+	// onETouchEvent
 	// update touch event
 	virtual bool onEvent( const SEvent& gameEvent);
 
 	// getButtonState
 	// set button state
-	inline ButtonState getButtonState()
+	inline EButtonState getButtonState()
 	{
 		return m_buttonState;
 	}
 
 	// setButtonState
 	// set button state
-	void setButtonState(ButtonState state)
+	void setButtonState(EButtonState state)
 	{
 		m_buttonState = state;
 	}

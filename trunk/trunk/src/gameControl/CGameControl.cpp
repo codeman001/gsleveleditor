@@ -84,7 +84,7 @@ bool CGameControl::OnEvent(const SEvent& event)
             
     if ( event.EventType == EET_MOUSE_INPUT_EVENT )
     {
-		handleTouchEvent( event );
+		handleETouchEvent( event );
     }	
 	else if ( event.EventType == EET_KEY_INPUT_EVENT )
 	{		
@@ -96,9 +96,9 @@ bool CGameControl::OnEvent(const SEvent& event)
 
 
 
-// handleTouchEvent
+// handleETouchEvent
 // when player touch on screen
-bool CGameControl::handleTouchEvent(const SEvent& event)
+bool CGameControl::handleETouchEvent(const SEvent& event)
 {
 #if defined (IOS) || defined (ANDROID)
 	IrrlichtDevice *device = getIView()->getDevice();

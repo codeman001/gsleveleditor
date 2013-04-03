@@ -129,7 +129,7 @@ void CUIWidget::update()
 	}
 }
 
-// onTouchEvent
+// onETouchEvent
 // update touch event
 bool CUIWidget::onEvent(const SEvent& gameEvent)
 {

@@ -28,7 +28,7 @@ void CUIHoldButton::setVisible( bool b )
 	m_flashObj.setVisible(b);
 }
 
-// onTouchEvent
+// onETouchEvent
 // update touch event
 bool CUIHoldButton::onEvent( const SEvent& gameEvent)
 {

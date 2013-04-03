@@ -9,7 +9,7 @@ class CGameObject;
 class IObjectComponent
 {
 public:
-	enum ComponentType
+	enum EComponentType
 	{
 		AnimMesh,
 		StaticMesh,

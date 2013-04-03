@@ -23,7 +23,7 @@ public:
 	// update per frame
 	virtual void update();
 
-	// onTouchEvent
+	// onETouchEvent
 	// update touch event
 	virtual bool onEvent( const SEvent& gameEvent);
     

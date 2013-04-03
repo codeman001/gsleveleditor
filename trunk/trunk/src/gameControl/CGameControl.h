@@ -91,9 +91,9 @@ public:
     
 protected:
 
-	// handleTouchEvent
+	// handleETouchEvent
 	// when player touch on screen
-	bool handleTouchEvent(const SEvent& event);
+	bool handleETouchEvent(const SEvent& event);
 
 	// handleKeyEvent
 	// when player press a key

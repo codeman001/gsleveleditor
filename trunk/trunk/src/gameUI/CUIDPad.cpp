@@ -27,7 +27,7 @@ void CUIDPad::update()
 	CUIWidget::update();
 }
 
-// onTouchEvent
+// onETouchEvent
 // update touch event
 bool CUIDPad::onEvent( const SEvent& gameEvent)
 {

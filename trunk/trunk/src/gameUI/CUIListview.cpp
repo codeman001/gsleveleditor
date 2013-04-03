@@ -28,7 +28,7 @@ void CUIListviewItem::update()
 	CUIWidget::update();
 }
 
-// onTouchEvent
+// onETouchEvent
 // update touch event
 bool CUIListviewItem::onEvent( const SEvent& gameEvent)
 {
@@ -149,7 +149,7 @@ void CUIListview::update()
 	updateItemPosition();
 }
 
-// onTouchEvent
+// onETouchEvent
 // update touch event
 bool CUIListview::onEvent( const SEvent& gameEvent)
 {

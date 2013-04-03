@@ -58,7 +58,7 @@ public:
 	static core::vector3df s_oy;
 	static core::vector3df s_oz;
 
-	enum ObjectType
+	enum EObjectType
 	{
 		GameObject,
 		ZoneObject,
@@ -69,7 +69,7 @@ public:
 		NumObject
 	};
 	
-	enum ObjectState
+	enum EObjectState
 	{
 		Normal = 0,
 		Move,
@@ -88,8 +88,8 @@ protected:
 #endif
 	std::wstring		m_objectTemplate;
 
-	ObjectType			m_objectType;
-	ObjectState			m_objectState;
+	EObjectType			m_objectType;
+	EObjectState			m_objectState;
 
 	core::vector3df		m_position;
 	core::vector3df		m_rotation;
@@ -260,21 +260,21 @@ public:
 
 	// setObjectState
 	// set state for object
-	inline void setObjectState( ObjectState state )
+	inline void setObjectState( EObjectState state )
 	{
 		m_objectState = state;
 	}
 
 	// getObjectState
 	// get state of object
-	inline ObjectState getObjectState()
+	inline EObjectState getObjectState()
 	{
 		return m_objectState;
 	}
 
 	// getObjectType
 	// get object type
-	inline ObjectType getObjectType()
+	inline EObjectType getObjectType()
 	{
 		return m_objectType;
 	}

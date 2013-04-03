@@ -260,9 +260,9 @@ void CApplication::notifyResizeWin(int w, int h)
 	m_resizeWin = true;
 }
 
-// notifyTouchEvent
+// notifyETouchEvent
 // touch on device
-void CApplication::notifyTouchEvent(CTouchManager::TouchEvent touchEvent, int x, int y, int id)
+void CApplication::notifyETouchEvent(CTouchManager::ETouchEvent touchEvent, int x, int y, int id)
 {
     E_ORIENTATION orientation = m_driver->getOrientation();
     if ( orientation == video::EOO_90 )

@@ -61,7 +61,7 @@ void CGameGrassSceneNode::render()
 	
 
 #ifdef GSEDITOR
-	CGameObject::ObjectState state = m_owner->getObjectState();
+	CGameObject::EObjectState state = m_owner->getObjectState();
 	
 	// draw bbox on select
 	if ( 

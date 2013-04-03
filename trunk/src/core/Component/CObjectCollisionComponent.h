@@ -13,14 +13,14 @@ protected:
 		ISceneNode	*node;
 	};
 public:
-	enum CollisionType
+	enum ECollisionType
 	{
 		BoudingBox = 0,
 		Triangle,
 		OctreeTriange
 	};
 
-	CollisionType	m_collisionType;
+	ECollisionType	m_collisionType;
 	int				m_collisionData;
 
 public:

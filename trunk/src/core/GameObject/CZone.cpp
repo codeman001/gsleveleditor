@@ -303,7 +303,7 @@ void CZone::loadData( CSerializable *pObj )
 	{
 		if ( strcmp(s_stringObjType[i], type) == 0 )
 		{
-			m_objectType = (CGameObject::ObjectType)i;
+			m_objectType = (CGameObject::EObjectType)i;
 			break;
 		}
 	}
@@ -353,7 +353,7 @@ void CZone::updateData( CSerializable* pObj )
 	{
 		if ( strcmp(s_stringObjType[i], type) == 0 )
 		{
-			m_objectType = (CGameObject::ObjectType)i;
+			m_objectType = (CGameObject::EObjectType)i;
 			break;
 		}
 	}

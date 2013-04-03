@@ -148,7 +148,7 @@ void CObjectCollisionComponent::loadData( CSerializable* pObj )
 	if ( type > CObjectCollisionComponent::OctreeTriange || type < 0 )
 		m_collisionType = CObjectCollisionComponent::BoudingBox;
 	else
-		m_collisionType = (CollisionType)type;
+		m_collisionType = (ECollisionType)type;
 
 	// read collision data
 	m_collisionData = pObj->readInt();

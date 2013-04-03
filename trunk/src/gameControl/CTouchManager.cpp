@@ -111,7 +111,7 @@ int CTouchManager::getTouchID(int deviceID)
 
 // touchEvent
 // update touch event
-void CTouchManager::touchEvent(TouchEvent touchEvent, int x, int y, int id)
+void CTouchManager::touchEvent(ETouchEvent touchEvent, int x, int y, int id)
 {
 	int touchID = getTouchID( id );
 	if ( touchID == -1 )

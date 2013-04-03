@@ -9,12 +9,12 @@
 
 #include "core/TextureManager/CTextureManager.h"
 
-CStateGameLoading::CStateGameLoading()
+CStateGameLoading::CStateGameLoading(IGameMatch::EGameMatchType gameMatch)
 	:CGameState( CGameState::GSStateGameLoading )
 {	
 	m_beginLoading = false;
 
-	CStateGameplay *gameplay = new CStateGameplay();
+	CStateGameplay *gameplay = new CStateGameplay(gameMatch);
 	
 	m_levelLoad = gameplay->getLevel();
 	m_levelLoad->loadLevel( CGameLevel::getLevelProperty("levelLoad") );

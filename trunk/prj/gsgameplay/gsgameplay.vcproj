@@ -985,6 +985,22 @@
 				Name="gameMatch"
 				>
 				<File
+					RelativePath="..\..\src\gameMatch\CBaseGameMatch.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameMatch\CBaseGameMatch.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameMatch\CGameMatchSolo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameMatch\CGameMatchSolo.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\gameMatch\IGameMatch.h"
 					>
 				</File>

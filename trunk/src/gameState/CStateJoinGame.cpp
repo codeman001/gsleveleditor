@@ -140,7 +140,7 @@ void CStateJoinGame::onUpdate()
 		setFxAllStateVisible(CGameState::StateCount, false);
 
 		CGameStateMgr::getInstance()->popAllState();
-		CGameStateMgr::getInstance()->pushState( new CStateGameLoading() );
+		CGameStateMgr::getInstance()->pushState( new CStateGameLoading( IGameMatch::SoloMode ) );
 
 		m_joinGame = false;
 	}

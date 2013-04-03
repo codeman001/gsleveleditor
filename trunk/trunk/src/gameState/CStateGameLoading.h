@@ -2,6 +2,7 @@
 #define _STATE_GAMELOADING_
 
 #include "CGameState.h"
+#include "gameMatch/IGameMatch.h"
 
 class CStateGameLoading: public CGameState
 {
@@ -13,7 +14,7 @@ protected:
 
 	bool			m_beginLoading;
 public:
-	CStateGameLoading();
+	CStateGameLoading(IGameMatch::EGameMatchType gameMatch);
 	virtual ~CStateGameLoading();
 
 	virtual void onCreate();	

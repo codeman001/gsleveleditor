@@ -3,19 +3,18 @@
 
 #include "stdafx.h"
 #include "CGameState.h"
+#include "gameMatch/IGameMatch.h"
 
 class CStateGameplay: public CGameState
 {
 protected:	
-	CGameLevel		*m_level;
-    
-	CUIDPad*	m_dpad;
-	CUIHoldButton*	m_btnRunFast;
-	CUIHoldButton*	m_btnShoot;
-	CUIButton*	m_btnPause;
+	CGameLevel		*m_level;	
+
+	IGameMatch::EGameMatchType	m_gameMatchType;
+	IGameMatch*					m_gameMatch;
 
 public:
-	CStateGameplay();
+	CStateGameplay(IGameMatch::EGameMatchType gameMatch);
 	virtual ~CStateGameplay();
 
 	virtual void onCreate();	

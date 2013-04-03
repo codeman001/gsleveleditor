@@ -86,7 +86,7 @@ public:
     // action
     void setRunParameter(float f, float runRot);
     void setRunMode(bool run);
-    void setRunFatMode(bool runFast);
+    void setRunFastMode(bool runFast);
     void setShootMode(bool shoot, bool reload);
     
 protected:

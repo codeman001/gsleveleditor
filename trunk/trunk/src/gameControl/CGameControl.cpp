@@ -63,7 +63,7 @@ void CGameControl::setRunMode(bool run)
     m_runState = run;
 }
 
-void CGameControl::setRunFatMode(bool runFast)
+void CGameControl::setRunFastMode(bool runFast)
 {
     m_runFastState = runFast;
 }

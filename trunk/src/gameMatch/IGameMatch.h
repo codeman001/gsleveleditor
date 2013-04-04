@@ -13,6 +13,7 @@ public:
 		TeamMode,
 		TeamBombMode,
 		ZombieSolo,
+		MatchCount,
 	};
 	
 	enum EMatchState
@@ -21,6 +22,8 @@ public:
 		MatchPlaying,
 		MatchEnd
 	};
+public:
+	static const char *s_stringOfMatch[];
 
 protected:
 	EGameMatchType	m_matchType;

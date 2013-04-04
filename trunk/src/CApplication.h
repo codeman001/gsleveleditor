@@ -7,10 +7,14 @@
 #include "CBinaryUtils.h"
 #include "CDaeUtils.h"
 
+#include "CParticleComponent.h"
+#include "CColladaMeshComponent.h"
+
 #include "gameState/CStateInit.h"
 #include "gameState/CGameStateManager.h"
 #include "gameLevel/CGameLevel.h"
 #include "gameDebug/CGameDebug.h"
+#include "gameConfig/CGameConfig.h"
 #include "gameControl/CTouchManager.h"
 #include "gameControl/CGameControl.h"
 #include "core/TextureManager/CTextureManager.h"

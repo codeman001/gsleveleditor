@@ -76,7 +76,7 @@ public:
 
 };
 
-typedef std::vector<CObjectTemplate>				ArrayTemplate;
+typedef std::vector<CObjectTemplate>			ArrayTemplate;
 typedef std::vector<CObjectTemplate>::iterator	ArrayTemplateIter;
 
 #endif

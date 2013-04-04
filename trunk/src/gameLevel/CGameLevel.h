@@ -22,8 +22,8 @@ class CGameLevel
 protected:
 	ArrayZone		m_zones;
 
-	CGameCamera	*	m_activeCamera;
-	CZone*			m_activeZone;
+	CGameCamera		*m_activeCamera;
+	CZone			*m_activeZone;
 
 	// for load level	
 	char*			m_loadLevelBuffer;
@@ -144,6 +144,20 @@ public:
 	// getCamera
 	// get current camera
 	CGameCamera* getCamera();
+
+	// setActiveZone
+	// set current zone
+	inline void setActiveZone(CZone *z)
+	{
+		m_activeZone = z;
+	}
+
+	// getActiveZone
+	// get current zone
+	CZone* getActiveZone()
+	{
+		return m_activeZone;
+	}
 
 	// checkTerrainCollide
 	// check terrain collide

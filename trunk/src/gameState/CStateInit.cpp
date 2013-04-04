@@ -6,6 +6,7 @@
 #include "CGameStateManager.h"
 
 #include "IView.h"
+#include "gameConfig/CGameConfig.h"
 
 //#define OPEN_GAMEPLAY	"data/level/levelGameM1.lv"
 
@@ -67,6 +68,8 @@ void CStateInit::onUpdate()
 		fileSystem->addZipFileArchive( getIView()->getPhysicPath("_textureTGA.zip") );
 	#endif
 #endif
+		// load game config
+		CGameConfig::getInstance()->initConfig();
 
 		// load all template
 		CObjTemplateFactory::loadAllObjectTemplate();

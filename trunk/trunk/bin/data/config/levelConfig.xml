@@ -1,0 +1,11 @@
+<levelConfig>
+	<gameMode type="SoloMode">
+		<level name="TXT_LEVEL1" des="TXT_DES_LEVEL1" resource="data/level/levelGameM1.lv" thumbnail=""/>
+	</gameMode>
+	<gameMode type="TeamMode">
+	</gameMode>
+	<gameMode type="TeamBombMode">
+	</gameMode>
+	<gameMode type="ZombieSolo">
+	</gameMode>
+</levelConfig>

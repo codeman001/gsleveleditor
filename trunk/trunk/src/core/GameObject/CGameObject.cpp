@@ -12,6 +12,8 @@
 #endif
 
 long CGameObject::s_objectID = 1;
+std::map<long,long>	CGameObject::s_mapObjIDOnFileSaved;
+bool CGameObject::s_repairIDMode = false;
 
 core::vector3df CGameObject::s_ox	= core::vector3df(1.0f, 0.0f, 0.0f);
 core::vector3df CGameObject::s_oy	= core::vector3df(0.0f, 1.0f, 0.0f);
@@ -355,9 +357,25 @@ void CGameObject::loadData( CSerializable* pObj )
 {	
 	pObj->nextRecord();
 
-	m_objectID	= pObj->readLong();
-
+	long objectID = pObj->readLong();
 	long parentID = pObj->readLong();
+
+	if ( s_repairIDMode == true )
+	{
+		// save id
+		s_mapObjIDOnFileSaved[objectID] = m_objectID;
+
+		// get real parent
+		if ( s_mapObjIDOnFileSaved.find(parentID) == s_mapObjIDOnFileSaved.end() )
+			parentID = -1;
+		else
+			parentID = s_mapObjIDOnFileSaved[parentID];
+	}
+	else
+	{
+		m_objectID = objectID;
+	}
+
 	if ( parentID == -1 )
 		setParent( NULL );
 	else
@@ -465,9 +483,25 @@ void CGameObject::updateData( CSerializable* pObj )
 {
 	pObj->nextRecord();
 
-	m_objectID	= pObj->readLong();
-
+	long objectID = pObj->readLong();
 	long parentID = pObj->readLong();
+
+	if ( s_repairIDMode == true )
+	{
+		// save id
+		s_mapObjIDOnFileSaved[objectID] = m_objectID;
+
+		// get real parent
+		if ( s_mapObjIDOnFileSaved.find(parentID) == s_mapObjIDOnFileSaved.end() )
+			parentID = -1;
+		else
+			parentID = s_mapObjIDOnFileSaved[parentID];
+	}
+	else
+	{
+		m_objectID = objectID;
+	}
+
 	if ( parentID == -1 )
 		setParent( NULL );
 	else

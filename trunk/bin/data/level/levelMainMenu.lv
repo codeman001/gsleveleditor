@@ -4,32 +4,32 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: 3811.8371582 | floatType;
-		cameraY: 5866.3168945 | floatType;
-		cameraZ: 2807.1464844 | floatType;
-		cameraTargetX: -1479.7346191 | floatType;
-		cameraTargetY: 2860.6267090 | floatType;
-		cameraTargetZ: -1641.3300781 | floatType;
+		cameraX: 3421.1726074 | floatType;
+		cameraY: 5532.3911133 | floatType;
+		cameraZ: 2826.2570801 | floatType;
+		cameraTargetX: -1624.1257324 | floatType;
+		cameraTargetY: 2618.4953613 | floatType;
+		cameraTargetZ: -1217.7114258 | floatType;
 		numberObjects: 9 | intType;
 	}
 }
-zone_1
+zone_2
 {
 	Zone Object
 	{
-		objectID: 1 | longType;
+		objectID: 2 | longType;
 		objectType: Zone Object | stringType;
 		objectName: zone1 | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
 	}
 }
-object_2
+object_3
 {
 	Game object
 	{
-		objectID: 2 | longType;
-		parentID: 1 | longType;
+		objectID: 3 | longType;
+		parentID: 2 | longType;
 		objectType: Game Object | stringType;
 		objectName: levelMainMenu | stringType;
 		objectTemplate: levelMainMenu | stringType;
@@ -48,7 +48,7 @@ object_2
 		scaleZ: 1.0000000 | floatType;
 	}
 }
-object_3
+object_4
 {
 	Camera Object
 	{
@@ -59,8 +59,8 @@ object_3
 	}
 	Game object
 	{
-		objectID: 3 | longType;
-		parentID: 1 | longType;
+		objectID: 4 | longType;
+		parentID: 2 | longType;
 		objectType: Camera Object | stringType;
 		objectName: camMain | stringType;
 		objectTemplate:  | stringType;
@@ -95,7 +95,7 @@ object_5
 	Game object
 	{
 		objectID: 5 | longType;
-		parentID: 1 | longType;
+		parentID: 2 | longType;
 		objectType: Trigger Object | stringType;
 		objectName: triggerInitLevel | stringType;
 		objectTemplate:  | stringType;
@@ -125,7 +125,7 @@ object_6
 	Game object
 	{
 		objectID: 6 | longType;
-		parentID: 1 | longType;
+		parentID: 2 | longType;
 		objectType: Waypoint Object | stringType;
 		objectName: cameraInitWayPoint | stringType;
 		objectTemplate:  | stringType;
@@ -155,7 +155,7 @@ object_7
 	Game object
 	{
 		objectID: 7 | longType;
-		parentID: 1 | longType;
+		parentID: 2 | longType;
 		objectType: Waypoint Object | stringType;
 		objectName: waypoint_7 | stringType;
 		objectTemplate:  | stringType;
@@ -185,7 +185,7 @@ object_8
 	Game object
 	{
 		objectID: 8 | longType;
-		parentID: 1 | longType;
+		parentID: 2 | longType;
 		objectType: Waypoint Object | stringType;
 		objectName: waypoint_8 | stringType;
 		objectTemplate:  | stringType;
@@ -215,7 +215,7 @@ object_9
 	Game object
 	{
 		objectID: 9 | longType;
-		parentID: 1 | longType;
+		parentID: 2 | longType;
 		objectType: Waypoint Object | stringType;
 		objectName: waypoint_9 | stringType;
 		objectTemplate:  | stringType;
@@ -250,7 +250,7 @@ object_10
 	Game object
 	{
 		objectID: 10 | longType;
-		parentID: 1 | longType;
+		parentID: 2 | longType;
 		objectType: Trigger Object | stringType;
 		objectName: triggerSkybox | stringType;
 		objectTemplate:  | stringType;

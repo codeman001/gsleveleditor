@@ -195,6 +195,9 @@ extern void getBufferString( char *lpBuffer, char *from, char *to );
 // parse document from data
 bool CDocument::readDocumentFromData( char *lpData )
 {
+	CGameObject::s_mapObjIDOnFileSaved.clear();
+	CGameObject::s_repairIDMode = true;
+
 	char *p = lpData;
 	char *from = p;
 
@@ -293,6 +296,9 @@ bool CDocument::readDocumentFromData( char *lpData )
 			p++;
 		}
 	}
+
+	CGameObject::s_mapObjIDOnFileSaved.clear();
+	CGameObject::s_repairIDMode = false;
 
 	return true;
 }

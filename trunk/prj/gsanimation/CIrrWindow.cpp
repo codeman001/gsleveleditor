@@ -80,7 +80,7 @@ void CIrrWindow::initScene()
 	m_designCamera->setName( L"Design camera" );
 	m_designCamera->setTarget(core::vector3df(0,0,0));
 	m_designCamera->setPosition( core::vector3df(-400, 200, -400) );
-
+	m_designCamera->setFarValue( 100000.0f );
 	// set active camera
 	m_designCamera->getCameraNode()->setFOV( core::degToRad(40.0f) );
 	getIView()->setActiveCamera( m_designCamera );

@@ -295,7 +295,17 @@ void CZone::loadData( CSerializable *pObj )
 	pObj->nextRecord();
 	
 	// object id
-	m_objectID	= pObj->readLong();
+	long objectID	= pObj->readLong();
+	
+	if ( s_repairIDMode == true )
+	{
+		// save id
+		s_mapObjIDOnFileSaved[objectID] = m_objectID;
+	}
+	else
+	{
+		m_objectID = objectID;
+	}
 
 	// object type
 	char *type = pObj->readString();
@@ -345,7 +355,17 @@ void CZone::updateData( CSerializable* pObj )
 	pObj->nextRecord();
 	
 	// object id
-	m_objectID	= pObj->readLong();
+	long objectID = pObj->readLong();
+
+	if ( s_repairIDMode == true )
+	{
+		// save id
+		s_mapObjIDOnFileSaved[objectID] = m_objectID;
+	}
+	else
+	{
+		m_objectID = objectID;
+	}
 
 	// object type
 	char *type = pObj->readString();

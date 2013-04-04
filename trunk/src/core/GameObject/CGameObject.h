@@ -51,8 +51,9 @@ class CGameObject
 #endif
 {	
 public:
-	static long		s_objectID;
-
+	static long					s_objectID;
+	static std::map<long,long>	s_mapObjIDOnFileSaved;
+	static bool					s_repairIDMode;
 public:
 	static core::vector3df s_ox;
 	static core::vector3df s_oy;
@@ -89,7 +90,7 @@ protected:
 	std::wstring		m_objectTemplate;
 
 	EObjectType			m_objectType;
-	EObjectState			m_objectState;
+	EObjectState		m_objectState;
 
 	core::vector3df		m_position;
 	core::vector3df		m_rotation;
@@ -152,6 +153,10 @@ public:
 		m_objectID = id;
 		if ( m_node )
 			m_node->setID( (s32) id );
+
+		// inc aut
+		if ( s_objectID <= m_objectID )
+			s_objectID = m_objectID + 1;
 	}
 
 	// getID

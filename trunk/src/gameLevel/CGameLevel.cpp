@@ -198,6 +198,10 @@ void CGameLevel::loadLevel( const char *lpLevel )
 	m_numObjects = 0;
 	m_numObjectsLoaded = 0;
 
+	// init id
+	CGameObject::s_objectID = 1;
+	CGameObject::s_mapObjIDOnFileSaved.clear();
+	CGameObject::s_repairIDMode = true;
 }
 
 extern void getBufferString( char *lpBuffer, char *from, char *to );
@@ -208,7 +212,7 @@ bool CGameLevel::loadStep( int nStep )
 {
 	if ( m_loadLevelBuffer == NULL )
 		return true;
-	
+
 	int step = 0;
 
 	char *p = m_loadPos;
@@ -361,6 +365,10 @@ bool CGameLevel::loadStep( int nStep )
 	m_loadLevelBuffer = NULL;
 	m_loadPos = NULL;
 	m_loadZone = NULL;
+	
+	// turn off repair id mode
+	CGameObject::s_repairIDMode = false;
+	CGameObject::s_mapObjIDOnFileSaved.clear();
 
 	// load lua script
 	compileGameScript();

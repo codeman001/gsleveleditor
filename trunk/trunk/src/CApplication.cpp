@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "CApplication.h"
 
-#include "CParticleComponent.h"
-#include "CColladaMeshComponent.h"
-
 #ifdef ANDROID
 	#include <android/log.h>
 #endif
@@ -101,7 +98,8 @@ void CApplication::initApplication( IrrlichtDevice* device )
 	CScriptManager::createGetInstance();
 	CColladaAnimationFactory::createGetInstance();
 	CGameDebug::createGetInstance();
-    
+	CGameConfig::createGetInstance();
+
 	// init instance for gamestate
 	CGameStateMgr::createGetInstance();
 	registerEvent( "gameStateMgr", CGameStateMgr::getInstance() );
@@ -139,6 +137,7 @@ void CApplication::destroyApplication()
 	CScriptManager::releaseInstance();
 	CColladaAnimationFactory::releaseInstance();
 	CGameDebug::releaseInstance();
+	CGameConfig::releaseInstance();
 	CGameUI::releaseInstance();
     CGameControl::releaseInstance();
     CTextureManager::releaseInstance();

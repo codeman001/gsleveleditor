@@ -1001,7 +1001,23 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\gameMatch\IGameMatch.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\gameMatch\IGameMatch.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="gameConfig"
+				>
+				<File
+					RelativePath="..\..\src\gameConfig\CGameConfig.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameConfig\CGameConfig.h"
 					>
 				</File>
 			</Filter>

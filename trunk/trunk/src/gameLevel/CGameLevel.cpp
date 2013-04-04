@@ -53,6 +53,9 @@ CGameLevel::CGameLevel()
 	m_loadLevelBuffer = NULL;
 	m_loadPos = NULL;
 	m_loadZone = NULL;
+
+	m_activeZone	= NULL;
+	m_activeCamera	= NULL;
 }
 
 CGameLevel::~CGameLevel()
@@ -202,6 +205,9 @@ void CGameLevel::loadLevel( const char *lpLevel )
 	CGameObject::s_objectID = 1;
 	CGameObject::s_mapObjIDOnFileSaved.clear();
 	CGameObject::s_repairIDMode = true;
+
+	m_activeZone	= NULL;
+	m_activeCamera	= NULL;
 }
 
 extern void getBufferString( char *lpBuffer, char *from, char *to );
@@ -272,6 +278,10 @@ bool CGameLevel::loadStep( int nStep )
 					// register name for search object by name
 					m_loadZone->registerObjectName( m_loadZone );
 					m_numObjectsLoaded++;
+
+					// set first zone is active zone
+					if ( m_activeZone == NULL )
+						m_activeZone = m_loadZone;
 				}
 				else if ( strcmp( objType, strOfType( CGameObject::WaypointObject ) ) == 0 )
 				{
@@ -589,6 +599,7 @@ void CGameLevel::render()
 void CGameLevel::setCamera( CGameCamera* cam )
 {
 	getIView()->setActiveCamera( cam );
+	m_activeCamera = cam;
 }
 
 // getCamera

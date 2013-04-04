@@ -72,3 +72,11 @@ player
 	{
 	}
 }
+spawnPoint
+{
+	Box object component
+	{
+		size: 100.0000000 | floatType;
+		textureFile: data/texture | filePathType;
+	}
+}

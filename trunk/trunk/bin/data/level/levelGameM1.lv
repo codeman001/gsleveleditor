@@ -4,32 +4,32 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: 1775.2773438 | floatType;
-		cameraY: -305.2200623 | floatType;
-		cameraZ: 1767.7601318 | floatType;
-		cameraTargetX: 1214.9215088 | floatType;
-		cameraTargetY: -1108.5356445 | floatType;
-		cameraTargetZ: -558.2733154 | floatType;
-		numberObjects: 16 | intType;
+		cameraX: 3062.7788086 | floatType;
+		cameraY: 284.6772766 | floatType;
+		cameraZ: 2312.4777832 | floatType;
+		cameraTargetX: 741.5507813 | floatType;
+		cameraTargetY: -1037.7811279 | floatType;
+		cameraTargetZ: -457.3981934 | floatType;
+		numberObjects: 18 | intType;
 	}
 }
-zone_1
+zone_2
 {
 	Zone Object
 	{
-		objectID: 1 | longType;
+		objectID: 2 | longType;
 		objectType: Zone Object | stringType;
 		objectName: zone1 | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
 	}
 }
-object_2
+object_3
 {
 	Game object
 	{
-		objectID: 2 | longType;
-		parentID: 1 | longType;
+		objectID: 3 | longType;
+		parentID: 2 | longType;
 		objectType: Game Object | stringType;
 		objectName: levelGameM1 | stringType;
 		objectTemplate: levelGameM1 | stringType;
@@ -53,7 +53,7 @@ object_4
 	Game object
 	{
 		objectID: 4 | longType;
-		parentID: 1 | longType;
+		parentID: 2 | longType;
 		objectType: Game Object | stringType;
 		objectName: levelGameM1Col | stringType;
 		objectTemplate: levelGameM1Col | stringType;
@@ -88,7 +88,7 @@ object_5
 	Game object
 	{
 		objectID: 5 | longType;
-		parentID: 1 | longType;
+		parentID: 2 | longType;
 		objectType: Trigger Object | stringType;
 		objectName: triggerInitLevel | stringType;
 		objectTemplate:  | stringType;
@@ -96,73 +96,18 @@ object_5
 		visible: true | boolType;
 		lighting: true | boolType;
 		lock: true | boolType;
-		positionX: 1779.1599121 | floatType;
-		positionY: -839.6339722 | floatType;
-		positionZ: 1560.0458984 | floatType;
+		positionX: 1969.2833252 | floatType;
+		positionY: -307.0629883 | floatType;
+		positionZ: 454.9422607 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;
-		scaleX: 20.3645535 | floatType;
-		scaleY: 20.3645535 | floatType;
-		scaleZ: 20.3645535 | floatType;
+		scaleX: 50.0000000 | floatType;
+		scaleY: 2.0000000 | floatType;
+		scaleZ: 50.0000000 | floatType;
 	}
 }
-object_6
-{
-	Game object
-	{
-		objectID: 6 | longType;
-		parentID: 1 | longType;
-		objectType: Game Object | stringType;
-		objectName: player | stringType;
-		objectTemplate: player | stringType;
-		enable: true | boolType;
-		visible: true | boolType;
-		lighting: true | boolType;
-		lock: true | boolType;
-		positionX: 1787.7031250 | floatType;
-		positionY: -806.6190186 | floatType;
-		positionZ: 1536.9841309 | floatType;
-		rotationX: 0.0000000 | floatType;
-		rotationY: -186.0000000 | floatType;
-		rotationZ: 0.0000000 | floatType;
-		scaleX: 1.0000000 | floatType;
-		scaleY: 1.0000000 | floatType;
-		scaleZ: 1.0000000 | floatType;
-	}
-}
-object_7
-{
-	Camera Object
-	{
-		targetX: 2416.3496094 | floatType;
-		targetY: -1803.0743408 | floatType;
-		targetZ: 132.7716064 | floatType;
-		targetID: -1 | longType;
-	}
-	Game object
-	{
-		objectID: 7 | longType;
-		parentID: 1 | longType;
-		objectType: Camera Object | stringType;
-		objectName: playerCamera | stringType;
-		objectTemplate:  | stringType;
-		enable: true | boolType;
-		visible: true | boolType;
-		lighting: false | boolType;
-		lock: false | boolType;
-		positionX: 1588.1273193 | floatType;
-		positionY: -258.1444397 | floatType;
-		positionZ: 1888.9677734 | floatType;
-		rotationX: 218.5078888 | floatType;
-		rotationY: 25.2485695 | floatType;
-		rotationZ: 180.0000000 | floatType;
-		scaleX: 1.0000000 | floatType;
-		scaleY: 1.0000000 | floatType;
-		scaleZ: 1.0000000 | floatType;
-	}
-}
-object_9
+object_8
 {
 	Light Object
 	{
@@ -177,8 +122,8 @@ object_9
 	}
 	Game object
 	{
-		objectID: 9 | longType;
-		parentID: 1 | longType;
+		objectID: 8 | longType;
+		parentID: 2 | longType;
 		objectType: Light Object | stringType;
 		objectName: light_9 | stringType;
 		objectTemplate:  | stringType;
@@ -197,7 +142,7 @@ object_9
 		scaleZ: 1.0000000 | floatType;
 	}
 }
-object_11
+object_10
 {
 	Light Object
 	{
@@ -212,8 +157,8 @@ object_11
 	}
 	Game object
 	{
-		objectID: 11 | longType;
-		parentID: 1 | longType;
+		objectID: 10 | longType;
+		parentID: 2 | longType;
 		objectType: Light Object | stringType;
 		objectName: light_11 | stringType;
 		objectTemplate:  | stringType;
@@ -232,7 +177,7 @@ object_11
 		scaleZ: 1.0000000 | floatType;
 	}
 }
-object_13
+object_12
 {
 	Light Object
 	{
@@ -247,8 +192,8 @@ object_13
 	}
 	Game object
 	{
-		objectID: 13 | longType;
-		parentID: 1 | longType;
+		objectID: 12 | longType;
+		parentID: 2 | longType;
 		objectType: Light Object | stringType;
 		objectName: light_13 | stringType;
 		objectTemplate:  | stringType;
@@ -267,7 +212,7 @@ object_13
 		scaleZ: 1.0000000 | floatType;
 	}
 }
-object_15
+object_14
 {
 	Light Object
 	{
@@ -282,8 +227,8 @@ object_15
 	}
 	Game object
 	{
-		objectID: 15 | longType;
-		parentID: 1 | longType;
+		objectID: 14 | longType;
+		parentID: 2 | longType;
 		objectType: Light Object | stringType;
 		objectName: light_15 | stringType;
 		objectTemplate:  | stringType;
@@ -302,7 +247,7 @@ object_15
 		scaleZ: 1.0000000 | floatType;
 	}
 }
-object_17
+object_16
 {
 	Light Object
 	{
@@ -317,8 +262,8 @@ object_17
 	}
 	Game object
 	{
-		objectID: 17 | longType;
-		parentID: 1 | longType;
+		objectID: 16 | longType;
+		parentID: 2 | longType;
 		objectType: Light Object | stringType;
 		objectName: light_17 | stringType;
 		objectTemplate:  | stringType;
@@ -329,6 +274,102 @@ object_17
 		positionX: -3668.3818359 | floatType;
 		positionY: 222.5076294 | floatType;
 		positionZ: 349.8964844 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_17
+{
+	Game object
+	{
+		objectID: 17 | longType;
+		parentID: 2 | longType;
+		objectType: Game Object | stringType;
+		objectName: spawnPoint_17 | stringType;
+		objectTemplate: spawnPoint | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: 1984.1882324 | floatType;
+		positionY: -806.6190186 | floatType;
+		positionZ: 1581.7817383 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_18
+{
+	Game object
+	{
+		objectID: 18 | longType;
+		parentID: 2 | longType;
+		objectType: Game Object | stringType;
+		objectName: spawnPoint_18 | stringType;
+		objectTemplate: spawnPoint | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: 2513.3354492 | floatType;
+		positionY: -806.6190186 | floatType;
+		positionZ: -1739.0314941 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_19
+{
+	Game object
+	{
+		objectID: 19 | longType;
+		parentID: 2 | longType;
+		objectType: Game Object | stringType;
+		objectName: spawnPoint_19 | stringType;
+		objectTemplate: spawnPoint | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: -3972.0000000 | floatType;
+		positionY: -806.6190186 | floatType;
+		positionZ: -772.8338623 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_20
+{
+	Game object
+	{
+		objectID: 20 | longType;
+		parentID: 2 | longType;
+		objectType: Game Object | stringType;
+		objectName: spawnPoint_20 | stringType;
+		objectTemplate: spawnPoint | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: -2907.0463867 | floatType;
+		positionY: -806.6190186 | floatType;
+		positionZ: 830.6371460 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;

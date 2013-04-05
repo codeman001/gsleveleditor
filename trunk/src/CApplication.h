@@ -62,7 +62,7 @@ public:
 
 	// notifyETouchEvent
 	// touch on device
-	void notifyETouchEvent(CTouchManager::ETouchEvent touchEvent, int x, int y, int id);
+	void notifyTouchEvent(CTouchManager::ETouchEvent touchEvent, int x, int y, int id);
     
     // notifyChangeOrientation
     // change orientation

@@ -117,6 +117,10 @@
 		7FEF4F5F15FB376500D2894C /* CTouchManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FEF4F5C15FB376500D2894C /* CTouchManager.cpp */; };
 		7FFA24DD160DA7F90066E646 /* CComms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFA24D9160DA7F90066E646 /* CComms.cpp */; };
 		7FFA24DE160DA7F90066E646 /* CMultiplayerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFA24DB160DA7F90066E646 /* CMultiplayerManager.cpp */; };
+		7FFB723A170F0C3600045E7C /* CBaseGameMatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFB7234170F0C3600045E7C /* CBaseGameMatch.cpp */; };
+		7FFB723B170F0C3600045E7C /* CGameMatchSolo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFB7236170F0C3600045E7C /* CGameMatchSolo.cpp */; };
+		7FFB723C170F0C3600045E7C /* IGameMatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFB7238170F0C3600045E7C /* IGameMatch.cpp */; };
+		7FFB723F170F0C4400045E7C /* CGameConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFB723D170F0C4400045E7C /* CGameConfig.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -351,6 +355,14 @@
 		7FFA24DA160DA7F90066E646 /* CComms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CComms.h; path = Network/CComms.h; sourceTree = "<group>"; };
 		7FFA24DB160DA7F90066E646 /* CMultiplayerManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CMultiplayerManager.cpp; path = Network/CMultiplayerManager.cpp; sourceTree = "<group>"; };
 		7FFA24DC160DA7F90066E646 /* CMultiplayerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CMultiplayerManager.h; path = Network/CMultiplayerManager.h; sourceTree = "<group>"; };
+		7FFB7234170F0C3600045E7C /* CBaseGameMatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CBaseGameMatch.cpp; path = gameMatch/CBaseGameMatch.cpp; sourceTree = "<group>"; };
+		7FFB7235170F0C3600045E7C /* CBaseGameMatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBaseGameMatch.h; path = gameMatch/CBaseGameMatch.h; sourceTree = "<group>"; };
+		7FFB7236170F0C3600045E7C /* CGameMatchSolo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CGameMatchSolo.cpp; path = gameMatch/CGameMatchSolo.cpp; sourceTree = "<group>"; };
+		7FFB7237170F0C3600045E7C /* CGameMatchSolo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGameMatchSolo.h; path = gameMatch/CGameMatchSolo.h; sourceTree = "<group>"; };
+		7FFB7238170F0C3600045E7C /* IGameMatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IGameMatch.cpp; path = gameMatch/IGameMatch.cpp; sourceTree = "<group>"; };
+		7FFB7239170F0C3600045E7C /* IGameMatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IGameMatch.h; path = gameMatch/IGameMatch.h; sourceTree = "<group>"; };
+		7FFB723D170F0C4400045E7C /* CGameConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CGameConfig.cpp; path = gameConfig/CGameConfig.cpp; sourceTree = "<group>"; };
+		7FFB723E170F0C4400045E7C /* CGameConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGameConfig.h; path = gameConfig/CGameConfig.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -454,6 +466,8 @@
 		7FD0BF4E15F4F34400626D90 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				7FFB7233170F0C2300045E7C /* gameMatch */,
+				7FFB722E170F0C1A00045E7C /* gameConfig */,
 				7F609826162F0B860085D3FF /* gameUI */,
 				7FD0BF4F15F4F34400626D90 /* AppInclude.h */,
 				7FD0BF5015F4F34400626D90 /* CApplication.cpp */,
@@ -805,6 +819,28 @@
 			name = Network;
 			sourceTree = "<group>";
 		};
+		7FFB722E170F0C1A00045E7C /* gameConfig */ = {
+			isa = PBXGroup;
+			children = (
+				7FFB723D170F0C4400045E7C /* CGameConfig.cpp */,
+				7FFB723E170F0C4400045E7C /* CGameConfig.h */,
+			);
+			name = gameConfig;
+			sourceTree = "<group>";
+		};
+		7FFB7233170F0C2300045E7C /* gameMatch */ = {
+			isa = PBXGroup;
+			children = (
+				7FFB7234170F0C3600045E7C /* CBaseGameMatch.cpp */,
+				7FFB7235170F0C3600045E7C /* CBaseGameMatch.h */,
+				7FFB7236170F0C3600045E7C /* CGameMatchSolo.cpp */,
+				7FFB7237170F0C3600045E7C /* CGameMatchSolo.h */,
+				7FFB7238170F0C3600045E7C /* IGameMatch.cpp */,
+				7FFB7239170F0C3600045E7C /* IGameMatch.h */,
+			);
+			name = gameMatch;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1015,6 +1051,10 @@
 				7F70B25F16B56C8F00E098D2 /* CBasePlayerState.cpp in Sources */,
 				7F70B26016B56C8F00E098D2 /* CNetworkPlayerComponent.cpp in Sources */,
 				7FC1A11516D90F0A00574176 /* CStateIGM.cpp in Sources */,
+				7FFB723A170F0C3600045E7C /* CBaseGameMatch.cpp in Sources */,
+				7FFB723B170F0C3600045E7C /* CGameMatchSolo.cpp in Sources */,
+				7FFB723C170F0C3600045E7C /* IGameMatch.cpp in Sources */,
+				7FFB723F170F0C4400045E7C /* CGameConfig.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,6 +10,14 @@
 
 #include "gameMatch/IGameMatch.h"
 
+/*
+txtPanelTitle
+btnCreateGame
+btnMainMenu
+listZone
+lstSelectLevel
+*/
+
 const int k_btnCreateGame = 0;
 const int k_btnJointGame = 1;
 

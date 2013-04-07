@@ -16,6 +16,9 @@ btnCreateGame
 btnMainMenu
 listZone
 lstSelectLevel
+itemListSelectLevel
+ txtLevelName
+ txtLevelMode
 */
 
 const int k_btnCreateGame = 0;

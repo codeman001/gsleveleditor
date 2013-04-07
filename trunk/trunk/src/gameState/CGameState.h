@@ -26,6 +26,7 @@ public:
 	{
 		GSStateInit = 0,
 		GSStateMainMenu,
+		GSStateSelectLevel,
 		GSStateJoinGame,
 		GSStateGameLoading,
 		GSStateGameplay,

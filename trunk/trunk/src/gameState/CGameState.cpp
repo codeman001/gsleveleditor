@@ -33,6 +33,7 @@ const char* CGameState::getStateName( EGameState state )
 	static const char* s_stateName[] = {
 		"stateInit",
 		"stateMainMenu",
+		"stateSelectLevel",
 		"stateJoinGame",
 		"stateGameLoading",
 		"stateGameHud",

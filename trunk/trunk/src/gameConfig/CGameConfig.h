@@ -31,7 +31,24 @@ public:
 	void initConfig();
 
 protected:
+	// initLevelConfig
+	// load level info
 	void initLevelConfig();
+
+public:
+	// getNumGameMatch
+	// get num match detected
+	inline int getNumGameMatch()
+	{
+		return (int)m_gameMatchs.size();
+	}
+
+	// getGameMatch
+	// get current match
+	SGameMatch* getGameMatch(int id)
+	{
+		return &m_gameMatchs[id];
+	}
 };
 
 #endif

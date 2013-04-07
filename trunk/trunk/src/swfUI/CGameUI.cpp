@@ -96,9 +96,9 @@ void CGameUI::_fsCallback( gameswf::character *movie, const char *lpCommand, con
 	strcpy(flashEvent.FSEvent.Param, lpParams);
 	
 #if _DEBUG	
-	char string[512] ={0};
-	sprintf(string,"gameswf fscommand '%s' '%s'", lpCommand, lpParams);
-	os::Printer::log( string );
+	//char string[512] ={0};
+	//sprintf(string,"gameswf fscommand '%s' '%s'", lpCommand, lpParams);
+	//os::Printer::log( string );
 #endif
 
 	// post event to device

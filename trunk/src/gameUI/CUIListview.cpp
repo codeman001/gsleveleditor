@@ -97,9 +97,13 @@ bool CUIListviewItem::onEvent( const SEvent& gameEvent)
 // set selected
 void CUIListviewItem::setSelected(bool b)
 {
-	m_selected = false;
-	m_hover = false;
-	m_flashObj.gotoFrame("normal", true);
+	m_selected = b;
+	m_hover = b;
+
+	if ( b == false )
+		m_flashObj.gotoFrame("normal", true);
+	else
+		m_flashObj.gotoFrame("selected", true);
 }
 
 
@@ -110,7 +114,6 @@ void CUIListviewItem::setSelected(bool b)
 CUIListview::CUIListview( const char *name, CUIWidget* parent, CMenuFxObj flashObj )
 	:CUIWidget(name, parent, flashObj)
 {
-	m_focus = -1;
 	m_incId = 0;
 
 	m_yOffset		= 0;
@@ -397,6 +400,18 @@ void CUIListview::updateItemPosition()
             yItem += m_rowHeight;
             m_allRowHeight += m_rowHeight;
         }
+	}
+}
+
+// setSelect
+// select a item
+void CUIListview::setSelect(int index)
+{
+	if ( index >= 0 && index < (int)m_listItems.size() )
+	{
+		CUIListviewItem *item = m_listItems[index];
+		item->setSelected(true);
+		onItemSelect( item, true);
 	}
 }
 

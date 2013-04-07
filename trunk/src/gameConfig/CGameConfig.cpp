@@ -34,6 +34,9 @@ void CGameConfig::initLevelConfig()
 	const std::wstring	gameMatch(L"match");
 	const std::wstring	level(L"level");
 	
+	// clear old value
+	m_gameMatchs.clear();
+
 	std::wstring				match;
 	IGameMatch::EGameMatchType	gameMatchType = IGameMatch::MatchCount;
 

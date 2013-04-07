@@ -804,6 +804,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="CStateSelectLevel"
+					>
+					<File
+						RelativePath="..\..\src\gameState\CStateSelectLevel.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\gameState\CStateSelectLevel.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="gameLevel"

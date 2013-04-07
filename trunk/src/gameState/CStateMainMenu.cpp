@@ -2,24 +2,13 @@
 #include "CStateMainMenu.h"
 
 #include "CStateJoinGame.h"
-#include "CStateGameLoading.h"
+#include "CStateSelectLevel.h"
 #include "CGameStateManager.h"
 
 #include "gameEvent.h"
 #include "IView.h"
 
 #include "gameMatch/IGameMatch.h"
-
-/*
-txtPanelTitle
-btnCreateGame
-btnMainMenu
-listZone
-lstSelectLevel
-itemListSelectLevel
- txtLevelName
- txtLevelMode
-*/
 
 const int k_btnCreateGame = 0;
 const int k_btnJointGame = 1;
@@ -110,10 +99,7 @@ void CStateMainMenu::onFsCommand( const char *command, const char *param )
 			switch ( m_menuChoice )
 			{
 			case k_btnCreateGame:
-				CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
-				CGameLevel::setLevelProperty("isHost","true");
-
-				CGameStateMgr::getInstance()->changeState( new CStateGameLoading( IGameMatch::SoloMode ) );
+				CGameStateMgr::getInstance()->pushState( new CStateSelectLevel() );
 				break;
 			case k_btnJointGame:
 				CGameStateMgr::getInstance()->pushState( new CStateJoinGame() );

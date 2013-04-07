@@ -58,8 +58,7 @@ public:
 class CUIListview: public CUIWidget
 {
 protected:
-	std::vector<CUIListviewItem*>	m_listItems;
-	int							m_focus;
+	std::vector<CUIListviewItem*>	m_listItems;	
 	int							m_incId;
 
 	float						m_fY;
@@ -153,6 +152,10 @@ public:
     {
         m_rowHeight = h;
     }
+
+	// setSelect
+	// select a item
+	void setSelect(int index);
 };
 
 #endif

@@ -11,6 +11,8 @@ protected:
 	CUIHoldButton*	m_btnRunFast;
 	CUIHoldButton*	m_btnShoot;
 
+	CGameObject*	m_player;
+
 public:
 	CGameMatchSolo();
 	virtual ~CGameMatchSolo();

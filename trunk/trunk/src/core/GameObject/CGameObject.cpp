@@ -717,14 +717,9 @@ void CGameObject::createComponent( CSerializable* componentData )
 	
 	pComp = CComponentFactory::loadComponent( this, componentData );
 
-	while ( pComp )
-	{
-		// add component
+	// add component
+	if ( pComp )
 		m_components.push_back( pComp );
-
-		// continue load another component
-		pComp = CComponentFactory::loadComponent( this, componentData );
-	}
 
 	componentData->setCursorRecord( pos );	
 }
@@ -739,16 +734,10 @@ void CGameObject::createNullComponent( CSerializable* componentData )
 	
 	pComp = CComponentFactory::loadComponent( this, componentData, false );
 
-	while ( pComp )
-	{
-		// add component
+	if ( pComp )
 		m_components.push_back( pComp );
 
-		// continue load another component
-		pComp = CComponentFactory::loadComponent( this, componentData, false );
-	}
-
-	componentData->setCursorRecord( pos );	
+	componentData->setCursorRecord( pos );
 }
 
 

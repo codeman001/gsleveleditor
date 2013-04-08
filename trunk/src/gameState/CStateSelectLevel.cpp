@@ -53,17 +53,17 @@ void CStateSelectLevel::onCreate()
 	// default select
 	if ( m_lstSelectLevel->getItemCount() > 0 )
 		m_lstSelectLevel->setSelect(0);
+
+	m_jumpToLoading = false;
 }
 
 void CStateSelectLevel::onDestroy()
 {
+	CGameState::onDestroy();
 }
 
 void CStateSelectLevel::onFsCommand( const char *command, const char *param )
 {
-	//CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
-	//CGameLevel::setLevelProperty("isHost","true");
-	//CGameStateMgr::getInstance()->changeState( new CStateGameLoading( IGameMatch::SoloMode ) );
 }
 
 void CStateSelectLevel::onRender()
@@ -75,6 +75,15 @@ void CStateSelectLevel::onRender()
 void CStateSelectLevel::onUpdate()
 {
 	CGameState::onUpdate();
+
+	if ( m_jumpToLoading == true )
+	{
+		// hide fx flash
+		setFxAllStateVisible(CGameState::StateCount, false);
+
+		CGameStateMgr::getInstance()->popAllState();
+		CGameStateMgr::getInstance()->pushState( new CStateGameLoading( IGameMatch::SoloMode ) );
+	}
 }
 
 void CStateSelectLevel::onEvent(const SEvent& event)
@@ -93,6 +102,15 @@ void CStateSelectLevel::onEvent(const SEvent& event)
 			{
 				if ( m_lstSelectLevel->getItem(i)->isSelected() )
 				{
+					CGameConfig::SLevelInfo *lvInfo = (CGameConfig::SLevelInfo*)m_lstSelectLevel->getItem(i)->getUserData();
+
+					char levelPath[512] = {0};
+					uiString::convertUnicodeToUTF8((unsigned short*)lvInfo->resource.c_str(), levelPath);
+
+					CGameLevel::setLevelProperty("LevelLoad", levelPath);
+					CGameLevel::setLevelProperty("IsHost","true");
+
+					m_jumpToLoading = true;					
 				}
 			}
 		}

@@ -308,7 +308,7 @@ CSerializable* CComponentFactory::getComponent( char *lpName )
 
 // loadComponent
 // create component
-IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializable *data )
+IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializable *data, bool loadData )
 {	
 	int cursor = data->getCursorRecord();
 	char *lpComponentName = data->readString();
@@ -366,7 +366,7 @@ IObjectComponent*	CComponentFactory::loadComponent( CGameObject *pObj, CSerializ
 	}
 
 	// load component data
-	if ( pComp )
+	if ( pComp && loadData )
 		pComp->loadData( data );
 
 	// check not build in component

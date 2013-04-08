@@ -17,7 +17,7 @@ CStateGameLoading::CStateGameLoading(IGameMatch::EGameMatchType gameMatch)
 	CStateGameplay *gameplay = new CStateGameplay(gameMatch);
 	
 	m_levelLoad = gameplay->getLevel();
-	m_levelLoad->loadLevel( CGameLevel::getLevelProperty("levelLoad") );
+	m_levelLoad->loadLevel( CGameLevel::getLevelProperty("LevelLoad") );
 
     // release all main menu texture
 	CColladaCache::freeData();
@@ -43,7 +43,7 @@ void CStateGameLoading::onCreate()
 
 void CStateGameLoading::onDestroy()
 {
-	setFxStateVisible( m_state, false );
+	CGameState::onDestroy();
 }
 
 void CStateGameLoading::onFsCommand( const char *command, const char *param )

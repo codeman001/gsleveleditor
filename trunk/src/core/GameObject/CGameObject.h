@@ -563,6 +563,10 @@ public:
 	// create a component on object
 	virtual void createComponent( CSerializable* componentData );
 	
+	// createNullComponent
+	// create a component on object (with no data)
+	virtual void createNullComponent( CSerializable* componentData );
+
 	// initComponent
 	// init all component on object
 	virtual void initComponent( );

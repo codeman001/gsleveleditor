@@ -3,16 +3,16 @@ debug("compile levelMainMenu.lua")
 
 function triggerInitLevel_enable(triggerID)
 	-- set main camera
-	local cameraID = getObjectByName("camMain")
+	local cameraID = getObjectByName("CamMain")
 	setLevelCamera(cameraID)
 	setCameraFarValue(cameraID, 10000)
 	
 	-- camera move to waypoint
-	local wayPointID =  getObjectByName("cameraInitWayPoint")
+	local wayPointID =  getObjectByName("CameraInitWayPoint")
 	setAnimatorMoveToWayPoint(cameraID, wayPointID, 0.03, true)
 	
 	-- set skybox
-	local levelObjectID = getObjectByName("levelMainMenu")
+	local levelObjectID = getObjectByName("LevelMainMenu")
 	setSceneNodeIsSkydome(levelObjectID,"Object01-node")
 	
 	-- default ambient light
@@ -24,7 +24,7 @@ function triggerSkybox_always(triggerID)
 	x,y,z = getCurrentCameraPosition()
 	
 	-- set skybox position
-	local levelObjectID = getObjectByName("levelMainMenu")
+	local levelObjectID = getObjectByName("LevelMainMenu")
 	setSceneNodePosition(levelObjectID,"Object01-node",x,y,z)
 end
 

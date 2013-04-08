@@ -4,12 +4,12 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: 3421.1726074 | floatType;
-		cameraY: 5532.3911133 | floatType;
-		cameraZ: 2826.2570801 | floatType;
-		cameraTargetX: -1624.1257324 | floatType;
-		cameraTargetY: 2618.4953613 | floatType;
-		cameraTargetZ: -1217.7114258 | floatType;
+		cameraX: 3867.7575684 | floatType;
+		cameraY: 5723.7578125 | floatType;
+		cameraZ: 2665.6918945 | floatType;
+		cameraTargetX: -2161.7990723 | floatType;
+		cameraTargetY: 1745.4487305 | floatType;
+		cameraTargetZ: 1039.5401611 | floatType;
 		numberObjects: 9 | intType;
 	}
 }
@@ -31,8 +31,8 @@ object_3
 		objectID: 3 | longType;
 		parentID: 2 | longType;
 		objectType: Game Object | stringType;
-		objectName: levelMainMenu | stringType;
-		objectTemplate: levelMainMenu | stringType;
+		objectName: LevelMainMenu | stringType;
+		objectTemplate: LevelMainMenu | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: false | boolType;
@@ -62,7 +62,7 @@ object_4
 		objectID: 4 | longType;
 		parentID: 2 | longType;
 		objectType: Camera Object | stringType;
-		objectName: camMain | stringType;
+		objectName: CamMain | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -97,7 +97,7 @@ object_5
 		objectID: 5 | longType;
 		parentID: 2 | longType;
 		objectType: Trigger Object | stringType;
-		objectName: triggerInitLevel | stringType;
+		objectName: TriggerInitLevel | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -127,7 +127,7 @@ object_6
 		objectID: 6 | longType;
 		parentID: 2 | longType;
 		objectType: Waypoint Object | stringType;
-		objectName: cameraInitWayPoint | stringType;
+		objectName: CameraInitWayPoint | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -157,7 +157,7 @@ object_7
 		objectID: 7 | longType;
 		parentID: 2 | longType;
 		objectType: Waypoint Object | stringType;
-		objectName: waypoint_7 | stringType;
+		objectName: Waypoint_7 | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -187,7 +187,7 @@ object_8
 		objectID: 8 | longType;
 		parentID: 2 | longType;
 		objectType: Waypoint Object | stringType;
-		objectName: waypoint_8 | stringType;
+		objectName: Waypoint_8 | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -217,7 +217,7 @@ object_9
 		objectID: 9 | longType;
 		parentID: 2 | longType;
 		objectType: Waypoint Object | stringType;
-		objectName: waypoint_9 | stringType;
+		objectName: Waypoint_9 | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -252,7 +252,7 @@ object_10
 		objectID: 10 | longType;
 		parentID: 2 | longType;
 		objectType: Trigger Object | stringType;
-		objectName: triggerSkybox | stringType;
+		objectName: TriggerSkybox | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;

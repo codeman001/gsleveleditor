@@ -1,4 +1,4 @@
-water
+Water
 {
 	Water component
 	{
@@ -8,7 +8,7 @@ water
 		waterNormalTexture: data/texture/waterNormal.tga | stringType;
 	}
 }
-pointLight
+PointLight
 {
 	Lighting component
 	{
@@ -18,7 +18,7 @@ pointLight
 		radius: 500.0000000 | floatType;
 	}
 }
-levelMainMenu
+LevelMainMenu
 {
 	Collada mesh component
 	{
@@ -30,7 +30,7 @@ levelMainMenu
 		hideTerrain: false | boolType;
 	}
 }
-levelGameM1
+LevelGameM1
 {
 	Collada mesh component
 	{
@@ -43,7 +43,7 @@ levelGameM1
 		enablePointLight: true | boolType;
 	}
 }
-levelGameM1Col
+LevelGameM1Col
 {
 	Collada mesh component
 	{
@@ -55,7 +55,7 @@ levelGameM1Col
 		hideTerrain: true | boolType;
 	}
 }
-player
+Player
 {
 	Collada mesh component
 	{
@@ -72,7 +72,7 @@ player
 	{
 	}
 }
-spawnPoint
+SpawnPoint
 {
 	Box object component
 	{

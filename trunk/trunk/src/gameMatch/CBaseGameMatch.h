@@ -25,6 +25,10 @@ public:
 	// process event
 	virtual void onEvent(const SEvent& event);
 
+	// spawnPlayer
+	// create a player
+	CGameObject* spawn3rdPlayer();
+
 };
 
 #endif

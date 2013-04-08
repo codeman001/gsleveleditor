@@ -221,6 +221,30 @@ CGameObject* CObjTemplateFactory::spawnObject( wchar_t* templateName, CGameObjec
 	return pObj;
 }
 
+// spawnNullObject
+// create a object on template with parent (no load data)
+CGameObject* CObjTemplateFactory::spawnNullObject( wchar_t* templateName, CGameObject *parent )
+{
+	CObjectTemplate *pTemplate = getTemplate( templateName );
+	if ( pTemplate == NULL )
+		return NULL;
+
+	CGameObject *pObj = new CGameObject(parent);
+	ArraySerializable::iterator i =	pTemplate->getAllComponentProperty()->begin(), 
+		end = pTemplate->getAllComponentProperty()->end();
+
+	while ( i != end )
+	{
+		pObj->createNullComponent( &(*i ) );
+		i++;
+	}
+	
+	pObj->setVisible( false );
+	pObj->setObjectTemplate( templateName );
+	pObj->setLighting( false );
+	return pObj;
+}
+
 
 // saveAllObjectTemplate
 // save obj template to file

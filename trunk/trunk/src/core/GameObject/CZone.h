@@ -32,6 +32,10 @@ public:
 	// create a template object
 	CGameObject* createObject( wchar_t* objTemplate );
 
+	// createObject
+	// create a template object
+	CGameObject* createObjectWithNoData( wchar_t* objTemplate );
+
 	// createCamera
 	// create a cameraObject
 	CGameCamera* createCamera();

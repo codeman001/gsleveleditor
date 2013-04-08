@@ -729,6 +729,29 @@ void CGameObject::createComponent( CSerializable* componentData )
 	componentData->setCursorRecord( pos );	
 }
 
+// createNullComponent
+// create a component on object (with no data)
+void CGameObject::createNullComponent( CSerializable* componentData )
+{
+	IObjectComponent *pComp = NULL;
+
+	int pos = componentData->getCursorRecord();
+	
+	pComp = CComponentFactory::loadComponent( this, componentData, false );
+
+	while ( pComp )
+	{
+		// add component
+		m_components.push_back( pComp );
+
+		// continue load another component
+		pComp = CComponentFactory::loadComponent( this, componentData, false );
+	}
+
+	componentData->setCursorRecord( pos );	
+}
+
+
 // initComponent
 // create a component on object
 void CGameObject::initComponent()

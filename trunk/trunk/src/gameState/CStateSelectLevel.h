@@ -10,6 +10,7 @@ protected:
 	CUIButton	*m_btnCreateGame;
 	CUIListview	*m_lstSelectLevel;
 
+	bool		m_jumpToLoading;
 public:
 	CStateSelectLevel();
 	virtual ~CStateSelectLevel();

@@ -50,7 +50,7 @@ public:
 
 	// loadComponent
 	// create component
-	static IObjectComponent*	loadComponent( CGameObject *pObj, CSerializable *data );
+	static IObjectComponent*	loadComponent( CGameObject *pObj, CSerializable *data, bool loadData = true );
 };
 
 #endif

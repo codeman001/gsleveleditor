@@ -54,13 +54,13 @@ void CStateGameplay::onCreate()
 
 	// init multiplayer
 #ifdef HAS_MULTIPLAYER
-	const char *isHost = CGameLevel::getLevelProperty("isHost");
+	const char *isHost = CGameLevel::getLevelProperty("IsHost");
 	if ( strcmp(isHost, "true") == 0 )
 		m_mpMgr = new CMultiplayerManager(true, false);
 	else
     {
-        const char *connectIP = CGameLevel::getLevelProperty("serverIP");
-		short keyID = (short)( atoi(CGameLevel::getLevelProperty("keyID")) );
+        const char *connectIP = CGameLevel::getLevelProperty("ServerIP");
+		short keyID = (short)( atoi(CGameLevel::getLevelProperty("KeyID")) );
 		
 		m_mpMgr = new CMultiplayerManager(false, false, connectIP);
 		m_mpMgr->setKeyID(keyID);

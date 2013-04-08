@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "CBaseGameMatch.h"
 
+#include "gameLevel/CGameLevel.h"
 #include "gameState/CGameStateManager.h"
 #include "gameState/CStateIGM.h"
-
 
 CBaseGameMatch::CBaseGameMatch(IGameMatch::EGameMatchType type)
 	:IGameMatch(type)
@@ -45,4 +45,17 @@ void CBaseGameMatch::onEvent(const SEvent& event)
 		if ( buttonEvent->data == m_btnPause )
 			CGameStateMgr::getInstance()->pushState( new CStateIGM() );
 	}
+}
+
+// spawnPlayer
+// create a player
+CGameObject* CBaseGameMatch::spawn3rdPlayer()
+{
+	CGameLevel *currentLevel = CGameLevel::getCurrentLevel();
+	if ( currentLevel == NULL )
+		return NULL;
+
+	CGameObject *obj = currentLevel->getActiveZone()->createObjectWithNoData(L"Player");
+
+	return obj;
 }

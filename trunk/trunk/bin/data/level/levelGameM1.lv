@@ -4,12 +4,12 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: 3062.7788086 | floatType;
-		cameraY: 284.6772766 | floatType;
-		cameraZ: 2312.4777832 | floatType;
-		cameraTargetX: 741.5507813 | floatType;
-		cameraTargetY: -1037.7811279 | floatType;
-		cameraTargetZ: -457.3981934 | floatType;
+		cameraX: 2969.6867676 | floatType;
+		cameraY: 385.6302490 | floatType;
+		cameraZ: 2342.2912598 | floatType;
+		cameraTargetX: 676.4597168 | floatType;
+		cameraTargetY: -920.8754883 | floatType;
+		cameraTargetZ: -394.1718750 | floatType;
 		numberObjects: 18 | intType;
 	}
 }
@@ -31,8 +31,8 @@ object_3
 		objectID: 3 | longType;
 		parentID: 2 | longType;
 		objectType: Game Object | stringType;
-		objectName: levelGameM1 | stringType;
-		objectTemplate: levelGameM1 | stringType;
+		objectName: LevelGameM1 | stringType;
+		objectTemplate: LevelGameM1 | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: true | boolType;
@@ -55,8 +55,8 @@ object_4
 		objectID: 4 | longType;
 		parentID: 2 | longType;
 		objectType: Game Object | stringType;
-		objectName: levelGameM1Col | stringType;
-		objectTemplate: levelGameM1Col | stringType;
+		objectName: LevelGameM1Col | stringType;
+		objectTemplate: LevelGameM1Col | stringType;
 		enable: true | boolType;
 		visible: false | boolType;
 		lighting: false | boolType;
@@ -90,7 +90,7 @@ object_5
 		objectID: 5 | longType;
 		parentID: 2 | longType;
 		objectType: Trigger Object | stringType;
-		objectName: triggerInitLevel | stringType;
+		objectName: TriggerInitLevel | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -107,7 +107,7 @@ object_5
 		scaleZ: 50.0000000 | floatType;
 	}
 }
-object_8
+object_7
 {
 	Light Object
 	{
@@ -122,10 +122,10 @@ object_8
 	}
 	Game object
 	{
-		objectID: 8 | longType;
+		objectID: 7 | longType;
 		parentID: 2 | longType;
 		objectType: Light Object | stringType;
-		objectName: light_9 | stringType;
+		objectName: Light_9 | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -142,7 +142,7 @@ object_8
 		scaleZ: 1.0000000 | floatType;
 	}
 }
-object_10
+object_9
 {
 	Light Object
 	{
@@ -157,10 +157,10 @@ object_10
 	}
 	Game object
 	{
-		objectID: 10 | longType;
+		objectID: 9 | longType;
 		parentID: 2 | longType;
 		objectType: Light Object | stringType;
-		objectName: light_11 | stringType;
+		objectName: Light_11 | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -177,7 +177,7 @@ object_10
 		scaleZ: 1.0000000 | floatType;
 	}
 }
-object_12
+object_11
 {
 	Light Object
 	{
@@ -192,10 +192,10 @@ object_12
 	}
 	Game object
 	{
-		objectID: 12 | longType;
+		objectID: 11 | longType;
 		parentID: 2 | longType;
 		objectType: Light Object | stringType;
-		objectName: light_13 | stringType;
+		objectName: Light_13 | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -212,7 +212,7 @@ object_12
 		scaleZ: 1.0000000 | floatType;
 	}
 }
-object_14
+object_13
 {
 	Light Object
 	{
@@ -227,10 +227,10 @@ object_14
 	}
 	Game object
 	{
-		objectID: 14 | longType;
+		objectID: 13 | longType;
 		parentID: 2 | longType;
 		objectType: Light Object | stringType;
-		objectName: light_15 | stringType;
+		objectName: Light_15 | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -247,7 +247,7 @@ object_14
 		scaleZ: 1.0000000 | floatType;
 	}
 }
-object_16
+object_15
 {
 	Light Object
 	{
@@ -262,10 +262,10 @@ object_16
 	}
 	Game object
 	{
-		objectID: 16 | longType;
+		objectID: 15 | longType;
 		parentID: 2 | longType;
 		objectType: Light Object | stringType;
-		objectName: light_17 | stringType;
+		objectName: Light_17 | stringType;
 		objectTemplate:  | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
@@ -282,15 +282,15 @@ object_16
 		scaleZ: 1.0000000 | floatType;
 	}
 }
-object_17
+object_16
 {
 	Game object
 	{
-		objectID: 17 | longType;
+		objectID: 16 | longType;
 		parentID: 2 | longType;
 		objectType: Game Object | stringType;
-		objectName: spawnPoint_17 | stringType;
-		objectTemplate: spawnPoint | stringType;
+		objectName: SpawnPoint_17 | stringType;
+		objectTemplate: SpawnPoint | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: false | boolType;
@@ -306,15 +306,15 @@ object_17
 		scaleZ: 1.0000000 | floatType;
 	}
 }
-object_18
+object_17
 {
 	Game object
 	{
-		objectID: 18 | longType;
+		objectID: 17 | longType;
 		parentID: 2 | longType;
 		objectType: Game Object | stringType;
-		objectName: spawnPoint_18 | stringType;
-		objectTemplate: spawnPoint | stringType;
+		objectName: SpawnPoint_18 | stringType;
+		objectTemplate: SpawnPoint | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: false | boolType;
@@ -330,15 +330,15 @@ object_18
 		scaleZ: 1.0000000 | floatType;
 	}
 }
-object_19
+object_18
 {
 	Game object
 	{
-		objectID: 19 | longType;
+		objectID: 18 | longType;
 		parentID: 2 | longType;
 		objectType: Game Object | stringType;
-		objectName: spawnPoint_19 | stringType;
-		objectTemplate: spawnPoint | stringType;
+		objectName: SpawnPoint_19 | stringType;
+		objectTemplate: SpawnPoint | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: false | boolType;
@@ -354,15 +354,15 @@ object_19
 		scaleZ: 1.0000000 | floatType;
 	}
 }
-object_20
+object_19
 {
 	Game object
 	{
-		objectID: 20 | longType;
+		objectID: 19 | longType;
 		parentID: 2 | longType;
 		objectType: Game Object | stringType;
-		objectName: spawnPoint_20 | stringType;
-		objectTemplate: spawnPoint | stringType;
+		objectName: SpawnPoint_20 | stringType;
+		objectTemplate: SpawnPoint | stringType;
 		enable: true | boolType;
 		visible: true | boolType;
 		lighting: false | boolType;

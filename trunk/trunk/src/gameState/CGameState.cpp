@@ -54,6 +54,7 @@ void CGameState::onCreate()
 // on window destroy
 void CGameState::onDestroy()
 {
+	setFxStateVisible( m_state, false );
 }
 
 // onActive	

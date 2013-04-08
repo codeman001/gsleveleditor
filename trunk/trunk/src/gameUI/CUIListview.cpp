@@ -104,6 +104,8 @@ void CUIListviewItem::setSelected(bool b)
 		m_flashObj.gotoFrame("normal", true);
 	else
 		m_flashObj.gotoFrame("selected", true);
+
+	replaceTextOnLabel();
 }
 
 

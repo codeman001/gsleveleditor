@@ -128,13 +128,13 @@ void CStateJoinGame::onUpdate()
 
 	if ( m_joinGame )
 	{
-		CGameLevel::setLevelProperty("levelLoad","data/level/levelGameM1.lv");
-		CGameLevel::setLevelProperty("isHost","false");				
-		CGameLevel::setLevelProperty("serverIP", m_server.c_str());
+		CGameLevel::setLevelProperty("LevelLoad","data/level/levelGameM1.lv");
+		CGameLevel::setLevelProperty("IsHost","false");				
+		CGameLevel::setLevelProperty("ServerIP", m_server.c_str());
 
 		char keyID[512];
 		sprintf(keyID,"%d", m_mpMgr->getKeyID());
-		CGameLevel::setLevelProperty("keyID", keyID);
+		CGameLevel::setLevelProperty("KeyID", keyID);
 
 		// hide fx flash
 		setFxAllStateVisible(CGameState::StateCount, false);

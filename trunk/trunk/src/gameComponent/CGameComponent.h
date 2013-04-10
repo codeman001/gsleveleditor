@@ -15,7 +15,9 @@ public:
 		NetworkPlayerComponent,
         GunLightComponent,
 		BulletRayComponent,
-		LifeTimeComponent
+		LifeTimeComponent,
+		SpawnPointComponent,
+		SpawnPointMgrComponent,
 	};
 
 	// loadComponent

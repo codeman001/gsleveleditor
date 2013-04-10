@@ -4,6 +4,7 @@
 #include "CPlayerComponent.h"
 #include "CNetworkPlayerComponent.h"
 #include "CGunLightComponent.h"
+#include "CSpawnPointComponent.h"
 
 const char *CGameComponent::s_compType[] = 
 {
@@ -11,7 +12,9 @@ const char *CGameComponent::s_compType[] =
 	"Network player component",
     "Gun light component",
 	"Bullet ray component",
-	"Gun light component",
+	"Life time component",
+	"Spawn point component",
+	"Spawn point manager component",
 };
 
 #define	stringOfComponent( type )	CGameComponent::s_compType[ (int)type - (int)CGameComponent::PlayerComponent  ]
@@ -26,7 +29,8 @@ IObjectComponent* CGameComponent::loadComponent( CGameObject *pObj, char *compon
 	static SComponentCreation s_gameComponentCreation[] = {
 		{ stringOfComponent(CGameComponent::PlayerComponent),			newComponent<CPlayerComponent> },
 		{ stringOfComponent(CGameComponent::NetworkPlayerComponent),	newComponent<CNetworkPlayerComponent> },
-		{ stringOfComponent(CGameComponent::GunLightComponent),			newComponent<CGunLightComponent> }
+		{ stringOfComponent(CGameComponent::GunLightComponent),			newComponent<CGunLightComponent> },
+		{ stringOfComponent(CGameComponent::SpawnPointComponent),		newComponent<CSpawnPointComponent> },
 	};
 
 	// search all game component

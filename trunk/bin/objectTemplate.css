@@ -59,7 +59,7 @@ Player
 {
 	Collada mesh component
 	{
-		meshFile: data/mesh/character/hero/hero.scene | filePathType;
+		meshFile:  | filePathType;
 		defaultNode:  | stringType;
 	}
 	Ellipsoid collision component
@@ -78,5 +78,9 @@ SpawnPoint
 	{
 		size: 100.0000000 | floatType;
 		textureFile: data/texture | filePathType;
+	}
+	Spawn point component
+	{
+		teamID: 0 | intType;
 	}
 }

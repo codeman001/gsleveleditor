@@ -11,6 +11,8 @@
 #endif
 
 #include <irrlicht.h>
+#include <IRandomizer.h>
+
 #include <os.h>
 using namespace irr;
 using namespace irr::scene;

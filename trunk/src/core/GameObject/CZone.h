@@ -18,6 +18,7 @@ protected:
 	CContainerObject					*m_particleMgr;
 	CGameObject							*m_shadowMgr;
 	CGameObject							*m_bulletMgr;
+	CGameObject							*m_spawnPointMgr;
 #endif
 
 public:
@@ -131,6 +132,13 @@ public:
 	inline CGameObject* getBulletManager()
 	{
 		return m_bulletMgr;
+	}
+
+	// getSpawnPointManager
+	// return spawn point manager
+	inline CGameObject* getSpawnPointManager()
+	{
+		return m_spawnPointMgr;
 	}
 #endif
 

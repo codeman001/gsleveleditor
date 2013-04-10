@@ -16,6 +16,7 @@
 #ifdef GSGAMEPLAY
 #include "gameLevel/CGameLevel.h"
 #include "gameComponent/CBulletRayComponent.h"
+#include "gameComponent/CSpawnPointComponent.h"
 #endif
 
 CZone::CZone()
@@ -49,6 +50,11 @@ CZone::CZone()
 	m_bulletMgr->addComponent(bulletComp);
     m_bulletMgr->setNetworkGlobalObject(true);
 	m_bulletMgr->setSyncTransform(false);
+
+	m_spawnPointMgr = createEmptyObject();
+	CSpawnPointMgrComponent *spawnPointMgrComp = new CSpawnPointMgrComponent(m_spawnPointMgr);
+	spawnPointMgrComp->initComponent();
+	m_spawnPointMgr->addComponent(spawnPointMgrComp);
 #endif
 
 }

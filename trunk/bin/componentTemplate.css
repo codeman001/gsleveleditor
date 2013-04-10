@@ -4,3 +4,7 @@ Player component
 Network player component
 {
 }
+Spawn point component
+{
+	teamID:  | intType;
+}

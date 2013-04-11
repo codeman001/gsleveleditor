@@ -1,0 +1,2540 @@
+<?xml version="1.0" encoding="utf-8"?>
+<strings>
+	<table name="Loading">
+		<ids>
+			<id value="LOADING_TIP_01"/>
+			<id value="LOADING_TIP_02"/>
+			<id value="LOADING_TIP_03"/>
+			<id value="LOADING_TIP_04"/>
+			<id value="LOADING_TIP_05"/>
+			<id value="LOADING_TIP_06"/>
+			<id value="LOADING_TIP_07"/>
+			<id value="LOADING_TIP_08"/>
+			<id value="LOADING_TIP_09"/>
+			<id value="LOADING_TIP_10"/>
+			<id value="LOADING_TIP_11"/>
+			<id value="LOADING_TIP_12"/>
+			<id value="LOADING_TIP_13"/>
+			<id value="LOADING_TIP_14"/>
+			<id value="LOADING_TIP_15"/>
+			<id value="LOADING_TIP_16"/>
+			<id value="LOADING_TIP_17"/>
+			<id value="LOADING_TIP_18"/>
+			<id value="LOADING_TIP_19"/>
+			<id value="LOADING_TIP_20"/>
+			<id value="LOADING_TIP_21"/>
+			<id value="LOADING_TIP_22"/>
+			<id value="LOADING_TIP_23"/>
+			<id value="LOADING_TIP_24"/>
+			<id value="LOADING_TIP_25"/>
+			<id value="LOADING_TIP_26"/>
+			<id value="LOADING_TIP_27"/>
+			<id value="LOADING_TIP_28"/>
+			<id value="LOADING_TIP_29"/>
+			<id value="LOADING_TIP_30"/>
+			<id value="LOADING_TIP_31"/>
+			<id value="LOADING_TIP_32"/>
+			<id value="LOADING_TIP_33"/>
+			<id value="LOADING_TIP_34"/>
+			<id value="LOADING_TIP_DES_01"/>
+			<id value="LOADING_TIP_DES_02"/>
+			<id value="LOADING_TIP_DES_03"/>
+			<id value="LOADING_TIP_DES_04"/>
+			<id value="LOADING_TIP_DES_05"/>
+			<id value="LOADING_TIP_DES_06"/>
+			<id value="LOADING_TIP_DES_07"/>
+			<id value="LOADING_TIP_DES_08"/>
+			<id value="LOADING_TIP_DES_09"/>
+			<id value="LOADING_TIP_DES_10"/>
+			<id value="LOADING_TIP_DES_11"/>
+			<id value="LOADING_TIP_DES_12"/>
+			<id value="LOADING_TIP_DES_13"/>
+			<id value="LOADING_TIP_DES_14"/>
+			<id value="LOADING_TIP_DES_15"/>
+			<id value="LOADING_TIP_DES_16"/>
+			<id value="LOADING_TIP_DES_17"/>
+			<id value="LOADING_TIP_DES_18"/>
+			<id value="LOADING_TIP_DES_19"/>
+			<id value="LOADING_TIP_DES_20"/>
+			<id value="LOADING_TIP_DES_21"/>
+			<id value="LOADING_TIP_DES_22"/>
+			<id value="LOADING_TIP_DES_23"/>
+			<id value="LOADING_TIP_DES_24"/>
+			<id value="LOADING_TIP_DES_25"/>
+			<id value="LOADING_TIP_DES_26"/>
+			<id value="LOADING_TIP_DES_27"/>
+			<id value="LOADING_TIP_DES_28"/>
+			<id value="LOADING_TIP_DES_29"/>
+			<id value="LOADING_TIP_DES_30"/>
+			<id value="LOADING_TIP_DES_31"/>
+			<id value="LOADING_TIP_DES_32"/>
+			<id value="LOADING_TIP_DES_33"/>
+			<id value="LOADING_TIP_DES_34"/>
+		</ids>
+		<EN>
+			<string>
+				Harmless
+			</string>
+			<string>
+				Crossing
+			</string>
+			<string>
+				Ricochet 1
+			</string>
+			<string>
+				Ricochet 2
+			</string>
+			<string>
+				EMP (Stun)
+			</string>
+			<string>
+				Napalm 1
+			</string>
+			<string>
+				Napalm 2
+			</string>
+			<string>
+				Invincible
+			</string>
+			<string>
+				Double Shell
+			</string>
+			<string>
+				Homing 1
+			</string>
+			<string>
+				Homing 2
+			</string>
+			<string>
+				Homing 3
+			</string>
+			<string>
+				Grenade 1
+			</string>
+			<string>
+				Grenade 2
+			</string>
+			<string>
+				Bomb Protection
+			</string>
+			<string>
+				Fire Protection
+			</string>
+			<string>
+				Rocket Protection
+			</string>
+			<string>
+				Homing Jam
+			</string>
+			<string>
+				EMP Shield
+			</string>
+			<string>
+				Stealth
+			</string>
+			<string>
+				Last Stand
+			</string>
+			<string>
+				Regeneration 1
+			</string>
+			<string>
+				Regeneration 2
+			</string>
+			<string>
+				Regeneration 3
+			</string>
+			<string>
+				Mine Protection
+			</string>
+			<string>
+				Ice Grip
+			</string>
+			<string>
+				Mud Resistance
+			</string>
+			<string>
+				Slide Resistance
+			</string>
+			<string>
+				Mine
+			</string>
+			<string>
+				Turret
+			</string>
+			<string>
+				Bomb
+			</string>
+			<string>
+				Shooting Enemies
+			</string>
+			<string>
+				Leaderboard
+			</string>
+			<string>
+				Try Your Friend's Tank
+			</string>
+			<string>
+				You'll never shoot yourself in the back with these shells!
+			</string>
+			<string>
+				Your shell will cut through other shells like a shell through butter!
+			</string>
+			<string>
+				Your shells will be bouncing off the walls in no time!
+			</string>
+			<string>
+				Take down your enemies with the awesome power of physics.
+			</string>
+			<string>
+				A shell so great that it's shocking! Literally!
+			</string>
+			<string>
+				The hottest shell around -- literally! It's on fire!
+			</string>
+			<string>
+				No tank can survive this flaming shell!
+			</string>
+			<string>
+				This is one shell that won't let anything get in its way!
+			</string>
+			<string>
+				Double your shells... Double your fun!
+			</string>
+			<string>
+				Where your enemy goes, these shells will follow!
+			</string>
+			<string>
+				Your opponents can't hide from these seeking shells!
+			</string>
+			<string>
+				These super-accurate seeking shells are sure to stay on your enemy's trail!
+			</string>
+			<string>
+				Don't just damage your enemy; damage everything near them too!
+			</string>
+			<string>
+				The bigger the grenade, the bigger the blast radius!
+			</string>
+			<string>
+				Bombs will just bounce off this bodacious armor!
+			</string>
+			<string>
+				Armor that's so cool, it's flame-retardant!
+			</string>
+			<string>
+				Rockets can't break through this amazing armor!
+			</string>
+			<string>
+				Don't let your enemy's projectiles follow you around!
+			</string>
+			<string>
+				Nothing shocks you when you're rocking this bad boy.
+			</string>
+			<string>
+				An invisibility cloak that lets you hide for a couple of seconds while the heat is on.
+			</string>
+			<string>
+				When the going gets tough, the tough do DOUBLE damage.
+			</string>
+			<string>
+				Put some life back in your tank... a little bit at a time.
+			</string>
+			<string>
+				The more life in your tank, the longer you last!
+			</string>
+			<string>
+				Get life back so fast... it'll be like you never lost it!
+			</string>
+			<string>
+				No need to mind the mines with these treads!
+			</string>
+			<string>
+				Put an end to the icy slip and slide! Now THAT'S cool!
+			</string>
+			<string>
+				Get down and dirty with these tough treads.
+			</string>
+			<string>
+				These grip the ground, allowing you to move like magic over the moving tracks.
+			</string>
+			<string>
+				Give your enemies an explosive surprise with a mine!
+			</string>
+			<string>
+				It's like bringing a friend into battle with you... a deadly friend!
+			</string>
+			<string>
+				Surprise your enemies with a little gift of death from above!
+			</string>
+			<string>
+				Move the virtual pad on the right side to shoot, or tap to shoot. Choose whichever style is most comfortable!
+			</string>
+			<string>
+				Do your best in Campaign or Multiplayer! The leaderboard will show the world how good you are!
+			</string>
+			<string>
+				Visit your friend's profile to check out their tanks. Give a friend's tank a spin for a mission, and you may even want one of your own!
+			</string>
+		</EN>
+		<FR>
+			<string>
+				Inoffensif
+			</string>
+			<string>
+				Transpercer
+			</string>
+			<string>
+				Ricochet 1
+			</string>
+			<string>
+				Ricochet 2
+			</string>
+			<string>
+				IEM (étourdissant)
+			</string>
+			<string>
+				Napalm 1
+			</string>
+			<string>
+				Napalm 2
+			</string>
+			<string>
+				Invincible
+			</string>
+			<string>
+				Obus double
+			</string>
+			<string>
+				Autoguidé 1
+			</string>
+			<string>
+				Autoguidé 2
+			</string>
+			<string>
+				Autoguidé 3
+			</string>
+			<string>
+				Grenade 2
+			</string>
+			<string>
+				Grenade 3
+			</string>
+			<string>
+				Protection anti-bombes
+			</string>
+			<string>
+				Protection anti-incendie
+			</string>
+			<string>
+				Protection anti-roquettes
+			</string>
+			<string>
+				Brouilleur autoguidé
+			</string>
+			<string>
+				Bouclier IEM
+			</string>
+			<string>
+				Furtivité
+			</string>
+			<string>
+				Ultime résistance
+			</string>
+			<string>
+				Régénération 1
+			</string>
+			<string>
+				Régénération 2
+			</string>
+			<string>
+				Régénération 3
+			</string>
+			<string>
+				Protection anti-mines
+			</string>
+			<string>
+				Antidérapant
+			</string>
+			<string>
+				Anti-boue
+			</string>
+			<string>
+				Anti-glisse
+			</string>
+			<string>
+				Mine
+			</string>
+			<string>
+				Tourelle
+			</string>
+			<string>
+				Bombe
+			</string>
+			<string>
+				Tirer sur l'ennemi
+			</string>
+			<string>
+				Classement
+			</string>
+			<string>
+				Essaie le tank d'un ami
+			</string>
+			<string>
+				Ces obus ne se retourneront pas contre toi !
+			</string>
+			<string>
+				Ces obus transperceront les autres obus comme du beurre.
+			</string>
+			<string>
+				Tes obus rebondiront sur les murs !
+			</string>
+			<string>
+				Élimine tes ennemis en utilisant les lois de la physique !
+			</string>
+			<string>
+				Un obus tellement puissant que c'en est choquant !
+			</string>
+			<string>
+				Le meilleur obus ! Il est en feu ! Littéralement !
+			</string>
+			<string>
+				Aucun tank ne peut survivre à cet obus enflammé !
+			</string>
+			<string>
+				Cet obus ne laissera rien lui barrer la route !
+			</string>
+			<string>
+				Double tes obus, et ton plaisir !
+			</string>
+			<string>
+				Là où tes ennemis sont, tes obus iront !
+			</string>
+			<string>
+				Tes adversaires ne peuvent pas échapper à ces obus autoguidés !
+			</string>
+			<string>
+				Ces obus super efficaces ne perdront pas l'ennemi de vue !
+			</string>
+			<string>
+				N'inflige pas seulement des dégâts à tes ennemis, mais aussi à tout ce qui se trouve autour !
+			</string>
+			<string>
+				Plus la grenade est grosse, plus le rayon d'explosion est grand !
+			</string>
+			<string>
+				Les bombes vont rebondir sur ce blindage robuste !
+			</string>
+			<string>
+				Un blindage tellement cool qu'il ne craint pas les flammes !
+			</string>
+			<string>
+				Les roquettes ne peuvent rien contre ce super blindage !
+			</string>
+			<string>
+				Ne laisse pas les projectiles ennemis te suivre !
+			</string>
+			<string>
+				Avec ça, tu n'auras plus peur de rien !
+			</string>
+			<string>
+				Une cape d'invisibilité qui te permet de disparaître quelques secondes quand les choses tournent mal.
+			</string>
+			<string>
+				Quand tu es en difficulté, tu infliges le DOUBLE de dégâts.
+			</string>
+			<string>
+				Redonne de la vie à ton tank... un petit peu à la fois.
+			</string>
+			<string>
+				Plus ton tank a de vie, plus il dure !
+			</string>
+			<string>
+				Reviens à la vie si rapidement que tu ne te souviendras plus l'avoir perdue !
+			</string>
+			<string>
+				Avec ces chenilles, les mines sont aussi dangereuses que de vulgaires cailloux.
+			</string>
+			<string>
+				Ça glisse ? PLUS avec ces chenilles !
+			</string>
+			<string>
+				Tu vas pouvoir te salir sans crainte avec ces chenilles de terrain.
+			</string>
+			<string>
+				Avec ça, même quand le sol bouge dans un sens, tu peux avancer dans l'autre !
+			</string>
+			<string>
+				Offre une surprise explosive à tes ennemis : une mine !
+			</string>
+			<string>
+				Emmène un ami sur le champ de bataille, un ami mortel !
+			</string>
+			<string>
+				Surprends tes ennemis avec un cadeau de la mort venu du ciel !
+			</string>
+			<string>
+				Déplace le pavé virtuel à droite ou touche la cible pour tirer. Choisis la manière qui te convient !
+			</string>
+			<string>
+				Fais de ton mieux en mode Campagne ou en Multijoueur ! Le classement te dira si tu fais partie des meilleurs !
+			</string>
+			<string>
+				Consulte le profil d'un ami pour voir son tank ! Essaie le tank d'un ami pendant une mission, tu voudras peut-être le même !
+			</string>
+		</FR>
+		<DE>
+			<string>
+				Harmlos
+			</string>
+			<string>
+				Schusskollision
+			</string>
+			<string>
+				Querschläger 1
+			</string>
+			<string>
+				Querschläger 2
+			</string>
+			<string>
+				EMP (Lähmen)
+			</string>
+			<string>
+				Napalm 1
+			</string>
+			<string>
+				Napalm 2
+			</string>
+			<string>
+				Unbesiegbar
+			</string>
+			<string>
+				Doppelgranate
+			</string>
+			<string>
+				Zielsucher 3
+			</string>
+			<string>
+				Zielsucher 4
+			</string>
+			<string>
+				Zielsucher 5
+			</string>
+			<string>
+				Granate 3
+			</string>
+			<string>
+				Granate 4
+			</string>
+			<string>
+				Bombenschutz
+			</string>
+			<string>
+				Feuerschutz
+			</string>
+			<string>
+				Raketenschutz
+			</string>
+			<string>
+				Zielsucherstörung
+			</string>
+			<string>
+				EMP-Schild
+			</string>
+			<string>
+				Tarnung
+			</string>
+			<string>
+				Letztes Gefecht
+			</string>
+			<string>
+				Erneuerung 1
+			</string>
+			<string>
+				Erneuerung 2
+			</string>
+			<string>
+				Erneuerung 3
+			</string>
+			<string>
+				Minenschutz
+			</string>
+			<string>
+				Eisgriffigkeit
+			</string>
+			<string>
+				Schlammresistenz
+			</string>
+			<string>
+				Rutschresistenz
+			</string>
+			<string>
+				Mine
+			</string>
+			<string>
+				Geschütz
+			</string>
+			<string>
+				Bombe
+			</string>
+			<string>
+				Auf Feinde schießen
+			</string>
+			<string>
+				Bestenliste
+			</string>
+			<string>
+				Panzer von Freund ausprobieren
+			</string>
+			<string>
+				Mit diesen Granaten wirst du dir niemals selbst Schaden zufügen!
+			</string>
+			<string>
+				Deine Granate wird andere Granaten durchdringen, wie eine Granate Butter durchdringt.
+			</string>
+			<string>
+				Deine Granaten werden im Nu von den Wänden abprallen.
+			</string>
+			<string>
+				Erledige deine Feinde mit der unglaublichen Macht der Physik.
+			</string>
+			<string>
+				Eine Granate, die einfach nur schockierend ist. Im wahrsten Sinne des Wortes!
+			</string>
+			<string>
+				Die heisseste Granate überhaupt -- im wahrsten Sinne des Wortes! Sie steht in Flammen!
+			</string>
+			<string>
+				Kein Panzer kann diese flammende Granate überleben!
+			</string>
+			<string>
+				Die Granate, der sich nichts in den Weg stellen wird!
+			</string>
+			<string>
+				Verdopple deine Granaten... Verdopple deinen Spass!
+			</string>
+			<string>
+				Wohin auch immer deine Feinde gehen, diese Granaten werden ihnen folgen!
+			</string>
+			<string>
+				Deine Gegner können sich nicht vor diesen Granaten verstecken!
+			</string>
+			<string>
+				Diese super akkuraten Granaten werden mit Sicherheit deinen Feinden auf den Fersen bleiben!
+			</string>
+			<string>
+				Füge nicht nur deinen Feinden Schaden zu, beschädige auch alles um sie herum!
+			</string>
+			<string>
+				Je größer die Granate, desto größer die Reichweite!
+			</string>
+			<string>
+				Bomben werden von dieser grossartigen Rüstung einfach abprallen!
+			</string>
+			<string>
+				So eine coole Rüstung, sie ist feuersicher!
+			</string>
+			<string>
+				Durch diese Wahnsinnsrüstung schafft es keine Rakete!
+			</string>
+			<string>
+				Lass dich nicht von den Geschossen deiner Feinde verfolgen!
+			</string>
+			<string>
+				Nichts kann dich schockieren, wenn du mit diesem Panzer unterwegs bist.
+			</string>
+			<string>
+				Eine Tarnkappe, mit der du dich ein paar Sekunden lang verstecken kannst, während es heiß hergeht.
+			</string>
+			<string>
+				Wenn es hart auf hart kommt, fügen die Harten DOPPELTEN Schaden zu.
+			</string>
+			<string>
+				Bringe wieder etwas Leben in deinen Panzer... jeweils ein bisschen.
+			</string>
+			<string>
+				Je mehr Leben du in deinem Panzer hast, desto länger lebst du!
+			</string>
+			<string>
+				Hol dir Leben so schnell wieder... als hättest du nie welches verloren!
+			</string>
+			<string>
+				Mit diesen Ketten brauchst du dich um die Minen nicht zu sorgen!
+			</string>
+			<string>
+				Schluss mit dem Rutschen! DAS ist cool!
+			</string>
+			<string>
+				Sei skrupellos mit diesen starken Ketten.
+			</string>
+			<string>
+				Diese haften am Boden, so dass du dich wunderbar über die sich bewegenden Fliessbänder bewegen kannst.
+			</string>
+			<string>
+				Bereite deinen Feinden eine explosive Überraschung mit Minen!
+			</string>
+			<string>
+				Es ist, als würdest du einen Freund mit aufs Schlachtfeld nehmen... einen tödlichen Freund!
+			</string>
+			<string>
+				Überrasche deine Feinde mit einem tödlichen Geschenk von oben!
+			</string>
+			<string>
+				Bewege das rechte Steuerelement oder berühre das Ziel, um zu schießen. Wähle den Stil, der dir mehr liegt!
+			</string>
+			<string>
+				Versuche dein Bestes im Kampagnen- oder Mehrspielermodus! Die Bestenliste zeigt der Welt, wie gut du bist!
+			</string>
+			<string>
+				Besuche das Profil deiner Freunde und sieh dir ihre Panzer an! Spiele eine Mission mit dem Panzer deiner Freunde und vielleicht willst du dann auch solch einen haben!
+			</string>
+		</DE>
+		<SP>
+			<string>
+				Inocuo
+			</string>
+			<string>
+				Cruce
+			</string>
+			<string>
+				Rebote 1
+			</string>
+			<string>
+				Rebote 2
+			</string>
+			<string>
+				PEM (aturdir)
+			</string>
+			<string>
+				Napalm 1
+			</string>
+			<string>
+				Napalm 2
+			</string>
+			<string>
+				Invencible
+			</string>
+			<string>
+				Doble proyectil
+			</string>
+			<string>
+				Buscador 1
+			</string>
+			<string>
+				Buscador 2
+			</string>
+			<string>
+				Buscador 3
+			</string>
+			<string>
+				Granada 1
+			</string>
+			<string>
+				Granada 2
+			</string>
+			<string>
+				Protección para bombas
+			</string>
+			<string>
+				Protección para fuego
+			</string>
+			<string>
+				Protección para misiles
+			</string>
+			<string>
+				Inhibidor de rastreo
+			</string>
+			<string>
+				Escudo PEM
+			</string>
+			<string>
+				Sigilo
+			</string>
+			<string>
+				Último en pie
+			</string>
+			<string>
+				Regeneración 1
+			</string>
+			<string>
+				Regeneración 2
+			</string>
+			<string>
+				Regeneración 3
+			</string>
+			<string>
+				Protección para minas
+			</string>
+			<string>
+				Sujeción en el hielo
+			</string>
+			<string>
+				Protección para barro
+			</string>
+			<string>
+				Protección para
+deslizamientos
+			</string>
+			<string>
+				Mina
+			</string>
+			<string>
+				Torreta
+			</string>
+			<string>
+				Bomba
+			</string>
+			<string>
+				Disparar
+			</string>
+			<string>
+				Clasificación
+			</string>
+			<string>
+				Prueba el tanque
+de tu amigo
+			</string>
+			<string>
+				¡Con estos proyectiles nunca realizarás tiros en falso!
+			</string>
+			<string>
+				¡Tus proyectiles atravesarán otros proyectiles como balas en mantequilla!
+			</string>
+			<string>
+				¡Tus proyectiles rebotarán como un balón de fútbol!
+			</string>
+			<string>
+				Elimina a tus enemigos con el asombroso poder de la física.
+			</string>
+			<string>
+				¡Un proyectil tan alucinante que impacta! ¡Literalmente!
+			</string>
+			<string>
+				El proyectil más caliente de por aquí. ¡Literalmente! ¡Está que arde!
+			</string>
+			<string>
+				¡No hay tanque capaz de sobrevivir a este flamígero proyectil!
+			</string>
+			<string>
+				¡Este proyectil no permitirá que nada se interponga en su camino!
+			</string>
+			<string>
+				Dobla tus proyectiles... ¡Diversión doble!
+			</string>
+			<string>
+				¡Estos proyectiles seguirán a tus enemigos allá donde vayan!
+			</string>
+			<string>
+				¡Tus oponentes no podrán esconderse de estos proyectiles buscadores!
+			</string>
+			<string>
+				¡Estos precisos proyectiles buscadores no perderán el rastro de tus enemigos!
+			</string>
+			<string>
+				No inflijas daño solo a tu enemigo, ¡destruye todo lo que esté cerca!
+			</string>
+			<string>
+				¡Cuánto más grande la granada, mayor el radio de detonación!
+			</string>
+			<string>
+				¡Las bombas rebotarán al impactar contra este audaz blindaje!
+			</string>
+			<string>
+				¡Los blindajes más molones son los ignífugos!
+			</string>
+			<string>
+				¡Los misiles no llegarán a impactar contra este asombroso blindaje!
+			</string>
+			<string>
+				¡No dejes que los proyectiles enemigos te persigan!
+			</string>
+			<string>
+				Nada te alcanzará mientras estés cerca de este chico malo.
+			</string>
+			<string>
+				Un manto de invisibilidad que te permitirá esconderte durante un par de segundos.
+			</string>
+			<string>
+				Cuando el fuego arrecia, los tipos duros infligen daño DOBLE.
+			</string>
+			<string>
+				Devuelve algo de vitalidad a tu tanque... un poquito cada vez.
+			</string>
+			<string>
+				¡Cuánta más vitalidad tenga tu tanque, más tiempo durará!
+			</string>
+			<string>
+				Consigues vitalidad tan rápido... ¡Será como si no la hubieras perdido!
+			</string>
+			<string>
+				¡No hace falta que te preocupes de las minas con estas orugas!
+			</string>
+			<string>
+				¡Acaba con los resbalones en el hielo! ¡Esto sí que mola!
+			</string>
+			<string>
+				Arremanga y ensúciate con estas duras orugas.
+			</string>
+			<string>
+				Se agarran firmemente al suelo y permiten un movimiento sin igual sobre cintas transportadoras.
+			</string>
+			<string>
+				¡Dales una sorpresa explosiva a tus enemigos!
+			</string>
+			<string>
+				Es como llevar a un amigo contigo a la batalla... ¡un amigo mortal!
+			</string>
+			<string>
+				¡Sorprende a tus enemigos con un regalito mortal desde los cielos!
+			</string>
+			<string>
+				Mueve el pad vitual hacia la dcha. para disparar, o toca para disparar. ¡Elige el estilo que te resulte más cómodo!
+			</string>
+			<string>
+				¡Hazlo lo mejor que puedas en Campaña o Multijugador! ¡La clasificación mostrará al mundo lo bueno que eres!
+			</string>
+			<string>
+				Echa un vistazo al perfil de tu amigo para ver sus tanques. Utiliza el tanque de un amigo para dar una vuelta, y hasta puede que quieras uno para ti.
+			</string>
+		</SP>
+		<IT>
+			<string>
+				Innocuo
+			</string>
+			<string>
+				Attraversamento
+			</string>
+			<string>
+				Rimbalzo 1
+			</string>
+			<string>
+				Rimbalzo 2
+			</string>
+			<string>
+				EMP (stordimento)
+			</string>
+			<string>
+				Napalm 1
+			</string>
+			<string>
+				Napalm 2
+			</string>
+			<string>
+				Invincibile
+			</string>
+			<string>
+				Proiettile doppio
+			</string>
+			<string>
+				Autoguidato 1
+			</string>
+			<string>
+				Autoguidato 2
+			</string>
+			<string>
+				Autoguidato 3
+			</string>
+			<string>
+				Granata 1
+			</string>
+			<string>
+				Granata 2
+			</string>
+			<string>
+				Protezione da bombe
+			</string>
+			<string>
+				Protezione da fuoco
+			</string>
+			<string>
+				Protezione da razzi
+			</string>
+			<string>
+				Blocco autoguida
+			</string>
+			<string>
+				Scudo EMP
+			</string>
+			<string>
+				Furtività
+			</string>
+			<string>
+				L'ultima risorsa
+			</string>
+			<string>
+				Rigenerazione 1
+			</string>
+			<string>
+				Rigenerazione 2
+			</string>
+			<string>
+				Rigenerazione 3
+			</string>
+			<string>
+				Protezione da mine
+			</string>
+			<string>
+				Tenuta sul ghiaccio
+			</string>
+			<string>
+				Resistenza al fango
+			</string>
+			<string>
+				Antiscivolo
+			</string>
+			<string>
+				Mine
+			</string>
+			<string>
+				Torrette
+			</string>
+			<string>
+				Bombe
+			</string>
+			<string>
+				Sparare al nemico
+			</string>
+			<string>
+				Classifica
+			</string>
+			<string>
+				Prova il carro di un amico
+			</string>
+			<string>
+				Non ti colpirai mai alle spalle con questi proiettili!
+			</string>
+			<string>
+				Il tuo proiettile attraverserà altri proiettili come se fossero fatti di burro!
+			</string>
+			<string>
+				Farà rimbalzare i tuoi proiettili come se fossero fatti di gomma!
+			</string>
+			<string>
+				Elimina i nemici grazie alle meravigliose leggi della fisica.
+			</string>
+			<string>
+				Un proiettile enorme che darà una bella scossa al nemico!
+			</string>
+			<string>
+				Il proiettile più caldo dell'estate, letteralmente infuocato!
+			</string>
+			<string>
+				Nessun carro può sopravvivere questo proiettile infuocato!
+			</string>
+			<string>
+				Questo proiettile abbatte tutto ciò che incontra!
+			</string>
+			<string>
+				Raddoppia i proiettili e il divertimento!
+			</string>
+			<string>
+				Ovunque il tuo nemico vada, questo proiettile lo inseguirà!
+			</string>
+			<string>
+				I tuoi avversari non possono sfuggire a questi proiettili autoguidati!
+			</string>
+			<string>
+				Questi missili autoguidati precisi non perderanno i nemici di vista!
+			</string>
+			<string>
+				Non danneggiare solo il nemico, danneggia tutto ciò che gli è vicino!
+			</string>
+			<string>
+				Più grande è la granata e maggiore sarà il raggio di esplosione!
+			</string>
+			<string>
+				I proiettili rimbalzeranno da questa formidabile corazza.
+			</string>
+			<string>
+				Una corazza così fredda che è resistente al fuoco!
+			</string>
+			<string>
+				I razzi non possono penetrare questa incredibile corazza!
+			</string>
+			<string>
+				Non lasciarti inseguire dai proiettili nemici!
+			</string>
+			<string>
+				Nulla ti darà una scossa migliore di questa meraviglia!
+			</string>
+			<string>
+				Un dispositivo di occultamento che ti nasconde per qualche secondo nei momenti più difficili.
+			</string>
+			<string>
+				Quando il gioco si fa duro, i duri arrecano danni DOPPI!
+			</string>
+			<string>
+				Ripristina l'energia del tuo carro, un po' alla volta.
+			</string>
+			<string>
+				Più energia hai nel carro, più a lungo vivrai!
+			</string>
+			<string>
+				Recupera l'energia così in fretta che è come se non l'avessi mai persa!
+			</string>
+			<string>
+				Usa questi cingoli e passa sopra le mine come se niente fosse!
+			</string>
+			<string>
+				Non temere più il ghiaccio!
+			</string>
+			<string>
+				Fai il lavoro sporco con questi cingoli resistenti.
+			</string>
+			<string>
+				Grazie alla loro forza aderente ti sposterai sul terreno come se niente fosse.
+			</string>
+			<string>
+				Prepara una sorpresa esplosiva per i nemici!
+			</string>
+			<string>
+				È come combattere con un amico... un amico letale!
+			</string>
+			<string>
+				Sorprendi i nemici con un piccolo regalo letale dall'alto!
+			</string>
+			<string>
+				Muovi il pad virtuale sul lato destro dello schermo o tocca per sparare. Scegli lo stile che più ti piace!
+			</string>
+			<string>
+				Dai del tuo meglio in modalità Campagna o Multigiocatore! La classifica mostrerà quanto sei bravo!
+			</string>
+			<string>
+				Accedi al profilo di un amico per dare un'occhiata ai suoi carri. Prova il carro di un amico e se ti piace, perché non comprartene uno uguale?
+			</string>
+		</IT>
+		<JP>
+			<string>
+				ハームレス
+			</string>
+			<string>
+				貫通弾
+			</string>
+			<string>
+				反射1
+			</string>
+			<string>
+				反射2
+			</string>
+			<string>
+				EMP （スタン）
+			</string>
+			<string>
+				ナパーム1
+			</string>
+			<string>
+				ナパーム2
+			</string>
+			<string>
+				インビンシブル
+			</string>
+			<string>
+				ダブルショット
+			</string>
+			<string>
+				誘導弾1
+			</string>
+			<string>
+				誘導弾2
+			</string>
+			<string>
+				誘導弾3
+			</string>
+			<string>
+				グレネード1
+			</string>
+			<string>
+				グレネード2
+			</string>
+			<string>
+				ボムプロテクト
+			</string>
+			<string>
+				ファイアプロテクト
+			</string>
+			<string>
+				ロケットプロテクト
+			</string>
+			<string>
+				ホーミングジャム
+			</string>
+			<string>
+				EMPシールド
+			</string>
+			<string>
+				ステルス
+			</string>
+			<string>
+				ラストスタンド
+			</string>
+			<string>
+				リジェネ1
+			</string>
+			<string>
+				リジェネ2
+			</string>
+			<string>
+				リジェネ3
+			</string>
+			<string>
+				マインプロテクト
+			</string>
+			<string>
+				アイスグリップ
+			</string>
+			<string>
+				マッドレジスト
+			</string>
+			<string>
+				スライドレジスト
+			</string>
+			<string>
+				地雷
+			</string>
+			<string>
+				タレット
+			</string>
+			<string>
+				爆弾
+			</string>
+			<string>
+				発砲
+			</string>
+			<string>
+				ランキング
+			</string>
+			<string>
+				フレンドの戦車を試そう
+			</string>
+			<string>
+				この弾なら 自分の 背中に 当る 心配は なし！
+			</string>
+			<string>
+				この弾なら 他の弾を バター みたいに 切り裂けるぞ！
+			</string>
+			<string>
+				この弾は 壁に 当ると ビリヤードの ように 跳ね返るぞ！
+			</string>
+			<string>
+				物理の力を 利用して 敵を 倒そう！
+			</string>
+			<string>
+				ショッキングな弾！ 言葉通りに ビリッと 来る！
+			</string>
+			<string>
+				いま一番 熱い弾！ まさに炎のように！
+			</string>
+			<string>
+				燃える闘魂を のせた 燃える弾丸！
+			</string>
+			<string>
+				この弾の 邪魔を する ことは 誰にも できない！
+			</string>
+			<string>
+				撃つ弾が2倍！ 楽しさも2倍！
+			</string>
+			<string>
+				敵が行く ところに ついていく 弾！
+			</string>
+			<string>
+				敵を追い掛ける弾。 その様は まるで 忠犬のよう。
+			</string>
+			<string>
+				どこに行っても 補足して 追い掛ける、 まるで ストーカーの ような弾。
+			</string>
+			<string>
+				当った敵に ダメージを 与える どころか 周りにも ダメージを 与える 太っ腹な弾。
+			</string>
+			<string>
+				一部の人が 花火代わりに 撃つ ことが ある。
+			</string>
+			<string>
+				爆弾を はじき返す グレートな 装甲。
+			</string>
+			<string>
+				難燃性の 頼れる装甲。
+			</string>
+			<string>
+				月には 行けても この装甲の 奥には 行けねぇぜ！ -開発者は語る。
+			</string>
+			<string>
+				現代ニンジャが 開発した ミサイルを まく 装甲。
+			</string>
+			<string>
+				どんな小心者でも 肝が 据わり ショックを 受けなくなる 装甲。
+			</string>
+			<string>
+				数秒間 透明になって 見えなくなる。
+			</string>
+			<string>
+				やられる 寸前に なると 大きな 力を 発揮する ことが できる ようになる。
+			</string>
+			<string>
+				少しずつ 戦車の 装甲を 回復できる。
+			</string>
+			<string>
+				戦車に 自動修理 機能を 搭載！
+			</string>
+			<string>
+				撃たれても すぐに ダメージを 回復する ゾンビの ような 戦車に なれる！
+			</string>
+			<string>
+				血河屍山と 地雷を 踏み越える キャタピラ！
+			</string>
+			<string>
+				氷とボケで 滑らなく なる 高機能 キャタピラ！
+			</string>
+			<string>
+				足場の悪い 泥でも やすやす 踏み越える タフな キャタピラ！
+			</string>
+			<string>
+				ベルトコンベアの 上でも 通常通り 動ける 不思議な キャタピラ！
+			</string>
+			<string>
+				地雷を使って、 敵に 強烈な サプライズを お見舞いしよう！
+			</string>
+			<string>
+				バトルで 一番 頼れる友達... それはタレット！
+			</string>
+			<string>
+				上空から敵に 爆弾を お見舞いしよう！
+			</string>
+			<string>
+				右にある バーチャルパッドを 動かして 射撃！ 狙いたい場所を タップして 射撃！ 好きな方で 撃とう！
+			</string>
+			<string>
+				キャンペーンや マルチプレイで ベストを 尽くして 世界の ランキング 上位を 目指そう！
+			</string>
+			<string>
+				フレンドの プロフィールから みんなの 戦車を チェックしよう！ 気になった 戦車は ミッションで 試し乗り する ことも できるぞ！
+			</string>
+		</JP>
+		<KR>
+			<string>
+				피해 무효
+			</string>
+			<string>
+				관통
+			</string>
+			<string>
+				반사 1
+			</string>
+			<string>
+				반사 2
+			</string>
+			<string>
+				EMP (마비)
+			</string>
+			<string>
+				네이팜 1
+			</string>
+			<string>
+				네이팜 2
+			</string>
+			<string>
+				무적 포탄
+			</string>
+			<string>
+				쌍발탄
+			</string>
+			<string>
+				유도 1
+			</string>
+			<string>
+				유도 2
+			</string>
+			<string>
+				유도 3
+			</string>
+			<string>
+				유탄 1
+			</string>
+			<string>
+				유탄 2
+			</string>
+			<string>
+				폭탄 방어
+			</string>
+			<string>
+				화염 방어
+			</string>
+			<string>
+				로켓 방어
+			</string>
+			<string>
+				유도 방해
+			</string>
+			<string>
+				EMP 보호막
+			</string>
+			<string>
+				은신
+			</string>
+			<string>
+				최후의 일격
+			</string>
+			<string>
+				재생 1
+			</string>
+			<string>
+				재생 2
+			</string>
+			<string>
+				재생 3
+			</string>
+			<string>
+				지뢰 방어
+			</string>
+			<string>
+				빙판 접지력
+			</string>
+			<string>
+				진흙 저항
+			</string>
+			<string>
+				미끄럼 방지
+			</string>
+			<string>
+				지뢰
+			</string>
+			<string>
+				포탑
+			</string>
+			<string>
+				폭탄
+			</string>
+			<string>
+				적 공격
+			</string>
+			<string>
+				순위표
+			</string>
+			<string>
+				친구 탱크 사용하기
+			</string>
+			<string>
+				이 포탄을 사용하면 자기 포탄에 후방을 맞을 염려가 없습니다!
+			</string>
+			<string>
+				적의 포탄을 두부 자르듯 잘라버릴 수 있습니다!
+			</string>
+			<string>
+				포탄이 벽에 맞고 튕겨져 나옵니다!
+			</string>
+			<string>
+				강력한 초능력으로 적을 제압하세요.
+			</string>
+			<string>
+				말 그대로 충격적인 포탄입니다!
+			</string>
+			<string>
+				문자 그대로 가장 뜨거운 포탄입니다! 불을 조심하세요!
+			</string>
+			<string>
+				이 불타는 포탄에는 어떤 탱크도 버틸 수 없습니다!
+			</string>
+			<string>
+				누구도 막을 수 없는 포탄입니다!
+			</string>
+			<string>
+				포탄이 두 발이면 재미도 두 배입니다!
+			</string>
+			<string>
+				적이 어디로 가든 이 포탄이 따라갈 것입니다!
+			</string>
+			<string>
+				적은 절대로 이 유도 포탄으로부터 숨을 수 없습니다!
+			</string>
+			<string>
+				적의 꽁무니를 놓지 않는 초정밀 포탄입니다!
+			</string>
+			<string>
+				적뿐 아니라 주변 모든 것에 피해를 입히세요!
+			</string>
+			<string>
+				포탄이 클수록 파괴 반경도 커집니다!
+			</string>
+			<string>
+				이 강력한 장갑은 포탄을 튕겨낼 것입니다!
+			</string>
+			<string>
+				화염을 막아주는 쿨한 장갑입니다!
+			</string>
+			<string>
+				이 멋진 장갑은 로켓 공격에 효과적입니다!
+			</string>
+			<string>
+				적의 미사일에 추격당하지 마세요!
+			</string>
+			<string>
+				이제 더 이상의 충격은 없습니다.
+			</string>
+			<string>
+				격전지의 중심에서 몇 초 동안 모습을 감춰줍니다.
+			</string>
+			<string>
+				위기의 상황에서 두 배의 위력으로 적을 공격합니다.
+			</string>
+			<string>
+				탱크에 다시 생명력을 불어넣으세요.
+			</string>
+			<string>
+				탱크가 튼튼할수록 더 오래 버틸 수 있습니다!
+			</string>
+			<string>
+				신속하게 피해를 복구하세요. 마치 공격받은 적조차 없었던 것처럼!
+			</string>
+			<string>
+				이 캐터필러만 있으면 지뢰 걱정은 끝입니다!
+			</string>
+			<string>
+				더 이상 미끄러움은 없습니다!
+			</string>
+			<string>
+				이 강력한 캐터필러로 진흙탕을 헤쳐나가세요.
+			</string>
+			<string>
+				땅을 움켜쥐는 이 캐터필러로 움직이는 지면 위를 마법처럼 질주하세요.
+			</string>
+			<string>
+				지뢰로 적을 기습 공격하세요!
+			</string>
+			<string>
+				전장에 강력한 친구를 지원군으로 데려가세요!
+			</string>
+			<string>
+				작은 죽음의 선물로 적에게 놀라움을 선사하세요!
+			</string>
+			<string>
+				가상 패드를 오른쪽으로 슬라이드하거나 터치하여 포탄을 발사합니다. 취향에 맞게 선택하세요!
+			</string>
+			<string>
+				캠페인과 멀티 플레이에서는 최선을 다하세요! 순위표를 통해 당신의 실력이 전 세계에 공개됩니다!
+			</string>
+			<string>
+				친구의 프로필에서 순위를 확인해 보세요. 미션에서 친구의 탱크를 사용해보면 그 탱크가 가지고 싶어질지도 모릅니다!
+			</string>
+		</KR>
+		<RU>
+			<string>
+				Безопасный
+			</string>
+			<string>
+				Бронебойный
+			</string>
+			<string>
+				Рикошет 1
+			</string>
+			<string>
+				Рикошет 2
+			</string>
+			<string>
+				ЭМИ (помехи)
+			</string>
+			<string>
+				Напалм 1
+			</string>
+			<string>
+				Напалм 2
+			</string>
+			<string>
+				Неуязвимый
+			</string>
+			<string>
+				Двойной выстрел
+			</string>
+			<string>
+				Самонаводка 1
+			</string>
+			<string>
+				Самонаводка 2
+			</string>
+			<string>
+				Самонаводка 3
+			</string>
+			<string>
+				Граната 1
+			</string>
+			<string>
+				Граната 2
+			</string>
+			<string>
+				Экран от бомб
+			</string>
+			<string>
+				Огнеупорность
+			</string>
+			<string>
+				Экран от ракет
+			</string>
+			<string>
+				Тепловая ловушка
+			</string>
+			<string>
+				ЭМИ-щит
+			</string>
+			<string>
+				Маскировка
+			</string>
+			<string>
+				Последний оплот
+			</string>
+			<string>
+				Регенерация 1
+			</string>
+			<string>
+				Регенерация 2
+			</string>
+			<string>
+				Регенерация 3
+			</string>
+			<string>
+				Экран от мин
+			</string>
+			<string>
+				Ледяная хватка
+			</string>
+			<string>
+				Защита от грязи
+			</string>
+			<string>
+				Защита от заноса
+			</string>
+			<string>
+				Мина
+			</string>
+			<string>
+				Пушка
+			</string>
+			<string>
+				Бомба
+			</string>
+			<string>
+				Стрельба
+			</string>
+			<string>
+				Лидеры
+			</string>
+			<string>
+				Испытайте танк друга
+			</string>
+			<string>
+				С такими снарядами вы никогда себе в спину не выстрелите!
+			</string>
+			<string>
+				Ваш снаряд будет пронзать снаряды противника, словно нож режет масло!
+			</string>
+			<string>
+				Ваши снаряды тут же будут отскакивать от стен!
+			</string>
+			<string>
+				Уничтожьте своих врагов используя невероятную физическую силу.
+			</string>
+			<string>
+				Это снаряд приводит в шоковое состояние! Буквально!
+			</string>
+			<string>
+				Это самый лучший снаряд - честное слово!
+			</string>
+			<string>
+				Ни один так не выдержит удара этого снаряда!
+			</string>
+			<string>
+				Этот снаряд ничто не остановит!
+			</string>
+			<string>
+				Вдвое больше снарядов... вдвое веселее!
+			</string>
+			<string>
+				Эти снаряды будут следовать за врагом по пятам!
+			</string>
+			<string>
+				Вашим соперникам от этих снарядов не спрятаться!
+			</string>
+			<string>
+				Эти суперточные снаряды никогда не упустят вражеский след!
+			</string>
+			<string>
+				Вы не только вражеский танк выведете из строя, а и все вокруг!
+			</string>
+			<string>
+				Чем больше граната, тем круче взрыв!
+			</string>
+			<string>
+				Бомбы просто отскакивают от этой брони!
+			</string>
+			<string>
+				Эта броня супер-огнеупорная!
+			</string>
+			<string>
+				Ракетам не пробить эту замечательную броню!
+			</string>
+			<string>
+				Не дайте снарядам противника настичь вас!
+			</string>
+			<string>
+				Вам ничто не помешает нанести плохому парню достойный удар.
+			</string>
+			<string>
+				Плащ-невидимка, который спрячет вас на пару секунд в самом разгаре боя.
+			</string>
+			<string>
+				Когда дело принимает жесткий оборот, вы наносите ДВОЙНОЙ урон!
+			</string>
+			<string>
+				Вся жизнь в вашем танке... все больше и больше.
+			</string>
+			<string>
+				Чем больше жизни вы вкладываете в танк, тем дольше вы живете!
+			</string>
+			<string>
+				Вы быстро вернетесь к жизни... словно и не уходили из нее!
+			</string>
+			<string>
+				С такими гусеницами вам никакие мины не страшны!
+			</string>
+			<string>
+				Забудьте о скольжении! Вы можете без проблем ездить по льду!
+			</string>
+			<string>
+				С такими гусеницами вам любая грязь по плечу!
+			</string>
+			<string>
+				Они цепляются за землю так, словно вы по рельсам катитесь.
+			</string>
+			<string>
+				Устройте врагам горячий сюрприз с миной!
+			</string>
+			<string>
+				Хорошо, когда на вашей стороне есть друг... большой друг.
+			</string>
+			<string>
+				Удивите врагов неприятным сюрпризом с небес!
+			</string>
+			<string>
+				Проведите по вирт. джойстику справа для стрельбы, или нажмите для стрельбы. Выберите удобный для себя стиль управления!
+			</string>
+			<string>
+				Покажите себя в кампании или сетевом режиме! В турнирной таблице ваши результаты увидит весь мир!
+			</string>
+			<string>
+				Посетите профили друзей и посмотрите их танки. Отправьте танк друга на задание, возможно вам захочется заиметь такой же!
+			</string>
+		</RU>
+		<SC>
+			<string>
+				无害
+			</string>
+			<string>
+				破坏
+			</string>
+			<string>
+				跳弹1
+			</string>
+			<string>
+				跳弹2
+			</string>
+			<string>
+				EMP（眩晕）
+			</string>
+			<string>
+				凝固汽油弹 1
+			</string>
+			<string>
+				凝固汽油弹 2
+			</string>
+			<string>
+				无敌
+			</string>
+			<string>
+				双重炮弹
+			</string>
+			<string>
+				制导1
+			</string>
+			<string>
+				制导2
+			</string>
+			<string>
+				制导3
+			</string>
+			<string>
+				榴弹1
+			</string>
+			<string>
+				榴弹2
+			</string>
+			<string>
+				炸弹防御
+			</string>
+			<string>
+				火焰防御
+			</string>
+			<string>
+				火箭防御
+			</string>
+			<string>
+				制导防御
+			</string>
+			<string>
+				EMP盾
+			</string>
+			<string>
+				潜行
+			</string>
+			<string>
+				背水一战
+			</string>
+			<string>
+				回复 1
+			</string>
+			<string>
+				回复 2
+			</string>
+			<string>
+				回复 3
+			</string>
+			<string>
+				防雷
+			</string>
+			<string>
+				抓冰
+			</string>
+			<string>
+				抗泥浆
+			</string>
+			<string>
+				防滑
+			</string>
+			<string>
+				地雷
+			</string>
+			<string>
+				炮塔
+			</string>
+			<string>
+				炸弹
+			</string>
+			<string>
+				射击敌人
+			</string>
+			<string>
+				排行榜
+			</string>
+			<string>
+				试试你好友的坦克
+			</string>
+			<string>
+				这些炮弹不会误伤到你自己！
+			</string>
+			<string>
+				你的炮弹可以像切碎黄油那样切碎其他炮弹！
+			</string>
+			<string>
+				你的炮弹会立刻从墙上弹回来！
+			</string>
+			<string>
+				用超强的物理能量掀翻敌人。
+			</string>
+			<string>
+				这炮弹震得人头晕目眩！
+			</string>
+			<string>
+				史上最威猛的炮弹！
+			</string>
+			<string>
+				没有哪辆坦克能逃过这样威猛的炮弹！
+			</string>
+			<string>
+				该炮弹所向无敌！
+			</string>
+			<string>
+				双倍的炮弹，双倍的欢乐！
+			</string>
+			<string>
+				你的敌人去哪儿，这些炮弹就去哪儿！
+			</string>
+			<string>
+				有了这些炮弹，你的对手无处可躲！
+			</string>
+			<string>
+				这些超精准的巡航炮弹会粘着敌人的屁股不放！
+			</string>
+			<string>
+				它不仅会摧毁你的敌人，还会摧毁敌人附近的所有物体！
+			</string>
+			<string>
+				榴弹越大，爆炸范围越大！
+			</string>
+			<string>
+				该装甲坚不可摧，炸弹也拿它没办法！
+			</string>
+			<string>
+				能够抵御火焰的超酷装甲！
+			</string>
+			<string>
+				火箭也没法穿透这套惊人的装甲！
+			</string>
+			<string>
+				别让敌人的射弹盯上你！
+			</string>
+			<string>
+				有了它，没有什么能伤到你！
+			</string>
+			<string>
+				这套隐形装备可以让你暂时躲避激烈的战火！
+			</string>
+			<string>
+				当形势变得严峻时，伤害也会加倍！
+			</string>
+			<string>
+				为你的坦克增添生命值......每次一点点！
+			</string>
+			<string>
+				你坦克的生命值越高，你存活得就越久！
+			</string>
+			<string>
+				生命值回复得如此之快......就像重来没有丢失过似的！
+			</string>
+			<string>
+				有了这些履带就再也不怕地雷啦！
+			</string>
+			<string>
+				彻底摆脱冰面打滑的烦恼吧！现在感觉棒极了！
+			</string>
+			<string>
+				赶快用这厚重的履带来对抗泥沼吧！
+			</string>
+			<string>
+				它们能够牢牢地抓紧地面，让你在很滑的道路上行动自如！
+			</string>
+			<string>
+				用地雷给你的敌人带去一个爆炸惊喜吧！
+			</string>
+			<string>
+				就像带着一名好友与你一起上战场......一名致命的好友！
+			</string>
+			<string>
+				用来自上空的死亡小礼物给你的敌人带去惊喜吧！
+			</string>
+			<string>
+				移动右边的虚拟控制板射击，或点击进行射击。选择你最顺手的操作方式吧！
+			</string>
+			<string>
+				在战役或多人玩家中竭尽所能！排行榜将告诉你你在全球排名如何！
+			</string>
+			<string>
+				查看好友资料以了解他们的坦克。用好友的坦克完成一个任务，或许你也会想拥有这样的坦克！
+			</string>
+		</SC>
+		<BR>
+			<string>
+				Inofensivo
+			</string>
+			<string>
+				Travessia
+			</string>
+			<string>
+				Ricochete 1
+			</string>
+			<string>
+				Ricochete 2
+			</string>
+			<string>
+				PEM (atordoar)
+			</string>
+			<string>
+				Napalm 1
+			</string>
+			<string>
+				Napalm 2
+			</string>
+			<string>
+				Invencível
+			</string>
+			<string>
+				Bala dupla
+			</string>
+			<string>
+				Rastreador 1
+			</string>
+			<string>
+				Rastreador 2
+			</string>
+			<string>
+				Rastreador 3
+			</string>
+			<string>
+				Granada 1
+			</string>
+			<string>
+				Granada 2
+			</string>
+			<string>
+				Proteção contra bomba
+			</string>
+			<string>
+				Proteção contra fogo
+			</string>
+			<string>
+				Proteção contra míssil
+			</string>
+			<string>
+				Interferência 
+de rastreamento
+			</string>
+			<string>
+				Escudo contra PEM
+			</string>
+			<string>
+				Discrição
+			</string>
+			<string>
+				Última defesa
+			</string>
+			<string>
+				Regeneração 1
+			</string>
+			<string>
+				Regeneração 2
+			</string>
+			<string>
+				Regeneração 3
+			</string>
+			<string>
+				Proteção contra minas
+			</string>
+			<string>
+				Aderência ao gelo
+			</string>
+			<string>
+				Resistência à lama
+			</string>
+			<string>
+				Resistência ao deslize
+			</string>
+			<string>
+				Mina
+			</string>
+			<string>
+				Arma fixa
+			</string>
+			<string>
+				Bomba
+			</string>
+			<string>
+				Atirando em inimigos
+			</string>
+			<string>
+				Placar
+			</string>
+			<string>
+				O tanque do amigo
+			</string>
+			<string>
+				Você nunca vai atirar em si mesmo com essas balas.
+			</string>
+			<string>
+				Sua bala vai cortar outra bala como se fosse manteiga.
+			</string>
+			<string>
+				Suas balas vão quicar nas paredes rapidamente.
+			</string>
+			<string>
+				Acabe com seus inimigos com grande força física.
+			</string>
+			<string>
+				Uma bala chocantemente boa.
+			</string>
+			<string>
+				A bala mais quente do mercado... Literalmente está em chamas.
+			</string>
+			<string>
+				Nenhum tanque pode sobreviver a esta bala flamejante.
+			</string>
+			<string>
+				Esta bala não deixará nada passar no seu caminho.
+			</string>
+			<string>
+				Dobre suas balas... Dobre sua diversão.
+			</string>
+			<string>
+				Onde seus inimigos forem, estas balas seguirão eles.
+			</string>
+			<string>
+				Seu oponentes não podem se esconder dessas balas.
+			</string>
+			<string>
+				Essas balas de busca precisa vão ficar na cola do inimigo.
+			</string>
+			<string>
+				Não atinja só seu inimigo. Atinja também tudo o que está a sua volta.
+			</string>
+			<string>
+				Quanto maior a granada, maior o alcance.
+			</string>
+			<string>
+				As bombas vão correr dessa blindagem.
+			</string>
+			<string>
+				A blindagem é tão legal que o fogo tem medo de danificá-la.
+			</string>
+			<string>
+				Os mísseis não podem passar por essa blindagem maravilhosa.
+			</string>
+			<string>
+				Não deixe que os mísseis inimigos te sigam.
+			</string>
+			<string>
+				Nada te eletrocuta enquanto usar isso.
+			</string>
+			<string>
+				Um manto invisível que te esconde por alguns segundos enquanto o circo pega fogo.
+			</string>
+			<string>
+				Quando as coisas apertam, o melhor é DOBRAR o dano.
+			</string>
+			<string>
+				Dê vida ao seu tanque... Um pouco a cada vez.
+			</string>
+			<string>
+				Quanto mais vida em seu tanque, mais você durará.
+			</string>
+			<string>
+				Consiga a vida de volta rapidamente... Nem vai perceber que a tinha perdido.
+			</string>
+			<string>
+				Não precisa se preocupar com minas ao ter isso.
+			</string>
+			<string>
+				Pare de escorregar no gelo.
+			</string>
+			<string>
+				Ponha a mão na massa com isso aqui.
+			</string>
+			<string>
+				Estes clipes se agarram ao chão, permitindo um bom movimente sobre as esteiras.
+			</string>
+			<string>
+				Faça uma surpresa explosiva com minas!
+			</string>
+			<string>
+				É como ter um velho amigo ao seu lado.
+			</string>
+			<string>
+				Surpreenda seus inimigos com fogo dos céus!
+			</string>
+			<string>
+				Mova o controle virtual do lado direito ou toque para atirar. Jogue da maneira que achar melhor!
+			</string>
+			<string>
+				Divirta-se na campanha ou no modo multijogador! O placar mostrará ao mundo se você for realmente bom.
+			</string>
+			<string>
+				Veja o perfil do seu amigo para ver seus tanques. Use o tanque de um amigo em uma missão e inspire-se para montar o seu!
+			</string>
+		</BR>
+		<TR>
+			<string>
+				Zararsız
+			</string>
+			<string>
+				Kesişim
+			</string>
+			<string>
+				Sekme 1
+			</string>
+			<string>
+				Sekme 2
+			</string>
+			<string>
+				EMS (Sersemletici)
+			</string>
+			<string>
+				Napalm 1
+			</string>
+			<string>
+				Napalm 2
+			</string>
+			<string>
+				Ölümsüzlük
+			</string>
+			<string>
+				İkili Mermi
+			</string>
+			<string>
+				Güdümlü 1
+			</string>
+			<string>
+				Güdümlü 2
+			</string>
+			<string>
+				Güdümlü 3
+			</string>
+			<string>
+				Bomba 1
+			</string>
+			<string>
+				Bomba 2
+			</string>
+			<string>
+				Bomba Koruması
+			</string>
+			<string>
+				Alev Koruması
+			</string>
+			<string>
+				Roket Koruması
+			</string>
+			<string>
+				Güdümlü Bozucu
+			</string>
+			<string>
+				EMS Kalkanı
+			</string>
+			<string>
+				Görünmezlik
+			</string>
+			<string>
+				Nihai Direniş
+			</string>
+			<string>
+				Yenilenme 1
+			</string>
+			<string>
+				Yenilenme 2
+			</string>
+			<string>
+				Yenilenme 3
+			</string>
+			<string>
+				Mayın Koruması
+			</string>
+			<string>
+				Buz Kontrolü
+			</string>
+			<string>
+				Çamur Direnci
+			</string>
+			<string>
+				Kayma Direnci
+			</string>
+			<string>
+				Mayın
+			</string>
+			<string>
+				Taret
+			</string>
+			<string>
+				Bomba
+			</string>
+			<string>
+				Düşmana Ateş Etme
+			</string>
+			<string>
+				Lider Panosu
+			</string>
+			<string>
+				Arkadaşının Tankını Dene
+			</string>
+			<string>
+				Bu mermilerle kendini arkadan vuramazsın!
+			</string>
+			<string>
+				Mermilerin diğer mermileri tereyağı gibi ikiye ayıracak!
+			</string>
+			<string>
+				Mermilerin duvarlardan sekecek!
+			</string>
+			<string>
+				Düşmanlarını fiziğin müthiş gücüyle yok et!
+			</string>
+			<string>
+				Mermilerinin güzelliği karşısında düşmanların şoke olacak! Gerçek anlamda!
+			</string>
+			<string>
+				En ateşli mermileri aldın! Gerçekten yakıyorlar!
+			</string>
+			<string>
+				Bu alevli mermilere hiçbir tank dayanamaz!
+			</string>
+			<string>
+				Bu mermilerin karşısında hiçbir şey duramaz!
+			</string>
+			<string>
+				Mermileri çiftlemek, eğlenceyi çiftlemek demektir!
+			</string>
+			<string>
+				Düşmanın nereye, mermilerin oraya!
+			</string>
+			<string>
+				Bu takip eden mermiler düşmanı saklandığı yerde bulur.
+			</string>
+			<string>
+				Bu süper keskin mermiler düşmanlarını takip eder ve asla peşlerini bırakmaz!
+			</string>
+			<string>
+				Sadece düşmanına değil, çevresindeki her şeye zarar ver!
+			</string>
+			<string>
+				Bomban ne kadar büyükse, patlama alanı da o kadar büyüktür!
+			</string>
+			<string>
+				Bombalar bu çetin zırhtan sekip gidecek!
+			</string>
+			<string>
+				Bu zırh o kadar havalı ki aleve karşı dayanıyor!
+			</string>
+			<string>
+				Roketler bu inanılmaz zırhı delemez!
+			</string>
+			<string>
+				Bu zırhla düşmanın mermileri seni izleyemez!
+			</string>
+			<string>
+				Bu zırhla hiçbir şey seni şoke edemez!
+			</string>
+			<string>
+				Bu zırh ateş altınsa seni birkaç saniyeliğine görünmez yapar!
+			</string>
+			<string>
+				İşler zora girdiğinde İKİ KAT hasar vermeye başlarsın!
+			</string>
+			<string>
+				Tankın artık yavaş yavaş SP üretecek!
+			</string>
+			<string>
+				Tankında ne kadar fazla hayat olursa, o kadar uzun yaşarsın!
+			</string>
+			<string>
+				O kadar hızlı yenileneceksin ki yaralanma nedir bilmeyeceksin!
+			</string>
+			<string>
+				Bu paletlerle mayınlara bassan da olur!
+			</string>
+			<string>
+				Buzda kaymaya son! İşte olay budur!
+			</string>
+			<string>
+				Bu zorlu paletlerle çamurlanmaktan korkma.
+			</string>
+			<string>
+				bu paletler zemine öyle yapışır ki, hareketli zeminlerde kolayca ilerlersin.
+			</string>
+			<string>
+				Bir mayınla düşmanlarına patlayıcı bir sürpriz yap!
+			</string>
+			<string>
+				Bir arkadaşını yanında savaşa getirmek gibi bir şey... ölümcül bir arkadaşını!
+			</string>
+			<string>
+				Düşmanlarını yukarıdan gelen bir ölüm hediyesiyle şaşırt!
+			</string>
+			<string>
+				Ateş etmek için ekranın sağındaki sanal çubuğu hareket ettir veya tıklayarak ateş et. En rahat tarzı seç!
+			</string>
+			<string>
+				Harekat ve Çok Oyunculu modlarda elinden gelenin en iyisini yap! Lider Panosu dünyaya ne kadar iyi olduğunu gösterecek!
+			</string>
+			<string>
+				Arkadaşlarının profillerini ziyaret ederek tanklarına göz at. Bir görev için arkadaşının tankıyla tur at. Kendine ait bir tank bile isteyebilirsin!
+			</string>
+		</TR>
+	</table>
+	<table name="Sheet2">
+		<ids>
+			<id value="LOADING_TIP_01"/>
+			<id value="LOADING_TIP_02"/>
+			<id value="LOADING_TIP_03"/>
+			<id value="LOADING_TIP_04"/>
+			<id value="LOADING_TIP_05"/>
+		</ids>
+		<EN>
+			<string>
+				Harmless
+			</string>
+			<string>
+				Crossing
+			</string>
+			<string>
+				Ricochet 1
+			</string>
+			<string>
+				Ricochet 2
+			</string>
+			<string>
+				EMP (Stun)
+			</string>
+		</EN>
+		<FR>
+			<string>
+				Inoffensif
+			</string>
+			<string>
+				Transpercer
+			</string>
+			<string>
+				Ricochet 1
+			</string>
+			<string>
+				Ricochet 2
+			</string>
+			<string>
+				IEM (étourdissant)
+			</string>
+		</FR>
+		<DE>
+			<string>
+				Harmlos
+			</string>
+			<string>
+				Schusskollision
+			</string>
+			<string>
+				Querschläger 1
+			</string>
+			<string>
+				Querschläger 2
+			</string>
+			<string>
+				EMP (Lähmen)
+			</string>
+		</DE>
+		<SP>
+			<string>
+				Inocuo
+			</string>
+			<string>
+				Cruce
+			</string>
+			<string>
+				Rebote 1
+			</string>
+			<string>
+				Rebote 2
+			</string>
+			<string>
+				PEM (aturdir)
+			</string>
+		</SP>
+		<IT>
+			<string>
+				Innocuo
+			</string>
+			<string>
+				Attraversamento
+			</string>
+			<string>
+				Rimbalzo 1
+			</string>
+			<string>
+				Rimbalzo 2
+			</string>
+			<string>
+				EMP (stordimento)
+			</string>
+		</IT>
+		<JP>
+			<string>
+				ハームレス
+			</string>
+			<string>
+				貫通弾
+			</string>
+			<string>
+				反射1
+			</string>
+			<string>
+				反射2
+			</string>
+			<string>
+				EMP （スタン）
+			</string>
+		</JP>
+		<KR>
+			<string>
+				피해 무효
+			</string>
+			<string>
+				관통
+			</string>
+			<string>
+				반사 1
+			</string>
+			<string>
+				반사 2
+			</string>
+			<string>
+				EMP (마비)
+			</string>
+		</KR>
+		<RU>
+			<string>
+				Безопасный
+			</string>
+			<string>
+				Бронебойный
+			</string>
+			<string>
+				Рикошет 1
+			</string>
+			<string>
+				Рикошет 2
+			</string>
+			<string>
+				ЭМИ (помехи)
+			</string>
+		</RU>
+		<SC>
+			<string>
+				无害
+			</string>
+			<string>
+				破坏
+			</string>
+			<string>
+				跳弹1
+			</string>
+			<string>
+				跳弹2
+			</string>
+			<string>
+				EMP（眩晕）
+			</string>
+		</SC>
+		<BR>
+			<string>
+				Inofensivo
+			</string>
+			<string>
+				Travessia
+			</string>
+			<string>
+				Ricochete 1
+			</string>
+			<string>
+				Ricochete 2
+			</string>
+			<string>
+				PEM (atordoar)
+			</string>
+		</BR>
+		<TR>
+			<string>
+				Zararsız
+			</string>
+			<string>
+				Kesişim
+			</string>
+			<string>
+				Sekme 1
+			</string>
+			<string>
+				Sekme 2
+			</string>
+			<string>
+				EMS (Sersemletici)
+			</string>
+		</TR>
+	</table>
+</strings>

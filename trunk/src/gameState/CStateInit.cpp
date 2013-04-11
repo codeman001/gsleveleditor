@@ -68,6 +68,9 @@ void CStateInit::onUpdate()
 		fileSystem->addZipFileArchive( getIView()->getPhysicPath("_textureTGA.zip") );
 	#endif
 #endif
+		// load string
+		CGameString::loadString(getIView()->getPath("data/texts/texts.xml"));
+
 		// load game config
 		CGameConfig::getInstance()->initConfig();
 

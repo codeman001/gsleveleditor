@@ -1041,6 +1041,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="gameString"
+				>
+				<File
+					RelativePath="..\..\src\gameString\CGameString.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameString\CGameString.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\gsgameplay.cpp"

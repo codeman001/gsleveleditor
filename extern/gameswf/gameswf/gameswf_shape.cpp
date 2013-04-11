@@ -1394,6 +1394,10 @@ namespace gameswf
 		matrix	mat = inst->get_world_matrix();
 		cxform	cx = inst->get_world_cxform();
 		float	pixel_scale = inst->get_parent()->get_pixel_scale();
+		
+		// hongduc.pr@gmail.com add note:
+		// overide texture implement here
+		// -> m_fill_styles.m_bitmap_character
 
 		switch ( inst->get_blend_mode() )
 		{

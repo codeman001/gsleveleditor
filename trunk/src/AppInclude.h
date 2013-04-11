@@ -11,7 +11,10 @@
 #endif
 
 #include <irrlicht.h>
+
+#ifdef GSGAMEPLAY
 #include <IRandomizer.h>
+#endif
 
 #include <os.h>
 using namespace irr;

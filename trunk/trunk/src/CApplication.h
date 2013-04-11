@@ -17,6 +17,7 @@
 #include "gameConfig/CGameConfig.h"
 #include "gameControl/CTouchManager.h"
 #include "gameControl/CGameControl.h"
+#include "gameString/CGameString.h"
 #include "core/TextureManager/CTextureManager.h"
 
 class CApplication: public IEventReceiver, IView

@@ -141,6 +141,7 @@ void CApplication::destroyApplication()
 	CGameUI::releaseInstance();
     CGameControl::releaseInstance();
     CTextureManager::releaseInstance();
+	CGameString::release();
 }
 
 void CApplication::mainLoop()

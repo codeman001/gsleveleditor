@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "gameLevel/CGameLevel.h"
+#include "gameString/CGameString.h"
 
 #ifdef HAS_MULTIPLAYER
 #include "CMultiplayerManager.h"

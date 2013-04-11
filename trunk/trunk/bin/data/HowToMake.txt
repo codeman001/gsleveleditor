@@ -1,3 +1,12 @@
+[PVRBuild]
+
 - Install cygwin with components:
 	+ Shell/Bash
 	+ Devel/Make
+
+
+
+[TextBuild]
+
+- Install python27
+	+ install pyExcelerator (download from https://pypi.python.org/pypi/pyExcelerator)

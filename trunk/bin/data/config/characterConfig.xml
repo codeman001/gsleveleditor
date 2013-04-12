@@ -1,0 +1,7 @@
+<characterConfig>
+	<character>
+		<name>US Hawaii</name>
+		<model>data/mesh/character/hero/us_hawaii/us_hawaii.dae</model>
+		<anim>data/mesh/character/hero/us_hawaii/us_hawaii.anim</anim>
+	</character>
+</characterConfig>

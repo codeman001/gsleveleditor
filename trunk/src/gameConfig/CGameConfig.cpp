@@ -13,6 +13,7 @@ CGameConfig::~CGameConfig()
 void CGameConfig::initConfig()
 {
 	initLevelConfig();
+	initCharacterConfig();
 }
 
 void CGameConfig::initLevelConfig()
@@ -107,5 +108,98 @@ void CGameConfig::initLevelConfig()
 		}
 	}
 	
+	xmlRead->drop();
+}
+
+// parseCharacter
+void CGameConfig::parseCharacter(io::IXMLReader* xmlRead)
+{
+	m_gameCharacter.push_back( SCharacterInfo() );
+	SCharacterInfo& charInfo = m_gameCharacter.back();
+
+	int readState = 0;
+
+	while ( xmlRead->read() )
+	{
+		switch (xmlRead->getNodeType())
+		{		
+		case io::EXN_ELEMENT:
+			{
+				const wchar_t* nodeName = xmlRead->getNodeName();
+				
+				if ( nodeName == std::wstring(L"name") )
+					readState = 1;
+				else if ( nodeName == std::wstring(L"model") )
+					readState = 2;
+				else if ( nodeName == std::wstring(L"anim") )
+					readState = 3;
+			}
+			break;
+		case io::EXN_ELEMENT_END:
+			{
+				const wchar_t* nodeName = xmlRead->getNodeName();
+				if ( nodeName == std::wstring(L"character") )
+					return;
+			}
+			break;
+		case io::EXN_TEXT:
+			{
+				const wchar_t* text = xmlRead->getNodeData();
+
+				if ( readState == 1 )
+					charInfo.name	= std::wstring(text);
+				else if ( readState == 2 )
+					charInfo.model	= std::wstring(text);
+				else if ( readState == 3 )
+					charInfo.anim	= std::wstring(text);
+
+				readState = 0;
+			}
+			break;
+		}
+	}
+}
+
+// initCharacterConfig
+// load character
+void CGameConfig::initCharacterConfig()
+{
+	const char *lpFilename = "data/config/characterConfig.xml";
+
+	IrrlichtDevice	*device = getIView()->getDevice();
+	io::IFileSystem *fs = device->getFileSystem();
+	
+	io::IXMLReader *xmlRead = fs->createXMLReader( lpFilename );
+
+	if ( xmlRead == NULL )
+	{
+		xmlRead = fs->createXMLReader( getIView()->getPath(lpFilename) );
+		if ( xmlRead == NULL )
+			return;
+	}
+
+	while ( xmlRead->read() )
+	{
+		switch (xmlRead->getNodeType())
+		{		
+		case io::EXN_ELEMENT:
+			{
+				const wchar_t* nodeName = xmlRead->getNodeName();
+				if ( nodeName == std::wstring(L"character") )
+				{
+					parseCharacter(xmlRead);
+				}
+			}
+		case io::EXN_ELEMENT_END:
+			{
+			}
+			break;
+		case io::EXN_TEXT:
+			{
+			}
+			break;
+		}
+	}
+
 	xmlRead->drop();
 }

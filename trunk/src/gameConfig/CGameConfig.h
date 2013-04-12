@@ -1,6 +1,7 @@
 #ifndef _CGAME_CONFIG_
 #define _CGAME_CONFIG_
 
+#include "stdafx.h"
 #include "gameMatch/IGameMatch.h"
 #include "uiClass/uiSingleton.h"
 
@@ -21,9 +22,16 @@ public:
 		std::vector<SLevelInfo>		levels;
 	};
 
-protected:
-	std::vector<SGameMatch>	m_gameMatchs;
+	struct SCharacterInfo
+	{
+		std::wstring	name;
+		std::wstring	model;
+		std::wstring	anim;
+	};
 
+protected:
+	std::vector<SGameMatch>			m_gameMatchs;
+	std::vector<SCharacterInfo>		m_gameCharacter;
 public:
 	CGameConfig();
 	~CGameConfig();
@@ -34,6 +42,13 @@ protected:
 	// initLevelConfig
 	// load level info
 	void initLevelConfig();
+
+	// initCharacterConfig
+	// load character
+	void initCharacterConfig();
+
+	// parseCharacter
+	void parseCharacter(io::IXMLReader* reader);
 
 public:
 	// getNumGameMatch

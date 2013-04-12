@@ -1,10 +1,11 @@
 Player component
 {
+	charID: 0 | intType;
 }
 Network player component
 {
 }
 Spawn point component
 {
-	teamID:  | intType;
+	teamID: 0 | intType;
 }

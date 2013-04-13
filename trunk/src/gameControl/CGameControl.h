@@ -19,8 +19,7 @@ protected:
 protected:
     float       m_runStrength;
     float       m_runRot;
-    bool        m_runState;
-    bool        m_runFastState;
+    bool        m_runState;    
     bool        m_shootState;
     bool        m_reloadState;
 public:
@@ -85,8 +84,7 @@ public:
 
     // action
     void setRunParameter(float f, float runRot);
-    void setRunMode(bool run);
-    void setRunFastMode(bool runFast);
+    void setRunMode(bool run);    
     void setShootMode(bool shoot, bool reload);
     
 protected:

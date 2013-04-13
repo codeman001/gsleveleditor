@@ -44,17 +44,17 @@ void CSpawnPointMgrComponent::loadData( CSerializable* pObj )
 
 // getRandomPosition
 // random a pos from list spawnPoint
-core::vector3df CSpawnPointMgrComponent::getRandomPosition(int teamID)
+void CSpawnPointMgrComponent::getRandomPosition(int teamID, core::vector3df& pos, core::vector3df &rot)
 {
 	core::vector3df ret;
 
 	if ( m_listSpawnPoint.size() > 0 )
 	{
 		int r = getIView()->getDevice()->getRandomizer()->rand() % (int)m_listSpawnPoint.size();
-		ret = m_listSpawnPoint[r]->getGameObject()->getPosition();
-	}
-
-	return ret;
+		
+		pos = m_listSpawnPoint[r]->getGameObject()->getPosition();
+		rot = m_listSpawnPoint[r]->getGameObject()->getRotation();
+	}	
 }
 
 
@@ -95,6 +95,9 @@ void CSpawnPointComponent::initComponent()
 // run when update per frame
 void CSpawnPointComponent::updateComponent()
 {
+#ifdef GSGAMEPLAY
+	m_gameObject->setVisible(false);
+#endif
 }    
 // saveData
 // save data to serializable

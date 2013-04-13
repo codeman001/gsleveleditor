@@ -39,9 +39,6 @@ void CGameMatchSolo::update()
 {
 	if ( m_player == NULL )
 		m_player = spawn3rdPlayer();
-	
-
-
 }
 
 // onEvent
@@ -55,7 +52,8 @@ void CGameMatchSolo::onEvent(const SEvent& event)
 		SEventButtonData *buttonEvent = ((SEventButtonData*)event.GameEvent.EventData);
 
 		if ( buttonEvent->data == m_btnRunFast )
-            CGameControl::getInstance()->setRunFastMode(true);
+		{
+		}
 		else if ( buttonEvent->data == m_btnShoot )
             CGameControl::getInstance()->setShootMode(true, false);
 	}
@@ -64,7 +62,8 @@ void CGameMatchSolo::onEvent(const SEvent& event)
 		SEventButtonData *buttonEvent = ((SEventButtonData*)event.GameEvent.EventData);
 
 		if ( buttonEvent->data == m_btnRunFast )
-            CGameControl::getInstance()->setRunFastMode(false);
+		{            
+		}
 		else if ( buttonEvent->data == m_btnShoot )
             CGameControl::getInstance()->setShootMode(false, false);			
 	}

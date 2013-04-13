@@ -41,7 +41,7 @@ public:
 
 	// getRandomPosition
 	// random a pos from list spawnPoint
-	core::vector3df getRandomPosition(int teamID = -1);
+	void getRandomPosition(int teamID, core::vector3df& pos, core::vector3df &rot);
 };
 
 

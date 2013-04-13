@@ -27,16 +27,9 @@ public:
     enum EPlayerState
 	{
 		PlayerNone = 0,
-		PlayerIdle,		
-		PlayerTurn,
-		PlayerRunTurn,
-		PlayerRun,
-        PlayerRunFastTurn,
-		PlayerRunFast,
-        PlayerRunToRunFast,
-        PlayerRunFastToRun,
-        PlayerStandAim,
-        PlayerRotate,
+		PlayerIdle,
+		PlayerRun,        
+        PlayerStandAim,        
 		NumStateCount
 	};
     
@@ -44,11 +37,7 @@ public:
     {
         PlayerUpBodyAim = 0,
         PlayerUpBodyShoot,
-        PlayerUpBodyReload,
-		PlayerUpBodyOffGun,
-        PlayerUpBodyAimToOffGun,
-        PlayerUpBodyOffGunToAim,
-        PlayerUpBodyRunFast      
+        PlayerUpBodyReload		
     };
     
 	enum EPlayerSubState
@@ -71,82 +60,32 @@ protected:
     
     EPlayerSubState         m_upbodySubState;
     EPlayerUpBodyState      m_upbodyState;
-    
-    
-    float					m_runSpeed;
-	float					m_runFastSpeed;
-    
-	bool					m_runCommand;
-    bool                    m_gunOnCommand;
+        
     
 	SEventPlayerMove		m_playerMoveEvt;
-    SEventPlayerCommand     m_playerCmdEvt;
-    
-	core::vector3df			m_controlRotate;
-    
-    
-    int                     m_idleAnimationID;
-	float					m_animCurrentTime;
+    SEventPlayerCommand     m_playerCmdEvt;    
     
     CColladaAnimation*		m_animationPackage;
 	CColladaMeshComponent*	m_collada;
-    
-	std::vector<CGameColladaSceneNode*>	m_nodesHandsAndHead;
-	std::vector<CGameColladaSceneNode*>	m_nodesChest;	
-	std::vector<CGameColladaSceneNode*>	m_nodesLeftShoulder;
-	std::vector<CGameColladaSceneNode*>	m_nodesRightShoulder;
-    
-	std::vector<CGameColladaSceneNode*>	m_nodesFoot;
-	std::vector<CGameColladaSceneNode*>	m_nodesUpBody;
-    
-	CGameColladaSceneNode*				m_nodeNeck;
+    	
+	std::vector<CGameColladaSceneNode*>	m_nodesUpBody;    	
     
 	// begin anim name declare
-	std::vector<std::string>		m_animIdle;
-    
-	std::string						m_animRun;
+	std::string						m_animIdleAim;
+    	
 	std::string						m_animRunForward;
 	std::string						m_animRunBackward;
-	std::string						m_animRunStrafeLeft;
-	std::string						m_animRunStrafeRight;
-	std::string						m_animRunNoGun;
-    
-	std::string						m_animGunOn;
-	std::string						m_animGunOff;
-	std::string						m_animGunReload;
-    
-	std::string						m_animAimDown;
-	std::string						m_animAimUp;
-	std::string						m_animAimLeft;
-	std::string						m_animAimRight;
-	std::string						m_animAimStraight;
-    
-	std::string						m_animShootLeft;
-	std::string						m_animShootRight;
-	std::string						m_animShootUp;
-	std::string						m_animShootDown;
-	std::string						m_animShootStraight;
+	std::string						m_animRunLeft;
+	std::string						m_animRunRight;	
+    	
 	// end anim name declare	
-    
-	std::string				m_offGunAnimation;
-	float					m_offGunFactor;
-    
-	float					m_aimFactor;
-	bool					m_aimRotateCharacter;
-    
-    float                   m_upBodyRunFastFactor;
-    
 	float					m_runFactor;	
-	float					m_runAccel;
-	float					m_runToRunFastAccel;
-	float					m_gunOnOffAccel;
+	float					m_runAccel;	
         
 	float					m_animForwardFactor;
 	float					m_animBackwardFactor;
 	float					m_animLeftFactor;
-	float					m_animRightFactor;
-    
-	float					m_spineRotation;
+	float					m_animRightFactor;    	
     
 	float					m_rootBlendRotation;
 	float					m_spineBlendRotation;
@@ -162,14 +101,7 @@ protected:
 	CGameObject*			m_gunMuzzle;
 
     CLightObject*           m_gunLight;
-    CGunLightComponent*     m_gunLightComp;
-
-    // mp sync
-    core::vector3df         m_MPRotateVector;
-    float                   m_MPRunRotate;
-    float                   m_MPRunTurnFactor;
-    core::vector2df         m_MPAimAngle;
-    float                   m_MPSpineRotate;
+    CGunLightComponent*     m_gunLightComp;  
 
 protected:
     
@@ -203,25 +135,10 @@ protected:
     
     // doNextState
 	// change to next state
-	void doNextState();	
-    
-    // setOffGunAnimation
-	inline void setOffGunAnimation( std::string animName)
-	{
-		m_offGunAnimation = animName;
-	}
-    
-	// setOffGunFactor
-	inline void setOffGunFactor(float f)
-	{
-		m_offGunFactor = f;
-	}
+	void doNextState();	    
     
     // isFinishedAnim	
-	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0, int animLayer = 0);
-    
-	// stepAnimationTime	
-	void stepAnimationTime();
+	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0, int animLayer = 0);    	
     
     // turnToDir
 	bool turnToDir(core::vector3df& dir, const core::vector3df& turnTo, float speed );
@@ -243,14 +160,6 @@ protected:
 	void calcRunAnimationBlend(float rot, float &forward, float &backward, float &left, float &right);
     
 	void calcAimAnimationBlend(core::vector2df angle, float &up, float &down, float &left, float &right);
-
-	// setSpineRotation	
-	void setSpineRotation( float r )
-	{
-		const float maxAngle = 110.0f;
-		m_spineRotation = r;
-		m_spineRotation = core::clamp<float>(m_spineRotation, -maxAngle, maxAngle);
-	}
 
 	inline void showMuzzle(float time)
 	{

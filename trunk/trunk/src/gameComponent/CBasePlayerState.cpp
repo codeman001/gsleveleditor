@@ -29,30 +29,7 @@ CBasePlayerState::CBasePlayerState()
     // default state
 	m_state			= PlayerNone;	
 	m_lastState		= PlayerNone;
-	m_nextState		= PlayerNone;
-    
-	
-	// init run const
-	m_runSpeed				= 0.3f;
-	m_runFastSpeed			= 0.5f;
-    
-	m_runCommand	= false;			
-    m_gunOnCommand  = false;
-    
-	m_runFactor = 0.0f;
-	m_runAccel	= 0.002f;
-	m_runToRunFastAccel = 0.003f;
-    
-    m_idleAnimationID       = 0;
-	m_animCurrentTime		= 0.0f;	
-    
-	m_spineRotation = 0.0f;
-	
-    m_upBodyRunFastFactor = 0.0f;
-	m_offGunFactor = 1.0f;
-    
-	m_aimFactor = 0.0f;
-	m_aimRotateCharacter = false;
+	m_nextState		= PlayerNone;    
 
 	// mesh time
 	m_muzzleMeshTime = 0;
@@ -142,82 +119,7 @@ CBulletRayComponent* CBasePlayerState::getZoneBulletComponent()
 
 void CBasePlayerState::init(CGameObject* gameObj)
 {    
-	m_owner = gameObj;
-
-    // foot nodes
-	m_nodesFoot.push_back( m_collada->getSceneNode("Reference") );
-	m_nodesFoot.push_back( m_collada->getSceneNode("LeftGun") );
-	m_nodesFoot.push_back( m_collada->getSceneNode("Hips") );		
-	m_nodesFoot.push_back( m_collada->getSceneNode("LeftUpLeg") );
-	m_nodesFoot.push_back( m_collada->getSceneNode("RightUpLeg") );
-	m_collada->getChildsOfSceneNode("LeftUpLeg",	m_nodesFoot);
-	m_collada->getChildsOfSceneNode("RightUpLeg",	m_nodesFoot);
-    
-	// left & right hand with gun
-	m_collada->getChildsOfSceneNode("LeftShoulder",		m_nodesLeftShoulder);
-	m_nodesLeftShoulder.push_back( m_collada->getSceneNode("LeftGun") );
-	m_nodesLeftShoulder.push_back( m_collada->getSceneNode("LeftGunTip") );	
-    
-	m_collada->getChildsOfSceneNode("RightShoulder",	m_nodesRightShoulder);
-	m_collada->getChildsOfSceneNode("RightGun",			m_nodesRightShoulder);
-	m_nodesRightShoulder.push_back( m_collada->getSceneNode("RightGun") );
-	m_nodesRightShoulder.push_back( m_collada->getSceneNode("RightGunTip") );    
-    
-	// hand, head
-	m_nodesHandsAndHead.push_back( m_collada->getSceneNode("RightGun") );		
-	m_collada->getChildsOfSceneNode("Spine3",m_nodesHandsAndHead);
-    
-	// up body
-	m_nodesUpBody = m_nodesHandsAndHead;
-	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine") );	
-	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine1") );    
-	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine2") );
-	m_nodesUpBody.push_back( m_collada->getSceneNode("Spine3") );
-    
-	// connected animation layer
-    m_collada->getSceneNode("Spine")->setConnectAnimLayer(true, false, false, false);
-    m_collada->setNodeReferenceByAnimLayer(m_collada->getSceneNode("RightGun"), m_collada->getSceneNode("RightHand"));
-    
-    
-	// decalre anim list
-	m_animIdle.push_back( "Hero@Idle" );
-	m_animIdle.push_back( "Hero@Idle1" );
-	m_animIdle.push_back( "Hero@Idle2" );
-    
-	m_animRunForward	= "Hero@RunForward";
-	m_animRunBackward	= "Hero@RunBackward";
-	m_animRunStrafeLeft	= "Hero@RunStrafeLeft";
-	m_animRunStrafeRight= "Hero@RunStrafeRight";
-	m_animRunNoGun		= "Hero@RunForwardNoGun";
-    
-	m_animGunOn			= "Hero@GunOn";
-	m_animGunOff		= "Hero@GunOff";	
-	m_animGunReload		= "Hero@GunReload";
-    
-	m_animAimDown		= "Hero@AimDown";
-	m_animAimUp			= "Hero@AimUp";
-	m_animAimLeft		= "Hero@AimLeft";
-	m_animAimRight		= "Hero@AimRight";
-	m_animAimStraight	= "Hero@AimStraight";
-    
-	m_animShootLeft		= "Hero@ShootLeft";
-	m_animShootRight	= "Hero@ShootRight";
-	m_animShootUp		= "Hero@ShootUp";
-	m_animShootDown		= "Hero@ShootDown";
-	m_animShootStraight	= "Hero@ShootStraight";
-    
-    
-	// set basic state idle
-	m_collada->setAnimation( m_animIdle[0] );    
-	setState( PlayerIdle );
-    
-	// enable anim layer 1
-    m_collada->enableAnimLayer(1, true);
-	m_collada->setAnimLayer( m_nodesUpBody, 1 );		
-	
-	setUpBodyState(PlayerUpBodyOffGun );
-    setOffGunAnimation("Hero@Idle");
-	setOffGunFactor(1.0f);
+	m_owner = gameObj;   
 }
 
 void CBasePlayerState::initPlayerObjects()
@@ -241,23 +143,7 @@ void CBasePlayerState::initPlayerObjects()
 // init callback func
 void CBasePlayerState::initAnimationCallback()
 {
-	CGameColladaSceneNode *spine = m_collada->getSceneNode("Spine");
-	spine->setAnimationCallback(this);
-	m_nodesChest.push_back( spine );
 	
-	spine = m_collada->getSceneNode("Spine1");
-	spine->setAnimationCallback(this);	
-	m_nodesChest.push_back( spine );
-    
-	spine = m_collada->getSceneNode("Spine2");
-	spine->setAnimationCallback(this);
-	m_nodesChest.push_back( spine );
-    
-	CGameColladaSceneNode *root = m_collada->getSceneNode("Reference");
-	root->setAnimationCallback(this);
-    
-	m_nodeNeck = m_collada->getSceneNode("Neck");
-	m_nodeNeck->setAnimationCallback(this);	 
 }
 
 
@@ -273,16 +159,6 @@ void CBasePlayerState::doNextState()
     CMultiplayerManager *mpMgr = CGameStateMgr::getInstance()->getCurrentState()->getMPManager();
     if ( mpMgr )
         mpMgr->setSyncData(true);
-}
-
-// stepAnimationTime	
-void CBasePlayerState::stepAnimationTime()
-{
-	float timeStep = getIView()->getTimeStep();
-	m_animCurrentTime = m_animCurrentTime - timeStep;
-	
-	if ( m_animCurrentTime < 0 )
-		m_animCurrentTime = 0;
 }
 
 // turnToDir
@@ -521,42 +397,5 @@ void CBasePlayerState::_onUpdateFrameDataChannel( ISceneNode* node, core::vector
 }
 
 void CBasePlayerState::_onUpdateFinishAbsolute( ISceneNode* node, core::matrix4& absoluteAnimationMatrix )
-{
-	if ( m_state != CBasePlayerState::PlayerIdle )
-	{
-		// todo modify rotation, position of anim
-		const core::vector3df rotAxis = core::vector3df(0,0,1);
-
-		const float maxSpine = 70.0f;
-		float spineAngle = core::clamp<float>(m_spineRotation, -maxSpine, maxSpine);
-        float neckAngle = m_spineRotation - spineAngle;        
-		float r = spineAngle/3.0f;	    
-
-        if ( node == m_nodesChest[0] )
-        {
-            core::quaternion q;
-            q.fromAngleAxis( core::degToRad(r), rotAxis  );
-            absoluteAnimationMatrix *= q.getMatrix();
-        }
-        else if ( node == m_nodesChest[1] )
-        {
-            core::quaternion q;
-            q.fromAngleAxis( core::degToRad(r), rotAxis );
-            absoluteAnimationMatrix *= q.getMatrix();
-        }
-        else if ( node == m_nodesChest[2] )
-        {
-            core::quaternion q;
-            q.fromAngleAxis( core::degToRad(r), rotAxis );
-            absoluteAnimationMatrix *= q.getMatrix();
-        }			
-        else if ( node == m_nodeNeck )
-        {
-            core::quaternion q;
-            core::vector3df neckAxis = core::vector3df(0.0f,-0.8f,1.0f);
-            neckAxis.normalize();
-            q.fromAngleAxis( core::degToRad( neckAngle ), neckAxis );
-            absoluteAnimationMatrix *= q.getMatrix();
-        }        
-	}
+{	
 }

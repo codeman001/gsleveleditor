@@ -21,6 +21,7 @@ public:
 
 
 protected:	
+	int		m_charID;
 
 public:
 	CPlayerComponent(CGameObject* obj);
@@ -59,55 +60,13 @@ protected:
 
 	// updateState	
 	void updateState();
-
-	void updateStateIdle();	
-	void updateStateTurn();
-	void updateStateRunTurn();
-	void updateStateRun();
-	void updateStateRunFastTurn();    
-	void updateStateRunFast();
-    void updateStateRunToRunFast();
-    void updateStateRunFastToRun();
-    void updateStateStandAim();   	
-    void updateStatePlayerRotate();
     
 	// mp sync
-	void packDataStateIdle(CDataPacket *packet);
-	void packDataStateTurn(CDataPacket *packet);
-	void packDataStateRunTurn(CDataPacket *packet);
-	void packDataStateRun(CDataPacket *packet);
-	void packDataStateRunFastTurn(CDataPacket *packet);
-	void packDataStateRunFast(CDataPacket *packet);
-    void packDataStateRunToRunFast(CDataPacket *packet);
-    void packDataStateRunFastToRun(CDataPacket *packet);
-    void packDataStateStandAim(CDataPacket *packet);
-    void packDataStatePlayerRotate(CDataPacket *packet);    
-
-
     // updateUpperBody
     // update state aim, shoot, reload
-    void updateUpperBody();
-    void updateUpperBodyAim();
-    void updateUpperBodyShoot();
-    void updateUpperBodyReload();
-    void updateUpperBodyOffgun();
-    void updateUpperBodyAimToOffgun();
-    void updateUpperBodyOffgunToAim();
-    void updateUpperBodyRunFast();
     
-    void packDataUpperBodyAim(CDataPacket *packet);
-    void packDataUpperBodyShoot(CDataPacket *packet);
-    void packDataUpperBodyReload(CDataPacket *packet);
-    void packDataUpperBodyOffgun(CDataPacket *packet);
-    void packDataUpperBodyAimToOffgun(CDataPacket *packet);
-    void packDataUpperBodyOffguntoAim(CDataPacket *packet);
-    void packDataUpperBodyRunFast(CDataPacket *packet);
 
 public:
-
-	// setSpineLookAt
-	// rotate spine to look at a pos
-	void setSpineLookAt( const core::vector3df& pos, float speed = 3.0f );
 
 	// getCameraFrontVector
 	// return camera front vector

@@ -64,6 +64,20 @@ public:
 	{
 		return &m_gameMatchs[id];
 	}
+
+	// getNumCharacter
+	// get num character
+	inline int getNumCharacter()
+	{
+		return (int)m_gameCharacter.size();
+	}
+
+	// getCharacterInfo
+	// get character
+	SCharacterInfo* getCharacterInfo(int id)
+	{
+		return &m_gameCharacter[id];
+	}
 };
 
 #endif

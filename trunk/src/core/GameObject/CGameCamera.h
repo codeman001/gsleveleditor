@@ -15,6 +15,7 @@ public:
 
 protected:
 	ICameraSceneNode	*m_camera;
+	ISceneNodeAnimator	*m_animator;
 
 #ifdef GSEDITOR
 	ISceneNode			*m_cameraMesh;
@@ -127,6 +128,10 @@ public:
 	// setFollowObjectCamera
 	// set camera follow a object
 	void setFollowObjectCamera( CGameObject* obj, float radius );
+	
+	// setFollowRot
+	// set camera pos of follow obj type
+	void setFollowRotate(float x, float y);
 
 	// setFreeCamera
 	// set camera free with custom pos & target

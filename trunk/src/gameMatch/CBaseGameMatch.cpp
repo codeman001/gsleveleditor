@@ -84,5 +84,10 @@ CGameObject* CBaseGameMatch::spawn3rdPlayer()
 	cam->setFollowObjectCamera(obj, 300);
 	currentLevel->setCamera(cam);
 
+	core::vector3df defaultCamLook(0,0,1);
+	core::vector3df playerFront = obj->getFront();
+	float angle = playerCmp->getAngle(defaultCamLook, playerFront);
+	cam->setFollowRotate(0, angle);
+
 	return obj;
 }

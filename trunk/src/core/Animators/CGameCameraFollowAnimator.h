@@ -54,6 +54,11 @@ public:
 			return true;
 		}
 
+		inline void setRotateAngle(float x, float y)
+		{
+			m_rotate.X = x;
+			m_rotate.Y = y;
+		}
 		
 		inline void setFollowNode( ISceneNode *node )
 		{

@@ -16,8 +16,7 @@ CGameControl::CGameControl()
     m_runStrength = 0.0f;
     m_runRot = 0.0f;
     
-    m_runState = false;
-    m_runFastState = false;
+    m_runState = false;    
     m_shootState = false;
     m_reloadState = false;
 }
@@ -61,11 +60,6 @@ void CGameControl::setRunParameter(float f, float runRot)
 void CGameControl::setRunMode(bool run)
 {
     m_runState = run;
-}
-
-void CGameControl::setRunFastMode(bool runFast)
-{
-    m_runFastState = runFast;
 }
 
 void CGameControl::setShootMode(bool shoot, bool reload)

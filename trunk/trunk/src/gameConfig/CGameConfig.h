@@ -22,11 +22,19 @@ public:
 		std::vector<SLevelInfo>		levels;
 	};
 
+	struct SCharacterLod
+	{
+		std::string		node;
+		float			distance;
+	};
+
 	struct SCharacterInfo
 	{
-		std::wstring	name;
-		std::wstring	model;
-		std::wstring	anim;
+		std::string		name;
+		std::string		model;
+		std::string		anim;
+
+		std::vector<SCharacterLod>	lods;
 	};
 
 protected:

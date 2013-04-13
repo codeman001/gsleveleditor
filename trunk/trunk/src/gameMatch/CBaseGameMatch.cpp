@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "CBaseGameMatch.h"
 
+#include "gameComponent/CPlayerComponent.h"
+#include "gameComponent/CSpawnPointComponent.h"
+
 #include "gameLevel/CGameLevel.h"
 #include "gameState/CGameStateManager.h"
 #include "gameState/CStateIGM.h"
@@ -55,7 +58,31 @@ CGameObject* CBaseGameMatch::spawn3rdPlayer()
 	if ( currentLevel == NULL )
 		return NULL;
 
-	CGameObject *obj = currentLevel->getActiveZone()->createObjectWithNoData(L"Player");
+	CZone *zone = currentLevel->getActiveZone();
+
+	// create player object
+	CGameObject *obj = zone->createObjectWithNoData(L"Player");
+
+	// set character id
+	CPlayerComponent *playerCmp = (CPlayerComponent*)obj->getComponent(CGameComponent::PlayerComponent);
+	playerCmp->setCharacterID(0);
+
+	// load model + anim
+	obj->initComponent();
+
+	// set position
+	core::vector3df rot, pos;
+	CGameObject *spawnPointMgr = zone->getSpawnPointManager();
+	CSpawnPointMgrComponent *spawnComp = (CSpawnPointMgrComponent*)spawnPointMgr->getComponent(CGameComponent::SpawnPointMgrComponent);
+
+	spawnComp->getRandomPosition(-1, pos, rot);
+	obj->setPosition(pos);
+	obj->setRotation(rot);
+
+	// create camera
+	CGameCamera* cam = zone->createCamera();
+	cam->setFollowObjectCamera(obj, 300);
+	currentLevel->setCamera(cam);
 
 	return obj;
 }

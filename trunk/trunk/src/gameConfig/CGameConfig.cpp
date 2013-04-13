@@ -133,6 +133,22 @@ void CGameConfig::parseCharacter(io::IXMLReader* xmlRead)
 					readState = 2;
 				else if ( nodeName == std::wstring(L"anim") )
 					readState = 3;
+				else if ( nodeName == std::wstring(L"node") )
+				{
+					const wchar_t* node = xmlRead->getAttributeValue(L"name");
+					const wchar_t* distance = xmlRead->getAttributeValue(L"distance");
+					
+					char nodeA[512], distanceA[512];
+					float dis = 0;
+					uiString::convertUnicodeToUTF8((const unsigned short*)node, nodeA);
+					uiString::convertUnicodeToUTF8((const unsigned short*)distance, distanceA);
+					sscanf(distanceA, "%f", &dis);
+
+					charInfo.lods.push_back( SCharacterLod() );
+					SCharacterLod& lod = charInfo.lods.back();
+					lod.node = nodeA;
+					lod.distance = dis;
+				}
 			}
 			break;
 		case io::EXN_ELEMENT_END:
@@ -145,13 +161,15 @@ void CGameConfig::parseCharacter(io::IXMLReader* xmlRead)
 		case io::EXN_TEXT:
 			{
 				const wchar_t* text = xmlRead->getNodeData();
+				char textA[512];
+				uiString::convertUnicodeToUTF8((const unsigned short*)text, textA);
 
-				if ( readState == 1 )
-					charInfo.name	= std::wstring(text);
+				if ( readState == 1 )				
+					charInfo.name	= std::string(textA);
 				else if ( readState == 2 )
-					charInfo.model	= std::wstring(text);
+					charInfo.model	= std::string(textA);
 				else if ( readState == 3 )
-					charInfo.anim	= std::wstring(text);
+					charInfo.anim	= std::string(textA);
 
 				readState = 0;
 			}

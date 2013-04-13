@@ -55,6 +55,12 @@ public:
     // unpack data on multiplayer
     virtual void unpackDataMultiplayer(CDataPacket *packet);
 
+public:
+	inline void setCharacterID(int id)
+	{
+		m_charID = id;
+	}
+
 protected:
 	void packDataMPState(CDataPacket *packet);	
 

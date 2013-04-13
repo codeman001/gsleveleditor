@@ -4,6 +4,7 @@
 #include "CZone.h"
 #include "CPlayerComponent.h"
 
+#include "gameConfig/CGameConfig.h"
 #include "gameLevel/CGameLevel.h"
 #include "gameDebug/CGameDebug.h"
 
@@ -30,8 +31,24 @@ CPlayerComponent::~CPlayerComponent()
 void CPlayerComponent::initComponent()
 {
     m_collada = (CColladaMeshComponent*)m_gameObject->getComponent( IObjectComponent::ColladaMesh );
+
+	// load model by character id
+	CGameConfig::SCharacterInfo *charInfo = CGameConfig::getInstance()->getCharacterInfo(m_charID);
+
+	// load model
+	m_collada->loadDae( charInfo->model.c_str() );
+
+	// load animation
+	CColladaAnimationFactory* animFactory = CColladaAnimationFactory::getInstance();
+	m_animationPackage = animFactory->getAnimation( charInfo->name.c_str() );
+	if ( m_animationPackage == NULL )
+		m_animationPackage = animFactory->loadAnimation( charInfo->name.c_str(), getIView()->getPath(charInfo->anim));
     m_collada->setAnimationPackage( m_animationPackage );
     
+	// apply lod
+	for (int i = 0, n = (int)charInfo->lods.size(); i < n; i++)	
+		m_collada->addLodData( charInfo->lods[i].distance, charInfo->lods[i].node.c_str() );	
+
     init(m_gameObject);
 
 	// register event
@@ -77,13 +94,7 @@ void CPlayerComponent::loadData( CSerializable* pObj )
 	pObj->nextRecord();
 	
 	// get char id
-	m_charID = pObj->readInt();
-
-	// need load animation package
-	CColladaAnimationFactory* animFactory = CColladaAnimationFactory::getInstance();
-	m_animationPackage = animFactory->getAnimation("playerAnim");
-	if ( m_animationPackage == NULL )
-		m_animationPackage = animFactory->loadAnimation("playerAnim", getIView()->getPath("data/mesh/character/hero/hero.anim"));	
+	m_charID = pObj->readInt();	
 }
 
 // packDataMultiplayer

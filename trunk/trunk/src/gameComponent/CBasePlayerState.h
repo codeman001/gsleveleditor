@@ -146,7 +146,8 @@ protected:
 	// turnToDir
 	// turn vector dir to turnTo
 	core::vector3df interpolateTurnToDir( const core::vector3df& turnFrom, const core::vector3df& turnTo, float f );
-    
+   
+public:
 	// getRatioWithAngle	
 	float getRatioWithAngle( const core::vector3df& turnFrom, const core::vector3df& turnTo, float angle );
     
@@ -154,7 +155,8 @@ protected:
     
 	// fixAngle
 	float fixAngle( float f );
-    
+   
+protected:
     // calcRunAnimationBlend
 	// calc animation
 	void calcRunAnimationBlend(float rot, float &forward, float &backward, float &left, float &right);

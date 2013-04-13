@@ -60,6 +60,8 @@ CGameCamera::CGameCamera()
 
 	// restore camera
 	smgr->setActiveCamera( oldCam );
+		
+	m_animator = NULL;
 
 #ifndef GSGAMEPLAY
 	setEditorCamera();
@@ -267,6 +269,7 @@ void CGameCamera::setEditorCamera()
 	CGameGSCameraAnimators* camAnimator = new CGameGSCameraAnimators( getIView()->getDevice()->getCursorControl() );
 	m_camera->addAnimator( camAnimator );	
 	camAnimator->drop();
+	m_animator = camAnimator;
 #endif
 }
 
@@ -282,7 +285,19 @@ void CGameCamera::setFollowObjectCamera( CGameObject* obj, float radius )
 	anim->setFollowNode( obj->getSceneNode() );
 	m_camera->addAnimator( anim );
 	anim->drop();
+	m_animator = anim;
 #endif
+}
+
+// setFollowRot
+// set camera pos of follow obj type
+void CGameCamera::setFollowRotate(float x, float y)
+{
+	if ( m_cameraType == CGameCamera::FollowObjectCamera && m_animator )
+	{
+		CGameCameraFollowAnimator* animator = (CGameCameraFollowAnimator*)m_animator;
+		animator->setRotateAngle(x,y);
+	}
 }
 
 // setFreeCamera
@@ -291,4 +306,5 @@ void CGameCamera::setFreeCamera()
 {
 	m_camera->removeAnimators();
 	m_cameraType = CGameCamera::FreeCamera;
+	m_animator = NULL;
 }

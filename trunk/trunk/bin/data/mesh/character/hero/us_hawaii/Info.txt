@@ -1,0 +1,15 @@
+Animation:
+	TP_RunFront
+	TP_RunBack
+	TP_RunLeft
+	TP_RunRight
+	TP_Shoot_MachineGuns
+
+	
+Main Bone:
+	BoneRoot
+		Bip01-node
+	
+			Bip01_Spine-node (foot)
+				Bip01_Spine1-node (chest)
+						HandGunHold-node (gun)

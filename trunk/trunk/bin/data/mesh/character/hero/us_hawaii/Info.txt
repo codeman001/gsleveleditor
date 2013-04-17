@@ -11,5 +11,7 @@ Main Bone:
 		Bip01-node
 	
 			Bip01_Spine-node (foot)
+				Bip01_R_Thigh-node
+				Bip01_L_Thigh-node
 				Bip01_Spine1-node (chest)
 						HandGunHold-node (gun)

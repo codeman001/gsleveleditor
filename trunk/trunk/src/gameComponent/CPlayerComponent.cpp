@@ -53,6 +53,17 @@ void CPlayerComponent::initComponent()
 
 	// register event
 	getIView()->registerEvent("CPlayerComponent", this);
+
+	// init lua player component
+	CScriptManager::getInstance()->startFunc(
+		"createPlayerComponent",
+		"sl",
+		"TestPlayer", (unsigned long)this);
+	CScriptManager::getInstance()->startFunc(
+		"updatePlayerComponent",
+		"sd",
+		"TestPlayer", 0.0);
+
 }
 
 // update
@@ -167,14 +178,51 @@ void CPlayerComponent::packDataMPState(CDataPacket *packet)
 // updateState	
 void CPlayerComponent::updateState()
 {	
-	
+	updatePlayerState();
+	updateUpbodyState();
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Player component update state
 ///////////////////////////////////////////////////////////////////////
 
+void CPlayerComponent::updatePlayerState()
+{
+	switch (m_state)
+	{
+	case CBasePlayerState::PlayerStand:
+		updateStateStand();
+		break;
+	}
+}
 
+void CPlayerComponent::updateUpbodyState()
+{
+	switch (m_upbodyState)
+	{
+	case CBasePlayerState::PlayerUpBodyAim:
+		updateUpBodyAim();
+		break;
+	}
+}
+
+void CPlayerComponent::updateStateStand()
+{
+	if ( m_subState == SubStateInit )
+	{        
+		m_collada->setAnimation(m_animShootMachineGuns, 0, true, 0);
+		m_collada->pauseAtFrame(0.0f);
+
+		m_subState = SubStateActive;		
+	}
+	else if ( m_subState == SubStateEnd )
+	{		
+		doNextState();		
+	}
+	else
+	{	
+	}
+}
 
 //void CPlayerComponent::updateStateTEMPLATE()
 //{
@@ -190,6 +238,11 @@ void CPlayerComponent::updateState()
 //	{	
 //  }
 //}
+
+
+void CPlayerComponent::updateUpBodyAim()
+{
+}
 
 
 //void CPlayerComponent::updateUpperBodyTEMPLATE()

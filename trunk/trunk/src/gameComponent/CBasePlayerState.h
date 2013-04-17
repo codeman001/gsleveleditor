@@ -26,10 +26,9 @@ class CBasePlayerState:
 public:
     enum EPlayerState
 	{
-		PlayerNone = 0,
-		PlayerIdle,
+		PlayerNone = 0,		
 		PlayerRun,        
-        PlayerStandAim,        
+        PlayerStand,        
 		NumStateCount
 	};
     
@@ -71,13 +70,18 @@ protected:
 	std::vector<CGameColladaSceneNode*>	m_nodesUpBody;    	
     
 	// begin anim name declare
-	std::string						m_animIdleAim;
+	std::string						m_animShootMachineGuns;
     	
 	std::string						m_animRunForward;
 	std::string						m_animRunBackward;
 	std::string						m_animRunLeft;
 	std::string						m_animRunRight;	
     	
+
+	std::vector<CGameColladaSceneNode*>	m_footNodes;
+	std::vector<CGameColladaSceneNode*>	m_upBodyNodes;
+
+
 	// end anim name declare	
 	float					m_runFactor;	
 	float					m_runAccel;	
@@ -85,10 +89,7 @@ protected:
 	float					m_animForwardFactor;
 	float					m_animBackwardFactor;
 	float					m_animLeftFactor;
-	float					m_animRightFactor;    	
-    
-	float					m_rootBlendRotation;
-	float					m_spineBlendRotation;
+	float					m_animRightFactor;   	
     
 	core::vector3df			m_runTurnVector;
 	core::vector3df			m_runCurrentVector;

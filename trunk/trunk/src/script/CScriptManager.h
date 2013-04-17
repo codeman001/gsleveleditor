@@ -43,7 +43,8 @@ namespace NSScriptManager
 
 			// add parameter for func
 			void pushDouble( double d );
-			void pushInteger( int i );
+			void pushInteger( long i );
+			void pushUInteger( unsigned long i );
 			void pushString( const char *s );
 
 			// isRunning
@@ -105,7 +106,8 @@ namespace NSScriptManager
 		// startFunc
 		// calc function with paramater
 		// argType is list param type: 
-		//	+ i: integer
+		//	+ i: long
+		//	+ l: unsigned long
 		//	+ d: double
 		//  + s: string
 		// example:

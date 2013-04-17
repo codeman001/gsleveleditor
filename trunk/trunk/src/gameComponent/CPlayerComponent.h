@@ -71,6 +71,13 @@ protected:
     // updateUpperBody
     // update state aim, shoot, reload
     
+	void updatePlayerState();
+	void updateUpbodyState();
+
+protected:
+	
+	void updateStateStand();
+	void updateUpBodyAim();
 
 public:
 

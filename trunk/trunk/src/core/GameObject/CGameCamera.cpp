@@ -295,8 +295,10 @@ void CGameCamera::setFollowRotate(float x, float y)
 {
 	if ( m_cameraType == CGameCamera::FollowObjectCamera && m_animator )
 	{
+#ifdef GSGAMEPLAY
 		CGameCameraFollowAnimator* animator = (CGameCameraFollowAnimator*)m_animator;
 		animator->setRotateAngle(x,y);
+#endif
 	}
 }
 

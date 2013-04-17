@@ -119,7 +119,50 @@ CBulletRayComponent* CBasePlayerState::getZoneBulletComponent()
 
 void CBasePlayerState::init(CGameObject* gameObj)
 {    
-	m_owner = gameObj;   
+	m_owner = gameObj;
+
+	m_state		= CBasePlayerState::PlayerStand;
+	m_subState	= CBasePlayerState::SubStateInit;
+
+
+	m_animShootMachineGuns = "TP_Shoot_MachineGuns";
+    	
+	m_animRunForward	= "TP_RunFront";
+	m_animRunBackward	= "TP_RunBack";
+	m_animRunLeft		= "TP_RunLeft";
+	m_animRunRight		= "TP_RunRight";
+
+	
+	// get all bone nodes
+	std::vector<CGameColladaSceneNode*>	allNodes;
+	allNodes.push_back( m_collada->getSceneNode("BoneRoot") );
+	m_collada->getChildsOfSceneNode("BoneRoot", allNodes);
+	
+	// get up body nodes
+	m_upBodyNodes.push_back( m_collada->getSceneNode("Bip01_Spine1-node") );
+	m_collada->getChildsOfSceneNode("Bip01_Spine1-node", m_upBodyNodes);
+
+	// find foot nodes
+	std::vector<CGameColladaSceneNode*>::iterator i = allNodes.begin(), end = allNodes.end();
+	while (i != end)
+	{
+		if ( std::find(m_upBodyNodes.begin(), m_upBodyNodes.end(), (*i)) == m_upBodyNodes.end() )
+		{
+			m_footNodes.push_back( (*i) );
+		}
+		i++;
+	}
+
+	// apply animation layer
+	m_collada->setAnimLayer( m_footNodes,	0);
+	m_collada->setAnimLayer( m_upBodyNodes, 1);	
+
+	m_collada->enableAnimLayer(0, true);
+	m_collada->enableAnimLayer(1, true);
+
+
+	// connected animation layer
+	m_collada->getSceneNode("Bip01_Spine1-node")->setConnectAnimLayer(true, false, false, false);
 }
 
 void CBasePlayerState::initPlayerObjects()

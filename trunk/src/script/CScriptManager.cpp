@@ -77,7 +77,14 @@ void CLuaThread::pushDouble( double d )
 	m_nParams++;
 }
 
-void CLuaThread::pushInteger( int i )
+void CLuaThread::pushInteger( long i )
+{
+	luaL_checkstack(m_thread, 1, "too many arguments");
+	lua_pushinteger(m_thread, i);
+	m_nParams++;
+}
+
+void CLuaThread::pushUInteger( unsigned long i )
 {
 	luaL_checkstack(m_thread, 1, "too many arguments");
 	lua_pushinteger(m_thread, i);
@@ -279,7 +286,8 @@ int CScriptManager::startFunc( const char *funcName )
 // startFunc
 // calc function with paramater
 // argType is list param type: 
-//	+ i: integer
+//	+ i: long
+//	+ l: unsigned long
 //	+ d: double
 //  + s: string
 // example:
@@ -298,7 +306,8 @@ int CScriptManager::startFunc( const char *func, const char *sig, ... )
 	nres = (int)strlen(sig);
 	
 	double d = 0.0f;
-	int i = 0;
+	long i = 0;
+	unsigned long l = 0;
 	char *s = NULL;
 	
 	// also push parameter
@@ -313,8 +322,13 @@ int CScriptManager::startFunc( const char *func, const char *sig, ... )
 			break;
 		case 'i':
 			//integer argument
-			i = va_arg(vl, int);
+			i = va_arg(vl, long);
 			m_threads[idx]->pushInteger(i);
+			break;
+		case 'l':
+			// unsigned long argument
+			i = va_arg(vl, unsigned long);
+			m_threads[idx]->pushUInteger(i);
 			break;
 		case 's':
 			//string argument

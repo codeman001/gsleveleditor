@@ -34,6 +34,8 @@ void CEllipsoidCollisionComponent::initComponent()
 // update object by frame
 void CEllipsoidCollisionComponent::updateComponent()
 {
+	return;
+
 #ifdef GSGAMEPLAY
 	CGameLevel *level =	CGameLevel::getCurrentLevel();
 	if ( level == NULL )

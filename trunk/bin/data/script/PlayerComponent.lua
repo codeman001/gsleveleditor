@@ -37,6 +37,8 @@ function CPlayerComponent.create(gameObj)
 	local newObj = {}
 	setmetatable(newObj, CPlayerComponent)
 	
+	debug("CPlayerComponent init")
+	
 	-- game object
 	newObj.m_gameObject 	= gameObj
 	newObj.m_collada		= getObjectCollada(gameObj)	
@@ -60,27 +62,27 @@ function CPlayerComponent.create(gameObj)
 	-- add root node
 	table.insert(newObj.m_allSceneNodes, getColladaSceneNode(newObj.m_collada, "BoneRoot"))		
 	local allChildSceneNode = getChildsOfColladaSceneNode(newObj.m_collada, "BoneRoot")
-	for node in ipairs(allChildSceneNode) do
-		table.insert(newObj.m_allSceneNodes, node)
-	end	
+	for id,node in ipairs(allChildSceneNode) do
+		table.insert(newObj.m_allSceneNodes, node)		
+	end		
 	debug("Total bone nodes of player: " .. table.getn(newObj.m_allSceneNodes) )
 	
 	---------------------------------------------------------
 	-- add upbody node
 	table.insert(newObj.m_allUpbodyNodes, getColladaSceneNode(newObj.m_collada, "Bip01_Spine1-node"))
 	local allUpBodySceneNode = getChildsOfColladaSceneNode(newObj.m_collada, "Bip01_Spine1-node")
-	for node in ipairs(allUpBodySceneNode) do
+	for id,node in ipairs(allUpBodySceneNode) do
 		table.insert(newObj.m_allUpbodyNodes, node)
 	end	
 	debug("Total upbody nodes of player: " .. table.getn(newObj.m_allUpbodyNodes) )
 	
 	---------------------------------------------------------
 	-- add foot node
-	for node in ipairs(newObj.m_allSceneNodes) do
+	for id,node in ipairs(newObj.m_allSceneNodes) do
 		local isFootNode = true
 		
 		-- find in upbody nodes
-		for upNode in ipairs(newObj.m_allUpbodyNodes) do
+		for idUp,upNode in ipairs(newObj.m_allUpbodyNodes) do
 			if node == upNode then
 				isFootNode = false
 				break
@@ -89,10 +91,20 @@ function CPlayerComponent.create(gameObj)
 		
 		-- add to upbody node
 		if isFootNode == true then
-			table.insert(newObj.m_allFootNodes, node)
+			table.insert(newObj.m_allFootNodes, node)			
 		end		
 	end
 	debug("Total foot nodes of player: " .. table.getn(newObj.m_allFootNodes) )
+	
+	---------------------------------------------------------
+	-- setup animation lauer
+	setColladaAnimationLayer(newObj.m_collada, newObj.m_allFootNodes, 0)
+	setColladaAnimationLayer(newObj.m_collada, newObj.m_allUpbodyNodes, 1)
+	
+	enableColladaAnimationLayer(newObj.m_collada, 0, true)
+	enableColladaAnimationLayer(newObj.m_collada, 1, true)
+	
+	setSceneNodeIsJoinAnimLayer(newObj.m_collada, "Bip01_Spine1-node", true, false, false, false)
 	
 	return newObj;
 end
@@ -171,10 +183,13 @@ function CPlayerComponent:updatePlayerStateStand(timeStep)
 	
 	if self.m_playerSubState == k_playerSubStateInit then
 		-- init state
+		setColladaAnimation(self.m_collada, k_playerAnimShootMachineGuns, 0, true, 0)
+		pauseColladaAnimAtFrame(self.m_collada, 0, 0)
 		
+		self.m_playerSubState = k_playerSubStateUpdate
 	elseif self.m_playerSubState == k_playerSubStateEnd then
 		-- end state
-		
+		self.doNextState()
 	end
 	 
 	-- update state

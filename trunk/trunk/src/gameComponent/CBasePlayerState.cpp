@@ -26,11 +26,6 @@ inline bool realIsEqual(float a, float b, float precision = REAL_PRECISION)
 
 CBasePlayerState::CBasePlayerState()
 {
-    // default state
-	m_state			= PlayerNone;	
-	m_lastState		= PlayerNone;
-	m_nextState		= PlayerNone;    
-
 	// mesh time
 	m_muzzleMeshTime = 0;
 
@@ -121,10 +116,8 @@ void CBasePlayerState::init(CGameObject* gameObj)
 {    
 	m_owner = gameObj;
 
-	m_state		= CBasePlayerState::PlayerStand;
-	m_subState	= CBasePlayerState::SubStateInit;
 
-
+	/*
 	m_animShootMachineGuns = "TP_Shoot_MachineGuns";
     	
 	m_animRunForward	= "TP_RunFront";
@@ -163,6 +156,7 @@ void CBasePlayerState::init(CGameObject* gameObj)
 
 	// connected animation layer
 	m_collada->getSceneNode("Bip01_Spine1-node")->setConnectAnimLayer(true, false, false, false);
+	*/
 }
 
 void CBasePlayerState::initPlayerObjects()
@@ -192,12 +186,6 @@ void CBasePlayerState::initAnimationCallback()
 
 void CBasePlayerState::doNextState()
 {		
-    // change next state
-    m_lastState	= m_state;
-    m_state		= m_nextState;
-    m_subState	= SubStateInit;
-    m_nextState = PlayerNone;
-    
     // sync at next frame
     CMultiplayerManager *mpMgr = CGameStateMgr::getInstance()->getCurrentState()->getMPManager();
     if ( mpMgr )

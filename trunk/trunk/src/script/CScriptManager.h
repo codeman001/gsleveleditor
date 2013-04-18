@@ -130,6 +130,9 @@ namespace NSScriptManager
 		// compile
 		void compileLuaSource(const char* buff, int size);
 
+		// reset
+		void reset();
+
 	protected:
 		// getLuaFuncRefId
 		// get lua ref

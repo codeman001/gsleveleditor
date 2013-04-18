@@ -32,20 +32,9 @@ public:
 	// unpackDataFromPlayerComponent
 	// sync mp gameplay
 	void unpackDataFromPlayerComponent( CDataPacket* packet );
-
-protected:
-
-	CBasePlayerState::EPlayerSubState		m_subStateMP;
-	CBasePlayerState::EPlayerState			m_stateMP;
-
-	CBasePlayerState::EPlayerSubState		m_upbodySubStateMP;
-	CBasePlayerState::EPlayerUpBodyState	m_upbodyStateMP;
     
 protected:
-	void unpackDataMPState(CDataPacket *packet);
-    
-    void unpackDataMPUpBodyState(CDataPacket *packet);
-    
+	void unpackDataMPState(CDataPacket *packet);    
         
 protected:
     void updateState();

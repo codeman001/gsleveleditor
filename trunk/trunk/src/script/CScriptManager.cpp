@@ -211,6 +211,42 @@ CScriptManager::~CScriptManager()
 	lua_close( m_state );
 }
 
+// reset
+void CScriptManager::reset()
+{
+	stopAllFunc();
+
+	// release current lua state
+	for (int i = 0; i < MAX_LUA_THREADS; i++)
+	{
+		m_threads[i]->stop();
+		delete m_threads[i];
+		m_threads[i] = NULL;
+	}
+
+	lua_close( m_state );
+
+
+	// reinit luastate
+	//initialize lua
+	m_state = lua_open();
+
+	//load lua base libraries
+	luaL_openlibs(m_state);		
+
+	// error state
+	lua_atpanic(m_state, CScriptManager::luaPanic);
+
+	for ( int i = 0; i < MAX_LUA_THREADS; i++ )
+		m_threads[i] = new CLuaThread();
+
+	//make lua gc run slower (default value is 200, which means it collects when the mem doubles)
+	lua_gc(m_state, LUA_GCSETPAUSE, 300);
+
+	// init
+	init();
+}
+
 // luaPanic
 // this function is called when LUA got error
 int CScriptManager::luaPanic(lua_State* L)
@@ -340,6 +376,9 @@ int CScriptManager::startFunc( const char *func, const char *sig, ... )
 			break;
 		}
 	}
+
+	// run function
+	m_threads[idx]->update();
 
 	va_end(vl);
 	return idx;

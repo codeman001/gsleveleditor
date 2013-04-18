@@ -3,6 +3,8 @@
 #include "CGameLevel.h"
 #include "IView.h"
 
+#include "CColladaMeshComponent.h"
+
 #define getLevel()	CGameLevel::getCurrentLevel()
 
 //////////////////////////////////////////////////////////
@@ -414,6 +416,28 @@ int setLevelAmbientLight(lua_State* state)
 	return 0;
 }
 
+
+//////////////////////////////////////////////////////////
+// COLLADA COMPONENT FUNCTION IMPLEMENT
+//////////////////////////////////////////////////////////
+
+// getObjectCollada
+// param: obj
+int getObjectCollada(lua_State* state)
+{
+	lua_Integer objectID = lua_tointeger(state,1);
+	
+	CGameObject* p = (CGameObject*)objectID;
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)p->getComponent(IObjectComponent::ColladaMesh);
+
+	if ( collada )
+		lua_pushinteger( state, (lua_Integer)collada );
+	else
+		lua_pushinteger( state, 0 );
+
+	return 1;
+}
+
 //////////////////////////////////////////////////////////
 // PLAYER COMPONENT FUNCTION IMPLEMENT
 //////////////////////////////////////////////////////////
@@ -491,6 +515,9 @@ void registerCFunction()
 
 	// lighting function
 	REGISTER_C_FUNCTION(setLevelAmbientLight);
+
+	// collada function
+	REGISTER_C_FUNCTION(getObjectCollada);
 
 	// inventory function
 	REGISTER_C_FUNCTION(addItemToInventory);

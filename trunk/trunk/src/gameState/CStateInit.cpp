@@ -94,8 +94,10 @@ void CStateInit::onUpdate()
 		m_menuFx->setVisible( true );
 		m_menuFx->setBackgroundTransparent( true );
 
-		CGameLevel::setLevelLoad( OPEN_GAMEPLAY );
-		CGameStateMgr::getInstance()->changeState( new CStateGameLoading() );
+		CGameLevel::setLevelProperty("LevelLoad", OPEN_GAMEPLAY);
+		CGameLevel::setLevelProperty("IsHost","true");
+		
+		CGameStateMgr::getInstance()->changeState( new CStateGameLoading( IGameMatch::SoloMode ) );
 #else
 		CGameStateMgr::getInstance()->changeState( mainMenuState );
 #endif

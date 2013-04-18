@@ -630,9 +630,16 @@ public:
 
 	// setComponent
 	// set component
-	void setComponent( CColladaMeshComponent *comp )
+	inline void setComponent( CColladaMeshComponent *comp )
 	{
 		m_component = comp;
+	}
+
+	// getComponent
+	// get component
+	inline CColladaMeshComponent* getComponent()
+	{
+		return m_component;
 	}
 
 	inline void setAnimationCallback( IGameAnimationCallback *callback )
@@ -651,7 +658,7 @@ public:
 		m_terrainNode = b;
 	}
 
-	bool isTerrainNode()
+	inline bool isTerrainNode()
 	{
 		return m_terrainNode;
 	}

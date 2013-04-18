@@ -412,7 +412,7 @@ int getColladaSceneNode(lua_State* state)
 int getChildsOfColladaSceneNode(lua_State* state)
 {
 	lua_Integer colladaID = lua_tointeger(state,1);
-	const char* sceneNodeName = lua_tostring(state,2);		
+	const char* sceneNodeName = lua_tostring(state,2);
 
 	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
 	if ( collada )
@@ -427,17 +427,19 @@ int getChildsOfColladaSceneNode(lua_State* state)
 		{
 			lua_createtable(state, (int)listChilds.size(), 0);
 			newTable = lua_gettop(state);
-		}
+		}	
 
 		int idx = 1;
 		std::vector<CGameColladaSceneNode*>::iterator i = listChilds.begin(), end = listChilds.end();
 		while ( i != end )
 		{
-			// push var to lua
+			// push variable
 			lua_pushnumber(state, (lua_Integer) (*i) );			
 
-			// get result to table
-			lua_rawseti (state, newTable, idx++);
+			// set result to table
+			// see http://pgl.yoyo.org/luai/i/lua_rawseti
+			lua_rawseti (state, newTable, idx++);			
+
 			i++;
 		}
 	}
@@ -445,6 +447,24 @@ int getChildsOfColladaSceneNode(lua_State* state)
 	return 1;
 }
 
+// setSceneNodeIsJoinAnimLayer
+// set scenenode as join anim
+int setSceneNodeIsJoinAnimLayer(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state, 1);
+	const char* sceneNodeName = lua_tostring(state,2);
+	int b = lua_toboolean(state,3);
+
+	int x = lua_toboolean(state,4);
+	int y = lua_toboolean(state,5);
+	int z = lua_toboolean(state,6);
+
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )	
+		collada->getSceneNode(sceneNodeName)->setConnectAnimLayer(b == 1, x == 1, y == 1, z == 1);	
+	
+	return 0;
+}
 
 //////////////////////////////////////////////////////////
 // LIGHTING FUNCTION IMPLEMENT
@@ -483,46 +503,141 @@ int getObjectCollada(lua_State* state)
 	return 1;
 }
 
-//////////////////////////////////////////////////////////
-// PLAYER COMPONENT FUNCTION IMPLEMENT
-//////////////////////////////////////////////////////////
+// setColladaAnimationLayer
+// set anim layer of list scenenode
+int setColladaAnimationLayer(lua_State* state)
+{	
+	lua_Integer colladaID = lua_tointeger(state, 1);
+	lua_Integer	layerID = lua_tointeger(state, 3);
+	
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada == NULL )
+		return 0;	
 
+	int numSceneNode = lua_objlen(state, 2);
+	for(int i = 1; i <= numSceneNode; i++) 
+	{
+		// push index of array
+		lua_pushnumber(state, i);
 
+		// push variable to stack
+		// see http://pgl.yoyo.org/luai/i/lua_gettable
+		// stack size = 4
+		// 4	-1	index of array
+		// 3	-2	layerID
+		// 2	-3	tableOfSceneNode
+		// 1	-4	colladaID
+		lua_gettable(state, -3);
+		
+		// get nodeID on top of stack
+		lua_Integer nodeID = lua_tointeger(state, -1);
 
-//////////////////////////////////////////////////////////
-// INVETORY FUNCTION IMPLEMENT
-//////////////////////////////////////////////////////////
+		CGameColladaSceneNode *node = (CGameColladaSceneNode*)nodeID;
+		if (node && node->getComponent() == collada)
+		{
+			node->setAnimLayer( (int)layerID );
+		}
 
-// addItemToInventory
-// add item to inventory
-// param1: obj
-// param2: itemTemplate
-int addItemToInventory(lua_State* state)
-{
-	lua_Integer objID = lua_tointeger(state,1);
-	const char* itemTemplate = lua_tostring(state,2);
-
-	CGameObject* obj = (CGameObject*)objID;
-	if ( obj )
-	{		
-	}
+		// remove index of array
+		lua_pop(state,1);
+    }
 
 	return 0;
 }
 
-// setActiveItemOnInventory
-// set active item on inventory
-// param1: obj
-// param2: itemTemplate
-int setActiveItemOnInventory(lua_State* state)
+// enableColladaAnimationLayer
+// enable layer animation
+int enableColladaAnimationLayer(lua_State* state)
 {
-	lua_Integer objID = lua_tointeger(state,1);
-	const char* itemTemplate = lua_tostring(state,2);
+	lua_Integer colladaID = lua_tointeger(state, 1);
+	lua_Integer	layerID = lua_tointeger(state, 2);
+	int b =	lua_toboolean(state,3);
+	
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada == NULL )
+		return 0;
 
-	CGameObject* obj = (CGameObject*)objID;
-	if ( obj )
-	{		
+	collada->enableAnimLayer( (int)layerID, b == 1 );
+	return 0;
+}
+
+// setColladaAnimation
+// set animation
+int setColladaAnimation(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state, 1);
+	const char* animName = lua_tostring(state, 2);
+	int track	= (int)lua_tointeger(state,3);
+	int loop	= lua_toboolean(state,4);
+	int layer	= (int)lua_tointeger(state,5);
+
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )	
+		collada->setAnimation(animName, track, loop == 1, layer);	
+
+	return 0;
+}
+
+// getColladaCurrentAnimFrame
+// get current animation frame
+int getColladaCurrentAnimFrame(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state, 1);
+	int track	= (int)lua_tointeger(state,2);	
+	int layer	= (int)lua_tointeger(state,3);
+
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )	
+	{
+		float frame = collada->getCurrentFrame(track, layer);
+		lua_pushnumber(state, frame);
 	}
+	return 1;
+}
+
+// setColladaPauseAnimAtFrame
+// pause animation
+int setColladaAnimFrame(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state, 1);
+	float frame = (float)lua_tonumber(state, 2);
+	int track	= (int)lua_tointeger(state,3);	
+	int layer	= (int)lua_tointeger(state,4);
+
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )		
+		collada->setCurrentFrame(frame, track, layer);
+
+	return 0;
+}
+
+// setColladaPauseAnimAtFrame
+// pause animation
+int pauseColladaAnimAtFrame(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state, 1);
+	float frame = (float)lua_tonumber(state, 2);
+	int track	= (int)lua_tointeger(state,3);	
+	int layer	= (int)lua_tointeger(state,4);
+
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )		
+		collada->pauseAtFrame(frame, track, layer);
+
+	return 0;
+}
+
+// resumeColladaAnim
+// resume anim
+int resumeColladaAnim(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state, 1);	
+	int track	= (int)lua_tointeger(state,2);	
+	int layer	= (int)lua_tointeger(state,3);
+
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )		
+		collada->resumeAnim(track, layer);
 
 	return 0;
 }
@@ -560,17 +675,21 @@ void registerCFunction()
 
 	REGISTER_C_FUNCTION(getColladaSceneNode);
 	REGISTER_C_FUNCTION(getChildsOfColladaSceneNode);
-
+	REGISTER_C_FUNCTION(setSceneNodeIsJoinAnimLayer);
 
 	// lighting function
 	REGISTER_C_FUNCTION(setLevelAmbientLight);
 
 	// collada function
 	REGISTER_C_FUNCTION(getObjectCollada);
-
-	// inventory function
-	REGISTER_C_FUNCTION(addItemToInventory);
-	REGISTER_C_FUNCTION(setActiveItemOnInventory);
+	REGISTER_C_FUNCTION(setColladaAnimationLayer);
+	REGISTER_C_FUNCTION(enableColladaAnimationLayer);
+	
+	REGISTER_C_FUNCTION(setColladaAnimation);
+	REGISTER_C_FUNCTION(getColladaCurrentAnimFrame);
+	REGISTER_C_FUNCTION(setColladaAnimFrame);
+	REGISTER_C_FUNCTION(pauseColladaAnimAtFrame);
+	REGISTER_C_FUNCTION(resumeColladaAnim);
 	
 }
 // end register

@@ -13,7 +13,9 @@ function triggerInitLevel_enable(triggerID)
 	
 	-- set skybox
 	local levelObjectID = getObjectByName("LevelMainMenu")
-	setSceneNodeIsSkydome(levelObjectID,"Object01-node")
+	local colladaID = getObjectCollada(levelObjectID)
+	
+	setSceneNodeIsSkydome(colladaID,"Object01-node")
 	
 	-- default ambient light
 	setLevelAmbientLight(50,50,50)
@@ -21,11 +23,13 @@ end
 
 function triggerSkybox_always(triggerID)
 	-- get current camera pos
-	x,y,z = getCurrentCameraPosition()
+	local x,y,z = getCurrentCameraPosition()
 	
 	-- set skybox position
 	local levelObjectID = getObjectByName("LevelMainMenu")
-	setSceneNodePosition(levelObjectID,"Object01-node",x,y,z)
+	local colladaID = getObjectCollada(levelObjectID)
+	
+	setSceneNodePosition(colladaID,"Object01-node",x,y,z)
 end
 
 debug("-----------------------------------------------------------------\n\n")

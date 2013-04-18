@@ -325,24 +325,21 @@ int getCurrentCameraPosition(lua_State* state)
 // params: objectID, sceneNodeName, x,y,z
 int setSceneNodePosition(lua_State* state)
 {
-	lua_Integer objID	= lua_tointeger(state,1);
+	lua_Integer colladaID = lua_tointeger(state,1);
 	const char* sceneNodeName = lua_tostring(state,2);
+
 	float x		= (float)lua_tonumber(state,3);
 	float y		= (float)lua_tonumber(state,4);
 	float z		= (float)lua_tonumber(state,5);
 
-	CGameObject* obj = (CGameObject*)objID;
-	if ( obj )
+	CColladaMeshComponent *comp = (CColladaMeshComponent*)colladaID;
+	if ( comp )
 	{
-		CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
-		if ( comp )
+		CGameColladaSceneNode* node = comp->getSceneNode(sceneNodeName);
+		if ( node )
 		{
-			CGameColladaSceneNode* node = comp->getSceneNode(sceneNodeName);
-			if ( node )
-			{
-				// set position
-				node->setPosition( core::vector3df(x,y,z) );
-			}
+			// set position
+			node->setPosition( core::vector3df(x,y,z) );
 		}
 	}
 
@@ -354,23 +351,19 @@ int setSceneNodePosition(lua_State* state)
 // set sky box
 int setSceneNodeIsSkydome(lua_State* state)
 {
-	lua_Integer objID	= lua_tointeger(state,1);
+	lua_Integer colladaID	= lua_tointeger(state,1);
 	const char* sceneNodeName = lua_tostring(state,2);	
 
-	CGameObject* obj = (CGameObject*)objID;
-	if ( obj )
+	CColladaMeshComponent *comp = (CColladaMeshComponent*)colladaID;
+	if ( comp )
 	{
-		CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
-		if ( comp )
+		CGameColladaSceneNode* node = comp->getSceneNode(sceneNodeName);
+		if ( node )
 		{
-			CGameColladaSceneNode* node = comp->getSceneNode(sceneNodeName);
-			if ( node )
-			{
-				// set position
-				node->setSkydome( true );
-			}
+			// set position
+			node->setSkydome( true );
 		}
-	}
+	}	
 
 	return 0;
 }
@@ -379,27 +372,79 @@ int setSceneNodeIsSkydome(lua_State* state)
 // set sky box
 int setSceneNodeVisible(lua_State* state)
 {
-	lua_Integer objID	= lua_tointeger(state,1);
+	lua_Integer colladaID	= lua_tointeger(state,1);
 	const char* sceneNodeName = lua_tostring(state,2);
 	bool b		= lua_toboolean(state,3) == 1;
-
-	CGameObject* obj = (CGameObject*)objID;
-	if ( obj )
+	
+	CColladaMeshComponent *comp = (CColladaMeshComponent*)colladaID;
+	if ( comp )
 	{
-		CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
-		if ( comp )
+		CGameColladaSceneNode* node = comp->getSceneNode(sceneNodeName);
+		if ( node )
 		{
-			CGameColladaSceneNode* node = comp->getSceneNode(sceneNodeName);
-			if ( node )
-			{
-				// set position
-				node->setVisible( b );
-			}
+			// set position
+			node->setVisible( b );
 		}
-	}
+	}	
 
 	return 0;
 }
+
+// getColladaSceneNode
+// get collada scenenode
+int getColladaSceneNode(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state,1);
+	const char* sceneNodeName = lua_tostring(state,2);
+
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	CGameColladaSceneNode *node = NULL;
+
+	if ( collada )
+		 node = collada->getSceneNode(sceneNodeName);	
+	
+	lua_pushnumber( state, (lua_Integer) node );
+	return 1;
+}
+
+// getChildsOfColladaSceneNode
+// get list child scene node
+int getChildsOfColladaSceneNode(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state,1);
+	const char* sceneNodeName = lua_tostring(state,2);		
+
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )
+	{
+		std::vector<CGameColladaSceneNode*>	listChilds;
+		collada->getChildsOfSceneNode(sceneNodeName, listChilds);
+		
+		int newTable = 0;
+
+		// create lua array
+		if ( listChilds.size() > 0 )
+		{
+			lua_createtable(state, (int)listChilds.size(), 0);
+			newTable = lua_gettop(state);
+		}
+
+		int idx = 1;
+		std::vector<CGameColladaSceneNode*>::iterator i = listChilds.begin(), end = listChilds.end();
+		while ( i != end )
+		{
+			// push var to lua
+			lua_pushnumber(state, (lua_Integer) (*i) );			
+
+			// get result to table
+			lua_rawseti (state, newTable, idx++);
+			i++;
+		}
+	}
+	
+	return 1;
+}
+
 
 //////////////////////////////////////////////////////////
 // LIGHTING FUNCTION IMPLEMENT
@@ -512,6 +557,10 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(setSceneNodePosition);
 	REGISTER_C_FUNCTION(setSceneNodeIsSkydome);	
 	REGISTER_C_FUNCTION(setSceneNodeVisible);
+
+	REGISTER_C_FUNCTION(getColladaSceneNode);
+	REGISTER_C_FUNCTION(getChildsOfColladaSceneNode);
+
 
 	// lighting function
 	REGISTER_C_FUNCTION(setLevelAmbientLight);

@@ -66,36 +66,15 @@ void CNetworkPlayerComponent::unpackDataFromPlayerComponent( CDataPacket* packet
 	m_playerCmdEvt.shoot		= (packet->getByte() == 1);
 	m_playerCmdEvt.reload		= (packet->getByte() == 1);	
     
-	// unpack player state
-	m_subStateMP	= (CPlayerComponent::EPlayerSubState)packet->getByte();
-	m_stateMP		= (CPlayerComponent::EPlayerState)packet->getByte();
-
-	m_upbodySubStateMP	= (CPlayerComponent::EPlayerSubState)packet->getByte();
-	m_upbodyStateMP		= (CPlayerComponent::EPlayerUpBodyState)packet->getByte();
-    
-    
 	// unpack mp state
 	unpackDataMPState(packet);
-    unpackDataMPUpBodyState(packet);
-    
-    // change state
-    if ( m_state != m_stateMP )
-        setState(m_stateMP);
-    
-    // change upbody state
-    if ( m_upbodyState != m_upbodyStateMP )
-        setUpBodyState(m_upbodyStateMP);
+
 }
 
 
 void CNetworkPlayerComponent::unpackDataMPState(CDataPacket *packet)
 {
 	
-}
-
-void CNetworkPlayerComponent::unpackDataMPUpBodyState(CDataPacket *packet)
-{
-    
 }
 
 void CNetworkPlayerComponent::updateState()

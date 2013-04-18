@@ -18,6 +18,7 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 	:IObjectComponent(obj, CGameComponent::PlayerComponent)
 {	
 	m_collada	= NULL;
+	m_init		= true;
 }
 
 CPlayerComponent::~CPlayerComponent()
@@ -55,15 +56,9 @@ void CPlayerComponent::initComponent()
 	getIView()->registerEvent("CPlayerComponent", this);
 
 	// init lua player component
-	CScriptManager::getInstance()->startFunc(
-		"createPlayerComponent",
-		"sl",
-		"TestPlayer", (unsigned long)this);
-	CScriptManager::getInstance()->startFunc(
-		"updatePlayerComponent",
-		"sd",
-		"TestPlayer", 0.0);
-
+	char luaObjName[64];
+	sprintf(luaObjName, "CPlayerComp_%ld", m_gameObject->getID());
+	m_luaObjName = luaObjName;
 }
 
 // update
@@ -124,13 +119,6 @@ void CPlayerComponent::packDataMultiplayer(CDataPacket *packet)
 	packet->addByte(m_playerCmdEvt.shoot);
 	packet->addByte(m_playerCmdEvt.reload);
 
-	// pack player state
-	packet->addByte((unsigned char)m_subState);
-	packet->addByte((unsigned char)m_state);
-
-	packet->addByte((unsigned char)m_upbodySubState);
-	packet->addByte((unsigned char)m_upbodyState);
-
 	// pack mp state
 	packDataMPState(packet);
 }
@@ -170,42 +158,22 @@ void CPlayerComponent::packDataMPState(CDataPacket *packet)
 }
 
 
-///////////////////////////////////////////////////////////////////////
-// Player component implement
-///////////////////////////////////////////////////////////////////////
-
-
 // updateState	
 void CPlayerComponent::updateState()
 {	
-	updatePlayerState();
-	updateUpbodyState();
-}
-
-///////////////////////////////////////////////////////////////////////
-// Player component update state
-///////////////////////////////////////////////////////////////////////
-
-void CPlayerComponent::updatePlayerState()
-{
-	switch (m_state)
+	if ( m_init )
 	{
-	case CBasePlayerState::PlayerStand:
-		updateStateStand();
-		break;
+		// call lua func
+		CScriptManager::getInstance()->startFunc("createPlayerComponent","sl", m_luaObjName.c_str(), (unsigned long)m_gameObject);
+		m_init = false;
 	}
+
+	// call update in lua func
+	CScriptManager::getInstance()->startFunc("updatePlayerComponent","sd", m_luaObjName.c_str(), getIView()->getTimeStep() );
 }
 
-void CPlayerComponent::updateUpbodyState()
-{
-	switch (m_upbodyState)
-	{
-	case CBasePlayerState::PlayerUpBodyAim:
-		updateUpBodyAim();
-		break;
-	}
-}
 
+/*
 void CPlayerComponent::updateStateStand()
 {
 	if ( m_subState == SubStateInit )
@@ -223,6 +191,7 @@ void CPlayerComponent::updateStateStand()
 	{	
 	}
 }
+*/
 
 //void CPlayerComponent::updateStateTEMPLATE()
 //{
@@ -238,11 +207,6 @@ void CPlayerComponent::updateStateStand()
 //	{	
 //  }
 //}
-
-
-void CPlayerComponent::updateUpBodyAim()
-{
-}
 
 
 //void CPlayerComponent::updateUpperBodyTEMPLATE()

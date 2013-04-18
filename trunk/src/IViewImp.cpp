@@ -7,7 +7,7 @@
 #endif
 
 #if defined(GSGAMEPLAY) && defined(WIN32)
-	//#define VISUALLEAKDETECTOR
+	#define VISUALLEAKDETECTOR
 #endif
 
 #ifdef VISUALLEAKDETECTOR

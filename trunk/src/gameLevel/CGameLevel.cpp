@@ -61,6 +61,7 @@ CGameLevel::CGameLevel()
 CGameLevel::~CGameLevel()
 {
 	releaseLevel();
+	CScriptManager::getInstance()->reset();
 }
 
 // createZone
@@ -416,14 +417,17 @@ int CGameLevel::getLoadingPercent()
 void CGameLevel::compileGameScript()
 {
 	// cache 2mb script
-	m_loadLevelBuffer = new char[2*1024*1024];
-	m_loadPos = m_loadLevelBuffer;
+	m_loadLevelBuffer = new char[2*1024*1024];	
 
 	char folderPath[1024];
 	char fullPath[1024];
 	uiString::getFolderPath<const char, char>( m_levelFile.c_str(), folderPath );
 	uiString::cat<char, const char>(folderPath,"/");
 	
+	// add lua component
+	m_listScriptFile.push_back("../script/PlayerComponent.lua");
+
+		
 	int numScriptFile = (int)m_listScriptFile.size();
 	for ( int i = 0; i < numScriptFile; i++ )
 	{
@@ -438,19 +442,16 @@ void CGameLevel::compileGameScript()
 			if ( length > 0 )
 			{				
 				// read level data
-				file->read(m_loadPos, (u32)length);
+				file->read(m_loadLevelBuffer, (u32)length);
 			}
 
-			m_loadPos[length++] = '\n';
-			m_loadPos[length]	= NULL;
-			m_loadPos += length;
 			file->drop();
+
+			// compile lua source
+			CScriptManager::getInstance()->compileLuaSource( m_loadLevelBuffer, length );			
 		}	
 
 	}
-
-	// compile lua source
-	CScriptManager::getInstance()->compileLuaSource( m_loadLevelBuffer, (int)(m_loadPos - m_loadLevelBuffer) );
 
 	// implement function
 	registerCFunction();

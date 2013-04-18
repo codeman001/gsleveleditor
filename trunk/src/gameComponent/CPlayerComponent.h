@@ -22,6 +22,7 @@ public:
 
 protected:	
 	int		m_charID;
+	bool	m_init;
 
 public:
 	CPlayerComponent(CGameObject* obj);
@@ -65,19 +66,7 @@ protected:
 	void packDataMPState(CDataPacket *packet);	
 
 	// updateState	
-	void updateState();
-    
-	// mp sync
-    // updateUpperBody
-    // update state aim, shoot, reload
-    
-	void updatePlayerState();
-	void updateUpbodyState();
-
-protected:
-	
-	void updateStateStand();
-	void updateUpBodyAim();
+	void updateState();  
 
 public:
 

@@ -42,6 +42,7 @@ function CPlayerComponent.create(gameObj)
 	-- game object
 	newObj.m_gameObject 	= gameObj
 	newObj.m_collada		= getObjectCollada(gameObj)	
+	newObj.m_playerComp		= getPlayerComponent(gameObj)
 	
 	-- player state
 	newObj.m_playerState		= k_playerStateStand
@@ -52,6 +53,13 @@ function CPlayerComponent.create(gameObj)
 	newObj.m_playerUpState		= k_playerUpBodyAim
 	newObj.m_playerSubUpState	= k_playerSubStateInit
 	newObj.m_nextUpbodyState	= k_playerUpBodyNone	
+	
+	-- input
+	newObj.m_inputRun 			= 0
+	newObj.m_inputRunStrength 	= 0.0
+	newObj.m_inputRunRotate 	= 0.0
+	newObj.m_inputShoot 		= 0
+	newObj.m_inputReload		= 0
 	
 	-- get list scene node
 	newObj.m_allSceneNodes		= {}
@@ -193,7 +201,8 @@ function CPlayerComponent:updatePlayerStateStand(timeStep)
 	end
 	 
 	-- update state
-	
+	-- debug("run: " .. self.m_inputRun .. " rot: " .. self.m_inputRunRotate)	
+	rotatePlayerToCameraFront(self.m_playerComp, 6.0)
 	
 end
 
@@ -225,6 +234,22 @@ end
 function updatePlayerComponent(objectName, timeStep)
 	if CPlayerComponentList[objectName] ~= nil then
 		CPlayerComponentList[objectName]:updateState(timeStep)
+	end
+end
+
+-- updatePlayerComponentInput
+-- update move input
+function updatePlayerComponentInput(objectName, isRun, runStrength, runRotate, shoot, reload)
+	if CPlayerComponentList[objectName] ~= nil then
+		local playerComp = CPlayerComponentList[objectName]
+		
+		-- update input
+		playerComp.m_inputRun 			= isRun
+		playerComp.m_inputRunStrength 	= runStrength
+		playerComp.m_inputRunRotate 	= runRotate
+		playerComp.m_inputShoot 		= shoot
+		playerComp.m_inputReload		= reload
+		
 	end
 end
 

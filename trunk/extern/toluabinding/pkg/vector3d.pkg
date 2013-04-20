@@ -14,7 +14,7 @@ namespace core
 		TOLUA_TEMPLATE_BIND(T, f32)
 
 		vector3d();
-		vector3d(T nx=0, T ny=0, T nz=0);
+		vector3d(T nx, T ny, T nz);
 		vector3d(vector3d<T>& other);
 
 		// operators

@@ -4,7 +4,7 @@ using namespace irr::core;
 
 /*
 ** Lua binding: line2d
-** Generated automatically by tolua++-1.0.92 on 04/20/13 17:01:27.
+** Generated automatically by tolua++-1.0.92 on 04/20/13 17:58:23.
 */
 
 #ifndef __cplusplus
@@ -28,13 +28,6 @@ static int tolua_collect_irr__core__vector2d_f32_ (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_f64 (lua_State* tolua_S)
-{
- f64* self = (f64*) tolua_tousertype(tolua_S,1,0);
-	delete self;
-	return 0;
-}
-
 static int tolua_collect_vector2d_f32_ (lua_State* tolua_S)
 {
  vector2d<f32>* self = (vector2d<f32>*) tolua_tousertype(tolua_S,1,0);
@@ -54,11 +47,9 @@ static int tolua_collect_irr__core__line2d_f32_ (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"f32");
  tolua_usertype(tolua_S,"vector2d<f32>");
- tolua_usertype(tolua_S,"irr::core::line2d<f32>");
- tolua_usertype(tolua_S,"f64");
  tolua_usertype(tolua_S,"irr::core::vector2d<f32>");
+ tolua_usertype(tolua_S,"irr::core::line2d<f32>");
 }
 
 /* method: new of class  irr::core::line2d<f32> */
@@ -124,19 +115,19 @@ static int tolua_line2d_irr_core_line2d_f32__new01(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::line2d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  f32 xa = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 ya = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 xb = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 yb = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float xa = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float ya = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float xb = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float yb = ((  float)  tolua_tonumber(tolua_S,5,0));
   {
    irr::core::line2d<f32>* tolua_ret = (irr::core::line2d<f32>*)  new irr::core::line2d<f32>(xa,ya,xb,yb);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"irr::core::line2d<f32>");
@@ -155,19 +146,19 @@ static int tolua_line2d_irr_core_line2d_f32__new01_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::line2d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  f32 xa = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 ya = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 xb = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 yb = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float xa = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float ya = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float xb = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float yb = ((  float)  tolua_tonumber(tolua_S,5,0));
   {
    irr::core::line2d<f32>* tolua_ret = (irr::core::line2d<f32>*)  new irr::core::line2d<f32>(xa,ya,xb,yb);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"irr::core::line2d<f32>");
@@ -409,10 +400,10 @@ static int tolua_line2d_irr_core_line2d_f32__setLine00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::line2d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
@@ -420,18 +411,22 @@ static int tolua_line2d_irr_core_line2d_f32__setLine00(lua_State* tolua_S)
 #endif
  {
   irr::core::line2d<f32>* self = (irr::core::line2d<f32>*)  tolua_tousertype(tolua_S,1,0);
-  f32* xa = ((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32* ya = ((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32* xb = ((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32* yb = ((f32*)  tolua_tousertype(tolua_S,5,0));
+   float xa = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float ya = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float xb = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float yb = ((  float)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setLine'",NULL);
 #endif
   {
-   self->setLine(*xa,*ya,*xb,*yb);
+   self->setLine(xa,ya,xb,yb);
+   tolua_pushnumber(tolua_S,(lua_Number)xa);
+   tolua_pushnumber(tolua_S,(lua_Number)ya);
+   tolua_pushnumber(tolua_S,(lua_Number)xb);
+   tolua_pushnumber(tolua_S,(lua_Number)yb);
   }
  }
- return 0;
+ return 4;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setLine'.",&tolua_err);
@@ -517,16 +512,8 @@ static int tolua_line2d_irr_core_line2d_f32__getLength00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getLength'",NULL);
 #endif
   {
-   f64 tolua_ret = (f64)  self->getLength();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new f64(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"f64");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(f64));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"f64");
-#endif
-   }
+    double tolua_ret = (  double)  self->getLength();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -675,16 +662,8 @@ static int tolua_line2d_irr_core_line2d_f32__getAngleWith00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAngleWith'",NULL);
 #endif
   {
-   f64 tolua_ret = (f64)  self->getAngleWith(*l);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new f64(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"f64");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(f64));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"f64");
-#endif
-   }
+    double tolua_ret = (  double)  self->getAngleWith(*l);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;

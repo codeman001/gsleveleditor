@@ -4,7 +4,7 @@ using namespace irr::core;
 
 /*
 ** Lua binding: aabbox3d
-** Generated automatically by tolua++-1.0.92 on 04/20/13 17:01:27.
+** Generated automatically by tolua++-1.0.92 on 04/20/13 17:58:23.
 */
 
 #ifndef __cplusplus
@@ -47,12 +47,11 @@ static int tolua_collect_irr__core__aabbox3d_f32_ (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"f32");
+ tolua_usertype(tolua_S,"irr::core::plane3d<f32>");
  tolua_usertype(tolua_S,"irr::core::aabbox3d<f32>");
  tolua_usertype(tolua_S,"irr::core::line3d<f32>");
  tolua_usertype(tolua_S,"EIntersectionRelation3D");
  tolua_usertype(tolua_S,"irr::core::vector3d<f32>");
- tolua_usertype(tolua_S,"irr::core::plane3d<f32>");
 }
 
 /* method: new of class  irr::core::aabbox3d<f32> */
@@ -222,23 +221,23 @@ static int tolua_aabbox3d_irr_core_aabbox3d_f32__new03(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::aabbox3d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,6,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,7,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,7,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,8,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  f32 minx = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 miny = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 minz = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 maxx = *((f32*)  tolua_tousertype(tolua_S,5,0));
-  f32 maxy = *((f32*)  tolua_tousertype(tolua_S,6,0));
-  f32 maxz = *((f32*)  tolua_tousertype(tolua_S,7,0));
+   float minx = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float miny = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float minz = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float maxx = ((  float)  tolua_tonumber(tolua_S,5,0));
+   float maxy = ((  float)  tolua_tonumber(tolua_S,6,0));
+   float maxz = ((  float)  tolua_tonumber(tolua_S,7,0));
   {
    irr::core::aabbox3d<f32>* tolua_ret = (irr::core::aabbox3d<f32>*)  new irr::core::aabbox3d<f32>(minx,miny,minz,maxx,maxy,maxz);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"irr::core::aabbox3d<f32>");
@@ -257,23 +256,23 @@ static int tolua_aabbox3d_irr_core_aabbox3d_f32__new03_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::aabbox3d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,6,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,7,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,7,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,8,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  f32 minx = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 miny = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 minz = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 maxx = *((f32*)  tolua_tousertype(tolua_S,5,0));
-  f32 maxy = *((f32*)  tolua_tousertype(tolua_S,6,0));
-  f32 maxz = *((f32*)  tolua_tousertype(tolua_S,7,0));
+   float minx = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float miny = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float minz = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float maxx = ((  float)  tolua_tonumber(tolua_S,5,0));
+   float maxy = ((  float)  tolua_tonumber(tolua_S,6,0));
+   float maxz = ((  float)  tolua_tonumber(tolua_S,7,0));
   {
    irr::core::aabbox3d<f32>* tolua_ret = (irr::core::aabbox3d<f32>*)  new irr::core::aabbox3d<f32>(minx,miny,minz,maxx,maxy,maxz);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"irr::core::aabbox3d<f32>");
@@ -393,9 +392,9 @@ static int tolua_aabbox3d_irr_core_aabbox3d_f32__reset00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::aabbox3d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
@@ -403,9 +402,9 @@ static int tolua_aabbox3d_irr_core_aabbox3d_f32__reset00(lua_State* tolua_S)
 #endif
  {
   irr::core::aabbox3d<f32>* self = (irr::core::aabbox3d<f32>*)  tolua_tousertype(tolua_S,1,0);
-  f32 x = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 y = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 z = *((f32*)  tolua_tousertype(tolua_S,4,0));
+   float x = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float y = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float z = ((  float)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'reset'",NULL);
 #endif
@@ -623,7 +622,7 @@ static int tolua_aabbox3d_irr_core_aabbox3d_f32__intersectsWithLine01(lua_State*
      !tolua_isusertype(tolua_S,1,"irr::core::aabbox3d<f32>",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"irr::core::vector3d<f32>",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,3,"irr::core::vector3d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
@@ -632,7 +631,7 @@ static int tolua_aabbox3d_irr_core_aabbox3d_f32__intersectsWithLine01(lua_State*
   irr::core::aabbox3d<f32>* self = (irr::core::aabbox3d<f32>*)  tolua_tousertype(tolua_S,1,0);
   irr::core::vector3d<f32>* linemiddle = ((irr::core::vector3d<f32>*)  tolua_tousertype(tolua_S,2,0));
   irr::core::vector3d<f32>* linevect = ((irr::core::vector3d<f32>*)  tolua_tousertype(tolua_S,3,0));
-  f32 halflength = *((f32*)  tolua_tousertype(tolua_S,4,0));
+   float halflength = ((  float)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'intersectsWithLine'",NULL);
 #endif
@@ -874,7 +873,7 @@ static int tolua_aabbox3d_irr_core_aabbox3d_f32__getInterpolated00(lua_State* to
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::aabbox3d<f32>",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"irr::core::aabbox3d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -883,7 +882,7 @@ static int tolua_aabbox3d_irr_core_aabbox3d_f32__getInterpolated00(lua_State* to
  {
   irr::core::aabbox3d<f32>* self = (irr::core::aabbox3d<f32>*)  tolua_tousertype(tolua_S,1,0);
   irr::core::aabbox3d<f32>* other = ((irr::core::aabbox3d<f32>*)  tolua_tousertype(tolua_S,2,0));
-  f32 d = *((f32*)  tolua_tousertype(tolua_S,3,0));
+   float d = ((  float)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getInterpolated'",NULL);
 #endif

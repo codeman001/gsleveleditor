@@ -4,7 +4,7 @@ using namespace irr::core;
 
 /*
 ** Lua binding: irrString
-** Generated automatically by tolua++-1.0.92 on 04/20/13 17:01:27.
+** Generated automatically by tolua++-1.0.92 on 04/20/13 17:58:23.
 */
 
 #ifndef __cplusplus
@@ -21,13 +21,6 @@ int  tolua_irrString_open (lua_State* tolua_S);
 /* function to release collected object via destructor */
 #ifdef __cplusplus
 
-static int tolua_collect_irr__core__string_char_ (lua_State* tolua_S)
-{
- irr::core::string<char>* self = (irr::core::string<char>*) tolua_tousertype(tolua_S,1,0);
-	delete self;
-	return 0;
-}
-
 static int tolua_collect_wchar_t (lua_State* tolua_S)
 {
  wchar_t* self = (wchar_t*) tolua_tousertype(tolua_S,1,0);
@@ -35,9 +28,9 @@ static int tolua_collect_wchar_t (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_s32 (lua_State* tolua_S)
+static int tolua_collect_irr__core__string_char_ (lua_State* tolua_S)
 {
- s32* self = (s32*) tolua_tousertype(tolua_S,1,0);
+ irr::core::string<char>* self = (irr::core::string<char>*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -54,9 +47,8 @@ static int tolua_collect_irr__core__string_wchar_t_ (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"irr::core::string<char>");
  tolua_usertype(tolua_S,"wchar_t");
- tolua_usertype(tolua_S,"s32");
+ tolua_usertype(tolua_S,"irr::core::string<char>");
  tolua_usertype(tolua_S,"irr::core::string<wchar_t>");
 }
 
@@ -438,16 +430,8 @@ static int tolua_irrString_irr_core_string_char__size00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'size'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->size();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->size();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -724,7 +708,7 @@ static int tolua_irrString_irr_core_string_char__append02(lua_State* tolua_S)
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::string<char>",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"const irr::core::string<char>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -732,7 +716,7 @@ static int tolua_irrString_irr_core_string_char__append02(lua_State* tolua_S)
  {
   irr::core::string<char>* self = (irr::core::string<char>*)  tolua_tousertype(tolua_S,1,0);
   const irr::core::string<char>* other = ((const irr::core::string<char>*)  tolua_tousertype(tolua_S,2,0));
-  s32 length = *((s32*)  tolua_tousertype(tolua_S,3,0));
+  signed int length = (( signed int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'append'",NULL);
 #endif
@@ -754,7 +738,7 @@ static int tolua_irrString_irr_core_string_char__reserve00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::string<char>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
@@ -762,7 +746,7 @@ static int tolua_irrString_irr_core_string_char__reserve00(lua_State* tolua_S)
 #endif
  {
   irr::core::string<char>* self = (irr::core::string<char>*)  tolua_tousertype(tolua_S,1,0);
-  s32 count = *((s32*)  tolua_tousertype(tolua_S,2,0));
+  signed int count = (( signed int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'reserve'",NULL);
 #endif
@@ -800,16 +784,8 @@ static int tolua_irrString_irr_core_string_char__findFirst00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'findFirst'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->findFirst(c);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->findFirst(c);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -844,16 +820,8 @@ static int tolua_irrString_irr_core_string_char__findFirstChar00(lua_State* tolu
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'findFirstChar'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->findFirstChar(&c,count);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->findFirstChar(&c,count);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
    tolua_pushnumber(tolua_S,(lua_Number)c);
   }
  }
@@ -875,7 +843,7 @@ static int tolua_irrString_irr_core_string_char__findNext00(lua_State* tolua_S)
  if (
      !tolua_isusertype(tolua_S,1,"const irr::core::string<char>",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -884,21 +852,13 @@ static int tolua_irrString_irr_core_string_char__findNext00(lua_State* tolua_S)
  {
   const irr::core::string<char>* self = (const irr::core::string<char>*)  tolua_tousertype(tolua_S,1,0);
   char c = ((char)  tolua_tonumber(tolua_S,2,0));
-  s32 startPos = *((s32*)  tolua_tousertype(tolua_S,3,0));
+  signed int startPos = (( signed int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'findNext'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->findNext(c,startPos);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->findNext(c,startPos);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -931,16 +891,8 @@ static int tolua_irrString_irr_core_string_char__findLast00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'findLast'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->findLast(c);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->findLast(c);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -960,8 +912,8 @@ static int tolua_irrString_irr_core_string_char__subString00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::string<char>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -969,8 +921,8 @@ static int tolua_irrString_irr_core_string_char__subString00(lua_State* tolua_S)
 #endif
  {
   irr::core::string<char>* self = (irr::core::string<char>*)  tolua_tousertype(tolua_S,1,0);
-  s32 begin = *((s32*)  tolua_tousertype(tolua_S,2,0));
-  s32 length = *((s32*)  tolua_tousertype(tolua_S,3,0));
+  signed int begin = (( signed int)  tolua_tonumber(tolua_S,2,0));
+  signed int length = (( signed int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'subString'",NULL);
 #endif
@@ -1480,16 +1432,8 @@ static int tolua_irrString_irr_core_string_wchar_t__size00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'size'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->size();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->size();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -1765,7 +1709,7 @@ static int tolua_irrString_irr_core_string_wchar_t__append02(lua_State* tolua_S)
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::string<wchar_t>",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"const irr::core::string<wchar_t>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -1773,7 +1717,7 @@ static int tolua_irrString_irr_core_string_wchar_t__append02(lua_State* tolua_S)
  {
   irr::core::string<wchar_t>* self = (irr::core::string<wchar_t>*)  tolua_tousertype(tolua_S,1,0);
   const irr::core::string<wchar_t>* other = ((const irr::core::string<wchar_t>*)  tolua_tousertype(tolua_S,2,0));
-  s32 length = *((s32*)  tolua_tousertype(tolua_S,3,0));
+  signed int length = (( signed int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'append'",NULL);
 #endif
@@ -1795,7 +1739,7 @@ static int tolua_irrString_irr_core_string_wchar_t__reserve00(lua_State* tolua_S
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::string<wchar_t>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
@@ -1803,7 +1747,7 @@ static int tolua_irrString_irr_core_string_wchar_t__reserve00(lua_State* tolua_S
 #endif
  {
   irr::core::string<wchar_t>* self = (irr::core::string<wchar_t>*)  tolua_tousertype(tolua_S,1,0);
-  s32 count = *((s32*)  tolua_tousertype(tolua_S,2,0));
+  signed int count = (( signed int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'reserve'",NULL);
 #endif
@@ -1841,16 +1785,8 @@ static int tolua_irrString_irr_core_string_wchar_t__findFirst00(lua_State* tolua
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'findFirst'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->findFirst(c);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->findFirst(c);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -1885,16 +1821,8 @@ static int tolua_irrString_irr_core_string_wchar_t__findFirstChar00(lua_State* t
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'findFirstChar'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->findFirstChar(c,count);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->findFirstChar(c,count);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -1915,7 +1843,7 @@ static int tolua_irrString_irr_core_string_wchar_t__findNext00(lua_State* tolua_
  if (
      !tolua_isusertype(tolua_S,1,"const irr::core::string<wchar_t>",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"wchar_t",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -1924,21 +1852,13 @@ static int tolua_irrString_irr_core_string_wchar_t__findNext00(lua_State* tolua_
  {
   const irr::core::string<wchar_t>* self = (const irr::core::string<wchar_t>*)  tolua_tousertype(tolua_S,1,0);
   wchar_t c = *((wchar_t*)  tolua_tousertype(tolua_S,2,0));
-  s32 startPos = *((s32*)  tolua_tousertype(tolua_S,3,0));
+  signed int startPos = (( signed int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'findNext'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->findNext(c,startPos);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->findNext(c,startPos);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -1971,16 +1891,8 @@ static int tolua_irrString_irr_core_string_wchar_t__findLast00(lua_State* tolua_
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'findLast'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->findLast(c);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->findLast(c);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -2000,8 +1912,8 @@ static int tolua_irrString_irr_core_string_wchar_t__subString00(lua_State* tolua
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::string<wchar_t>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -2009,8 +1921,8 @@ static int tolua_irrString_irr_core_string_wchar_t__subString00(lua_State* tolua
 #endif
  {
   irr::core::string<wchar_t>* self = (irr::core::string<wchar_t>*)  tolua_tousertype(tolua_S,1,0);
-  s32 begin = *((s32*)  tolua_tousertype(tolua_S,2,0));
-  s32 length = *((s32*)  tolua_tousertype(tolua_S,3,0));
+  signed int begin = (( signed int)  tolua_tonumber(tolua_S,2,0));
+  signed int length = (( signed int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'subString'",NULL);
 #endif

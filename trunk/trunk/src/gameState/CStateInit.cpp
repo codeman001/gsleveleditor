@@ -8,7 +8,7 @@
 #include "IView.h"
 #include "gameConfig/CGameConfig.h"
 
-//#define OPEN_GAMEPLAY	"data/level/levelGameM1.lv"
+#define OPEN_GAMEPLAY	"data/level/levelGameM1.lv"
 
 CStateInit::CStateInit()
 	:CGameState( CGameState::GSStateInit )

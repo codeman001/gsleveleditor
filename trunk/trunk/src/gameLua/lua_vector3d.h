@@ -1,6 +1,6 @@
 /*
 ** Lua binding: vector3d
-** Generated automatically by tolua++-1.0.92 on 04/20/13 17:01:28.
+** Generated automatically by tolua++-1.0.92 on 04/20/13 17:58:24.
 */
 
 /* Exported function */

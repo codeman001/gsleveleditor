@@ -4,7 +4,7 @@ using namespace irr::core;
 
 /*
 ** Lua binding: quaternion
-** Generated automatically by tolua++-1.0.92 on 04/20/13 17:01:27.
+** Generated automatically by tolua++-1.0.92 on 04/20/13 17:58:23.
 */
 
 #ifndef __cplusplus
@@ -20,13 +20,6 @@ int  tolua_quaternion_open (lua_State* tolua_S);
 
 /* function to release collected object via destructor */
 #ifdef __cplusplus
-
-static int tolua_collect_f32 (lua_State* tolua_S)
-{
- f32* self = (f32*) tolua_tousertype(tolua_S,1,0);
-	delete self;
-	return 0;
-}
 
 static int tolua_collect_matrix4 (lua_State* tolua_S)
 {
@@ -48,7 +41,6 @@ static int tolua_collect_irr__core__quaternion (lua_State* tolua_S)
 static void tolua_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"vector3d<f32>");
- tolua_usertype(tolua_S,"f32");
  tolua_usertype(tolua_S,"matrix4");
  tolua_usertype(tolua_S,"irr::core::quaternion");
 }
@@ -116,19 +108,19 @@ static int tolua_quaternion_irr_core_quaternion_new01(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::quaternion",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  f32 X = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 Y = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 Z = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 W = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float X = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float Y = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float Z = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float W = ((  float)  tolua_tonumber(tolua_S,5,0));
   {
    irr::core::quaternion* tolua_ret = (irr::core::quaternion*)  new irr::core::quaternion(X,Y,Z,W);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"irr::core::quaternion");
@@ -147,19 +139,19 @@ static int tolua_quaternion_irr_core_quaternion_new01_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::quaternion",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  f32 X = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 Y = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 Z = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 W = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float X = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float Y = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float Z = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float W = ((  float)  tolua_tonumber(tolua_S,5,0));
   {
    irr::core::quaternion* tolua_ret = (irr::core::quaternion*)  new irr::core::quaternion(X,Y,Z,W);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"irr::core::quaternion");
@@ -178,17 +170,17 @@ static int tolua_quaternion_irr_core_quaternion_new02(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::quaternion",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  f32 x = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 y = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 z = *((f32*)  tolua_tousertype(tolua_S,4,0));
+   float x = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float y = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float z = ((  float)  tolua_tonumber(tolua_S,4,0));
   {
    irr::core::quaternion* tolua_ret = (irr::core::quaternion*)  new irr::core::quaternion(x,y,z);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"irr::core::quaternion");
@@ -207,17 +199,17 @@ static int tolua_quaternion_irr_core_quaternion_new02_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::quaternion",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  f32 x = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 y = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 z = *((f32*)  tolua_tousertype(tolua_S,4,0));
+   float x = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float y = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float z = ((  float)  tolua_tonumber(tolua_S,4,0));
   {
    irr::core::quaternion* tolua_ret = (irr::core::quaternion*)  new irr::core::quaternion(x,y,z);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"irr::core::quaternion");
@@ -404,14 +396,14 @@ static int tolua_quaternion_irr_core_quaternion__mul01(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::quaternion",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
   irr::core::quaternion* self = (irr::core::quaternion*)  tolua_tousertype(tolua_S,1,0);
-  f32 s = *((f32*)  tolua_tousertype(tolua_S,2,0));
+   float s = ((  float)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'operator*'",NULL);
 #endif
@@ -455,16 +447,8 @@ static int tolua_quaternion_irr_core_quaternion_dotProduct00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'dotProduct'",NULL);
 #endif
   {
-   f32 tolua_ret = (f32)  self->dotProduct(*other);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new f32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"f32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(f32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"f32");
-#endif
-   }
+    float tolua_ret = (  float)  self->dotProduct(*other);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -484,10 +468,10 @@ static int tolua_quaternion_irr_core_quaternion_set00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::quaternion",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
@@ -495,10 +479,10 @@ static int tolua_quaternion_irr_core_quaternion_set00(lua_State* tolua_S)
 #endif
  {
   irr::core::quaternion* self = (irr::core::quaternion*)  tolua_tousertype(tolua_S,1,0);
-  f32 x = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 y = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 z = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 w = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float x = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float y = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float z = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float w = ((  float)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'set'",NULL);
 #endif
@@ -522,18 +506,18 @@ static int tolua_quaternion_irr_core_quaternion_set01(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::quaternion",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
   irr::core::quaternion* self = (irr::core::quaternion*)  tolua_tousertype(tolua_S,1,0);
-  f32 x = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 y = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 z = *((f32*)  tolua_tousertype(tolua_S,4,0));
+   float x = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float y = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float z = ((  float)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'set'",NULL);
 #endif
@@ -660,7 +644,7 @@ static int tolua_quaternion_irr_core_quaternion_slerp00(lua_State* tolua_S)
      !tolua_isusertype(tolua_S,1,"irr::core::quaternion",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"irr::core::quaternion",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,3,"irr::core::quaternion",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
@@ -670,7 +654,7 @@ static int tolua_quaternion_irr_core_quaternion_slerp00(lua_State* tolua_S)
   irr::core::quaternion* self = (irr::core::quaternion*)  tolua_tousertype(tolua_S,1,0);
   irr::core::quaternion q1 = *((irr::core::quaternion*)  tolua_tousertype(tolua_S,2,0));
   irr::core::quaternion q2 = *((irr::core::quaternion*)  tolua_tousertype(tolua_S,3,0));
-  f32 time = *((f32*)  tolua_tousertype(tolua_S,4,0));
+   float time = ((  float)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'slerp'",NULL);
 #endif
@@ -704,7 +688,7 @@ static int tolua_quaternion_irr_core_quaternion_fromAngleAxis00(lua_State* tolua
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::quaternion",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isusertype(tolua_S,3,"vector3d<f32>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
@@ -713,7 +697,7 @@ static int tolua_quaternion_irr_core_quaternion_fromAngleAxis00(lua_State* tolua
 #endif
  {
   irr::core::quaternion* self = (irr::core::quaternion*)  tolua_tousertype(tolua_S,1,0);
-  f32 angle = *((f32*)  tolua_tousertype(tolua_S,2,0));
+   float angle = ((  float)  tolua_tonumber(tolua_S,2,0));
   vector3d<f32>* axis = ((vector3d<f32>*)  tolua_tousertype(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'fromAngleAxis'",NULL);
@@ -772,7 +756,7 @@ static int tolua_get_irr__core__quaternion_X(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'X'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->X,"f32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->X);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -785,10 +769,10 @@ static int tolua_set_irr__core__quaternion_X(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'X'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"f32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->X = *((f32*)  tolua_tousertype(tolua_S,2,0))
+  self->X = ((  float)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }
@@ -802,7 +786,7 @@ static int tolua_get_irr__core__quaternion_Y(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Y'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->Y,"f32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->Y);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -815,10 +799,10 @@ static int tolua_set_irr__core__quaternion_Y(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Y'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"f32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->Y = *((f32*)  tolua_tousertype(tolua_S,2,0))
+  self->Y = ((  float)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }
@@ -832,7 +816,7 @@ static int tolua_get_irr__core__quaternion_Z(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Z'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->Z,"f32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->Z);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -845,10 +829,10 @@ static int tolua_set_irr__core__quaternion_Z(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Z'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"f32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->Z = *((f32*)  tolua_tousertype(tolua_S,2,0))
+  self->Z = ((  float)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }
@@ -862,7 +846,7 @@ static int tolua_get_irr__core__quaternion_W(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'W'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->W,"f32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->W);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -875,10 +859,10 @@ static int tolua_set_irr__core__quaternion_W(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'W'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"f32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->W = *((f32*)  tolua_tousertype(tolua_S,2,0))
+  self->W = ((  float)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }

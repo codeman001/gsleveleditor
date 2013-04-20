@@ -4,7 +4,7 @@ using namespace irr::core;
 
 /*
 ** Lua binding: dimension2d
-** Generated automatically by tolua++-1.0.92 on 04/20/13 17:01:27.
+** Generated automatically by tolua++-1.0.92 on 04/20/13 17:58:23.
 */
 
 #ifndef __cplusplus
@@ -40,10 +40,8 @@ static int tolua_collect_irr__core__dimension2d_f32_ (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"f32");
- tolua_usertype(tolua_S,"irr::core::dimension2d<f32>");
- tolua_usertype(tolua_S,"s32");
  tolua_usertype(tolua_S,"irr::core::dimension2d<s32>");
+ tolua_usertype(tolua_S,"irr::core::dimension2d<f32>");
 }
 
 /* method: new of class  irr::core::dimension2d<f32> */
@@ -109,15 +107,15 @@ static int tolua_dimension2d_irr_core_dimension2d_f32__new01(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::dimension2d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  f32 width = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 height = *((f32*)  tolua_tousertype(tolua_S,3,0));
+   float width = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float height = ((  float)  tolua_tonumber(tolua_S,3,0));
   {
    irr::core::dimension2d<f32>* tolua_ret = (irr::core::dimension2d<f32>*)  new irr::core::dimension2d<f32>(width,height);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"irr::core::dimension2d<f32>");
@@ -136,15 +134,15 @@ static int tolua_dimension2d_irr_core_dimension2d_f32__new01_local(lua_State* to
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::dimension2d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  f32 width = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 height = *((f32*)  tolua_tousertype(tolua_S,3,0));
+   float width = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float height = ((  float)  tolua_tonumber(tolua_S,3,0));
   {
    irr::core::dimension2d<f32>* tolua_ret = (irr::core::dimension2d<f32>*)  new irr::core::dimension2d<f32>(width,height);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"irr::core::dimension2d<f32>");
@@ -248,7 +246,7 @@ static int tolua_get_irr__core__dimension2d_f32__Width(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Width'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->Width,"f32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->Width);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -261,10 +259,10 @@ static int tolua_set_irr__core__dimension2d_f32__Width(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Width'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"f32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->Width = *((f32*)  tolua_tousertype(tolua_S,2,0))
+  self->Width = ((  float)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }
@@ -278,7 +276,7 @@ static int tolua_get_irr__core__dimension2d_f32__Height(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Height'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->Height,"f32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->Height);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -291,10 +289,10 @@ static int tolua_set_irr__core__dimension2d_f32__Height(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Height'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"f32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->Height = *((f32*)  tolua_tousertype(tolua_S,2,0))
+  self->Height = ((  float)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }
@@ -363,15 +361,15 @@ static int tolua_dimension2d_irr_core_dimension2d_s32__new01(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::dimension2d<s32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  s32 width = *((s32*)  tolua_tousertype(tolua_S,2,0));
-  s32 height = *((s32*)  tolua_tousertype(tolua_S,3,0));
+  signed int width = (( signed int)  tolua_tonumber(tolua_S,2,0));
+  signed int height = (( signed int)  tolua_tonumber(tolua_S,3,0));
   {
    irr::core::dimension2d<s32>* tolua_ret = (irr::core::dimension2d<s32>*)  new irr::core::dimension2d<s32>(width,height);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"irr::core::dimension2d<s32>");
@@ -390,15 +388,15 @@ static int tolua_dimension2d_irr_core_dimension2d_s32__new01_local(lua_State* to
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::dimension2d<s32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  s32 width = *((s32*)  tolua_tousertype(tolua_S,2,0));
-  s32 height = *((s32*)  tolua_tousertype(tolua_S,3,0));
+  signed int width = (( signed int)  tolua_tonumber(tolua_S,2,0));
+  signed int height = (( signed int)  tolua_tonumber(tolua_S,3,0));
   {
    irr::core::dimension2d<s32>* tolua_ret = (irr::core::dimension2d<s32>*)  new irr::core::dimension2d<s32>(width,height);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"irr::core::dimension2d<s32>");
@@ -502,7 +500,7 @@ static int tolua_get_irr__core__dimension2d_s32__Width(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Width'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->Width,"s32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->Width);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -515,10 +513,10 @@ static int tolua_set_irr__core__dimension2d_s32__Width(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Width'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"s32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->Width = *((s32*)  tolua_tousertype(tolua_S,2,0))
+  self->Width = (( signed int)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }
@@ -532,7 +530,7 @@ static int tolua_get_irr__core__dimension2d_s32__Height(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Height'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->Height,"s32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->Height);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -545,10 +543,10 @@ static int tolua_set_irr__core__dimension2d_s32__Height(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Height'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"s32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->Height = *((s32*)  tolua_tousertype(tolua_S,2,0))
+  self->Height = (( signed int)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }

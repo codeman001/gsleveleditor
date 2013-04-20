@@ -4,7 +4,7 @@ using namespace irr::core;
 
 /*
 ** Lua binding: SColor
-** Generated automatically by tolua++-1.0.92 on 04/20/13 17:01:28.
+** Generated automatically by tolua++-1.0.92 on 04/20/13 17:58:23.
 */
 
 #ifndef __cplusplus
@@ -21,23 +21,9 @@ int  tolua_SColor_open (lua_State* tolua_S);
 /* function to release collected object via destructor */
 #ifdef __cplusplus
 
-static int tolua_collect_s16 (lua_State* tolua_S)
-{
- s16* self = (s16*) tolua_tousertype(tolua_S,1,0);
-	delete self;
-	return 0;
-}
-
 static int tolua_collect_irr__video__SColorf (lua_State* tolua_S)
 {
  irr::video::SColorf* self = (irr::video::SColorf*) tolua_tousertype(tolua_S,1,0);
-	delete self;
-	return 0;
-}
-
-static int tolua_collect_s32 (lua_State* tolua_S)
-{
- s32* self = (s32*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -54,12 +40,8 @@ static int tolua_collect_irr__video__SColor (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"s16");
- tolua_usertype(tolua_S,"u8");
- tolua_usertype(tolua_S,"s32");
- tolua_usertype(tolua_S,"irr::video::SColor");
  tolua_usertype(tolua_S,"irr::video::SColorf");
- tolua_usertype(tolua_S,"f32");
+ tolua_usertype(tolua_S,"irr::video::SColor");
 }
 
 /* function: irr::video::RGB16 */
@@ -69,29 +51,21 @@ static int tolua_SColor_irr_video_RGB1600(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  s32 r = *((s32*)  tolua_tousertype(tolua_S,1,0));
-  s32 g = *((s32*)  tolua_tousertype(tolua_S,2,0));
-  s32 b = *((s32*)  tolua_tousertype(tolua_S,3,0));
+  signed int r = (( signed int)  tolua_tonumber(tolua_S,1,0));
+  signed int g = (( signed int)  tolua_tonumber(tolua_S,2,0));
+  signed int b = (( signed int)  tolua_tonumber(tolua_S,3,0));
   {
-   s16 tolua_ret = (s16)  irr::video::RGB16(r,g,b);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s16(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s16");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s16));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s16");
-#endif
-   }
+   signed short tolua_ret = ( signed short)  irr::video::RGB16(r,g,b);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -110,31 +84,23 @@ static int tolua_SColor_irr_video_RGBA1600(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  s32 r = *((s32*)  tolua_tousertype(tolua_S,1,0));
-  s32 g = *((s32*)  tolua_tousertype(tolua_S,2,0));
-  s32 b = *((s32*)  tolua_tousertype(tolua_S,3,0));
-  s32 a = *((s32*)  tolua_tousertype(tolua_S,4,0));
+  signed int r = (( signed int)  tolua_tonumber(tolua_S,1,0));
+  signed int g = (( signed int)  tolua_tonumber(tolua_S,2,0));
+  signed int b = (( signed int)  tolua_tonumber(tolua_S,3,0));
+  signed int a = (( signed int)  tolua_tonumber(tolua_S,4,0));
   {
-   s16 tolua_ret = (s16)  irr::video::RGBA16(r,g,b,a);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s16(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s16");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s16));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s16");
-#endif
-   }
+   signed short tolua_ret = ( signed short)  irr::video::RGBA16(r,g,b,a);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -153,25 +119,17 @@ static int tolua_SColor_irr_video_X8R8G8B8toA1R5G5B500(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  s32 color = *((s32*)  tolua_tousertype(tolua_S,1,0));
+  signed int color = (( signed int)  tolua_tonumber(tolua_S,1,0));
   {
-   s16 tolua_ret = (s16)  irr::video::X8R8G8B8toA1R5G5B5(color);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s16(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s16");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s16));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s16");
-#endif
-   }
+   signed short tolua_ret = ( signed short)  irr::video::X8R8G8B8toA1R5G5B5(color);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -190,25 +148,17 @@ static int tolua_SColor_irr_video_getAlpha00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"s16",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  s16 color = *((s16*)  tolua_tousertype(tolua_S,1,0));
+  signed short color = (( signed short)  tolua_tonumber(tolua_S,1,0));
   {
-   s32 tolua_ret = (s32)  irr::video::getAlpha(color);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  irr::video::getAlpha(color);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -227,25 +177,17 @@ static int tolua_SColor_irr_video_getRed00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"s16",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  s16 color = *((s16*)  tolua_tousertype(tolua_S,1,0));
+  signed short color = (( signed short)  tolua_tonumber(tolua_S,1,0));
   {
-   s32 tolua_ret = (s32)  irr::video::getRed(color);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  irr::video::getRed(color);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -264,25 +206,17 @@ static int tolua_SColor_irr_video_getGreen00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"s16",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  s16 color = *((s16*)  tolua_tousertype(tolua_S,1,0));
+  signed short color = (( signed short)  tolua_tonumber(tolua_S,1,0));
   {
-   s32 tolua_ret = (s32)  irr::video::getGreen(color);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  irr::video::getGreen(color);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -301,25 +235,17 @@ static int tolua_SColor_irr_video_getBlue00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"s16",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  s16 color = *((s16*)  tolua_tousertype(tolua_S,1,0));
+  signed short color = (( signed short)  tolua_tonumber(tolua_S,1,0));
   {
-   s32 tolua_ret = (s32)  irr::video::getBlue(color);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  irr::video::getBlue(color);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -338,25 +264,17 @@ static int tolua_SColor_irr_video_A1R5G5B5toA8R8G8B800(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"s16",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  s16 color = *((s16*)  tolua_tousertype(tolua_S,1,0));
+  signed short color = (( signed short)  tolua_tonumber(tolua_S,1,0));
   {
-   s32 tolua_ret = (s32)  irr::video::A1R5G5B5toA8R8G8B8(color);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  irr::video::A1R5G5B5toA8R8G8B8(color);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -375,25 +293,17 @@ static int tolua_SColor_irr_video_R5G6B5toA8R8G8B800(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"s16",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  s16 color = *((s16*)  tolua_tousertype(tolua_S,1,0));
+  signed short color = (( signed short)  tolua_tonumber(tolua_S,1,0));
   {
-   s32 tolua_ret = (s32)  irr::video::R5G6B5toA8R8G8B8(color);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  irr::video::R5G6B5toA8R8G8B8(color);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -412,25 +322,17 @@ static int tolua_SColor_irr_video_R5G6B5toA1R5G5B500(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"s16",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  s16 color = *((s16*)  tolua_tousertype(tolua_S,1,0));
+  signed short color = (( signed short)  tolua_tonumber(tolua_S,1,0));
   {
-   s16 tolua_ret = (s16)  irr::video::R5G6B5toA1R5G5B5(color);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s16(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s16");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s16));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s16");
-#endif
-   }
+   signed short tolua_ret = ( signed short)  irr::video::R5G6B5toA1R5G5B5(color);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -449,25 +351,17 @@ static int tolua_SColor_irr_video_A1R5G5B5toR5G6B500(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"s16",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  s16 color = *((s16*)  tolua_tousertype(tolua_S,1,0));
+  signed short color = (( signed short)  tolua_tonumber(tolua_S,1,0));
   {
-   s16 tolua_ret = (s16)  irr::video::A1R5G5B5toR5G6B5(color);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s16(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s16");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s16));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s16");
-#endif
-   }
+   signed short tolua_ret = ( signed short)  irr::video::A1R5G5B5toR5G6B5(color);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -487,20 +381,20 @@ static int tolua_SColor_irr_video_SColor_new00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::video::SColor",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  s32 a = *((s32*)  tolua_tousertype(tolua_S,2,0));
-  s32 r = *((s32*)  tolua_tousertype(tolua_S,3,0));
-  s32 g = *((s32*)  tolua_tousertype(tolua_S,4,0));
-  s32 b = *((s32*)  tolua_tousertype(tolua_S,5,0));
+  signed int a = (( signed int)  tolua_tonumber(tolua_S,2,0));
+  signed int r = (( signed int)  tolua_tonumber(tolua_S,3,0));
+  signed int g = (( signed int)  tolua_tonumber(tolua_S,4,0));
+  signed int b = (( signed int)  tolua_tonumber(tolua_S,5,0));
   {
    irr::video::SColor* tolua_ret = (irr::video::SColor*)  new irr::video::SColor(a,r,g,b);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"irr::video::SColor");
@@ -523,20 +417,20 @@ static int tolua_SColor_irr_video_SColor_new00_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::video::SColor",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  s32 a = *((s32*)  tolua_tousertype(tolua_S,2,0));
-  s32 r = *((s32*)  tolua_tousertype(tolua_S,3,0));
-  s32 g = *((s32*)  tolua_tousertype(tolua_S,4,0));
-  s32 b = *((s32*)  tolua_tousertype(tolua_S,5,0));
+  signed int a = (( signed int)  tolua_tonumber(tolua_S,2,0));
+  signed int r = (( signed int)  tolua_tonumber(tolua_S,3,0));
+  signed int g = (( signed int)  tolua_tonumber(tolua_S,4,0));
+  signed int b = (( signed int)  tolua_tonumber(tolua_S,5,0));
   {
    irr::video::SColor* tolua_ret = (irr::video::SColor*)  new irr::video::SColor(a,r,g,b);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"irr::video::SColor");
@@ -570,16 +464,8 @@ static int tolua_SColor_irr_video_SColor_getAlpha00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAlpha'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->getAlpha();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->getAlpha();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -610,16 +496,8 @@ static int tolua_SColor_irr_video_SColor_getRed00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getRed'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->getRed();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->getRed();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -650,16 +528,8 @@ static int tolua_SColor_irr_video_SColor_getGreen00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getGreen'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->getGreen();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->getGreen();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -690,16 +560,8 @@ static int tolua_SColor_irr_video_SColor_getBlue00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getBlue'",NULL);
 #endif
   {
-   s32 tolua_ret = (s32)  self->getBlue();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s32");
-#endif
-   }
+   signed int tolua_ret = ( signed int)  self->getBlue();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -719,7 +581,7 @@ static int tolua_SColor_irr_video_SColor_setAlpha00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::video::SColor",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
@@ -727,7 +589,7 @@ static int tolua_SColor_irr_video_SColor_setAlpha00(lua_State* tolua_S)
 #endif
  {
   irr::video::SColor* self = (irr::video::SColor*)  tolua_tousertype(tolua_S,1,0);
-  s32 a = *((s32*)  tolua_tousertype(tolua_S,2,0));
+  signed int a = (( signed int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAlpha'",NULL);
 #endif
@@ -752,7 +614,7 @@ static int tolua_SColor_irr_video_SColor_setRed00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::video::SColor",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
@@ -760,7 +622,7 @@ static int tolua_SColor_irr_video_SColor_setRed00(lua_State* tolua_S)
 #endif
  {
   irr::video::SColor* self = (irr::video::SColor*)  tolua_tousertype(tolua_S,1,0);
-  s32 r = *((s32*)  tolua_tousertype(tolua_S,2,0));
+  signed int r = (( signed int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setRed'",NULL);
 #endif
@@ -785,7 +647,7 @@ static int tolua_SColor_irr_video_SColor_setGreen00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::video::SColor",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
@@ -793,7 +655,7 @@ static int tolua_SColor_irr_video_SColor_setGreen00(lua_State* tolua_S)
 #endif
  {
   irr::video::SColor* self = (irr::video::SColor*)  tolua_tousertype(tolua_S,1,0);
-  s32 g = *((s32*)  tolua_tousertype(tolua_S,2,0));
+  signed int g = (( signed int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setGreen'",NULL);
 #endif
@@ -818,7 +680,7 @@ static int tolua_SColor_irr_video_SColor_setBlue00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::video::SColor",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
@@ -826,7 +688,7 @@ static int tolua_SColor_irr_video_SColor_setBlue00(lua_State* tolua_S)
 #endif
  {
   irr::video::SColor* self = (irr::video::SColor*)  tolua_tousertype(tolua_S,1,0);
-  s32 b = *((s32*)  tolua_tousertype(tolua_S,2,0));
+  signed int b = (( signed int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setBlue'",NULL);
 #endif
@@ -862,16 +724,8 @@ static int tolua_SColor_irr_video_SColor_toA1R5G5B500(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'toA1R5G5B5'",NULL);
 #endif
   {
-   s16 tolua_ret = (s16)  self->toA1R5G5B5();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new s16(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s16");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(s16));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"s16");
-#endif
-   }
+   signed short tolua_ret = ( signed short)  self->toA1R5G5B5();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -891,7 +745,7 @@ static int tolua_SColor_irr_video_SColor_toOpenGLColor00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::video::SColor",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"u8",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
@@ -899,15 +753,16 @@ static int tolua_SColor_irr_video_SColor_toOpenGLColor00(lua_State* tolua_S)
 #endif
  {
   irr::video::SColor* self = (irr::video::SColor*)  tolua_tousertype(tolua_S,1,0);
-  u8* dest = ((u8*)  tolua_tousertype(tolua_S,2,0));
+  unsigned char dest = (( unsigned char)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'toOpenGLColor'",NULL);
 #endif
   {
-   self->toOpenGLColor(dest);
+   self->toOpenGLColor(&dest);
+   tolua_pushnumber(tolua_S,(lua_Number)dest);
   }
  }
- return 0;
+ return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'toOpenGLColor'.",&tolua_err);
@@ -924,10 +779,10 @@ static int tolua_SColor_irr_video_SColor_set00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::video::SColor",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"s32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
@@ -935,10 +790,10 @@ static int tolua_SColor_irr_video_SColor_set00(lua_State* tolua_S)
 #endif
  {
   irr::video::SColor* self = (irr::video::SColor*)  tolua_tousertype(tolua_S,1,0);
-  s32 a = *((s32*)  tolua_tousertype(tolua_S,2,0));
-  s32 r = *((s32*)  tolua_tousertype(tolua_S,3,0));
-  s32 g = *((s32*)  tolua_tousertype(tolua_S,4,0));
-  s32 b = *((s32*)  tolua_tousertype(tolua_S,5,0));
+  signed int a = (( signed int)  tolua_tonumber(tolua_S,2,0));
+  signed int r = (( signed int)  tolua_tonumber(tolua_S,3,0));
+  signed int g = (( signed int)  tolua_tonumber(tolua_S,4,0));
+  signed int b = (( signed int)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'set'",NULL);
 #endif
@@ -998,7 +853,7 @@ static int tolua_SColor_irr_video_SColor_getInterpolated00(lua_State* tolua_S)
  if (
      !tolua_isusertype(tolua_S,1,"irr::video::SColor",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"irr::video::SColor",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -1007,7 +862,7 @@ static int tolua_SColor_irr_video_SColor_getInterpolated00(lua_State* tolua_S)
  {
   irr::video::SColor* self = (irr::video::SColor*)  tolua_tousertype(tolua_S,1,0);
   irr::video::SColor other = *((irr::video::SColor*)  tolua_tousertype(tolua_S,2,0));
-  f32 d = *((f32*)  tolua_tousertype(tolua_S,3,0));
+   float d = ((  float)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getInterpolated'",NULL);
 #endif
@@ -1041,7 +896,7 @@ static int tolua_get_irr__video__SColor_color(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'color'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->color,"s32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->color);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -1054,10 +909,10 @@ static int tolua_set_irr__video__SColor_color(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'color'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"s32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->color = *((s32*)  tolua_tousertype(tolua_S,2,0))
+  self->color = (( signed int)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }
@@ -1071,20 +926,20 @@ static int tolua_SColor_irr_video_SColorf_new00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::video::SColorf",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  f32 r = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 g = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 b = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 a = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float r = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float g = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float b = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float a = ((  float)  tolua_tonumber(tolua_S,5,0));
   {
    irr::video::SColorf* tolua_ret = (irr::video::SColorf*)  new irr::video::SColorf(r,g,b,a);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"irr::video::SColorf");
@@ -1107,20 +962,20 @@ static int tolua_SColor_irr_video_SColorf_new00_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::video::SColorf",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  f32 r = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 g = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 b = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 a = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float r = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float g = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float b = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float a = ((  float)  tolua_tonumber(tolua_S,5,0));
   {
    irr::video::SColorf* tolua_ret = (irr::video::SColorf*)  new irr::video::SColorf(r,g,b,a);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"irr::video::SColorf");
@@ -1183,7 +1038,7 @@ static int tolua_get_irr__video__SColorf_r(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'r'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->r,"f32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->r);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -1196,10 +1051,10 @@ static int tolua_set_irr__video__SColorf_r(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'r'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"f32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->r = *((f32*)  tolua_tousertype(tolua_S,2,0))
+  self->r = ((  float)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }
@@ -1213,7 +1068,7 @@ static int tolua_get_irr__video__SColorf_g(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'g'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->g,"f32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->g);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -1226,10 +1081,10 @@ static int tolua_set_irr__video__SColorf_g(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'g'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"f32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->g = *((f32*)  tolua_tousertype(tolua_S,2,0))
+  self->g = ((  float)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }
@@ -1243,7 +1098,7 @@ static int tolua_get_irr__video__SColorf_b(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'b'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->b,"f32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->b);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -1256,10 +1111,10 @@ static int tolua_set_irr__video__SColorf_b(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'b'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"f32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->b = *((f32*)  tolua_tousertype(tolua_S,2,0))
+  self->b = ((  float)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }
@@ -1273,7 +1128,7 @@ static int tolua_get_irr__video__SColorf_a(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'a'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->a,"f32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->a);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -1286,10 +1141,10 @@ static int tolua_set_irr__video__SColorf_a(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'a'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"f32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->a = *((f32*)  tolua_tousertype(tolua_S,2,0))
+  self->a = ((  float)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }
@@ -1303,10 +1158,10 @@ static int tolua_SColor_irr_video_SColorf_set00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::video::SColorf",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
@@ -1314,10 +1169,10 @@ static int tolua_SColor_irr_video_SColorf_set00(lua_State* tolua_S)
 #endif
  {
   irr::video::SColorf* self = (irr::video::SColorf*)  tolua_tousertype(tolua_S,1,0);
-  f32 aa = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 rr = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 gg = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 bb = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float aa = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float rr = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float gg = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float bb = ((  float)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'set'",NULL);
 #endif
@@ -1343,7 +1198,7 @@ static int tolua_SColor_irr_video_SColorf_getInterpolated00(lua_State* tolua_S)
  if (
      !tolua_isusertype(tolua_S,1,"irr::video::SColorf",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"irr::video::SColorf",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -1352,7 +1207,7 @@ static int tolua_SColor_irr_video_SColorf_getInterpolated00(lua_State* tolua_S)
  {
   irr::video::SColorf* self = (irr::video::SColorf*)  tolua_tousertype(tolua_S,1,0);
   irr::video::SColorf other = *((irr::video::SColorf*)  tolua_tousertype(tolua_S,2,0));
-  f32 d = *((f32*)  tolua_tousertype(tolua_S,3,0));
+   float d = ((  float)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getInterpolated'",NULL);
 #endif
@@ -1386,8 +1241,8 @@ static int tolua_SColor_irr_video_SColorf_setColorComponentValue00(lua_State* to
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::video::SColorf",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"s32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -1395,8 +1250,8 @@ static int tolua_SColor_irr_video_SColorf_setColorComponentValue00(lua_State* to
 #endif
  {
   irr::video::SColorf* self = (irr::video::SColorf*)  tolua_tousertype(tolua_S,1,0);
-  s32 index = *((s32*)  tolua_tousertype(tolua_S,2,0));
-  f32 value = *((f32*)  tolua_tousertype(tolua_S,3,0));
+  signed int index = (( signed int)  tolua_tonumber(tolua_S,2,0));
+   float value = ((  float)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setColorComponentValue'",NULL);
 #endif

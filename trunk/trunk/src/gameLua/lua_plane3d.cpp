@@ -4,7 +4,7 @@ using namespace irr::core;
 
 /*
 ** Lua binding: plane3d
-** Generated automatically by tolua++-1.0.92 on 04/20/13 17:01:27.
+** Generated automatically by tolua++-1.0.92 on 04/20/13 17:58:23.
 */
 
 #ifndef __cplusplus
@@ -20,13 +20,6 @@ int  tolua_plane3d_open (lua_State* tolua_S);
 
 /* function to release collected object via destructor */
 #ifdef __cplusplus
-
-static int tolua_collect_f32 (lua_State* tolua_S)
-{
- f32* self = (f32*) tolua_tousertype(tolua_S,1,0);
-	delete self;
-	return 0;
-}
 
 static int tolua_collect_irr__core__plane3d_f32_ (lua_State* tolua_S)
 {
@@ -47,9 +40,8 @@ static int tolua_collect_vector3d_f32_ (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"irr::core::plane3d<f32>");
- tolua_usertype(tolua_S,"f32");
  tolua_usertype(tolua_S,"vector3d<f32>");
+ tolua_usertype(tolua_S,"irr::core::plane3d<f32>");
 }
 
 /* method: new of class  irr::core::plane3d<f32> */
@@ -169,23 +161,23 @@ static int tolua_plane3d_irr_core_plane3d_f32__new02(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::plane3d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,6,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,7,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,7,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,8,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  f32 px = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 py = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 pz = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 nx = *((f32*)  tolua_tousertype(tolua_S,5,0));
-  f32 ny = *((f32*)  tolua_tousertype(tolua_S,6,0));
-  f32 nz = *((f32*)  tolua_tousertype(tolua_S,7,0));
+   float px = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float py = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float pz = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float nx = ((  float)  tolua_tonumber(tolua_S,5,0));
+   float ny = ((  float)  tolua_tonumber(tolua_S,6,0));
+   float nz = ((  float)  tolua_tonumber(tolua_S,7,0));
   {
    irr::core::plane3d<f32>* tolua_ret = (irr::core::plane3d<f32>*)  new irr::core::plane3d<f32>(px,py,pz,nx,ny,nz);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"irr::core::plane3d<f32>");
@@ -204,23 +196,23 @@ static int tolua_plane3d_irr_core_plane3d_f32__new02_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::plane3d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,6,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,7,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,7,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,8,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  f32 px = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 py = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 pz = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 nx = *((f32*)  tolua_tousertype(tolua_S,5,0));
-  f32 ny = *((f32*)  tolua_tousertype(tolua_S,6,0));
-  f32 nz = *((f32*)  tolua_tousertype(tolua_S,7,0));
+   float px = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float py = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float pz = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float nx = ((  float)  tolua_tonumber(tolua_S,5,0));
+   float ny = ((  float)  tolua_tonumber(tolua_S,6,0));
+   float nz = ((  float)  tolua_tonumber(tolua_S,7,0));
   {
    irr::core::plane3d<f32>* tolua_ret = (irr::core::plane3d<f32>*)  new irr::core::plane3d<f32>(px,py,pz,nx,ny,nz);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"irr::core::plane3d<f32>");
@@ -417,7 +409,7 @@ static int tolua_plane3d_irr_core_plane3d_f32__setPlane01(lua_State* tolua_S)
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::plane3d<f32>",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"vector3d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -425,7 +417,7 @@ static int tolua_plane3d_irr_core_plane3d_f32__setPlane01(lua_State* tolua_S)
  {
   irr::core::plane3d<f32>* self = (irr::core::plane3d<f32>*)  tolua_tousertype(tolua_S,1,0);
   vector3d<f32>* nvect = ((vector3d<f32>*)  tolua_tousertype(tolua_S,2,0));
-  f32 d = *((f32*)  tolua_tousertype(tolua_S,3,0));
+   float d = ((  float)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPlane'",NULL);
 #endif
@@ -532,16 +524,8 @@ static int tolua_plane3d_irr_core_plane3d_f32__getKnownIntersectionWithLine00(lu
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getKnownIntersectionWithLine'",NULL);
 #endif
   {
-   f32 tolua_ret = (f32)  self->getKnownIntersectionWithLine(*linePoint1,*linePoint2);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new f32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"f32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(f32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"f32");
-#endif
-   }
+    float tolua_ret = (  float)  self->getKnownIntersectionWithLine(*linePoint1,*linePoint2);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -863,16 +847,8 @@ static int tolua_plane3d_irr_core_plane3d_f32__getDistanceTo00(lua_State* tolua_
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDistanceTo'",NULL);
 #endif
   {
-   f32 tolua_ret = (f32)  self->getDistanceTo(*point);
-   {
-#ifdef __cplusplus
-    void* tolua_obj = new f32(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"f32");
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(f32));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"f32");
-#endif
-   }
+    float tolua_ret = (  float)  self->getDistanceTo(*point);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -922,7 +898,7 @@ static int tolua_get_irr__core__plane3d_f32__D(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'D'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)&self->D,"f32");
+  tolua_pushnumber(tolua_S,(lua_Number)self->D);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -935,10 +911,10 @@ static int tolua_set_irr__core__plane3d_f32__D(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
   if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'D'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"f32",0,&tolua_err))
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->D = *((f32*)  tolua_tousertype(tolua_S,2,0))
+  self->D = ((  float)  tolua_tonumber(tolua_S,2,0))
 ;
  return 0;
 }

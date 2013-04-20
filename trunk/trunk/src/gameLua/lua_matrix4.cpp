@@ -4,7 +4,7 @@ using namespace irr::core;
 
 /*
 ** Lua binding: matrix4
-** Generated automatically by tolua++-1.0.92 on 04/20/13 17:01:27.
+** Generated automatically by tolua++-1.0.92 on 04/20/13 17:58:23.
 */
 
 #ifndef __cplusplus
@@ -43,9 +43,8 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"irr::core::plane3d<f32>");
  tolua_usertype(tolua_S,"irr::core::aabbox3d<f32>");
  tolua_usertype(tolua_S,"irr::core::matrix4");
- tolua_usertype(tolua_S,"irr::core::rect<s32>");
  tolua_usertype(tolua_S,"irr::core::vector3d<f32>");
- tolua_usertype(tolua_S,"f32");
+ tolua_usertype(tolua_S,"irr::core::rect<s32>");
 }
 
 /* method: new of class  irr::core::matrix4 */
@@ -955,7 +954,7 @@ static int tolua_matrix4_irr_core_matrix4_multiplyWith1x4Matrix00(lua_State* tol
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::matrix4",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
@@ -963,15 +962,16 @@ static int tolua_matrix4_irr_core_matrix4_multiplyWith1x4Matrix00(lua_State* tol
 #endif
  {
   irr::core::matrix4* self = (irr::core::matrix4*)  tolua_tousertype(tolua_S,1,0);
-  f32* matrix = ((f32*)  tolua_tousertype(tolua_S,2,0));
+   float matrix = ((  float)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'multiplyWith1x4Matrix'",NULL);
 #endif
   {
-   self->multiplyWith1x4Matrix(matrix);
+   self->multiplyWith1x4Matrix(&matrix);
+   tolua_pushnumber(tolua_S,(lua_Number)matrix);
   }
  }
- return 0;
+ return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'multiplyWith1x4Matrix'.",&tolua_err);
@@ -1054,10 +1054,10 @@ static int tolua_matrix4_irr_core_matrix4_buildProjectionMatrixPerspectiveFovRH0
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::matrix4",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
@@ -1065,10 +1065,10 @@ static int tolua_matrix4_irr_core_matrix4_buildProjectionMatrixPerspectiveFovRH0
 #endif
  {
   irr::core::matrix4* self = (irr::core::matrix4*)  tolua_tousertype(tolua_S,1,0);
-  f32 fieldOfViewRadians = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 aspectRatio = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 zNear = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 zFar = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float fieldOfViewRadians = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float aspectRatio = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float zNear = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float zFar = ((  float)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'buildProjectionMatrixPerspectiveFovRH'",NULL);
 #endif
@@ -1093,10 +1093,10 @@ static int tolua_matrix4_irr_core_matrix4_buildProjectionMatrixPerspectiveFovLH0
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::matrix4",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
@@ -1104,10 +1104,10 @@ static int tolua_matrix4_irr_core_matrix4_buildProjectionMatrixPerspectiveFovLH0
 #endif
  {
   irr::core::matrix4* self = (irr::core::matrix4*)  tolua_tousertype(tolua_S,1,0);
-  f32 fieldOfViewRadians = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 aspectRatio = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 zNear = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 zFar = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float fieldOfViewRadians = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float aspectRatio = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float zNear = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float zFar = ((  float)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'buildProjectionMatrixPerspectiveFovLH'",NULL);
 #endif
@@ -1132,10 +1132,10 @@ static int tolua_matrix4_irr_core_matrix4_buildProjectionMatrixPerspectiveRH00(l
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::matrix4",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
@@ -1143,10 +1143,10 @@ static int tolua_matrix4_irr_core_matrix4_buildProjectionMatrixPerspectiveRH00(l
 #endif
  {
   irr::core::matrix4* self = (irr::core::matrix4*)  tolua_tousertype(tolua_S,1,0);
-  f32 widthOfViewVolume = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 heightOfViewVolume = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 zNear = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 zFar = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float widthOfViewVolume = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float heightOfViewVolume = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float zNear = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float zFar = ((  float)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'buildProjectionMatrixPerspectiveRH'",NULL);
 #endif
@@ -1171,10 +1171,10 @@ static int tolua_matrix4_irr_core_matrix4_buildProjectionMatrixPerspectiveLH00(l
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::matrix4",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
@@ -1182,10 +1182,10 @@ static int tolua_matrix4_irr_core_matrix4_buildProjectionMatrixPerspectiveLH00(l
 #endif
  {
   irr::core::matrix4* self = (irr::core::matrix4*)  tolua_tousertype(tolua_S,1,0);
-  f32 widthOfViewVolume = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 heightOfViewVolume = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 zNear = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 zFar = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float widthOfViewVolume = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float heightOfViewVolume = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float zNear = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float zFar = ((  float)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'buildProjectionMatrixPerspectiveLH'",NULL);
 #endif
@@ -1210,10 +1210,10 @@ static int tolua_matrix4_irr_core_matrix4_buildProjectionMatrixOrthoLH00(lua_Sta
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::matrix4",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
@@ -1221,10 +1221,10 @@ static int tolua_matrix4_irr_core_matrix4_buildProjectionMatrixOrthoLH00(lua_Sta
 #endif
  {
   irr::core::matrix4* self = (irr::core::matrix4*)  tolua_tousertype(tolua_S,1,0);
-  f32 widthOfViewVolume = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 heightOfViewVolume = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 zNear = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 zFar = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float widthOfViewVolume = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float heightOfViewVolume = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float zNear = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float zFar = ((  float)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'buildProjectionMatrixOrthoLH'",NULL);
 #endif
@@ -1249,10 +1249,10 @@ static int tolua_matrix4_irr_core_matrix4_buildProjectionMatrixOrthoRH00(lua_Sta
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::matrix4",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,5,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
@@ -1260,10 +1260,10 @@ static int tolua_matrix4_irr_core_matrix4_buildProjectionMatrixOrthoRH00(lua_Sta
 #endif
  {
   irr::core::matrix4* self = (irr::core::matrix4*)  tolua_tousertype(tolua_S,1,0);
-  f32 widthOfViewVolume = *((f32*)  tolua_tousertype(tolua_S,2,0));
-  f32 heightOfViewVolume = *((f32*)  tolua_tousertype(tolua_S,3,0));
-  f32 zNear = *((f32*)  tolua_tousertype(tolua_S,4,0));
-  f32 zFar = *((f32*)  tolua_tousertype(tolua_S,5,0));
+   float widthOfViewVolume = ((  float)  tolua_tonumber(tolua_S,2,0));
+   float heightOfViewVolume = ((  float)  tolua_tonumber(tolua_S,3,0));
+   float zNear = ((  float)  tolua_tonumber(tolua_S,4,0));
+   float zFar = ((  float)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'buildProjectionMatrixOrthoRH'",NULL);
 #endif
@@ -1364,7 +1364,7 @@ static int tolua_matrix4_irr_core_matrix4_buildShadowMatrix00(lua_State* tolua_S
      !tolua_isusertype(tolua_S,1,"irr::core::matrix4",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"irr::core::vector3d<f32>",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,3,"irr::core::plane3d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
@@ -1374,7 +1374,7 @@ static int tolua_matrix4_irr_core_matrix4_buildShadowMatrix00(lua_State* tolua_S
   irr::core::matrix4* self = (irr::core::matrix4*)  tolua_tousertype(tolua_S,1,0);
   irr::core::vector3d<f32> light = *((irr::core::vector3d<f32>*)  tolua_tousertype(tolua_S,2,0));
   irr::core::plane3d<f32> plane = *((irr::core::plane3d<f32>*)  tolua_tousertype(tolua_S,3,0));
-  f32 point = *((f32*)  tolua_tousertype(tolua_S,4,0));
+   float point = ((  float)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'buildShadowMatrix'",NULL);
 #endif
@@ -1400,7 +1400,7 @@ static int tolua_matrix4_irr_core_matrix4_buildNDCToDCMatrix00(lua_State* tolua_
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::matrix4",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"irr::core::rect<s32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -1409,7 +1409,7 @@ static int tolua_matrix4_irr_core_matrix4_buildNDCToDCMatrix00(lua_State* tolua_
  {
   irr::core::matrix4* self = (irr::core::matrix4*)  tolua_tousertype(tolua_S,1,0);
   irr::core::rect<s32>* area = ((irr::core::rect<s32>*)  tolua_tousertype(tolua_S,2,0));
-  f32 zScale = *((f32*)  tolua_tousertype(tolua_S,3,0));
+   float zScale = ((  float)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'buildNDCToDCMatrix'",NULL);
 #endif
@@ -1435,7 +1435,7 @@ static int tolua_matrix4_irr_core_matrix4_interpolate00(lua_State* tolua_S)
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::matrix4",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"irr::core::matrix4",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -1444,7 +1444,7 @@ static int tolua_matrix4_irr_core_matrix4_interpolate00(lua_State* tolua_S)
  {
   irr::core::matrix4* self = (irr::core::matrix4*)  tolua_tousertype(tolua_S,1,0);
   irr::core::matrix4* b = ((irr::core::matrix4*)  tolua_tousertype(tolua_S,2,0));
-  f32 time = *((f32*)  tolua_tousertype(tolua_S,3,0));
+   float time = ((  float)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'interpolate'",NULL);
 #endif

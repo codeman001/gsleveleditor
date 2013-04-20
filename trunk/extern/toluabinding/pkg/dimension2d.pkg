@@ -1,0 +1,40 @@
+// Copyright (C) 2005-2006 Josh Turpen, Nikolaus Gebhardt
+// This file is part of the IrrLua Lua binding for Irrlicht.
+// For conditions of distribution and use, see copyright notice in IrrLua.h
+
+
+namespace irr
+{
+namespace core
+{
+
+	//! Specifies a 2 dimensional size.
+	//template <class T>
+	class dimension2d
+	{
+			TOLUA_TEMPLATE_BIND(T, f32, s32)
+
+			dimension2d();
+			dimension2d(T width, T height);
+			dimension2d(irr::core::dimension2d<T>& other);
+
+
+			bool operator == (dimension2d<T>& other) ;
+			//bool operator != (dimension2d<T>& other) ;
+			//dimension2d<T>& operator=(dimension2d<T>& other) ;
+
+			T Width,Height;
+	};
+
+} // end namespace core
+} // end namespace irr
+
+
+$[
+
+irr.core.dimension2d = irr.core.dimension2d_f32_
+irr.core.dimension2df32 = irr.core.dimension2d_f32_
+irr.core.dimension2ds32 = irr.core.dimension2d_s32_
+
+$]
+

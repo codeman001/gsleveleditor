@@ -1,0 +1,46 @@
+// Copyright (C) 2005-2006 Josh Turpen, Nikolaus Gebhardt
+// This file is part of the IrrLua Lua binding for Irrlicht.
+// For conditions of distribution and use, see copyright notice in IrrLua.h
+
+
+namespace irr
+{
+namespace core
+{
+
+	//! Simple class for holding 2d coordinates.
+	/** Not supposed for doing geometric calculations.
+	use vector2d instead for things like that. 
+	*/
+	//template <class T>
+	class position2d
+	{
+		TOLUA_TEMPLATE_BIND(T, f32, s32)
+
+			position2d();
+			position2d(T x, T y);
+			position2d(position2d<T>& other);
+
+			bool operator == (position2d<T>& other);
+			//bool operator != (position2d<T>& other) ;
+			//position2d<T>& operator+=(position2d<T>& other);
+			//position2d<T>& operator-=(position2d<T>& other);
+			position2d<T> operator-(position2d<T>& other);
+			position2d<T> operator+(position2d<T>& other);
+			//position2d<T>& operator=(position2d<T>& other) ;
+
+			T X,Y;
+	};
+
+} // end namespace core
+} // end namespace irr
+
+$[
+
+
+irr.core.position2d = irr.core.position2d_s32_
+irr.core.position2ds32 = irr.core.position2d_s32_
+irr.core.position2df32 = irr.core.position2d_f32_
+
+$]
+

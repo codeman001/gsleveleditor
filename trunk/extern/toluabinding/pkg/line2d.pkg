@@ -1,0 +1,75 @@
+// Copyright (C) 2005-2006 Josh Turpen, Nikolaus Gebhardt
+// This file is part of the IrrLua Lua binding for Irrlicht.
+// For conditions of distribution and use, see copyright notice in IrrLua.h
+
+
+namespace irr
+{
+namespace core
+{
+
+//! 2D line between two points with intersection methods.
+//template <class T>
+class line2d
+{
+		TEMPLATE_BIND(T, f32)
+
+		line2d();
+		line2d(T xa, T ya, T xb, T yb);
+		line2d( irr::core::vector2d<T>& Start,  irr::core::vector2d<T>& End);
+		line2d( irr::core::line2d<T>& other);
+
+		// operators
+
+		irr::core::line2d<T> operator+( irr::core::vector2d<T>& point);
+		//line2d<T>& operator+=( vector2d<T>& point) { start += point; end += point; return *this; };
+
+		irr::core::line2d<T> operator-( irr::core::vector2d<T>& point);
+		//line2d<T>& operator-=( vector2d<T>& point) { start -= point; end -= point; return *this; };
+
+		bool operator==( irr::core::line2d<T>& other);
+		//bool operator!=( line2d<T>& other);
+
+		// functions
+
+		void setLine( T& xa,  T& ya,  T& xb,  T& yb);
+		void setLine( irr::core::vector2d<T>& nstart,  irr::core::vector2d<T>& nend);
+		void setLine( irr::core::line2d<T>& line);
+
+		//! Returns length of line
+		//! \return Returns length of line.
+		f64 getLength();
+
+		//! Returns the vector of the line.
+		//! \return Returns the vector of the line.
+		vector2d<T> getVector();
+
+		//! Tests if this line intersects with an other line.
+		//! \param l: Other line to test intersection with.
+		//! \param out: If there is an intersection, the location of the intersection will
+		//! be stored in this vector.
+		//! \return Returns true if there is an intersection, false if not.
+		bool intersectWith( irr::core::line2d<T>& l, irr::core::vector2d<T>& out);
+
+		//! Returns unit vector of the line.
+		//! \return Returns unit vector of this line.
+		irr::core::vector2d<T> getUnitVector();
+
+		f64 getAngleWith( irr::core::line2d<T>& l);
+		
+		// member variables
+		
+		irr::core::vector2d<T> start;
+		irr::core::vector2d<T> end;
+};
+
+
+} // end namespace core
+} // end namespace irr
+
+$[
+
+irr.core.line2d = irr.core.line2d_f32_
+
+$]
+

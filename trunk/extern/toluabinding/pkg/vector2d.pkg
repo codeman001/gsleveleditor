@@ -1,0 +1,107 @@
+// Copyright (C) 2005-2006 Josh Turpen, Nikolaus Gebhardt
+// This file is part of the IrrLua Lua binding for Irrlicht.
+// For conditions of distribution and use, see copyright notice in IrrLua.h
+
+
+namespace irr
+{
+namespace core
+{
+
+
+//! 2d vector template class with lots of operators and methods.
+//template <class T>
+class vector2d
+{
+	TOLUA_TEMPLATE_BIND(T, f32)
+
+	vector2d();
+	vector2d(T nx=0, T ny=0);
+	vector2d(vector2d<T>& other);
+
+	// operators
+
+	vector2d<T> operator-();
+
+	//vector2d<T>& operator=(vector2d<T>& other);
+
+	vector2d<T> operator+(vector2d<T>& other);
+	//vector2d<T>& operator+=(vector2d<T>& other);
+
+	vector2d<T> operator-(vector2d<T>& other);
+	//vector2d<T>& operator-=(vector2d<T>& other);
+
+	vector2d<T> operator*(vector2d<T>& other);
+//	vector2d<T>& operator*=(vector2d<T>& other);
+	vector2d<T> operator*(T v);
+//	vector2d<T>& operator*=(T v);
+
+	vector2d<T> operator/(vector2d<T>& other);
+//	vector2d<T>& operator/=(vector2d<T>& other);
+	vector2d<T> operator/(T v);
+//	vector2d<T>& operator/=(T v);
+
+	bool operator==(vector2d<T>& other);
+//	bool operator!=(vector2d<T>& other);
+
+	// functions
+
+	void set(T& nx, T& ny);
+	//void set(vector2d<T>& p);
+
+	//! Returns the length of the vector
+	//! \return Returns the length of the vector.
+	f64 getLength();
+
+	//! Returns the dot product of this vector with an other.
+	T dotProduct(vector2d<T>& other);
+
+	//! Returns distance from an other point. Here, the vector is interpreted as
+	//! point in 2 dimensional space.
+	f64 getDistanceFrom(vector2d<T>& other);
+
+	//! rotates the point around a center by an amount of degrees.
+	void rotateBy(f64 degrees, vector2d<T>& center);
+
+	//! normalizes the vector.
+	vector2d<T>& normalize();
+
+	//! Calculates the angle of this vector in grad in the trigonometric sense.
+	//! This method has been suggested by Pr3t3nd3r.
+	//! \return Returns a value between 0 and 360.
+	inline f64 getAngleTrig();
+
+	//! Calculates the angle of this vector in grad in the counter trigonometric sense.
+	//! \return Returns a value between 0 and 360.
+	inline f64 getAngle();
+	
+	//! Calculates the angle between this vector and another one in grad.
+	//! \return Returns a value between 0 and 90.
+	inline f64 getAngleWith(vector2d<T>& b);
+
+	//! returns interpolated vector
+	//! \param other: other vector to interpolate between
+	//! \param d: value between 0.0f and 1.0f.
+	vector2d<T> getInterpolated(vector2d<T>& other, f32 d);
+	//! sets this vector to the interpolated vector between a and b. 
+	
+	void interpolate( vector2d<T>& a,  vector2d<T>& b,  f32 t);
+	
+	// member variables
+	T X,Y;
+};
+
+	//! Typedef for f32 2d vector.
+	//typedef vector2d<f32> vector2df;
+	//! Typedef for integer 2d vector.
+	//typedef vector2d<s32> vector2di;
+
+} // end namespace core
+} // end namespace irr
+
+$[
+
+irr.core.vector2d = irr.core.vector2d_f32_
+
+$]
+

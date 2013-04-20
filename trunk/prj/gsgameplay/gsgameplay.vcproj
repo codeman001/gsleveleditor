@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrogles\include;..\..\..\extern\irrogles\source\Irrlicht;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Network;..\..\src\core\Serializable;..\..\..\extern\spark\include;..\..\..\extern\gameswf;..\..\..\extern\freetype\include;..\..\..\extern\lua\src;..\..\..\extern\vld\include"
+				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrogles\include;..\..\..\extern\irrogles\source\Irrlicht;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Network;..\..\src\core\Serializable;..\..\..\extern\spark\include;..\..\..\extern\gameswf;..\..\..\extern\freetype\include;..\..\..\extern\lua\src;..\..\..\extern\vld\include;&quot;..\..\..\extern\tolua++\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;GSGAMEPLAY"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="IrrlichtES.lib freetype.lib gameswf.lib luad.lib"
+				AdditionalDependencies="IrrlichtES.lib freetype.lib gameswf.lib luad.lib toluapp.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\bin"
 				IgnoreDefaultLibraryNames="libcd.lib"
@@ -1050,6 +1050,114 @@
 				</File>
 				<File
 					RelativePath="..\..\src\gameString\CGameString.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="gameLua"
+				>
+				<File
+					RelativePath="..\..\src\gameLua\lua_aabbox3d.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_aabbox3d.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_dimension2d.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_dimension2d.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_irrString.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_irrString.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_line2d.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_line2d.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_line3d.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_line3d.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_matrix4.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_matrix4.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_plane3d.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_plane3d.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_position2d.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_position2d.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_quaternion.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_quaternion.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_SColor.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_SColor.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_triangle3d.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_triangle3d.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_vector2d.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_vector2d.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_vector3d.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameLua\lua_vector3d.h"
 					>
 				</File>
 			</Filter>

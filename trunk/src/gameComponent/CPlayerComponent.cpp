@@ -146,6 +146,18 @@ bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
         {
             m_playerCmdEvt = *((SEventPlayerCommand*)irrEvent.GameEvent.EventData);                        
         }
+
+		// implement in lua
+		CScriptManager::getInstance()->startFunc(
+				"updatePlayerComponentInput",	// lua function
+				"siddii",						// param types
+				m_luaObjName.c_str(),
+				m_playerMoveEvt.run,
+				m_playerMoveEvt.strength,
+				m_playerMoveEvt.rotate,
+				(int)m_playerCmdEvt.shoot,
+				(int)m_playerCmdEvt.reload
+			);
 	}
 
 	return true;
@@ -173,56 +185,26 @@ void CPlayerComponent::updateState()
 }
 
 
-/*
-void CPlayerComponent::updateStateStand()
+// rotatePlayerToFront
+// rotate player
+bool CPlayerComponent::rotatePlayerToFront(float step)
 {
-	if ( m_subState == SubStateInit )
-	{        
-		m_collada->setAnimation(m_animShootMachineGuns, 0, true, 0);
-		m_collada->pauseAtFrame(0.0f);
+	core::line3df	ray		= getCameraRay();
+	core::vector3df	colPos	= getCollisionPoint(ray);
+			
+	// rotate main character		
+	core::vector3df v0 = m_gameObject->getFront();
+	core::vector3df aimPos = colPos - m_gameObject->getPosition();
+	aimPos.Y = 0;
+	aimPos.normalize();
 
-		m_subState = SubStateActive;		
-	}
-	else if ( m_subState == SubStateEnd )
-	{		
-		doNextState();		
-	}
-	else
-	{	
-	}
+	bool finish = false;
+	if ( turnToDir( v0, aimPos, 6.0f ) == true )
+		finish = true;
+
+	m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+	return finish;
 }
-*/
-
-//void CPlayerComponent::updateStateTEMPLATE()
-//{
-//	if ( m_subState == SubStateInit )
-//	{        
-//		m_subState = SubStateActive;		
-//	}
-//	else if ( m_subState == SubStateEnd )
-//	{		
-//		doNextState();		
-//	}
-//	else
-//	{	
-//  }
-//}
-
-
-//void CPlayerComponent::updateUpperBodyTEMPLATE()
-//{
-//    if ( m_upbodySubState == SubStateInit )
-//    {        
-//        m_upbodySubState = SubStateActive;		
-//    }
-//    else if ( m_upbodySubState == SubStateEnd )
-//    {		
-//        doNextState();		
-//    }
-//    else
-//    {	
-//    }    
-//}
 
 
 // getCameraFrontVector
@@ -289,8 +271,10 @@ core::line3df CPlayerComponent::getCameraRay()
 {
     core::line3d<f32> ray;
     ICameraSceneNode *camera = getIView()->getSceneMgr()->getActiveCamera();
-    ray.start = camera->getPosition();
-    ray.end = ray.start + (camera->getTarget() - ray.start).normalize() * 10000.0f;
+    ray.start = camera->getPosition();	
+    ray.end = ray.start + (camera->getTarget() - ray.start).normalize() * 50000.0f;
+
+	// return the ray length: 500m
     return ray;
 }
 

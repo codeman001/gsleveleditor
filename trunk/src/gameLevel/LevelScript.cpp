@@ -4,6 +4,7 @@
 #include "IView.h"
 
 #include "CColladaMeshComponent.h"
+#include "gameComponent/CPlayerComponent.h"
 
 #define getLevel()	CGameLevel::getCurrentLevel()
 
@@ -642,6 +643,48 @@ int resumeColladaAnim(lua_State* state)
 	return 0;
 }
 
+//////////////////////////////////////////////////////////
+// PLAYER COMPONENT FUNCTION IMPLEMENT
+//////////////////////////////////////////////////////////
+
+// getPlayerComponent
+// return the player component
+int getPlayerComponent(lua_State* state)
+{
+	lua_Integer objectID = lua_tointeger(state, 1);	
+	CGameObject *obj = (CGameObject*)objectID;
+
+	if ( obj )
+	{
+		CPlayerComponent *playerComp = (CPlayerComponent*)obj->getComponent(CGameComponent::PlayerComponent);
+		lua_pushinteger( state, (lua_Integer)playerComp );
+	}
+	else
+	{
+		lua_pushinteger( state, 0 );
+	}
+
+	return 1;
+}
+
+// rotatePlayerToCameraFront
+// rotate player to camera
+int rotatePlayerToCameraFront(lua_State* state)
+{
+	lua_Integer playerID = lua_tointeger(state, 1);
+	lua_Number rotStep = lua_tonumber(state,2);
+
+	CPlayerComponent* playerComp = (CPlayerComponent*)playerID;
+
+	bool finish = false;
+
+	if ( playerComp )
+		finish = playerComp->rotatePlayerToFront((float)rotStep);
+
+	lua_pushinteger(state, (int)finish);
+	return 1;
+}
+
 /////////////////////////////////////////////////////////////
 // registerCFunction
 // implement lua func by c++ language
@@ -690,6 +733,10 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(setColladaAnimFrame);
 	REGISTER_C_FUNCTION(pauseColladaAnimAtFrame);
 	REGISTER_C_FUNCTION(resumeColladaAnim);
+
+	// player function
+	REGISTER_C_FUNCTION(getPlayerComponent);
+	REGISTER_C_FUNCTION(rotatePlayerToCameraFront);
 	
 }
 // end register

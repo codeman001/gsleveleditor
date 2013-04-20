@@ -70,6 +70,10 @@ protected:
 
 public:
 
+	// rotatePlayerToFront
+	// rotate player
+	bool rotatePlayerToFront(float step);
+
 	// getCameraFrontVector
 	// return camera front vector
 	core::vector3df getCameraFrontVector();

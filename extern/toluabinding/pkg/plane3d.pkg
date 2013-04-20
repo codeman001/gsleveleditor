@@ -87,7 +87,7 @@ class plane3d
 
 		//! Tests if there is a intersection between this plane and another
 		//! \return Returns true if there is a intersection.
-		bool existsInterSection( plane3d<T>& other) ;
+		bool existsIntersection( plane3d<T>& other) ;
 
 		//! Intersects this plane with another.
 		//! \return Returns true if there is a intersection, false if not.

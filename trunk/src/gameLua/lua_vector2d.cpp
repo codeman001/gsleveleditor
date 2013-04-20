@@ -4,7 +4,7 @@ using namespace irr::core;
 
 /*
 ** Lua binding: vector2d
-** Generated automatically by tolua++-1.0.92 on 04/20/13 16:09:23.
+** Generated automatically by tolua++-1.0.92 on 04/20/13 17:01:28.
 */
 
 #ifndef __cplusplus
@@ -15,7 +15,7 @@ using namespace irr::core;
 #include "tolua++.h"
 
 /* Exported function */
-TOLUA_API int  tolua_vector2d_open (lua_State* tolua_S);
+int  tolua_vector2d_open (lua_State* tolua_S);
 
 
 /* function to release collected object via destructor */
@@ -115,8 +115,8 @@ static int tolua_vector2d_irr_core_vector2d_f32__new01(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::vector2d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",1,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",1,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -142,8 +142,8 @@ static int tolua_vector2d_irr_core_vector2d_f32__new01_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::vector2d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"f32",1,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"f32",1,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"f32",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"f32",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;

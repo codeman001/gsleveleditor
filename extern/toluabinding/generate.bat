@@ -1,3 +1,4 @@
+..\tolua++\bin\tolua++5.1.exe -H lua_irrTypes.h -o lua_irrTypes.cpp pkg\irrTypes.pkg
 ..\tolua++\bin\tolua++5.1.exe -H lua_aabbox3d.h -o lua_aabbox3d.cpp pkg\aabbox3d.pkg
 ..\tolua++\bin\tolua++5.1.exe -H lua_dimension2d.h -o lua_dimension2d.cpp pkg\dimension2d.pkg
 ..\tolua++\bin\tolua++5.1.exe -H lua_irrString.h -o lua_irrString.cpp pkg\irrString.pkg

@@ -2,6 +2,17 @@
 // This file is part of the IrrLua Lua binding for Irrlicht.
 // For conditions of distribution and use, see copyright notice in IrrLua.h
 
+typedef double lua_Number;
+typedef unsigned char u8; 
+typedef signed char s8; 
+typedef char c8; 
+typedef unsigned short u16;
+typedef signed short s16; 
+typedef unsigned int u32;
+typedef signed int s32; 
+typedef float f32; 
+typedef double f64; 
+
 namespace irr
 {
 namespace core

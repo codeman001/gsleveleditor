@@ -202,7 +202,7 @@ function CPlayerComponent:updatePlayerStateStand(timeStep)
 	 
 	-- update state
 	-- debug("run: " .. self.m_inputRun .. " rot: " .. self.m_inputRunRotate)	
-	rotatePlayerToCameraFront(self.m_playerComp, 6.0)
+	self:rotatePlayerToFront(6.0)
 	
 end
 
@@ -211,6 +211,44 @@ end
 function CPlayerComponent:updatePlayerStateRun(timeStep)
 	
 end
+
+-- rotatePlayerToFront
+-- Rotate player to front of camera
+function CPlayerComponent:rotatePlayerToFront(rotStep)
+	local currentCamera = getActiveCamera()
+	
+	local frontx, fronty, frontz	= getObjectFront(self.m_gameObject)
+	local x1,x2,x3, y1,y2,y3 		= getCameraRay(currentCamera)
+	local colx, coly, colz 			= getLevelCollision(x1,x2,x3, y1,y2,y3)
+	
+	local aimPos = irr.core.vector3d(colx - frontx, coly - fronty, colz - frontz)
+	aimPos.Y = 0
+	aimPos:normalize()
+	
+end
+
+--[[
+// rotatePlayerToFront
+// rotate player
+bool CPlayerComponent::rotatePlayerToFront(float step)
+{
+	core::line3df	ray		= getCameraRay();
+	core::vector3df	colPos	= getCollisionPoint(ray);
+			
+	// rotate main character		
+	core::vector3df v0 = m_gameObject->getFront();
+	core::vector3df aimPos = colPos - m_gameObject->getPosition();
+	aimPos.Y = 0;
+	aimPos.normalize();
+
+	bool finish = false;
+	if ( turnToDir( v0, aimPos, 6.0f ) == true )
+		finish = true;
+
+	m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
+	return finish;
+}
+--]]
 
 -----------------------------------------------------------
 -- C/C++ call interface 

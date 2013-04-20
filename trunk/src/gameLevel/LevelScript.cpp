@@ -2,7 +2,7 @@
 #include "LevelScript.h"
 #include "CGameLevel.h"
 #include "IView.h"
-
+#include "CVectorUtil.h"
 #include "CColladaMeshComponent.h"
 #include "gameComponent/CPlayerComponent.h"
 
@@ -134,6 +134,22 @@ int setObjectRotation(lua_State* state)
 	return 0;
 }
 
+// getObjectFront
+// get front vector
+int getObjectFront(lua_State* state)
+{
+	lua_Integer objID	= lua_tointeger(state,1);
+	
+	CGameObject* obj = (CGameObject*)objID;
+	core::vector3df front =	obj->getFront();
+
+	lua_pushnumber(state, (float)front.X);
+	lua_pushnumber(state, (float)front.Y);
+	lua_pushnumber(state, (float)front.Z);
+
+	return 3;
+}
+
 // setObjectLookAtObject
 // param: objectID, objectTargetID
 int setObjectLookAtObject(lua_State* state)
@@ -189,42 +205,6 @@ int setAnimatorMoveToWayPoint(lua_State* state)
 	return 0;
 }
 
-// addObjectLod
-// add lod data
-// param: objectID, distance, node
-int addObjectLod(lua_State* state)
-{
-	lua_Integer objID = lua_tointeger(state,1);
-	float dis = (float)lua_tonumber(state,2);
-	const char* node = lua_tostring(state,3);
-
-	CGameObject* obj = (CGameObject*)objID;
-	
-	if ( obj )
-	{
-		// add on player comp
-		CColladaMeshComponent* colladaComp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
-		if ( colladaComp )
-			colladaComp->addLodData( dis, node );
-	}
-
-	return 0;
-}
-
-// clearObjectLod
-// clear lod data, return default collada node
-int clearObjectLod(lua_State* state)
-{
-	lua_Integer objID = lua_tointeger(state,1);
-	CGameObject* obj = (CGameObject*)objID;
-	
-	// clear all lod data
-	CColladaMeshComponent* colladaComp = (CColladaMeshComponent*)obj->getComponent( IObjectComponent::ColladaMesh );
-	if ( colladaComp )
-		colladaComp->clearLodData();
-
-	return 0;
-}
 
 
 //////////////////////////////////////////////////////////
@@ -242,6 +222,39 @@ int setLevelCamera(lua_State* state)
 		getLevel()->setCamera((CGameCamera*)cam);
 
 	return 0;
+}
+
+// getActiveCamera
+// get current camera
+int getActiveCamera(lua_State* state)
+{
+	CGameCamera* cam = (CGameCamera*)getIView()->getActiveCamera();
+	lua_pushinteger( state, (lua_Integer) cam);
+	return 1;
+}
+
+// getCameraRay
+// get current ray view
+int getCameraRay(lua_State* state)
+{
+	lua_Integer camID = lua_tointeger(state,1);
+	CGameCamera* cam = (CGameCamera*)camID;
+
+	scene::ICameraSceneNode *camNode = cam->getCameraNode();
+
+	core::line3df ray;
+	ray.start = camNode->getPosition();	
+    ray.end = ray.start + (camNode->getTarget() - ray.start).normalize() * 50000.0f;
+
+	lua_pushnumber(state, ray.start.X);
+	lua_pushnumber(state, ray.start.Y);
+	lua_pushnumber(state, ray.start.Z);
+
+	lua_pushnumber(state, ray.end.X);
+	lua_pushnumber(state, ray.end.Y);
+	lua_pushnumber(state, ray.end.Z);
+
+	return 6;
 }
 
 // setCameraFarValue
@@ -314,6 +327,43 @@ int getCurrentCameraPosition(lua_State* state)
 	lua_pushnumber( state, 0 );
 	lua_pushnumber( state, 0 );
 	lua_pushnumber( state, 0 );
+	return 3;
+}
+
+//////////////////////////////////////////////////////////
+// COLLISION FUNCTION IMPLEMENT
+//////////////////////////////////////////////////////////
+
+int getLevelCollision(lua_State* state)
+{
+	core::line3df ray;
+
+	ray.start.X = (float)lua_tonumber(state,1);
+	ray.start.Y = (float)lua_tonumber(state,2);
+	ray.start.Z = (float)lua_tonumber(state,3);
+
+	ray.end.X = (float)lua_tonumber(state,4);
+	ray.end.Y = (float)lua_tonumber(state,5);
+	ray.end.Z = (float)lua_tonumber(state,6);
+
+	core::vector3df ret;	
+	core::vector3df     outPoint;
+	core::triangle3df   outTri;
+
+	CGameLevel *level =	CGameLevel::getCurrentLevel();
+	if ( level->checkTerrainCollide(ray, outPoint, outTri) == true )
+	{
+		ret = outPoint;
+	}
+	else
+	{
+		ret = ray.end;
+	}
+	
+	lua_pushnumber(state, ret.X);
+	lua_pushnumber(state, ret.Y);
+	lua_pushnumber(state, ret.Z);
+
 	return 3;
 }
 
@@ -667,24 +717,6 @@ int getPlayerComponent(lua_State* state)
 	return 1;
 }
 
-// rotatePlayerToCameraFront
-// rotate player to camera
-int rotatePlayerToCameraFront(lua_State* state)
-{
-	lua_Integer playerID = lua_tointeger(state, 1);
-	lua_Number rotStep = lua_tonumber(state,2);
-
-	CPlayerComponent* playerComp = (CPlayerComponent*)playerID;
-
-	bool finish = false;
-
-	if ( playerComp )
-		finish = playerComp->rotatePlayerToFront((float)rotStep);
-
-	lua_pushinteger(state, (int)finish);
-	return 1;
-}
-
 /////////////////////////////////////////////////////////////
 // registerCFunction
 // implement lua func by c++ language
@@ -698,11 +730,10 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(setObjectPosition);
 	REGISTER_C_FUNCTION(getObjectRotation);
 	REGISTER_C_FUNCTION(setObjectRotation);
+	REGISTER_C_FUNCTION(getObjectFront);
 	REGISTER_C_FUNCTION(setObjectLookAtObject);
 	REGISTER_C_FUNCTION(setObjectOrientation);
-	REGISTER_C_FUNCTION(setAnimatorMoveToWayPoint);
-	REGISTER_C_FUNCTION(addObjectLod);
-	REGISTER_C_FUNCTION(clearObjectLod);
+	REGISTER_C_FUNCTION(setAnimatorMoveToWayPoint);	
 
 	// camera function
 	REGISTER_C_FUNCTION(setLevelCamera);
@@ -710,6 +741,8 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(setCameraLookAtObj);
 	REGISTER_C_FUNCTION(getCurrentCameraPosition);
 	REGISTER_C_FUNCTION(setCameraFollowObject);
+	REGISTER_C_FUNCTION(getActiveCamera);
+	REGISTER_C_FUNCTION(getCameraRay);
 
 	// scenenode function
 	REGISTER_C_FUNCTION(setSceneNodePosition);
@@ -719,6 +752,9 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(getColladaSceneNode);
 	REGISTER_C_FUNCTION(getChildsOfColladaSceneNode);
 	REGISTER_C_FUNCTION(setSceneNodeIsJoinAnimLayer);
+
+	// collision function
+	REGISTER_C_FUNCTION(getLevelCollision);
 
 	// lighting function
 	REGISTER_C_FUNCTION(setLevelAmbientLight);
@@ -735,8 +771,7 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(resumeColladaAnim);
 
 	// player function
-	REGISTER_C_FUNCTION(getPlayerComponent);
-	REGISTER_C_FUNCTION(rotatePlayerToCameraFront);
+	REGISTER_C_FUNCTION(getPlayerComponent);	
 	
 }
 // end register

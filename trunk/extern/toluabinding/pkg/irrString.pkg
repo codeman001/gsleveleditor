@@ -21,7 +21,7 @@ methods make_upper, make_lower and equals_ignore_case.
 //template <class T>
 class string
 {
-	TOLUA_TEMPLATE_BIND(T , char, wchar_t, c8, s8, u8, f32)
+	TOLUA_TEMPLATE_BIND(T , char, wchar_t)
 
 	//! Default constructor
 	string();

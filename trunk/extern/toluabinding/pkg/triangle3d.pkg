@@ -42,11 +42,7 @@ namespace core
 		//! \param p: Point to test. Assumes that this point is already on the plane
 		//! of the triangle.
 		//! \return Returns true if the point is inside the triangle, otherwise false.
-		bool isPointInsideFast(vector3d<T>& p) ;
-		
-
-
-		bool isOnSameSide(vector3d<T>& p1, vector3d<T>& p2, vector3d<T>& a, vector3d<T>& b) ;
+		bool isPointInsideFast(vector3d<T>& p) ;			
 
 
 		//! Returns an intersection with a 3d line.

@@ -52,7 +52,7 @@ class quaternion
 		//quaternion& operator*=(quaternion& other);
 
 		//! calculates the dot product
-		f32 getDotProduct(quaternion& other) ;
+		f32 dotProduct(quaternion& other) ;
 
 		//! sets new quaternion 
 		void set(f32 x, f32 y, f32 z, f32 w);

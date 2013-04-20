@@ -21,14 +21,10 @@ namespace core
 			position2d(T x, T y);
 			position2d(position2d<T>& other);
 
-			bool operator == (position2d<T>& other);
-			//bool operator != (position2d<T>& other) ;
-			//position2d<T>& operator+=(position2d<T>& other);
-			//position2d<T>& operator-=(position2d<T>& other);
+			bool operator == (position2d<T>& other);			
 			position2d<T> operator-(position2d<T>& other);
 			position2d<T> operator+(position2d<T>& other);
-			//position2d<T>& operator=(position2d<T>& other) ;
-
+			
 			T X,Y;
 	};
 

@@ -153,7 +153,7 @@ namespace core
 			//! \param plane: plane into which the geometry if flattened into
 			//! \param point: value between 0 and 1, describing the light source. 
 			//! If this is 1, it is a point light, if it is 0, it is a directional light.
-			void buildShadowMatrix(irr::core::vector3d<f32> light, irr::core::plane3d<f32> plane, f32 point=1);
+			void buildShadowMatrix(irr::core::vector3d<f32> light, irr::core::plane3d<f32> plane, f32 point);
 
 			//! Builds a matrix which transforms a normalized Device Corrdinate to Device Coordinates. 
 			/** Used to scale <-1,-1><1,1> to viewport, for example from von <-1,-1> <1,1> to the viewport <0,0><0,640> */

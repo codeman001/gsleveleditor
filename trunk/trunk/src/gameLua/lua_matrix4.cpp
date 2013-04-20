@@ -2,10 +2,9 @@
 using namespace irr;
 using namespace irr::core;
 
-
 /*
 ** Lua binding: matrix4
-** Generated automatically by tolua++-1.0.92 on 04/20/13 16:09:22.
+** Generated automatically by tolua++-1.0.92 on 04/20/13 17:01:27.
 */
 
 #ifndef __cplusplus
@@ -16,18 +15,11 @@ using namespace irr::core;
 #include "tolua++.h"
 
 /* Exported function */
-TOLUA_API int  tolua_matrix4_open (lua_State* tolua_S);
+int  tolua_matrix4_open (lua_State* tolua_S);
 
 
 /* function to release collected object via destructor */
 #ifdef __cplusplus
-
-static int tolua_collect_f32 (lua_State* tolua_S)
-{
- f32* self = (f32*) tolua_tousertype(tolua_S,1,0);
-	delete self;
-	return 0;
-}
 
 static int tolua_collect_irr__core__vector3d_f32_ (lua_State* tolua_S)
 {
@@ -1372,7 +1364,7 @@ static int tolua_matrix4_irr_core_matrix4_buildShadowMatrix00(lua_State* tolua_S
      !tolua_isusertype(tolua_S,1,"irr::core::matrix4",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"irr::core::vector3d<f32>",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,3,"irr::core::plane3d<f32>",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,4,"f32",1,&tolua_err) ||
+     !tolua_isusertype(tolua_S,4,"f32",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
@@ -1382,7 +1374,7 @@ static int tolua_matrix4_irr_core_matrix4_buildShadowMatrix00(lua_State* tolua_S
   irr::core::matrix4* self = (irr::core::matrix4*)  tolua_tousertype(tolua_S,1,0);
   irr::core::vector3d<f32> light = *((irr::core::vector3d<f32>*)  tolua_tousertype(tolua_S,2,0));
   irr::core::plane3d<f32> plane = *((irr::core::plane3d<f32>*)  tolua_tousertype(tolua_S,3,0));
-  f32 point = *((f32*)  tolua_tousertype(tolua_S,4,(void*)1));
+  f32 point = *((f32*)  tolua_tousertype(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'buildShadowMatrix'",NULL);
 #endif
@@ -1518,58 +1510,6 @@ static int tolua_matrix4_irr_core_matrix4_getTransposed00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: M of class  irr::core::matrix4 */
-#ifndef TOLUA_DISABLE_tolua_get_matrix4_irr_core_matrix4_M
-static int tolua_get_matrix4_irr_core_matrix4_M(lua_State* tolua_S)
-{
- int tolua_index;
-  irr::core::matrix4* self;
- lua_pushstring(tolua_S,".self");
- lua_rawget(tolua_S,1);
- self = (irr::core::matrix4*)  lua_touserdata(tolua_S,-1);
-#ifndef TOLUA_RELEASE
- {
-  tolua_Error tolua_err;
-  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
-   tolua_error(tolua_S,"#vinvalid type in array indexing.",&tolua_err);
- }
-#endif
- tolua_index = (int)tolua_tonumber(tolua_S,2,0);
-#ifndef TOLUA_RELEASE
- if (tolua_index<0 || tolua_index>=16)
-  tolua_error(tolua_S,"array indexing out of range.",NULL);
-#endif
- tolua_pushusertype(tolua_S,(void*)&self->pointer()[tolua_index],"f32");
- return 1;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* set function: M of class  irr::core::matrix4 */
-#ifndef TOLUA_DISABLE_tolua_set_matrix4_irr_core_matrix4_M
-static int tolua_set_matrix4_irr_core_matrix4_M(lua_State* tolua_S)
-{
- int tolua_index;
-  irr::core::matrix4* self;
- lua_pushstring(tolua_S,".self");
- lua_rawget(tolua_S,1);
- self = (irr::core::matrix4*)  lua_touserdata(tolua_S,-1);
-#ifndef TOLUA_RELEASE
- {
-  tolua_Error tolua_err;
-  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
-   tolua_error(tolua_S,"#vinvalid type in array indexing.",&tolua_err);
- }
-#endif
- tolua_index = (int)tolua_tonumber(tolua_S,2,0);
-#ifndef TOLUA_RELEASE
- if (tolua_index<0 || tolua_index>=16)
-  tolua_error(tolua_S,"array indexing out of range.",NULL);
-#endif
- self->pointer()[tolua_index] = *((f32*)  tolua_tousertype(tolua_S,3,0));
- return 0;
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* Open function */
 TOLUA_API int tolua_matrix4_open (lua_State* tolua_S)
 {
@@ -1630,7 +1570,6 @@ TOLUA_API int tolua_matrix4_open (lua_State* tolua_S)
      tolua_function(tolua_S,"buildNDCToDCMatrix",tolua_matrix4_irr_core_matrix4_buildNDCToDCMatrix00);
      tolua_function(tolua_S,"interpolate",tolua_matrix4_irr_core_matrix4_interpolate00);
      tolua_function(tolua_S,"getTransposed",tolua_matrix4_irr_core_matrix4_getTransposed00);
-     tolua_array(tolua_S,"M",tolua_get_matrix4_irr_core_matrix4_M,tolua_set_matrix4_irr_core_matrix4_M);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

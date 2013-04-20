@@ -1,6 +1,6 @@
 /*
 ** Lua binding: SColor
-** Generated automatically by tolua++-1.0.92 on 04/20/13 16:09:23.
+** Generated automatically by tolua++-1.0.92 on 04/20/13 17:01:28.
 */
 
 /* Exported function */

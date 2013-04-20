@@ -4,7 +4,7 @@ using namespace irr::core;
 
 /*
 ** Lua binding: irrString
-** Generated automatically by tolua++-1.0.92 on 04/20/13 16:17:32.
+** Generated automatically by tolua++-1.0.92 on 04/20/13 17:01:27.
 */
 
 #ifndef __cplusplus
@@ -15,7 +15,7 @@ using namespace irr::core;
 #include "tolua++.h"
 
 /* Exported function */
-TOLUA_API int  tolua_irrString_open (lua_State* tolua_S);
+int  tolua_irrString_open (lua_State* tolua_S);
 
 
 /* function to release collected object via destructor */

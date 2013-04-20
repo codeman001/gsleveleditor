@@ -4,7 +4,19 @@
 
 using namespace NSScriptManager;
 
-
+#include "gameLua/lua_aabbox3d.h"
+#include "gameLua/lua_dimension2d.h"
+#include "gameLua/lua_irrString.h"
+#include "gameLua/lua_line2d.h"
+#include "gameLua/lua_line3d.h"
+#include "gameLua/lua_matrix4.h"
+#include "gameLua/lua_plane3d.h"
+#include "gameLua/lua_position2d.h"
+#include "gameLua/lua_quaternion.h"
+#include "gameLua/lua_SColor.h"
+#include "gameLua/lua_triangle3d.h"
+#include "gameLua/lua_vector2d.h"
+#include "gameLua/lua_vector3d.h"
 
 /////////////////////////////////////////
 // Basic lua func Implement
@@ -439,4 +451,18 @@ void CScriptManager::init()
 {
 	registerCFunction("wait",	luaWait);
 	registerCFunction("debug",	luaDebug);
+
+	// init irrlicht lua sdk
+	tolua_dimension2d_open(m_state);
+	tolua_irrString_open(m_state);
+	tolua_line2d_open(m_state);
+	tolua_line3d_open(m_state);
+	tolua_matrix4_open(m_state);
+	tolua_plane3d_open(m_state);
+	tolua_position2d_open(m_state);
+	tolua_quaternion_open(m_state);
+	tolua_SColor_open(m_state);
+	tolua_triangle3d_open(m_state);
+	tolua_vector2d_open(m_state);
+	tolua_vector3d_open(m_state);
 }

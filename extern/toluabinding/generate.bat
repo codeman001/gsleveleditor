@@ -1,0 +1,13 @@
+..\tolua++\bin\tolua++5.1.exe -H lua_aabbox3d.h -o lua_aabbox3d.cpp pkg\aabbox3d.pkg
+..\tolua++\bin\tolua++5.1.exe -H lua_dimension2d.h -o lua_dimension2d.cpp pkg\dimension2d.pkg
+..\tolua++\bin\tolua++5.1.exe -H lua_irrString.h -o lua_irrString.cpp pkg\irrString.pkg
+..\tolua++\bin\tolua++5.1.exe -H lua_line2d.h -o lua_line2d.cpp pkg\line2d.pkg
+..\tolua++\bin\tolua++5.1.exe -H lua_line3d.h -o lua_line3d.cpp pkg\line3d.pkg
+..\tolua++\bin\tolua++5.1.exe -H lua_matrix4.h -o lua_matrix4.cpp pkg\matrix4.pkg
+..\tolua++\bin\tolua++5.1.exe -H lua_plane3d.h -o lua_plane3d.cpp pkg\plane3d.pkg
+..\tolua++\bin\tolua++5.1.exe -H lua_position2d.h -o lua_position2d.cpp pkg\position2d.pkg
+..\tolua++\bin\tolua++5.1.exe -H lua_quaternion.h -o lua_quaternion.cpp pkg\quaternion.pkg
+..\tolua++\bin\tolua++5.1.exe -H lua_SColor.h -o lua_SColor.cpp pkg\SColor.pkg
+..\tolua++\bin\tolua++5.1.exe -H lua_triangle3d.h -o lua_triangle3d.cpp pkg\triangle3d.pkg
+..\tolua++\bin\tolua++5.1.exe -H lua_vector2d.h -o lua_vector2d.cpp pkg\vector2d.pkg
+..\tolua++\bin\tolua++5.1.exe -H lua_vector3d.h -o lua_vector3d.cpp pkg\vector3d.pkg

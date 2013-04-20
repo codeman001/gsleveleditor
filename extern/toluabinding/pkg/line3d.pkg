@@ -1,0 +1,83 @@
+// Copyright (C) 2005-2006 Josh Turpen, Nikolaus Gebhardt
+// This file is part of the IrrLua Lua binding for Irrlicht.
+// For conditions of distribution and use, see copyright notice in IrrLua.h
+
+
+namespace irr
+{
+namespace core
+{
+
+//! 3D line between two points with intersection methods.
+//template <class T>
+class line3d
+{
+		TOLUA_TEMPLATE_BIND(T, f32)
+		// Constructors
+
+		line3d();
+		line3d(T xa, T ya, T za, T xb, T yb, T zb);
+		line3d( vector3d<T>& start,  vector3d<T>& end);
+		line3d( line3d<T>& other);
+
+		// operators
+
+		line3d<T> operator+( vector3d<T>& point);
+		//line3d<T>& operator+=( vector3d<T>& point);
+
+		line3d<T> operator-( vector3d<T>& point);
+		//line3d<T>& operator-=( vector3d<T>& point);
+
+		bool operator==( line3d<T>& other);
+		//bool operator!=( line3d<T>& other);
+
+		// functions
+
+		void setLine( T& xa,  T& ya,  T& za,  T& xb,  T& yb,  T& zb);
+		void setLine( vector3d<T>& nstart,  vector3d<T>& nend);
+		void setLine( line3d<T>& line);
+
+		//! Returns length of line
+		//! \return Returns length of line.
+		f64 getLength();
+
+		//! Returns sqared length of line
+		//! \return Returns sqared length of line.
+		T getLengthSQ();
+
+		//! Returns middle of line
+		vector3d<T> getMiddle();
+
+		//! Returns vector of line
+		vector3d<T> getVector();
+
+		//! Returns if the overgiven point is between start and end of the
+		//! line. Assumes that the point is already somewhere on the line.
+		bool isPointBetweenStartAndEnd( vector3d<T>& point);
+
+		//! Returns the closest point on this line to a point
+		vector3d<T> getClosestPoint( vector3d<T>& point);
+
+		//! Returns if the line intersects with a shpere
+		//! \param sorigin: Origin of the shpere.
+		//! \param sradius: Radius if the sphere.
+		//! \return Returns true if there is an intersection.
+		//! If there is one, the distance to the first intersection point
+		//! is stored in outdistance.
+		bool getIntersectionWithSphere(vector3d<T> sorigin, T sradius, f64& outdistance);
+		
+		// member variables
+		
+		vector3d<T> start;
+		vector3d<T> end;
+};
+
+
+} // end namespace core
+} // end namespace irr
+
+$[
+
+irr.core.line3d = irr.core.line3d_f32_
+
+$]

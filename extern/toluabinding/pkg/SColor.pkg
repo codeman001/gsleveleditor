@@ -1,0 +1,99 @@
+// Copyright (C) 2005-2006 Josh Turpen, Nikolaus Gebhardt
+// This file is part of the IrrLua Lua binding for Irrlicht.
+// For conditions of distribution and use, see copyright notice in IrrLua.h
+
+namespace irr
+{
+namespace video  
+{
+	
+	s16 RGB16(s32 r, s32 g, s32 b);
+	s16 RGBA16(s32 r, s32 g, s32 b, s32 a);
+	s16 X8R8G8B8toA1R5G5B5(s32 color);
+	s32 getAlpha(s16 color);
+	s32 getRed(s16 color);
+	s32 getGreen(s16 color);
+	s32 getBlue(s16 color);
+	s32 getLuminance(s16 color);
+	s32 A1R5G5B5toA8R8G8B8(s16 color);
+	s32 R5G6B5toA8R8G8B8(s16 color);
+	s16 R5G6B5toA1R5G5B5(s16 color);
+	s16 A1R5G5B5toR5G6B5(s16 color);
+	
+	class SColor
+	{
+		//inline SColor();
+		SColor(s32 a, s32 r, s32 g, s32 b);
+		//inline SColor(s32 clr);
+
+
+		 s32 getAlpha();
+		 s32 getRed();
+		 s32 getGreen();
+		s32 getBlue();
+
+		void setAlpha(s32 a);
+		void setRed(s32 r);
+		void setGreen(s32 g);
+		 void setBlue(s32 b);
+
+		s16 toA1R5G5B5();
+		s32 toOpenGLColor(); 
+		void set(s32 a, s32 r, s32 g, s32 b);
+		bool operator==(SColor& other);
+
+		//inline bool operator!=(SColor& other);
+
+		SColor getInterpolated(SColor other, f32 d);
+        
+		s32 color; 
+		
+	};
+
+
+	class SColorf
+	{
+		
+		//SColorf();
+		//SColorf(f32 r, f32 g, f32 b);
+		SColorf(f32 r, f32 g, f32 b, f32 a);
+		//SColorf(SColor c);
+
+		SColor toSColor();
+
+
+		f32 r,g,b,a;
+
+		void set(f32 aa, f32 rr, f32 gg, f32 bb);
+		SColorf getInterpolated(SColorf other, f32 d);
+		void setColorComponentValue(s32 index, f32 value);
+
+	};
+	
+} 
+} 
+
+$[
+
+
+irr.video.__SColor = irr.video.SColor
+function irr.video.SColor(a,r,g,b)
+	local ret = irr.video.__SColor:new(a,r,g,b)
+	tolua.takeownership(ret)
+	return ret
+end
+	
+irr.video.__SColorf = irr.video.SColorf
+function irr.video.SColorf(r,g,b,a)
+	a = a or 1
+	local ret = irr.video.__SColorf:new(r,g,b,a)
+	tolua.takeownership(ret)
+	return ret
+end
+
+
+
+$]
+
+
+

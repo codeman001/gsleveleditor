@@ -1,0 +1,162 @@
+// Copyright (C) 2005-2006 Josh Turpen, Nikolaus Gebhardt
+// This file is part of the IrrLua Lua binding for Irrlicht.
+// For conditions of distribution and use, see copyright notice in IrrLua.h
+
+
+namespace irr
+{
+namespace core
+{
+
+//!	Very simple string class with some useful features.
+/**	string<c8> and string<wchar_t> work both with unicode AND ascii,
+so you can assign unicode to string<c8> and ascii to string<wchar_t> 
+(and the other way round) if your ever would want to. 
+Note that the conversation between both is not done using an encoding.
+
+Known bugs:
+Special characters like 'Ä', 'Ü' and 'Ö' are ignored in the
+methods make_upper, make_lower and equals_ignore_case.
+*/
+//template <class T>
+class string
+{
+	TOLUA_TEMPLATE_BIND(T , char, wchar_t, c8, s8, u8, f32)
+
+	//! Default constructor
+	string();
+
+	//! Constructor
+	string(const string<T>& other);
+
+	//! Constructs a string from an int
+	string(int number);
+
+	//! Constructor for copying a string from a pointer with a given lenght
+	//template <class B>
+	//string(const B* c, s32 lenght);
+
+	//! Constructor for unicode and ascii strings
+	//template <class B>
+	//string(const B* c);
+	//! destructor
+
+	~string();
+
+	//! Assignment operator
+//	string<T>& operator=(const string<T>& other) ;
+
+	//! Assignment operator for strings, ascii and unicode
+//	template <class B>
+//	string<T>& operator=(const B* c); 
+	
+	//! Add operator for other strings
+	string<T> operator+(const string<T>& other) ;
+
+	//! Add operator for strings, ascii and unicode 
+	//template <class B> 
+	//string<T> operator+(const B* c) ;
+
+	//! Direct access operator
+	T& operator [](int index)  const;
+
+	//! Comparison operator
+	bool operator ==(const string<T>& other) const;
+
+	bool operator ==(const T* str) const;
+	
+	//! Is smaller operator
+	bool operator <(const string<T>& other) const;
+
+	//! Equals not operator
+	//bool operator !=(const string<T>& other) const;
+    
+	//! Returns length of string
+	//! \return Returns length of the string in characters.
+	s32 size() const;
+
+	//! Returns character string
+	//! \return Returns pointer to C-style zero terminated string.
+	//const T* c_str() const;
+	const char* c_str() const;
+	//const wchar_t* c_str() const;
+	
+	//! Makes the string lower case.
+	void make_lower();
+
+	//! Makes the string upper case.
+	void make_upper();
+	
+	//! Compares the string ignoring case.
+	//! \param other: Other string to compare.
+	//! \return Returns true if the string are equal ignoring case.
+	bool equals_ignore_case(const string<T>& other) const;
+
+	bool equalsn(const string<T>& other, int len);
+	bool equalsn(const T* other, int len);
+
+	
+	//! Appends a character to this string
+	//! \param character: Character to append.
+	void append(T character);
+	
+	//! Appends a string to this string
+	//! \param other: String to append.
+	void append(const string<T>& other);
+	
+	//! Appends a string of the length l to this string.
+	//! \param other: other String to append to this string.
+	//! \param length: How much characters of the other string to add to this one.
+	void append(const string<T>& other, s32 length);
+	
+	//! Reserves some memory.
+	//! \param count: Amount of characters to reserve.
+	void reserve(s32 count);
+	
+	//! finds first occurrence of character in string
+	//! \param c: Character to search for.
+	//! \return Returns position where the character has been found,
+	//! or -1 if not found.
+	s32 findFirst(T c) const;
+
+	s32 findFirstChar(T* c, int count) const;
+	
+	//! finds next occurrence of character in string
+	//! \param c: Character to search for.
+	//! \param startPos: Position in string to start searching. 
+	//! \return Returns position where the character has been found,
+	//! or -1 if not found.
+	s32 findNext(T c, s32 startPos) const;
+	
+	//! finds last occurrence of character in string
+	//! \param c: Character to search for.
+	//! \return Returns position where the character has been found,
+	//! or -1 if not found.
+	s32 findLast(T c) const;
+	
+	//! Returns a substring
+	//! \param begin: Start of substring.
+	//! \param length: Length of substring.
+	string<T> subString(s32 begin, s32 length);
+
+//	void operator += (T c);
+//	void operator += (const string<T>& other);
+//	void operator += (int i);
+
+	void replace(T toReplace, T replaceWith);
+	void trim();
+	void erase(int index);
+
+};
+
+
+//! Typedef for character strings
+typedef string<irr::c8> stringc;
+
+//! Typedef for wide character strings
+typedef string<wchar_t> stringw;
+
+} // end namespace core
+} // end namespace irr
+
+

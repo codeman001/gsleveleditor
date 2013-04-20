@@ -1,0 +1,159 @@
+// Copyright (C) 2005-2006 Josh Turpen, Nikolaus Gebhardt
+// This file is part of the IrrLua Lua binding for Irrlicht.
+// For conditions of distribution and use, see copyright notice in IrrLua.h
+
+namespace irr
+{
+namespace core
+{
+
+//! Axis aligned bounding box in 3d dimensional space.
+/** Has some useful methods used with occlusion culling or clipping.
+*/
+//template <class T>
+class aabbox3d
+{
+		TOLUA_TEMPLATE_BIND(T, f32)
+		// Constructors
+
+		aabbox3d();
+		aabbox3d(irr::core::vector3d<T>& min, irr::core::vector3d<T>& max);
+		aabbox3d(irr::core::vector3d<T>& init);
+		aabbox3d(T minx, T miny, T minz, T maxx, T maxy, T maxz);
+
+		// operators
+
+		inline bool operator==(aabbox3d<T>& other) ;
+		//inline bool operator!=(aabbox3d<T>& other) { return !(MinEdge == other.MinEdge && other.MaxEdge == MaxEdge);};
+
+		// functions
+
+		//! Adds a point to the bounding box, causing it to grow bigger, 
+		//! if point is outside of the box
+		//! \param p: Point to add into the box.
+		void addInternalPoint(irr::core::vector3d<T>& p);
+
+		//! Adds an other bounding box to the bounding box, causing it to grow bigger,
+		//! if the box is outside of the box
+		//! \param b: Other bounding box to add into this box.
+		void addInternalBox(irr::core::aabbox3d<T>& b);
+
+		//! Resets the bounding box.
+		void reset(T x, T y, T z);
+
+		//! Resets the bounding box.
+		void reset(irr::core::aabbox3d<T>& initValue);
+
+		//! Resets the bounding box.
+		void reset(irr::core::vector3d<T>& initValue);
+
+		//! Adds a point to the bounding box, causing it to grow bigger, 
+		//! if point is outside of the box.
+		//! \param x: X Coordinate of the point to add to this box.
+		//! \param y: Y Coordinate of the point to add to this box.
+		//! \param z: Z Coordinate of the point to add to this box.
+		//void addInternalPoint(T x, T y, T z);
+
+		//! Determinates if a point is within this box.
+		//! \param p: Point to check.
+		//! \return Returns true if the point is withing the box, and false if it is not.
+		bool isPointInside(irr::core::vector3d<T>& p) ;
+
+		//! Determinates if a point is within this box and its borders.
+		//! \param p: Point to check.
+		//! \return Returns true if the point is withing the box, and false if it is not.
+		bool isPointTotalInside(irr::core::vector3d<T>& p) ;
+
+		//! Determinates if the box intersects with an other box.
+		//! \param other: Other box to check a intersection with.
+		//! \return Returns true if there is a intersection with the other box, 
+		//! otherwise false.
+		bool intersectsWithBox(irr::core::aabbox3d<T>& other) ;
+
+		//! Tests if the box intersects with a line
+		//! \param line: Line to test intersection with.
+		//! \return Returns true if there is an intersection and false if not.
+		bool intersectsWithLine(irr::core::line3d<T>& line) ;
+
+		//! Tests if the box intersects with a line
+		//! \return Returns true if there is an intersection and false if not.
+		bool intersectsWithLine(irr::core::vector3d<T>& linemiddle, irr::core::vector3d<T>& linevect, T halflength);
+
+		//! Classifies a relation with a plane.
+		//! \param plane: Plane to classify relation to.
+		//! \return Returns ISREL3D_FRONT if the box is in front of the plane,
+		//! ISREL3D_BACK if the box is back of the plane, and
+		//! ISREL3D_CLIPPED if is on both sides of the plane.
+		EIntersectionRelation3D classifyPlaneRelation(irr::core::plane3d<T>& plane);
+
+		//! returns center of the bounding box
+		irr::core::vector3d<T> getCenter() ;
+
+		//! returns extend of the box
+		irr::core::vector3d<T> getExtent() ;
+
+
+		//! stores all 8 edges of the box into a array
+		//! \param edges: Pointer to array of 8 edges
+        void getEdges(irr::core::vector3d<T> *edges) ;
+
+
+		//! returns if the box is empty, which means that there is
+		//! no space within the min and the max edge.
+		bool isEmpty() ;
+		
+
+		//! repairs the box, if for example MinEdge and MaxEdge are swapped.
+		void repair();
+		
+
+		//! Calculates a new interpolated bounding box.
+		//! \param other: other box to interpolate between
+		//! \param d: value between 0.0f and 1.0f.
+		irr::core::aabbox3d<T> getInterpolated(irr::core::aabbox3d<T>& other, f32 d) ;
+		
+
+		// member variables
+		
+		irr::core::vector3d<T> MinEdge;
+		irr::core::vector3d<T> MaxEdge;
+};
+
+	//! Typedef for a f32 3d bounding box.
+	//typedef aabbox3d<f32> aabbox3df;
+	//! Typedef for an integer 3d bounding box.
+	//typedef aabbox3d<s32> aabbox3di;
+
+
+} // end namespace core
+} // end namespace irr
+
+
+$[
+
+
+irr.core.aabbox3d = irr.core.aabbox3d_f32_
+
+
+
+function irr.core.aabbox3d_f32_:getEdges()
+	local middle = (self.MinEdge + self.MaxEdge) / irr.core.vector3d(2,2,2)
+	local diag = middle - self.MaxEdge
+
+	local edges = {}
+
+	edges[1] = irr.core.vector3d(middle.X + diag.X, middle.Y + diag.Y, middle.Z + diag.Z)
+	edges[2] = irr.core.vector3d(middle.X + diag.X, middle.Y - diag.Y, middle.Z + diag.Z)
+	edges[3] = irr.core.vector3d(middle.X + diag.X, middle.Y + diag.Y, middle.Z - diag.Z)
+	edges[4] = irr.core.vector3d(middle.X + diag.X, middle.Y - diag.Y, middle.Z - diag.Z)
+	edges[5] = irr.core.vector3d(middle.X - diag.X, middle.Y + diag.Y, middle.Z + diag.Z)
+	edges[6] = irr.core.vector3d(middle.X - diag.X, middle.Y - diag.Y, middle.Z + diag.Z)
+	edges[7] = irr.core.vector3d(middle.X - diag.X, middle.Y + diag.Y, middle.Z - diag.Z)
+	edges[8] = irr.core.vector3d(middle.X - diag.X, middle.Y - diag.Y, middle.Z - diag.Z)
+
+	return edges
+end
+
+
+$]
+

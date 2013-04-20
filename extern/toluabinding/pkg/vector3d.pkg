@@ -1,0 +1,131 @@
+// Copyright (C) 2005-2006 Josh Turpen, Nikolaus Gebhardt
+// This file is part of the IrrLua Lua binding for Irrlicht.
+// For conditions of distribution and use, see copyright notice in IrrLua.h
+
+namespace irr
+{
+namespace core
+{
+	
+	//! 3d vector template class with lots of operators and methods.
+	//template <class T>
+	class vector3d  
+	{
+		TOLUA_TEMPLATE_BIND(T, f32)
+
+		vector3d();
+		vector3d(T nx=0, T ny=0, T nz=0);
+		vector3d(vector3d<T>& other);
+
+		// operators
+
+		vector3d<T> operator-();
+
+		//vector3d<T>& operator=(vector3d<T>& other);
+
+		vector3d<T> operator+(vector3d<T>& other);
+		//vector3d<T>& operator+=(vector3d<T>& other);
+
+		vector3d<T> operator-(vector3d<T>& other);
+		//vector3d<T>& operator-=(vector3d<T>& other);
+
+		vector3d<T> operator*(vector3d<T>& other);
+		//vector3d<T>& operator*=(vector3d<T>& other);
+		vector3d<T> operator*(T v);
+		//vector3d<T>& operator*=(T v);
+
+		vector3d<T> operator/(vector3d<T>& other);
+		//vector3d<T>& operator/=(vector3d<T>& other);
+		vector3d<T> operator/(T v);
+		//vector3d<T>& operator/=(T v);
+
+		bool operator<=(vector3d<T>&other);
+		//bool operator>=(vector3d<T>&other);
+
+		bool operator==(vector3d<T>& other);
+		//bool operator!=(vector3d<T>& other);
+
+		bool equals(vector3d<T>& other);
+
+		// functions
+
+		void set(T nx, T ny, T nz);
+		void set(vector3d<T>& p);
+
+		//! Returns length of the vector.
+		f64 getLength();
+
+		//! Returns squared length of the vector.
+		//! This is useful because it is much faster then
+		//! getLength().
+		f64 getLengthSQ();
+
+		//! Returns the dot product with another vector.
+		T dotProduct(vector3d<T>& other);
+
+		//! Returns distance from an other point. Here, the vector is interpreted as
+		//! point in 3 dimensional space.
+		f64 getDistanceFrom(vector3d<T>& other);
+
+		//! Returns squared distance from an other point. 
+		//! Here, the vector is interpreted as point in 3 dimensional space.
+		T getDistanceFromSQ(vector3d<T>& other);
+
+		vector3d<T> crossProduct(vector3d<T>& p);
+
+		bool isBetweenPoints(vector3d<T>& begin, vector3d<T>& end);
+
+		//! Normalizes the vector.
+		vector3d<T>& normalize();
+
+		//! Sets the lenght of the vector to a new value
+		void setLength(T newlength);
+
+		//! Inverts the vector.
+		void invert();
+
+		void rotateXZBy(f64 degrees, vector3d<T>& center);
+
+		void rotateXYBy(f64 degrees, vector3d<T>& center);
+		
+
+		void rotateYZBy(f64 degrees, vector3d<T>& center);
+		
+
+		//! returns interpolated vector
+		//! \param other: other vector to interpolate between
+		//! \param d: value between 0.0f and 1.0f.
+		vector3d<T> getInterpolated(vector3d<T>& other, f32 d);
+		
+
+		//! Gets the Y and Z rotations of a vector
+		//! Thanks to Arras on the Irrlicht forums to add this method.
+		//! \return A vector representing the rotation in degrees of
+		//! this vector. The Z component of the vector will always be 0.
+		vector3d<T> getHorizontalAngle();
+
+		void getAs4Values(T* array);
+		
+
+		// member variables
+
+		T X,Y,Z;
+	};
+
+
+	//! Typedef for a f32 3d vector.
+	//typedef vector3d<f32> vector3df;
+	//! Typedef for an integer 3d vector.
+	//typedef vector3d<s32> vector3di;
+
+} // end namespace core
+} // end namespac irr
+
+
+$[
+
+irr.core.vector3d = irr.core.vector3d_f32_
+
+$]
+
+

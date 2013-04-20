@@ -1,0 +1,115 @@
+// Copyright (C) 2005-2006 Josh Turpen, Nikolaus Gebhardt
+// This file is part of the IrrLua Lua binding for Irrlicht.
+// For conditions of distribution and use, see copyright notice in IrrLua.h
+
+
+namespace irr
+{
+namespace core
+{
+	
+	//! 3d triangle template class for doing collision detection and other things.
+//	template <class T>
+	class triangle3d  
+	{
+		TOLUA_TEMPLATE_BIND(T, f32)
+
+		triangle3d();
+		~triangle3d();
+		//! Determinates if the triangle is totally inside a bounding box.
+		//! \param box: Box to check.
+		//! \return Returns true if the triangle is withing the box,
+		//! and false if it is not.
+		bool isTotalInsideBox(aabbox3d<T>& box) ;
+		
+
+		bool operator==(triangle3d<T>& other) ;
+	//	bool operator!=(triangle3d<T>& other) ;
+
+		//! Returns the closest point on a triangle to a point on the same plane.
+		//! \param p: Point which must be on the same plane as the triangle.
+		irr::core::vector3d<T> closestPointOnTriangle(irr::core::vector3d<T>& p) ;
+
+		//! Returns if a point is inside the triangle
+		//! \param p: Point to test. Assumes that this point is already on the plane
+		//! of the triangle.
+		//! \return Returns true if the point is inside the triangle, otherwise false.
+		bool isPointInside(vector3d<T>& p) ;
+
+		//! Returns if a point is inside the triangle. This method is an implementation
+		//! of the example used in a paper by Kasper Fauerby original written
+		//! by Keidy from Mr-Gamemaker.
+		//! \param p: Point to test. Assumes that this point is already on the plane
+		//! of the triangle.
+		//! \return Returns true if the point is inside the triangle, otherwise false.
+		bool isPointInsideFast(vector3d<T>& p) ;
+		
+
+
+		bool isOnSameSide(vector3d<T>& p1, vector3d<T>& p2, vector3d<T>& a, vector3d<T>& b) ;
+
+
+		//! Returns an intersection with a 3d line.
+		//! \param lineVect: Vector of the line to intersect with.
+		//! \param linePoint: Point of the line to intersect with.
+		//! \param outIntersection: Place to store the intersection point, if there is one.
+		//! \return Returns true if there was an intersection, false if there was not.
+		bool getIntersectionWithLimitedLine(line3d<T>& line, vector3d<T>& outIntersection) ;
+
+		//! Returns an intersection with a 3d line.
+		//! Please note that also points are returned as intersection, which
+		//! are on the line, but not between the start and end point of the line.
+		//! If you want the returned point be between start and end, please
+		//! use getIntersectionWithLimitedLine().
+		//! \param lineVect: Vector of the line to intersect with.
+		//! \param linePoint: Point of the line to intersect with.
+		//! \param outIntersection: Place to store the intersection point, if there is one.
+		//! \return Returns true if there was an intersection, false if there was not.
+		bool getIntersectionWithLine(vector3d<T>& linePoint, vector3d<T>& lineVect, vector3d<T>& outIntersection) ;
+
+		//! Calculates the intersection between a 3d line and 
+		//! the plane the triangle is on.
+		//! \param lineVect: Vector of the line to intersect with.
+		//! \param linePoint: Point of the line to intersect with.
+		//! \param outIntersection: Place to store the intersection point, if there is one.
+		//! \return Returns true if there was an intersection, false if there was not.
+		bool getIntersectionOfPlaneWithLine(vector3d<T>& linePoint, vector3d<T>& lineVect, vector3d<T>& outIntersection) ;
+		
+		//! Returns the normal of the triangle.
+		//! Please note: The normal is not normalized.
+		vector3d<T> getNormal() ;
+
+		//! Returns if the triangle is front of backfacing.
+		//! \param lookDirection: Look direction.
+		//! \return Returns true if the plane is front facing, which mean it would
+		//! be visible, and false if it is backfacing.
+		bool isFrontFacing(vector3d<T>& lookDirection) ;
+
+		//! Returns the plane of this triangle.
+		plane3d<T> getPlane() ;
+
+		void set(irr::core::vector3d<T>& a, irr::core::vector3d<T>& b, irr::core::vector3d<T>& c);
+
+		//! the three points of the triangle
+		vector3d<T> pointA; 
+		vector3d<T> pointB; 
+		vector3d<T> pointC; 
+	};
+
+
+	//! Typedef for a f32 3d triangle.
+	//typedef triangle3d<f32> triangle3d<f32>;
+
+	//! Typedef for an integer 3d triangle.
+	//typedef triangle3d<s32> triangle3di;
+
+} // end namespace core
+} // end namespac irr
+
+
+$[
+
+irr.core.triangle3d = irr.core.triangle3d_f32_
+
+$]
+

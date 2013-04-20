@@ -1,0 +1,178 @@
+// Copyright (C) 2005-2006 Josh Turpen, Nikolaus Gebhardt
+// This file is part of the IrrLua Lua binding for Irrlicht.
+// For conditions of distribution and use, see copyright notice in IrrLua.h
+
+
+namespace irr
+{
+namespace core
+{
+
+
+	//! 4x4 matrix. Mostly used as transformation matrix for 3d calculations.
+	/* Matrix4 is mainly used by the Irrlicht engine for doing transformations.
+	The matrix is a D3D style matrix, row major with translations in the 4th row.
+	*/
+	class matrix4
+	{
+
+			//! Constructor
+			matrix4();
+			~matrix4();
+
+			//! Simple operator for directly accessing every element of the matrix.
+			//f32& operator()(s32 row, s32 col);
+
+			//! Simple operator for directly accessing every element of the matrix.
+			//f32& operator()(s32 row, s32 col) ;
+
+			//! Sets this matrix equal to the other matrix.
+			//matrix4& operator=(matrix4 &other);
+
+			//! Returns true if other matrix is equal to this matrix.
+			bool operator==(irr::core::matrix4 &other);
+
+			//! Returns true if other matrix is not equal to this matrix.
+			//bool operator!=(matrix4 &other) ;
+
+			//! Multiply by another matrix.
+			//matrix4& operator*=(matrix4& other);
+
+			//! Multiply by another matrix.
+			matrix4 operator*(irr::core::matrix4& other) ;
+
+			//! Set matrix to identity. 
+			void makeIdentity();
+
+			//! Returns true if the matrix is the identity matrix
+			bool isIdentity();
+
+			//! Set the translation of the current matrix. Will erase any previous values.
+			void setTranslation( irr::core::vector3d<f32>& translation );			
+
+			//! Gets the current translation
+			irr::core::vector3d<f32> getTranslation();
+
+			//! Set the inverse translation of the current matrix. Will erase any previous values.
+			void setInverseTranslation( irr::core::vector3d<f32>& translation );	
+
+			//! Make a rotation matrix from Euler angles. The 4th row and column are unmodified.
+			void setRotationRadians( irr::core::vector3d<f32>& rotation );			
+
+			//! Make a rotation matrix from Euler angles. The 4th row and column are unmodified.
+			void setRotationDegrees( irr::core::vector3d<f32>& rotation );			
+
+			//! Returns the rotation, as set by setRotation(). This code was orginally written by by Chev.
+			irr::core::vector3d<f32> getRotationDegrees() ;			
+
+			//! Make an inverted rotation matrix from Euler angles. The 4th row and column are unmodified.
+			void setInverseRotationRadians( irr::core::vector3d<f32>& rotation );	
+
+			//! Make an inverted rotation matrix from Euler angles. The 4th row and column are unmodified.
+			void setInverseRotationDegrees( irr::core::vector3d<f32>& rotation );	
+
+			//! Set Scale
+			void setScale( irr::core::vector3d<f32>& scale );
+			
+			//! Get Scale
+			irr::core::vector3d<f32> getScale();
+
+
+			//! Translate a vector by the inverse of the translation part of this matrix.
+			void inverseTranslateVect( irr::core::vector3d<f32>& vect ) ;			
+
+			//! Rotate a vector by the inverse of the rotation part of this matrix.
+			void inverseRotateVect( irr::core::vector3d<f32>& vect ) ;				
+
+			//! Rotate a vector by the rotation part of this matrix.
+			void rotateVect( irr::core::vector3d<f32>& vect ) ;				
+
+			//! Transforms the vector by this matrix
+			void transformVect( irr::core::vector3d<f32>& vect);
+
+			//! Transforms input vector by this matrix and stores result in output vector 
+			void transformVect( irr::core::vector3d<f32>& in, irr::core::vector3d<f32>& out);
+
+			//! Transforms the vector by this matrix
+			//void transformVect( f32 *out, irr::core::vector3d<f32>& in);
+
+			//! Translate a vector by the translation part of this matrix.
+			void translateVect( irr::core::vector3d<f32>& vect );
+
+			//! Transforms a plane by this matrix
+			void transformPlane( irr::core::plane3d<f32> &plane);
+
+			//! Transforms a plane by this matrix
+			void transformPlane( irr::core::plane3d<f32> &in, irr::core::plane3d<f32> &out);
+
+			//! Transforms a axis aligned bounding box
+			void transformBox( irr::core::aabbox3d<f32> &box);
+
+			//! Transforms a axis aligned bounding box more 
+			//! accurately, but slower than than transformBox
+			void transformBoxEx( irr::core::aabbox3d<f32> &box);
+
+			//! Multiplies this matrix by a 1x4 matrix
+			void multiplyWith1x4Matrix(f32* matrix);
+
+			//! Calculates inverse of matrix. Slow.
+			//! \return Returns false if there is no inverse matrix.
+			bool makeInverse();
+
+			//! returns the inversed matrix of this one
+			//! \param Target, where result matrix is written to.
+			//! \return Returns false if there is no inverse matrix.
+			bool getInverse(irr::core::matrix4& out);
+
+			//! Builds a right-handed perspective projection matrix based on a field of view
+			void buildProjectionMatrixPerspectiveFovRH(f32 fieldOfViewRadians, f32 aspectRatio, f32 zNear, f32 zFar);
+
+			//! Builds a left-handed perspective projection matrix based on a field of view
+			void buildProjectionMatrixPerspectiveFovLH(f32 fieldOfViewRadians, f32 aspectRatio, f32 zNear, f32 zFar);
+
+			//! Builds a right-handed perspective projection matrix.
+			void buildProjectionMatrixPerspectiveRH(f32 widthOfViewVolume, f32 heightOfViewVolume, f32 zNear, f32 zFar);
+
+			//! Builds a left-handed perspective projection matrix.
+			void buildProjectionMatrixPerspectiveLH(f32 widthOfViewVolume, f32 heightOfViewVolume, f32 zNear, f32 zFar);
+
+			//! Builds a left-handed orthogonal projection matrix.
+			void buildProjectionMatrixOrthoLH(f32 widthOfViewVolume, f32 heightOfViewVolume, f32 zNear, f32 zFar);
+
+			//! Builds a right-handed orthogonal projection matrix.
+			void buildProjectionMatrixOrthoRH(f32 widthOfViewVolume, f32 heightOfViewVolume, f32 zNear, f32 zFar);
+
+			//! Builds a left-handed look-at matrix.
+			void buildCameraLookAtMatrixLH(irr::core::vector3d<f32>& position, irr::core::vector3d<f32>& target, irr::core::vector3d<f32>& upVector);
+
+			//! Builds a right-handed look-at matrix.
+			void buildCameraLookAtMatrixRH(irr::core::vector3d<f32>& position, irr::core::vector3d<f32>& target, irr::core::vector3d<f32>& upVector);
+
+			//! Builds a matrix that flattens geometry into a plane.
+			//! \param light: light source
+			//! \param plane: plane into which the geometry if flattened into
+			//! \param point: value between 0 and 1, describing the light source. 
+			//! If this is 1, it is a point light, if it is 0, it is a directional light.
+			void buildShadowMatrix(irr::core::vector3d<f32> light, irr::core::plane3d<f32> plane, f32 point=1);
+
+			//! Builds a matrix which transforms a normalized Device Corrdinate to Device Coordinates. 
+			/** Used to scale <-1,-1><1,1> to viewport, for example from von <-1,-1> <1,1> to the viewport <0,0><0,640> */
+			void buildNDCToDCMatrix(irr::core::rect<s32>& area, f32 zScale);
+			
+			//! creates a new matrix as interpolated matrix from to other ones.
+			//! \param b: other matrix to interpolate with
+			//! \param time: Must be a value between 0 and 1.
+			matrix4 interpolate(irr::core::matrix4& b, f32 time);
+
+			//! returns transposed matrix
+			matrix4 getTransposed();
+
+			//! Matrix data, stored in column-major order
+			f32 M[16];
+	};
+
+
+} // end namespace core
+} // end namespace irr
+
+

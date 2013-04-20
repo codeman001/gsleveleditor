@@ -165,10 +165,7 @@ namespace core
 			matrix4 interpolate(irr::core::matrix4& b, f32 time);
 
 			//! returns transposed matrix
-			matrix4 getTransposed();
-
-			//! Matrix data, stored in column-major order
-			f32 M[16];
+			matrix4 getTransposed();			
 	};
 
 

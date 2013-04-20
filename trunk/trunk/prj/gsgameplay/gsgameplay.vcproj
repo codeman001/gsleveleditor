@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrogles\include;..\..\..\extern\irrogles\source\Irrlicht;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Network;..\..\src\core\Serializable;..\..\..\extern\spark\include;..\..\..\extern\gameswf;..\..\..\extern\freetype\include;..\..\..\extern\lua\src;..\..\..\extern\vld\include;&quot;..\..\..\extern\tolua++\include&quot;"
+				AdditionalIncludeDirectories="..\..\src;&quot;$(ProjectDir)&quot;;..\..\..\extern\irrogles\include;..\..\..\extern\irrogles\source\Irrlicht;..\..\src\core;..\..\src\core\Animators;..\..\src\core\Component;..\..\src\core\GameObject;..\..\src\core\ObjectTemplate;..\..\src\core\SceneNode;..\..\src\core\Network;..\..\src\core\Serializable;..\..\src\core\Utils;..\..\..\extern\spark\include;..\..\..\extern\gameswf;..\..\..\extern\freetype\include;..\..\..\extern\lua\src;..\..\..\extern\vld\include;&quot;..\..\..\extern\tolua++\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;GSGAMEPLAY"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -657,6 +657,18 @@
 					</File>
 					<File
 						RelativePath="..\..\src\core\TextureManager\CTextureManager.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Utils"
+					>
+					<File
+						RelativePath="..\..\src\core\Utils\CVectorUtil.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\core\Utils\CVectorUtil.h"
 						>
 					</File>
 				</Filter>

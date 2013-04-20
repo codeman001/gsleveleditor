@@ -55,22 +55,7 @@ protected:
     
     // isFinishedAnim	
 	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0, int animLayer = 0);    	
-    
-    // turnToDir
-	bool turnToDir(core::vector3df& dir, const core::vector3df& turnTo, float speed );
-    
-	// turnToDir
-	// turn vector dir to turnTo
-	core::vector3df interpolateTurnToDir( const core::vector3df& turnFrom, const core::vector3df& turnTo, float f );
-   
-public:
-	// getRatioWithAngle	
-	float getRatioWithAngle( const core::vector3df& turnFrom, const core::vector3df& turnTo, float angle );
-    
-	float getAngle( const core::vector3df& v1, const core::vector3df& v2 );	
-    
-	// fixAngle
-	float fixAngle( float f );
+        
    
 protected:
     // calcRunAnimationBlend

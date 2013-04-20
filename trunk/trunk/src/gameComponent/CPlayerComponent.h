@@ -69,26 +69,6 @@ protected:
 	void updateState();  
 
 public:
-
-	// rotatePlayerToFront
-	// rotate player
-	bool rotatePlayerToFront(float step);
-
-	// getCameraFrontVector
-	// return camera front vector
-	core::vector3df getCameraFrontVector();
-
-    // getCameraRay
-    // get camera view ray
-    core::line3df getCameraRay();
-    
-	// getCollisionPoint
-	// check collision
-	core::vector3df getCollisionPoint( core::line3df ray );
-
-    // getAimAngle
-    // get angle of hand
-    core::vector2df getAimAngle( const core::vector3df aimPoint );
     
 };
 

@@ -184,41 +184,7 @@ void CPlayerComponent::updateState()
 	CScriptManager::getInstance()->startFunc("updatePlayerComponent","sd", m_luaObjName.c_str(), getIView()->getTimeStep() );
 }
 
-
-// rotatePlayerToFront
-// rotate player
-bool CPlayerComponent::rotatePlayerToFront(float step)
-{
-	core::line3df	ray		= getCameraRay();
-	core::vector3df	colPos	= getCollisionPoint(ray);
-			
-	// rotate main character		
-	core::vector3df v0 = m_gameObject->getFront();
-	core::vector3df aimPos = colPos - m_gameObject->getPosition();
-	aimPos.Y = 0;
-	aimPos.normalize();
-
-	bool finish = false;
-	if ( turnToDir( v0, aimPos, 6.0f ) == true )
-		finish = true;
-
-	m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
-	return finish;
-}
-
-
-// getCameraFrontVector
-// return camera front vector
-core::vector3df CPlayerComponent::getCameraFrontVector()
-{
-	CGameCamera* cam = CGameLevel::getCurrentLevel()->getCamera();
-	core::vector3df front = cam->getTarget() - cam->getPosition();
-	front.Y = 0;
-	front.normalize();	
-
-	return front;
-}
-
+/*
 core::vector2df CPlayerComponent::getAimAngle( const core::vector3df aimPoint )
 {
 	core::vector2df ret;
@@ -264,38 +230,4 @@ core::vector2df CPlayerComponent::getAimAngle( const core::vector3df aimPoint )
 
 	return ret;
 }
-
-// getCameraRay
-// get camera view ray
-core::line3df CPlayerComponent::getCameraRay()
-{
-    core::line3d<f32> ray;
-    ICameraSceneNode *camera = getIView()->getSceneMgr()->getActiveCamera();
-    ray.start = camera->getPosition();	
-    ray.end = ray.start + (camera->getTarget() - ray.start).normalize() * 50000.0f;
-
-	// return the ray length: 500m
-    return ray;
-}
-
-// getCollisionPoint
-// check collision
-core::vector3df CPlayerComponent::getCollisionPoint( core::line3df ray )
-{
-	core::vector3df ret;
-	
-	core::vector3df     outPoint;
-	core::triangle3df   outTri;
-
-	CGameLevel *level =	CGameLevel::getCurrentLevel();
-	if ( level->checkTerrainCollide(ray, outPoint, outTri) == true )
-	{
-		ret = outPoint;
-	}
-	else
-	{
-		ret = ray.end;
-	}
-	 
-	return ret;
-}
+*/

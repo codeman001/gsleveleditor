@@ -21,6 +21,23 @@
 		7F3875E5163841FD00E84B98 /* CDaeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3875E3163841FD00E84B98 /* CDaeUtils.cpp */; };
 		7F39584F160EF17700EEB3A2 /* CDataPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */; };
 		7F3A4562169722670088EB8A /* CGunLightComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3A4560169722670088EB8A /* CGunLightComponent.cpp */; };
+		7F3AEB721722D05300713383 /* lua_aabbox3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB581722D05300713383 /* lua_aabbox3d.cpp */; };
+		7F3AEB731722D05300713383 /* lua_dimension2d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB5A1722D05300713383 /* lua_dimension2d.cpp */; };
+		7F3AEB741722D05300713383 /* lua_irrString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB5C1722D05300713383 /* lua_irrString.cpp */; };
+		7F3AEB751722D05300713383 /* lua_line2d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB5E1722D05300713383 /* lua_line2d.cpp */; };
+		7F3AEB761722D05300713383 /* lua_line3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB601722D05300713383 /* lua_line3d.cpp */; };
+		7F3AEB771722D05300713383 /* lua_matrix4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB621722D05300713383 /* lua_matrix4.cpp */; };
+		7F3AEB781722D05300713383 /* lua_plane3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB641722D05300713383 /* lua_plane3d.cpp */; };
+		7F3AEB791722D05300713383 /* lua_position2d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB661722D05300713383 /* lua_position2d.cpp */; };
+		7F3AEB7A1722D05300713383 /* lua_quaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB681722D05300713383 /* lua_quaternion.cpp */; };
+		7F3AEB7B1722D05300713383 /* lua_SColor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB6A1722D05300713383 /* lua_SColor.cpp */; };
+		7F3AEB7C1722D05300713383 /* lua_triangle3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB6C1722D05300713383 /* lua_triangle3d.cpp */; };
+		7F3AEB7D1722D05300713383 /* lua_vector2d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB6E1722D05300713383 /* lua_vector2d.cpp */; };
+		7F3AEB7E1722D05300713383 /* lua_vector3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB701722D05300713383 /* lua_vector3d.cpp */; };
+		7F3AEB811722D06900713383 /* CGameString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEB7F1722D06900713383 /* CGameString.cpp */; };
+		7F3AEBA61722D1A300713383 /* CSpawnPointComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEBA41722D1A300713383 /* CSpawnPointComponent.cpp */; };
+		7F3AEBA71722D1C200713383 /* libtoluapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F3AEB971722D0D900713383 /* libtoluapp.a */; };
+		7F3AEBAA1722D37900713383 /* CStateSelectLevel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3AEBA81722D37900713383 /* CStateSelectLevel.cpp */; };
 		7F3FF7F716A10CE5000EFAED /* CUIHoldButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3FF7F516A10CE5000EFAED /* CUIHoldButton.cpp */; };
 		7F44D92D16AEF9090039FA06 /* CContainerObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F44D92B16AEF9090039FA06 /* CContainerObject.cpp */; };
 		7F44D93016AEF9190039FA06 /* CGameStaticShadowSceneNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F44D92E16AEF9190039FA06 /* CGameStaticShadowSceneNode.cpp */; };
@@ -131,6 +148,13 @@
 			remoteGlobalIDString = D2AAC07E0554694100DB518D;
 			remoteInfo = Lua;
 		};
+		7F3AEB961722D0D900713383 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7F3AEB921722D0D800713383 /* toluapp.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7F3AEB8B1722D0D800713383;
+			remoteInfo = toluapp;
+		};
 		7FCBD12C15F4B13400C432A7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7FCBD12815F4B13300C432A7 /* irrlicht.xcodeproj */;
@@ -173,6 +197,39 @@
 		7F39584E160EF17700EEB3A2 /* CDataPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDataPacket.h; path = Network/CDataPacket.h; sourceTree = "<group>"; };
 		7F3A4560169722670088EB8A /* CGunLightComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGunLightComponent.cpp; sourceTree = "<group>"; };
 		7F3A4561169722670088EB8A /* CGunLightComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGunLightComponent.h; sourceTree = "<group>"; };
+		7F3AEB581722D05300713383 /* lua_aabbox3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_aabbox3d.cpp; path = gameLua/lua_aabbox3d.cpp; sourceTree = "<group>"; };
+		7F3AEB591722D05300713383 /* lua_aabbox3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_aabbox3d.h; path = gameLua/lua_aabbox3d.h; sourceTree = "<group>"; };
+		7F3AEB5A1722D05300713383 /* lua_dimension2d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_dimension2d.cpp; path = gameLua/lua_dimension2d.cpp; sourceTree = "<group>"; };
+		7F3AEB5B1722D05300713383 /* lua_dimension2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_dimension2d.h; path = gameLua/lua_dimension2d.h; sourceTree = "<group>"; };
+		7F3AEB5C1722D05300713383 /* lua_irrString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_irrString.cpp; path = gameLua/lua_irrString.cpp; sourceTree = "<group>"; };
+		7F3AEB5D1722D05300713383 /* lua_irrString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_irrString.h; path = gameLua/lua_irrString.h; sourceTree = "<group>"; };
+		7F3AEB5E1722D05300713383 /* lua_line2d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_line2d.cpp; path = gameLua/lua_line2d.cpp; sourceTree = "<group>"; };
+		7F3AEB5F1722D05300713383 /* lua_line2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_line2d.h; path = gameLua/lua_line2d.h; sourceTree = "<group>"; };
+		7F3AEB601722D05300713383 /* lua_line3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_line3d.cpp; path = gameLua/lua_line3d.cpp; sourceTree = "<group>"; };
+		7F3AEB611722D05300713383 /* lua_line3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_line3d.h; path = gameLua/lua_line3d.h; sourceTree = "<group>"; };
+		7F3AEB621722D05300713383 /* lua_matrix4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_matrix4.cpp; path = gameLua/lua_matrix4.cpp; sourceTree = "<group>"; };
+		7F3AEB631722D05300713383 /* lua_matrix4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_matrix4.h; path = gameLua/lua_matrix4.h; sourceTree = "<group>"; };
+		7F3AEB641722D05300713383 /* lua_plane3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_plane3d.cpp; path = gameLua/lua_plane3d.cpp; sourceTree = "<group>"; };
+		7F3AEB651722D05300713383 /* lua_plane3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_plane3d.h; path = gameLua/lua_plane3d.h; sourceTree = "<group>"; };
+		7F3AEB661722D05300713383 /* lua_position2d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_position2d.cpp; path = gameLua/lua_position2d.cpp; sourceTree = "<group>"; };
+		7F3AEB671722D05300713383 /* lua_position2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_position2d.h; path = gameLua/lua_position2d.h; sourceTree = "<group>"; };
+		7F3AEB681722D05300713383 /* lua_quaternion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_quaternion.cpp; path = gameLua/lua_quaternion.cpp; sourceTree = "<group>"; };
+		7F3AEB691722D05300713383 /* lua_quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_quaternion.h; path = gameLua/lua_quaternion.h; sourceTree = "<group>"; };
+		7F3AEB6A1722D05300713383 /* lua_SColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_SColor.cpp; path = gameLua/lua_SColor.cpp; sourceTree = "<group>"; };
+		7F3AEB6B1722D05300713383 /* lua_SColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_SColor.h; path = gameLua/lua_SColor.h; sourceTree = "<group>"; };
+		7F3AEB6C1722D05300713383 /* lua_triangle3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_triangle3d.cpp; path = gameLua/lua_triangle3d.cpp; sourceTree = "<group>"; };
+		7F3AEB6D1722D05300713383 /* lua_triangle3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_triangle3d.h; path = gameLua/lua_triangle3d.h; sourceTree = "<group>"; };
+		7F3AEB6E1722D05300713383 /* lua_vector2d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_vector2d.cpp; path = gameLua/lua_vector2d.cpp; sourceTree = "<group>"; };
+		7F3AEB6F1722D05300713383 /* lua_vector2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_vector2d.h; path = gameLua/lua_vector2d.h; sourceTree = "<group>"; };
+		7F3AEB701722D05300713383 /* lua_vector3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_vector3d.cpp; path = gameLua/lua_vector3d.cpp; sourceTree = "<group>"; };
+		7F3AEB711722D05300713383 /* lua_vector3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_vector3d.h; path = gameLua/lua_vector3d.h; sourceTree = "<group>"; };
+		7F3AEB7F1722D06900713383 /* CGameString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CGameString.cpp; path = gameString/CGameString.cpp; sourceTree = "<group>"; };
+		7F3AEB801722D06900713383 /* CGameString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGameString.h; path = gameString/CGameString.h; sourceTree = "<group>"; };
+		7F3AEB921722D0D800713383 /* toluapp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = toluapp.xcodeproj; path = "../../../extern/tolua++/iphoneos/toluapp/toluapp.xcodeproj"; sourceTree = "<group>"; };
+		7F3AEBA41722D1A300713383 /* CSpawnPointComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CSpawnPointComponent.cpp; sourceTree = "<group>"; };
+		7F3AEBA51722D1A300713383 /* CSpawnPointComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSpawnPointComponent.h; sourceTree = "<group>"; };
+		7F3AEBA81722D37900713383 /* CStateSelectLevel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CStateSelectLevel.cpp; sourceTree = "<group>"; };
+		7F3AEBA91722D37900713383 /* CStateSelectLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CStateSelectLevel.h; sourceTree = "<group>"; };
 		7F3FF7F516A10CE5000EFAED /* CUIHoldButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUIHoldButton.cpp; sourceTree = "<group>"; };
 		7F3FF7F616A10CE5000EFAED /* CUIHoldButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUIHoldButton.h; sourceTree = "<group>"; };
 		7F44D92B16AEF9090039FA06 /* CContainerObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CContainerObject.cpp; sourceTree = "<group>"; };
@@ -370,6 +427,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7F3AEBA71722D1C200713383 /* libtoluapp.a in Frameworks */,
 				7F1EC5E616109767008D61A2 /* libLua.a in Frameworks */,
 				7F62FBAB1600D6620022D697 /* QuartzCore.framework in Frameworks */,
 				7FCBDE4B15F4C4C100C432A7 /* libfreetype.a in Frameworks */,
@@ -407,6 +465,56 @@
 			isa = PBXGroup;
 			children = (
 				7F1EC5E516109756008D61A2 /* libLua.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7F3AEB521722D02500713383 /* gameString */ = {
+			isa = PBXGroup;
+			children = (
+				7F3AEB7F1722D06900713383 /* CGameString.cpp */,
+				7F3AEB801722D06900713383 /* CGameString.h */,
+			);
+			name = gameString;
+			sourceTree = "<group>";
+		};
+		7F3AEB571722D02F00713383 /* gameLua */ = {
+			isa = PBXGroup;
+			children = (
+				7F3AEB581722D05300713383 /* lua_aabbox3d.cpp */,
+				7F3AEB591722D05300713383 /* lua_aabbox3d.h */,
+				7F3AEB5A1722D05300713383 /* lua_dimension2d.cpp */,
+				7F3AEB5B1722D05300713383 /* lua_dimension2d.h */,
+				7F3AEB5C1722D05300713383 /* lua_irrString.cpp */,
+				7F3AEB5D1722D05300713383 /* lua_irrString.h */,
+				7F3AEB5E1722D05300713383 /* lua_line2d.cpp */,
+				7F3AEB5F1722D05300713383 /* lua_line2d.h */,
+				7F3AEB601722D05300713383 /* lua_line3d.cpp */,
+				7F3AEB611722D05300713383 /* lua_line3d.h */,
+				7F3AEB621722D05300713383 /* lua_matrix4.cpp */,
+				7F3AEB631722D05300713383 /* lua_matrix4.h */,
+				7F3AEB641722D05300713383 /* lua_plane3d.cpp */,
+				7F3AEB651722D05300713383 /* lua_plane3d.h */,
+				7F3AEB661722D05300713383 /* lua_position2d.cpp */,
+				7F3AEB671722D05300713383 /* lua_position2d.h */,
+				7F3AEB681722D05300713383 /* lua_quaternion.cpp */,
+				7F3AEB691722D05300713383 /* lua_quaternion.h */,
+				7F3AEB6A1722D05300713383 /* lua_SColor.cpp */,
+				7F3AEB6B1722D05300713383 /* lua_SColor.h */,
+				7F3AEB6C1722D05300713383 /* lua_triangle3d.cpp */,
+				7F3AEB6D1722D05300713383 /* lua_triangle3d.h */,
+				7F3AEB6E1722D05300713383 /* lua_vector2d.cpp */,
+				7F3AEB6F1722D05300713383 /* lua_vector2d.h */,
+				7F3AEB701722D05300713383 /* lua_vector3d.cpp */,
+				7F3AEB711722D05300713383 /* lua_vector3d.h */,
+			);
+			name = gameLua;
+			sourceTree = "<group>";
+		};
+		7F3AEB931722D0D800713383 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7F3AEB971722D0D900713383 /* libtoluapp.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -466,6 +574,8 @@
 		7FD0BF4E15F4F34400626D90 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				7F3AEB571722D02F00713383 /* gameLua */,
+				7F3AEB521722D02500713383 /* gameString */,
 				7FFB7233170F0C2300045E7C /* gameMatch */,
 				7FFB722E170F0C1A00045E7C /* gameConfig */,
 				7F609826162F0B860085D3FF /* gameUI */,
@@ -640,6 +750,8 @@
 		7FD0BFAB15F4F34400626D90 /* gameComponent */ = {
 			isa = PBXGroup;
 			children = (
+				7F3AEBA41722D1A300713383 /* CSpawnPointComponent.cpp */,
+				7F3AEBA51722D1A300713383 /* CSpawnPointComponent.h */,
 				7F70B25B16B56C8F00E098D2 /* CBasePlayerState.cpp */,
 				7F70B25C16B56C8F00E098D2 /* CBasePlayerState.h */,
 				7F70B25D16B56C8F00E098D2 /* CNetworkPlayerComponent.cpp */,
@@ -681,6 +793,8 @@
 		7FD0BFBC15F4F34400626D90 /* gameState */ = {
 			isa = PBXGroup;
 			children = (
+				7F3AEBA81722D37900713383 /* CStateSelectLevel.cpp */,
+				7F3AEBA91722D37900713383 /* CStateSelectLevel.h */,
 				7FC1A11316D90F0A00574176 /* CStateIGM.cpp */,
 				7FC1A11416D90F0A00574176 /* CStateIGM.h */,
 				7F609833162F0BE60085D3FF /* CStateJoinGame.cpp */,
@@ -735,6 +849,7 @@
 		7FE6C70B15F47C2D00E07797 = {
 			isa = PBXGroup;
 			children = (
+				7F3AEB921722D0D800713383 /* toluapp.xcodeproj */,
 				7F1EC5DD16109755008D61A2 /* Lua.xcodeproj */,
 				7FCBDE4215F4C4A400C432A7 /* freetype.xcodeproj */,
 				7FCBDE2B15F4C3A800C432A7 /* gameswf.xcodeproj */,
@@ -897,6 +1012,10 @@
 					ProductGroup = 7F1EC5DE16109755008D61A2 /* Products */;
 					ProjectRef = 7F1EC5DD16109755008D61A2 /* Lua.xcodeproj */;
 				},
+				{
+					ProductGroup = 7F3AEB931722D0D800713383 /* Products */;
+					ProjectRef = 7F3AEB921722D0D800713383 /* toluapp.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -911,6 +1030,13 @@
 			fileType = archive.ar;
 			path = libLua.a;
 			remoteRef = 7F1EC5E416109756008D61A2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7F3AEB971722D0D900713383 /* libtoluapp.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libtoluapp.a;
+			remoteRef = 7F3AEB961722D0D900713383 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		7FCBD12D15F4B13400C432A7 /* libirrlicht.a */ = {
@@ -1055,6 +1181,22 @@
 				7FFB723B170F0C3600045E7C /* CGameMatchSolo.cpp in Sources */,
 				7FFB723C170F0C3600045E7C /* IGameMatch.cpp in Sources */,
 				7FFB723F170F0C4400045E7C /* CGameConfig.cpp in Sources */,
+				7F3AEB721722D05300713383 /* lua_aabbox3d.cpp in Sources */,
+				7F3AEB731722D05300713383 /* lua_dimension2d.cpp in Sources */,
+				7F3AEB741722D05300713383 /* lua_irrString.cpp in Sources */,
+				7F3AEB751722D05300713383 /* lua_line2d.cpp in Sources */,
+				7F3AEB761722D05300713383 /* lua_line3d.cpp in Sources */,
+				7F3AEB771722D05300713383 /* lua_matrix4.cpp in Sources */,
+				7F3AEB781722D05300713383 /* lua_plane3d.cpp in Sources */,
+				7F3AEB791722D05300713383 /* lua_position2d.cpp in Sources */,
+				7F3AEB7A1722D05300713383 /* lua_quaternion.cpp in Sources */,
+				7F3AEB7B1722D05300713383 /* lua_SColor.cpp in Sources */,
+				7F3AEB7C1722D05300713383 /* lua_triangle3d.cpp in Sources */,
+				7F3AEB7D1722D05300713383 /* lua_vector2d.cpp in Sources */,
+				7F3AEB7E1722D05300713383 /* lua_vector3d.cpp in Sources */,
+				7F3AEB811722D06900713383 /* CGameString.cpp in Sources */,
+				7F3AEBA61722D1A300713383 /* CSpawnPointComponent.cpp in Sources */,
+				7F3AEBAA1722D37900713383 /* CStateSelectLevel.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1137,7 +1279,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/Network ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src";
+				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/Network ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src ../../../extern/tolua++/include";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1160,7 +1302,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/Network ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src";
+				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/Network ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src ../../../extern/tolua++/include";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

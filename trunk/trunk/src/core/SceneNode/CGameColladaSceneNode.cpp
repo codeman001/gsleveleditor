@@ -942,10 +942,12 @@ void CGameColladaSceneNode::updateAbsolutePosition()
                 // calc rotation
 				if (m_linkRotateY)
 				{
-					float rotY = AbsoluteAnimationMatrixLayer[0].getRotationDegrees().Y;
-					core::vector3df myRot = AbsoluteAnimationMatrixLayer[i].getRotationDegrees();
-					myRot.Y = rotY;
-					AbsoluteAnimationMatrixLayer[i].setRotationDegrees(myRot);
+					//float rotY = AbsoluteAnimationMatrixLayer[0].getRotationDegrees().Y;
+					//core::vector3df myRot = AbsoluteAnimationMatrixLayer[i].getRotationDegrees();
+					//myRot.Y = rotY;
+					//AbsoluteAnimationMatrixLayer[i].setRotationDegrees(myRot);
+
+					AbsoluteAnimationMatrixLayer[i] = AbsoluteAnimationMatrixLayer[0];
 				}                
             }
             

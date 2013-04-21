@@ -1,10 +1,12 @@
 #include "stdafx.h"
+
 using namespace irr;
 using namespace irr::core;
 
+
 /*
 ** Lua binding: position2d
-** Generated automatically by tolua++-1.0.92 on 04/20/13 17:58:23.
+** Generated automatically by tolua++-1.0.92 on 04/21/13 13:56:35.
 */
 
 #ifndef __cplusplus

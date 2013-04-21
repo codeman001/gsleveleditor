@@ -425,6 +425,7 @@ void CGameLevel::compileGameScript()
 	uiString::cat<char, const char>(folderPath,"/");
 	
 	// add lua component
+	m_listScriptFile.push_back("../script/VectorUtils.lua");
 	m_listScriptFile.push_back("../script/PlayerComponent.lua");
 
 		

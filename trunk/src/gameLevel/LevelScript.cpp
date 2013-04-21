@@ -166,6 +166,20 @@ int setObjectLookAtObject(lua_State* state)
 	return 0;
 }
 
+// setObjectLookAtPos
+// rotate object to pos
+int setObjectLookAtPos(lua_State* state)
+{
+	lua_Integer objID		= lua_tointeger(state,1);
+	float x = (float)lua_tonumber(state,2);
+	float y = (float)lua_tonumber(state,3);
+	float z = (float)lua_tonumber(state,4);
+
+	CGameObject* obj = (CGameObject*)objID;
+	obj->lookAt(obj->getPosition() + core::vector3df(x,y,z));
+	return 0;
+}
+
 // setObjectOrientation
 // param: objectID, objectTargetID
 int setObjectOrientation(lua_State* state)
@@ -732,6 +746,7 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(setObjectRotation);
 	REGISTER_C_FUNCTION(getObjectFront);
 	REGISTER_C_FUNCTION(setObjectLookAtObject);
+	REGISTER_C_FUNCTION(setObjectLookAtPos);
 	REGISTER_C_FUNCTION(setObjectOrientation);
 	REGISTER_C_FUNCTION(setAnimatorMoveToWayPoint);	
 

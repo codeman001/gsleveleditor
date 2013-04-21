@@ -1,6 +1,6 @@
 /*
 ** Lua binding: matrix4
-** Generated automatically by tolua++-1.0.92 on 04/20/13 17:58:23.
+** Generated automatically by tolua++-1.0.92 on 04/21/13 13:56:35.
 */
 
 /* Exported function */

@@ -1,10 +1,11 @@
 #include "stdafx.h"
+
 using namespace irr;
 using namespace irr::core;
 
 /*
 ** Lua binding: line2d
-** Generated automatically by tolua++-1.0.92 on 04/20/13 17:58:23.
+** Generated automatically by tolua++-1.0.92 on 04/21/13 13:56:35.
 */
 
 #ifndef __cplusplus
@@ -28,13 +29,6 @@ static int tolua_collect_irr__core__vector2d_f32_ (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_vector2d_f32_ (lua_State* tolua_S)
-{
- vector2d<f32>* self = (vector2d<f32>*) tolua_tousertype(tolua_S,1,0);
-	delete self;
-	return 0;
-}
-
 static int tolua_collect_irr__core__line2d_f32_ (lua_State* tolua_S)
 {
  irr::core::line2d<f32>* self = (irr::core::line2d<f32>*) tolua_tousertype(tolua_S,1,0);
@@ -47,7 +41,6 @@ static int tolua_collect_irr__core__line2d_f32_ (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"vector2d<f32>");
  tolua_usertype(tolua_S,"irr::core::vector2d<f32>");
  tolua_usertype(tolua_S,"irr::core::line2d<f32>");
 }
@@ -544,14 +537,14 @@ static int tolua_line2d_irr_core_line2d_f32__getVector00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getVector'",NULL);
 #endif
   {
-   vector2d<f32> tolua_ret = (vector2d<f32>)  self->getVector();
+   irr::core::vector2d<f32> tolua_ret = (irr::core::vector2d<f32>)  self->getVector();
    {
 #ifdef __cplusplus
-    void* tolua_obj = new vector2d<f32>(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"vector2d<f32>");
+    void* tolua_obj = new irr::core::vector2d<f32>(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"irr::core::vector2d<f32>");
 #else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(vector2d<f32>));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"vector2d<f32>");
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(irr::core::vector2d<f32>));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"irr::core::vector2d<f32>");
 #endif
    }
   }

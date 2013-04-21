@@ -1,10 +1,12 @@
 #include "stdafx.h"
+
 using namespace irr;
 using namespace irr::core;
 
+
 /*
 ** Lua binding: quaternion
-** Generated automatically by tolua++-1.0.92 on 04/20/13 17:58:23.
+** Generated automatically by tolua++-1.0.92 on 04/21/13 13:56:35.
 */
 
 #ifndef __cplusplus
@@ -21,9 +23,9 @@ int  tolua_quaternion_open (lua_State* tolua_S);
 /* function to release collected object via destructor */
 #ifdef __cplusplus
 
-static int tolua_collect_matrix4 (lua_State* tolua_S)
+static int tolua_collect_irr__core__matrix4 (lua_State* tolua_S)
 {
- matrix4* self = (matrix4*) tolua_tousertype(tolua_S,1,0);
+ irr::core::matrix4* self = (irr::core::matrix4*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -40,8 +42,8 @@ static int tolua_collect_irr__core__quaternion (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"vector3d<f32>");
- tolua_usertype(tolua_S,"matrix4");
+ tolua_usertype(tolua_S,"irr::core::matrix4");
+ tolua_usertype(tolua_S,"irr::core::vector3d<f32>");
  tolua_usertype(tolua_S,"irr::core::quaternion");
 }
 
@@ -228,13 +230,13 @@ static int tolua_quaternion_irr_core_quaternion_new03(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::quaternion",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"matrix4",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"irr::core::matrix4",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  matrix4* mat = ((matrix4*)  tolua_tousertype(tolua_S,2,0));
+  irr::core::matrix4* mat = ((irr::core::matrix4*)  tolua_tousertype(tolua_S,2,0));
   {
    irr::core::quaternion* tolua_ret = (irr::core::quaternion*)  new irr::core::quaternion(*mat);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"irr::core::quaternion");
@@ -253,13 +255,13 @@ static int tolua_quaternion_irr_core_quaternion_new03_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"irr::core::quaternion",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"matrix4",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"irr::core::matrix4",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  matrix4* mat = ((matrix4*)  tolua_tousertype(tolua_S,2,0));
+  irr::core::matrix4* mat = ((irr::core::matrix4*)  tolua_tousertype(tolua_S,2,0));
   {
    irr::core::quaternion* tolua_ret = (irr::core::quaternion*)  new irr::core::quaternion(*mat);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"irr::core::quaternion");
@@ -582,14 +584,14 @@ static int tolua_quaternion_irr_core_quaternion_getMatrix00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMatrix'",NULL);
 #endif
   {
-   matrix4 tolua_ret = (matrix4)  self->getMatrix();
+   irr::core::matrix4 tolua_ret = (irr::core::matrix4)  self->getMatrix();
    {
 #ifdef __cplusplus
-    void* tolua_obj = new matrix4(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"matrix4");
+    void* tolua_obj = new irr::core::matrix4(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"irr::core::matrix4");
 #else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(matrix4));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"matrix4");
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(irr::core::matrix4));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"irr::core::matrix4");
 #endif
    }
   }
@@ -689,7 +691,7 @@ static int tolua_quaternion_irr_core_quaternion_fromAngleAxis00(lua_State* tolua
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::quaternion",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"vector3d<f32>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"irr::core::vector3d<f32>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
@@ -698,7 +700,7 @@ static int tolua_quaternion_irr_core_quaternion_fromAngleAxis00(lua_State* tolua
  {
   irr::core::quaternion* self = (irr::core::quaternion*)  tolua_tousertype(tolua_S,1,0);
    float angle = ((  float)  tolua_tonumber(tolua_S,2,0));
-  vector3d<f32>* axis = ((vector3d<f32>*)  tolua_tousertype(tolua_S,3,0));
+  irr::core::vector3d<f32>* axis = ((irr::core::vector3d<f32>*)  tolua_tousertype(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'fromAngleAxis'",NULL);
 #endif
@@ -723,7 +725,7 @@ static int tolua_quaternion_irr_core_quaternion_toEuler00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"irr::core::quaternion",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"vector3d<f32>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"irr::core::vector3d<f32>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
@@ -731,7 +733,7 @@ static int tolua_quaternion_irr_core_quaternion_toEuler00(lua_State* tolua_S)
 #endif
  {
   irr::core::quaternion* self = (irr::core::quaternion*)  tolua_tousertype(tolua_S,1,0);
-  vector3d<f32>* euler = ((vector3d<f32>*)  tolua_tousertype(tolua_S,2,0));
+  irr::core::vector3d<f32>* euler = ((irr::core::vector3d<f32>*)  tolua_tousertype(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'toEuler'",NULL);
 #endif

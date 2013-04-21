@@ -30,7 +30,7 @@ namespace core
 		//! \param box: Box to check.
 		//! \return Returns true if the triangle is withing the box,
 		//! and false if it is not.
-		bool isTotalInsideBox(aabbox3d<T>& box) ;
+		bool isTotalInsideBox(irr::core::aabbox3d<T>& box) ;
 		
 
 		bool operator==(triangle3d<T>& other) ;
@@ -44,7 +44,7 @@ namespace core
 		//! \param p: Point to test. Assumes that this point is already on the plane
 		//! of the triangle.
 		//! \return Returns true if the point is inside the triangle, otherwise false.
-		bool isPointInside(vector3d<T>& p) ;
+		bool isPointInside(irr::core::vector3d<T>& p) ;
 
 		//! Returns if a point is inside the triangle. This method is an implementation
 		//! of the example used in a paper by Kasper Fauerby original written
@@ -52,7 +52,7 @@ namespace core
 		//! \param p: Point to test. Assumes that this point is already on the plane
 		//! of the triangle.
 		//! \return Returns true if the point is inside the triangle, otherwise false.
-		bool isPointInsideFast(vector3d<T>& p) ;			
+		bool isPointInsideFast(irr::core::vector3d<T>& p) ;			
 
 
 		//! Returns an intersection with a 3d line.
@@ -60,7 +60,7 @@ namespace core
 		//! \param linePoint: Point of the line to intersect with.
 		//! \param outIntersection: Place to store the intersection point, if there is one.
 		//! \return Returns true if there was an intersection, false if there was not.
-		bool getIntersectionWithLimitedLine(line3d<T>& line, vector3d<T>& outIntersection) ;
+		bool getIntersectionWithLimitedLine(irr::core::line3d<T>& line, irr::core::vector3d<T>& outIntersection) ;
 
 		//! Returns an intersection with a 3d line.
 		//! Please note that also points are returned as intersection, which
@@ -71,7 +71,7 @@ namespace core
 		//! \param linePoint: Point of the line to intersect with.
 		//! \param outIntersection: Place to store the intersection point, if there is one.
 		//! \return Returns true if there was an intersection, false if there was not.
-		bool getIntersectionWithLine(vector3d<T>& linePoint, vector3d<T>& lineVect, vector3d<T>& outIntersection) ;
+		bool getIntersectionWithLine(irr::core::vector3d<T>& linePoint, irr::core::vector3d<T>& lineVect, irr::core::vector3d<T>& outIntersection) ;
 
 		//! Calculates the intersection between a 3d line and 
 		//! the plane the triangle is on.
@@ -79,27 +79,27 @@ namespace core
 		//! \param linePoint: Point of the line to intersect with.
 		//! \param outIntersection: Place to store the intersection point, if there is one.
 		//! \return Returns true if there was an intersection, false if there was not.
-		bool getIntersectionOfPlaneWithLine(vector3d<T>& linePoint, vector3d<T>& lineVect, vector3d<T>& outIntersection) ;
+		bool getIntersectionOfPlaneWithLine(irr::core::vector3d<T>& linePoint, irr::core::vector3d<T>& lineVect, irr::core::vector3d<T>& outIntersection) ;
 		
 		//! Returns the normal of the triangle.
 		//! Please note: The normal is not normalized.
-		vector3d<T> getNormal() ;
+		irr::core::vector3d<T> getNormal() ;
 
 		//! Returns if the triangle is front of backfacing.
 		//! \param lookDirection: Look direction.
 		//! \return Returns true if the plane is front facing, which mean it would
 		//! be visible, and false if it is backfacing.
-		bool isFrontFacing(vector3d<T>& lookDirection) ;
+		bool isFrontFacing(irr::core::vector3d<T>& lookDirection) ;
 
 		//! Returns the plane of this triangle.
-		plane3d<T> getPlane() ;
+		irr::core::plane3d<T> getPlane() ;
 
 		void set(irr::core::vector3d<T>& a, irr::core::vector3d<T>& b, irr::core::vector3d<T>& c);
 
 		//! the three points of the triangle
-		vector3d<T> pointA; 
-		vector3d<T> pointB; 
-		vector3d<T> pointC; 
+		irr::core::vector3d<T> pointA; 
+		irr::core::vector3d<T> pointB; 
+		irr::core::vector3d<T> pointC; 
 	};
 
 

@@ -27,16 +27,16 @@ class line3d
 
 		line3d();
 		line3d(T xa, T ya, T za, T xb, T yb, T zb);
-		line3d( vector3d<T>& start,  vector3d<T>& end);
+		line3d( irr::core::vector3d<T>& start,  irr::core::vector3d<T>& end);
 		line3d( line3d<T>& other);
 
 		// operators
 
-		line3d<T> operator+( vector3d<T>& point);
-		//line3d<T>& operator+=( vector3d<T>& point);
+		line3d<T> operator+( irr::core::vector3d<T>& point);
+		//line3d<T>& operator+=( irr::core::vector3d<T>& point);
 
-		line3d<T> operator-( vector3d<T>& point);
-		//line3d<T>& operator-=( vector3d<T>& point);
+		line3d<T> operator-( irr::core::vector3d<T>& point);
+		//line3d<T>& operator-=( irr::core::vector3d<T>& point);
 
 		bool operator==( line3d<T>& other);
 		//bool operator!=( line3d<T>& other);
@@ -44,7 +44,7 @@ class line3d
 		// functions
 
 		void setLine( T& xa,  T& ya,  T& za,  T& xb,  T& yb,  T& zb);
-		void setLine( vector3d<T>& nstart,  vector3d<T>& nend);
+		void setLine( irr::core::vector3d<T>& nstart,  irr::core::vector3d<T>& nend);
 		void setLine( line3d<T>& line);
 
 		//! Returns length of line
@@ -56,17 +56,17 @@ class line3d
 		T getLengthSQ();
 
 		//! Returns middle of line
-		vector3d<T> getMiddle();
+		irr::core::vector3d<T> getMiddle();
 
 		//! Returns vector of line
-		vector3d<T> getVector();
+		irr::core::vector3d<T> getVector();
 
 		//! Returns if the overgiven point is between start and end of the
 		//! line. Assumes that the point is already somewhere on the line.
-		bool isPointBetweenStartAndEnd( vector3d<T>& point);
+		bool isPointBetweenStartAndEnd( irr::core::vector3d<T>& point);
 
 		//! Returns the closest point on this line to a point
-		vector3d<T> getClosestPoint( vector3d<T>& point);
+		irr::core::vector3d<T> getClosestPoint( irr::core::vector3d<T>& point);
 
 		//! Returns if the line intersects with a shpere
 		//! \param sorigin: Origin of the shpere.
@@ -74,12 +74,12 @@ class line3d
 		//! \return Returns true if there is an intersection.
 		//! If there is one, the distance to the first intersection point
 		//! is stored in outdistance.
-		bool getIntersectionWithSphere(vector3d<T> sorigin, T sradius, f64& outdistance);
+		bool getIntersectionWithSphere(irr::core::vector3d<T> sorigin, T sradius, f64& outdistance);
 		
 		// member variables
 		
-		vector3d<T> start;
-		vector3d<T> end;
+		irr::core::vector3d<T> start;
+		irr::core::vector3d<T> end;
 };
 
 

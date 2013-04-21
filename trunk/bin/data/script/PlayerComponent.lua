@@ -212,6 +212,8 @@ function CPlayerComponent:updatePlayerStateRun(timeStep)
 	
 end
 
+
+
 -- rotatePlayerToFront
 -- Rotate player to front of camera
 function CPlayerComponent:rotatePlayerToFront(rotStep)
@@ -220,35 +222,20 @@ function CPlayerComponent:rotatePlayerToFront(rotStep)
 	local frontx, fronty, frontz	= getObjectFront(self.m_gameObject)
 	local x1,x2,x3, y1,y2,y3 		= getCameraRay(currentCamera)
 	local colx, coly, colz 			= getLevelCollision(x1,x2,x3, y1,y2,y3)
+	local posx, posy, posz 			= getObjectPosition(self.m_gameObject)
 	
-	local aimPos = irr.core.vector3d(colx - frontx, coly - fronty, colz - frontz)
+	local aimPos = irr.core.vector3d(colx - posx, coly - posy, colz - posz)
 	aimPos.Y = 0
 	aimPos:normalize()
+
+	local v0 = irr.core.vector3d(frontx, fronty, frontz)
+	ret = CVectorUtil.turnToDir(v0, aimPos, rotStep)
 	
+	local lookAt = ret[2];
+	setObjectLookAtPos(self.m_gameObject, lookAt.X, lookAt.Y, lookAt.Z )
+	
+	return ret[1]
 end
-
---[[
-// rotatePlayerToFront
-// rotate player
-bool CPlayerComponent::rotatePlayerToFront(float step)
-{
-	core::line3df	ray		= getCameraRay();
-	core::vector3df	colPos	= getCollisionPoint(ray);
-			
-	// rotate main character		
-	core::vector3df v0 = m_gameObject->getFront();
-	core::vector3df aimPos = colPos - m_gameObject->getPosition();
-	aimPos.Y = 0;
-	aimPos.normalize();
-
-	bool finish = false;
-	if ( turnToDir( v0, aimPos, 6.0f ) == true )
-		finish = true;
-
-	m_gameObject->lookAt( m_gameObject->getPosition() + v0 );
-	return finish;
-}
---]]
 
 -----------------------------------------------------------
 -- C/C++ call interface 

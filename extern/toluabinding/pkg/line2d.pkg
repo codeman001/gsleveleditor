@@ -32,10 +32,10 @@ class line2d
 		// operators
 
 		irr::core::line2d<T> operator+( irr::core::vector2d<T>& point);
-		//line2d<T>& operator+=( vector2d<T>& point) { start += point; end += point; return *this; };
+		//line2d<T>& operator+=( irr::core::vector2d<T>& point) { start += point; end += point; return *this; };
 
 		irr::core::line2d<T> operator-( irr::core::vector2d<T>& point);
-		//line2d<T>& operator-=( vector2d<T>& point) { start -= point; end -= point; return *this; };
+		//line2d<T>& operator-=( irr::core::vector2d<T>& point) { start -= point; end -= point; return *this; };
 
 		bool operator==( irr::core::line2d<T>& other);
 		//bool operator!=( line2d<T>& other);
@@ -52,7 +52,7 @@ class line2d
 
 		//! Returns the vector of the line.
 		//! \return Returns the vector of the line.
-		vector2d<T> getVector();
+		irr::core::vector2d<T> getVector();
 
 		//! Tests if this line intersects with an other line.
 		//! \param l: Other line to test intersection with.

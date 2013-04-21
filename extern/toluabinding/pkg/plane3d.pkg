@@ -40,10 +40,10 @@ class plane3d
 
 		plane3d();
 		
-		plane3d( vector3d<T>& MPoint,  vector3d<T>& Normal);
+		plane3d( irr::core::vector3d<T>& MPoint,  irr::core::vector3d<T>& Normal);
 		plane3d(T px, T py, T pz, T nx, T ny, T nz);
 		plane3d( plane3d<T>& other);
-		plane3d( vector3d<T>& point1,  vector3d<T>& point2,  vector3d<T>& point3);
+		plane3d( irr::core::vector3d<T>& point1,  irr::core::vector3d<T>& point2,  irr::core::vector3d<T>& point3);
 
 		// operators
 
@@ -52,11 +52,11 @@ class plane3d
 
 		// functions
 
-		void setPlane( vector3d<T>& point,  vector3d<T>& nvector);
+		void setPlane( irr::core::vector3d<T>& point,  irr::core::vector3d<T>& nvector);
 
-		void setPlane( vector3d<T>& nvect, T d);
+		void setPlane( irr::core::vector3d<T>& nvect, T d);
 
-		void setPlane( vector3d<T>& point1,  vector3d<T>& point2,  vector3d<T>& point3);
+		void setPlane( irr::core::vector3d<T>& point1,  irr::core::vector3d<T>& point2,  irr::core::vector3d<T>& point3);
 
 
 		//! Returns an intersection with a 3d line.
@@ -64,7 +64,7 @@ class plane3d
 		//! \param linePoint: Point of the line to intersect with.
 		//! \param outIntersection: Place to store the intersection point, if there is one.
 		//! \return Returns true if there was an intersection, false if there was not.
-		bool getIntersectionWithLine( vector3d<T>& linePoint,  vector3d<T>& lineVect, vector3d<T>& outIntersection) ;
+		bool getIntersectionWithLine( irr::core::vector3d<T>& linePoint,  irr::core::vector3d<T>& lineVect, irr::core::vector3d<T>& outIntersection) ;
 
 		//! Returns where on a line between two points an intersection with this plane happened.
 		//! Only useful if known that there is an intersection.
@@ -72,28 +72,28 @@ class plane3d
 		//! \param linePoint2: Point2 of the line to intersect with.
 		//! \return Returns where on a line between two points an intersection with this plane happened.
 		//! For example, 0.5 is returned if the intersection happened exectly in the middle of the two points.
-		f32 getKnownIntersectionWithLine( vector3d<T>& linePoint1,  vector3d<T>& linePoint2) ;
+		f32 getKnownIntersectionWithLine( irr::core::vector3d<T>& linePoint1,  irr::core::vector3d<T>& linePoint2) ;
 
 		//! Returns an intersection with a 3d line, limited between two 3d points.
 		//! \param linePoint1: Point 1 of the line.
 		//! \param linePoint2: Point 2 of the line.
 		//! \param outIntersection: Place to store the intersection point, if there is one.
 		//! \return Returns true if there was an intersection, false if there was not.
-		bool getIntersectionWithLimitedLine( vector3d<T>& linePoint1,  vector3d<T>& linePoint2, vector3d<T>& outIntersection) ;
+		bool getIntersectionWithLimitedLine( irr::core::vector3d<T>& linePoint1,  irr::core::vector3d<T>& linePoint2, irr::core::vector3d<T>& outIntersection) ;
 
 		//! Classifies the relation of a point to this plane.
 		//! \param point: Point to classify its relation.
 		//! \return Returns ISREL3D_FRONT if the point is in front of the plane,
 		//! ISREL3D_BACK if the point is behind of the plane, and
 		//! ISREL3D_PLANAR if the point is within the plane.
-		EIntersectionRelation3D classifyPointRelation( vector3d<T>& point) ;
+		EIntersectionRelation3D classifyPointRelation( irr::core::vector3d<T>& point) ;
 
 		//! Recalculates the distance from origin by applying
 		//! a new member point to the plane.
-		void recalculateD( vector3d<T>& MPoint);
+		void recalculateD( irr::core::vector3d<T>& MPoint);
 
 		//!\return Returns a member point of the plane.
-		vector3d<T> getMemberPoint() ;
+		irr::core::vector3d<T> getMemberPoint() ;
 
 		//! Tests if there is a intersection between this plane and another
 		//! \return Returns true if there is a intersection.
@@ -101,25 +101,25 @@ class plane3d
 
 		//! Intersects this plane with another.
 		//! \return Returns true if there is a intersection, false if not.
-		bool getIntersectionWithPlane( plane3d<T>& other, vector3d<T>& outLinePoint, vector3d<T>& outLineVect) ;
+		bool getIntersectionWithPlane( plane3d<T>& other, irr::core::vector3d<T>& outLinePoint, irr::core::vector3d<T>& outLineVect) ;
 
 		//! Returns the intersection point with two other planes if there is one.
-		bool getIntersectionWithPlanes( plane3d<T>& o1,  plane3d<T>& o2, vector3d<T>& outPoint) ;
+		bool getIntersectionWithPlanes( plane3d<T>& o1,  plane3d<T>& o2, irr::core::vector3d<T>& outPoint) ;
 
 		//! Returns if the plane is front of backfacing. Note that this only
 		//! works if the normal is Normalized.
 		//! \param lookDirection: Look direction.
 		//! \return Returns true if the plane is front facing, which mean it would
 		//! be visible, and false if it is backfacing.
-		bool isFrontFacing( vector3d<T>& lookDirection) ;
+		bool isFrontFacing( irr::core::vector3d<T>& lookDirection) ;
 
 		//! Returns the distance to a point.  Note that this only
 		//! works if the normal is Normalized.
-		T getDistanceTo( vector3d<T>& point) ;
+		T getDistanceTo( irr::core::vector3d<T>& point) ;
 	
 		// member variables
 		
-		vector3d<T> Normal;		// normal vector
+		irr::core::vector3d<T> Normal;		// normal vector
 		T D;					// distance from origin
 		
 };

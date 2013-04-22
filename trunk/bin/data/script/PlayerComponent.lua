@@ -62,7 +62,8 @@ function CPlayerComponent.create(gameObj)
 	newObj.m_inputReload		= 0
 	
 	-- spine
-	newObj.m_spineRotX			= 0.0
+	newObj.m_spineRotX				= 0.0
+	newObj.m_needRotateCharacter	= false
 	
 	-- get list scene node
 	newObj.m_allSceneNodes		= {}
@@ -176,7 +177,7 @@ function CPlayerComponent:updateState(timeStep)
 	}
 				
 	local stateUpBodyUpdate = {
-		[k_playerUpBodyAim]		= function() end,
+		[k_playerUpBodyAim]		= function() self:updatePlayerUpBodyAim(timeStep)	end,
 		[k_playerUpBodyShoot]	= function() end,
 		[k_playerUpBodyReload]	= function() end,
 	}
@@ -195,8 +196,9 @@ function CPlayerComponent:updatePlayerStateStand(timeStep)
 	
 	if self.m_playerSubState == k_playerSubStateInit then
 		-- init state
+		-- set anim on layer 0
 		setColladaAnimation(self.m_collada, k_playerAnimShootMachineGuns, 0, true, 0)
-		pauseColladaAnimAtFrame(self.m_collada, 0, 0)
+		pauseColladaAnimAtFrame(self.m_collada, 0, 0, 0)
 		
 		self.m_playerSubState = k_playerSubStateUpdate
 	elseif self.m_playerSubState == k_playerSubStateEnd then
@@ -204,10 +206,12 @@ function CPlayerComponent:updatePlayerStateStand(timeStep)
 		self.doNextState()
 	end
 	 
-	-- update state
-	-- debug("run: " .. self.m_inputRun .. " rot: " .. self.m_inputRunRotate)	
-	self:rotatePlayerToFront(6.0)
+	-- rotate character	
+	if self.m_needRotateCharacter == true then
+		self.m_needRotateCharacter = (self:rotatePlayerToFront(6.0) == false)
+	end
 	
+	-- check input
 end
 
 -- updatePlayerStateRun
@@ -217,6 +221,36 @@ function CPlayerComponent:updatePlayerStateRun(timeStep)
 end
 
 
+-- updatePlayerUpBodyAim
+-- Update aim
+function CPlayerComponent:updatePlayerUpBodyAim(timeStep)
+
+	if self.m_playerSubUpState == k_playerSubStateInit then
+		-- init state
+		-- set anim on layer 1
+		setColladaAnimation(self.m_collada, k_playerAnimShootMachineGuns, 0, true, 1)
+		pauseColladaAnimAtFrame(self.m_collada, 0, 0, 1)
+		
+		self.m_playerSubUpState = k_playerSubStateUpdate
+	elseif self.m_playerSubUpState == k_playerSubStateEnd then
+		-- end state
+		self.doNextUpBodyState()
+	end
+
+	-- rotate spine
+	local angle = self:getAngleFromPlayerFrontToCameraView()
+	self.m_spineRotX = -angle
+		
+	-- rotate character if the angle is too large
+	if math.abs(angle) >= 45 then
+		self.m_needRotateCharacter = true
+	end
+	
+end
+
+-----------------------------------------------------------
+-- player support function implement
+-----------------------------------------------------------
 
 -- rotatePlayerToFront
 -- Rotate player to front of camera
@@ -241,11 +275,33 @@ function CPlayerComponent:rotatePlayerToFront(rotStep)
 	return ret[1]
 end
 
+-- getAngleFromPlayerFrontToCameraView
+-- get angle from camera view & player front
+function CPlayerComponent:getAngleFromPlayerFrontToCameraView()
+	local currentCamera = getActiveCamera()
+	local frontx, fronty, frontz	= getObjectFront(self.m_gameObject)
+	local x1,x2,x3, y1,y2,y3 		= getCameraRay(currentCamera)
+	local colx, coly, colz 			= getLevelCollision(x1,x2,x3, y1,y2,y3)
+	local posx, posy, posz 			= getObjectPosition(self.m_gameObject)
+	
+	local cameraFront = irr.core.vector3d(colx - posx, coly - posy, colz - posz)
+	cameraFront.Y = 0
+	cameraFront:normalize()
+	
+	local playerFront = irr.core.vector3d(frontx, fronty, frontz)
+	
+	return CVectorUtil.getAngle(playerFront, cameraFront)	
+end
+
+-----------------------------------------------------------
+-- player bone callback implement
+-----------------------------------------------------------
+
 -- boneTransformCallback
 -- call when apply modify bone transform
 function CPlayerComponent:boneTransformCallback(boneName)
 	-- new quanternion
-	q = irr.core.quaternion()
+	local q = irr.core.quaternion()
 	
 	if boneName == "Bip01_Spine1-node" then		
 		-- rot x

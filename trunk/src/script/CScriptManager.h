@@ -113,6 +113,10 @@ namespace NSScriptManager
 		// example:
 		// startFunc("function","is",10,"helloWorld")
 		int startFunc( const char *func, const char *argType, ... );
+	
+		// getResultAsUserData
+		// get value return from function
+		void* startFuncAndGetResult( const char *func, const char *argType, ... );
 
 		// stopFunc
 		// stop lua func

@@ -396,6 +396,71 @@ int CScriptManager::startFunc( const char *func, const char *sig, ... )
 	return idx;
 }
 
+// getResultAsUserData
+// get result from lua func
+void *CScriptManager::startFuncAndGetResult( const char *func, const char *sig, ... )
+{
+	// set function name
+	lua_getglobal(m_state, func);
+
+	// set variable
+	va_list vl;
+	int narg, nres;
+	va_start(vl, sig);
+
+	nres = (int)strlen(sig);
+	
+	double d = 0.0f;
+	long i = 0;
+	unsigned long l = 0;
+	char *s = NULL;
+	
+	// also push parameter
+	for (narg = 0; *sig; narg++) 
+	{		
+		switch (*sig++) 
+		{
+		case 'd':
+			//double argument
+			d = va_arg(vl, double);
+			lua_pushnumber(m_state, d);
+			break;
+		case 'i':
+			//integer argument
+			i = va_arg(vl, long);
+			lua_pushinteger(m_state, i);
+			break;
+		case 'l':
+			// unsigned long argument
+			i = va_arg(vl, unsigned long);
+			lua_pushinteger(m_state, i);
+			break;
+		case 's':
+			//string argument
+			s = va_arg(vl, char *);
+			lua_pushstring(m_state, s);
+			break;
+		case '>':
+		default:
+			break;
+		}
+	}
+
+	// call the function with narg arguments, return 1 result
+	lua_call(m_state, narg, 1);
+
+	// check result return
+	if (!lua_isuserdata(m_state, -1)) 	
+		return NULL;
+
+	// get result
+	void *u = lua_touserdata(m_state, -1);
+	
+	// remove result on stack
+	lua_pop(m_state, 1);
+
+	return (u==NULL) ? NULL : *((void**)u);
+}
 
 // stopFunc
 // stop lua func

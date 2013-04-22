@@ -61,6 +61,9 @@ function CPlayerComponent.create(gameObj)
 	newObj.m_inputShoot 		= 0
 	newObj.m_inputReload		= 0
 	
+	-- spine
+	newObj.m_spineRotX			= 0.0
+	
 	-- get list scene node
 	newObj.m_allSceneNodes		= {}
 	newObj.m_allUpbodyNodes		= {}
@@ -113,6 +116,7 @@ function CPlayerComponent.create(gameObj)
 	enableColladaAnimationLayer(newObj.m_collada, 1, true)
 	
 	setSceneNodeIsJoinAnimLayer(newObj.m_collada, "Bip01_Spine1-node", true, false, false, false)
+	applyModifyPlayerBoneTransform(newObj.m_playerComp,"Bip01_Spine1-node", "updatePlayerComponentBoneTransformCallback");
 	
 	return newObj;
 end
@@ -237,6 +241,20 @@ function CPlayerComponent:rotatePlayerToFront(rotStep)
 	return ret[1]
 end
 
+-- boneTransformCallback
+-- call when apply modify bone transform
+function CPlayerComponent:boneTransformCallback(boneName)
+	-- new quanternion
+	q = irr.core.quaternion()
+	
+	if boneName == "Bip01_Spine1-node" then		
+		-- rot x
+		q:fromAngleAxis(k_degToRad*self.m_spineRotX, irr.core.vector3d(1,0,0));
+	end
+	
+	return q
+end
+
 -----------------------------------------------------------
 -- C/C++ call interface 
 -----------------------------------------------------------
@@ -276,6 +294,16 @@ function updatePlayerComponentInput(objectName, isRun, runStrength, runRotate, s
 		playerComp.m_inputReload		= reload
 		
 	end
+end
+
+-- updatePlayerComponentBoneTransformCallback
+-- update when bone transform
+function updatePlayerComponentBoneTransformCallback(objectName, boneName)
+	-- implement bone transform callback
+	if CPlayerComponentList[objectName] ~= nil then
+		return CPlayerComponentList[objectName]:boneTransformCallback(boneName)
+	end		
+	return irr.core.quaternion()
 end
 
 debug("-----------------------------------------------------------------\n\n")

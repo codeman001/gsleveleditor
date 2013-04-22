@@ -12,9 +12,9 @@ CVectorUtil.__index = CVectorUtil
 
 function CVectorUtil.turnToDir(dir, turnTo, speed)
 	-- rotate front vec
-	local f = speed*0.1*30;	
+	local f = speed*0.1*getTimeStep();	
 	
-	if ( f >= math.abs( CVectorUtil.getAngle(dir, turnTo)) ) then	
+	if ( f >= math.abs( CVectorUtil.getAngle(dir, turnTo)) ) then		
 		dir = turnTo;
         return {true, turnTo};
 	end

@@ -38,15 +38,10 @@ protected:
 	CColladaMeshComponent*	m_collada;
 
 	bool					m_initPlayer;
-	float					m_muzzleMeshTime;
 	
-	CGameObject*			m_owner;
-	CGameObject*			m_gunMuzzle;
-
-    CLightObject*           m_gunLight;
-    CGunLightComponent*     m_gunLightComp;  
-
+	CGameObject*			m_owner;	
 	std::string				m_luaObjName;
+
 protected:
         
     // doNextState
@@ -56,28 +51,30 @@ protected:
     // isFinishedAnim	
 	bool isFinishedAnim( std::vector<CGameColladaSceneNode*>& nodes, int trackChannel = 0, int animLayer = 0);    	
         
-   
-protected:
-    // calcRunAnimationBlend
-	// calc animation
-	void calcRunAnimationBlend(float rot, float &forward, float &backward, float &left, float &right);
-    
-	void calcAimAnimationBlend(core::vector2df angle, float &up, float &down, float &left, float &right);
-
-	inline void showMuzzle(float time)
+public:
+	// registerBoneTransformCallback
+	// register 
+	void registerBoneTransformCallback(CGameColladaSceneNode* bone, std::string& function)
 	{
-		m_muzzleMeshTime = time;
+		m_boneTransformCallback[bone] = function;
 	}
 
-    // getZoneBulletComponent
-    // get bullet manager
-    CBulletRayComponent* getZoneBulletComponent();
-    
+	// unRegisterBoneTransformCallback
+	// unregister callback 
+	void unRegisterBoneTransformCallback(CGameColladaSceneNode* bone)
+	{
+		std::map<CGameColladaSceneNode*, std::string>::iterator it;
+		it = m_boneTransformCallback.find(bone);
+
+		if ( it != m_boneTransformCallback.end() )		
+			m_boneTransformCallback.erase(it);		
+	}
+
+protected:
+ 	
+
 protected:
 	void update();
-	void updateMuzzleMesh();
-
-	void initAnimationCallback();
 	void initPlayerObjects();
 
 	// call back frame update on scenenode
@@ -85,6 +82,8 @@ protected:
 	virtual void _onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel, int animLayer);
 	virtual void _onUpdateFinishAbsolute( ISceneNode* node, core::matrix4& absoluteAnimationMatrix );
 	
+protected:
+	std::map<CGameColladaSceneNode*, std::string>	m_boneTransformCallback;
 
 };
 

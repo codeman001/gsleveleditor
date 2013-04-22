@@ -12,6 +12,14 @@
 // GAME OBJECT FUNCTION IMPLEMENT
 //////////////////////////////////////////////////////////
 
+// getTimeStep
+// return TPF
+int getTimeStep(lua_State* state)
+{
+	lua_pushnumber(state, (double)getIView()->getTimeStep());
+	return 1;
+}
+
 // getObjectByName
 // get object id by name
 // param: objName
@@ -731,12 +739,33 @@ int getPlayerComponent(lua_State* state)
 	return 1;
 }
 
+// applyModifyPlayerBoneTransform
+// set callback for this
+int applyModifyPlayerBoneTransform(lua_State *state)
+{
+	lua_Integer playerID = lua_tointeger(state, 1);
+	const char *nodeName = lua_tostring(state,2);
+	const char *callbackFunc = lua_tostring(state,3);
+
+	// get component
+	CPlayerComponent *playerComp = (CPlayerComponent*)playerID;
+	CColladaMeshComponent *colladaComp = (CColladaMeshComponent*)playerComp->getGameObject()->getComponent(IObjectComponent::ColladaMesh);
+	
+	// register callback
+	CGameColladaSceneNode* node = colladaComp->getSceneNode(nodeName);
+	node->setAnimationCallback((CBasePlayerState*)playerComp);
+	playerComp->registerBoneTransformCallback(node, std::string(callbackFunc));
+
+	return 0;
+}
+
 /////////////////////////////////////////////////////////////
 // registerCFunction
 // implement lua func by c++ language
 void registerCFunction()
 {
 	// object function
+	REGISTER_C_FUNCTION(getTimeStep);
 	REGISTER_C_FUNCTION(getObjectByName);
 	REGISTER_C_FUNCTION(disableObject);
 	REGISTER_C_FUNCTION(enableObject);
@@ -787,7 +816,7 @@ void registerCFunction()
 
 	// player function
 	REGISTER_C_FUNCTION(getPlayerComponent);	
-	
+	REGISTER_C_FUNCTION(applyModifyPlayerBoneTransform);
 }
 // end register
 /////////////////////////////////////////////////////////////

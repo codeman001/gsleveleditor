@@ -14,6 +14,14 @@ void getArrayFromVector( const core::vector3df& v, float *floatArray )
 	floatArray[2] = v.Z;
 }
 
+void getArrayFromQuaternion( const core::quaternion& q, float *floatArray )
+{
+	floatArray[0] = q.X;
+	floatArray[1] = q.Y;
+	floatArray[2] = q.Z;
+	floatArray[3] = q.W;
+}
+
 //////////////////////////////////////////////
 // struct declare
 //////////////////////////////////////////////
@@ -214,7 +222,7 @@ void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode
 
 
 	char	stringc[STRING_BUFFER_SIZE];
-	float	floatArray[3];
+	float	floatArray[4];
 
 	// identity id
 	unsigned int pointerID = (unsigned int) ((unsigned long)node);
@@ -266,7 +274,21 @@ void CBinaryUtils::saveColladaScene( io::IWriteFile *file, CGameColladaSceneNode
 	// animation matrix
 	memStream.writeData( node->AnimationMatrix.pointer(), sizeof(f32)*16 );
 	memStream.writeData( node->AbsoluteAnimationMatrix.pointer(), sizeof(f32)*16 );
-	memStream.writeData( node->LocalMatrix.pointer(), sizeof(f32)*16 );
+	
+	// local transform
+	getArrayFromVector( node->LocalPosition, floatArray );
+	memStream.writeData( floatArray, sizeof(float)*3 );
+	
+	getArrayFromVector( node->LocalScale, floatArray );
+	memStream.writeData( floatArray, sizeof(float)*3 );
+
+	getArrayFromQuaternion( node->LocalRotation, floatArray);
+	memStream.writeData( floatArray, sizeof(float)*4 );	
+
+	memStream.writeData(node->LocalMatrix.pointer(), sizeof(float)*16);
+
+	int useLocalMtx = node->UseLocalMatrix == true?1:0;
+	memStream.writeData( &useLocalMtx, sizeof(int) );	
 
 	// check have mesh
 	int haveMesh = 1;
@@ -799,7 +821,7 @@ void CBinaryUtils::readColladaScene( unsigned char *data, unsigned int size, CGa
 	CMemoryReadWrite memStream( data, size );
 
 	char	stringc[STRING_BUFFER_SIZE];
-	float	floatArray[3];
+	float	floatArray[4];
 	float	matrix[16];
 
 	// identity id
@@ -874,12 +896,29 @@ void CBinaryUtils::readColladaScene( unsigned char *data, unsigned int size, CGa
 	memStream.readData( matrix, sizeof(f32)*16 );
 	newNode->AbsoluteAnimationMatrix.setM( matrix );
 
-	memStream.readData( matrix, sizeof(f32)*16 );
-	newNode->LocalMatrix.setM( matrix );
+
+	// local transform
+	memStream.readData( floatArray, sizeof(float)*3 );
+	newNode->LocalPosition = core::vector3df(floatArray[0], floatArray[1], floatArray[2]);
+
+	memStream.readData( floatArray, sizeof(float)*3 );
+	newNode->LocalScale = core::vector3df(floatArray[0], floatArray[1], floatArray[2]);
+
+	memStream.readData( floatArray, sizeof(float)*4 );
+	newNode->LocalRotation.X = floatArray[0];
+	newNode->LocalRotation.Y = floatArray[1];
+	newNode->LocalRotation.Z = floatArray[2];
+	newNode->LocalRotation.W = floatArray[3];
+	
+	memStream.readData( newNode->LocalMatrix.pointer(), sizeof(float)*16 );	
+	
+	int useLocalMtx = 1;	
+	memStream.readData( &useLocalMtx, sizeof(int) );
+	newNode->UseLocalMatrix = (useLocalMtx == 1);
 
 	// check have mesh
 	int haveMesh = 1;	
-	memStream.readData( &haveMesh, sizeof(int) );	
+	memStream.readData( &haveMesh, sizeof(int) );
 
 	if ( haveMesh )
 	{		

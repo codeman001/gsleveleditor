@@ -79,6 +79,8 @@ CGameAnimationTrack::CGameAnimationTrack()
 
 	m_isCrossAnim = false;
 	m_crossAnimationLoop = false;	
+
+	UseLocalTransform = true;
 }
 
 CGameAnimationTrack::~CGameAnimationTrack()
@@ -86,7 +88,9 @@ CGameAnimationTrack::~CGameAnimationTrack()
 
 }
 
-void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix)
+void CGameAnimationTrack::getFrameData(f32 frame, 
+									   core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, 
+									   const core::vector3df &localPos, const core::vector3df &localScale, const core::quaternion &localRot)
 {
 	s32 foundPositionIndex	= -1;
 	s32 foundScaleIndex		= -1;
@@ -151,7 +155,10 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 	}
 	else
 	{
-		position = DefaultPos;
+		if ( UseLocalTransform )
+			position = localPos;
+		else
+			position = DefaultPos;
 	}
 
 #pragma endregion	
@@ -212,7 +219,10 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 	}
 	else
 	{
-		scale = DefaultScale;	
+		if ( UseLocalTransform )
+			scale = localScale;
+		else
+			scale = DefaultScale;	
 	}
 #pragma endregion
 	
@@ -274,7 +284,10 @@ void CGameAnimationTrack::getFrameData(f32 frame, core::vector3df &position, cor
 	}
 	else
 	{		
-		rotation = DefaultRot;
+		if ( UseLocalTransform )
+			rotation = localRot;
+		else
+			rotation = DefaultRot;
 	}
 #pragma endregion
 
@@ -413,7 +426,9 @@ void CGameAnimation::sortWeightTrack( SAnimWeight *arrayTrack, int &num )
 
 // getFrameData
 // get anim at frame
-void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix, IGameAnimationCallback* callback, ISceneNode *parent, int layer)
+void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, 
+								  const core::vector3df& localPos, const core::vector3df& localScale, const core::quaternion& localRot,
+								  IGameAnimationCallback* callback, ISceneNode *parent, int layer)
 {
 	SAnimWeight sortWeight[MAX_ANIMTRACK];
 	memset(sortWeight, 0, sizeof(sortWeight));
@@ -437,10 +452,8 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 		m_animTrack[i].getFrameData
 			(
 				m_animTrack[i].getCurrentFrame(), 
-				posTrack, 
-				scaleTrack, 
-				rotTrack, 
-				localMatrix 
+				posTrack, scaleTrack, rotTrack, 
+				localPos,localScale, localRot 
 			);
 
 		// implement callback
@@ -489,7 +502,7 @@ void CGameAnimation::getFrameData( core::vector3df &position, core::vector3df &s
 
 // synchronizedTimeScale
 // sync speed of n track
-void CGameAnimation::synchronizedByTimeScale(float baseRatio)
+bool CGameAnimation::synchronizedByTimeScale(float baseRatio)
 {
 	float syncFrame = 0;
     
@@ -513,25 +526,25 @@ void CGameAnimation::synchronizedByTimeScale(float baseRatio)
 		}
 	}
 
-    if ( syncFrame == 0.0f || baseChannel == -1 )
-        return;
+	if ( baseChannel == -1 )
+        return false;
     
 	for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 	{
-		if ( m_animTrack[i].isEnable() == true && m_animTrack[i].getTotalFrame() != 0 && m_animTrack[i].getAnimWeight() > 0.0f)
+		if ( m_animTrack[i].isEnable() == true && m_animTrack[i].getAnimWeight() >= 0.0f )
 		{
-			float speedRatio = m_animTrack[i].getTotalFrame()/syncFrame;
-            
+			float speedRatio = m_animTrack[i].getTotalFrame()/syncFrame;            
 			m_animTrack[i].setSpeedRatio( speedRatio * baseRatio );
             
-            if ( i != baseChannel )
+			if ( i != baseChannel )
             {
                 frameRatio = core::clamp<float>(frameRatio, 0.0f, 1.0f);
-                m_animTrack[i].setCurrentFrame( frameRatio*m_animTrack[i].getTotalFrame() );
+				m_animTrack[i].setCurrentFrame( frameRatio*m_animTrack[i].getTotalFrame() );
             }
 		}
 	}
     
+	return true;
 }
 
 // update
@@ -758,9 +771,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	m_animationLayer		= 0;
 	m_connectLayerAnim		= false;
 	
-	m_linkRotateX = false;
-	m_linkRotateY = false;
-	m_linkRotateZ = false;
+	m_linkMatrixLayer = false;
 
 	m_enableBoneBBox = true;
 
@@ -776,6 +787,8 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	#endif
 
 #endif
+
+	UseLocalMatrix = false;
 
 	Box.MinEdge = core::vector3df(-2, -2, -2);
 	Box.MaxEdge = core::vector3df( 2,  2,  2);
@@ -910,7 +923,7 @@ void CGameColladaSceneNode::updateAbsolutePosition()
             continue;
         
 		// apply custom transform (skybox) with anim matrix
-		RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(), AnimationMatrixLayer[i]);			
+		RelativeMatrix.setbyproduct_nocheck(getRelativeTransformation(), AnimationMatrixLayer[i]);
 
         // calc absolute animation
         if ( m_isRootColladaNode == true )
@@ -930,25 +943,29 @@ void CGameColladaSceneNode::updateAbsolutePosition()
             // translate to right position
             if ( m_connectLayerAnim == true && m_isRootColladaNode == false && i > 0 )
             {
-                // calc position
-                core::vector3df parentPos = colladaParent->AbsoluteAnimationMatrix.getTranslation();                
-                core::vector3df myParentPos = colladaParent->AbsoluteAnimationMatrixLayer[i].getTranslation();                
-                core::vector3df myPos = AbsoluteAnimationMatrixLayer[i].getTranslation();
-                core::vector3df offset = myPos - myParentPos;                
-                
-				// change to right position
-				AbsoluteAnimationMatrixLayer[i].setTranslation(parentPos + offset);
-
-                // calc rotation
-				if (m_linkRotateY)
+				if ( m_linkMatrixLayer )
 				{
-					//float rotY = AbsoluteAnimationMatrixLayer[0].getRotationDegrees().Y;
-					//core::vector3df myRot = AbsoluteAnimationMatrixLayer[i].getRotationDegrees();
-					//myRot.Y = rotY;
-					//AbsoluteAnimationMatrixLayer[i].setRotationDegrees(myRot);
-
 					AbsoluteAnimationMatrixLayer[i] = AbsoluteAnimationMatrixLayer[0];
-				}                
+				}
+				else
+				{
+					core::vector3df absPos = AbsoluteAnimationMatrixLayer[0].getTranslation();
+					core::vector3df absRot = AbsoluteAnimationMatrixLayer[i].getRotationDegrees();
+					core::vector3df absScale = AbsoluteAnimationMatrixLayer[i].getScale();
+
+					core::matrix4 mRot;
+					mRot.setRotationDegrees(absRot);
+
+					core::matrix4 mScale;
+					mScale.setScale(absScale * core::vector3df(1,-1,1));
+									
+					core::matrix4 mTrans;
+					mTrans.setTranslation(absPos);
+
+					AbsoluteAnimationMatrixLayer[i] = mTrans;
+					AbsoluteAnimationMatrixLayer[i] *= mRot;
+					AbsoluteAnimationMatrixLayer[i] *= mScale;
+				}
             }
             
 			// callback
@@ -975,6 +992,26 @@ void CGameColladaSceneNode::updateAbsolutePosition()
         }
         
     }
+}
+
+// getLocalMatrix
+// get local matrix
+const core::matrix4 CGameColladaSceneNode::getLocalMatrix()
+{
+	// rotation
+	core::matrix4 mat = LocalMatrix;
+	if ( UseLocalMatrix == false )
+	{
+		core::matrix4 matScale;
+	
+		mat.setTranslation(LocalPosition);
+		mat *= LocalRotation.getMatrix();	
+
+		matScale.setScale(LocalScale);
+		mat *= matScale;
+	}
+
+	return mat;
 }
 
 void CGameColladaSceneNode::reCalcAbsoluteMatrix()
@@ -1202,14 +1239,15 @@ void CGameColladaSceneNode::updateAnimation()
     core::vector3df basePosition;
     core::vector3df baseScale;
     core::quaternion baseRotation;
+
     bool haveCalcBase = false;
     
     for ( int i = 0; i < MAX_ANIMLAYER; i++ )
     {   
         if ( m_gameAnimation[i].isEnable() == false )
             continue;
-        		
-		if ( m_gameAnimation[i].isHaveAnim() == false )
+
+		if ( UseLocalMatrix )
 		{
 			// no animation
 			AnimationMatrixLayer[i] = LocalMatrix;
@@ -1221,7 +1259,10 @@ void CGameColladaSceneNode::updateAnimation()
 			core::vector3df scale;
 			core::quaternion rotation;
 		
-			m_gameAnimation[i].getFrameData( position, scale, rotation, LocalMatrix, m_animationCallback, this, m_animationLayer);
+			m_gameAnimation[i].getFrameData( 
+				position, scale, rotation, 
+				LocalPosition, LocalScale, LocalRotation, 
+				m_animationCallback, this, m_animationLayer);
 
 			// run callback
 			if ( m_animationCallback )
@@ -1306,6 +1347,7 @@ void CGameColladaSceneNode::updateAnimation()
 				AnimationMatrixLayer[i] *= ColladaMesh->InvBindShapeMatrix;
 			}
 		}
+
     }
 }
 
@@ -1755,8 +1797,12 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 	newNode->AnimationMatrix = AnimationMatrix;
 	newNode->AbsoluteAnimationMatrix = AbsoluteAnimationMatrix;
 
-	newNode->LocalMatrix = LocalMatrix;
-	
+	newNode->LocalPosition	= LocalPosition;
+	newNode->LocalScale		= LocalScale;
+	newNode->LocalRotation	= LocalRotation;
+	newNode->LocalMatrix	= LocalMatrix;
+	newNode->UseLocalMatrix	= UseLocalMatrix;
+
 	newNode->ColladaMesh = NULL;
 	if ( ColladaMesh )
 	{
@@ -1787,9 +1833,7 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 	newNode->m_animationLayer	= m_animationLayer;
 	newNode->m_connectLayerAnim	= m_connectLayerAnim;
 
-	newNode->m_linkRotateX		= m_linkRotateX;
-	newNode->m_linkRotateY		= m_linkRotateY;
-	newNode->m_linkRotateZ		= m_linkRotateZ;
-
+	newNode->m_linkMatrixLayer	= m_linkMatrixLayer;
+	
 	return newNode;
 }

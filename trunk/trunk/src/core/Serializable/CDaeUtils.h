@@ -155,13 +155,14 @@ struct SNodeParam
 	std::wstring			Instance;
 	
 	core::matrix4			Transform;
+	bool					UseTransform;
+
 	core::quaternion		Rot;
 	core::vector3df			Pos;
 	core::vector3df			Scale;
 
-
-	std::vector<SNodeParam*>		Childs;
-	SNodeParam*				Parent;
+	std::vector<SNodeParam*>	Childs;
+	SNodeParam*					Parent;
 
 	ISkinnedMesh::SJoint	*Joint;
 	CGameColladaSceneNode	*SceneNode;
@@ -172,6 +173,8 @@ struct SNodeParam
 		Joint = NULL;
 		SceneNode = NULL;
 		ChildLevel = 0;
+		UseTransform = true;
+		Scale = core::vector3df(1,1,1);
 	}
 };
 typedef std::vector<SNodeParam*>	ArrayNodeParams;

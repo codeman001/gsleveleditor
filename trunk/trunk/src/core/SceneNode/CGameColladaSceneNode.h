@@ -268,6 +268,7 @@ public:
 	core::vector3df									DefaultPos;
 	core::vector3df									DefaultScale;
 
+	bool											UseLocalTransform;
 public:
 	CGameAnimationTrack();
 	virtual ~CGameAnimationTrack();
@@ -324,7 +325,10 @@ public:
 
 	// getFrameData
 	// get anim at frame
-	void getFrameData(f32 frame, core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix);
+	void getFrameData(
+		f32 frame, 
+		core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, 
+		const core::vector3df &localPos, const core::vector3df &localScale, const core::quaternion &localRot);
 
 	// update
 	// update per frame
@@ -415,11 +419,14 @@ public:
 
 	// getFrameData
 	// get anim at frame
-	void getFrameData( core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, const core::matrix4& localMatrix, IGameAnimationCallback* callback, ISceneNode *parent, int layer);
+	void getFrameData( 
+		core::vector3df &position, core::vector3df &scale, core::quaternion &rotation, 
+		const core::vector3df& localPos, const core::vector3df& localScale, const core::quaternion& localRot,
+		IGameAnimationCallback* callback, ISceneNode *parent, int layer);
 
 	// synchronizedTimeScale
 	// sync speed of n track	
-	void synchronizedByTimeScale(float baseRatio);
+	bool synchronizedByTimeScale(float baseRatio);
 
 	// update
 	// update per frame
@@ -495,8 +502,14 @@ public:
 	core::matrix4	AnimationMatrixLayer[MAX_ANIMLAYER];
     core::matrix4	BaseAbsoluteAnimationMatrixLayer[MAX_ANIMLAYER];
 	core::matrix4	AbsoluteAnimationMatrixLayer[MAX_ANIMLAYER];
-    
-	core::matrix4	LocalMatrix;
+    	
+	core::vector3df		LocalPosition;
+	core::vector3df		LocalScale;
+	core::quaternion	LocalRotation;
+
+	core::matrix4		LocalMatrix;	
+	bool				UseLocalMatrix;
+
 	core::matrix4	GlobalInversedMatrix;
 	
 	CGameColladaMesh	*ColladaMesh;
@@ -521,9 +534,9 @@ protected:
 
 	int				m_animationLayer;
 	bool			m_connectLayerAnim;
-	bool			m_linkRotateX;
-	bool			m_linkRotateY;
-	bool			m_linkRotateZ;
+	
+	bool			m_linkMatrixLayer;	
+
 public:
 	CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id, bool hardwareSkinning = true);
 
@@ -587,12 +600,10 @@ public:
     }
     
 	// setConnectAnimLayer	
-	inline void setConnectAnimLayer(bool b, bool linkRotX, bool linkRotY, bool linkRotZ)
+	inline void setConnectAnimLayer(bool b, bool linkMatrix)
 	{
 		m_connectLayerAnim = b;
-		m_linkRotateX = linkRotX;
-		m_linkRotateY = linkRotY;
-		m_linkRotateZ = linkRotZ;
+		m_linkMatrixLayer = linkMatrix;		
 	}
 
 	// setSIDName
@@ -760,14 +771,25 @@ public:
 	
 	void setLocalMatrix( const core::matrix4& mat )
 	{
-		LocalMatrix = mat;
 		AnimationMatrix = mat;
+		LocalMatrix = mat;
+
+		UseLocalMatrix = true;
 	}
 	
-	const core::matrix4& getLocalMatrix()
+	void setLocalTransform( const core::vector3df& pos, const core::vector3df& scale, const core::quaternion& rot )
 	{
-		return LocalMatrix;
+		LocalPosition = pos;
+		LocalScale = scale;
+		LocalRotation = rot;
+
+		LocalMatrix = getLocalMatrix();
+		AnimationMatrix = LocalMatrix;
+
+		UseLocalMatrix = false;
 	}
+
+	const core::matrix4 getLocalMatrix();
 
 	void setAbsoluteTransform( const core::matrix4& mat )
 	{

@@ -527,14 +527,12 @@ int setSceneNodeIsJoinAnimLayer(lua_State* state)
 	lua_Integer colladaID = lua_tointeger(state, 1);
 	const char* sceneNodeName = lua_tostring(state,2);
 	int b = lua_toboolean(state,3);
-
-	int x = lua_toboolean(state,4);
-	int y = lua_toboolean(state,5);
-	int z = lua_toboolean(state,6);
+	int link = lua_toboolean(state,4);
+	
 
 	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
 	if ( collada )	
-		collada->getSceneNode(sceneNodeName)->setConnectAnimLayer(b == 1, x == 1, y == 1, z == 1);	
+		collada->getSceneNode(sceneNodeName)->setConnectAnimLayer(b == 1, link == 1);	
 	
 	return 0;
 }
@@ -715,6 +713,84 @@ int resumeColladaAnim(lua_State* state)
 	return 0;
 }
 
+// setColladaAnimWeight
+// set anim weight
+int setColladaAnimWeight(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state, 1);	
+	float weight = (float)lua_tonumber(state,2);
+	int track	= (int)lua_tointeger(state,3);	
+	int layer	= (int)lua_tointeger(state,4);
+	
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )		
+		collada->setAnimWeight(weight, track, layer);
+
+	return 0;
+}
+
+// setColladaAnimSpeed
+// set anim speed
+int setColladaAnimSpeed(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state, 1);	
+	float speed = (float)lua_tonumber(state,2);
+	int track	= (int)lua_tointeger(state,3);	
+	int layer	= (int)lua_tointeger(state,4);
+	
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )		
+		collada->setAnimSpeed(speed, track, layer);
+
+	return 0;
+}
+
+// colladaSynchronizedAnim
+// sync multi animation
+int colladaSynchronizedAnim(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state, 1);	
+	float speedRatio = (float)lua_tonumber(state,2);
+	int layer	= (int)lua_tointeger(state,3);	
+
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )		
+		collada->synchronizedByTimeScale(layer, speedRatio);
+
+	return 0;
+}
+
+// colladaEnableAnimTrackChannel
+// enable track anim 
+int colladaEnableAnimTrackChannel(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state, 1);
+	int track	= (int)lua_tointeger(state,2);
+	bool enable	= (bool)(lua_toboolean(state,3) == 1);
+	int layer	= (int)lua_tointeger(state,4);
+
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )		
+		collada->enableAnimTrackChannel(track, enable, layer);
+
+	return 0;
+}
+
+// colladaOnlyEnableAnimTrackChannel
+// only enable anim track
+int colladaOnlyEnableAnimTrackChannel(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state, 1);
+	int track	= (int)lua_tointeger(state,2);	
+	int layer	= (int)lua_tointeger(state,3);
+
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )		
+		collada->onlyEnableAnimTrackChannel(track, layer);
+
+	return 0;
+}
+
 //////////////////////////////////////////////////////////
 // PLAYER COMPONENT FUNCTION IMPLEMENT
 //////////////////////////////////////////////////////////
@@ -813,7 +889,12 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(setColladaAnimFrame);
 	REGISTER_C_FUNCTION(pauseColladaAnimAtFrame);
 	REGISTER_C_FUNCTION(resumeColladaAnim);
-
+	REGISTER_C_FUNCTION(setColladaAnimWeight);
+	REGISTER_C_FUNCTION(setColladaAnimSpeed);
+	REGISTER_C_FUNCTION(colladaSynchronizedAnim);
+	REGISTER_C_FUNCTION(colladaEnableAnimTrackChannel);
+	REGISTER_C_FUNCTION(colladaOnlyEnableAnimTrackChannel);
+	
 	// player function
 	REGISTER_C_FUNCTION(getPlayerComponent);	
 	REGISTER_C_FUNCTION(applyModifyPlayerBoneTransform);

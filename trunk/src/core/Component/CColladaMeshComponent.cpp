@@ -201,11 +201,15 @@ void CColladaAnimation::createSynchronizedAnim( const char *lpNewName, const cha
 			float frameSplit = 2.0f;
 			float f = 0.0f;
 			float ratio = time/time1;
+			
+			core::vector3df defaultPos;
+			core::vector3df defaultScale(1,1,1);
+			core::quaternion defaultRot;
 
 			while ( 1 )
 			{				
-				track1.getFrameData(f, pos1, scale1, rot1, core::IdentityMatrix);
-				track2.getFrameData(time2*f/time1, pos2, scale2, rot2, core::IdentityMatrix);
+				track1.getFrameData(f, pos1, scale1, rot1, defaultPos, defaultScale, defaultRot);
+				track2.getFrameData(time2*f/time1, pos2, scale2, rot2,  defaultPos, defaultScale, defaultRot);
 				
 				posKey.frame = f*ratio;
 				posKey.position.interpolate(pos1, pos2, w );
@@ -673,7 +677,12 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 		core::quaternion	currentRotate;
 		CGameAnimationTrack *track = j->getAnimation(animLayer)->getTrack(trackChannel);
 
-		track->getFrameData( track->getCurrentFrame(), currentPos, currentScale, currentRotate, j->LocalMatrix );
+		track->getFrameData( 
+			track->getCurrentFrame(), 
+			currentPos, currentScale, currentRotate, 
+			j->LocalPosition,
+			j->LocalScale,
+			j->LocalRotation);
 
 		CGameAnimationTrack::SRotationKey rot;
 		rot.frame		= 0;
@@ -700,6 +709,7 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 			track->DefaultPos	= anim->DefaultPos;
 			track->DefaultRot	= anim->DefaultRot;
 			track->DefaultScale = anim->DefaultScale;
+			track->UseLocalTransform = false;
 
 			int nRotKey = anim->RotationKeys.size();
 			if ( nRotKey > 0 )
@@ -797,7 +807,10 @@ void CColladaMeshComponent::setCrossFadeAnimationToLayer(const char *lpAnimName,
         
 		CGameAnimationTrack *srcTrack = j->getAnimation(fromAnimLayer)->getTrack(fromChannel);
         
-		srcTrack->getFrameData( srcTrack->getCurrentFrame(), currentPos, currentScale, currentRotate, j->LocalMatrix );
+		srcTrack->getFrameData( 
+			srcTrack->getCurrentFrame(), 
+			currentPos, currentScale, currentRotate, 
+			j->LocalPosition, j->LocalScale, j->LocalRotation);
         
 		CGameAnimationTrack::SRotationKey rot;
 		rot.frame		= 0;
@@ -825,7 +838,7 @@ void CColladaMeshComponent::setCrossFadeAnimationToLayer(const char *lpAnimName,
 			track->DefaultPos	= anim->DefaultPos;
 			track->DefaultRot	= anim->DefaultRot;
 			track->DefaultScale = anim->DefaultScale;
-			
+			track->UseLocalTransform = false;
 
 			int nRotKey = anim->RotationKeys.size();
 			if ( nRotKey > 0 )
@@ -936,6 +949,7 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChanne
 			track->DefaultPos	= anim->DefaultPos;
 			track->DefaultRot	= anim->DefaultRot;
 			track->DefaultScale = anim->DefaultScale;
+			track->UseLocalTransform = false;
 
 			// add rotation key
 			int nRotKey = anim->RotationKeys.size();
@@ -982,6 +996,9 @@ void CColladaMeshComponent::setAnimation(const char *lpAnimName, int trackChanne
 // sync 2 animation
 void CColladaMeshComponent::synchronizedByTimeScale(int animLayer, float speedRatio)
 {
+	float speed[MAX_ANIMTRACK] = {0};
+	float frame[MAX_ANIMTRACK] = {0};
+
 	// loop all node
 	std::map<std::string, CGameColladaSceneNode*>::iterator i = m_mapNode.begin(), end = m_mapNode.end();
 	while ( i != end )
@@ -994,7 +1011,35 @@ void CColladaMeshComponent::synchronizedByTimeScale(int animLayer, float speedRa
 			continue;
 		}
 		
-		j->getAnimation(animLayer)->synchronizedByTimeScale(speedRatio);
+		if ( j->getAnimation(animLayer)->synchronizedByTimeScale(speedRatio) == true )		
+		{
+			for ( int iTrack = 0; iTrack < MAX_ANIMLAYER; iTrack++ )
+			{
+				speed[iTrack] = j->getAnimation(animLayer)->getTrack(iTrack)->getSpeedRatio();
+				frame[iTrack] = j->getAnimation(animLayer)->getTrack(iTrack)->getCurrentFrame();
+			}
+			break;
+		}
+		i++;
+	}
+
+
+	i = m_mapNode.begin(), end = m_mapNode.end();
+	while ( i != end )
+	{
+		CGameColladaSceneNode* j = (*i).second;
+				
+		if ( j == NULL )
+		{
+			i++;
+			continue;
+		}
+
+		for ( int iTrack = 0; iTrack < MAX_ANIMLAYER; iTrack++ )
+		{
+			j->getAnimation(animLayer)->getTrack(iTrack)->setSpeedRatio( speed[iTrack] );
+			j->getAnimation(animLayer)->getTrack(iTrack)->setCurrentFrame( frame[iTrack] );
+		}
 
 		i++;
 	}

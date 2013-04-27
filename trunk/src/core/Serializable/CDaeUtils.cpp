@@ -1101,6 +1101,8 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 			m_boneRoot->Name = L"BoneRoot";
 			m_boneRoot->ChildLevel = 0;
 			m_boneRoot->Parent = NULL;
+
+			m_boneRoot->Scale = core::vector3df(-1,1,1);
 			m_boneRoot->Transform.setScale( core::vector3df(-1,1,1) );
 
 			m_listNode.push_back(m_boneRoot);
@@ -1133,6 +1135,7 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 				core::matrix4 m = readTranslateNode(xmlRead, m_needFlip);
 				pNode->Transform *= m;
 				pNode->Pos = m.getTranslation();
+				pNode->UseTransform = false;
 			}
 			else if ( xmlRead->getNodeName() == rotateSectionName )
 			{
@@ -1140,6 +1143,7 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 				core::matrix4 m = readRotateNode(xmlRead, m_needFlip);
 				pNode->Transform *= m;
 				pNode->Rot = core::quaternion(m);
+				pNode->UseTransform = false;
 			}
 			else if ( xmlRead->getNodeName() == scaleSectionName )
 			{
@@ -1147,6 +1151,7 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 				core::matrix4 m = readScaleNode(xmlRead, m_needFlip);
 				pNode->Transform *= m;
 				pNode->Scale = m.getScale();
+				pNode->UseTransform = false;
 			}			
 			else if ( xmlRead->getNodeName() == matrixNodeName)
 			{
@@ -2059,6 +2064,22 @@ void CDaeUtils::constructSkinMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri,
 	{
 		u32 ind = i * 3;
 		
+		/*
+		if (flip)
+		{
+			mbuffer->Indices.push_back(indices[ind+2]);
+			mbuffer->Indices.push_back(indices[ind+1]);
+			mbuffer->Indices.push_back(indices[ind+0]);
+		}
+		else
+		{
+			mbuffer->Indices.push_back(indices[ind+0]);
+			mbuffer->Indices.push_back(indices[ind+1]);
+			mbuffer->Indices.push_back(indices[ind+2]);
+		}
+		*/
+		
+		// flip 0x animation
 		if (flip)
 		{
 			mbuffer->Indices.push_back(indices[ind+0]);
@@ -2071,6 +2092,7 @@ void CDaeUtils::constructSkinMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri,
 			mbuffer->Indices.push_back(indices[ind+1]);
 			mbuffer->Indices.push_back(indices[ind+0]);
 		}
+
 	}
 		
 	// set material
@@ -2423,8 +2445,11 @@ void CDaeUtils::constructScene()
 			colladaSceneNode->setSIDName( name );
 		}
 
-		// set relative position		
-		colladaSceneNode->setLocalMatrix( node->Transform );
+		// set relative position
+		if ( node->UseTransform )
+			colladaSceneNode->setLocalMatrix( node->Transform );
+		else
+			colladaSceneNode->setLocalTransform( node->Pos, node->Scale, node->Rot );
 		
 		
 		// construct geometry & controller in node

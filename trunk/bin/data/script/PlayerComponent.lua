@@ -23,6 +23,9 @@ k_playerAnimRunBackward			= "TP_RunBack"
 k_playerAnimRunLeft				= "TP_RunLeft"
 k_playerAnimRunRight			= "TP_RunRight"
 
+k_animRunRotateSpeed			= 0.4
+k_animStandToRunBlendSpeed		= 0.003
+k_animRunToStandBlendSpeed		= 0.003
 
 -- class CPlayerComponent
 CPlayerComponent = {}
@@ -61,6 +64,13 @@ function CPlayerComponent.create(gameObj)
 	newObj.m_inputShoot 		= 0
 	newObj.m_inputReload		= 0
 	
+	-- animation
+	newObj.m_runFactor			= 0.0	
+	
+	-- run params
+	newObj.m_runVector			= irr.core.vector3d()
+	newObj.m_currentRunVector	= irr.core.vector3d()
+	
 	-- spine
 	newObj.m_spineRotX				= 0.0
 	newObj.m_needRotateCharacter	= false
@@ -81,11 +91,26 @@ function CPlayerComponent.create(gameObj)
 	
 	---------------------------------------------------------
 	-- add upbody node
-	table.insert(newObj.m_allUpbodyNodes, getColladaSceneNode(newObj.m_collada, "Bip01_Spine1-node"))
-	local allUpBodySceneNode = getChildsOfColladaSceneNode(newObj.m_collada, "Bip01_Spine1-node")
+	
+	-- head
+	--table.insert(newObj.m_allUpbodyNodes, getColladaSceneNode(newObj.m_collada, "Bip01_Head-node"))
+	--local allUpBodySceneNode = getChildsOfColladaSceneNode(newObj.m_collada, "Bip01_Head-node")
+	--for id,node in ipairs(allUpBodySceneNode) do
+	--	table.insert(newObj.m_allUpbodyNodes, node)
+	--end	
+	-- right hand
+	table.insert(newObj.m_allUpbodyNodes, getColladaSceneNode(newObj.m_collada, "Bip01_R_Clavicle-node"))	
+	local allUpBodySceneNode = getChildsOfColladaSceneNode(newObj.m_collada, "Bip01_R_Clavicle-node")
 	for id,node in ipairs(allUpBodySceneNode) do
 		table.insert(newObj.m_allUpbodyNodes, node)
 	end	
+	-- left hand
+	table.insert(newObj.m_allUpbodyNodes, getColladaSceneNode(newObj.m_collada, "Bip01_L_Clavicle-node"))	
+	local allUpBodySceneNode = getChildsOfColladaSceneNode(newObj.m_collada, "Bip01_L_Clavicle-node")
+	for id,node in ipairs(allUpBodySceneNode) do
+		table.insert(newObj.m_allUpbodyNodes, node)
+	end
+	
 	debug("Total upbody nodes of player: " .. table.getn(newObj.m_allUpbodyNodes) )
 	
 	---------------------------------------------------------
@@ -116,7 +141,10 @@ function CPlayerComponent.create(gameObj)
 	enableColladaAnimationLayer(newObj.m_collada, 0, true)
 	enableColladaAnimationLayer(newObj.m_collada, 1, true)
 	
-	setSceneNodeIsJoinAnimLayer(newObj.m_collada, "Bip01_Spine1-node", true, false, false, false)
+	--setSceneNodeIsJoinAnimLayer(newObj.m_collada, "Bip01_Head-node", true, false)
+	setSceneNodeIsJoinAnimLayer(newObj.m_collada, "Bip01_R_Clavicle-node", true, true)
+	setSceneNodeIsJoinAnimLayer(newObj.m_collada, "Bip01_L_Clavicle-node", true, true)
+	
 	applyModifyPlayerBoneTransform(newObj.m_playerComp,"Bip01_Spine1-node", "updatePlayerComponentBoneTransformCallback");
 	
 	return newObj;
@@ -142,7 +170,7 @@ end
 
 -- doNextState
 -- force change state
-function CPlayerComponent:doNextState()
+function CPlayerComponent:doNextState()	
 	if self.m_nextPlayerState ~= k_playerStateNone then
 		self.m_playerState 		= self.m_nextPlayerState
 		self.m_playerSubState 	= k_playerSubStateInit
@@ -198,25 +226,118 @@ function CPlayerComponent:updatePlayerStateStand(timeStep)
 		-- init state
 		-- set anim on layer 0
 		setColladaAnimation(self.m_collada, k_playerAnimShootMachineGuns, 0, true, 0)
+		setColladaAnimWeight(self.m_collada, 1, 0, 0)
+		
 		pauseColladaAnimAtFrame(self.m_collada, 0, 0, 0)
+		
+		-- disable multi anim
+		colladaEnableAnimTrackChannel(self.m_collada, 1, false, 0)
+		colladaEnableAnimTrackChannel(self.m_collada, 2, false, 0)
+		colladaEnableAnimTrackChannel(self.m_collada, 3, false, 0)
+		colladaEnableAnimTrackChannel(self.m_collada, 4, false, 0)
 		
 		self.m_playerSubState = k_playerSubStateUpdate
 	elseif self.m_playerSubState == k_playerSubStateEnd then
 		-- end state
-		self.doNextState()
+		self:doNextState()
 	end
 	 
 	-- rotate character	
 	if self.m_needRotateCharacter == true then
-		self.m_needRotateCharacter = (self:rotatePlayerToFront(6.0) == false)
-	end
+		self.m_needRotateCharacter = (self:rotatePlayerToFront(0.6) == false)
+	end		
+	
+	-- set run vector
+	local frontx, fronty, frontz = getObjectFront(self.m_gameObject)	
+	self.m_currentRunVector = irr.core.vector3d(frontx, fronty, frontz)
+	self.m_runVector = irr.core.vector3d(frontx, fronty, frontz)
 	
 	-- check input
+	if self.m_inputRun == 1 then
+		self:setPlayerState(k_playerStateRun)
+	end
 end
 
 -- updatePlayerStateRun
 -- Update when player running
-function CPlayerComponent:updatePlayerStateRun(timeStep)
+function CPlayerComponent:updatePlayerStateRun(timeStep)	
+		
+	if self.m_playerSubState == k_playerSubStateInit then		
+		-- track 0
+		setColladaAnimation(self.m_collada, k_playerAnimShootMachineGuns, 0, true, 0)
+		colladaEnableAnimTrackChannel(self.m_collada, 0, true, 0)
+		pauseColladaAnimAtFrame(self.m_collada, 0, 0, 0)
+				
+		-- track 1
+		setColladaAnimation(self.m_collada, k_playerAnimRunForward, 1, true, 0)
+		colladaEnableAnimTrackChannel(self.m_collada, 1, true, 0)
+		
+		-- track 2
+		setColladaAnimation(self.m_collada, k_playerAnimRunBackward, 2, true, 0)		
+		colladaEnableAnimTrackChannel(self.m_collada, 2, true, 0)
+		
+		-- track 3
+		setColladaAnimation(self.m_collada, k_playerAnimRunLeft, 3, true, 0)		
+		colladaEnableAnimTrackChannel(self.m_collada, 3, true, 0)
+		
+		-- track 4
+		setColladaAnimation(self.m_collada, k_playerAnimRunRight, 4, true, 0)		
+		colladaEnableAnimTrackChannel(self.m_collada, 4, true, 0)
+		
+		self.m_playerSubState = k_playerSubStateUpdate
+		
+	elseif self.m_playerSubState == k_playerSubStateEnd then
+		-- end state
+		self:doNextState()
+	end
+	
+	-- update run vector
+	local frontx, fronty, frontz = getObjectFront(self.m_gameObject)
+	frontVector = irr.core.vector3d(frontx, fronty, frontz)
+	self.m_runVector = irr.core.vector3d(frontx, fronty, frontz)
+		
+	local q = irr.core.quaternion()
+	q:fromAngleAxis( k_degToRad*self.m_inputRunRotate, irr.core.vector3d(0,1,0) )
+	local mat = q:getMatrix()
+	mat:rotateVect(self.m_runVector);
+	self.m_runVector:normalize();		
+
+	-- update current run vector
+	local ret = CVectorUtil.turnToDir(self.m_currentRunVector, self.m_runVector, k_animRunRotateSpeed)
+	self.m_currentRunVector = irr.core.vector3d(ret[2])
+			
+	-- if have input
+	if self.m_inputRun == 1 then		
+		local angle = -CVectorUtil.getAngle(self.m_currentRunVector, frontVector)		
+		runBlend = self:calcRunAnimationBlend(angle)
+	end
+	
+	local runFactor = self.m_runFactor		
+	
+	-- set weight of run anim
+	setColladaAnimWeight(self.m_collada, 1 - runFactor, 0, 0)
+	setColladaAnimWeight(self.m_collada, runBlend[1]*runFactor, 1, 0)
+	setColladaAnimWeight(self.m_collada, runBlend[2]*runFactor, 2, 0)
+	setColladaAnimWeight(self.m_collada, runBlend[3]*runFactor, 3, 0)
+	setColladaAnimWeight(self.m_collada, runBlend[4]*runFactor, 4, 0)	
+	
+	-- sync animation
+	colladaSynchronizedAnim(self.m_collada, 1.0, 0)
+	
+	-- inc run factor
+	if self.m_inputRun == 1 then	
+		self.m_runFactor = self.m_runFactor + timeStep*k_animStandToRunBlendSpeed
+	else
+		self.m_runFactor = self.m_runFactor - timeStep*k_animRunToStandBlendSpeed		
+	end
+	
+	-- clamp from 0 to 1
+	if self.m_runFactor >= 1.0 then
+		self.m_runFactor = 1.0
+	elseif self.m_runFactor <= 0.0 then
+		self.m_runFactor = 0.0
+		self:setPlayerState(k_playerStateStand)
+	end		
 	
 end
 
@@ -224,28 +345,7 @@ end
 -- updatePlayerUpBodyAim
 -- Update aim
 function CPlayerComponent:updatePlayerUpBodyAim(timeStep)
-
-	if self.m_playerSubUpState == k_playerSubStateInit then
-		-- init state
-		-- set anim on layer 1
-		setColladaAnimation(self.m_collada, k_playerAnimShootMachineGuns, 0, true, 1)
-		pauseColladaAnimAtFrame(self.m_collada, 0, 0, 1)
-		
-		self.m_playerSubUpState = k_playerSubStateUpdate
-	elseif self.m_playerSubUpState == k_playerSubStateEnd then
-		-- end state
-		self.doNextUpBodyState()
-	end
-
-	-- rotate spine
-	local angle = self:getAngleFromPlayerFrontToCameraView()
-	self.m_spineRotX = -angle
-		
-	-- rotate character if the angle is too large
-	if math.abs(angle) >= 45 then
-		self.m_needRotateCharacter = true
-	end
-	
+	self.m_needRotateCharacter = true
 end
 
 -----------------------------------------------------------
@@ -291,6 +391,65 @@ function CPlayerComponent:getAngleFromPlayerFrontToCameraView()
 	local playerFront = irr.core.vector3d(frontx, fronty, frontz)
 	
 	return CVectorUtil.getAngle(playerFront, cameraFront)	
+end
+
+-- calcRunAnimationBlend
+-- calc animation
+function CPlayerComponent:calcRunAnimationBlend(rot)
+	local forward = 0.0
+	local backward = 0.0
+	local left = 0.0
+	local right = 0.0
+    
+	if -90.0 <= rot and rot <= 90.0 then	
+		-- move forward		
+		backward = 0.0;
+		if rot <= 0.0 and rot <= 90.0 then		
+			-- right
+			left = 0.0;
+            
+			local fixAngle	= k_degToRad*math.mod(rot + 90.0, 360.0);
+			local dForward	= math.abs(math.sin(fixAngle));
+            
+			-- we have sin2 + cos2 = 1
+            -- it mean dforward2 + dright2 = 1.0
+            forward = dForward*dForward;
+			right   = 1.0 - forward;		
+		else		
+			-- left
+			right = 0.0;
+            
+			local fixAngle	= k_degToRad*math.mod(rot + 90.0, 360.0);
+			local dForward	= math.abs(math.sin(fixAngle));
+			
+            forward = dForward*dForward;
+            left = 1.0 - forward;
+		end
+	else	
+		-- move back
+		forward = 0.0;
+		if 90.0 <= rot and rot <= 180.0 then		
+			-- left
+			local right = 0.0;
+            
+			local fixAngle	= k_degToRad*math.mod(rot + 90.0, 360.0);
+			local dBackward	= math.abs(math.sin(fixAngle));			
+            
+            backward    = dBackward*dBackward;
+            left        = 1.0- backward;		
+		else		
+			-- right
+			left = 0.0;
+            
+			local fixAngle	= k_degToRad*math.mod(rot + 90.0, 360.0);
+			local dBackward	= math.abs(math.sin(fixAngle));
+			
+            backward    = dBackward*dBackward;
+            right       = 1.0- backward;
+		end
+	end
+    
+	return {forward, backward, left, right}
 end
 
 -----------------------------------------------------------

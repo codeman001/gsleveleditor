@@ -12,7 +12,7 @@ CVectorUtil.__index = CVectorUtil
 
 function CVectorUtil.turnToDir(dir, turnTo, speed)
 	-- rotate front vec
-	local f = speed*0.1*getTimeStep();	
+	local f = speed*getTimeStep();	
 	
 	if ( f >= math.abs( CVectorUtil.getAngle(dir, turnTo)) ) then		
 		dir = turnTo;
@@ -33,24 +33,24 @@ end
 
 function CVectorUtil.interpolateTurnToDir(turnFrom, turnTo, f)
 	-- calc turn Direction    
-    local normal = turnTo:crossProduct(turnFrom);
-    normal:normalize();
+    local normal = turnTo:crossProduct(turnFrom)
+    normal:normalize()
     
-    local q = irr.core.quaternion();
-	q:fromAngleAxis( k_degToRad*f, normal);
+    local q = irr.core.quaternion()
+	q:fromAngleAxis( k_degToRad*f, normal)
     
 	-- rotate result vector
-	local dir = irr.core.vector3d(turnFrom);
+	local dir = irr.core.vector3d(turnFrom)
 	local mat = q:getMatrix()
-	mat:rotateVect(dir);
-	dir:normalize();
+	mat:rotateVect(dir)
+	dir:normalize()
     
-	return dir;	
+	return dir
 end
 
 function CVectorUtil.getAngle(v1, v2)
 	local normal = v2:crossProduct(v1)
-	local angleVec = v2:dotProduct( v1 )
+	local angleVec = v2:dotProduct(v1)
 	
 	angleVec = CVectorUtil.fixAngle(angleVec)
 	angleVec = k_radToDeg*math.acos(angleVec)

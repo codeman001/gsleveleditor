@@ -211,7 +211,7 @@ bool CDocument::readDocumentFromData( char *lpData )
 		if ( *p == '{' )
 		{
 			getBufferString( lpStringA, from, p );
-			uiString::convertUTF8ToUnicode( lpStringA, (unsigned short*) lpString );
+			uiString::convertUTF8ToUnicode(lpStringA, lpString);
 						
 			p++;
 			
@@ -225,7 +225,7 @@ bool CDocument::readDocumentFromData( char *lpData )
 			SSerializableRec *r = objData.getProperty("objectTemplate");
 			if ( r != NULL && currentZone && uiString::length(r->data) > 0 )
 			{
-				uiString::convertUTF8ToUnicode( r->data, (unsigned short*) lpString );
+				uiString::convertUTF8ToUnicode(r->data, lpString);
 
 				// create game object
 				CGameObject *pGameObj = currentZone->createObject( lpString );

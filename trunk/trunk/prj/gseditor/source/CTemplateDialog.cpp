@@ -62,7 +62,7 @@ CTemplateDialog::CTemplateDialog(LPWSTR lpTitle, int x, int y, int w, int h, uiW
 			continue;
 
 		// add row with name component
-		uiString::convertUTF8ToUnicode( r->name, (unsigned short*) lpText );		
+		uiString::convertUTF8ToUnicode(r->name, lpText);		
 		uiListPropertyRow *pRow = m_componentControl->addRowItem(lpText);
 
 		// set control on column 1 is combobox
@@ -130,7 +130,7 @@ void CTemplateDialog::onUpdateListComponent(uiObject *pSender )
 			
 			// get name of property
 			pRow->getText( lpComponentName, 0 );
-			uiString::convertUnicodeToUTF8( (unsigned short*)lpComponentName, lpComponentNameA );
+			uiString::convertUnicodeToUTF8(lpComponentName, lpComponentNameA );
 
 			bool	objHasComponent		= m_objectTemplate->containComponent( lpComponentNameA );
 
@@ -192,7 +192,7 @@ void CTemplateDialog::onUpdateListProperty(uiObject *pSender )
 
 				// copy data from control to serializable
 				pRow->getText( lpText, 1 );
-				uiString::convertUnicodeToUTF8( (unsigned short*) lpText, pRec->data );
+				uiString::convertUnicodeToUTF8(lpText, pRec->data );
 
 			}
 			iRec++;
@@ -233,7 +233,7 @@ void CTemplateDialog::addSerializableToProperty( CSerializable *p )
 		SSerializableRec &r = (*iRec);
 		
 		// convert name
-		uiString::convertUTF8ToUnicode( r.name, (unsigned short*)lpName );
+		uiString::convertUTF8ToUnicode(r.name, lpName);
 		
 		// erase tag object
 		r.tagObject = NULL;
@@ -253,7 +253,7 @@ void CTemplateDialog::addSerializableToProperty( CSerializable *p )
 			r.tagObject = pRow;
 
 			// convert value
-			uiString::convertUTF8ToUnicode( r.data, (unsigned short*)lpValue );
+			uiString::convertUTF8ToUnicode(r.data, lpValue);
 			pRow->setText( lpValue, 1 );
 
 			// enable edit

@@ -115,6 +115,6 @@ void CTemplateWindow::onTemplateChange( uiObject *pSender )
 	// set current template
 	getIView()->setCurrentObjectTemplate( lpString );
 
-	uiString::convertUnicodeToUTF8( (unsigned short*) lpString, lpStringA );
+	uiString::convertUnicodeToUTF8(lpString, lpStringA );
 	printf("Select current template: %s \n", lpStringA);
 }

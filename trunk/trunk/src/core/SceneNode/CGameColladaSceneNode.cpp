@@ -1249,7 +1249,7 @@ void CGameColladaSceneNode::updateAnimation()
 		if ( UseLocalMatrix )
 		{
 			// no animation
-			AnimationMatrixLayer[i] = LocalMatrix;
+			AnimationMatrixLayer[i] = LocalMatrix;			
 		}
 		else
 		{

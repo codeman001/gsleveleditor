@@ -180,7 +180,7 @@ void CMenuFxObj::setText( const wchar_t *lpString )
 		gameswf::edit_text_character* edit_text = (gameswf::edit_text_character*)m_character;
 
 		char stringc[1024];
-		uiString::convertUnicodeToUTF8( (const unsigned short*) lpString, stringc );
+		uiString::convertUnicodeToUTF8(lpString, stringc );
 		edit_text->set_text_value( tu_string(stringc) );
 	}
 }

@@ -2960,7 +2960,7 @@ bool CDaeUtils::getScaleFrameID( SColladaNodeAnim* frames, float frame, int *fra
 SNodeParam* CDaeUtils::getNode( const std::string& nodeName )
 {
 	wchar_t wName[512];
-	uiString::convertUTF8ToUnicode(nodeName.c_str(), (unsigned short*)wName);
+	uiString::convertUTF8ToUnicode(nodeName.c_str(), wName);
 
 	for ( int j = 0; j < (int)m_listNode.size(); j++ )
 	{

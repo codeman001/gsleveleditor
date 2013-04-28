@@ -148,7 +148,7 @@ CGameObject* CGameLevel::searchObject( long id )
 CGameObject* CGameLevel::searchObject( const char* name )
 {
 	wchar_t buffer[1024] = {0};
-	uiString::convertUTF8ToUnicode( name, (unsigned short*) buffer );
+	uiString::convertUTF8ToUnicode(name, buffer);
 
 	ArrayZoneIter iZone = m_zones.begin(), iEnd = m_zones.end();
 	while ( iZone != iEnd )
@@ -233,7 +233,7 @@ bool CGameLevel::loadStep( int nStep )
 		if ( *p == '{' )
 		{
 			getBufferString( lpStringA, from, p );
-			uiString::convertUTF8ToUnicode( lpStringA, (unsigned short*) lpString );
+			uiString::convertUTF8ToUnicode(lpStringA, lpString );
 						
 			p++;
 			
@@ -247,7 +247,7 @@ bool CGameLevel::loadStep( int nStep )
 			SSerializableRec *r = objData.getProperty("objectTemplate");
 			if ( r != NULL && m_loadZone && uiString::length(r->data) > 0 )
 			{
-				uiString::convertUTF8ToUnicode( r->data, (unsigned short*) lpString );
+				uiString::convertUTF8ToUnicode(r->data, lpString);
 
 				// create game object
 				CGameObject *pGameObj = m_loadZone->createObject( lpString );

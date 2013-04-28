@@ -321,7 +321,7 @@ void CZone::saveData( CSerializable *pObj )
 	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
 
 	char lpText[1024] = {0};
-	uiString::convertUnicodeToUTF8( (unsigned short*)m_name.c_str(), lpText );
+	uiString::convertUnicodeToUTF8(m_name.c_str(), lpText );
 	pObj->addString	("objectName",	lpText, false);
 
 	pObj->addBool	("enable",		m_enable );
@@ -360,7 +360,7 @@ void CZone::loadData( CSerializable *pObj )
 
 	// read obj name
 	wchar_t lpText[1024] = {0};
-	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
+	uiString::convertUTF8ToUnicode( pObj->readString(),lpText );
 	setName( lpText );
 
 	// object enable
@@ -380,7 +380,7 @@ void CZone::getData( CSerializable* pObj )
 	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
 
 	char lpText[1024] = {0};
-	uiString::convertUnicodeToUTF8( (unsigned short*)m_name.c_str(), lpText );
+	uiString::convertUnicodeToUTF8(m_name.c_str(), lpText );
 	pObj->addString	("objectName",	lpText, false);
 
 	pObj->addBool	("enable",		m_enable );
@@ -420,7 +420,7 @@ void CZone::updateData( CSerializable* pObj )
 
 	// read obj name
 	wchar_t lpText[1024] = {0};
-	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
+	uiString::convertUTF8ToUnicode( pObj->readString(),lpText );
 	setName( lpText );
 
 	// object enable
@@ -515,7 +515,7 @@ void CZone::unpackDataMultiplayer(CDataPacket *packet, int hostKeyId)
 	            
 				char string[512] = {0};
 				char temp[512] = {0};
-				uiString::convertUnicodeToUTF8( (const unsigned short*)templateName, temp);
+				uiString::convertUnicodeToUTF8(templateName, temp);
 	            
 				if ( obj == NULL )
 				{

@@ -105,7 +105,7 @@ void CStateSelectLevel::onEvent(const SEvent& event)
 					CGameConfig::SLevelInfo *lvInfo = (CGameConfig::SLevelInfo*)m_lstSelectLevel->getItem(i)->getUserData();
 
 					char levelPath[512] = {0};
-					uiString::convertUnicodeToUTF8((unsigned short*)lvInfo->resource.c_str(), levelPath);
+					uiString::convertUnicodeToUTF8(lvInfo->resource.c_str(), levelPath);
 
 					CGameLevel::setLevelProperty("LevelLoad", levelPath);
 					CGameLevel::setLevelProperty("IsHost","true");

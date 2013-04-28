@@ -719,7 +719,7 @@ namespace uiClass
             return s_buffer;
         }
         
-		static void convertUTF8ToUnicode(const char* src, unsigned short* dst)
+		static void convertUTF8ToUnicode(const char* src, wchar_t* dst)
 		{
 			int t = 0;
 			
@@ -733,14 +733,14 @@ namespace uiClass
 
 		// convertUnicodeToUTF8
 		// convert unicode to utf8 string
-		static void convertUnicodeToUTF8(const unsigned short* src, char* dst)
+		static void convertUnicodeToUTF8(const wchar_t* src, char* dst)
 		{            
 			int k = 0;
 			int l = 0;
 
 			while(src[k])
 			{
-				unsigned short c = src[k];
+				wchar_t c = src[k];
 
 				if(c <= 0x007F)
 				{

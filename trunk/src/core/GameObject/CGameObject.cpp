@@ -318,10 +318,10 @@ void CGameObject::saveData( CSerializable* pObj )
 	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
 
 	char lpText[1024] = {0};
-	uiString::convertUnicodeToUTF8( (unsigned short*)m_name.c_str(), lpText );
+	uiString::convertUnicodeToUTF8(m_name.c_str(), lpText );
 	pObj->addString	("objectName",	lpText, false);
 
-	uiString::convertUnicodeToUTF8( (unsigned short*)m_objectTemplate.c_str(), lpText );
+	uiString::convertUnicodeToUTF8(m_objectTemplate.c_str(), lpText );
 	pObj->addString	("objectTemplate",	lpText, true);
 
 	pObj->addBool	("enable",		m_enable );
@@ -399,11 +399,11 @@ void CGameObject::loadData( CSerializable* pObj )
 	wchar_t lpText[1024] = {0};
 
 	// read obj name	
-	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
+	uiString::convertUTF8ToUnicode( pObj->readString(),lpText );
 	setName( lpText );
 
 	// read template	
-	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
+	uiString::convertUTF8ToUnicode( pObj->readString(),lpText );
 	m_objectTemplate = lpText;
 
 	m_enable		= pObj->readBool();
@@ -453,10 +453,10 @@ void CGameObject::getData( CSerializable* pObj )
 	pObj->addString	("objectType",	s_stringObjType[ (int)m_objectType ], true);
 
 	char lpText[1024] = {0};
-	uiString::convertUnicodeToUTF8( (unsigned short*)m_name.c_str(), lpText );
+	uiString::convertUnicodeToUTF8(m_name.c_str(), lpText );
 	pObj->addString	("objectName",	lpText, false);
 
-	uiString::convertUnicodeToUTF8( (unsigned short*)m_objectTemplate.c_str(), lpText );
+	uiString::convertUnicodeToUTF8(m_objectTemplate.c_str(), lpText );
 	pObj->addString	("objectTemplate",	lpText, true);
 
 	pObj->addBool	("enable",		m_enable );
@@ -525,7 +525,7 @@ void CGameObject::updateData( CSerializable* pObj )
 	wchar_t lpText[1024] = {0};
 
 	// read obj name	
-	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
+	uiString::convertUTF8ToUnicode( pObj->readString(),lpText );
 	setName( lpText );
 
 #ifdef GSGAMEPLAY
@@ -533,7 +533,7 @@ void CGameObject::updateData( CSerializable* pObj )
 #endif
 
 	// read template	
-	uiString::convertUTF8ToUnicode( pObj->readString(), (unsigned short*)lpText );
+	uiString::convertUTF8ToUnicode( pObj->readString(),lpText );
 	m_objectTemplate = lpText;
 
 	m_enable		= pObj->readBool();

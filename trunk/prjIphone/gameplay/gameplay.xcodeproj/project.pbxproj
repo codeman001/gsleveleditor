@@ -17,6 +17,7 @@
 		7F1AEF1015F7A2C500DF8EA0 /* CAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */; };
 		7F1EC5E616109767008D61A2 /* libLua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F1EC5E516109756008D61A2 /* libLua.a */; };
 		7F2F9A27169C759D003797B3 /* _texturePVR.zip in Resources */ = {isa = PBXBuildFile; fileRef = 7F2F9A26169C759D003797B3 /* _texturePVR.zip */; };
+		7F34694F172CDFD300BB6C31 /* CVectorUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F34694D172CDFD300BB6C31 /* CVectorUtil.cpp */; };
 		7F3743F51613552C0006762B /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3743F31613552C0006762B /* md5.cpp */; };
 		7F3875E5163841FD00E84B98 /* CDaeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F3875E3163841FD00E84B98 /* CDaeUtils.cpp */; };
 		7F39584F160EF17700EEB3A2 /* CDataPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F39584D160EF17700EEB3A2 /* CDataPacket.cpp */; };
@@ -189,6 +190,8 @@
 		7F1AEF0E15F7A2C500DF8EA0 /* CAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CAppDelegate.mm; sourceTree = "<group>"; };
 		7F1EC5DD16109755008D61A2 /* Lua.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lua.xcodeproj; path = ../../../extern/lua/ios/Lua.xcodeproj; sourceTree = "<group>"; };
 		7F2F9A26169C759D003797B3 /* _texturePVR.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = _texturePVR.zip; path = ../../bin/_texturePVR.zip; sourceTree = "<group>"; };
+		7F34694D172CDFD300BB6C31 /* CVectorUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CVectorUtil.cpp; path = Utils/CVectorUtil.cpp; sourceTree = "<group>"; };
+		7F34694E172CDFD300BB6C31 /* CVectorUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CVectorUtil.h; path = Utils/CVectorUtil.h; sourceTree = "<group>"; };
 		7F3743F31613552C0006762B /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = md5.cpp; path = Network/md5.cpp; sourceTree = "<group>"; };
 		7F3743F41613552C0006762B /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = md5.h; path = Network/md5.h; sourceTree = "<group>"; };
 		7F3875E3163841FD00E84B98 /* CDaeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDaeUtils.cpp; sourceTree = "<group>"; };
@@ -469,6 +472,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		7F346947172CDFC800BB6C31 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				7F34694D172CDFD300BB6C31 /* CVectorUtil.cpp */,
+				7F34694E172CDFD300BB6C31 /* CVectorUtil.h */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
 		7F3AEB521722D02500713383 /* gameString */ = {
 			isa = PBXGroup;
 			children = (
@@ -605,6 +617,7 @@
 		7FD0BF5215F4F34400626D90 /* core */ = {
 			isa = PBXGroup;
 			children = (
+				7F346947172CDFC800BB6C31 /* Utils */,
 				7FB364021699CCAF00DA4152 /* TextureManager */,
 				7FD0BF5315F4F34400626D90 /* Animators */,
 				7FD0BF5815F4F34400626D90 /* Component */,
@@ -1197,6 +1210,7 @@
 				7F3AEB811722D06900713383 /* CGameString.cpp in Sources */,
 				7F3AEBA61722D1A300713383 /* CSpawnPointComponent.cpp in Sources */,
 				7F3AEBAA1722D37900713383 /* CStateSelectLevel.cpp in Sources */,
+				7F34694F172CDFD300BB6C31 /* CVectorUtil.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1279,7 +1293,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/Network ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src ../../../extern/tolua++/include";
+				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/Network ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../src/core/Utils ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src ../../../extern/tolua++/include";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1302,7 +1316,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/Network ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src ../../../extern/tolua++/include";
+				USER_HEADER_SEARCH_PATHS = "../../src ../../src/core ../../src/core/Animators ../../src/core/Component ../../src/core/GameObject ../../src/core/Network ../../src/core/ObjectTemplate ../../src/core/SceneNode ../../src/core/Serializable ../../src/core/Utils ../../../extern/irrogles/include ../../../extern/irrogles/source/Irrlicht ../../../extern/spark/include ../../../extern/gameswf ../../../extern/freetype/include ../../../extern/lua/src ../../../extern/tolua++/include";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -37,7 +37,7 @@ void CPlayerComponent::initComponent()
 	CGameConfig::SCharacterInfo *charInfo = CGameConfig::getInstance()->getCharacterInfo(m_charID);
 
 	// load model
-	m_collada->loadDae( charInfo->model.c_str() );
+	m_collada->loadScene(charInfo->model.c_str() );
 
 	// load animation
 	CColladaAnimationFactory* animFactory = CColladaAnimationFactory::getInstance();

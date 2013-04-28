@@ -701,6 +701,24 @@ namespace uiClass
 			return result;
 		}
 
+        static unsigned short* getUnicodeString( const wchar_t *src )
+        {
+            static unsigned short s_buffer[2048];
+
+            const wchar_t* t = src;
+            unsigned short* d = s_buffer;
+            
+            while ( *t )
+            {
+                *d = (unsigned short) *t;
+                d++;
+                t++;
+            }
+            
+            *d = NULL;
+            return s_buffer;
+        }
+        
 		static void convertUTF8ToUnicode(const char* src, unsigned short* dst)
 		{
 			int t = 0;
@@ -716,7 +734,7 @@ namespace uiClass
 		// convertUnicodeToUTF8
 		// convert unicode to utf8 string
 		static void convertUnicodeToUTF8(const unsigned short* src, char* dst)
-		{
+		{            
 			int k = 0;
 			int l = 0;
 

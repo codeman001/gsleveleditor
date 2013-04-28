@@ -63,7 +63,7 @@ CGameObject* CBaseGameMatch::spawn3rdPlayer()
 	CZone *zone = currentLevel->getActiveZone();
 
 	// create player object
-	CGameObject *obj = zone->createObjectWithNoData(L"Player");
+	CGameObject *obj = zone->createObjectWithNoData( (wchar_t*)uiString::getUnicodeString(L"Player"));
 
 	// set character id
 	CPlayerComponent *playerCmp = (CPlayerComponent*)obj->getComponent(CGameComponent::PlayerComponent);

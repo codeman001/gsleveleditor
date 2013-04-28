@@ -123,6 +123,7 @@
 		7F60980C162F0AF30085D3FF /* CUIDPad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F60980A162F0AF30085D3FF /* CUIDPad.cpp */; };
 		7F70B24116B5623C00E098D2 /* CBasePlayerState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F70B24016B5623C00E098D2 /* CBasePlayerState.cpp */; };
 		7FB363E81699C3D900DA4152 /* CTextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB363E71699C3D900DA4152 /* CTextureManager.cpp */; };
+		7FCB1DB4172CC625008EA041 /* CVectorUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FCB1DB2172CC625008EA041 /* CVectorUtil.cpp */; };
 		7FCB58AB162C69DD00349381 /* CStateJoinGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FCB58A9162C69DD00349381 /* CStateJoinGame.cpp */; };
 		7FCB58C9162C6CC200349381 /* corbel.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7FCB58C5162C6CC200349381 /* corbel.ttf */; };
 		7FCB58CA162C6CC200349381 /* corbelb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7FCB58C6162C6CC200349381 /* corbelb.ttf */; };
@@ -395,6 +396,8 @@
 		7F70B24016B5623C00E098D2 /* CBasePlayerState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CBasePlayerState.cpp; sourceTree = "<group>"; };
 		7FB363E61699C3BD00DA4152 /* CTextureManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CTextureManager.h; path = TextureManager/CTextureManager.h; sourceTree = "<group>"; };
 		7FB363E71699C3D900DA4152 /* CTextureManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CTextureManager.cpp; path = TextureManager/CTextureManager.cpp; sourceTree = "<group>"; };
+		7FCB1DB2172CC625008EA041 /* CVectorUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CVectorUtil.cpp; path = Utils/CVectorUtil.cpp; sourceTree = "<group>"; };
+		7FCB1DB3172CC625008EA041 /* CVectorUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CVectorUtil.h; path = Utils/CVectorUtil.h; sourceTree = "<group>"; };
 		7FCB58A9162C69DD00349381 /* CStateJoinGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CStateJoinGame.cpp; sourceTree = "<group>"; };
 		7FCB58AA162C69DD00349381 /* CStateJoinGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CStateJoinGame.h; sourceTree = "<group>"; };
 		7FCB58C5162C6CC200349381 /* corbel.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = corbel.ttf; path = ../../bin/corbel.ttf; sourceTree = "<group>"; };
@@ -535,6 +538,7 @@
 		7F3A6AF2160F5E8000B31F81 /* core */ = {
 			isa = PBXGroup;
 			children = (
+				7FCB1DAC172CC611008EA041 /* Utils */,
 				7FB363E51699C32E00DA4152 /* TextureManager */,
 				7F3A6AF3160F5E8000B31F81 /* Animators */,
 				7F3A6AF8160F5E8000B31F81 /* Component */,
@@ -936,6 +940,15 @@
 			name = TextureManager;
 			sourceTree = "<group>";
 		};
+		7FCB1DAC172CC611008EA041 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				7FCB1DB2172CC625008EA041 /* CVectorUtil.cpp */,
+				7FCB1DB3172CC625008EA041 /* CVectorUtil.h */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
 		7FFB7244170F0D1900045E7C /* gameMatch */ = {
 			isa = PBXGroup;
 			children = (
@@ -1196,6 +1209,7 @@
 				7F3AEB231722CDEB00713383 /* lua_vector3d.cpp in Sources */,
 				7F3AEB491722CF2800713383 /* CGameString.cpp in Sources */,
 				7F3AEB4C1722CF4400713383 /* CSpawnPointComponent.cpp in Sources */,
+				7FCB1DB4172CC625008EA041 /* CVectorUtil.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1297,6 +1311,7 @@
 					../../src/core/SceneNode,
 					../../src/core/ObjectTemplate,
 					../../src/core/Serializable,
+					../../src/core/Utils,
 				);
 				INFOPLIST_FILE = "gameplay/gameplay-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1333,6 +1348,7 @@
 					../../src/core/SceneNode,
 					../../src/core/ObjectTemplate,
 					../../src/core/Serializable,
+					../../src/core/Utils,
 				);
 				INFOPLIST_FILE = "gameplay/gameplay-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";

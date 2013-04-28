@@ -823,6 +823,8 @@ int applyModifyPlayerBoneTransform(lua_State *state)
 	const char *nodeName = lua_tostring(state,2);
 	const char *callbackFunc = lua_tostring(state,3);
 
+    std::string func = callbackFunc;
+    
 	// get component
 	CPlayerComponent *playerComp = (CPlayerComponent*)playerID;
 	CColladaMeshComponent *colladaComp = (CColladaMeshComponent*)playerComp->getGameObject()->getComponent(IObjectComponent::ColladaMesh);
@@ -830,7 +832,7 @@ int applyModifyPlayerBoneTransform(lua_State *state)
 	// register callback
 	CGameColladaSceneNode* node = colladaComp->getSceneNode(nodeName);
 	node->setAnimationCallback((CBasePlayerState*)playerComp);
-	playerComp->registerBoneTransformCallback(node, std::string(callbackFunc));
+	playerComp->registerBoneTransformCallback(node, func);
 
 	return 0;
 }

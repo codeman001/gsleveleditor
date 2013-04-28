@@ -1156,7 +1156,7 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 			else if ( xmlRead->getNodeName() == matrixNodeName)
 			{
 				// mull matix
-				pNode->Transform *= readMatrixNode(xmlRead, m_needFlip);
+				pNode->Transform *= readMatrixNode(xmlRead, m_needFlip);				
 			}
 			else if ( xmlRead->getNodeName() == instanceGeometrySectionName )
 			{

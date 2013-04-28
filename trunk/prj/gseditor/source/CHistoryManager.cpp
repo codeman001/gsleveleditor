@@ -67,7 +67,7 @@ bool CHistoryManager::doCreate(	SAction* action, bool redo )
 
 		CZone *pZone = (CZone*) pParent;
 		wchar_t objTemplate[1024];
-		uiString::convertUTF8ToUnicode( pObjectTemplate->data, (unsigned short*) objTemplate );
+		uiString::convertUTF8ToUnicode(pObjectTemplate->data, objTemplate);
 
 		CGameObject *pObj = NULL;
 

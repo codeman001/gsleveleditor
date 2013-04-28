@@ -40,7 +40,7 @@ CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, u
 
 	if ( m_componentTemplate )
 	{
-		uiString::convertUTF8ToUnicode( m_componentTemplate->readRawRecord()->name, (unsigned short*) lpText );
+		uiString::convertUTF8ToUnicode(m_componentTemplate->readRawRecord()->name, lpText);
 		pRow->setText( lpText, 1 );
 	}
 	else
@@ -74,17 +74,17 @@ CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, u
 			SSerializableRec* pRec = m_componentTemplate->readRawRecord();
 
 			// set type variable text at column 1
-			uiString::convertUTF8ToUnicode( stringOfType(pRec->type), (unsigned short*) lpText );
+			uiString::convertUTF8ToUnicode(stringOfType(pRec->type), lpText);
 			pRow->setText( lpText, 1 );
 			
 			if ( pRec->data != NULL )
 			{
 				// set name property text
-				uiString::convertUTF8ToUnicode( pRec->name, (unsigned short*) lpText );
+				uiString::convertUTF8ToUnicode(pRec->name, lpText);
 				pRow->setText( lpText, 0 );
 
 				// set value property text
-				uiString::convertUTF8ToUnicode( pRec->data, (unsigned short*) lpText );
+				uiString::convertUTF8ToUnicode(pRec->data, lpText);
 				pRow->setText( lpText, 2 );
 			}
 
@@ -100,7 +100,7 @@ CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, u
 				pListType = (uiComboBox*)pRow->setControl( UILISTPROPERTY_COMBOBOX, 1, NULL );
 				for ( int i = 0; i < NSSerializable::numType; i++ )
 				{
-					uiString::convertUTF8ToUnicode( stringOfType(i), (unsigned short*) lpText );
+					uiString::convertUTF8ToUnicode(stringOfType(i), lpText);
 					pListType->addString( lpText );
 				}
 				pListType->selectItem( (DWORD) pRec->type );
@@ -120,7 +120,7 @@ CComponentDialog::CComponentDialog(LPWSTR lpTitle, int x, int y, int w, int h, u
 			pListType = (uiComboBox*)pRow->setControl( UILISTPROPERTY_COMBOBOX, 1, NULL );
 			for ( int i = 0; i < NSSerializable::numType; i++ )
 			{
-				uiString::convertUTF8ToUnicode( stringOfType(i), (unsigned short*) lpText );
+				uiString::convertUTF8ToUnicode(stringOfType(i), lpText);
 				pListType->addString( lpText );
 			}
 			pListType->selectItem( 0 );
@@ -250,7 +250,7 @@ bool CComponentDialog::onOKButton()
 	}	
 
 	// add group
-	uiString::convertUnicodeToUTF8((unsigned short*)lpString, lpNameCom);
+	uiString::convertUnicodeToUTF8(lpString, lpNameCom);
 	p->addGroup( lpNameCom );
 	
 	int n = m_listControl->getItemCount();
@@ -262,14 +262,14 @@ bool CComponentDialog::onOKButton()
 		// get property name
 		pRow->getText( lpString, 0 );
 		uiString::trim<wchar_t>( lpString );
-		uiString::convertUnicodeToUTF8( (unsigned short*)lpString, lpName );
+		uiString::convertUnicodeToUTF8(lpString, lpName );
 		if ( strlen( lpName ) == 0 )
 			continue;
 
 		// get property type
 		pRow->getText( lpString, 1 );
 		uiString::trim<wchar_t>( lpString );
-		uiString::convertUnicodeToUTF8( (unsigned short*)lpString, lpValue );
+		uiString::convertUnicodeToUTF8(lpString, lpValue );
 		NSSerializable::dataType type = CSerializable::getType( lpValue );
 		if ( type == NSSerializable::unknownType )
 			continue;
@@ -277,7 +277,7 @@ bool CComponentDialog::onOKButton()
 		// get property value
 		pRow->getText( lpString, 2 );
 		uiString::trim<wchar_t>( lpString );
-		uiString::convertUnicodeToUTF8( (unsigned short*)lpString, lpValue );
+		uiString::convertUnicodeToUTF8(lpString, lpValue );
 
 		// add record
 		SSerializableRec r;

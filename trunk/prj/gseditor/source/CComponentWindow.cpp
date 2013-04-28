@@ -50,7 +50,7 @@ void CComponentWindow::reloadList()
 			continue;
 
 		// convert value
-		uiString::convertUTF8ToUnicode( r->name, (unsigned short*)lpValue );
+		uiString::convertUTF8ToUnicode(r->name, lpValue);
 		uiComboBoxItem *pItem =	m_comboList->addItem( lpValue, lpValue );
 		
 		// tag type mesh to list property

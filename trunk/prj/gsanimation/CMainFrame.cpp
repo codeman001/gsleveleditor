@@ -393,8 +393,8 @@ bool CMainFrame::doExportMode()
 	char srcFile[MAX_PATH] = {0};
 	char dstFile[MAX_PATH] = {0};
 
-	uiString::convertUnicodeToUTF8( (unsigned short*) src.c(), srcFile );
-	uiString::convertUnicodeToUTF8( (unsigned short*) dst.c(), dstFile );
+	uiString::convertUnicodeToUTF8(src.c(), srcFile );
+	uiString::convertUnicodeToUTF8(dst.c(), dstFile );
 
 	m_file1 = srcFile;
 	m_file2 = dstFile;

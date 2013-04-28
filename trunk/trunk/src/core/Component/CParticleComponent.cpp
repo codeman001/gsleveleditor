@@ -370,20 +370,6 @@ void CParticleComponent::saveXML( const char *lpFileName )
 	file->drop();
 }
 
-// convertToU16
-// on MAC wchar_t is 4bytes
-// so we need convert it to 2bytes
-void CParticleComponent::convertToU16( unsigned short* dst, const wchar_t *src)
-{
-    while ( *src != 0 )
-    {
-        *dst = *src;
-        dst++;
-        src++;
-    }
-    *dst = 0;
-}
-
 // loadXML
 // load particle from xml file
 void CParticleComponent::loadXML( const char *lpFileName )
@@ -405,7 +391,6 @@ void CParticleComponent::loadXML( const char *lpFileName )
 	IParticleSystemSceneNode *particle = NULL;
 	SParticleInfo*	particleInfo = NULL;
     
-    unsigned short  attribValueW[1024];
     char attribValueA[1024] = {0};
     
 	while ( xmlRead->read() )
@@ -426,14 +411,12 @@ void CParticleComponent::loadXML( const char *lpFileName )
 							particleInfo = CParticleComponent::getParticleInfo( particle );
 
 							const wchar_t *attribValue = xmlRead->getAttributeValue(L"name");
-                            convertToU16(attribValueW, attribValue);
-							uiString::convertUnicodeToUTF8(attribValueW, attribValueA );
+							uiString::convertUnicodeToUTF8(attribValue, attribValueA );
 							particle->setName( attribValue );
 
                             
-							attribValue = xmlRead->getAttributeValue(L"texture");		
-                            convertToU16(attribValueW, attribValue);
-							uiString::convertUnicodeToUTF8(attribValueW, attribValueA );
+							attribValue = xmlRead->getAttributeValue(L"texture");
+							uiString::convertUnicodeToUTF8(attribValue, attribValueA );
 
 #ifdef _IRR_COMPILE_WITH_OGLES2_
                             char fileName[512];
@@ -465,8 +448,7 @@ void CParticleComponent::loadXML( const char *lpFileName )
 								CTextureManager::getInstance()->registerTexture(pTex);
 
 							attribValue = xmlRead->getAttributeValue(L"additiveTrans");
-                            convertToU16(attribValueW, attribValue);
-							uiString::convertUnicodeToUTF8(attribValueW, attribValueA );
+							uiString::convertUnicodeToUTF8(attribValue, attribValueA );
                             
 							if ( strcmp( attribValueA, "true") == 0 )
 								particleInfo->additiveTrans = true;
@@ -487,15 +469,13 @@ void CParticleComponent::loadXML( const char *lpFileName )
 
 							// set start time
 							attribValue = xmlRead->getAttributeValue(L"startTime");
-                            convertToU16(attribValueW, attribValue);
-							uiString::convertUnicodeToUTF8(attribValueW, attribValueA );
+							uiString::convertUnicodeToUTF8(attribValue, attribValueA );
                             
 							sscanf(attribValueA, "%ld", &particleInfo->startTime );
 
 							// set life time
 							attribValue = xmlRead->getAttributeValue(L"lifeTime");
-                            convertToU16(attribValueW, attribValue);
-							uiString::convertUnicodeToUTF8(attribValueW, attribValueA );
+							uiString::convertUnicodeToUTF8(attribValue, attribValueA );
                             
 							sscanf(attribValueA, "%ld", &particleInfo->lifeTime );							
 

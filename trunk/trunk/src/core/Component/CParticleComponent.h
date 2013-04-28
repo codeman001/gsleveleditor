@@ -114,10 +114,6 @@ protected:
 	// load particle from xml file
 	void loadXML( const char *lpFileName );
     
-    // convertToU16
-    // on MAC wchar_t is 4bytes
-    // so we need convert it to 2bytes
-    void convertToU16( unsigned short* dst, const wchar_t *src);
 public:
 	// stopParticle
 	// stop particle emitter

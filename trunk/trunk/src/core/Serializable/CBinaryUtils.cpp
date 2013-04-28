@@ -360,7 +360,7 @@ void CBinaryUtils::saveColladaMesh( io::IWriteFile *file, CGameColladaMesh* mesh
 		CGameColladaMesh::SJoint& joint = mesh->Joints[i];
 
 		// joint name
-		uiString::convertUnicodeToUTF8( (unsigned short*) joint.name.c_str(), stringc ); 
+		uiString::convertUnicodeToUTF8(joint.name.c_str(), stringc ); 
 		memStream.writeData( stringc, STRING_BUFFER_SIZE );
 		
 		memStream.writeData(  joint.globalInversedMatrix.pointer(), sizeof(f32)*16 );
@@ -996,7 +996,7 @@ void CBinaryUtils::readColladaMesh( unsigned char *data, unsigned int size )
 
 		// joint name
 		memStream.readData( stringc, STRING_BUFFER_SIZE );
-		uiString::convertUTF8ToUnicode( stringc, (unsigned short*) stringw );
+		uiString::convertUTF8ToUnicode( stringc, stringw );
 		joint.name = stringw;		
 		
 		memStream.readData(  joint.globalInversedMatrix.pointer(), sizeof(f32)*16 );

@@ -63,7 +63,7 @@ void CGameConfig::initLevelConfig()
 						gameMatchType	= IGameMatch::MatchCount;
 
 						char matchA[64] = {0};
-						uiString::convertUnicodeToUTF8( uiString::getUnicodeString(match.c_str()), matchA);
+						uiString::convertUnicodeToUTF8(match.c_str(), matchA);
 
 						for (int i = 0; i < (int)IGameMatch::MatchCount; i++)
 						{
@@ -140,8 +140,8 @@ void CGameConfig::parseCharacter(io::IXMLReader* xmlRead)
 					
 					char nodeA[512], distanceA[512];
 					float dis = 0;
-					uiString::convertUnicodeToUTF8(uiString::getUnicodeString(node), nodeA);
-					uiString::convertUnicodeToUTF8(uiString::getUnicodeString(distance), distanceA);
+					uiString::convertUnicodeToUTF8(node, nodeA);
+					uiString::convertUnicodeToUTF8(distance, distanceA);
 					sscanf(distanceA, "%f", &dis);
 
 					charInfo.lods.push_back( SCharacterLod() );
@@ -162,7 +162,7 @@ void CGameConfig::parseCharacter(io::IXMLReader* xmlRead)
 			{
 				const wchar_t* text = xmlRead->getNodeData();
 				char textA[512];
-				uiString::convertUnicodeToUTF8( uiString::getUnicodeString(text), textA);
+				uiString::convertUnicodeToUTF8(text, textA);
 
 				if ( readState == 1 )				
 					charInfo.name	= std::string(textA);

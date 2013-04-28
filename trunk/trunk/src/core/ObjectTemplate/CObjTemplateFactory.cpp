@@ -40,7 +40,7 @@ void readTemplateFromData( char *lpData )
 		if ( *p == '{' )
 		{
 			getBufferString( lpStringA, from, p );
-			uiString::convertUTF8ToUnicode( lpStringA, (unsigned short*) lpString );
+			uiString::convertUTF8ToUnicode( lpStringA,lpString );
 
 			CObjectTemplate obj;
 			CSerializable	component;
@@ -115,13 +115,13 @@ CObjectTemplate* CObjTemplateFactory::getTemplate( wchar_t* templateName )
 	char lpNameA[1024];
 	
 	char templateNameA[1024];
-	uiString::convertUnicodeToUTF8( (unsigned short*) templateName, templateNameA );
+	uiString::convertUnicodeToUTF8(templateName, templateNameA );
 
 	while ( i != end )
 	{
 		CObjectTemplate *p = &(*i);
 	
-		uiString::convertUnicodeToUTF8( (unsigned short*) p->getObjectTemplateName(), lpNameA );
+		uiString::convertUnicodeToUTF8(p->getObjectTemplateName(), lpNameA );
 
 		if ( strcmp( lpNameA, templateNameA) == 0 )
 		{
@@ -141,14 +141,14 @@ int CObjTemplateFactory::getTemplateId( wchar_t* templateName )
 	static char lpNameA[1024];	
 	static char templateNameA[1024];
     
-	uiString::convertUnicodeToUTF8( (unsigned short*) templateName, templateNameA );
+	uiString::convertUnicodeToUTF8(templateName, templateNameA );
 
     int id = 0;
 	while ( i != end )
 	{
 		CObjectTemplate *p = &(*i);
         
-		uiString::convertUnicodeToUTF8( (unsigned short*) p->getObjectTemplateName(), lpNameA );
+		uiString::convertUnicodeToUTF8(p->getObjectTemplateName(), lpNameA );
         
 		if ( strcmp( lpNameA, templateNameA) == 0 )
 		{
@@ -266,7 +266,7 @@ void CObjTemplateFactory::saveAllObjectTemplate()
 		wchar_t *templateName = pTemplate->getObjectTemplateName();
 		char	templateNameA[1024];
 
-		uiString::convertUnicodeToUTF8( (unsigned short*) templateName, templateNameA );
+		uiString::convertUnicodeToUTF8(templateName, templateNameA );
 		
 		file << templateNameA << "\n";
 		file << "{\n";
@@ -348,13 +348,13 @@ void CObjTemplateFactory::removeTemplate(wchar_t* templateName)
 	char lpNameA[1024];
 	
 	char templateNameA[1024];
-	uiString::convertUnicodeToUTF8( (unsigned short*) templateName, templateNameA );
+	uiString::convertUnicodeToUTF8(templateName, templateNameA );
 
 	while ( i != end )
 	{
 		CObjectTemplate *p = &(*i);
 	
-		uiString::convertUnicodeToUTF8( (unsigned short*) p->getObjectTemplateName(), lpNameA );
+		uiString::convertUnicodeToUTF8(p->getObjectTemplateName(), lpNameA );
 
 		if ( strcmp( lpNameA, templateNameA) == 0 )
 		{

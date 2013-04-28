@@ -5,6 +5,7 @@ debug("compile PlayerComponent.lua")
 k_playerStateNone		= 0		
 k_playerStateStand 		= (k_playerStateNone+1)
 k_playerStateRun 		= (k_playerStateStand+1)
+k_playerStateFlipTurn 	= (k_playerStateRun+1)
 
 k_playerUpBodyNone		= 0
 k_playerUpBodyAim		= (k_playerUpBodyNone+1)
@@ -26,6 +27,7 @@ k_playerAnimRunRight			= "TP_RunRight"
 k_animRunRotateSpeed			= 0.4
 k_animStandToRunBlendSpeed		= 0.003
 k_animRunToStandBlendSpeed		= 0.003
+k_animFipTurnBlendSpeed			= 0.005
 
 -- class CPlayerComponent
 CPlayerComponent = {}
@@ -85,8 +87,8 @@ function CPlayerComponent.create(gameObj)
 	table.insert(newObj.m_allSceneNodes, getColladaSceneNode(newObj.m_collada, "BoneRoot"))		
 	local allChildSceneNode = getChildsOfColladaSceneNode(newObj.m_collada, "BoneRoot")
 	for id,node in ipairs(allChildSceneNode) do
-		table.insert(newObj.m_allSceneNodes, node)		
-	end		
+		table.insert(newObj.m_allSceneNodes, node)
+	end
 	debug("Total bone nodes of player: " .. table.getn(newObj.m_allSceneNodes) )
 	
 	---------------------------------------------------------
@@ -202,6 +204,7 @@ function CPlayerComponent:updateState(timeStep)
 	local stateUpdate = {
 		[k_playerStateStand] 	= function() self:updatePlayerStateStand(timeStep)	end,
 		[k_playerStateRun]		= function() self:updatePlayerStateRun(timeStep) 	end,
+		[k_playerStateFlipTurn]	= function() self:updatePlayerStateFlipTurn(timeStep) end,
 	}
 				
 	local stateUpBodyUpdate = {
@@ -217,6 +220,10 @@ function CPlayerComponent:updateState(timeStep)
 	stateUpBodyUpdate[self.m_playerUpState]();
 	
 end
+
+-----------------------------------------------------------
+-- player state implement 
+-----------------------------------------------------------
 
 -- updatePlayerStateStand
 -- Update when player not moving
@@ -284,6 +291,9 @@ function CPlayerComponent:updatePlayerStateRun(timeStep)
 		setColladaAnimation(self.m_collada, k_playerAnimRunRight, 4, true, 0)		
 		colladaEnableAnimTrackChannel(self.m_collada, 4, true, 0)
 		
+		-- default run blend
+		runBlend = self:calcRunAnimationBlend(0)
+		
 		self.m_playerSubState = k_playerSubStateUpdate
 		
 	elseif self.m_playerSubState == k_playerSubStateEnd then
@@ -302,24 +312,28 @@ function CPlayerComponent:updatePlayerStateRun(timeStep)
 	mat:rotateVect(self.m_runVector);
 	self.m_runVector:normalize();		
 
+	-- flip turn
+	local angle = math.abs(CVectorUtil.getAngle(self.m_runVector, self.m_currentRunVector))
+	if ( angle > 160 ) then
+		self:setPlayerState(k_playerStateFlipTurn)
+	end
+		
 	-- update current run vector
 	local ret = CVectorUtil.turnToDir(self.m_currentRunVector, self.m_runVector, k_animRunRotateSpeed)
 	self.m_currentRunVector = irr.core.vector3d(ret[2])
 			
 	-- if have input
 	if self.m_inputRun == 1 then		
-		local angle = -CVectorUtil.getAngle(self.m_currentRunVector, frontVector)		
+		angle = -CVectorUtil.getAngle(self.m_currentRunVector, frontVector)
 		runBlend = self:calcRunAnimationBlend(angle)
 	end
 	
-	local runFactor = self.m_runFactor		
-	
 	-- set weight of run anim
+	local runFactor = self.m_runFactor
 	setColladaAnimWeight(self.m_collada, 1 - runFactor, 0, 0)
-	setColladaAnimWeight(self.m_collada, runBlend[1]*runFactor, 1, 0)
-	setColladaAnimWeight(self.m_collada, runBlend[2]*runFactor, 2, 0)
-	setColladaAnimWeight(self.m_collada, runBlend[3]*runFactor, 3, 0)
-	setColladaAnimWeight(self.m_collada, runBlend[4]*runFactor, 4, 0)	
+	for id,weight in ipairs(runBlend) do
+		setColladaAnimWeight(self.m_collada, weight*runFactor, id, 0)
+	end
 	
 	-- sync animation
 	colladaSynchronizedAnim(self.m_collada, 1.0, 0)
@@ -328,7 +342,7 @@ function CPlayerComponent:updatePlayerStateRun(timeStep)
 	if self.m_inputRun == 1 then	
 		self.m_runFactor = self.m_runFactor + timeStep*k_animStandToRunBlendSpeed
 	else
-		self.m_runFactor = self.m_runFactor - timeStep*k_animRunToStandBlendSpeed		
+		self.m_runFactor = self.m_runFactor - timeStep*k_animRunToStandBlendSpeed
 	end
 	
 	-- clamp from 0 to 1
@@ -340,6 +354,82 @@ function CPlayerComponent:updatePlayerStateRun(timeStep)
 	end		
 	
 end
+
+-- updatePlayerStateFlipTurn
+-- update when player force change the run turn
+function CPlayerComponent:updatePlayerStateFlipTurn(timeStep) 
+	if self.m_playerSubState == k_playerSubStateInit then		
+		-- track 0
+		setColladaAnimation(self.m_collada, k_playerAnimShootMachineGuns, 0, true, 0)
+		colladaEnableAnimTrackChannel(self.m_collada, 0, true, 0)
+		pauseColladaAnimAtFrame(self.m_collada, 0, 0, 0)
+				
+		-- track 1
+		setColladaAnimation(self.m_collada, k_playerAnimRunForward, 1, true, 0)
+		colladaEnableAnimTrackChannel(self.m_collada, 1, true, 0)
+		
+		-- track 2
+		setColladaAnimation(self.m_collada, k_playerAnimRunBackward, 2, true, 0)		
+		colladaEnableAnimTrackChannel(self.m_collada, 2, true, 0)
+		
+		-- track 3
+		setColladaAnimation(self.m_collada, k_playerAnimRunLeft, 3, true, 0)		
+		colladaEnableAnimTrackChannel(self.m_collada, 3, true, 0)
+		
+		-- track 4
+		setColladaAnimation(self.m_collada, k_playerAnimRunRight, 4, true, 0)		
+		colladaEnableAnimTrackChannel(self.m_collada, 4, true, 0)		
+		
+		self.m_playerSubState = k_playerSubStateUpdate
+		
+	elseif self.m_playerSubState == k_playerSubStateEnd then
+		-- end state
+		self:doNextState()
+	end
+	
+		
+	-- update run vector
+	local frontx, fronty, frontz = getObjectFront(self.m_gameObject)
+	frontVector = irr.core.vector3d(frontx, fronty, frontz)	
+			
+	-- if have input
+	angle = -CVectorUtil.getAngle(self.m_currentRunVector, frontVector)
+	runBlend = self:calcRunAnimationBlend(angle)
+	
+	-- set weight of run anim
+	local runFactor = self.m_runFactor
+	setColladaAnimWeight(self.m_collada, 1 - runFactor, 0, 0)
+	for id,weight in ipairs(runBlend) do
+		setColladaAnimWeight(self.m_collada, weight*runFactor, id, 0)
+	end
+	
+	-- sync animation
+	colladaSynchronizedAnim(self.m_collada, 1.0, 0)			
+	
+	-- stop run animation
+	self.m_runFactor = self.m_runFactor - timeStep*k_animFipTurnBlendSpeed
+	if self.m_runFactor <= 0 then
+		self.m_runFactor = 0
+		
+		-- call run vector
+		self.m_runVector = irr.core.vector3d(frontx, fronty, frontz)		
+		local q = irr.core.quaternion()
+		q:fromAngleAxis( k_degToRad*self.m_inputRunRotate, irr.core.vector3d(0,1,0) )
+		local mat = q:getMatrix()
+		mat:rotateVect(self.m_runVector);
+		self.m_runVector:normalize();
+	
+		-- force turn
+		self.m_currentRunVector = self.m_runVector
+		
+		-- return state run
+		self:setPlayerState(k_playerStateRun)		
+	end
+end
+
+-----------------------------------------------------------
+-- upbody state implement 
+-----------------------------------------------------------
 
 
 -- updatePlayerUpBodyAim

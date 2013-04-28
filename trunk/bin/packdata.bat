@@ -1,7 +1,7 @@
-delete _common.zip
-delete _textureTGA.zip
-delete _texturePVR.zip
-delete _scene.zip
+del _common.zip
+del _textureTGA.zip
+del _texturePVR.zip
+del _scene.zip
 
 ..\tools\7z\7z.exe a -r _common.zip *.css
 ..\tools\7z\7z.exe a -r _common.zip *.fsh

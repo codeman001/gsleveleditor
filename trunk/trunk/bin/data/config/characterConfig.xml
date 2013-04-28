@@ -1,7 +1,7 @@
 <characterConfig>
 	<character>
 		<name>US Hawaii</name>
-		<model>data/mesh/character/hero/us_hawaii/us_hawaii.dae</model>
+		<model>data/mesh/character/hero/us_hawaii/us_hawaii.scene</model>
 		<anim>data/mesh/character/hero/us_hawaii/us_hawaii.anim</anim>
 		<lods>			
 			<node name="l0_downs_hawaii-node" distance="1000"/> <!-- 10m -->

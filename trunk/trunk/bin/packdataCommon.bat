@@ -1,4 +1,4 @@
-delete _common.zip
+del _common.zip
 
 ..\tools\7z\7z.exe a -r _common.zip *.css
 ..\tools\7z\7z.exe a -r _common.zip *.fsh

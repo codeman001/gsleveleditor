@@ -55,11 +55,37 @@ LevelGameM1Col
 		hideTerrain: true | boolType;
 	}
 }
+LevelGameM2
+{
+	Collada mesh component
+	{
+		meshFile: data/mesh/environment/levelGameM2/Map1.scene | filePathType;
+		defaultNode:  | stringType;
+	}
+	Object property component
+	{
+		enableDirectionLight: false | boolType;
+		enablePointLight: true | boolType;
+	}
+	Object transform component
+	{
+		rotateX: 0.0000000 | floatType;
+		rotateY: 0.0000000 | floatType;
+		rotateZ: 0.0000000 | floatType;
+		scaleX: 254 | floatType;
+		scaleY: 254 | floatType;
+		scaleZ: 254 | floatType;
+	}
+	Terrain component
+	{
+		hideTerrain: true | boolType;
+	}
+}
 Player
 {
 	Collada mesh component
 	{
-		meshFile:  | filePathType;
+		meshFile: data/mesh/character/hero/us_hawaii/us_hawaii.scene | filePathType;
 		defaultNode:  | stringType;
 	}
 	Ellipsoid collision component

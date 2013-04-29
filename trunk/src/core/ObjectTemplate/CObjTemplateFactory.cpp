@@ -204,12 +204,6 @@ CGameObject* CObjTemplateFactory::spawnObject( wchar_t* templateName, CGameObjec
 	if ( pTemplate == NULL )
 		return NULL;
 
-	if ( std::wstring(templateName) == L"SpawnPoint" )
-	{
-		int t = 0;
-		t++;
-	}
-
 	CGameObject *pObj = new CGameObject(parent);
 	ArraySerializable::iterator i =	pTemplate->getAllComponentProperty()->begin(), 
 		end = pTemplate->getAllComponentProperty()->end();

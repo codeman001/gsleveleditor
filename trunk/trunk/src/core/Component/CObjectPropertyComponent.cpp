@@ -47,9 +47,12 @@ void CObjectPropertyComponent::initComponent()
 		CColladaMeshComponent *comp = (CColladaMeshComponent*)m_gameObject->getComponent( IObjectComponent::ColladaMesh );		
 		CGameColladaContainerSceneNode* colladaNode = (CGameColladaContainerSceneNode*)comp->getColladaNode();
 		
-		std::vector<ISceneNode*>* listMeshNode = colladaNode->getBoundingMeshNode();
-		for ( int i = 0, n = (int)listMeshNode->size(); i < n; i++ )
-			listNodesHaveMesh.push_back( listMeshNode->at(i) );
+		if ( colladaNode )
+		{
+			std::vector<ISceneNode*>* listMeshNode = colladaNode->getBoundingMeshNode();
+			for ( int i = 0, n = (int)listMeshNode->size(); i < n; i++ )
+				listNodesHaveMesh.push_back( listMeshNode->at(i) );
+		}
 	}
 
 	for ( int i = 0, n = (int)listNodesHaveMesh.size(); i < n; i++ )

@@ -68,7 +68,8 @@ void CAddObjectController::onLMouseUp(int x, int y)
 		if ( camRay.getLength() < 5000 )
 		{
 			CGameObject *pObj =	pView->getCurrentZone()->createObject( pView->getCurrentObjectTemplate() );
-			
+			pView->getCurrentZone()->updateAddRemoveObj();
+
 			if ( pObj == NULL )
 				pView->alertError( L"Can not create object because missing template" );
 			else

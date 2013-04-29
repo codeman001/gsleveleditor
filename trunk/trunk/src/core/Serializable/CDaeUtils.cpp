@@ -777,6 +777,10 @@ void CDaeUtils::parseGeometryNode( io::IXMLReader *xmlRead )
 					}				
 				}
 
+				// need flip Ox
+				if ( triangle.NumElementPerVertex > 1 )
+					m_flipOx = true;
+
 				// add triangles
 				if ( triangle.IndexBuffer != NULL )
 					mesh.Triangles.push_back( triangle );
@@ -1046,7 +1050,7 @@ void CDaeUtils::parseSceneNode( io::IXMLReader *xmlRead )
 	const std::wstring sceneSectionName(L"visual_scene");
 	const std::wstring nodeSectionName(L"node");
 	
-	m_boneRoot = NULL;
+	m_colladaRoot = NULL;
 
 	while(xmlRead->read())
 	{			
@@ -1092,24 +1096,31 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 	pNode->Type = L"NODE";
 	if ( xmlRead->getAttributeValue(L"type") )
 		pNode->Type = xmlRead->getAttributeValue(L"type");
-	
-	if ( pNode->Type == L"JOINT" && parent == NULL )
-	{		
-		if ( m_boneRoot == NULL )
-		{
-			m_boneRoot = new SNodeParam();
-			m_boneRoot->Name = L"BoneRoot";
-			m_boneRoot->ChildLevel = 0;
-			m_boneRoot->Parent = NULL;
-
-			m_boneRoot->Scale = core::vector3df(-1,1,1);
-			m_boneRoot->Transform.setScale( core::vector3df(-1,1,1) );
-
-			m_listNode.push_back(m_boneRoot);
-		}		
 		
-		parent = m_boneRoot;
+	if ( m_colladaRoot == NULL )
+	{
+		m_colladaRoot = new SNodeParam();
+		m_colladaRoot->Name = L"ColladaRoot";
+		m_colladaRoot->ChildLevel = 0;
+
+		m_colladaRoot->Parent = NULL;
+		
+		if (m_flipOx == false)
+		{
+			m_colladaRoot->Scale = core::vector3df(1,1,1);
+			m_colladaRoot->Transform.setScale( core::vector3df(1,1,1) );
+		}
+		else
+		{
+			m_colladaRoot->Scale = core::vector3df(-250,250,250);
+			m_colladaRoot->Transform.setScale( core::vector3df(-250,250,250) );
+		}
+
+		m_listNode.push_back(m_colladaRoot);		
 	}
+
+	if ( parent == NULL )
+		parent = m_colladaRoot;	
 
 	pNode->Parent = parent;
 	if ( parent )
@@ -1673,7 +1684,7 @@ void CDaeUtils::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMe
 
 	}
 	else
-	{
+	{		
 		m_vertexMap.clear();
 
 		indices.set_used( tri->NumPolygon * 3 );
@@ -1777,17 +1788,35 @@ void CDaeUtils::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMe
 	{
 		u32 ind = i * 3;
 
-		if (flip)
-		{
-			mbuffer->Indices.push_back(indices[ind+2]);
-			mbuffer->Indices.push_back(indices[ind+1]);
-			mbuffer->Indices.push_back(indices[ind+0]);
+		if ( m_flipOx == true )
+		{			
+			if (flip)
+			{
+				mbuffer->Indices.push_back(indices[ind+0]);
+				mbuffer->Indices.push_back(indices[ind+1]);
+				mbuffer->Indices.push_back(indices[ind+2]);
+			}
+			else
+			{
+				mbuffer->Indices.push_back(indices[ind+2]);
+				mbuffer->Indices.push_back(indices[ind+1]);
+				mbuffer->Indices.push_back(indices[ind+0]);
+			}
 		}
 		else
 		{
-			mbuffer->Indices.push_back(indices[ind+0]);
-			mbuffer->Indices.push_back(indices[ind+1]);
-			mbuffer->Indices.push_back(indices[ind+2]);
+			if (flip)
+			{
+				mbuffer->Indices.push_back(indices[ind+2]);
+				mbuffer->Indices.push_back(indices[ind+1]);
+				mbuffer->Indices.push_back(indices[ind+0]);
+			}
+			else
+			{
+				mbuffer->Indices.push_back(indices[ind+0]);
+				mbuffer->Indices.push_back(indices[ind+1]);
+				mbuffer->Indices.push_back(indices[ind+2]);
+			}
 		}
 	}
 	
@@ -1821,7 +1850,7 @@ void CDaeUtils::constructMeshBuffer( SMeshParam *mesh, STrianglesParam* tri, IMe
 	}
 
 	delete mapIdx;
-
+	
 	mbuffer->Indices = indexBuffer;
 	mbuffer->Vertices = vertexBuffer;
 
@@ -2064,33 +2093,35 @@ void CDaeUtils::constructSkinMeshBuffer( SMeshParam *mesh,	STrianglesParam* tri,
 	{
 		u32 ind = i * 3;
 		
-		/*
-		if (flip)
-		{
-			mbuffer->Indices.push_back(indices[ind+2]);
-			mbuffer->Indices.push_back(indices[ind+1]);
-			mbuffer->Indices.push_back(indices[ind+0]);
+		if ( m_flipOx == true )
+		{			
+			if (flip)
+			{
+				mbuffer->Indices.push_back(indices[ind+0]);
+				mbuffer->Indices.push_back(indices[ind+1]);
+				mbuffer->Indices.push_back(indices[ind+2]);
+			}
+			else
+			{
+				mbuffer->Indices.push_back(indices[ind+2]);
+				mbuffer->Indices.push_back(indices[ind+1]);
+				mbuffer->Indices.push_back(indices[ind+0]);
+			}
 		}
 		else
 		{
-			mbuffer->Indices.push_back(indices[ind+0]);
-			mbuffer->Indices.push_back(indices[ind+1]);
-			mbuffer->Indices.push_back(indices[ind+2]);
-		}
-		*/
-		
-		// flip 0x animation
-		if (flip)
-		{
-			mbuffer->Indices.push_back(indices[ind+0]);
-			mbuffer->Indices.push_back(indices[ind+1]);
-			mbuffer->Indices.push_back(indices[ind+2]);
-		}
-		else
-		{
-			mbuffer->Indices.push_back(indices[ind+2]);
-			mbuffer->Indices.push_back(indices[ind+1]);
-			mbuffer->Indices.push_back(indices[ind+0]);
+			if (flip)
+			{
+				mbuffer->Indices.push_back(indices[ind+2]);
+				mbuffer->Indices.push_back(indices[ind+1]);
+				mbuffer->Indices.push_back(indices[ind+0]);
+			}
+			else
+			{
+				mbuffer->Indices.push_back(indices[ind+0]);
+				mbuffer->Indices.push_back(indices[ind+1]);
+				mbuffer->Indices.push_back(indices[ind+2]);
+			}
 		}
 
 	}
@@ -2476,14 +2507,15 @@ void CDaeUtils::constructScene()
 				// add mesh buffer to skin mesh
 				int nBuffer = (int)pMesh->Triangles.size();
 
-
 				for ( int i = 0; i < nBuffer; i++ )
 				{
 					STrianglesParam& tri = pMesh->Triangles[i];
-					
+					if ( tri.NumPolygon == 0 )
+						continue;
+
 					// create mesh buffer
-					IMeshBuffer* meshBuffer = NULL;										
-			
+					IMeshBuffer* meshBuffer = NULL;
+
 					if ( pMesh->Type == k_skinMesh )
 					{
 						meshBuffer = new SColladaSkinMeshBuffer();
@@ -2654,6 +2686,7 @@ void CDaeUtils::loadFile( const char *lpFilename, CGameObject* obj )
 
 	bool readLUpAxis = false;
 	m_needFlip = false;
+	m_flipOx = false;
 
 	while ( xmlRead->read() )
 	{

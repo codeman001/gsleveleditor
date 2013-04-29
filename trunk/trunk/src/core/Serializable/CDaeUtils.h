@@ -353,7 +353,7 @@ protected:
 	std::string					m_animeshFile;
 	std::string					m_animFileName;
 
-	SNodeParam					*m_boneRoot;
+	SNodeParam					*m_colladaRoot;
 
 #pragma region DAE_PARSE_OBJECTS
 	//	list of effect in collada scene
@@ -365,6 +365,7 @@ protected:
 	ArrayNodeParams				m_listNode;
 
 	bool						m_needFlip;
+	bool						m_flipOx;
 
     typedef std::vector<s32>    ArrayShort;
     

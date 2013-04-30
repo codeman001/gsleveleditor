@@ -26,6 +26,9 @@ protected:
 		core::vector3df		m_currentTarget;
 		core::vector3df		m_toPos;
 		core::vector3df		m_toTarget;
+
+		bool				m_haveStaticTarget;
+		core::vector3df		m_staticTarget;
 public:
 		//! Constructor
 		CGameCameraFollowAnimator(	gui::ICursorControl* cursorControl, float radius, f32 rotateSpeed = 20.0f );
@@ -73,6 +76,12 @@ public:
 		inline void setRadius( float r )
 		{
 			m_radius = r;
+		}
+
+		void setStaticTarget(bool b, const core::vector3df& v)
+		{
+			m_haveStaticTarget = b;
+			m_staticTarget = v;
 		}
 protected:
 	

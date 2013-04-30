@@ -758,10 +758,7 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 		CGameColladaMesh *mesh = m_listMesh[ meshID ];
 		
 		if ( node != NULL && mesh != NULL )
-		{						
-			// set child bouding box
-			pParent->addBoundingMeshNode( node );
-			
+		{			
 			// set material to buffer
 			int nBufferCount = mesh->getMeshBufferCount();
 			for ( int i = 0; i < nBufferCount; i++ )
@@ -780,8 +777,11 @@ void CBinaryUtils::loadFile( io::IReadFile *file, CGameObject* obj )
 				}
 			}
 
+			// set collada mesh
 			node->setColladaMesh( mesh );
 
+			// set child bouding box
+			pParent->addBoundingMeshNode( node );
 		}
 		it++;
 	}

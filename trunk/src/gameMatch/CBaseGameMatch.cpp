@@ -13,6 +13,9 @@
 CBaseGameMatch::CBaseGameMatch(IGameMatch::EGameMatchType type)
 	:IGameMatch(type)
 {
+	m_player	= NULL;
+	m_fixCamera = true;
+	m_frameCount = 0;
 }
 
 CBaseGameMatch::~CBaseGameMatch()
@@ -34,7 +37,34 @@ void CBaseGameMatch::initUI(CMenuFxObj menufx, CUICanvas* rootWidget)
 // update match
 void CBaseGameMatch::update()
 {
+	m_frameCount++;
+
+	updateCameraTarget();
 }
+
+// updateCameraTarget	
+void CBaseGameMatch::updateCameraTarget()
+{
+	if ( m_player )
+	{
+		if ( m_fixCamera && m_frameCount > 1 )
+		{
+			core::aabbox3d<f32> box = m_player->getSceneNode()->getBoundingBox();
+
+			m_staticTarget = box.getCenter();
+			m_staticTarget.Y = m_staticTarget.Y  + (box.MaxEdge.Y - box.MinEdge.Y)/4;
+
+			m_fixCamera = false;
+		}
+
+		CGameLevel *currentLevel = CGameLevel::getCurrentLevel();
+		if ( currentLevel && currentLevel->getCamera() )
+		{
+			currentLevel->getCamera()->setFollowStaticTarget(true, m_player->getPosition() + m_staticTarget);
+		}
+	}
+}
+
 
 // onEvent
 // process event

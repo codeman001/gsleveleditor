@@ -3,8 +3,7 @@
 
 CGameMatchSolo::CGameMatchSolo()
 	:CBaseGameMatch(IGameMatch::SoloMode)
-{
-	m_player = NULL;
+{	
 }
 
 CGameMatchSolo::~CGameMatchSolo()
@@ -39,6 +38,10 @@ void CGameMatchSolo::update()
 {
 	if ( m_player == NULL )
 		m_player = spawn3rdPlayer();
+	else
+	{
+		CBaseGameMatch::update();
+	}
 }
 
 // onEvent

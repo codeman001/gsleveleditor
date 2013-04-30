@@ -499,6 +499,9 @@ public:
 	core::matrix4	AbsoluteAnimationMatrix;
 	core::matrix4	RelativeMatrix;
 
+	// to compute bbox
+	core::matrix4	LocalAbsoluteMatrix;
+
 	core::matrix4	AnimationMatrixLayer[MAX_ANIMLAYER];
     core::matrix4	BaseAbsoluteAnimationMatrixLayer[MAX_ANIMLAYER];
 	core::matrix4	AbsoluteAnimationMatrixLayer[MAX_ANIMLAYER];
@@ -535,7 +538,7 @@ protected:
 	int				m_animationLayer;
 	bool			m_connectLayerAnim;
 	
-	bool			m_linkMatrixLayer;	
+	bool			m_linkMatrixLayer;
 
 public:
 	CGameColladaSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id, bool hardwareSkinning = true);
@@ -686,14 +689,14 @@ public:
 		return m_hideTerrainNode;
 	}
 
-	bool isEnableBoneBBox()
+	bool isHaveBoneBBox()
 	{
-		return m_enableBoneBBox;
+		return m_haveBoneBBox;
 	}
 
 	void setBoneBBox(bool b)
 	{
-		m_enableBoneBBox = b;
+		m_haveBoneBBox = b;
 	}
 
 #ifdef GSANIMATION
@@ -813,7 +816,7 @@ public:
 protected:	
 	u32				m_timer;	
 
-	bool			m_enableBoneBBox;
+	bool			m_haveBoneBBox;
 	bool			m_isSkydome;
 	bool			m_terrainNode;
 	bool			m_hideTerrainNode;

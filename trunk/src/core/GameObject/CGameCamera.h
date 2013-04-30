@@ -133,6 +133,9 @@ public:
 	// set camera pos of follow obj type
 	void setFollowRotate(float x, float y);
 
+	// set static target
+	void setFollowStaticTarget(bool b, const core::vector3df& v);
+
 	// setFreeCamera
 	// set camera free with custom pos & target
 	void setFreeCamera();

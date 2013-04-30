@@ -29,6 +29,9 @@ k_animStandToRunBlendSpeed		= 0.003
 k_animRunToStandBlendSpeed		= 0.003
 k_animFipTurnBlendSpeed			= 0.005
 
+k_runSpeed						= 0.4
+
+
 -- class CPlayerComponent
 CPlayerComponent = {}
 CPlayerComponent.__index = CPlayerComponent
@@ -252,7 +255,7 @@ function CPlayerComponent:updatePlayerStateStand(timeStep)
 	-- rotate character	
 	if self.m_needRotateCharacter == true then
 		self.m_needRotateCharacter = (self:rotatePlayerToFront(0.6) == false)
-	end		
+	end
 	
 	-- set run vector
 	local frontx, fronty, frontz = getObjectFront(self.m_gameObject)	
@@ -352,6 +355,20 @@ function CPlayerComponent:updatePlayerStateRun(timeStep)
 		self.m_runFactor = 0.0
 		self:setPlayerState(k_playerStateStand)
 	end		
+	
+	-- rotate character	
+	if self.m_needRotateCharacter == true then
+		self.m_needRotateCharacter = (self:rotatePlayerToFront(0.6) == false)
+	end
+						
+	
+	-- move character
+	local posX, posY, posZ = getObjectPosition(self.m_gameObject)
+	posX = posX + self.m_runFactor*self.m_currentRunVector.X*timeStep*k_runSpeed
+	posY = posY + self.m_runFactor*self.m_currentRunVector.Y*timeStep*k_runSpeed
+	posZ = posZ + self.m_runFactor*self.m_currentRunVector.Z*timeStep*k_runSpeed	
+	
+	setObjectPosition(self.m_gameObject, posX, posY, posZ)
 	
 end
 

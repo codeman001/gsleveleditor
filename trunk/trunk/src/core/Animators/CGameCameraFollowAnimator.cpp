@@ -14,6 +14,7 @@ CGameCameraFollowAnimator::CGameCameraFollowAnimator(	gui::ICursorControl* curso
 	m_radius = radius;
 	m_rotateSpeed = rotateSpeed;
 
+	m_haveStaticTarget = false;
 	m_firstUpdate = true;
 	m_followNode = NULL;
 
@@ -111,11 +112,20 @@ void CGameCameraFollowAnimator::animateNode(ISceneNode* node, u32 timeMs)
 		m_cursorPos = m_centerCursor;
 	}	
 
-	core::aabbox3df box = m_followNode->getTransformedBoundingBox();
-	core::vector3df target = box.getCenter();
+	core::vector3df target;
 
-	// hard code to offset the camera target
-	target.Y = target.Y  + (box.MaxEdge.Y - box.MinEdge.Y)/4;
+	if ( m_haveStaticTarget == false )
+	{
+		core::aabbox3df box = m_followNode->getTransformedBoundingBox();
+		target = box.getCenter();
+
+		// hard code to offset the camera target
+		target.Y = target.Y  + (box.MaxEdge.Y - box.MinEdge.Y)/4;
+	}
+	else
+	{
+		target = m_staticTarget;
+	}
 
 	core::vector3df pos = core::vector3df(0,0, m_radius );
 

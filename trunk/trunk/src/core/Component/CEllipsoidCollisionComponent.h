@@ -45,6 +45,11 @@ public:
 	{
 		return true;
 	}
+
+	// initFromBBox
+	// get box from bouding box of object
+	void initFromBBox();
+
 public:
 
 	// isFalling

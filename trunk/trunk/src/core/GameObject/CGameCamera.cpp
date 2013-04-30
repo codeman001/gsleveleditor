@@ -302,6 +302,18 @@ void CGameCamera::setFollowRotate(float x, float y)
 	}
 }
 
+// set static target
+void CGameCamera::setFollowStaticTarget(bool b, const core::vector3df& v)
+{
+	if ( m_cameraType == CGameCamera::FollowObjectCamera && m_animator )
+	{
+#ifdef GSGAMEPLAY
+		CGameCameraFollowAnimator* animator = (CGameCameraFollowAnimator*)m_animator;
+		animator->setStaticTarget(b,v);
+#endif
+	}
+}
+
 // setFreeCamera
 // set camera free with custom pos & target
 void CGameCamera::setFreeCamera()

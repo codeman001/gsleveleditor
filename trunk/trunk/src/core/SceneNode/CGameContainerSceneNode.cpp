@@ -106,6 +106,7 @@ CGameColladaContainerSceneNode::CGameColladaContainerSceneNode(
 			)
 	:CGameContainerSceneNode(owner, parent, mgr, id, position, rotation,scale)
 {
+	m_containSkinMesh = false;
 }
 
 
@@ -131,26 +132,78 @@ void CGameColladaContainerSceneNode::OnRegisterSceneNode()
 		ISceneNode::OnRegisterSceneNode();
 
 		// need update bouding box
-		std::vector<ISceneNode*>::iterator it = m_boudingMeshNode.begin(), end = m_boudingMeshNode.end();
-		
-		// box is equal first child
-		Box.reset(core::vector3df(0,0,0));
+		if ( m_containSkinMesh == false )
+		{
+			// update bbox from MESH
+			std::vector<ISceneNode*>::iterator it = m_boudingMeshNode.begin(), end = m_boudingMeshNode.end();
+			
+			// box is equal first child
+			Box.reset(core::vector3df(0,0,0));
 
-		bool first = true;
+			bool first = true;
 
-		// update another child
-		for (; it != end; ++it)
-		{	
-			CGameColladaSceneNode *node = (CGameColladaSceneNode*)(*it);			
-			if ( node->ColladaMesh )
-			{
-				if ( first == true )
+			// update another child
+			for (; it != end; ++it)
+			{	
+				CGameColladaSceneNode *node = (CGameColladaSceneNode*)(*it);			
+				if ( node->ColladaMesh )
 				{
-					Box = computeChildBoudingBox( node );
-					first = false;
+					if ( first == true )
+					{
+						Box = computeChildBoudingBox( node );
+						first = false;
+					}
+					else
+						Box.addInternalBox( computeChildBoudingBox( node ) );
 				}
-				else
-					Box.addInternalBox( computeChildBoudingBox( node ) );
+			}
+		}
+		else
+		{
+			// update bbox from BONE
+
+			std::queue<ISceneNode*>	queue;
+			ISceneNodeList::ConstIterator it = Children.begin(), end = Children.end();
+			while ( it != end )
+			{
+				queue.push( (*it) );
+				it++;
+			}
+			
+			bool first = true;
+			Box.reset(0,0,0);
+
+			while ( queue.size() )
+			{
+				CGameColladaSceneNode* top = (CGameColladaSceneNode*)queue.front();
+				queue.pop();
+
+				// only get bounding box of bone scene node
+				if ( top->getMesh() == NULL && top->isHaveBoneBBox() )
+				{
+					// call child OnAnimate					
+					core::aabbox3df bbBox = top->getBoundingBox();
+					top->LocalAbsoluteMatrix.transformBox(bbBox);
+
+					if ( first )
+					{
+						Box = bbBox;
+						first = false;
+					}
+					else
+					{
+						Box.addInternalBox( bbBox );
+					}					
+				}
+
+				it	= top->getChildren().begin();
+				end = top->getChildren().end();
+				while ( it != end )
+				{
+					queue.push( (*it) );
+					it++;
+				}
+
 			}
 		}
 	}
@@ -180,16 +233,16 @@ void CGameColladaContainerSceneNode::OnAnimate(irr::u32 timeMs)
 	{
 		queue.push( (*it) );
 		it++;
-	}
-	
+	}		
+
 	while ( queue.size() )
 	{
 		ISceneNode* top = queue.front();
 		queue.pop();
 
 		// call child OnAnimate
-		top->OnAnimate( timeMs );
-				
+		top->OnAnimate( timeMs );			
+
 		it	= top->getChildren().begin();
 		end = top->getChildren().end();
 		while ( it != end )
@@ -245,7 +298,7 @@ core::aabbox3df	CGameColladaContainerSceneNode::computeChildBoudingBox( ISceneNo
 		
 	while ( node != this && node != NULL )
 	{
-		mat = node->getRelativeTransformation() * mat;
+		mat = ((CGameColladaSceneNode*)node)->RelativeMatrix * mat;
 		node = node->getParent();
 	}
 
@@ -257,6 +310,19 @@ void CGameColladaContainerSceneNode::render()
 {
 	if (m_owner == NULL)
 		return;
+
+	IVideoDriver *driver = getIView()->getDriver();
+
+	driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
+	video::SMaterial deb_m;
+	deb_m.Lighting = false;
+	driver->setMaterial(deb_m);
+
+	core::aabbox3d<f32> tbox = Box;
+	getAbsoluteTransformation().transformBoxEx(tbox);
+
+	driver->draw3DBox( tbox, video::SColor(255,0,255,0));
+
 
 #ifdef GSEDITOR
 	CGameObject::EObjectState state = m_owner->getObjectState();

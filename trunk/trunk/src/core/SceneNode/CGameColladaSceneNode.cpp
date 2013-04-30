@@ -44,6 +44,12 @@ void CGameColladaMesh::updateJoint()
 	{
         uiString::convertUnicodeToUTF8(Joints[i].name.c_str(), nameA);
 		Joints[i].node = Component->getSceneNodeBySID( nameA ) ;
+
+		if ( Joints[i].haveBBox )
+		{
+			Joints[i].node->getBoundingBox() = Joints[i].bbBox;
+			Joints[i].node->setBoneBBox(true);
+		}
 	}
 }
 
@@ -772,7 +778,7 @@ CGameColladaSceneNode::CGameColladaSceneNode(scene::ISceneNode* parent, scene::I
 	
 	m_linkMatrixLayer = false;
 
-	m_enableBoneBBox = true;
+	m_haveBoneBBox = false;
 
 #ifdef GSANIMATION
 	m_isShowName = false;
@@ -901,7 +907,7 @@ void CGameColladaSceneNode::OnRegisterSceneNode()
 						}
 					}
 				}
-			}
+			}			
 #ifdef GSANIMATION
 			else
 				SceneManager->registerNodeForRendering(this);
@@ -975,7 +981,12 @@ void CGameColladaSceneNode::updateAbsolutePosition()
             AbsoluteAnimationMatrix = AbsoluteAnimationMatrixLayer[i];
             
 			if ( m_isRootColladaNode == true )
+			{
 				AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(), RelativeMatrix);
+				
+				// calc local absolute (to update bbox)
+				LocalAbsoluteMatrix = RelativeMatrix;
+			}
 			else
 			{
 				// find new relative mat
@@ -987,6 +998,9 @@ void CGameColladaSceneNode::updateAbsolutePosition()
 
 				// calc abs
 				AbsoluteTransformation.setbyproduct_nocheck(Parent->getAbsoluteTransformation(), RelativeMatrix);
+
+				// calc local absolute (to update bbox)
+				LocalAbsoluteMatrix.setbyproduct_nocheck( ((CGameColladaSceneNode*)Parent)->LocalAbsoluteMatrix, RelativeMatrix);
 			}
         }
         
@@ -1402,7 +1416,7 @@ void CGameColladaSceneNode::render()
 		for ( int i = 0, n = ColladaMesh->Joints.size(); i < n; i++ )
 		{
 			CGameColladaMesh::SJoint& j = ColladaMesh->Joints[i];
-			if ( j.node && j.node->isEnableBoneBBox() )
+			if ( j.node && j.node->isHaveBoneBBox() )
 			{
 				video::SMaterial debug_mat;
 				debug_mat.Lighting = false;
@@ -1468,7 +1482,7 @@ void CGameColladaSceneNode::render()
 #endif
 
 #ifndef GSANIMATION
-	if (DebugDataVisible & scene::EDS_BBOX)
+	//if (DebugDataVisible & scene::EDS_BBOX)	
 #endif
 	{		
 		// set identity transform
@@ -1518,10 +1532,14 @@ void CGameColladaSceneNode::render()
 			driver->draw3DBox( getBoundingBox(), video::SColor(255,255,255,255));
 		}
 #else
-		driver->setTransform(video::ETS_WORLD, AbsoluteTransformation );
-		driver->draw3DBox( getBoundingBox(), video::SColor(255,255,255,255));
+		//driver->setTransform(video::ETS_WORLD, AbsoluteTransformation );
+
+		//if ( ColladaMesh )
+		//	driver->draw3DBox( getBoundingBox(), video::SColor(255,0,0,255));
+		//else
+		//	driver->draw3DBox( getBoundingBox(), video::SColor(255,255,255,255));
 		
-		// skin bone debug
+		//// skin bone debug
 		//float size = 2.0f;
 		//core::aabbox3d<f32> skinBox;
 		//skinBox.MinEdge = core::vector3df(-size, -size, -size);
@@ -1812,7 +1830,7 @@ ISceneNode* CGameColladaSceneNode::clone(ISceneNode* newParent, ISceneManager* n
 			newNode->ColladaMesh->grab();
 		}
 		else
-		{			
+		{
 			// dynamic mesh
 			CGameColladaMesh *mesh = ColladaMesh->clone();
 				

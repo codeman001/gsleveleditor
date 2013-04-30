@@ -33,10 +33,10 @@ void CEllipsoidCollisionComponent::initComponent()
 // updateComponent
 // update object by frame
 void CEllipsoidCollisionComponent::updateComponent()
-{
-	return;
-
+{	
 #ifdef GSGAMEPLAY
+	initFromBBox();
+
 	CGameLevel *level =	CGameLevel::getCurrentLevel();
 	if ( level == NULL )
 	{
@@ -175,4 +175,15 @@ void CEllipsoidCollisionComponent::saveData( CSerializable* pObj )
 void CEllipsoidCollisionComponent::loadData( CSerializable* pObj )
 {
 	pObj->nextRecord();
+}
+
+// initFromBBox
+// get box from bouding box of object
+void CEllipsoidCollisionComponent::initFromBBox()
+{
+	core::aabbox3df box = m_gameObject->getSceneNode()->getBoundingBox();
+
+	m_ellipsoidRadius.X = (box.MaxEdge.X - box.MinEdge.X)/2;
+	m_ellipsoidRadius.Y = (box.MaxEdge.Y - box.MinEdge.Y)/2;
+	m_ellipsoidRadius.Z = (box.MaxEdge.Z - box.MinEdge.Z)/2;
 }

@@ -2,6 +2,7 @@
 #define _GAMECONTAINER_SCENENODE_
 
 #include "ISceneNode.h"
+#include "CGameColladaSceneNode.h"
 
 class CGameObject;
 
@@ -63,6 +64,8 @@ protected:
     };
     
     std::vector<SNodeReference>     m_nodeReference;
+	bool							m_containSkinMesh;
+
 public:
 	CGameColladaContainerSceneNode(
 			CGameObject *owner,
@@ -80,11 +83,16 @@ public:
 	//! Overide OnAnimate
 	virtual void OnAnimate(irr::u32 timeMs);
 
-	void addBoundingMeshNode( ISceneNode *p )
+	void addBoundingMeshNode( CGameColladaSceneNode *p )
 	{
 		if ( std::find( m_boudingMeshNode.begin(), m_boudingMeshNode.end(), p ) == m_boudingMeshNode.end() )
 		{
 			p->grab();
+
+			// check skin mesh
+			if ( p->getMesh() && p->getMesh()->IsStaticMesh == false )
+				m_containSkinMesh = true;
+
 			m_boudingMeshNode.push_back( p );
 		}
 	}
@@ -120,6 +128,12 @@ public:
         }
     }
     
+	// isContainSkinMesh
+	bool isContainSkinMesh()
+	{
+		return m_containSkinMesh;
+	}
+
 	std::vector<ISceneNode*>* getBoundingMeshNode()
 	{
 		return &m_boudingMeshNode;

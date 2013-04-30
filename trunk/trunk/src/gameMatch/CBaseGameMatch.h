@@ -9,6 +9,12 @@ class CBaseGameMatch: public IGameMatch
 protected:
 	CUIButton*		m_btnPause;
 
+	int				m_frameCount;
+	bool			m_fixCamera;
+	core::vector3df	m_staticTarget;
+
+	CGameObject*	m_player;
+
 public:
 	CBaseGameMatch(IGameMatch::EGameMatchType type);
 	virtual ~CBaseGameMatch();
@@ -29,6 +35,8 @@ public:
 	// create a player
 	CGameObject* spawn3rdPlayer();
 
+	// updateCameraTarget	
+	void updateCameraTarget();
 };
 
 #endif

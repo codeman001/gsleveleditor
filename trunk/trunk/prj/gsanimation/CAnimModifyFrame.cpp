@@ -104,7 +104,7 @@ LRESULT	CTreeContainer::messageMap(HWND hWnd,UINT uMsg, WPARAM wParam, LPARAM lP
 
 
 				// disable enable node item
-				bool checkBoneBBox = colladaNode->isEnableBoneBBox();
+				bool checkBoneBBox = colladaNode->isHaveBoneBBox();
 				m_treePopupMenu->getItem(k_menuEnableBoneBBox)->setDisable(false);
 				((uiMenuItem*)m_treePopupMenu->getItem(k_menuEnableBoneBBox))->setCheck(checkBoneBBox);
 			}			
@@ -151,7 +151,7 @@ void CTreeContainer::_onMenuCommand( uiObject *pSender )
 			CGameColladaSceneNode *node = (CGameColladaSceneNode*) m_clickTreeItem->getData();
 			if ( node )
 			{
-				node->setBoneBBox(!node->isEnableBoneBBox() );
+				node->setBoneBBox(!node->isHaveBoneBBox() );
 			}
 		}
 	}

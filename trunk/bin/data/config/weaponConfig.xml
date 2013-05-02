@@ -1,0 +1,10 @@
+<weaponConfig>
+	<weapon type="Gun">
+		<name>AR01</name>		
+		<model>data/mesh/weapon/AR01/AR01_low.scene</model>		
+		<snap>HandLeftGunHold-node</snap>
+		<params>
+			<param name="rateShoot" value="120" unit="bulletsPerMin"/>		
+		</params>
+	</weapon>
+</weaponConfig>

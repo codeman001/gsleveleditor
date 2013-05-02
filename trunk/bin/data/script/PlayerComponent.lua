@@ -23,13 +23,28 @@ k_playerAnimRunForward			= "TP_RunFront"
 k_playerAnimRunBackward			= "TP_RunBack"
 k_playerAnimRunLeft				= "TP_RunLeft"
 k_playerAnimRunRight			= "TP_RunRight"
+k_playerAnimRunForwardLeft		= "TP_RunFrontLeft"
+k_playerAnimRunForwardRight		= "TP_RunFrontRight"
+k_playerAnimRunBackwardLeft		= "TP_RunBackLeft"
+k_playerAnimRunBackwardRight	= "TP_RunBackRight"
+
+local k_playerRunAnims = {
+		k_playerAnimRunForward,
+		k_playerAnimRunBackward,
+		k_playerAnimRunLeft,
+		k_playerAnimRunRight,
+		k_playerAnimRunForwardLeft,
+		k_playerAnimRunForwardRight,
+		k_playerAnimRunBackwardLeft,
+		k_playerAnimRunBackwardRight
+}
 
 k_animRunRotateSpeed			= 0.4
 k_animStandToRunBlendSpeed		= 0.003
 k_animRunToStandBlendSpeed		= 0.003
 k_animFipTurnBlendSpeed			= 0.005
 
-k_runSpeed						= 0.4
+k_runSpeed						= 0.3
 
 
 -- class CPlayerComponent
@@ -102,7 +117,7 @@ function CPlayerComponent.create(gameObj)
 	--local allUpBodySceneNode = getChildsOfColladaSceneNode(newObj.m_collada, "Bip01_Head-node")
 	--for id,node in ipairs(allUpBodySceneNode) do
 	--	table.insert(newObj.m_allUpbodyNodes, node)
-	--end	
+	--end
 	-- right hand
 	table.insert(newObj.m_allUpbodyNodes, getColladaSceneNode(newObj.m_collada, "Bip01_R_Clavicle-node"))	
 	local allUpBodySceneNode = getChildsOfColladaSceneNode(newObj.m_collada, "Bip01_R_Clavicle-node")
@@ -139,16 +154,15 @@ function CPlayerComponent.create(gameObj)
 	debug("Total foot nodes of player: " .. table.getn(newObj.m_allFootNodes) )
 	
 	---------------------------------------------------------
-	-- setup animation lauer
-	setColladaAnimationLayer(newObj.m_collada, newObj.m_allFootNodes, 0)
-	setColladaAnimationLayer(newObj.m_collada, newObj.m_allUpbodyNodes, 1)
+	-- setup animation layer	
+	--setColladaAnimationLayer(newObj.m_collada, newObj.m_allFootNodes, 0)
+	--setColladaAnimationLayer(newObj.m_collada, newObj.m_allUpbodyNodes, 1)
 	
-	enableColladaAnimationLayer(newObj.m_collada, 0, true)
-	enableColladaAnimationLayer(newObj.m_collada, 1, true)
-	
-	--setSceneNodeIsJoinAnimLayer(newObj.m_collada, "Bip01_Head-node", true, false)
-	setSceneNodeIsJoinAnimLayer(newObj.m_collada, "Bip01_R_Clavicle-node", true, true)
-	setSceneNodeIsJoinAnimLayer(newObj.m_collada, "Bip01_L_Clavicle-node", true, true)
+	--enableColladaAnimationLayer(newObj.m_collada, 0, true)
+	--enableColladaAnimationLayer(newObj.m_collada, 1, true)
+		
+	--setSceneNodeIsJoinAnimLayer(newObj.m_collada, "Bip01_R_Clavicle-node", true, true)
+	--setSceneNodeIsJoinAnimLayer(newObj.m_collada, "Bip01_L_Clavicle-node", true, true)
 	
 	applyModifyPlayerBoneTransform(newObj.m_playerComp,"Bip01_Spine1-node", "updatePlayerComponentBoneTransformCallback");
 	
@@ -240,11 +254,10 @@ function CPlayerComponent:updatePlayerStateStand(timeStep)
 		
 		pauseColladaAnimAtFrame(self.m_collada, 0, 0, 0)
 		
-		-- disable multi anim
-		colladaEnableAnimTrackChannel(self.m_collada, 1, false, 0)
-		colladaEnableAnimTrackChannel(self.m_collada, 2, false, 0)
-		colladaEnableAnimTrackChannel(self.m_collada, 3, false, 0)
-		colladaEnableAnimTrackChannel(self.m_collada, 4, false, 0)
+		-- disable multi move anim
+		for i=1,8 do 			
+			colladaEnableAnimTrackChannel(self.m_collada, i, false, 0)
+		end			
 		
 		self.m_playerSubState = k_playerSubStateUpdate
 	elseif self.m_playerSubState == k_playerSubStateEnd then
@@ -276,24 +289,13 @@ function CPlayerComponent:updatePlayerStateRun(timeStep)
 		-- track 0
 		setColladaAnimation(self.m_collada, k_playerAnimShootMachineGuns, 0, true, 0)
 		colladaEnableAnimTrackChannel(self.m_collada, 0, true, 0)
-		pauseColladaAnimAtFrame(self.m_collada, 0, 0, 0)
+		pauseColladaAnimAtFrame(self.m_collada, 0, 0, 0)	
 				
-		-- track 1
-		setColladaAnimation(self.m_collada, k_playerAnimRunForward, 1, true, 0)
-		colladaEnableAnimTrackChannel(self.m_collada, 1, true, 0)
-		
-		-- track 2
-		setColladaAnimation(self.m_collada, k_playerAnimRunBackward, 2, true, 0)		
-		colladaEnableAnimTrackChannel(self.m_collada, 2, true, 0)
-		
-		-- track 3
-		setColladaAnimation(self.m_collada, k_playerAnimRunLeft, 3, true, 0)		
-		colladaEnableAnimTrackChannel(self.m_collada, 3, true, 0)
-		
-		-- track 4
-		setColladaAnimation(self.m_collada, k_playerAnimRunRight, 4, true, 0)		
-		colladaEnableAnimTrackChannel(self.m_collada, 4, true, 0)
-		
+		for i=1,8 do
+			setColladaAnimation(self.m_collada, k_playerRunAnims[i], i, true, 0)
+			colladaEnableAnimTrackChannel(self.m_collada, i, true, 0)
+		end
+				
 		-- default run blend
 		runBlend = self:calcRunAnimationBlend(0)
 		
@@ -330,13 +332,13 @@ function CPlayerComponent:updatePlayerStateRun(timeStep)
 		angle = -CVectorUtil.getAngle(self.m_currentRunVector, frontVector)
 		runBlend = self:calcRunAnimationBlend(angle)
 	end
-	
-	-- set weight of run anim
+		
+	-- set weight of run anim	
 	local runFactor = self.m_runFactor
 	setColladaAnimWeight(self.m_collada, 1 - runFactor, 0, 0)
-	for id,weight in ipairs(runBlend) do
+	for id,weight in ipairs(runBlend) do	
 		setColladaAnimWeight(self.m_collada, weight*runFactor, id, 0)
-	end
+	end	
 	
 	-- sync animation
 	colladaSynchronizedAnim(self.m_collada, 1.0, 0)
@@ -381,21 +383,10 @@ function CPlayerComponent:updatePlayerStateFlipTurn(timeStep)
 		colladaEnableAnimTrackChannel(self.m_collada, 0, true, 0)
 		pauseColladaAnimAtFrame(self.m_collada, 0, 0, 0)
 				
-		-- track 1
-		setColladaAnimation(self.m_collada, k_playerAnimRunForward, 1, true, 0)
-		colladaEnableAnimTrackChannel(self.m_collada, 1, true, 0)
-		
-		-- track 2
-		setColladaAnimation(self.m_collada, k_playerAnimRunBackward, 2, true, 0)		
-		colladaEnableAnimTrackChannel(self.m_collada, 2, true, 0)
-		
-		-- track 3
-		setColladaAnimation(self.m_collada, k_playerAnimRunLeft, 3, true, 0)		
-		colladaEnableAnimTrackChannel(self.m_collada, 3, true, 0)
-		
-		-- track 4
-		setColladaAnimation(self.m_collada, k_playerAnimRunRight, 4, true, 0)		
-		colladaEnableAnimTrackChannel(self.m_collada, 4, true, 0)		
+		for i=1,8 do
+			setColladaAnimation(self.m_collada, k_playerRunAnims[i], i, true, 0)
+			colladaEnableAnimTrackChannel(self.m_collada, i, true, 0)
+		end		
 		
 		self.m_playerSubState = k_playerSubStateUpdate
 		
@@ -417,7 +408,7 @@ function CPlayerComponent:updatePlayerStateFlipTurn(timeStep)
 	local runFactor = self.m_runFactor
 	setColladaAnimWeight(self.m_collada, 1 - runFactor, 0, 0)
 	for id,weight in ipairs(runBlend) do
-		setColladaAnimWeight(self.m_collada, weight*runFactor, id, 0)
+		setColladaAnimWeight(self.m_collada, weight*runFactor, id, 0)		
 	end
 	
 	-- sync animation
@@ -507,8 +498,60 @@ function CPlayerComponent:calcRunAnimationBlend(rot)
 	local backward = 0.0
 	local left = 0.0
 	local right = 0.0
-    
-	if -90.0 <= rot and rot <= 90.0 then	
+    local forwardleft = 0.0
+	local forwardright = 0.0
+	local backwardleft = 0.0
+	local backwardright = 0.0
+	
+	
+	-- 8 MOVE ANIMATION	
+	if -90.0 <= rot and rot < 90.0 then		
+		if 0.0 <= rot and rot < 45.0 then
+			-- forward & forwardleft
+			forwardleft = rot/45.0
+			forward = 1.0 - forwardleft					
+		elseif 45.0 <= rot and rot < 90.0 then			
+			-- left & forwardleft
+			left = (rot - 45.0)/45.0
+			forwardleft = 1.0 - left
+		elseif -45.0 <= rot and rot < 0.0 then
+			-- forward & forwardright
+			forwardright = rot/-45.0
+			forward = 1.0 - forwardright
+		else
+		debug(1)
+			-- -90 <= rot and rot < -45
+			-- right & forwardright
+			right = (rot + 45.0)/(-45.0)
+			forwardright = 1.0 - right
+		end
+		
+	else
+		if 90.0 <= rot and rot < 135.0 then		
+			-- left & backwardleft
+			backwardleft = (rot-90)/45.0
+			left = 1.0 - backwardleft
+		elseif 135.0 <= rot and rot < 180.0 then
+			-- backward & backwardleft
+			backward = (rot - 135.0)/45.0
+			backwardleft = 1.0 - backward
+		elseif -90.0 >= rot and rot > -135 then		
+			-- right & backwardright
+			backwardright = (rot+90)/(-45.0)
+			right = 1.0 - backwardright
+		else		
+			-- -135 >= rot & rot > -180
+			-- backward & backwardright
+			backward = (rot + 135)/(-45.0)
+			backwardright = 1.0 - backward
+		end
+	end
+	
+	return {forward, backward, left, right, forwardleft, forwardright, backwardleft, backwardright}
+	
+	--[[
+	-- 4 MOVE ANIMATION
+	if -90.0 <= rot and rot <= 90.0 then
 		-- move forward		
 		backward = 0.0;
 		if rot <= 0.0 and rot <= 90.0 then		
@@ -535,7 +578,7 @@ function CPlayerComponent:calcRunAnimationBlend(rot)
 	else	
 		-- move back
 		forward = 0.0;
-		if 90.0 <= rot and rot <= 180.0 then		
+		if 90.0 <= rot and rot <= 180.0 then
 			-- left
 			local right = 0.0;
             
@@ -557,6 +600,7 @@ function CPlayerComponent:calcRunAnimationBlend(rot)
 	end
     
 	return {forward, backward, left, right}
+	--]]
 end
 
 -----------------------------------------------------------

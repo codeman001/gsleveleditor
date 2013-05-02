@@ -1013,7 +1013,7 @@ void CColladaMeshComponent::synchronizedByTimeScale(int animLayer, float speedRa
 		
 		if ( j->getAnimation(animLayer)->synchronizedByTimeScale(speedRatio) == true )		
 		{
-			for ( int iTrack = 0; iTrack < MAX_ANIMLAYER; iTrack++ )
+			for ( int iTrack = 0; iTrack < MAX_ANIMTRACK; iTrack++ )
 			{
 				speed[iTrack] = j->getAnimation(animLayer)->getTrack(iTrack)->getSpeedRatio();
 				frame[iTrack] = j->getAnimation(animLayer)->getTrack(iTrack)->getCurrentFrame();
@@ -1035,7 +1035,7 @@ void CColladaMeshComponent::synchronizedByTimeScale(int animLayer, float speedRa
 			continue;
 		}
 
-		for ( int iTrack = 0; iTrack < MAX_ANIMLAYER; iTrack++ )
+		for ( int iTrack = 0; iTrack < MAX_ANIMTRACK; iTrack++ )
 		{
 			j->getAnimation(animLayer)->getTrack(iTrack)->setSpeedRatio( speed[iTrack] );
 			j->getAnimation(animLayer)->getTrack(iTrack)->setCurrentFrame( frame[iTrack] );

@@ -928,6 +928,14 @@
 					RelativePath="..\..\src\gameComponent\CSpawnPointComponent.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\gameComponent\CWeaponComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameComponent\CWeaponComponent.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="gameDebug"

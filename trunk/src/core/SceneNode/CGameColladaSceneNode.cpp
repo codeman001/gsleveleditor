@@ -537,15 +537,15 @@ bool CGameAnimation::synchronizedByTimeScale(float baseRatio)
 	for ( int i = 0; i < MAX_ANIMTRACK; i++ )
 	{
 		if ( m_animTrack[i].isEnable() == true && m_animTrack[i].getAnimWeight() >= 0.0f )
-		{
-			float speedRatio = m_animTrack[i].getTotalFrame()/syncFrame;            
+		{			
+			float speedRatio = m_animTrack[i].getTotalFrame()/syncFrame;
 			m_animTrack[i].setSpeedRatio( speedRatio * baseRatio );
             
 			if ( i != baseChannel )
             {
                 frameRatio = core::clamp<float>(frameRatio, 0.0f, 1.0f);
 				m_animTrack[i].setCurrentFrame( frameRatio*m_animTrack[i].getTotalFrame() );
-            }
+            }			
 		}
 	}
     

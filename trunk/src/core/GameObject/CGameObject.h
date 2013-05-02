@@ -306,6 +306,9 @@ public:
 		return m_rotation;
 	}
 
+	// setAbsoluteMatrix
+	virtual void setAbsoluteMatrix(const core::matrix4& mat);
+
 	// setRotation
 	// set 3d rotation
 	virtual void setRotation(core::vector3df& rot);	

@@ -1026,6 +1026,9 @@ SMeshParam* CDaeUtils::parseSkinNode( io::IXMLReader *xmlRead )
 	
 	mesh->Type = k_skinMesh;
 	updateJointToMesh( mesh, nameArray, weightArray, transformArray, vCountArray, vArray, bbArrayMin, bbArrayMax, bbCount, m_needFlip );
+	
+	// flip ox if skin mesh
+	m_flipOx = true;
 
 	// clean
 	if ( bbArrayMin )
@@ -1112,8 +1115,8 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 		}
 		else
 		{
-			m_colladaRoot->Scale = core::vector3df(-250,250,250);
-			m_colladaRoot->Transform.setScale( core::vector3df(-250,250,250) );
+			m_colladaRoot->Scale = core::vector3df(-1,1,1);
+			m_colladaRoot->Transform.setScale( core::vector3df(-1,1,1) );
 		}
 
 		m_listNode.push_back(m_colladaRoot);		
@@ -1178,6 +1181,16 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 			else if ( xmlRead->getNodeName() == instanceControllerSectionName )
 			{
 				// <instance_controller url="#MESHNAME">
+
+				// move to root
+				std::vector<SNodeParam*>::iterator i = std::find(pNode->Parent->Childs.begin(), pNode->Parent->Childs.end(), pNode);
+				if ( i != pNode->Parent->Childs.end() )
+					pNode->Parent->Childs.erase(i);
+
+				pNode->ChildLevel = 0;
+				pNode->Parent = NULL;
+
+				// get skin mesh url
 				pNode->Instance = xmlRead->getAttributeValue(L"url");
 				uriToId( pNode->Instance );
 			}

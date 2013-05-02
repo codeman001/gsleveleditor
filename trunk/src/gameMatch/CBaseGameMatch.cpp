@@ -3,6 +3,7 @@
 
 #include "gameComponent/CPlayerComponent.h"
 #include "gameComponent/CSpawnPointComponent.h"
+#include "gameComponent/CWeaponComponent.h"
 
 #include "gameLevel/CGameLevel.h"
 #include "gameState/CGameStateManager.h"
@@ -101,6 +102,13 @@ CGameObject* CBaseGameMatch::spawn3rdPlayer()
 
 	// load model + anim
 	obj->initComponent();
+
+	// add weapon
+	CWeaponComponent* weaponComp = (CWeaponComponent*)obj->getComponent(CGameComponent::WeaponComponent);
+	weaponComp->addWeaponToInventory("AR01");
+	weaponComp->setActiveWeapon("AR01");
+
+
 
 	// set position
 	core::vector3df rot, pos;

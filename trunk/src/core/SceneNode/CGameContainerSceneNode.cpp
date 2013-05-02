@@ -309,20 +309,7 @@ core::aabbox3df	CGameColladaContainerSceneNode::computeChildBoudingBox( ISceneNo
 void CGameColladaContainerSceneNode::render()
 {
 	if (m_owner == NULL)
-		return;
-
-	IVideoDriver *driver = getIView()->getDriver();
-
-	driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
-	video::SMaterial deb_m;
-	deb_m.Lighting = false;
-	driver->setMaterial(deb_m);
-
-	core::aabbox3d<f32> tbox = Box;
-	getAbsoluteTransformation().transformBoxEx(tbox);
-
-	driver->draw3DBox( tbox, video::SColor(255,0,255,0));
-
+		return;	
 
 #ifdef GSEDITOR
 	CGameObject::EObjectState state = m_owner->getObjectState();
@@ -365,6 +352,21 @@ void CGameColladaContainerSceneNode::render()
 	
 	if ( state == CGameObject::Rotation )
 		m_owner->drawCircleAroundObject();	
+#else
+	if ( DebugDataVisible & scene::EDS_BBOX )
+	{
+		IVideoDriver *driver = getIView()->getDriver();
+
+		driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
+		video::SMaterial deb_m;
+		deb_m.Lighting = false;
+		driver->setMaterial(deb_m);
+
+		core::aabbox3d<f32> tbox = Box;
+		getAbsoluteTransformation().transformBoxEx(tbox);
+
+		driver->draw3DBox( tbox, video::SColor(255,0,255,0));
+	}
 #endif
 }
 

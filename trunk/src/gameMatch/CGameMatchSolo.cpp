@@ -37,7 +37,9 @@ void CGameMatchSolo::initUI(CMenuFxObj menufx, CUICanvas *rootWidget)
 void CGameMatchSolo::update()
 {
 	if ( m_player == NULL )
-		m_player = spawn3rdPlayer();
+	{
+		m_player = spawn3rdPlayer();			
+	}
 	else
 	{
 		CBaseGameMatch::update();

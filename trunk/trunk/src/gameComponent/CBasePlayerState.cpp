@@ -82,17 +82,10 @@ bool CBasePlayerState::isFinishedAnim( std::vector<CGameColladaSceneNode*>& node
 // call back frame update on scenenode
 void CBasePlayerState::_onUpdateFrameData( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int animLayer)
 {
-}
-
-void CBasePlayerState::_onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel, int animLayer)
-{
-}
-
-void CBasePlayerState::_onUpdateFinishAbsolute( ISceneNode* node, core::matrix4& absoluteAnimationMatrix )
-{	
 	std::map<CGameColladaSceneNode*, std::string>::iterator itBone = m_boneTransformCallback.find( (CGameColladaSceneNode*)node);
 	if ( itBone != m_boneTransformCallback.end() )
-	{
+	{	
+//#if 0
 		// implement in lua
 		void *ret = CScriptManager::getInstance()->startFuncAndGetResult(
 			itBone->second.c_str(),	// lua function
@@ -106,7 +99,16 @@ void CBasePlayerState::_onUpdateFinishAbsolute( ISceneNode* node, core::matrix4&
 			core::quaternion *q = (core::quaternion*)ret;
 
 			// apply transform
-			absoluteAnimationMatrix *= q->getMatrix();
+			rotation = rotation*(*q);
 		}
+//#endif
 	}
+}
+
+void CBasePlayerState::_onUpdateFrameDataChannel( ISceneNode* node, core::vector3df& pos, core::vector3df& scale, core::quaternion& rotation, int channel, int animLayer)
+{
+}
+
+void CBasePlayerState::_onUpdateFinishAbsolute( ISceneNode* node, core::matrix4& absoluteAnimationMatrix )
+{
 }

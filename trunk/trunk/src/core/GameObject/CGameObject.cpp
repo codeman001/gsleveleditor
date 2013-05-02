@@ -88,6 +88,23 @@ CGameObject::~CGameObject()
 	destroyNode();
 }
 
+// setAbsoluteMatrix
+void CGameObject::setAbsoluteMatrix(const core::matrix4& mat)
+{		
+	m_right			= CGameObject::s_ox;
+	m_front			= CGameObject::s_oz;
+	m_up			= CGameObject::s_oy;
+
+	mat.rotateVect(m_front);
+	mat.rotateVect(m_right);
+	mat.rotateVect(m_up);
+
+	setOrientation(m_front, m_up);
+
+	m_position = mat.getTranslation();
+	updateNodePosition();
+}
+
 // setRotation
 // set 3d rotation
 void CGameObject::setRotation(core::vector3df& rot)

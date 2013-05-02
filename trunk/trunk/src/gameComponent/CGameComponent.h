@@ -18,6 +18,7 @@ public:
 		LifeTimeComponent,
 		SpawnPointComponent,
 		SpawnPointMgrComponent,
+		WeaponComponent,
 	};
 
 	// loadComponent

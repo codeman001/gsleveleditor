@@ -65,17 +65,15 @@ void CGunComponent::updateComponent()
 		updateShoot();
 		break;
 	case Reload:
-		{		
-			m_nextState = Normal;
-			
-			printf("Reload the gun\n");
-			m_currentBullets = m_numBullets;
+		{
+  			m_currentBullets = m_numBullets;
 			m_lastShootUpdate = 0.0f;
 			m_muzzleTime = 0.0f;
 		}
 		break;
 	}
 	
+	// update to show/hide gun muzzle
 	updateMuzzle();
 
 	// change state
@@ -114,6 +112,7 @@ void CGunComponent::updateShoot()
 
 		// ....
 		// ....
+
 		// ....
 
 		// set shoot time
@@ -123,12 +122,13 @@ void CGunComponent::updateShoot()
 		m_muzzleTime = 1000.0f/24.0f;
 		m_muzzleScale = 1.0f + ((rand()%999)/999.0f)*1.0f;
 	}
-
-	// need reload the gun
+	
 	if ( m_currentBullets == 0 )
 	{
-		m_nextState = Reload;
+		// todo null bullet :(
+		printf("No Bullets\n");
 	}
+
 }
 
 // updateMuzzle
@@ -172,8 +172,23 @@ void CGunComponent::shoot(bool b)
 }
 
 // reload
-void CGunComponent::reload()
+void CGunComponent::reload(bool b)
 {
-	if ( m_currentBullets < m_numBullets )
-		m_nextState = CGunComponent::Reload;
+	if ( b == true )
+	{
+		// reload the gun
+		if ( m_currentBullets < m_numBullets )	
+			m_nextState = CGunComponent::Reload;	
+	}
+	else
+	{
+		// reload finished
+		m_nextState = CGunComponent::Normal;
+	}
+}
+
+// needReload
+bool CGunComponent::needReload()
+{
+	return (m_currentBullets == 0);
 }

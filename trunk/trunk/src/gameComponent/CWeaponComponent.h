@@ -76,7 +76,11 @@ public:
 
 	// reloadActiveWeapon
 	// reload weapon
-	void reloadActiveWeapon();
+	void reloadActiveWeapon(bool b);
+
+	// needReloadActiveWeapon
+	// check to reload active weapon
+	bool needReloadActiveWeapon();
 
 }; 
 

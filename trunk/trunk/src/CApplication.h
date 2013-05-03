@@ -23,8 +23,8 @@
 class CApplication: public IEventReceiver, IView
 {	
 public:
-	long	m_lastUpdateTime;
-	int		m_fps;
+	unsigned long	m_lastUpdateTime;
+	int				m_fps;
 	
 protected:
 	bool			m_resizeWin;	

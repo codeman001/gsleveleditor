@@ -5,7 +5,7 @@
 	#include <android/log.h>
 #endif
 
-#define LIMIT_FPS	80.0f
+//#define LIMIT_FPS	80.0f
 
 IView* g_view = NULL;
 
@@ -147,15 +147,18 @@ void CApplication::destroyApplication()
 void CApplication::mainLoop()
 {
 	m_device->getTimer()->tick();
-	long now = m_device->getTimer()->getTime();
+	unsigned long now = m_device->getTimer()->getTime();
 	m_timeStep = (f32)(now - m_lastUpdateTime);
 	if ( m_timeStep == 0.0f )
 		m_timeStep = 1.0f;
     
     const float maxTimeStep = 1000.0f/15.0f;
     if ( m_timeStep > maxTimeStep )
+	{
+		printf("Warning: Low FPS: %f tpf, %f fps \n", m_timeStep, 1000.0f/m_timeStep);
         m_timeStep = maxTimeStep;
-    
+	}
+
 	m_lastUpdateTime = now;    
     
 	// update camera aspect

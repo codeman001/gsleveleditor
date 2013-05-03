@@ -1425,9 +1425,11 @@ void CDaeUtils::parseEffectNode( io::IXMLReader *xmlRead, SEffect* effect )
 							{
 								if ( xmlRead->getAttributeValue(L"opaque") )
 								{
-									if ( std::wstring(L"RGB_ZERO") == xmlRead->getAttributeValue(L"opaque") )
+									if ( std::wstring(L"RGB_ZERO") == xmlRead->getAttributeValue(L"opaque") ||
+										 std::wstring(L"A_ONE") == xmlRead->getAttributeValue(L"opaque"))
 									{
 										effect->TransparentAddColor = true;
+										effect->HasAlpha = true;
 									}
 								}
 							}
@@ -1561,7 +1563,7 @@ void CDaeUtils::parseEffectNode( io::IXMLReader *xmlRead, SEffect* effect )
 
 	if ( effect->HasAlpha == true )
 	{
-		if ( effect->Transparency != 1.0f )
+		if ( effect->Transparency != 1.0f && effect->TransparentAddColor == false )
 		{
 			effect->Mat.MaterialType = irr::video::EMT_TRANSPARENT_VERTEX_ALPHA;
 			effect->Mat.ZWriteEnable = false;

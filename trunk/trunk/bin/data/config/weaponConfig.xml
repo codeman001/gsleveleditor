@@ -3,8 +3,11 @@
 		<name>AR01</name>		
 		<model>data/mesh/weapon/AR01/AR01_low.scene</model>		
 		<snap>HandLeftGunHold-node</snap>
+		<muzzle>muzzle_flash-node</muzzle>
 		<params>
-			<param name="rateShoot" value="120" unit="bulletsPerMin"/>		
+			<param name="rateShoot" value="20" unit="bulletsPerMin"/>
+			<param name="numBullet" value="30"/>
+			<param name="damage" value="5" unit="hpPerBullet"/>
 		</params>
 	</weapon>
 </weaponConfig>

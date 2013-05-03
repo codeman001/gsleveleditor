@@ -889,6 +889,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\gameComponent\CGunComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameComponent\CGunComponent.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\gameComponent\CGunLightComponent.cpp"
 					>
 				</File>

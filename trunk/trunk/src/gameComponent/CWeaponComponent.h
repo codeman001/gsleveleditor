@@ -69,6 +69,15 @@ public:
 	// updateActiveWeapon
 	// update weapon
 	void updateActiveWeapon();
+
+	// shootActiveWeapon
+	// shoot weapon
+	void shootActiveWeapon(bool b);
+
+	// reloadActiveWeapon
+	// reload weapon
+	void reloadActiveWeapon();
+
 }; 
 
 #endif

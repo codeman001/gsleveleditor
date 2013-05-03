@@ -291,6 +291,8 @@ void CGameConfig::parseWeapon(io::IXMLReader* xmlRead)
 					readState = 2;
 				else if ( nodeName == std::wstring(L"snap") )
 					readState = 3;
+				else if ( nodeName == std::wstring(L"muzzle") )
+					readState = 4;
 				else if ( nodeName == std::wstring(L"param") )
 				{
 					const wchar_t* name		= xmlRead->getAttributeValue(L"name");
@@ -325,6 +327,8 @@ void CGameConfig::parseWeapon(io::IXMLReader* xmlRead)
 					weapon.model = textA;
 				else if ( readState == 3 )
 					weapon.snap = textA;
+				else if ( readState == 4 )
+					weapon.muzzle = textA;
 
 				readState = 0;
 			}

@@ -4,7 +4,9 @@
 #include "IView.h"
 #include "CVectorUtil.h"
 #include "CColladaMeshComponent.h"
+
 #include "gameComponent/CPlayerComponent.h"
+#include "gameComponent/CWeaponComponent.h"
 
 #define getLevel()	CGameLevel::getCurrentLevel()
 
@@ -837,6 +839,73 @@ int applyModifyPlayerBoneTransform(lua_State *state)
 	return 0;
 }
 
+//////////////////////////////////////////////////////////
+// WEAPON COMPONENT FUNCTION IMPLEMENT
+//////////////////////////////////////////////////////////
+
+// getWeaponComponent
+// get weapon component
+int getWeaponComponent(lua_State* state)
+{
+	lua_Integer objectID = lua_tointeger(state, 1);
+	CGameObject *obj = (CGameObject*)objectID;
+
+	if ( obj )
+	{
+		CWeaponComponent *weaponComp = (CWeaponComponent*)obj->getComponent(CGameComponent::WeaponComponent);
+		lua_pushinteger( state, (lua_Integer)weaponComp );
+	}
+	else
+	{
+		lua_pushinteger( state, 0 );
+	}
+
+	return 1;
+}
+
+// setActiveWeapon
+// set active a weapon
+int setActiveWeapon(lua_State* state)
+{
+	lua_Integer weaponID = lua_tointeger(state, 1);
+	const char *wpName = lua_tostring(state,2);
+
+	CWeaponComponent *wpComp = (CWeaponComponent*)weaponID;
+	
+	if ( wpComp )
+		wpComp->setActiveWeapon(wpName);
+
+	return 0;
+}
+
+// shootActiveWeapon
+// shoot active weapon
+int shootActiveWeapon(lua_State* state)
+{
+	lua_Integer weaponID = lua_tointeger(state, 1);
+	bool shoot = lua_toboolean(state,2) == 1;		
+
+	CWeaponComponent *wpComp = (CWeaponComponent*)weaponID;
+	if ( wpComp )
+		wpComp->shootActiveWeapon(shoot);
+
+	return 0;
+}
+
+// reloadActiveWeapon
+// reload weapon
+int reloadActiveWeapon(lua_State* state)
+{
+	lua_Integer weaponID = lua_tointeger(state, 1);
+	bool shoot = lua_toboolean(state,2) == 1;
+	
+	CWeaponComponent *wpComp = (CWeaponComponent*)weaponID;
+	if ( wpComp )
+		wpComp->reloadActiveWeapon();
+
+	return 0;
+}
+
 /////////////////////////////////////////////////////////////
 // registerCFunction
 // implement lua func by c++ language
@@ -900,6 +969,12 @@ void registerCFunction()
 	// player function
 	REGISTER_C_FUNCTION(getPlayerComponent);	
 	REGISTER_C_FUNCTION(applyModifyPlayerBoneTransform);
+
+	// weapon function
+	REGISTER_C_FUNCTION(getWeaponComponent);
+	REGISTER_C_FUNCTION(setActiveWeapon);
+	REGISTER_C_FUNCTION(shootActiveWeapon);
+	REGISTER_C_FUNCTION(reloadActiveWeapon);
 }
 // end register
 /////////////////////////////////////////////////////////////

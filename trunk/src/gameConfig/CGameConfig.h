@@ -55,6 +55,7 @@ public:
 		std::string		model;
 		std::string		type;
 		std::string		snap;
+		std::string		muzzle;
 
 		std::vector<SParam>	params;
 	};

@@ -67,6 +67,7 @@ function CPlayerComponent.create(gameObj)
 	newObj.m_gameObject 	= gameObj
 	newObj.m_collada		= getObjectCollada(gameObj)	
 	newObj.m_playerComp		= getPlayerComponent(gameObj)
+	newObj.m_weaponComp		= getWeaponComponent(gameObj)
 	
 	-- player state
 	newObj.m_playerState		= k_playerStateStand
@@ -439,7 +440,18 @@ end
 -- updatePlayerUpBodyAim
 -- Update aim
 function CPlayerComponent:updatePlayerUpBodyAim(timeStep)
-	self.m_needRotateCharacter = true
+	self.m_needRotateCharacter = true		
+	
+	if self.m_inputReload == 1 then
+		-- todo reload
+		reloadActiveWeapon(self.m_weaponComp, true)
+	elseif self.m_inputShoot == 1 then
+		-- todo shoot
+		shootActiveWeapon(self.m_weaponComp, true)
+	else
+		-- todo normal
+		shootActiveWeapon(self.m_weaponComp, false)
+	end	
 end
 
 -----------------------------------------------------------

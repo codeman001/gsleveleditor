@@ -19,6 +19,7 @@ public:
 		SpawnPointComponent,
 		SpawnPointMgrComponent,
 		WeaponComponent,
+		GunComponent,
 	};
 
 	// loadComponent

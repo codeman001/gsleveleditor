@@ -16,7 +16,8 @@ const char *CGameComponent::s_compType[] =
 	"Life time component",
 	"Spawn point component",
 	"Spawn point manager component",
-	"Weapon component"
+	"Weapon component",
+	"Gun component",
 };
 
 #define	stringOfComponent( type )	CGameComponent::s_compType[ (int)type - (int)CGameComponent::PlayerComponent  ]

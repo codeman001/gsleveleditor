@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "CGameObject.h"
 #include "gameConfig/CGameConfig.h"
+
 #include "CWeaponComponent.h"
+#include "CGunComponent.h"
 
 #include "gameDebug/CGameDebug.h"
 
@@ -77,6 +79,35 @@ void CWeaponComponent::updateActiveWeapon()
 	}
 }
 
+// shootActiveWeapon
+// shoot weapon
+void CWeaponComponent::shootActiveWeapon(bool b)
+{
+	if ( m_activeWeapon )
+	{
+		CGameObject *pObj = m_activeWeapon->m_obj;
+
+		CGunComponent* gun = (CGunComponent*)pObj->getComponent(CGameComponent::GunComponent);
+		if ( gun )
+			gun->shoot(b);
+	}
+}
+
+// reloadActiveWeapon
+// reload weapon
+void CWeaponComponent::reloadActiveWeapon()
+{
+	if ( m_activeWeapon )
+	{
+		CGameObject *pObj = m_activeWeapon->m_obj;
+
+		CGunComponent* gun = (CGunComponent*)pObj->getComponent(CGameComponent::GunComponent);
+		if ( gun )
+			gun->reload();
+	}
+}
+
+
 // saveData
 // save data to serializable
 void CWeaponComponent::saveData( CSerializable* pObj )
@@ -119,6 +150,7 @@ void CWeaponComponent::addWeaponToInventory( const char* weaponName )
 		{
 			CGameObject *wpObj = new CGameObject(NULL);
 			
+			// load model
 			if ( wpInfo->model.empty() == false )
 			{
 				CColladaMeshComponent *collada = new CColladaMeshComponent(wpObj);
@@ -137,6 +169,7 @@ void CWeaponComponent::addWeaponToInventory( const char* weaponName )
 			w.m_num = 1;
 			w.m_info = wpInfo;
 
+			// find type of weapon
 			for (int i = (int)Unknown; i < (int)NumWPType; i++)
 			{
 				if ( wpInfo->type == k_weaponTypeString[i] )
@@ -145,6 +178,18 @@ void CWeaponComponent::addWeaponToInventory( const char* weaponName )
 					break;
 				}
 			}
+
+			switch (w.m_type)
+			{
+			case Gun:
+				{
+					CGunComponent *gun = new CGunComponent(wpObj, wpInfo);
+					wpObj->addComponent(gun);
+				}
+				break;
+			}
+
+			wpObj->initComponent();
 		}
 	}
 	else

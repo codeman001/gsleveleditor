@@ -18,6 +18,7 @@ k_playerSubStateEnd		= (k_playerSubStateUpdate+1)
 
 
 -- declare player animation const
+k_playerAnimIdle				= "TP_Idle"
 k_playerAnimShootMachineGuns	= "TP_Shoot_MachineGuns"
 k_playerAnimRunForward			= "TP_RunFront"
 k_playerAnimRunBackward			= "TP_RunBack"
@@ -249,10 +250,8 @@ function CPlayerComponent:updatePlayerStateStand(timeStep)
 	if self.m_playerSubState == k_playerSubStateInit then
 		-- init state
 		-- set anim on layer 0
-		setColladaAnimation(self.m_collada, k_playerAnimShootMachineGuns, 0, true, 0)
-		setColladaAnimWeight(self.m_collada, 1, 0, 0)
-		
-		pauseColladaAnimAtFrame(self.m_collada, 0, 0, 0)
+		setColladaAnimation(self.m_collada, k_playerAnimIdle, 0, true, 0)
+		setColladaAnimWeight(self.m_collada, 1, 0, 0)			
 		
 		-- disable multi move anim
 		for i=1,8 do 			
@@ -287,9 +286,8 @@ function CPlayerComponent:updatePlayerStateRun(timeStep)
 		
 	if self.m_playerSubState == k_playerSubStateInit then		
 		-- track 0
-		setColladaAnimation(self.m_collada, k_playerAnimShootMachineGuns, 0, true, 0)
-		colladaEnableAnimTrackChannel(self.m_collada, 0, true, 0)
-		pauseColladaAnimAtFrame(self.m_collada, 0, 0, 0)	
+		setColladaAnimation(self.m_collada, k_playerAnimIdle, 0, true, 0)
+		colladaEnableAnimTrackChannel(self.m_collada, 0, true, 0)		
 				
 		for i=1,8 do
 			setColladaAnimation(self.m_collada, k_playerRunAnims[i], i, true, 0)
@@ -361,8 +359,7 @@ function CPlayerComponent:updatePlayerStateRun(timeStep)
 	-- rotate character	
 	if self.m_needRotateCharacter == true then
 		self.m_needRotateCharacter = (self:rotatePlayerToFront(0.6) == false)
-	end
-						
+	end		
 	
 	-- move character
 	local posX, posY, posZ = getObjectPosition(self.m_gameObject)
@@ -379,9 +376,8 @@ end
 function CPlayerComponent:updatePlayerStateFlipTurn(timeStep) 
 	if self.m_playerSubState == k_playerSubStateInit then		
 		-- track 0
-		setColladaAnimation(self.m_collada, k_playerAnimShootMachineGuns, 0, true, 0)
-		colladaEnableAnimTrackChannel(self.m_collada, 0, true, 0)
-		pauseColladaAnimAtFrame(self.m_collada, 0, 0, 0)
+		setColladaAnimation(self.m_collada, k_playerAnimIdle, 0, true, 0)
+		colladaEnableAnimTrackChannel(self.m_collada, 0, true, 0)		
 				
 		for i=1,8 do
 			setColladaAnimation(self.m_collada, k_playerRunAnims[i], i, true, 0)
@@ -456,11 +452,10 @@ function CPlayerComponent:rotatePlayerToFront(rotStep)
 	local currentCamera = getActiveCamera()
 	
 	local frontx, fronty, frontz	= getObjectFront(self.m_gameObject)
-	local x1,x2,x3, y1,y2,y3 		= getCameraRay(currentCamera)
-	local colx, coly, colz 			= getLevelCollision(x1,x2,x3, y1,y2,y3)
+	local x1,y1,z1, x2,y2,z2 		= getCameraRay(currentCamera)	
 	local posx, posy, posz 			= getObjectPosition(self.m_gameObject)
 	
-	local aimPos = irr.core.vector3d(colx - posx, coly - posy, colz - posz)
+	local aimPos = irr.core.vector3d(x2 - posx, y2 - posy, z2 - posz)
 	aimPos.Y = 0
 	aimPos:normalize()
 
@@ -518,8 +513,7 @@ function CPlayerComponent:calcRunAnimationBlend(rot)
 			-- forward & forwardright
 			forwardright = rot/-45.0
 			forward = 1.0 - forwardright
-		else
-		debug(1)
+		else		
 			-- -90 <= rot and rot < -45
 			-- right & forwardright
 			right = (rot + 45.0)/(-45.0)

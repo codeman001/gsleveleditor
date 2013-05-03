@@ -95,7 +95,7 @@ void CWeaponComponent::shootActiveWeapon(bool b)
 
 // reloadActiveWeapon
 // reload weapon
-void CWeaponComponent::reloadActiveWeapon()
+void CWeaponComponent::reloadActiveWeapon(bool b)
 {
 	if ( m_activeWeapon )
 	{
@@ -103,10 +103,24 @@ void CWeaponComponent::reloadActiveWeapon()
 
 		CGunComponent* gun = (CGunComponent*)pObj->getComponent(CGameComponent::GunComponent);
 		if ( gun )
-			gun->reload();
+			gun->reload(b);
 	}
 }
 
+// needReloadActiveWeapon
+// check to reload active weapon
+bool CWeaponComponent::needReloadActiveWeapon()
+{
+	if ( m_activeWeapon )
+	{
+		CGameObject *pObj = m_activeWeapon->m_obj;
+
+		CGunComponent* gun = (CGunComponent*)pObj->getComponent(CGameComponent::GunComponent);
+		if ( gun )
+			return gun->needReload();
+	}
+	return false;
+}
 
 // saveData
 // save data to serializable

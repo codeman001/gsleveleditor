@@ -66,7 +66,10 @@ public:
 	void shoot(bool b);
 
 	// reload
-	void reload();
+	void reload(bool b);
+
+	// needReload
+	bool needReload();
 
 	// getOwner
 	// get owner of gun

@@ -684,6 +684,22 @@ int setColladaAnimFrame(lua_State* state)
 	return 0;
 }
 
+// setColladaAnimLoop
+// set animation loop
+int setColladaAnimLoop(lua_State *state)
+{
+	lua_Integer colladaID = lua_tointeger(state, 1);
+	bool loop = (bool)(lua_toboolean(state, 2) == 1);
+	int track	= (int)lua_tointeger(state,3);	
+	int layer	= (int)lua_tointeger(state,4);
+	
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )		
+		collada->setAnimationLoop(loop, track, layer);
+
+	return 0;
+}
+
 // setColladaPauseAnimAtFrame
 // pause animation
 int pauseColladaAnimAtFrame(lua_State* state)
@@ -698,6 +714,23 @@ int pauseColladaAnimAtFrame(lua_State* state)
 		collada->pauseAtFrame(frame, track, layer);
 
 	return 0;
+}
+
+// isColladaEndAnimation
+// check end animation
+int isColladaEndAnimation(lua_State* state)
+{
+	lua_Integer colladaID = lua_tointeger(state, 1);	
+	int track	= (int)lua_tointeger(state,2);
+	int layer	= (int)lua_tointeger(state,3);
+
+	bool ret = false;
+	CColladaMeshComponent *collada = (CColladaMeshComponent*)colladaID;
+	if ( collada )
+		ret = collada->isEndAnimation(track, layer);
+
+	lua_pushboolean(state, (int)ret);
+	return 1;
 }
 
 // resumeColladaAnim
@@ -897,13 +930,30 @@ int shootActiveWeapon(lua_State* state)
 int reloadActiveWeapon(lua_State* state)
 {
 	lua_Integer weaponID = lua_tointeger(state, 1);
-	bool shoot = lua_toboolean(state,2) == 1;
+	bool b = lua_toboolean(state,2) == 1;
 	
 	CWeaponComponent *wpComp = (CWeaponComponent*)weaponID;
 	if ( wpComp )
-		wpComp->reloadActiveWeapon();
+		wpComp->reloadActiveWeapon(b);
 
 	return 0;
+}
+
+// needReloadActiveWeapon
+// check reload gun
+int needReloadActiveWeapon(lua_State* state)
+{
+	lua_Integer weaponID = lua_tointeger(state, 1);
+	bool b = lua_toboolean(state,2) == 1;
+	
+	bool ret = false;
+
+	CWeaponComponent *wpComp = (CWeaponComponent*)weaponID;
+	if ( wpComp )
+		ret = wpComp->needReloadActiveWeapon();
+
+	lua_pushboolean(state, (int)ret);
+	return 1;
 }
 
 /////////////////////////////////////////////////////////////
@@ -960,8 +1010,10 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(setColladaAnimFrame);
 	REGISTER_C_FUNCTION(pauseColladaAnimAtFrame);
 	REGISTER_C_FUNCTION(resumeColladaAnim);
+	REGISTER_C_FUNCTION(setColladaAnimLoop);
 	REGISTER_C_FUNCTION(setColladaAnimWeight);
 	REGISTER_C_FUNCTION(setColladaAnimSpeed);
+	REGISTER_C_FUNCTION(isColladaEndAnimation);
 	REGISTER_C_FUNCTION(colladaSynchronizedAnim);
 	REGISTER_C_FUNCTION(colladaEnableAnimTrackChannel);
 	REGISTER_C_FUNCTION(colladaOnlyEnableAnimTrackChannel);
@@ -975,6 +1027,7 @@ void registerCFunction()
 	REGISTER_C_FUNCTION(setActiveWeapon);
 	REGISTER_C_FUNCTION(shootActiveWeapon);
 	REGISTER_C_FUNCTION(reloadActiveWeapon);
+	REGISTER_C_FUNCTION(needReloadActiveWeapon);
 }
 // end register
 /////////////////////////////////////////////////////////////

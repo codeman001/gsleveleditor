@@ -8,9 +8,9 @@ k_playerStateRun 		= (k_playerStateStand+1)
 k_playerStateFlipTurn 	= (k_playerStateRun+1)
 
 k_playerUpBodyNone		= 0
-k_playerUpBodyAim		= (k_playerUpBodyNone+1)
-k_playerUpBodyShoot		= (k_playerUpBodyAim+1)
-k_playerUpBodyReload	= (k_playerUpBodyShoot+1)
+k_playerUpBodyAimMC		= (k_playerUpBodyNone+1)
+k_playerUpBodyShootMC	= (k_playerUpBodyAimMC+1)
+k_playerUpBodyReloadMC	= (k_playerUpBodyShootMC+1)
 
 k_playerSubStateInit	= 0
 k_playerSubStateUpdate	= (k_playerSubStateInit+1)
@@ -19,7 +19,10 @@ k_playerSubStateEnd		= (k_playerSubStateUpdate+1)
 
 -- declare player animation const
 k_playerAnimIdle				= "TP_Idle"
+
 k_playerAnimShootMachineGuns	= "TP_Shoot_MachineGuns"
+k_playerAnimReloadMachineGuns	= "TP_Reload_MachineGuns"
+
 k_playerAnimRunForward			= "TP_RunFront"
 k_playerAnimRunBackward			= "TP_RunBack"
 k_playerAnimRunLeft				= "TP_RunLeft"
@@ -75,8 +78,8 @@ function CPlayerComponent.create(gameObj)
 	newObj.m_nextPlayerState	= k_playerStateNone
 	
 	-- upbody state
-	newObj.m_playerUpState		= k_playerUpBodyAim
-	newObj.m_playerSubUpState	= k_playerSubStateInit
+	newObj.m_playerUpBodyState		= k_playerUpBodyAimMC
+	newObj.m_playerUpBodySubState	= k_playerSubStateInit
 	newObj.m_nextUpbodyState	= k_playerUpBodyNone	
 	
 	-- input
@@ -114,21 +117,9 @@ function CPlayerComponent.create(gameObj)
 	---------------------------------------------------------
 	-- add upbody node
 	
-	-- head
-	--table.insert(newObj.m_allUpbodyNodes, getColladaSceneNode(newObj.m_collada, "Bip01_Head-node"))
-	--local allUpBodySceneNode = getChildsOfColladaSceneNode(newObj.m_collada, "Bip01_Head-node")
-	--for id,node in ipairs(allUpBodySceneNode) do
-	--	table.insert(newObj.m_allUpbodyNodes, node)
-	--end
-	-- right hand
-	table.insert(newObj.m_allUpbodyNodes, getColladaSceneNode(newObj.m_collada, "Bip01_R_Clavicle-node"))	
-	local allUpBodySceneNode = getChildsOfColladaSceneNode(newObj.m_collada, "Bip01_R_Clavicle-node")
-	for id,node in ipairs(allUpBodySceneNode) do
-		table.insert(newObj.m_allUpbodyNodes, node)
-	end	
-	-- left hand
-	table.insert(newObj.m_allUpbodyNodes, getColladaSceneNode(newObj.m_collada, "Bip01_L_Clavicle-node"))	
-	local allUpBodySceneNode = getChildsOfColladaSceneNode(newObj.m_collada, "Bip01_L_Clavicle-node")
+	-- up body
+	table.insert(newObj.m_allUpbodyNodes, getColladaSceneNode(newObj.m_collada, "Bip01_Spine1-node"))
+	local allUpBodySceneNode = getChildsOfColladaSceneNode(newObj.m_collada, "Bip01_Spine1-node")
 	for id,node in ipairs(allUpBodySceneNode) do
 		table.insert(newObj.m_allUpbodyNodes, node)
 	end
@@ -154,20 +145,8 @@ function CPlayerComponent.create(gameObj)
 		end		
 	end
 	debug("Total foot nodes of player: " .. table.getn(newObj.m_allFootNodes) )
-	
-	---------------------------------------------------------
-	-- setup animation layer	
-	--setColladaAnimationLayer(newObj.m_collada, newObj.m_allFootNodes, 0)
-	--setColladaAnimationLayer(newObj.m_collada, newObj.m_allUpbodyNodes, 1)
-	
-	--enableColladaAnimationLayer(newObj.m_collada, 0, true)
-	--enableColladaAnimationLayer(newObj.m_collada, 1, true)
-		
-	--setSceneNodeIsJoinAnimLayer(newObj.m_collada, "Bip01_R_Clavicle-node", true, true)
-	--setSceneNodeIsJoinAnimLayer(newObj.m_collada, "Bip01_L_Clavicle-node", true, true)
-	
-	applyModifyPlayerBoneTransform(newObj.m_playerComp,"Bip01_Spine1-node", "updatePlayerComponentBoneTransformCallback");
-	
+			
+	applyModifyPlayerBoneTransform(newObj.m_playerComp,"Bip01_Spine1-node", "updatePlayerComponentBoneTransformCallback");	
 	return newObj;
 end
 
@@ -185,8 +164,8 @@ end
 -- setUpbodyState
 -- change state of player
 function CPlayerComponent:setUpbodyState( upbodyState )
-	self.m_nextUpbodyState 		= upbodyState
-	self.m_playerSubUpState		= k_playerSubStateEnd
+	self.m_nextUpbodyState 			= upbodyState
+	self.m_playerUpBodySubState		= k_playerSubStateEnd
 end
 
 -- doNextState
@@ -203,9 +182,9 @@ end
 -- force change upbody state
 function CPlayerComponent:doNextUpBodyState()
 	if self.m_nextUpbodyState ~= k_playerUpBodyNone then
-		newObj.m_playerUpState		= self.m_nextUpbodyState
-		newObj.m_playerSubUpState	= k_playerSubStateInit
-		newObj.m_nextUpbodyState	= k_playerUpBodyNone
+		self.m_playerUpBodyState	= self.m_nextUpbodyState
+		self.m_playerUpBodySubState	= k_playerSubStateInit
+		self.m_nextUpbodyState		= k_playerUpBodyNone
 	end
 end
 
@@ -227,16 +206,16 @@ function CPlayerComponent:updateState(timeStep)
 	}
 				
 	local stateUpBodyUpdate = {
-		[k_playerUpBodyAim]		= function() self:updatePlayerUpBodyAim(timeStep)	end,
-		[k_playerUpBodyShoot]	= function() end,
-		[k_playerUpBodyReload]	= function() end,
+		[k_playerUpBodyAimMC]		= function() self:updatePlayerUpBodyAimMC(timeStep)	end,
+		[k_playerUpBodyShootMC]		= function() self:updatePlayerUpBodyShootMC(timeStep) end,
+		[k_playerUpBodyReloadMC]	= function() self:updatePlayerUpBodyReloadMC(timeStep) end,
 	}
 	
 	-- update state
 	stateUpdate[self.m_playerState]();
 	
 	-- update upbody state
-	stateUpBodyUpdate[self.m_playerUpState]();
+	stateUpBodyUpdate[self.m_playerUpBodyState]();
 	
 end
 
@@ -263,6 +242,7 @@ function CPlayerComponent:updatePlayerStateStand(timeStep)
 	elseif self.m_playerSubState == k_playerSubStateEnd then
 		-- end state
 		self:doNextState()
+		return
 	end
 	 
 	-- rotate character	
@@ -303,6 +283,7 @@ function CPlayerComponent:updatePlayerStateRun(timeStep)
 	elseif self.m_playerSubState == k_playerSubStateEnd then
 		-- end state
 		self:doNextState()
+		return
 	end
 	
 	-- update run vector
@@ -390,6 +371,7 @@ function CPlayerComponent:updatePlayerStateFlipTurn(timeStep)
 	elseif self.m_playerSubState == k_playerSubStateEnd then
 		-- end state
 		self:doNextState()
+		return
 	end
 	
 		
@@ -428,7 +410,7 @@ function CPlayerComponent:updatePlayerStateFlipTurn(timeStep)
 		self.m_currentRunVector = self.m_runVector
 		
 		-- return state run
-		self:setPlayerState(k_playerStateRun)		
+		self:setPlayerState(k_playerStateRun)
 	end
 end
 
@@ -438,20 +420,99 @@ end
 
 
 -- updatePlayerUpBodyAim
--- Update aim
-function CPlayerComponent:updatePlayerUpBodyAim(timeStep)
-	self.m_needRotateCharacter = true		
+-- Update aim machine gun
+function CPlayerComponent:updatePlayerUpBodyAimMC(timeStep)
 	
-	if self.m_inputReload == 1 then
-		-- todo reload
-		reloadActiveWeapon(self.m_weaponComp, true)
-	elseif self.m_inputShoot == 1 then
-		-- todo shoot
-		shootActiveWeapon(self.m_weaponComp, true)
-	else
-		-- todo normal
+	if self.m_playerUpBodySubState == k_playerSubStateInit then		
+		self.m_playerUpBodySubState = k_playerSubStateUpdate		
+	elseif self.m_playerUpBodySubState == k_playerSubStateEnd then
+		self:doNextUpBodyState()
+		return
+	end
+		
+	self.m_needRotateCharacter = true
+	
+	if self.m_inputReload == 1 then		
+		self:setUpbodyState(k_playerUpBodyReloadMC)
+	elseif self.m_inputShoot == 1 then		
+		self:setUpbodyState(k_playerUpBodyShootMC)
+	else		
 		shootActiveWeapon(self.m_weaponComp, false)
 	end	
+end
+
+-- updatePlayerUpBodyShootMC
+-- update state when shoot machine gun
+function CPlayerComponent:updatePlayerUpBodyShootMC(timeStep)
+	
+	if self.m_playerUpBodySubState == k_playerSubStateInit then		
+		self.m_playerUpBodySubState = k_playerSubStateUpdate		
+	elseif self.m_playerUpBodySubState == k_playerSubStateEnd then		
+		self:doNextUpBodyState()
+		return
+	end
+		
+	self.m_needRotateCharacter = true
+	
+	if self.m_inputShoot == 1 then
+		-- todo shoot
+		shootActiveWeapon(self.m_weaponComp, true)
+		
+		-- reload weapon (if bullet count = 0)
+		if needReloadActiveWeapon(self.m_weaponComp) == true then			
+			self:setUpbodyState(k_playerUpBodyReloadMC)			
+		end
+		
+	elseif self.m_inputReload == 1 then
+		self:setUpbodyState(k_playerUpBodyReloadMC)
+	else
+		self:setUpbodyState(k_playerUpBodyAimMC)
+	end
+	
+end
+
+-- updatePlayerUpBodyReloadMC
+-- update state when reload machine gun
+function CPlayerComponent:updatePlayerUpBodyReloadMC(timeStep)
+	
+	if self.m_playerUpBodySubState == k_playerSubStateInit then		
+		
+		-- begin reload the gun
+		reloadActiveWeapon(self.m_weaponComp, true)
+		
+		-- active layer 2 of reload animation
+		---------------------------------------------------------				
+		setColladaAnimationLayer(self.m_collada, self.m_allUpbodyNodes, 1)
+		enableColladaAnimationLayer(self.m_collada, 1, true)
+		setSceneNodeIsJoinAnimLayer(self.m_collada, "Bip01_Spine1-node", true, true)		
+		
+		-- set animation reload		
+		setColladaAnimation(self.m_collada, k_playerAnimReloadMachineGuns, 0, true, 1)
+		setColladaAnimLoop(self.m_collada, false, 0, 1)
+		
+		self.m_playerUpBodySubState = k_playerSubStateUpdate
+		return
+		
+	elseif self.m_playerUpBodySubState == k_playerSubStateEnd then
+	
+		-- disable layer 2
+		setColladaAnimationLayer(self.m_collada, self.m_allUpbodyNodes, 0)
+		enableColladaAnimationLayer(self.m_collada, 1, false)
+		
+		self:doNextUpBodyState()
+		return
+	end
+		
+	self.m_needRotateCharacter = true
+	
+	if isColladaEndAnimation(self.m_collada, 0, 1) == true then
+		-- end reload the gun
+		reloadActiveWeapon(self.m_weaponComp, false)
+	
+		-- change to aim state
+		self:setUpbodyState(k_playerUpBodyAimMC)
+	end
+	
 end
 
 -----------------------------------------------------------

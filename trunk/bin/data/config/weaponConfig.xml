@@ -2,7 +2,7 @@
 	<weapon type="Gun">
 		<name>AR01</name>		
 		<model>data/mesh/weapon/AR01/AR01_low.scene</model>		
-		<snap>HandLeftGunHold-node</snap>
+		<snap>HandGunHold-node</snap>
 		<muzzle>muzzle_flash-node</muzzle>
 		<params>
 			<param name="rateShoot" value="20" unit="bulletsPerMin"/>

@@ -287,17 +287,16 @@ void CApplication::notifyChangeOrientation( int id )
     if ( id == 1 )
     {
         // left
-        m_driver->setOrientation(video::EOO_270);
+        m_driver->setOrientation(video::EOO_90);
     }
     else if ( id == 2 )
     {
         // right
-        m_driver->setOrientation(video::EOO_90);
+        m_driver->setOrientation(video::EOO_270);
     }
     else
     {
-        // portrail   
-        // m_driver->setOrientation(video::EOO_0);
-        m_driver->setOrientation(video::EOO_270);
+        // portrail
+        m_driver->setOrientation(video::EOO_90);
     }
 }

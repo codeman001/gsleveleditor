@@ -103,15 +103,15 @@ int getDeviceOrientation()
     {
         case UIDeviceOrientationLandscapeLeft:
             // left
-            ret = 1;
+            ret = 2;
             break;
         case UIDeviceOrientationLandscapeRight:
             // right
-            ret = 2;
+            ret = 1;
             break;
         default:
 			// portal
-            ret = -1;
+            ret = 0;
             break;
     };
 	return ret;

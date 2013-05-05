@@ -355,6 +355,8 @@ protected:
 
 	SNodeParam					*m_colladaRoot;
 
+	bool						m_enableMoveAnimation;
+
 #pragma region DAE_PARSE_OBJECTS
 	//	list of effect in collada scene
 	ArrayImages					m_listImages;
@@ -390,6 +392,13 @@ public:
 
 	void loadFile( const char *lpFilename, CGameObject* obj );
 	void loadDaeAnim( const char *lpFileName, CColladaAnimation	*collada);
+
+	// enableParseMoveAnimation
+	// disable position key frames
+	inline void enableParseMoveAnimation(bool b)
+	{
+		m_enableMoveAnimation = b;
+	}
 
 protected:
 
@@ -475,6 +484,7 @@ protected:
 	void clipDaeAnim();
 
 	SNodeParam* getNode( const std::string& nodeName );
+
 #pragma endregion
 
 };

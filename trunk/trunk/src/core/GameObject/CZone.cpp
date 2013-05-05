@@ -583,6 +583,24 @@ void CZone::unRegisterTerrainObj( CGameObject *pObj )
 
 }
 
+// registerCollideObj
+// add obj to collide list
+void CZone::registerCollideObj( CGameObject *pObj )
+{
+	if ( std::find(m_collideObjs.begin(), m_collideObjs.end(), pObj) == m_collideObjs.end() )	
+		m_collideObjs.push_back(pObj);	
+}
+
+// unRegisterCollideObj
+// remove obj from collide terrain
+void CZone::unRegisterCollideObj( CGameObject *pObj )
+{
+	ArrayGameObjectIter it = std::find(m_collideObjs.begin(), m_collideObjs.end(), pObj);
+	if ( it != 	m_collideObjs.end() )
+		m_collideObjs.erase( it );
+}
+
+
 // getTerrainCollision
 // check hit with a ray with a terrain
 bool CZone::getTerrainCollision( core::line3df & ray, f32 &outBestDistanceSquared, core::vector3df &outBestCollisionPoint, core::triangle3df &outBestTriangle )

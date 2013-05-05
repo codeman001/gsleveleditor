@@ -7,12 +7,29 @@
 
 class CBulletRayComponent: public IObjectComponent
 {
-protected:
-	std::vector<core::line3df>		m_rays;
-	std::vector<core::line3df>		m_raysSync;    
-	float							m_damage;
+public:
+	struct SBulletRay
+	{
+		core::line3df	ray;
+		float			damage;
+		bool			throwObj;
+		CGameObject*	weapon;
+		CGameObject*	owner;
 
-public:  
+		SBulletRay()
+		{
+			damage = 5.0f;
+			throwObj = false;
+			weapon = NULL;
+			owner = NULL;
+		}
+	};
+
+protected:
+	std::vector<SBulletRay>		m_rays;
+	std::vector<SBulletRay>		m_raysSync;
+
+public:
 	CBulletRayComponent(CGameObject* obj);
 	virtual ~CBulletRayComponent();
     
@@ -34,17 +51,17 @@ public:
     
 	// addBulletRay
 	// add a ray
-	void addBulletRay( const core::line3df& ray )
+	void addBulletRay( const core::line3df& ray, float damage, bool throwObj, CGameObject *weapon, CGameObject *owner )
 	{
-		m_rays.push_back(ray);
-        m_raysSync.push_back(ray);
-	}
+		SBulletRay r;
+		r.ray = ray;
+		r.damage = damage;
+		r.throwObj = throwObj;
+		r.weapon = weapon;
+		r.owner = owner;
 
-	// setBulletDamage
-	// set damage
-	inline void setBulletDamage(float f)
-	{
-		m_damage = f;
+		m_rays.push_back(r);
+        m_raysSync.push_back(r);
 	}
 
     // packDataMultiplayer
@@ -58,7 +75,7 @@ public:
 protected:
 	
 	// updateBulletCollision
-	void updateBulletCollision(core::line3df& ray);
+	void updateBulletCollision(SBulletRay& bullet);
 
 	// createSpark
 	CGameObject* createSpark( core::vector3df position, const char* xml, float lifeDelay );

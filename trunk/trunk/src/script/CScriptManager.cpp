@@ -282,6 +282,9 @@ void CScriptManager::update()
 
 	// reset stack
 	lua_settop(m_state, 0);
+
+	// gc collect memory
+	lua_gc(m_state, LUA_GCCOLLECT, 0);
 }
 
 // getLuaFuncRefId

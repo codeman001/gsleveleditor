@@ -670,3 +670,38 @@ bool CGameLevel::checkTerrainCollide( core::line3df& ray, core::vector3df& outPo
 
 	return hasCol;
 }
+
+// checkObjCollide
+// check obj collide with ray
+void CGameLevel::getListObjCollide(core::line3df& ray, ArrayGameObject& objs, CGameObject* me)
+{
+	core::aabbox3df myBox(ray.start, ray.end);	
+	myBox.repair();		
+
+	objs.clear();
+
+	// loop for all zone
+	int nZone = getZoneCount();
+	for ( int iZone = 0; iZone < nZone; iZone++ )
+	{
+		CZone *z = getZone( iZone );
+		core::aabbox3df zoneBox = z->getSceneNode()->getTransformedBoundingBox();		
+		
+		if ( zoneBox.intersectsWithBox( myBox ) == true )
+		{
+			ArrayGameObject& listObjs = z->getCollideObjsList();
+			
+			ArrayGameObject::iterator itObj = listObjs.begin(), itObjEnd = listObjs.end();
+			while ( itObj != itObjEnd )
+			{
+				CGameObject* obj = (*itObj);
+				if ( obj != me && obj->getSceneNode() )
+				{
+					if ( obj->getSceneNode()->getTransformedBoundingBox().intersectsWithLine(ray) )					
+						objs.push_back(obj);					
+				}
+				itObj++;
+			}
+		}
+	}
+}

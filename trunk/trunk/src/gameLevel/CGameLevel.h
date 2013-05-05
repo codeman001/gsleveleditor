@@ -163,6 +163,9 @@ public:
 	// check terrain collide
 	bool checkTerrainCollide( core::line3df& ray, core::vector3df& outPos, core::triangle3df& outTri );
 
+	// checkObjCollide
+	// check obj collide with ray
+	void getListObjCollide(core::line3df& ray, ArrayGameObject& obj, CGameObject* me = NULL);
 };
 
 #endif

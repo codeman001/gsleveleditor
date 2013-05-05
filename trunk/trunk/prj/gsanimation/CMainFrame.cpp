@@ -462,6 +462,9 @@ void CMainFrame::toolbarLoadAnimDae( uiObject *pSender )
 	dialog.getFileName( lpPath );
 	uiString::copy<char, WCHAR>( lpFileName, lpPath );
 	
+	bool b = question(L"Do you want load position key frame",L"Load position key frame", MB_YESNO);
+	CDaeUtils::getInstance()->enableParseMoveAnimation(b);
+
 	CColladaAnimation *colladaAnim = CColladaAnimationFactory::getInstance()->loadAnimation("baseAnim", lpFileName);
 	
 	// load anim from file

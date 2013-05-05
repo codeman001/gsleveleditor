@@ -36,6 +36,9 @@ CWeaponComponent::~CWeaponComponent()
 // run when init object
 void CWeaponComponent::initComponent()
 {
+	CEllipsoidCollisionComponent *ellipComp = (CEllipsoidCollisionComponent*)m_gameObject->getComponent(IObjectComponent::EllipsoidCollision);
+	if ( ellipComp )
+		ellipComp->setElipsoidCallback(this);
 }
 
 // update
@@ -220,4 +223,46 @@ void CWeaponComponent::setActiveWeapon( const char* weaponName )
 		m_activeWeapon->m_obj->setVisible(false);
 
 	m_activeWeapon = getWeapon(weaponName);
+}
+
+// _onUpdateEllipsoidBoundingBox
+// update callback
+void CWeaponComponent::_onUpdateEllipsoidBoundingBox(core::aabbox3df& box)
+{
+	if ( m_activeWeapon )
+	{
+		CGameObject *pObj = m_activeWeapon->m_obj;
+
+		CColladaMeshComponent* collada = (CColladaMeshComponent*)m_gameObject->getComponent(IObjectComponent::ColladaMesh);		
+		CGameColladaSceneNode *snapNode = NULL;
+		
+		if ( m_activeWeapon->m_info->snap.empty() == false )
+		{
+			// get node of position
+			snapNode = collada->getSceneNode( m_activeWeapon->m_info->snap.c_str() );
+			
+			// transform box
+			core::aabbox3df b = pObj->getSceneNode()->getBoundingBox();
+			core::matrix4 mat;
+			mat.setScale(core::vector3df(-1,1,1));
+			mat.transformBoxEx(b);
+			snapNode->LocalAbsoluteMatrix.transformBoxEx(b);
+
+			// add box of weapon
+			box.addInternalBox(b);
+
+			/*
+			core::matrix4 m = m_gameObject->getSceneNode()->getAbsoluteTransformation();
+
+			// debug
+			core::aabbox3df debugBox = box;
+			m.transformBoxEx(debugBox);
+			CGameDebug::getInstance()->addBoudingBox(debugBox, SColor(255,255,0,0));
+
+			debugBox = b;
+			m.transformBoxEx(debugBox);
+			CGameDebug::getInstance()->addBoudingBox(debugBox, SColor(255,0,0,255));
+			*/
+		}
+	}
 }

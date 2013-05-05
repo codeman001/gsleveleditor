@@ -4,6 +4,14 @@
 #include "CGameObject.h"
 #include "IObjectComponent.h"
 
+class IEllipsoidCallback
+{
+public:
+	virtual void _onUpdateEllipsoidBoundingBox(core::aabbox3df& box)
+	{
+	}
+};
+
 class CEllipsoidCollisionComponent: public IObjectComponent
 {
 protected:
@@ -18,6 +26,7 @@ protected:
 	core::vector3df		m_gravity;
 	core::vector3df		m_ellipsoidRadius;
 
+	IEllipsoidCallback*	m_callback;
 public:
 	CEllipsoidCollisionComponent( CGameObject *pObj );
 
@@ -53,12 +62,18 @@ public:
 public:
 
 	// isFalling
-	// chek objet is falling
+	// check objet is falling
 	bool isFalling()
 	{
 		return m_isFalling;
 	}
 
+	// setElipsoidCallback
+	// set call back
+	void setElipsoidCallback(IEllipsoidCallback* callback)
+	{
+		m_callback = callback;
+	}
 protected:
 	
 	// collideTest

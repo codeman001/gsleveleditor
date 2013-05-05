@@ -1,13 +1,17 @@
 <weaponConfig>
 	<weapon type="Gun">
-		<name>AR01</name>		
+		<name>AR01</name>
 		<model>data/mesh/weapon/AR01/AR01_low.scene</model>		
 		<snap>HandGunHold-node</snap>
 		<muzzle>muzzle_flash-node</muzzle>
 		<params>
-			<param name="rateShoot" value="20" unit="bulletsPerMin"/>
+			<param name="rateShoot" value="800" unit="bulletsPerMin"/>
 			<param name="numBullet" value="30"/>
-			<param name="damage" value="5" unit="hpPerBullet"/>
+			<param name="damage" value="5.0" unit="hpPerBullet"/>
+			<param name="damageThrowObj" value="1" unit="boolean"/>
+			<param name="autoAim" value="0" unit="boolean"/>
+			<param name="reloadTime" value="10" unit="second"/>
+			<param name="vibrateAngle" value="2.0" unit="deg"/>
 		</params>
 	</weapon>
 </weaponConfig>

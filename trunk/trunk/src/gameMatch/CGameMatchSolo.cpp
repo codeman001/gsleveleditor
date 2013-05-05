@@ -38,7 +38,11 @@ void CGameMatchSolo::update()
 {
 	if ( m_player == NULL )
 	{
-		m_player = spawn3rdPlayer();			
+		m_player = spawn3rdPlayer();
+
+		CGameObject *testPlayer = spawn3rdPlayer();
+		CPlayerComponent *playerComp = (CPlayerComponent*)testPlayer->getComponent(CGameComponent::PlayerComponent);
+		playerComp->setTestPlayer(true);
 	}
 	else
 	{

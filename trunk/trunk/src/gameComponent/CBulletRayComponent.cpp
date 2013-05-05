@@ -28,7 +28,7 @@ void CBulletRayComponent::updateComponent()
 {
 	m_gameObject->setSyncNetwork(true);
 
-	std::vector<core::line3df>::iterator it = m_rays.begin(), end = m_rays.end();
+	std::vector<SBulletRay>::iterator it = m_rays.begin(), end = m_rays.end();
 	while (it != end)
 	{
 		updateBulletCollision( (*it) );
@@ -61,13 +61,7 @@ void CBulletRayComponent::packDataMultiplayer(CDataPacket *packet)
 	packet->addByte((unsigned char)nray);
 	for (int i = 0; i < nray; i++)
 	{
-		packet->addFloat(m_raysSync[i].start.X);
-		packet->addFloat(m_raysSync[i].start.Y);
-		packet->addFloat(m_raysSync[i].start.Z);
-
-		packet->addFloat(m_raysSync[i].end.X);
-		packet->addFloat(m_raysSync[i].end.Y);
-		packet->addFloat(m_raysSync[i].end.Z);
+		
 	}
 	m_raysSync.clear();
 }
@@ -79,25 +73,32 @@ void CBulletRayComponent::unpackDataMultiplayer(CDataPacket *packet)
 	int nray = (int)packet->getByte();
 	for (int i = 0; i < nray; i++)
 	{
-		core::line3df ray;
-		ray.start.X = packet->getFloat();
-		ray.start.Y = packet->getFloat();
-		ray.start.Z = packet->getFloat();
-
-		ray.end.X = packet->getFloat();
-		ray.end.Y = packet->getFloat();
-		ray.end.Z = packet->getFloat();
-
-		m_rays.push_back(ray);
+		
 	}
 }
 
 
 // updateBulletCollision
-void CBulletRayComponent::updateBulletCollision(core::line3df& ray)
+void CBulletRayComponent::updateBulletCollision(SBulletRay& bullet)
 {
-	// spawn particle
-	createSpark( ray.end, "data/particle/bullet.xml", 5000.0f );
+	core::vector3df     outPoint;
+	core::triangle3df   outTri;
+	
+	CGameLevel *level =	CGameLevel::getCurrentLevel();
+
+	ArrayGameObject objs;
+	level->getListObjCollide(bullet.ray, objs, bullet.owner);
+
+	if ( objs.size() > 0 )
+	{
+		
+	}
+
+	if ( level->checkTerrainCollide( bullet.ray, outPoint, outTri) == true )
+	{
+		// spawn particle
+		createSpark( outPoint, "data/particle/bullet.xml", 5000.0f );
+	}
 }
 
 // createSpark

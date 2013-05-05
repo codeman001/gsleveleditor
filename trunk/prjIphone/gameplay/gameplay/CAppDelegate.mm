@@ -34,7 +34,7 @@
     
     // create opengl framebuffer
     if ( [glView createFramebuffer] == true )
-        [glView startGameLoop];
+        [glView startGameLoop];        
     
     return YES;
 }

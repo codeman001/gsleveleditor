@@ -76,17 +76,17 @@ extern void applicationChangeOrientation(int orientation);
     if (orientation == UIDeviceOrientationLandscapeLeft)
     {
         NSLog(@"Landscape Left!");
-        applicationChangeOrientation(1);
+        applicationChangeOrientation(2);
     }
     else if ( orientation == UIDeviceOrientationLandscapeRight )
     {
         NSLog(@"Landscape Right!");
-        applicationChangeOrientation(2);        
+        applicationChangeOrientation(1);
     }
     else 
     {
         NSLog(@"Portrait!");
-        applicationChangeOrientation(0);        
+        applicationChangeOrientation(0);
     }
 }
 
@@ -101,21 +101,7 @@ extern void applicationChangeOrientation(int orientation);
     int backingWidth = 0, backingHeight = 0;
 	glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &backingWidth);
 	glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &backingHeight);
-	
-    // create depth buffer
-    glGenRenderbuffersOES(1, &mDepthRenderbuffer);
-    glBindRenderbufferOES(GL_RENDERBUFFER_OES, mDepthRenderbuffer);
-    
-    glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT16_OES, backingWidth, backingHeight);
-    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES,mDepthRenderbuffer);
-	
-    // check error
-	if(glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES) 
-	{
-		NSLog(@"failed to make complete framebuffer object %x", glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
-	}
-    
-    
+	    
     // resize win
     appicationResizeWindow(backingWidth, backingHeight);                        
 }
@@ -156,7 +142,30 @@ extern void applicationChangeOrientation(int orientation);
     
     // attach render buffer to framebuffer
 	glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, mColorRenderbuffer);
-	   
+    
+    
+    [mEglContext renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
+	
+    glBindRenderbufferOES(GL_RENDERBUFFER_OES, mColorRenderbuffer);
+    
+    // get size render buffer
+    int backingWidth = 0, backingHeight = 0;
+	glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &backingWidth);
+	glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &backingHeight);
+	
+    // create depth buffer
+    glGenRenderbuffersOES(1, &mDepthRenderbuffer);
+    glBindRenderbufferOES(GL_RENDERBUFFER_OES, mDepthRenderbuffer);
+    
+    glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT16_OES, backingWidth, backingHeight);
+    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES,mDepthRenderbuffer);
+	
+    // check error
+	if(glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES)
+	{
+		NSLog(@"failed to make complete framebuffer object %x", glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
+	}
+    
     // init game
     appicationInitApp();
     return true;

@@ -370,7 +370,7 @@ int getLevelCollision(lua_State* state)
 	ray.end.Y = (float)lua_tonumber(state,5);
 	ray.end.Z = (float)lua_tonumber(state,6);
 
-	core::vector3df ret;	
+	core::vector3df		ret;	
 	core::vector3df     outPoint;
 	core::triangle3df   outTri;
 
@@ -784,7 +784,7 @@ int setColladaAnimSpeed(lua_State* state)
 // sync multi animation
 int colladaSynchronizedAnim(lua_State* state)
 {
-	lua_Integer colladaID = lua_tointeger(state, 1);	
+	lua_Integer colladaID = lua_tointeger(state, 1);
 	float speedRatio = (float)lua_tonumber(state,2);
 	int layer	= (int)lua_tointeger(state,3);	
 

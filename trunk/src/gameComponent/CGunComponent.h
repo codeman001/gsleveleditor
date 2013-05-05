@@ -23,7 +23,12 @@ protected:
 
 	int							m_numBullets;
 	int							m_bulletRate;
-	
+	float						m_damage;
+	bool						m_damageThrowObj;
+	bool						m_autoAim;
+	float						m_reloadTime;
+	float						m_vibrateAngle;
+
 	int							m_currentBullets;
 
 	CColladaMeshComponent		*m_collada;

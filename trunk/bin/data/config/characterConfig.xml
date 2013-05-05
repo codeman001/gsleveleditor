@@ -4,12 +4,12 @@
 		<model>data/mesh/character/hero/us_hawaii/us_hawaii.scene</model>
 		<anim>data/mesh/character/hero/us_hawaii/us_hawaii.anim</anim>
 		<lods>			
-			<node name="l0_downs_hawaii-node" distance="1000"/> <!-- 10m -->
-			<node name="l1_downs_hawaii-node" distance="2000"/> <!-- 20m -->
-			<node name="l2_downs_hawaii-node" distance="4000"/> <!-- 40m -->
-			<node name="l3_downs_hawaii-node" distance="8000"/> <!-- 80m -->
-			<node name="l4_downs_hawaii-node" distance="16000"/> <!-- 160m -->
-			<node name="l5_downs_hawaii-node" distance="32000"/> <!-- 320m -->
+			<node name="l0_downs_hawaii-node" distance="600"/> 		<!-- 6m -->
+			<node name="l1_downs_hawaii-node" distance="1000"/> 	<!-- 10m -->
+			<node name="l2_downs_hawaii-node" distance="1500"/> 	<!-- 15m -->
+			<node name="l3_downs_hawaii-node" distance="2000"/> 	<!-- 20m -->
+			<node name="l4_downs_hawaii-node" distance="3000"/> 	<!-- 30m -->
+			<node name="l5_downs_hawaii-node" distance="50000"/> 	<!-- 500m -->
 		</lods>
 	</character>
 </characterConfig>

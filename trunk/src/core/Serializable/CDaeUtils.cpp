@@ -561,6 +561,8 @@ CDaeUtils::CDaeUtils()
 {
 	m_component = NULL;
 	m_gameObject = NULL;
+
+	m_enableMoveAnimation = true;
 }
 
 CDaeUtils::~CDaeUtils()
@@ -1429,7 +1431,7 @@ void CDaeUtils::parseEffectNode( io::IXMLReader *xmlRead, SEffect* effect )
 										 std::wstring(L"A_ONE") == xmlRead->getAttributeValue(L"opaque"))
 									{
 										effect->TransparentAddColor = true;
-										effect->HasAlpha = true;
+										//effect->HasAlpha = true;
 									}
 								}
 							}
@@ -3556,10 +3558,13 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 									fvector[2] = arrayFloat[i*3 + 2];	
 								}
 					
-								CGameAnimationTrack::SPositionKey key;
-								key.frame = arrayTime[i]*k_defaultAnimFPS;
-								key.position = core::vector3df(fvector[0], fvector[1], fvector[2] );
-								nodeAnim->PositionKeys.push_back(key);
+								if ( m_enableMoveAnimation )
+								{
+									CGameAnimationTrack::SPositionKey key;
+									key.frame = arrayTime[i]*k_defaultAnimFPS;
+									key.position = core::vector3df(fvector[0], fvector[1], fvector[2] );
+									nodeAnim->PositionKeys.push_back(key);
+								}
 							}
 							else if ( stride == 1 )
 							{
@@ -3623,10 +3628,13 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 							key.rotation = core::quaternion( mat );
 							nodeAnim->RotationKeys.push_back(key);
 
-							CGameAnimationTrack::SPositionKey keyPos;
-							keyPos.frame = arrayTime[i]*k_defaultAnimFPS;
-							keyPos.position = mat.getTranslation();
-							nodeAnim->PositionKeys.push_back(keyPos);
+							if ( m_enableMoveAnimation )
+							{
+								CGameAnimationTrack::SPositionKey keyPos;
+								keyPos.frame = arrayTime[i]*k_defaultAnimFPS;
+								keyPos.position = mat.getTranslation();
+								nodeAnim->PositionKeys.push_back(keyPos);
+							}
 
 							CGameAnimationTrack::SScaleKey keyScale;
 							keyScale.frame = arrayTime[i]*k_defaultAnimFPS;
@@ -3719,8 +3727,9 @@ void CDaeUtils::parseAnimationNode( io::IXMLReader *xmlRead )
 							key.position.Y = key.position.Z;
 							key.position.Z = t;
 						}
-
-						nodeAnim->PositionKeys.push_back(key);
+						
+						if ( m_enableMoveAnimation )
+							nodeAnim->PositionKeys.push_back(key);
 					}
 
 					delete arrayTime;

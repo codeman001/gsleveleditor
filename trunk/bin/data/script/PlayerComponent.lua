@@ -6,6 +6,7 @@ k_playerStateNone		= 0
 k_playerStateStand 		= (k_playerStateNone+1)
 k_playerStateRun 		= (k_playerStateStand+1)
 k_playerStateFlipTurn 	= (k_playerStateRun+1)
+k_playerStateRunFast 	= (k_playerStateFlipTurn+1)
 
 k_playerUpBodyNone		= 0
 k_playerUpBodyAimMC		= (k_playerUpBodyNone+1)
@@ -32,6 +33,8 @@ k_playerAnimRunForwardRight		= "TP_RunFrontRight"
 k_playerAnimRunBackwardLeft		= "TP_RunBackLeft"
 k_playerAnimRunBackwardRight	= "TP_RunBackRight"
 
+k_playerAnimRunFastForward		= "TP_RunSprint_Front"
+
 local k_playerRunAnims = {
 		k_playerAnimRunForward,
 		k_playerAnimRunBackward,
@@ -45,11 +48,12 @@ local k_playerRunAnims = {
 
 k_animRunRotateSpeed			= 0.4
 k_animStandToRunBlendSpeed		= 0.003
+k_animStandToRunFastBlendSpeed	= 0.002
 k_animRunToStandBlendSpeed		= 0.003
 k_animFipTurnBlendSpeed			= 0.005
 
 k_runSpeed						= 0.3
-
+k_runFastSpeed					= 0.5
 
 -- class CPlayerComponent
 CPlayerComponent = {}
@@ -80,17 +84,18 @@ function CPlayerComponent.create(gameObj)
 	-- upbody state
 	newObj.m_playerUpBodyState		= k_playerUpBodyAimMC
 	newObj.m_playerUpBodySubState	= k_playerSubStateInit
-	newObj.m_nextUpbodyState	= k_playerUpBodyNone	
+	newObj.m_nextUpbodyState		= k_playerUpBodyNone	
 	
 	-- input
 	newObj.m_inputRun 			= 0
 	newObj.m_inputRunStrength 	= 0.0
 	newObj.m_inputRunRotate 	= 0.0
 	newObj.m_inputShoot 		= 0
-	newObj.m_inputReload		= 0
+	newObj.m_inputReload		= 0	
 	
 	-- animation
-	newObj.m_runFactor			= 0.0	
+	newObj.m_runFactor			= 0.0
+	newObj.m_runFastFactor		= 0.0
 	
 	-- run params
 	newObj.m_runVector			= irr.core.vector3d()
@@ -203,6 +208,7 @@ function CPlayerComponent:updateState(timeStep)
 		[k_playerStateStand] 	= function() self:updatePlayerStateStand(timeStep)	end,
 		[k_playerStateRun]		= function() self:updatePlayerStateRun(timeStep) 	end,
 		[k_playerStateFlipTurn]	= function() self:updatePlayerStateFlipTurn(timeStep) end,
+		[k_playerStateRunFast]	= function() self:updatePlayerStateRunFast(timeStep) end,
 	}
 				
 	local stateUpBodyUpdate = {
@@ -212,10 +218,15 @@ function CPlayerComponent:updateState(timeStep)
 	}
 	
 	-- update state
-	stateUpdate[self.m_playerState]();
+	stateUpdate[self.m_playerState]()
 	
 	-- update upbody state
-	stateUpBodyUpdate[self.m_playerUpBodyState]();
+	stateUpBodyUpdate[self.m_playerUpBodyState]()
+	
+	-- if run fast, the main character do not shoot or reload the weapon
+	if self.m_playerState == k_playerStateRunFast and self.m_playerUpBodyState ~= k_playerUpBodyAimMC then
+		self:setUpbodyState(k_playerUpBodyAimMC)
+	end
 	
 end
 
@@ -351,6 +362,126 @@ function CPlayerComponent:updatePlayerStateRun(timeStep)
 	
 	setObjectPosition(self.m_gameObject, posX, posY, posZ)
 	
+	-- change to state run fast
+	if self.m_inputRunStrength > 1.0 then
+		self:setPlayerState(k_playerStateRunFast)
+	end
+	
+end
+
+function CPlayerComponent:updatePlayerStateRunFast(timeStep)
+
+	if self.m_playerSubState == k_playerSubStateInit then						
+		-- default run blend
+		runBlend = self:calcRunAnimationBlend(0)
+
+		setColladaAnimation(self.m_collada, k_playerAnimRunFastForward, 9, true, 0)
+		colladaEnableAnimTrackChannel(self.m_collada, 9, true, 0)
+		
+		self.m_runFastFactor = 0.0		
+		self.m_playerSubState = k_playerSubStateUpdate		
+	elseif self.m_playerSubState == k_playerSubStateEnd then
+		-- end state
+		self:doNextState()
+		return
+	end
+	
+	-- update run vector
+	local currentCamera = getActiveCamera()
+		
+	local x1,y1,z1, x2,y2,z2	= getCameraRay(currentCamera)	
+	local posx, posy, posz 		= getObjectPosition(self.m_gameObject)
+	
+	local frontVector = irr.core.vector3d(x2 - posx, y2 - posy, z2 - posz)
+	frontVector.Y = 0
+	frontVector:normalize()
+		
+	self.m_runVector = irr.core.vector3d(frontVector)
+		
+	local q = irr.core.quaternion()
+	q:fromAngleAxis( k_degToRad*self.m_inputRunRotate, irr.core.vector3d(0,1,0) )
+	local mat = q:getMatrix()
+	mat:rotateVect(self.m_runVector);
+	self.m_runVector:normalize();		
+
+	-- flip turn
+	local angle = math.abs(CVectorUtil.getAngle(self.m_runVector, self.m_currentRunVector))
+	if ( angle > 160 ) then
+		-- todo late		
+	end
+		
+	-- update current run vector
+	local ret = CVectorUtil.turnToDir(self.m_currentRunVector, self.m_runVector, k_animRunRotateSpeed)
+	self.m_currentRunVector = irr.core.vector3d(ret[2])
+			
+	-- if have input
+	if self.m_inputRun == 1 then
+		angle = -CVectorUtil.getAngle(self.m_currentRunVector, frontVector)
+		runBlend = self:calcRunAnimationBlend(angle)
+	end
+		
+	-- set weight of run anim
+	local runFactor 	= self.m_runFactor*(1.0 - self.m_runFastFactor)
+	local runFastFactor = self.m_runFactor*self.m_runFastFactor
+	
+	setColladaAnimWeight(self.m_collada, 1 - self.m_runFactor, 0, 0)
+	for id,weight in ipairs(runBlend) do
+		setColladaAnimWeight(self.m_collada, weight*runFactor, id, 0)
+	end	
+	setColladaAnimWeight(self.m_collada, runFastFactor, 9, 0)
+		
+	
+	-- sync animation
+	colladaSynchronizedAnim(self.m_collada, 1.0, 0)
+	
+	-- inc run factor
+	if self.m_inputRun == 1 then	
+		self.m_runFactor = self.m_runFactor + timeStep*k_animStandToRunBlendSpeed
+		
+		-- inc run fast factor
+		if self.m_inputRunStrength > 1.0 then
+			self.m_runFastFactor = self.m_runFastFactor + timeStep*k_animStandToRunFastBlendSpeed
+		else
+			self.m_runFastFactor = self.m_runFastFactor - timeStep*k_animStandToRunFastBlendSpeed
+		end
+		
+	else
+		self.m_runFactor = self.m_runFactor - timeStep*k_animRunToStandBlendSpeed
+		self.m_runFastFactor = self.m_runFastFactor - timeStep*k_animStandToRunFastBlendSpeed
+	end
+	
+	-- clamp from 0 to 1
+	if self.m_runFactor >= 1.0 then
+		self.m_runFactor = 1.0	
+	elseif self.m_runFactor <= 0.0 then
+		self.m_runFactor = 0.0
+		self:setPlayerState(k_playerStateStand)
+		return
+	end
+	
+	if self.m_runFastFactor >= 1.0 then
+		self.m_runFastFactor = 1.0
+	elseif self.m_runFastFactor <= 0.0 then
+		self.m_runFastFactor = 0.0
+		self:setPlayerState(k_playerStateRun)
+		return
+	end
+	
+	-- rotate character to move
+	if self.m_inputRunStrength > 1.0 then
+		self:rotatePlayerToVector(self.m_currentRunVector, 0.6)
+	else
+		self:rotatePlayerToFront(0.6)
+	end
+		
+	-- move character
+	local posX, posY, posZ = getObjectPosition(self.m_gameObject)
+	posX = posX + self.m_runFactor*self.m_currentRunVector.X*timeStep*k_runFastSpeed
+	posY = posY + self.m_runFactor*self.m_currentRunVector.Y*timeStep*k_runFastSpeed
+	posZ = posZ + self.m_runFactor*self.m_currentRunVector.Z*timeStep*k_runFastSpeed	
+	
+	setObjectPosition(self.m_gameObject, posX, posY, posZ)
+		
 end
 
 -- updatePlayerStateFlipTurn
@@ -432,13 +563,17 @@ function CPlayerComponent:updatePlayerUpBodyAimMC(timeStep)
 		
 	self.m_needRotateCharacter = true
 	
-	if self.m_inputReload == 1 then		
-		self:setUpbodyState(k_playerUpBodyReloadMC)
-	elseif self.m_inputShoot == 1 then		
-		self:setUpbodyState(k_playerUpBodyShootMC)
-	else		
-		shootActiveWeapon(self.m_weaponComp, false)
-	end	
+	-- if player is run fast, player can not reload or shoot
+	if self.m_playerState ~= k_playerStateRunFast then	
+		if self.m_inputReload == 1 then		
+			self:setUpbodyState(k_playerUpBodyReloadMC)
+		elseif self.m_inputShoot == 1 then		
+			self:setUpbodyState(k_playerUpBodyShootMC)		
+		end			
+	end
+	
+	-- do not shoot the gun
+	shootActiveWeapon(self.m_weaponComp, false)	
 end
 
 -- updatePlayerUpBodyShootMC
@@ -539,6 +674,19 @@ function CPlayerComponent:rotatePlayerToFront(rotStep)
 	setObjectLookAtPos(self.m_gameObject, lookAt.X, lookAt.Y, lookAt.Z )
 	
 	return ret[1]
+end
+
+-- rotatePlayerToVector
+-- rotate player to vector
+function CPlayerComponent:rotatePlayerToVector(vector, rotStep)
+	vector:normalize()
+	
+	local frontx, fronty, frontz = getObjectFront(self.m_gameObject)
+	local v0 = irr.core.vector3d(frontx, fronty, frontz)
+	ret = CVectorUtil.turnToDir(v0, vector, rotStep)
+	
+	local lookAt = ret[2];
+	setObjectLookAtPos(self.m_gameObject, lookAt.X, lookAt.Y, lookAt.Z )	
 end
 
 -- getAngleFromPlayerFrontToCameraView

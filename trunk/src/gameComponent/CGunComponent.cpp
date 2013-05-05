@@ -2,6 +2,12 @@
 #include "IView.h"
 #include "CGunComponent.h"
 
+#include "CZone.h"
+#include "CBulletRayComponent.h"
+
+#include "gameLevel/CGameLevel.h"
+
+
 CGunComponent::CGunComponent(CGameObject* obj, CGameConfig::SWeaponInfo* info)
 	:IObjectComponent(obj, CGameComponent::GunComponent)
 {
@@ -17,17 +23,36 @@ CGunComponent::CGunComponent(CGameObject* obj, CGameConfig::SWeaponInfo* info)
 	m_numBullets = 0;
 	m_bulletRate = 0;
 
+	m_damage = 5.0f;
+	m_damageThrowObj = false;
+	m_autoAim = false;
+
+	m_reloadTime = 5.0f;
+	m_vibrateAngle = 0.0f;
+
 	// parse info
 	std::vector<CGameConfig::SParam>::iterator i = m_info->params.begin(), end = m_info->params.end();
 	while ( i != end )
 	{
 		const char *value = i->value.c_str();
 
+		// get param
 		if ( i->name == "rateShoot" )
 			m_bulletRate = atoi( value );
 		else if ( i->name == "numBullet" )
 			m_numBullets = atoi( value );
+		else if ( i->name == "damage" )
+			m_damage = (float)atof(value);
+		else if ( i->name == "damageThrowObj" )
+			m_damageThrowObj = (atoi(value) == 1);
+		else if ( i->name == "autoAim" )
+			m_autoAim = (atoi(value) == 1);
+		else if ( i->name == "reloadTime" )
+			m_reloadTime = (float)atof(value);
+		else if ( i->name == "vibrateAngle" )	
+			m_vibrateAngle = (float)atof(value);
 
+		// next param
 		i++;
 	}
 
@@ -97,9 +122,9 @@ void CGunComponent::saveData( CSerializable* pObj )
 void CGunComponent::updateShoot()
 {
 	m_lastShootUpdate = m_lastShootUpdate + getIView()->getTimeStep();
-	float timePerBullet = 1000.0f/m_bulletRate;
+	float timePerBullet = 60000.0f/m_bulletRate;
 	
-	int nBulletShoot = core::round32(m_lastShootUpdate/timePerBullet);	
+	int nBulletShoot = core::floor32(m_lastShootUpdate/timePerBullet);	
 	
 	if ( nBulletShoot > m_currentBullets )
 		nBulletShoot = m_currentBullets;		
@@ -107,11 +132,52 @@ void CGunComponent::updateShoot()
 	if ( nBulletShoot > 0 )	
 	{
 		// todo shoot bullet
-		m_currentBullets = m_currentBullets - nBulletShoot;
-		printf("Bullets: %d\n", m_currentBullets);
+ 		m_currentBullets = m_currentBullets - nBulletShoot;		
 
 		// ....
 		// ....
+		CGameObject *owner = m_gameObject->getParent();
+		if ( owner == NULL )
+			return;
+
+		CGameObject *zone =	owner->getParent();
+		
+		if ( zone == NULL || zone->getObjectType() != CGameObject::ZoneObject )
+			return;
+
+		CGameObject *bulletMgr = ((CZone*)zone)->getBulletManager();
+		CBulletRayComponent *bulletRayComp = (CBulletRayComponent*)bulletMgr->getComponent(CGameComponent::BulletRayComponent);
+		
+		// get camera ray
+		CGameCamera* cam = CGameLevel::getCurrentLevel()->getCamera();
+		core::line3df ray;
+		ray.start = cam->getPosition();
+		
+		core::vector3df baseDirection = (cam->getTarget() - ray.start).normalize();
+
+		for (int i = 0; i < nBulletShoot; i++)
+		{
+			core::vector3df d = baseDirection;
+
+			// rotate vibrate
+			float n = (rand()%1000)<500?1.0f:-1.0f;
+			float f = n*(rand()%1000)/1000.0f;
+			d.rotateXYBy(f * m_vibrateAngle);
+
+			n = (rand()%1000)<500?1.0f:-1.0f;
+			f = n*(rand()%1000)/1000.0f;
+			d.rotateYZBy(f * m_vibrateAngle);
+
+			n = (rand()%1000)<500?1.0f:-1.0f;
+			f = n*(rand()%1000)/1000.0f;
+			d.rotateXZBy(f * m_vibrateAngle);			
+			
+			// finish calc ray
+			ray.end = ray.start + d*50000.0f;
+
+			// shoot bullet
+			bulletRayComp->addBulletRay(ray, m_damage, m_damageThrowObj, m_gameObject, owner);
+		}
 
 		// ....
 
@@ -119,14 +185,13 @@ void CGunComponent::updateShoot()
 		m_lastShootUpdate = m_lastShootUpdate - nBulletShoot*timePerBullet;		
 		
 		// set muzzle
-		m_muzzleTime = 1000.0f/24.0f;
+		m_muzzleTime = 100.0f;
 		m_muzzleScale = 1.0f + ((rand()%999)/999.0f)*1.0f;
 	}
 	
 	if ( m_currentBullets == 0 )
 	{
-		// todo null bullet :(
-		printf("No Bullets\n");
+		// todo no bullet :(
 	}
 
 }

@@ -15,7 +15,7 @@ class CNetworkPlayerComponent;
 class CPlayerComponent: 
     public CBasePlayerState,
 	public IObjectComponent,
-	public IEventReceiver	
+	public IEventReceiver
 {
 public:	
 
@@ -24,6 +24,7 @@ protected:
 	int		m_charID;
 	bool	m_init;
 
+	bool	m_isTestPlayer;
 public:
 	CPlayerComponent(CGameObject* obj);
 	virtual ~CPlayerComponent();
@@ -60,6 +61,11 @@ public:
 	inline void setCharacterID(int id)
 	{
 		m_charID = id;
+	}
+
+	inline void setTestPlayer(bool b)
+	{
+		m_isTestPlayer = b;
 	}
 
 protected:

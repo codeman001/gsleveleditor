@@ -1,11 +1,6 @@
 #include "stdafx.h"
 #include "CBaseGameMatch.h"
 
-#include "gameComponent/CPlayerComponent.h"
-#include "gameComponent/CSpawnPointComponent.h"
-#include "gameComponent/CWeaponComponent.h"
-
-#include "gameLevel/CGameLevel.h"
 #include "gameState/CGameStateManager.h"
 #include "gameState/CStateIGM.h"
 

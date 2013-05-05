@@ -12,6 +12,7 @@ class CZone: public CContainerObject
 {
 protected:
 	ArrayGameObject						m_terrains;
+	ArrayGameObject						m_collideObjs;
 	ArrayGameObject						m_triggerObjects;
 
 #if defined(GSGAMEPLAY)
@@ -109,6 +110,21 @@ public:
 	inline ArrayGameObject& getTerrainList()
 	{
 		return m_terrains;
+	}
+
+	// registerCollideObj
+	// add obj to collide list
+	void registerCollideObj( CGameObject *pObj );
+
+	// unRegisterCollideObj
+	// remove obj from collide terrain
+	void unRegisterCollideObj( CGameObject *pObj );
+
+	// getCollideObjsList
+	// get all obj have box collide
+	inline ArrayGameObject& getCollideObjsList()
+	{
+		return m_collideObjs;
 	}
 #endif
 

@@ -19,10 +19,17 @@ CPlayerComponent::CPlayerComponent(CGameObject* obj)
 {	
 	m_collada	= NULL;
 	m_init		= true;
+
+	m_isTestPlayer = false;
 }
 
 CPlayerComponent::~CPlayerComponent()
 {
+	// unregister collide obj
+	CGameObject *zone = (CGameObject*)m_gameObject->getParent();
+	if ( zone && zone->getObjectType() == CGameObject::ZoneObject )	
+		((CZone*)zone)->unRegisterCollideObj( m_gameObject);
+
 	// unregister event
 	getIView()->unRegisterEvent( this );
 }
@@ -59,6 +66,17 @@ void CPlayerComponent::initComponent()
 	char luaObjName[64];
 	sprintf(luaObjName, "CPlayerComp_%ld", m_gameObject->getID());
 	m_luaObjName = luaObjName;
+
+	// init collision
+	ISceneManager *smgr = getIView()->getSceneMgr();
+	ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox(m_gameObject->getSceneNode());
+	m_gameObject->getSceneNode()->setTriangleSelector(selector);
+	selector->drop();
+
+	CGameObject *zone = (CGameObject*)m_gameObject->getParent();
+	if ( zone && zone->getObjectType() == CGameObject::ZoneObject )	
+		((CZone*)zone)->registerCollideObj( m_gameObject);
+		
 }
 
 // update
@@ -136,7 +154,7 @@ void CPlayerComponent::unpackDataMultiplayer(CDataPacket *packet)
 // cache event
 bool CPlayerComponent::OnEvent(const SEvent& irrEvent)
 {
-	if ( irrEvent.EventType == EET_GAME_EVENT && m_gameObject->isNetworkController() == false )
+	if ( irrEvent.EventType == EET_GAME_EVENT && m_gameObject->isNetworkController() == false && m_isTestPlayer == false )
 	{
 		if ( irrEvent.GameEvent.EventID == EvtPlayerMove )
 		{

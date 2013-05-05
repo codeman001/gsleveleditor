@@ -4,6 +4,11 @@
 #include "IGameMatch.h"
 #include "gameControl/CGameControl.h"
 
+#include "gameComponent/CPlayerComponent.h"
+#include "gameComponent/CSpawnPointComponent.h"
+#include "gameComponent/CWeaponComponent.h"
+#include "gameLevel/CGameLevel.h"
+
 class CBaseGameMatch: public IGameMatch
 {
 protected:

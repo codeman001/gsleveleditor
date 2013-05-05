@@ -17,6 +17,8 @@ CEllipsoidCollisionComponent::CEllipsoidCollisionComponent( CGameObject *pObj )
 	
 	m_ellipsoidRadius	= core::vector3df(50,90,80);	// right, up, front
 	m_translation		= core::vector3df(0,-90,0);
+
+	m_callback			= NULL;
 }
 
 CEllipsoidCollisionComponent::~CEllipsoidCollisionComponent()
@@ -104,6 +106,26 @@ void CEllipsoidCollisionComponent::updateComponent()
 				
 				itTerrain++;
 			}
+
+
+			// loop all collide object
+			ArrayGameObject& objs = z->getCollideObjsList();
+			ArrayGameObject::iterator itObj = objs.begin(), itObjEnd = objs.end();
+			while ( itObj != itObjEnd )
+			{
+				CGameObject *gameObj = ((CGameObject*) *itObj);
+				if ( gameObj != m_gameObject && gameObj->getSceneNode() )
+				{
+					ITriangleSelector *tri = gameObj->getSceneNode()->getTriangleSelector();
+					if ( tri )
+					{
+						collideTest( tri );
+					}
+				}
+
+				itObj++;
+			}
+
 		}
 
 	}
@@ -183,7 +205,15 @@ void CEllipsoidCollisionComponent::initFromBBox()
 {
 	core::aabbox3df box = m_gameObject->getSceneNode()->getBoundingBox();
 
-	m_ellipsoidRadius.X = (box.MaxEdge.X - box.MinEdge.X)/2;
-	m_ellipsoidRadius.Y = (box.MaxEdge.Y - box.MinEdge.Y)/2;
-	m_ellipsoidRadius.Z = (box.MaxEdge.Z - box.MinEdge.Z)/2;
+	if ( m_callback )
+		m_callback->_onUpdateEllipsoidBoundingBox(box);
+
+	m_ellipsoidRadius.X = (box.MaxEdge.X - box.MinEdge.X)*0.8f;
+	m_ellipsoidRadius.Y = (box.MaxEdge.Y - box.MinEdge.Y)*0.5f;
+	m_ellipsoidRadius.Z = (box.MaxEdge.Z - box.MinEdge.Z)*0.8f;
+	
+	if ( m_ellipsoidRadius.X < m_ellipsoidRadius.Z )
+		m_ellipsoidRadius.X = m_ellipsoidRadius.Z;
+	else
+		m_ellipsoidRadius.Z = m_ellipsoidRadius.X;
 }

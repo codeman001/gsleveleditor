@@ -164,7 +164,9 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	const int KeyLeft	= SHIFTBIT(2);
 	const int KeyRight	= SHIFTBIT(3);
 	const int KeyBack	= SHIFTBIT(4);
-	const int KeyFire	= SHIFTBIT(5);    
+	const int KeyFire	= SHIFTBIT(5);
+	const int KeyRunFast= SHIFTBIT(6);
+	const int KeyReload	= SHIFTBIT(7);
     
 	if ( event.KeyInput.PressedDown )
 	{
@@ -177,7 +179,11 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 		else if (  key == irr::KEY_RIGHT || key == irr::KEY_KEY_D )
 			m_keyActionBit |= KeyRight;
 		else if (  key == irr::KEY_SPACE )
-			m_keyActionBit |= KeyFire;        
+			m_keyActionBit |= KeyFire;
+		else if (  key == irr::KEY_SHIFT || key == irr::KEY_LSHIFT )
+			m_keyActionBit |= KeyRunFast;
+		else if (  key == irr::KEY_KEY_R )
+			m_keyActionBit |= KeyReload;
 	}		
 	else
 	{     
@@ -190,7 +196,11 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 		else if (  key == irr::KEY_RIGHT || key == irr::KEY_KEY_D )
 			m_keyActionBit &= ~KeyRight;
 		else if (  key == irr::KEY_SPACE )
-			m_keyActionBit &= ~KeyFire;        
+			m_keyActionBit &= ~KeyFire;
+		else if (  key == irr::KEY_SHIFT || key == irr::KEY_LSHIFT )
+			m_keyActionBit &= ~KeyRunFast;
+		else if (  key == irr::KEY_KEY_R )
+			m_keyActionBit &= ~KeyReload;
 	}
 
 	// update move
@@ -199,7 +209,9 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	bool runLeft	= false;
 	bool runRight	= false;    
     bool shoot		= false;
-    
+    bool runFast	= false;
+	bool reload		= false;
+
 	// calc rotation
 	if ( (m_keyActionBit & KeyLeft) != 0 )
 	{
@@ -228,6 +240,12 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
     if ( (m_keyActionBit & KeyFire) != 0 )
         shoot = true;
     
+	if ( (m_keyActionBit & KeyRunFast) != 0 )
+		runFast = true;
+
+	if ( (m_keyActionBit & KeyReload) != 0 )
+		reload = true;
+
 	// calc player rotation
 	float rot = 0.0f;
 	if ( runLeft )
@@ -256,8 +274,14 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
 	bool runCommand = runUp || runBack || runLeft || runRight;	
     
 	// send event to player component
-	if ( runCommand )		
-		sendPlayerRunEvent( 1.0f, rot );		
+	if ( runCommand )
+	{
+		float strength = 1.0f;
+		if ( runFast )
+			strength = 2.0f;
+
+		sendPlayerRunEvent( strength, rot );
+	}
 	else
 		sendPlayerStopEvent();
 
@@ -265,8 +289,10 @@ bool CGameControl::handleKeyEvent(const SEvent& event)
     if ( shoot )
         sendPlayerCommand(true, false);
     else
-        sendPlayerCommand(false, false);
-    
+	{
+        sendPlayerCommand(false, reload);
+	}
+
 	return true;
 }
 

@@ -91,7 +91,55 @@ void CBulletRayComponent::updateBulletCollision(SBulletRay& bullet)
 
 	if ( objs.size() > 0 )
 	{
-		
+		ArrayGameObject::iterator iObj = objs.begin(), iEnd = objs.end();
+		while ( iObj != iEnd )
+		{
+			CGameObject *obj = (CGameObject*)(*iObj);
+			CColladaMeshComponent *collada = (CColladaMeshComponent*)obj->getComponent(IObjectComponent::ColladaMesh);
+			
+			if ( collada )
+			{
+				ISceneNode* root =  collada->getSceneNode("BoneRoot");
+				
+				std::queue<ISceneNode*> bones;
+				core::list<ISceneNode*>::ConstIterator i = root->getChildren().begin(), 
+					end = root->getChildren().end();
+				
+				while ( i != end )
+				{
+					bones.push((*i));
+					i++;
+				}
+				
+				std::vector<ISceneNode*> bonesHit;
+
+				while ( bones.size() > 0 )
+				{
+					// get the first bone
+					ISceneNode* b = bones.front();
+					bones.pop();
+
+					if ( b->getTransformedBoundingBox().intersectsWithLine(bullet.ray) )					
+						bonesHit.push_back(b);
+
+					// continue check the children
+					i = b->getChildren().begin();
+					end = b->getChildren().end();
+					while ( i != end )
+					{
+						bones.push((*i));
+						i++;
+					}
+				}
+
+				if ( bonesHit.size() > 0 )
+				{
+					// implement from heal component
+
+				}
+			}
+			iObj++;
+		}
 	}
 
 	if ( level->checkTerrainCollide( bullet.ray, outPoint, outTri) == true )

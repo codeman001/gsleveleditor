@@ -905,6 +905,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\gameComponent\CHealthComponent.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\gameComponent\CHealthComponent.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\gameComponent\CLifeTimeComponent.cpp"
 					>
 				</File>

@@ -126,7 +126,8 @@ void CGameCameraFollowAnimator::animateNode(ISceneNode* node, u32 timeMs)
 	{
 		target = m_staticTarget;
 	}
-
+	
+	core::vector3df objPos = target;
 	core::vector3df pos = core::vector3df(0,0, m_radius );
 
 	core::matrix4 mat;
@@ -144,7 +145,7 @@ void CGameCameraFollowAnimator::animateNode(ISceneNode* node, u32 timeMs)
 
 	// need check camera collision with another object
 	core::vector3df	colPos;
-	if ( checkCollide(target, pos, colPos ) == true )
+	if ( checkCollide(objPos, pos, colPos ) == true )
 	{
 		pos = colPos;
 	}

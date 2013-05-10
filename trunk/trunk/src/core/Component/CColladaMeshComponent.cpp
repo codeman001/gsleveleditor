@@ -702,6 +702,11 @@ void CColladaMeshComponent::setCrossFadeAnimation(const char *lpAnimName, int tr
 
 		// todo add animation key
 		SColladaNodeAnim* anim = animClip->getAnimOfSceneNode( nodeName.c_str() );
+		if ( anim == NULL )
+		{
+			std::string name = nodeName + "-node";
+			anim = animClip->getAnimOfSceneNode( name.c_str() );
+		}
 
 		if ( anim )
 		{			

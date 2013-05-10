@@ -777,6 +777,10 @@ public:
 		AnimationMatrix = mat;
 		LocalMatrix = mat;
 
+		LocalPosition = mat.getTranslation();
+		LocalScale = mat.getScale();
+		LocalRotation = core::quaternion(mat);
+
 		UseLocalMatrix = true;
 	}
 	

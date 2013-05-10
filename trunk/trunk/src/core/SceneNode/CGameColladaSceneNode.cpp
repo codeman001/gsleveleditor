@@ -1260,7 +1260,7 @@ void CGameColladaSceneNode::updateAnimation()
         if ( m_gameAnimation[i].isEnable() == false )
             continue;
 
-		if ( UseLocalMatrix )
+		if ( UseLocalMatrix && m_gameAnimation[i].isHaveAnim() == false )
 		{
 			// no animation
 			AnimationMatrixLayer[i] = LocalMatrix;			
@@ -1350,15 +1350,13 @@ void CGameColladaSceneNode::updateAnimation()
 			m1[11] *= scale.Z;		
 
 			// update current relative matrix
-			AnimationMatrixLayer[i] = mat;
-		
-			core::vector3df rot = mat.getRotationDegrees();
+			AnimationMatrixLayer[i] = mat;		
 
 			// translate collada mesh node
-			if ( ColladaMesh )
-			{
-				AnimationMatrixLayer[i] *= ColladaMesh->InvBindShapeMatrix;
-			}
+			//if ( ColladaMesh )
+			//{
+			//	AnimationMatrixLayer[i] *= ColladaMesh->InvBindShapeMatrix;
+			//}
 		}
 
     }

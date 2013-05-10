@@ -13,8 +13,19 @@ void CAddObjectController::initController()
 	wchar_t *currentTemplate = pView->getCurrentObjectTemplate();
 	
 	CGameObject *p = CObjTemplateFactory::getGameObject( currentTemplate );
-	if ( p )
-		p->setVisible( true );
+	
+	if ( p == NULL )
+	{				
+		// create game object
+		p = CObjTemplateFactory::spawnObject(currentTemplate );
+		p->setObjectState( CGameObject::Move );
+		CObjTemplateFactory::addTemplateObject( p );
+
+		// reset template
+		getIView()->setCurrentObjectTemplate(currentTemplate);
+	}
+	
+	p->setVisible( true );
 
 	// init first
 	onMouseMove( pView->m_mouseX, pView->m_mouseY );

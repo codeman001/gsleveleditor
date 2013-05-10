@@ -242,6 +242,9 @@ bool CDocument::readDocumentFromData( char *lpData )
 					// create zone
 					currentZone = (CZone*)createZone();
 					currentZone->updateData( &objData );
+					
+					// set current zone
+					getIView()->setCurrentZone(currentZone);
 				}
 				else if ( strcmp( objType, strOfType( CGameObject::WaypointObject ) ) == 0 )
 				{
@@ -528,6 +531,15 @@ void CDocument::selectObject( int mouseX, int mouseY, bool isControlHold )
 	if ( selectedSceneNode )
 	{
 		CGameObject *pObj =	searchObject( selectedSceneNode->getID() );
+		
+		// try find parent
+		while ( pObj == NULL )
+		{
+			selectedSceneNode = selectedSceneNode->getParent();
+			if ( selectedSceneNode == NULL )
+				break;
+			pObj = searchObject( selectedSceneNode->getID() );
+		}
 
 		// add to select list
 		if ( pObj && pObj->isVisible() )

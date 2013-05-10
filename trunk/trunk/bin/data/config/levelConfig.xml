@@ -1,6 +1,7 @@
 <levelConfig>
 	<match type="SoloMode">
 		<level name="Test level1" des="TXT_DES_LEVEL1" resource="data/level/levelGameM1.lv" thumbnail=""/>
+		<level name="Test level2" des="TXT_DES_LEVEL2" resource="data/level/levelGameM2.lv" thumbnail=""/>
 	</match>
 	
 	<match type="TeamMode">

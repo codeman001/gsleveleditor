@@ -1172,7 +1172,7 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 			else if ( xmlRead->getNodeName() == matrixNodeName)
 			{
 				// mull matix
-				pNode->Transform *= readMatrixNode(xmlRead, m_needFlip);				
+				pNode->Transform *= readMatrixNode(xmlRead, m_needFlip);
 			}
 			else if ( xmlRead->getNodeName() == instanceGeometrySectionName )
 			{
@@ -1185,12 +1185,15 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 				// <instance_controller url="#MESHNAME">
 
 				// move to root
-				std::vector<SNodeParam*>::iterator i = std::find(pNode->Parent->Childs.begin(), pNode->Parent->Childs.end(), pNode);
-				if ( i != pNode->Parent->Childs.end() )
-					pNode->Parent->Childs.erase(i);
+				if ( pNode->Parent )
+				{
+					std::vector<SNodeParam*>::iterator i = std::find(pNode->Parent->Childs.begin(), pNode->Parent->Childs.end(), pNode);
+					if ( i != pNode->Parent->Childs.end() )
+						pNode->Parent->Childs.erase(i);
 
-				pNode->ChildLevel = 0;
-				pNode->Parent = NULL;
+					pNode->ChildLevel = 0;
+					pNode->Parent = NULL;
+				}
 
 				// get skin mesh url
 				pNode->Instance = xmlRead->getAttributeValue(L"url");
@@ -2179,7 +2182,11 @@ void CDaeUtils::constructSkinMesh( SMeshParam *meshParam, CGameColladaMesh *mesh
 		uiString::copy<char, const wchar_t>( sidName, joint.Name.c_str() );
 		newJoint.name = joint.Name;
 		newJoint.node = m_component->getSceneNodeBySID( sidName );
-		
+		if ( newJoint.node == NULL )
+			newJoint.node = m_component->getSceneNode(sidName);				
+
+		assert(newJoint.node != NULL);
+
 		newJoint.bbBox		= joint.BBox;
 		newJoint.haveBBox	= joint.HaveBBox;
 

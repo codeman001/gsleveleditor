@@ -1,0 +1,253 @@
+Game
+{
+	Game level
+	{
+		gridGame: false | boolType;
+		gridSize: 20 | intType;
+		cameraX: -1652.9259033 | floatType;
+		cameraY: 1935.2976074 | floatType;
+		cameraZ: -1798.2955322 | floatType;
+		cameraTargetX: -2049.9362793 | floatType;
+		cameraTargetY: -722.4304199 | floatType;
+		cameraTargetZ: -220.2358398 | floatType;
+		numberObjects: 10 | intType;
+	}
+}
+zone_2
+{
+	Zone Object
+	{
+		objectID: 2 | longType;
+		objectType: Zone Object | stringType;
+		objectName: zone1 | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+	}
+}
+object_3
+{
+	Game object
+	{
+		objectID: 3 | longType;
+		parentID: 2 | longType;
+		objectType: Game Object | stringType;
+		objectName: LevelGameM2_3 | stringType;
+		objectTemplate: LevelGameM2 | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: true | boolType;
+		positionX: 0.0000000 | floatType;
+		positionY: 0.0000000 | floatType;
+		positionZ: 0.0000000 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 254.0000000 | floatType;
+		scaleY: 254.0000000 | floatType;
+		scaleZ: 254.0000000 | floatType;
+	}
+}
+object_4
+{
+	Game object
+	{
+		objectID: 4 | longType;
+		parentID: 2 | longType;
+		objectType: Game Object | stringType;
+		objectName: SpawnPoint_4 | stringType;
+		objectTemplate: SpawnPoint | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: -3931.6418457 | floatType;
+		positionY: -12.3193054 | floatType;
+		positionZ: 1814.0576172 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_5
+{
+	Game object
+	{
+		objectID: 5 | longType;
+		parentID: 2 | longType;
+		objectType: Game Object | stringType;
+		objectName: SpawnPoint_5 | stringType;
+		objectTemplate: SpawnPoint | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: -458.7465820 | floatType;
+		positionY: 9.8742676 | floatType;
+		positionZ: 1703.2657471 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_6
+{
+	Game object
+	{
+		objectID: 6 | longType;
+		parentID: 2 | longType;
+		objectType: Game Object | stringType;
+		objectName: SpawnPoint_6 | stringType;
+		objectTemplate: SpawnPoint | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: 1844.0708008 | floatType;
+		positionY: 9.8742676 | floatType;
+		positionZ: 1708.6556396 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_7
+{
+	Game object
+	{
+		objectID: 7 | longType;
+		parentID: 2 | longType;
+		objectType: Game Object | stringType;
+		objectName: SpawnPoint_7 | stringType;
+		objectTemplate: SpawnPoint | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: 3389.3974609 | floatType;
+		positionY: 9.8742676 | floatType;
+		positionZ: -1523.5842285 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_8
+{
+	Game object
+	{
+		objectID: 8 | longType;
+		parentID: 2 | longType;
+		objectType: Game Object | stringType;
+		objectName: SpawnPoint_8 | stringType;
+		objectTemplate: SpawnPoint | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: 3218.3728027 | floatType;
+		positionY: -12.3193054 | floatType;
+		positionZ: 2143.1286621 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_9
+{
+	Game object
+	{
+		objectID: 9 | longType;
+		parentID: 2 | longType;
+		objectType: Game Object | stringType;
+		objectName: SpawnPoint_9 | stringType;
+		objectTemplate: SpawnPoint | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: -1814.9337158 | floatType;
+		positionY: 9.8742676 | floatType;
+		positionZ: -1460.1749268 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_10
+{
+	Game object
+	{
+		objectID: 10 | longType;
+		parentID: 2 | longType;
+		objectType: Game Object | stringType;
+		objectName: SpawnPoint_10 | stringType;
+		objectTemplate: SpawnPoint | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: -3669.5634766 | floatType;
+		positionY: -12.3193054 | floatType;
+		positionZ: -2071.1943359 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_11
+{
+	Trigger Object
+	{
+		scriptFile: levelGameM2.lua | filePathType;
+		onAlways:  | stringType;
+		onWhileIn:  | stringType;
+		onWhileOut:  | stringType;
+		onEnder:  | stringType;
+		onExit:  | stringType;
+		onEnable: triggerInitLevel_enable | stringType;
+		onDisable:  | stringType;
+	}
+	Game object
+	{
+		objectID: 11 | longType;
+		parentID: 2 | longType;
+		objectType: Trigger Object | stringType;
+		objectName: trigger_11 | stringType;
+		objectTemplate:  | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: true | boolType;
+		lock: false | boolType;
+		positionX: -2000.4970703 | floatType;
+		positionY: 812.5947876 | floatType;
+		positionZ: -1251.8770752 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 36.0271187 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 26.5978870 | floatType;
+	}
+}

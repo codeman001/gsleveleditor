@@ -56,14 +56,6 @@ void readTemplateFromData( char *lpData )
 			}
 			
 			CObjTemplateFactory::addTemplate( &obj );
-
-#ifdef GSEDITOR
-			// create game object
-			CGameObject *pObj = CObjTemplateFactory::spawnObject( lpString );
-			pObj->setObjectState( CGameObject::Move );
-			CObjTemplateFactory::addTemplateObject( pObj );
-#endif
-
 		}
 		else if ( *p == '}' )
 		{

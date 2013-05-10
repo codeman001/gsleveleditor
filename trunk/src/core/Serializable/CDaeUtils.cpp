@@ -2185,7 +2185,9 @@ void CDaeUtils::constructSkinMesh( SMeshParam *meshParam, CGameColladaMesh *mesh
 		if ( newJoint.node == NULL )
 			newJoint.node = m_component->getSceneNode(sidName);				
 
+#if defined(GSANIMATION) || defined(GSEDITOR)
 		assert(newJoint.node != NULL);
+#endif
 
 		newJoint.bbBox		= joint.BBox;
 		newJoint.haveBBox	= joint.HaveBBox;

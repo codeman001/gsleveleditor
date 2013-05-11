@@ -4,13 +4,13 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: -1652.9259033 | floatType;
-		cameraY: 1935.2976074 | floatType;
-		cameraZ: -1798.2955322 | floatType;
-		cameraTargetX: -2049.9362793 | floatType;
-		cameraTargetY: -722.4304199 | floatType;
-		cameraTargetZ: -220.2358398 | floatType;
-		numberObjects: 10 | intType;
+		cameraX: -2683.0144043 | floatType;
+		cameraY: 3018.0815430 | floatType;
+		cameraZ: -2262.0468750 | floatType;
+		cameraTargetX: -1628.3956299 | floatType;
+		cameraTargetY: 1984.5710449 | floatType;
+		cameraTargetZ: 2124.7373047 | floatType;
+		numberObjects: 12 | intType;
 	}
 }
 zone_2
@@ -62,7 +62,7 @@ object_4
 		lighting: false | boolType;
 		lock: false | boolType;
 		positionX: -3931.6418457 | floatType;
-		positionY: -12.3193054 | floatType;
+		positionY: 15.0009079 | floatType;
 		positionZ: 1814.0576172 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
@@ -86,7 +86,7 @@ object_5
 		lighting: false | boolType;
 		lock: false | boolType;
 		positionX: -458.7465820 | floatType;
-		positionY: 9.8742676 | floatType;
+		positionY: 9.8742523 | floatType;
 		positionZ: 1703.2657471 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
@@ -110,7 +110,7 @@ object_6
 		lighting: false | boolType;
 		lock: false | boolType;
 		positionX: 1844.0708008 | floatType;
-		positionY: 9.8742676 | floatType;
+		positionY: 9.8742523 | floatType;
 		positionZ: 1708.6556396 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
@@ -158,7 +158,7 @@ object_8
 		lighting: false | boolType;
 		lock: false | boolType;
 		positionX: 3218.3728027 | floatType;
-		positionY: -12.3193054 | floatType;
+		positionY: 15.0009079 | floatType;
 		positionZ: 2143.1286621 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
@@ -182,7 +182,7 @@ object_9
 		lighting: false | boolType;
 		lock: false | boolType;
 		positionX: -1814.9337158 | floatType;
-		positionY: 9.8742676 | floatType;
+		positionY: 9.8742523 | floatType;
 		positionZ: -1460.1749268 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
@@ -205,9 +205,9 @@ object_10
 		visible: true | boolType;
 		lighting: false | boolType;
 		lock: false | boolType;
-		positionX: -3669.5634766 | floatType;
-		positionY: -12.3193054 | floatType;
-		positionZ: -2071.1943359 | floatType;
+		positionX: -2758.7604980 | floatType;
+		positionY: 9.8742676 | floatType;
+		positionZ: -1623.8343506 | floatType;
 		rotationX: 0.0000000 | floatType;
 		rotationY: 0.0000000 | floatType;
 		rotationZ: 0.0000000 | floatType;
@@ -249,5 +249,40 @@ object_11
 		scaleX: 36.0271187 | floatType;
 		scaleY: 1.0000000 | floatType;
 		scaleZ: 26.5978870 | floatType;
+	}
+}
+object_13
+{
+	Light Object
+	{
+		lightingType: 1 | intType;
+		diffuseColor: ffffff | stringType;
+		specularColor: ffffff | stringType;
+		strength: 1.0000000 | floatType;
+		radius: 100.0000000 | floatType;
+		directionX: -1160.5405273 | floatType;
+		directionY: 1261.7407227 | floatType;
+		directionZ: 148.2325439 | floatType;
+	}
+	Game object
+	{
+		objectID: 13 | longType;
+		parentID: 2 | longType;
+		objectType: Light Object | stringType;
+		objectName: light_13 | stringType;
+		objectTemplate:  | stringType;
+		enable: true | boolType;
+		visible: true | boolType;
+		lighting: false | boolType;
+		lock: false | boolType;
+		positionX: -2920.9765625 | floatType;
+		positionY: 2618.0158691 | floatType;
+		positionZ: 543.9229736 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 1.0000000 | floatType;
+		scaleY: 1.0000000 | floatType;
+		scaleZ: 1.0000000 | floatType;
 	}
 }

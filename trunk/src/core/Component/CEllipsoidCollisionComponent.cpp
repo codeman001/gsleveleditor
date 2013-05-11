@@ -37,6 +37,7 @@ void CEllipsoidCollisionComponent::initComponent()
 void CEllipsoidCollisionComponent::updateComponent()
 {	
 #ifdef GSGAMEPLAY
+	return;
 	initFromBBox();
 
 	CGameLevel *level =	CGameLevel::getCurrentLevel();

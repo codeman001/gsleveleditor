@@ -93,7 +93,7 @@ CGameObject* CBaseGameMatch::spawn3rdPlayer()
 
 	// set character id
 	CPlayerComponent *playerCmp = (CPlayerComponent*)obj->getComponent(CGameComponent::PlayerComponent);
-	playerCmp->setCharacterID(0);
+	playerCmp->setCharacterID(1);
 
 	// load model + anim
 	obj->initComponent();

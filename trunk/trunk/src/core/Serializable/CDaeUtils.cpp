@@ -1105,7 +1105,7 @@ SNodeParam* CDaeUtils::parseNode( io::IXMLReader *xmlRead, SNodeParam* parent )
 	if ( m_colladaRoot == NULL )
 	{
 		m_colladaRoot = new SNodeParam();
-		m_colladaRoot->Name = L"ColladaRoot";
+		m_colladaRoot->Name = L"BoneRoot";
 		m_colladaRoot->ChildLevel = 0;
 
 		m_colladaRoot->Parent = NULL;

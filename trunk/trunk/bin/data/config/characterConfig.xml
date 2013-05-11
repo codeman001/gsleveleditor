@@ -12,4 +12,11 @@
 			<node name="l5_downs_hawaii-node" distance="50000"/> 	<!-- 500m -->
 		</lods>
 	</character>
+	<character>
+		<name>Test Character</name>
+		<model>data/mesh/character/hero/a_rev_male_1/a_rev_male_1.scene</model>
+		<anim>data/mesh/character/hero/us_hawaii/us_hawaii.anim</anim>
+		<lods>			
+		</lods>
+	</character>	
 </characterConfig>

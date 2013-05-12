@@ -351,6 +351,13 @@ public:
 	void loadData( CSerializable* pObj );
 
 public:
+	// createCollision
+	// it will create a obj with nav mesh
+	CGameObject* createCollisionObject();
+
+	// initCollision
+	void createCollision(CColladaMeshComponent *base);
+public:
 
 	// saveSceneToBinary
 	// save collada mesh info to binary file

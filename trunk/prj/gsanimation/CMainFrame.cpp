@@ -73,6 +73,9 @@ int CMainFrame::create(LPWSTR lpTitle, int x, int y, int w, int h, uiWindow* pPa
 
 		uiToolbarButton *toolbarButton = pToolbar->addButton(L"Save scene", 1);
 		toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarSaveScene>( this );
+	
+		toolbarButton = pToolbar->addButton(L"Save collision", 1);
+		toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarSaveCollision>( this );
 
 		toolbarButton = pToolbar->addButton(L"Save animation", 1);	
 		toolbarButton->setEventOnClicked<CMainFrame, &CMainFrame::toolbarSaveAnim>( this );
@@ -369,6 +372,47 @@ void CMainFrame::toolbarSaveAnim( uiObject *pSender )
 	//WCHAR title[1024];
 	//swprintf(title, 1024, L"%s - %s", STR_APP_TITLE, lpPath);
 	//setCaption( title );
+}
+
+void CMainFrame::toolbarSaveCollision( uiObject *pSender )
+{
+	WCHAR lpPath[ MAX_PATH ] = {0};	
+	char lpFileName[ MAX_PATH ] = {0};
+
+	if ( m_currentCollisionFile.size() == 0 )
+	{
+		uiSaveOpenDialog dialog;	
+		dialog.clearAllFileExt();
+		dialog.addFileExt( L"Collision Scene (.scene)", L"*.scene");
+		dialog.addFileExt( L"All files (.*)", L"*.*" );
+		if ( dialog.doModal( uiApplication::getRoot(), true ) == false )
+			return;
+
+		dialog.getFileName( lpPath );
+		uiString::copy<char, WCHAR>( lpFileName, lpPath );
+		
+		// save binary file
+		CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
+		
+		// create collision obj & save
+		CGameObject *obj = colladaComponent->createCollisionObject();
+		CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent(IObjectComponent::ColladaMesh);
+		comp->saveSceneToBinary(lpFileName);
+		delete obj;
+
+		m_currentCollisionFile = lpFileName;
+	}
+	else
+	{
+		// save binary file
+		CColladaMeshComponent* colladaComponent = m_irrWin->getAnimComponent();
+		
+		// create collision obj & save
+		CGameObject *obj = colladaComponent->createCollisionObject();
+		CColladaMeshComponent *comp = (CColladaMeshComponent*)obj->getComponent(IObjectComponent::ColladaMesh);
+		comp->saveSceneToBinary( m_currentCollisionFile.c_str() );
+		delete obj;
+	}
 }
 
 bool CMainFrame::doExportMode()

@@ -41,6 +41,7 @@ protected:
 	
 	string	m_currentFile;
 	string	m_currentAnimFile;
+	string	m_currentCollisionFile;
 
 public:
 
@@ -78,6 +79,7 @@ public:
 	void listPropertyOnItemEdit( uiObject *pSender );
 
 	void toolbarSaveScene( uiObject *pSender );
+	void toolbarSaveCollision( uiObject *pSender );
 	void toolbarSaveAnim( uiObject *pSender );
 	void toolbarLoadMesh( uiObject *pSender );
 	void toolbarLoadAnimDae( uiObject *pSender );

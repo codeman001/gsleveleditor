@@ -76,9 +76,26 @@ LevelGameM2
 		scaleY: 254.0000000 | floatType;
 		scaleZ: 254.0000000 | floatType;
 	}
+}
+LevelGameM2Col
+{
+	Collada mesh component
+	{
+		meshFile: data/mesh/environment/levelGameM2/asia_mall_col.scene | filePathType;
+		defaultNode:  | stringType;
+	}
+	Object transform component
+	{
+		rotateX: 0.0000000 | floatType;
+		rotateY: 0.0000000 | floatType;
+		rotateZ: 0.0000000 | floatType;
+		scaleX: 254.0000000 | floatType;
+		scaleY: 254.0000000 | floatType;
+		scaleZ: 254.0000000 | floatType;
+	}
 	Terrain component
 	{
-		hideTerrain: false | boolType;
+		hideTerrain: true | boolType;
 	}
 }
 Player

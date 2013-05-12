@@ -4,13 +4,13 @@ Game
 	{
 		gridGame: false | boolType;
 		gridSize: 20 | intType;
-		cameraX: -2683.0144043 | floatType;
-		cameraY: 3018.0815430 | floatType;
-		cameraZ: -2262.0468750 | floatType;
-		cameraTargetX: -1628.3956299 | floatType;
-		cameraTargetY: 1984.5710449 | floatType;
-		cameraTargetZ: 2124.7373047 | floatType;
-		numberObjects: 12 | intType;
+		cameraX: -2961.7724609 | floatType;
+		cameraY: 1663.9002686 | floatType;
+		cameraZ: 990.6967773 | floatType;
+		cameraTargetX: -292.2922363 | floatType;
+		cameraTargetY: -331.3571777 | floatType;
+		cameraTargetZ: -198.8256836 | floatType;
+		numberObjects: 13 | intType;
 	}
 }
 zone_2
@@ -284,5 +284,29 @@ object_13
 		scaleX: 1.0000000 | floatType;
 		scaleY: 1.0000000 | floatType;
 		scaleZ: 1.0000000 | floatType;
+	}
+}
+object_14
+{
+	Game object
+	{
+		objectID: 14 | longType;
+		parentID: 2 | longType;
+		objectType: Game Object | stringType;
+		objectName: LevelGameM2Col_14 | stringType;
+		objectTemplate: LevelGameM2Col | stringType;
+		enable: true | boolType;
+		visible: false | boolType;
+		lighting: false | boolType;
+		lock: true | boolType;
+		positionX: 0.0000000 | floatType;
+		positionY: 0.0000000 | floatType;
+		positionZ: 0.0000000 | floatType;
+		rotationX: 0.0000000 | floatType;
+		rotationY: 0.0000000 | floatType;
+		rotationZ: 0.0000000 | floatType;
+		scaleX: 254.0000000 | floatType;
+		scaleY: 254.0000000 | floatType;
+		scaleZ: 254.0000000 | floatType;
 	}
 }

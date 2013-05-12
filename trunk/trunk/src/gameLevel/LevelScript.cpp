@@ -4,6 +4,7 @@
 #include "IView.h"
 #include "CVectorUtil.h"
 #include "CColladaMeshComponent.h"
+#include "CEllipsoidCollisionComponent.h"
 
 #include "gameComponent/CPlayerComponent.h"
 #include "gameComponent/CWeaponComponent.h"
@@ -357,6 +358,24 @@ int getCurrentCameraPosition(lua_State* state)
 //////////////////////////////////////////////////////////
 // COLLISION FUNCTION IMPLEMENT
 //////////////////////////////////////////////////////////
+
+int setEllipsoidCollision(lua_State* state)
+{
+	lua_Integer objID = lua_tointeger(state,1);
+	float x  = (float)lua_tonumber(state,2);
+	float y  = (float)lua_tonumber(state,3);
+	float z  = (float)lua_tonumber(state,4);
+
+	CGameObject *obj = (CGameObject*)objID;
+	if ( obj )
+	{
+		CEllipsoidCollisionComponent *comp = (CEllipsoidCollisionComponent*)obj->getComponent(IObjectComponent::EllipsoidCollision);
+		if ( comp )
+			comp->setEllipsoid(x,y,z);
+	}
+
+	return 0;
+}
 
 int getLevelCollision(lua_State* state)
 {
@@ -996,6 +1015,7 @@ void registerCFunction()
 
 	// collision function
 	REGISTER_C_FUNCTION(getLevelCollision);
+	REGISTER_C_FUNCTION(setEllipsoidCollision);
 
 	// lighting function
 	REGISTER_C_FUNCTION(setLevelAmbientLight);

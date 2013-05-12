@@ -1371,6 +1371,165 @@ void CColladaMeshComponent::removeNodeReferenceByAnimLayer(CGameColladaSceneNode
     m_colladaNode->removeNodeReferenceByAnimLayer(node, parent);
 }
 
+
+// createCollision
+// it will create a obj with nav mesh
+CGameObject* CColladaMeshComponent::createCollisionObject()
+{
+	CGameObject* obj = new CGameObject(NULL);
+	CColladaMeshComponent *meshComp = new CColladaMeshComponent(obj);
+	obj->addComponent(meshComp);
+	
+	meshComp->createCollision(this);
+	return obj;
+}
+
+// initCollision
+void CColladaMeshComponent::createCollision(CColladaMeshComponent *base)
+{
+	// release if mesh is loaded
+	if ( m_gameObject->m_node )
+		m_gameObject->destroyNode();
+
+	ISceneManager *smgr = getIView()->getSceneMgr();
+
+	// create collada node
+	m_colladaNode = new CGameColladaContainerSceneNode
+		(
+			m_gameObject,
+			m_gameObject->getParentSceneNode(),
+			smgr,
+			(s32)m_gameObject->getID()
+		);
+	
+	m_gameObject->m_node = m_colladaNode;
+
+
+	std::queue<SGroupNode> queueNode;
+
+	const core::list<ISceneNode*>& childs = base->getColladaNode()->getChildren();
+	core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
+	while ( it != end )
+	{
+		queueNode.push( SGroupNode(base->getColladaNode(), (*it) ) );
+		it++;
+	}
+
+	CGameColladaMesh	*collisionMesh		= new CGameColladaMesh();
+	SColladaMeshBuffer	*collisionBuffer	= new SColladaMeshBuffer();
+	int vertexIndex = 0;
+
+	while ( queueNode.size() )
+	{
+		SGroupNode groupNode = queueNode.front();
+		queueNode.pop();
+
+		// clone new node
+		CGameColladaSceneNode *node = (CGameColladaSceneNode*)groupNode.initChild;
+		const core::matrix4& transformMatrix = node->getAbsoluteTransformation();
+
+		CGameColladaMesh* mesh = node->getMesh();
+		if ( mesh )
+		{
+			int nBuffer = mesh->getMeshBufferCount();
+
+			for ( int i = 0; i < nBuffer; i++)
+			{							
+				if ( mesh->IsStaticMesh == true )
+				{
+					SColladaMeshBuffer* buffer = (SColladaMeshBuffer*)mesh->getMeshBuffer(i);
+
+					collisionBuffer->Vertices.reallocate(collisionBuffer->Vertices.size() + buffer->Vertices.size());
+					collisionBuffer->Indices.reallocate(collisionBuffer->Indices.size() + buffer->Indices.size());
+					
+					// add to collision buffer
+					for (int i = 0; i < (int)buffer->Vertices.size(); i++)
+					{
+						video::S3DVertex v = buffer->Vertices[i];
+						
+						transformMatrix.transformVect(v.Pos);
+						transformMatrix.rotateVect(v.Normal);					
+
+						collisionBuffer->Vertices.push_back(v);
+					}
+
+					for (int i = 0; i < (int)buffer->Indices.size(); i++)
+					{
+						collisionBuffer->Indices.push_back(vertexIndex + buffer->Indices[i]);
+					}
+					vertexIndex = (int)collisionBuffer->Vertices.size();
+				}
+				else
+				{
+					SColladaSkinMeshBuffer* buffer = (SColladaSkinMeshBuffer*)mesh->getMeshBuffer(i);
+
+					for (int i = 0; i < (int)buffer->Vertices.size(); i++)
+					{
+						video::S3DVertexSkin v = buffer->Vertices[i];
+						
+						transformMatrix.transformVect(v.StaticPos);
+						transformMatrix.rotateVect(v.StaticNormal);
+
+						collisionBuffer->Vertices.push_back(v);
+					}
+
+					for (int i = 0; i < (int)buffer->Indices.size(); i++)
+					{
+						collisionBuffer->Indices.push_back(vertexIndex + buffer->Indices[i]);
+					}
+					vertexIndex = (int)collisionBuffer->Vertices.size();
+				}
+			}			
+		}
+
+		const core::list<ISceneNode*>& childs = node->getChildren();
+		core::list<ISceneNode*>::ConstIterator it = childs.begin(), end = childs.end();
+		while ( it != end )
+		{
+			queueNode.push( SGroupNode(node,(*it)) );
+			it++;
+		}		
+	}
+
+	// update bouding box
+	collisionMesh->Component = this;
+	collisionBuffer->recalculateBoundingBox();
+	collisionMesh->addMeshBuffer(collisionBuffer);
+	collisionMesh->recalculateBoundingBox();
+
+	// create new node
+	CGameColladaSceneNode *newColladaNode = new CGameColladaSceneNode(m_colladaNode, m_colladaNode->getSceneManager(), -1);
+
+	// assign component & register node ID
+	newColladaNode->setComponent( this );
+
+	// name	
+	const char *name = "collisionNode";
+	newColladaNode->setName(name);
+	registerName( std::string(name), newColladaNode );
+
+	// sid name
+	newColladaNode->setSIDName( name );	
+	registerSID( std::string(name), newColladaNode );
+
+	m_defaultNode.push_back(newColladaNode);
+
+	// use local matrix
+	newColladaNode->UseLocalMatrix = true;
+	newColladaNode->setRootColladaNode(true);
+
+	// set collada mesh
+	newColladaNode->setColladaMesh( collisionMesh );
+	collisionMesh->drop();
+
+	// set child bouding box
+	m_colladaNode->addBoundingMeshNode( newColladaNode );
+
+	// drop this node
+	newColladaNode->drop();
+}
+
+
 // saveSceneToBinary
 // save collada mesh info to binary file
 void CColladaMeshComponent::saveSceneToBinary( const char *lpFileName )

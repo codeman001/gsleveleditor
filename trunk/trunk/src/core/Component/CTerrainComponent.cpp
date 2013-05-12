@@ -83,14 +83,14 @@ void CTerrainComponent::initComponent()
 				temp.mesh = sceneNode->getMesh();				
 				temp.node = sceneNode;								
 
-				if ( comp->isDefaultNode( sceneNode ) )
-				{
+				//if ( comp->isDefaultNode( sceneNode ) )
+				//{
 					temp.type = 0;
 					sceneNode->setTerrainNode( true );
 					sceneNode->setHideTerrain( m_hideTerrain );
-				}
-				else
-					temp.type = 1;
+				//}
+				//else
+				//	temp.type = 1;
 				
 				m_listCollisionNode.push_back( temp );
 			}

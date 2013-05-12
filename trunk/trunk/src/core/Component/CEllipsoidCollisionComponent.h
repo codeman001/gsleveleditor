@@ -4,14 +4,6 @@
 #include "CGameObject.h"
 #include "IObjectComponent.h"
 
-class IEllipsoidCallback
-{
-public:
-	virtual void _onUpdateEllipsoidBoundingBox(core::aabbox3df& box)
-	{
-	}
-};
-
 class CEllipsoidCollisionComponent: public IObjectComponent
 {
 protected:
@@ -26,7 +18,6 @@ protected:
 	core::vector3df		m_gravity;
 	core::vector3df		m_ellipsoidRadius;
 
-	IEllipsoidCallback*	m_callback;
 public:
 	CEllipsoidCollisionComponent( CGameObject *pObj );
 
@@ -59,6 +50,19 @@ public:
 	// get box from bouding box of object
 	void initFromBBox();
 
+	// setEllipsoid
+	// set ellipse
+	inline void setEllipsoid(float x, float y, float z)
+	{
+		m_ellipsoidRadius.X = x;
+		m_ellipsoidRadius.Y = y;
+		m_ellipsoidRadius.Z = z;
+	}
+
+	inline void setEllipsoid(const core::vector3df& v)
+	{
+		m_ellipsoidRadius = v;
+	}
 public:
 
 	// isFalling
@@ -68,12 +72,6 @@ public:
 		return m_isFalling;
 	}
 
-	// setElipsoidCallback
-	// set call back
-	void setElipsoidCallback(IEllipsoidCallback* callback)
-	{
-		m_callback = callback;
-	}
 protected:
 	
 	// collideTest

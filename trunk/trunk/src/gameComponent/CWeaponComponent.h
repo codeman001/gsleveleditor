@@ -6,8 +6,7 @@
 #include "gameConfig/CGameConfig.h"
 
 class CWeaponComponent: 
-	public IObjectComponent,
-	public IEllipsoidCallback
+	public IObjectComponent
 {
 public:
 	enum EWeaponType
@@ -85,9 +84,6 @@ public:
 	// check to reload active weapon
 	bool needReloadActiveWeapon();
 
-	// _onUpdateEllipsoidBoundingBox
-	// update callback
-	virtual void _onUpdateEllipsoidBoundingBox(core::aabbox3df& box);
 }; 
 
 #endif

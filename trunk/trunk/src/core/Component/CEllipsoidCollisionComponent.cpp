@@ -13,12 +13,10 @@ CEllipsoidCollisionComponent::CEllipsoidCollisionComponent( CGameObject *pObj )
 	m_isFirstUpdate		= true;
 	m_isFalling			= true;
 	
-	m_gravity			= core::vector3df(0,-100,0);
+	m_gravity			= core::vector3df(0,-10,0);
 	
-	m_ellipsoidRadius	= core::vector3df(50,90,80);	// right, up, front
+	m_ellipsoidRadius	= core::vector3df(50,95,80);	// right, up, front
 	m_translation		= core::vector3df(0,-90,0);
-
-	m_callback			= NULL;
 }
 
 CEllipsoidCollisionComponent::~CEllipsoidCollisionComponent()
@@ -37,9 +35,6 @@ void CEllipsoidCollisionComponent::initComponent()
 void CEllipsoidCollisionComponent::updateComponent()
 {	
 #ifdef GSGAMEPLAY
-	return;
-	initFromBBox();
-
 	CGameLevel *level =	CGameLevel::getCurrentLevel();
 	if ( level == NULL )
 	{
@@ -70,7 +65,11 @@ void CEllipsoidCollisionComponent::updateComponent()
 	m_fallingVelocity += m_gravity * (f32)diff * 0.001f;
 
 	// my bouding box
-	core::aabbox3df myBox = node->getTransformedBoundingBox();
+	core::aabbox3df myBox = node->getBoundingBox();
+	core::matrix4 mat;
+	mat.setScale( core::vector3df(2,2,2) );
+	mat.transformBoxEx(myBox);
+	node->getAbsoluteTransformation().transformBoxEx(myBox);
 
 	int nZone = level->getZoneCount();
 
@@ -97,10 +96,11 @@ void CEllipsoidCollisionComponent::updateComponent()
 					for ( int i = 0; i < numNode; i++ )
 					{
 						SMeshCollisionNode& node = com->getMeshCollisionNode(i);
-						ITriangleSelector *tri = node.node->getTriangleSelector();
-						if ( tri )
+						if ( node.node->getTransformedBoundingBox().intersectsWithBox(myBox) )
 						{
-							collideTest( tri );
+							ITriangleSelector *tri = node.node->getTriangleSelector();
+							if ( tri )
+								collideTest( tri );							
 						}
 					}
 				}
@@ -205,9 +205,6 @@ void CEllipsoidCollisionComponent::loadData( CSerializable* pObj )
 void CEllipsoidCollisionComponent::initFromBBox()
 {
 	core::aabbox3df box = m_gameObject->getSceneNode()->getBoundingBox();
-
-	if ( m_callback )
-		m_callback->_onUpdateEllipsoidBoundingBox(box);
 
 	m_ellipsoidRadius.X = (box.MaxEdge.X - box.MinEdge.X)*0.8f;
 	m_ellipsoidRadius.Y = (box.MaxEdge.Y - box.MinEdge.Y)*0.5f;

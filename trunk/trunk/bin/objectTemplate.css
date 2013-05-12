@@ -124,6 +124,10 @@ SpawnPoint
 	{
 		size: 100.0000000 | floatType;
 		textureFile: data/texture | filePathType;
+		colorA: 200 | intType;
+		colorR: 255 | intType;
+		colorG: 0 | intType;
+		colorB: 0 | intType;
 	}
 	Spawn point component
 	{

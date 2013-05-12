@@ -10,6 +10,10 @@ protected:
 	float		m_size;
 	std::string	m_textureFile;
 
+	unsigned int m_colorA;
+	unsigned int m_colorR;
+	unsigned int m_colorG;
+	unsigned int m_colorB;
 public:
 	CBoxObjectComponent(CGameObject *pObj);
 

@@ -25,7 +25,8 @@ void CAddObjectController::initController()
 		getIView()->setCurrentObjectTemplate(currentTemplate);
 	}
 	
-	p->setVisible( true );
+	p->setVisible(true);
+	p->setLighting(true);
 
 	// init first
 	onMouseMove( pView->m_mouseX, pView->m_mouseY );

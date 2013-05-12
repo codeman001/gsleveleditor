@@ -4,9 +4,12 @@
 #include "IView.h"
 
 CBoxObjectComponent::CBoxObjectComponent(CGameObject *pObj )
-	:IObjectComponent( pObj, IObjectComponent::BoxObject )
+	:IObjectComponent(pObj, IObjectComponent::BoxObject)
 {
-
+	m_colorA = 0xff;
+	m_colorR = 0xff;
+	m_colorG = 0xff;
+	m_colorB = 0xff;
 }
 
 CBoxObjectComponent::~CBoxObjectComponent()
@@ -45,6 +48,17 @@ void CBoxObjectComponent::createBox()
 	node->setMaterialFlag( video::EMF_LIGHTING, m_gameObject->isLighting() );
 
 #ifdef GSEDITOR
+	video::SMaterial& mat = node->getMaterial(0);
+
+	mat.DiffuseColor	= video::SColor(m_colorA, m_colorR,m_colorG,m_colorB);
+	mat.AmbientColor	= video::SColor(m_colorA, m_colorR,m_colorG,m_colorB);
+	mat.SpecularColor	= video::SColor(m_colorA, m_colorR,m_colorG,m_colorB);
+
+	mat.setFlag( EMF_COLOR_MATERIAL, false );	
+	mat.MaterialType = EMT_TRANSPARENT_ALPHA_CHANNEL;
+#endif
+
+#ifdef GSEDITOR
 	// add collision
 	ITriangleSelector *selector = smgr->createTriangleSelectorFromBoundingBox(node);
 	node->setTriangleSelector(selector);
@@ -65,9 +79,14 @@ void CBoxObjectComponent::createBox()
 void CBoxObjectComponent::saveData( CSerializable* pObj )
 {
 	pObj->addGroup( IObjectComponent::s_compType[ m_componentID ] );
-
+	
 	pObj->addFloat("size", m_size, true );
 	pObj->addPath("textureFile", m_textureFile.c_str(), true);	
+	
+	pObj->addInt("colorA", m_colorA, true);
+	pObj->addInt("colorR", m_colorR, true);
+	pObj->addInt("colorG", m_colorG, true);
+	pObj->addInt("colorB", m_colorB, true);
 }
 
 // loadData
@@ -78,6 +97,11 @@ void CBoxObjectComponent::loadData( CSerializable* pObj )
 
 	m_size			= pObj->readFloat();
 	m_textureFile	= pObj->readString();
+	
+	m_colorA		= pObj->readInt();
+	m_colorR		= pObj->readInt();
+	m_colorG		= pObj->readInt();
+	m_colorB		= pObj->readInt();
 
 	createBox();
 }

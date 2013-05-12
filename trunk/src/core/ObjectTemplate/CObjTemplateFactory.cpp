@@ -207,9 +207,9 @@ CGameObject* CObjTemplateFactory::spawnObject( wchar_t* templateName, CGameObjec
 	}
 
 	pObj->initComponent();
-	pObj->setVisible( false );
-	pObj->setObjectTemplate( templateName );
-	pObj->setLighting( false );
+	pObj->setVisible(false);
+	pObj->setObjectTemplate(templateName);
+	pObj->setLighting(true);
 	return pObj;
 }
 

@@ -97,6 +97,10 @@ void CComponentFactory::initComponentTemplate()
 	p->addGroup	(stringOfComponent(IObjectComponent::BoxObject));	
 	p->addFloat("size", 100 );
 	p->addPath("textureFile", "data/texture");
+	p->addInt("colorA", 200);
+	p->addInt("colorR", 255);
+	p->addInt("colorG", 0);
+	p->addInt("colorB", 0);
 
 	// add billboard
 	s_compTemplate.push_back( CSerializable() );
